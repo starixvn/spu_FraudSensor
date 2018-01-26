@@ -1,0 +1,87 @@
+#pagination
+{
+     font-size:1em;     
+     color:#616161;
+     font-family: 'Lucida Sans',Tahoma,Arial,Helvetica,sans-serif;
+     padding-left: 10px;
+}
+#pagination a{ text-decoration:none;color:#616161; border-radius:2px;text-align:center;}
+#pagination a:hover, #pagination .current, #pagination .current.prev,#pagination .current.next{ font-weight:bold;background:#355391;color:#fff;border-radius:2px;margin-right: 2px;}
+#pagination a,#pagination span{display:block;float:left;margin-right:2px;line-height:14px;padding:0 2px}
+#pagination a.prev,#pagination a.next,#pagination span.prev,#pagination span.next{font-weight:bold;font-size:0.8em;}
+#itemperpage{float:left;padding:1px; border: 1px solid #969696;outline: 0 none;border-radius:3px;margin-left:6px;font-size:0.9em;}
+#pagination div.itemperpage{float:left;color:#3e5fa6;padding:0; margin-top:3px; font-weight:bold;}
+.numberlist{float:left;padding:2px;border: 1px solid #969696;border-radius:3px;margin-left:12px;}
+.numberlist ul
+{
+    display: inline;
+    list-style-type: none;
+    margin:0;
+    padding: 0;
+    }
+.numberlist ul li
+{
+        float:left;
+        display:inline;
+        padding:0 2px;
+       
+}
+.numberlist ul li.sep
+{
+     background: url(images/seperations.png) right 4px no-repeat;
+    }
+.numberlist ul li.last
+{
+    background: none !important;
+    }    
+#pagination div.detailtext{float:right;margin:0;padding:0; margin-top:3px;}
+
+#pagination .txt{width:40px !important;border: 1px solid #969696;padding:0 1px !important;font-size:0.9em !important;}
+
+#pagination .gotopage_box
+{
+    background: #f2f2f2;
+    background: -moz-linear-gradient(#f1f1f1, #f2f2f2) #e6e6e6;
+    background: -webkit-linear-gradient(#f1f1f1, #f2f2f2) #e6e6e6;
+    border: 1px solid #969696;
+    border-radius:2px;
+    box-shadow: 0 1px 1px rgba(255, 255, 255, 0.25) inset;
+    display: none;
+    padding: 0px !important;
+    position: absolute;
+    z-index: 9999;
+}
+#pagination .lnk
+{
+    cursor:pointer;
+    }
+#pagination .lnk:hover
+{
+    color:#3e5fa6;
+    }
+#pagination .gotopage_box td
+{
+    border: none 0px;
+    padding:1px !important;
+    font-size: 1em;
+    white-space: nowrap;
+}
+
+#pagenav_ibtn
+{
+    background:url(images/go-hover-icon.png) 0 0 no-repeat;
+    width:20px;
+    height:20px;
+    padding:0px;
+    margin:0px;
+    border: none 0px;
+    }
+#pagenav_ibtn:hover
+{
+    background-position:0 -22px !important;
+}
+
+#pagination #itemperpage 
+{
+    cursor: pointer;
+}

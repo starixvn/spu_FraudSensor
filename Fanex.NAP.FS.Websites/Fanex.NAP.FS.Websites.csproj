@@ -20,6 +20,8 @@
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
+    <Use64BitIISExpress />
+    <UseGlobalApplicationHostFile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -71,6 +73,9 @@
     <Reference Include="Microsoft.Practices.Unity.Interception, Version=2.0.414.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\EnterpriseLibrary.Unity.5.0.414.0\lib\net40\Microsoft.Practices.Unity.Interception.dll</HintPath>
       <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -126,10 +131,6 @@
     <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <Private>True</Private>
       <HintPath>..\packages\Microsoft.AspNet.WebPages.3.0.0\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <Private>True</Private>
-      <HintPath>..\packages\Newtonsoft.Json.5.0.6\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="WebGrease">
       <Private>True</Private>
@@ -201,6 +202,8 @@
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
+    <Compile Include="Util\WebRendering\Column.cs" />
+    <Compile Include="Util\WebRendering\Ignore.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Data\NAPFrameworkSpNames.xml" />
@@ -210,9 +213,37 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Scripts\auto-grid.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
+    <Content Include="Scripts\Fanex.Grid\Fanex.Grid.css" />
+    <Content Include="Scripts\Fanex.Grid\Fanex.Grid.js" />
+    <Content Include="Scripts\Fanex.Grid\Fanex.Pagination.css" />
+    <Content Include="Scripts\Fanex.Grid\Fanex.Pagination.js" />
+    <Content Include="Scripts\Fanex.Grid\images\back-icon.png" />
+    <Content Include="Scripts\Fanex.Grid\images\check-box.png" />
+    <Content Include="Scripts\Fanex.Grid\images\collapse-icon.png" />
+    <Content Include="Scripts\Fanex.Grid\images\collapse-small.png" />
+    <Content Include="Scripts\Fanex.Grid\images\excel-icon.png" />
+    <Content Include="Scripts\Fanex.Grid\images\expand-icon.png" />
+    <Content Include="Scripts\Fanex.Grid\images\expand-small.png" />
+    <Content Include="Scripts\Fanex.Grid\images\go-hover-icon.png" />
+    <Content Include="Scripts\Fanex.Grid\images\send-mail.png" />
+    <Content Include="Scripts\Fanex.Grid\images\seperations.png" />
+    <Content Include="Scripts\Fanex.Grid\images\sort-icon-new.png" />
+    <Content Include="Scripts\Fanex.Grid\images\sort-icon-new3.png" />
+    <Content Include="Scripts\Fanex.Grid\images\sort-icon.png" />
+    <Content Include="Scripts\Fanex.Grid\Language\Fanex.Gird.Lang.en-US.js" />
+    <Content Include="Scripts\Fanex.Grid\Language\Fanex.Gird.Lang.ja-JP.js" />
+    <Content Include="Scripts\Fanex.Grid\Language\Fanex.Gird.Lang.ko-KR.js" />
+    <Content Include="Scripts\Fanex.Grid\Language\Fanex.Gird.Lang.th-TH.js" />
+    <Content Include="Scripts\Fanex.Grid\Language\Fanex.Gird.Lang.vi-VN.js" />
+    <Content Include="Scripts\Fanex.Grid\Language\Fanex.Gird.Lang.zh-CN.js" />
+    <Content Include="Scripts\Fanex.Grid\Language\Fanex.Gird.Lang.zh-TW.js" />
+    <Content Include="Scripts\Fanex.Grid\ThirdParties\Moment\moment.min.js" />
+    <Content Include="Scripts\Fanex.Grid\ThirdParties\Numeral\languages.min.js" />
+    <Content Include="Scripts\Fanex.Grid\ThirdParties\Numeral\numeral.min.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />

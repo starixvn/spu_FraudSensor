@@ -1,0 +1,44 @@
+﻿namespace Fanex.NAP.FS.Websites.Util.WebRendering
+{
+    using Newtonsoft.Json.Linq;
+    using System;
+    using System.Linq;
+    using System.Reflection;
+
+    [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
+    public class Column : Attribute
+    {
+        public Column(string name)
+        {
+            Name = name;
+        }
+
+        public string Name { get; private set; }
+
+        public static string GetColumnJson<T>()
+        {
+            var t = typeof(T);
+
+            var properties =
+                    t.GetProperties()
+                    .Where(prop => prop.GetCustomAttribute<Ignore>() == null)
+                    .ToDictionary(prop => prop.Name, GetColumnName);
+
+            var json = JObject.FromObject(properties);
+
+            return json.ToString();
+        }
+
+        private static string GetColumnName(PropertyInfo prop)
+        {
+            var columnAttr = prop.GetCustomAttribute<Column>();
+
+            if (columnAttr == null)
+            {
+                return prop.Name;
+            }
+
+            return columnAttr.Name;
+        }
+    }
+}
