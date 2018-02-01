@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fanex.NAP.FS.Websites", "Fanex.NAP.FS.Websites\Fanex.NAP.FS.Websites.csproj", "{2CEE814C-AB8D-42A3-9A00-F605B5A6649B}"
 EndProject
@@ -10,6 +10,12 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fanex.NAP.FS.WinService", "Fanex.NAP.FS.WinService\Fanex.NAP.FS.WinService.csproj", "{6D6D8E14-23C3-46B7-889E-328632C6DC62}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fanex.NAP.FS.WinService.Console", "Fanex.NAP.FS.WinService.Console\Fanex.NAP.FS.WinService.Console.csproj", "{2226E469-7F62-4BFF-B5AC-C99051228374}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SonarQube", "SonarQube", "{E1B361EA-BB46-45A7-9750-C7F594CE425B}"
+	ProjectSection(SolutionItems) = preProject
+		SonarQube\SolutionBinding.sqconfig = SonarQube\SolutionBinding.sqconfig
+		SonarQube\SPUFraudSensorCSharp.ruleset = SonarQube\SPUFraudSensorCSharp.ruleset
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
