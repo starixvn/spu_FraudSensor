@@ -6,9 +6,9 @@
     using System.Reflection;
 
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
-    public class Column : Attribute
+    public class ColumnAttribute : Attribute
     {
-        public Column(string name)
+        public ColumnAttribute(string name)
         {
             Name = name;
         }
@@ -21,7 +21,7 @@
 
             var properties =
                     t.GetProperties()
-                    .Where(prop => prop.GetCustomAttribute<Ignore>() == null)
+                    .Where(prop => prop.GetCustomAttribute<IgnoreAttribute>() == null)
                     .ToDictionary(prop => prop.Name, GetColumnName);
 
             var json = JObject.FromObject(properties);
@@ -31,7 +31,7 @@
 
         private static string GetColumnName(PropertyInfo prop)
         {
-            var columnAttr = prop.GetCustomAttribute<Column>();
+            var columnAttr = prop.GetCustomAttribute<ColumnAttribute>();
 
             if (columnAttr == null)
             {

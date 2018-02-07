@@ -3,7 +3,7 @@
     using System;
 
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
-    public class Ignore : Attribute
+    public class IgnoreAttribute: Attribute
     {
     }
 }

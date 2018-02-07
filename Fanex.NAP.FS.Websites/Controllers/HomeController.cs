@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using Fanex.NAP.Core.Web.Attribute;
 using System.Web.Mvc;
 
 namespace Fanex.NAP.FS.Websites.Controllers
 {
-    public class HomeController : Controller
+    [NapSuperAuth]
+    public class HomeController : BaseController
     {
         public ActionResult Index()
         {

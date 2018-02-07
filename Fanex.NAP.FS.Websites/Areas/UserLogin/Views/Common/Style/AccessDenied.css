@@ -1,0 +1,24 @@
+﻿/* File Created: November 13, 2012 */
+/*Death Centre*/
+#horizon {
+    display: block;
+    height: 1px;
+    left: 0px;
+    overflow: visible;
+    position: absolute;
+    text-align: center;
+    top: 50%;
+    visibility: visible;
+    width: 100%;
+}
+
+#deadcentre {
+    background: url(images/accessDenied.gif);
+    height: 90px;
+    left: 50%;
+    margin-left: -65px;
+    position: absolute;
+    top: -45px;
+    visibility: visible;
+    width: 130px;
+}

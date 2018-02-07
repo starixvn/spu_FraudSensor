@@ -1,0 +1,55 @@
+﻿@model IEnumerable<SiteLevel>
+@{
+    ViewBag.Title = "Select Site To Sign In";
+    Layout = null;
+}
+<!DOCTYPE html>
+<!--[if IEMobile 7]><html class="no-js iem7 oldie"><![endif]-->
+<!--[if (IE 7)&!(IEMobile)]><html class="no-js ie7 oldie" lang="en"><![endif]-->
+<!--[if (IE 8)&!(IEMobile)]><html class="no-js ie8 oldie" lang="en"><![endif]-->
+<!--[if (IE 9)&!(IEMobile)]><html class="no-js ie9" lang="en"><![endif]-->
+<!--[if (gt IE 9)|(gt IEMobile 7)]><!-->
+<html lang="en">
+    <!--<![endif]-->
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+        <title>@ViewBag.Title</title>
+        <link href="~/areas/userlogin/themes/select-site.less" rel="stylesheet" type="text/css" />
+        <script src="~/areas/userlogin/scripts/lib/jquery-1.9.0.min.js" type="text/javascript"> </script>
+        @*<script src="~/Areas/UserLogin/Script/ReCheckIn.js" type="text/javascript"></script>*@
+    </head>
+    <body>
+        <div id="header">
+            <div class="logo">NAP</div>
+            <div class="auth">
+                Howdy, @HttpContext.Current.User.Identity.Name
+                <span class="sep">|</span>
+                @Html.ActionLink("Sign Out", "LogOut", "Login", new {Area = "UserLogin"}, new {})
+            </div>
+        </div>
+        <h1> @ViewBag.Title </h1>
+        <div class="sites">
+            @foreach (SiteLevel item in Model)
+            {
+                <div class="site">
+                    @Html.ActionLink(item.Site.Name, "GoToSite", "UserSite", new {id = item.Site.Id},
+                        new {target = "_blank"})
+                </div>
+            }
+        </div>
+        <input type="hidden" id="hdfOnUserId" value="@ViewBag.OnUserId" />
+    </body>
+</html>
+<script type="text/javascript">
+
+    $(document).ready(function() {
+        var idx = 1;
+        $('.site').each(function() {
+            $(this).delay(idx * 60).fadeIn(function() {
+                $(this).children().css({ 'padding-left': '60px', 'padding-right': '60px' });
+            });
+            idx++;
+        });
+    });
+
+</script>

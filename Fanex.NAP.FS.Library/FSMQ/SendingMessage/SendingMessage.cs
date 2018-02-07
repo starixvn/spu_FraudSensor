@@ -1,8 +1,8 @@
 ﻿namespace Fanex.NAP.FS.Library.FSMQ
 {
-    public abstract class SendingMessage : ISendingMessage
+    public class SendingMessage : ISendingMessage
     {
-        private IMessageQueueSender _messageQueue;
+        private readonly IMessageQueueSender _messageQueue;
 
         protected SendingMessage()
         {

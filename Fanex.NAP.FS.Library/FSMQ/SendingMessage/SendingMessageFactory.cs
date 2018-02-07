@@ -2,7 +2,7 @@
 {
     using System;
 
-    public class SendingMessageFactory
+    public static class SendingMessageFactory
     {
         public static ISendingMessage GetSender(SendingType type)
         {

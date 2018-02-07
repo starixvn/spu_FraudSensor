@@ -1,0 +1,98 @@
+@import url(http://fonts.googleapis.com/css?family=Abel);
+
+.transition (@value: all .2s ease-in-out) {
+	transition: @value;
+	-moz-transition: @value;
+	-webkit-transition: @value;
+	-o-transition: @value;
+}
+
+.box_shadow (@value: 0 0 1px rgba(0,0,0,0.5)) {
+	box-shadow: @value;
+	-moz-box-shadow: @value;
+	-webkit-box-shadow: @value;
+}
+
+body {
+	font-family: Abel, 'Segoe UI Light','Segoe UI','Lucida Grande',Verdana,Arial,Helvetica,sans-serif;
+	margin: 0;
+	padding: 0;
+	background: #f6f6f6 url(img/bg.png);
+}
+
+#header {
+	//background: #707070;
+	background: url(img/title-bg.jpg);
+	height: 80px;
+	padding: 30px;
+
+	.logo {
+		font-family: Abel, 'Segoe UI','Lucida Grande',Verdana,Arial,Helvetica,sans-serif;
+		float: left;
+		font-size: 3.6em;
+		font-weight: bold;
+		color: #fff;
+	}
+
+	.auth {
+		float: right;
+		padding: 15px 0 0 0;
+
+		.sep {
+			padding: 0 10px 0 0;
+			margin: 0 0 0 10px;
+		}
+
+		a {
+			text-decoration: none;
+			color: #ccc;
+
+			&:hover {
+				text-decoration: underline;
+			}
+		}
+	}
+}
+
+h1 {
+	font-family: 'Segoe UI Light','Segoe UI','Lucida Grande',Verdana,Arial,Helvetica,sans-serif;
+	color: #707070;
+	font-size: 36px;
+	font-weight: normal;
+	margin: 0;
+	padding: 36px;
+	text-align: center;
+	text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.9);
+	display: none;
+}
+
+.sites {
+
+	.site {
+		display: none;
+		float: left;
+		margin: 30px 20px;
+		box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.3);
+
+		a {
+			float: left;
+			min-width: 120px;
+			text-decoration: none;
+			background: #ccc;
+			padding: 40px 70px;
+			color: #707070;
+			text-align: center;
+			.transition();
+
+			&:hover {
+				background: #707070;
+				transform: scale(1.1);
+				color: #fff;
+			}
+
+			&:active, &:focus {
+				text-shadow: 0 0 3px #fff;
+			}
+		}
+	}
+}

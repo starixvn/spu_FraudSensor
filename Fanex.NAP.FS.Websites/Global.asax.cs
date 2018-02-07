@@ -2,6 +2,7 @@
 {
     using Fanex.Data;
     using Fanex.Logging;
+    using Fanex.NAP.FS.Websites.App_Start;
     using System;
     using System.Data.SqlClient;
     using System.Web;
@@ -16,13 +17,23 @@
             DbSettingProviderManager
                 .StartNewSession()
                 .UseDefaultConnectionStringProvider()
-                .UseDefaultDbSettingProvider(resourcePath: "~/App_Data", ignoreRedundantParameters: false, enableWatching: true)
+                .UseDefaultDbSettingProvider(resourcePath: "~/App_Data", enableWatching: true)
                 .Run();
 
             AreaRegistration.RegisterAllAreas();
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+        }
+
+        protected void Session_End(object sender, EventArgs e)
+        {
+            AuthConfig.SignOut();
+        }
+
+        protected void Application_AuthenticateRequest(object sender, EventArgs e)
+        {
+            AuthConfig.RegisterAuth(Context);
         }
 
         protected void Application_Error(object sender, EventArgs e)
@@ -45,14 +56,14 @@
                 string message = string.Format(
                                             exceptionFormat,
                                             ex.Message + "\r\n" + ex.InnerException.Message,
-                                            ex.GetType().ToString(),
+                                            ex.GetType(),
                                             ex.Source,
                                             HttpContext.Current.Request.Headers["Host"],
                                             HttpContext.Current.Request.UrlReferrer,
                                             HttpContext.Current.Request.UserHostAddress,
                                             HttpContext.Current.Request.UserAgent,
-                                            Request.Form.ToString(),
-                                            Request.QueryString.ToString(),
+                                            Request.Form,
+                                            Request.QueryString,
                                             ex.TargetSite,
                                             ex.StackTrace);
 
