@@ -126,6 +126,7 @@
     <Compile Include="FraudSensorService.Designer.cs">
       <DependentUpon>FraudSensorService.cs</DependentUpon>
     </Compile>
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="MessageQueue\IMessageQueueReceiver.cs" />
     <Compile Include="MessageQueue\IReceivingMessageHandler.cs" />
     <Compile Include="MessageQueue\MessageQueueReceiver.cs" />

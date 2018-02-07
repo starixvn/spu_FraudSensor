@@ -17,7 +17,7 @@
             DbSettingProviderManager
                .StartNewSession()
                .UseDefaultConnectionStringProvider()
-               .UseDefaultDbSettingProvider(resourcePath: "~/App_Data", ignoreRedundantParameters: false, enableWatching: true)
+               .UseDefaultDbSettingProvider(resourcePath: "~/App_Data", enableWatching: true)
                .Run();
 
             _taskLoader = taskLoader ?? new TaskLoader();
@@ -81,6 +81,7 @@
             }
             catch
             {
+                ////ignore comment
             }
         }
     }

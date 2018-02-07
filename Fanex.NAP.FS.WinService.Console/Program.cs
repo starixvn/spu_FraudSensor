@@ -1,6 +1,6 @@
 ﻿namespace Fanex.NAP.FS.WinService.Console
 {
-    class Program
+    static class Program
     {
         static void Main(string[] args)
         {

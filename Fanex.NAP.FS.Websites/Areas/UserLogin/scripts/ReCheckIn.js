@@ -1,4 +1,3 @@
-/// <reference path="/@JSense.js" />
 /*exported ReCheckin*/
 "use strict";
 
@@ -12,7 +11,7 @@ function ReCheckin() {
         dataType: "json",
         success: function (result) {
             if (result.IsKickedOut === "1") {
-                alert('You have logged in from another session or your login session has expired!');
+                //alert('You have logged in from another session or your login session has expired!');
                 window.location.href = urlLogout;
             }
         },

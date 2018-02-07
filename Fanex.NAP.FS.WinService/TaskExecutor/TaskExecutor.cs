@@ -7,7 +7,7 @@
     using System.Diagnostics;
     using System.Timers;
 
-    public abstract class TaskExecutor : ITaskExecutor
+    public abstract class TaskExecutor : ITaskExecutor, IDisposable
     {
         private Timer _timer;
 
@@ -47,7 +47,7 @@
                     ClearOldResult();
 
 #if DEBUG
-                    //Console.WriteLine("{0} - {1} - {2} is running", Task.CaseId, Task.TaskId, Task.TaskName);
+                    ////Console.WriteLine("{0} - {1} - {2} is running", Task.CaseId, Task.TaskId, Task.TaskName);
 #endif
                     ExecutePrecondition();
 
@@ -70,7 +70,6 @@
             _timer.Elapsed -= PreExecute;
             _timer.Stop();
             _timer.Close();
-            _timer.Dispose();
         }
 
         protected abstract void ClearOldResult();
@@ -109,13 +108,24 @@
 
 #if DEBUG
             stopwatch.Stop();
-            //Console.WriteLine("{0} - {1} - {2} spent {3} running", Task.CaseId, Task.TaskId, Task.TaskName, stopwatch.Elapsed.ToString());
+            ////Console.WriteLine("{0} - {1} - {2} spent {3} running", Task.CaseId, Task.TaskId, Task.TaskName, stopwatch.Elapsed.ToString());
 #endif
         }
 
         private void TriggerOtherTasks()
         {
+            ////??
+        }
 
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            _timer.Dispose();
         }
     }
 }
