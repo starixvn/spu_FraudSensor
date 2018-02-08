@@ -5,7 +5,7 @@
     using System;
     using System.Messaging;
 
-    public class FSMessageQueue
+    public class FSMessageQueue : IDisposable
     {
         protected readonly MessageQueue _messageQueue;
 
@@ -21,6 +21,17 @@
             {
                 Logger.Log.Error("_messageQueue = MessageQueue.Exists(queuePath) .. : " + ex);
             }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            _messageQueue.Dispose();
         }
     }
 }
