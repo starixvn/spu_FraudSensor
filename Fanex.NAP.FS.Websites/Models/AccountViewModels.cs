@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Fanex.NAP.FS.Websites.Models
+namespace Fanex.NAP.FS.Websites.ViewModels
 {
     public class ExternalLoginConfirmationViewModel
     {

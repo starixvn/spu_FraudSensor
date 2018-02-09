@@ -1,5 +1,4 @@
-﻿using System.Web;
-using System.Web.Optimization;
+﻿using System.Web.Optimization;
 
 namespace Fanex.NAP.FS.Websites
 {
@@ -26,6 +25,22 @@ namespace Fanex.NAP.FS.Websites
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
                       "~/Content/site.css"));
+
+            RegisterFSCoreBundles(bundles);
+            RegisterMatchMonitorBundles(bundles);
+        }
+
+        private static void RegisterFSCoreBundles(BundleCollection bundles)
+        {
+            bundles.Add(new ScriptBundle("~/core").Include(
+                "~/Scripts/Fanex.Grid/Fanex.Grid.js",
+                "~/Scripts/Fanex.Grid/Fanex.Pagination.js",
+                "~/Scripts/auto-grid.js"));
+        }
+
+        private static void RegisterMatchMonitorBundles(BundleCollection bundles)
+        {
+            bundles.Add(new ScriptBundle("~/match-monitor").Include("~/scripts/MatchMonitor/*.js"));
         }
     }
 }
