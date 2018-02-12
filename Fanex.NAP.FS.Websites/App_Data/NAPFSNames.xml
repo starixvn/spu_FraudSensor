@@ -5,5 +5,6 @@
   </Function>
   <Function Name="MatchMonitor">
     <Setting Key="FS_Rpt_MatchMonitorReportGet" SpName="FS_Rpt_MatchMonitorReportGet" DbName="DBFD.FraudDetection.bodbSPUNet"/>
+    <Setting Key="FS_Rpt_MatchMonitor_League_Get" SpName="FS_Rpt_MatchMonitor_League_Get" DbName="DBFD.FraudDetection.bodbSPUNet"/>
   </Function>
 </Functions>

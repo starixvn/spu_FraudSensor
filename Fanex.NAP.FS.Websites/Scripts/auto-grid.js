@@ -17,31 +17,31 @@
             arr.push(row);
         }
 
-        if (callbacks !== null) callback(obj, arr);
+        if (callback != null) callback(obj, arr);
 
         return arr;
     }
 
     function renderRow(columns, datum, callback) {
-        var array = [];
+        var arr = [];
         var obj = {};
 
         for (var prop in columns) {
-            var value = data[prop];
+            var value = datum[prop];
 
             var row =
                 {
                     Name: prop,
-                    Value: value === null ? "-" : value
+                    Value: value == null ? "-" : value
                 }
 
             obj[prop] = row;
             arr.push(row);
         }
 
-        if (callback !== null) callback(obj, array);
+        if (callback != null) callback(obj, arr);
 
-        return { Columns: array };
+        return { Columns: arr };
     }
 
     function renderRows(columns, data, callback) {
@@ -56,13 +56,13 @@
         return row_arrays;
     }
 
-    $.fn.autoGrid = function (columns, gridOptions, data, callbacks) {
+    $.fn.autoGrid = function (columns, gridOptions, data) {
         var options = Object.assign({}, gridOptions);
 
-        gridOptions.columns = renderHeader(columns, callbacks.header);
-        gridOptions.bodyRows = renderRows(columns, data, callbacks.row);
+        options.columns = renderHeader(columns, options.headerCallback == null ? null : options.headerCallback);
+        options.bodyRows = renderRows(columns, data, options.rowCallback == null ? null : options.rowCallback);
 
-        this.fanexGrid(gridOptions);
+        this.fanexGrid(options);
 
         return this;
     }

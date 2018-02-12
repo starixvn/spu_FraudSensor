@@ -97,6 +97,7 @@
         public ActionResult Index(string username, string password)
         {
             Response.BufferOutput = true;
+            object msg = null;
 
             if (!string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(password))
             {
@@ -165,13 +166,13 @@
                         else
                         {
                             // wrong password
-                            ViewBag.Message = ViewResources.Invalid_Username_or_Password;
+                            msg = ViewResources.Invalid_Username_or_Password;
                         }
                     }
                     else
                     {
                         // user doesn't exist
-                        ViewBag.Message = ViewResources.Invalid_Username_or_Password;
+                        msg = ViewResources.Invalid_Username_or_Password;
                     }
                 }
                 catch (Exception exception)
@@ -182,10 +183,10 @@
             }
             else
             {
-                ViewBag.Message = "Invalid input!";
+                msg = "Invalid input!";
             }
 
-            return View();
+            return View(msg);
         }
 
         #endregion sign in

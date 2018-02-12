@@ -23,8 +23,8 @@ namespace Fanex.NAP.FS.Websites
                       "~/Scripts/respond.js"));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
-                      "~/Content/bootstrap.css",
-                      "~/Content/site.css"));
+                      "~/Content/style.css",
+                      "~/Content/index.min.css"));
 
             RegisterFSCoreBundles(bundles);
             RegisterMatchMonitorBundles(bundles);

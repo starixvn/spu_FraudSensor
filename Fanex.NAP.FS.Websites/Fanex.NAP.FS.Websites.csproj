@@ -241,6 +241,8 @@
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\MatchMonitorController.cs" />
+    <Compile Include="Criteria\MatchMonitor\BalanceUpDateGetCriteria.cs" />
+    <Compile Include="Criteria\MatchMonitor\LeagueGetCriteria.cs" />
     <Compile Include="Criteria\MatchMonitor\MatchGetAllCriteria.cs" />
     <Compile Include="Criteria\MatchMonitor\VerifyMatchCriteria.cs" />
     <Compile Include="Global.asax.cs">
@@ -249,6 +251,7 @@
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Models\MatchMonitor\League.cs" />
     <Compile Include="Models\MatchMonitor\Match.cs" />
     <Compile Include="ViewModels\MatchMonitor\Event.cs" />
     <Compile Include="ViewModels\MatchMonitor\FraudCase.cs" />
@@ -269,6 +272,7 @@
     <Content Include="App_Data\NAPFSNames.xml" />
     <Content Include="Areas\UserLogin\scripts\lib\jquery-1.9.0.min.js" />
     <Content Include="Areas\UserLogin\scripts\ReCheckIn.js" />
+    <Content Include="Areas\UserLogin\themes\fonts\Fraud-Sensor.svg" />
     <Content Include="Areas\UserLogin\themes\img\auth-bg.png" />
     <Content Include="Areas\UserLogin\themes\img\bg.png" />
     <Content Include="Areas\UserLogin\themes\img\bkg-pat.png" />
@@ -276,6 +280,7 @@
     <Content Include="Areas\UserLogin\themes\img\header_bg.jpg" />
     <Content Include="Areas\UserLogin\themes\img\ie.png" />
     <Content Include="Areas\UserLogin\themes\img\lock.png" />
+    <Content Include="Areas\UserLogin\themes\img\login.png" />
     <Content Include="Areas\UserLogin\themes\img\logo.png" />
     <Content Include="Areas\UserLogin\themes\img\logo_FD.png" />
     <Content Include="Areas\UserLogin\themes\img\password.png" />
@@ -287,6 +292,7 @@
     <Content Include="Areas\UserLogin\themes\img\welcome.png" />
     <Content Include="Areas\UserLogin\themes\img\welcome2.png" />
     <Content Include="Areas\UserLogin\themes\login.css" />
+    <Content Include="Areas\UserLogin\themes\login.min.css" />
     <Content Include="Areas\UserLogin\Views\Common\Style\AccessDenied.css" />
     <Content Include="Areas\UserLogin\Views\Common\Style\Error.css" />
     <Content Include="Areas\UserLogin\Views\Common\Style\Images\accessDenied.gif" />
@@ -295,6 +301,10 @@
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\fonts\Fraud-Sensor.svg" />
+    <Content Include="Content\images\logo.png" />
+    <Content Include="Content\index.min.css" />
+    <Content Include="Content\style.css" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
@@ -325,6 +335,12 @@
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
     <Content Include="fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="Content\fonts\Fraud-Sensor.eot" />
+    <Content Include="Content\fonts\Fraud-Sensor.ttf" />
+    <Content Include="Content\fonts\Fraud-Sensor.woff" />
+    <Content Include="Areas\UserLogin\themes\fonts\Fraud-Sensor.eot" />
+    <Content Include="Areas\UserLogin\themes\fonts\Fraud-Sensor.ttf" />
+    <Content Include="Areas\UserLogin\themes\fonts\Fraud-Sensor.woff" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\Fanex.Grid\Fanex.Grid.css" />
     <Content Include="Scripts\Fanex.Grid\Fanex.Grid.js" />

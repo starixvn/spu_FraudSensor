@@ -5,6 +5,8 @@ namespace Fanex.NAP.FS.Websites.ViewModels.MatchMonitor
 {
     public class Match
     {
+        public static object Columns { get; }
+
         [Ignore]
         public int MatchId { get; set; }
 
@@ -24,5 +26,10 @@ namespace Fanex.NAP.FS.Websites.ViewModels.MatchMonitor
 
         [Column("Note")]
         public IEnumerable<string> Notes { get; set; }
+
+        static Match()
+        {
+            Columns = ColumnAttribute.GetColumnJson<Match>();
+        }
     }
 }

@@ -1,141 +1,81 @@
-﻿<!DOCTYPE html>
-<!--[if IEMobile 7]><html class="no-js iem7 oldie"><![endif]-->
-<!--[if (IE 7)&!(IEMobile)]><html class="no-js ie7 oldie" lang="en"><![endif]-->
-<!--[if (IE 8)&!(IEMobile)]><html class="no-js ie8 oldie" lang="en"><![endif]-->
-<!--[if (IE 9)&!(IEMobile)]><html class="no-js ie9" lang="en"><![endif]-->
-<!--[if (gt IE 9)|(gt IEMobile 7)]><!-->
+﻿@model string
+
+<!doctype html>
 <html lang="en">
-<!--<![endif]-->
 <head>
-    <meta charset="utf-8" />
-    <title>Sign In</title>
-    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
-    <meta name="viewport" content="width=device-width" />
-    <link href="~/areas/userlogin/themes/login.css" rel="stylesheet" type="text/css" />
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link href="https://fonts.googleapis.com/css?family=Lato:400,400i,700" rel="stylesheet">
+    <link rel="stylesheet" href="~/Content/style.css">
+    <!-- <link rel="stylesheet" href="assets/styles/base/reset.css">
+    <link rel="stylesheet" href="assets/styles/pages/login/login.css"> -->
+    <link rel="stylesheet" href="~/Areas/UserLogin/themes/login.min.css">
+    <title>Fraud Sensor</title>
 </head>
 <body>
-    <div id='not-supported-browser-panel' style="display: none">
-        Your browser is no longer supported. Some parts will not work and you may experience
-        problems.<br />
-        If you are having problems, try <a href='http://browsehappy.com/'>this</a> for full
-        browsing experience. Thank you!
-    </div>
-    @using (Html.BeginForm())
-    {
-        <div class="center">
-            <div id="login-box">
-                <div id="msg">
-                    <span id="inner-msg">@ViewBag.Message</span>
-                </div>
-                <div class="header">
-                    <div class="welcome">
-                    </div>
-                    <div class="secure">
-                    </div>
-                </div>
-                <div class="auth">
-                    <input type="text" id="username" name="username" autocomplete="off" />
-                    <input type="password" id="password" name="password" />
-                    <input type="submit" id="submit" value="Sign In" />
-                    <div class="bestview">
-                        <span>Best view in </span><span class="ff4">Firefox 4</span><span class="ie8">IE9</span>
-                    </div>
-                </div>
-            </div>
+    <section class="block">
+        <div class="text-center">
+            <img class="login-logo" src="~/Areas/UserLogin/themes/img/login.png" alt="Fraud Sensor">
         </div>
-    }
+        <h1 class="login-title text-center">Fraud sensor</h1>
+        @using (Html.BeginForm())
+        {
+            <div class="form-group">
+                <input type="text" class="form-control" placeholder="Username" id="username" name="username">
+                <span class="icon icon-account-outline"></span>
+            </div>
+            <div class="form-group">
+                <input type="password" class="form-control" placeholder="Password" id="password" name="password">
+                <span class="icon icon-onepassword"></span>
+            </div>
+             <button class="button -primary">Login</button>
+        }
+
+        <div class="msg-error">
+        @if (Model != null)
+        {
+            @Model;
+        }
+        </div>
+    </section>
+    <script src="~/Scripts/jquery-3.0.0.min.js"></script>
+    <script>
+        var username = $("#username");
+        var password = $("#password");
+        var msg = $(".msg-error");
+        var fst_load = true;
+        var has_error_message = @(Model != null ? "true": "false");
+
+        if (has_error_message) {
+            setTimeout(() => msg.text(""), 3000);
+        }
+
+        function check_before_submit() {
+            if (username.val().length == 0) {
+                msg.text("Username cant be empty");
+                username.addClass("invalid");
+                return false;
+            }
+
+            if (password.val().length == 0) {
+                msg.text("Password cant be empty");
+                password.addClass("invalid");
+                return false;
+            }
+
+            return true;
+        }
+
+        function reset_input() {
+            $("input").removeClass("invalid");
+            if (!fst_load) msg.text("");
+            fst_load = false;
+        }
+
+        $("input").focus(reset_input);
+        document.forms[0].onsubmit = check_before_submit;
+    </script>
 </body>
 </html>
-
-<script type="text/javascript">
-
-    var msg, username, password, btnSubmit;
-
-    window.onload = function () {
-        setInterval('window.history.forward()', 0);
-
-        msg = document.getElementById('msg');
-        innerMsg = document.getElementById('inner-msg');
-        username = document.getElementById('username');
-        password = document.getElementById('password');
-        btnSubmit = document.getElementById('submit');
-
-        checkBrowser(); // check if the client's browser is supported
-        username.focus();
-        if (innerMsg.innerHTML.length > 0) {
-            msg.style.display = 'block';
-            shake('msg', 0, 100);
-        } else {
-            msg.style.display = 'none';
-        }
-    };
-
-    document.forms[0].onsubmit = function () {
-        msg.style.display = 'none';
-
-        var isValid = true;
-
-        username.value = username.value.trim();
-
-        if (username.value.length == 0) {
-            username.classList.add('err');
-            isValid = false;
-            shake('username', 0, 100);
-        } else {
-            username.classList.remove('err');
-        }
-
-        if (password.value.length == 0) {
-            password.classList.add('err');
-            isValid = false;
-            shake('password', 0, 100);
-        } else {
-            password.classList.remove('err');
-        }
-
-        return isValid;
-    };
-
-    String.prototype.trim = function () {
-        return this.replace(/^\s*/, "").replace(/\s*$/, "");
-    };
-
-    function shake(target, times, duration) {
-        for (var i = times, j = 0; i >= 0; i--) {
-            setTimeout(target + ".style.left = '-" + i + "0px'", j++ * duration);
-            setTimeout(target + ".style.left = '" + i + "0px'", j++ * duration);
-        }
-    }
-
-    function checkBrowser() {
-        var msieVersion = getIeVersion();
-
-        if (msieVersion != -1 && msieVersion < 8.0) {
-            var warnPnl = document.getElementById('not-supported-browser-panel');
-            if (warnPnl.style.display == 'none') {
-                warnPnl.style.display = 'block';
-            }
-        }
-    }
-
-    ;
-
-    // Returns the version of Internet Explorer or -1
-    // (indicating the use of another browser).
-
-    function getIeVersion() {
-        var version = -1; // Return value assumes failure.
-
-        if (window.navigator.userAgent.indexOf("MSIE") > 0) {
-            var usrAgent = navigator.userAgent;
-            var reg = new RegExp("MSIE ([0-9]{1,}[\.0-9]{0,})");
-
-            if (reg.exec(usrAgent) != null) version = parseFloat(RegExp.$1);
-        }
-
-        return version;
-    }
-
-    ;
-
-</script>

@@ -21,9 +21,15 @@ namespace Fanex.NAP.FS.Websites.Controllers
         }
 
         [HttpPost]
-        public ActionResult VerifyMatch()
+        public ActionResult GetLeagues(LeagueGetCriteria criteria)
         {
-            return null;
+            return Json(MatchMonitorService.GetLeagues(criteria));
+        }
+
+        [HttpPost]
+        public ActionResult VerifyMatch(VerifyMatchCriteria criteria)
+        {
+            return Json(MatchMonitorService.VerifyMatch(criteria));
         }
     }
 }

@@ -1,4 +1,4 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<RuleSet Name="SonarQube - SPU / Fraud Sensor Nexcel CSharp" ToolsVersion="14.0">
+<RuleSet Name="SonarQube - SPU / Fraud Sensor Nexcel CSharp" ToolsVersion="15.0">
   <Include Path="..\sonarqube\spufraudsensorcsharp.ruleset" Action="Default" />
 </RuleSet>

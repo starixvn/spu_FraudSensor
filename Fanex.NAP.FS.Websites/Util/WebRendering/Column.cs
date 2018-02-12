@@ -20,7 +20,7 @@
             var t = typeof(T);
 
             var properties =
-                    t.GetProperties()
+                    t.GetProperties(BindingFlags.Instance | BindingFlags.Public)
                     .Where(prop => prop.GetCustomAttribute<IgnoreAttribute>() == null)
                     .ToDictionary(prop => prop.Name, GetColumnName);
 

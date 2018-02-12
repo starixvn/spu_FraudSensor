@@ -5,6 +5,8 @@ namespace Fanex.NAP.FS.Websites.ViewModels.MatchMonitor
 {
     public class FraudCase
     {
+        public FraudCase() { }
+
         public FraudCase(int id, string name, IEnumerable<Models.MatchMonitor.FraudCase> data)
         {
             FraudCaseName = name;

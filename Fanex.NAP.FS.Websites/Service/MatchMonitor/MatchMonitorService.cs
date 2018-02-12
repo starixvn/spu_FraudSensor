@@ -19,9 +19,26 @@ namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
                     var fraudCases = query.Read<Models.MatchMonitor.FraudCase>();
                     var matches = query.Read<Models.MatchMonitor.Match>();
 
-                    return matches.GroupJoin(fraudCases, m => m.MatchId, f => f.MatchId, GetMatch);
+                    return matches.GroupJoin(fraudCases, m => m.MatchId, f => f.MatchId, GetMatch).ToList();
                 }
             }
+        }
+
+        public static IEnumerable<Models.MatchMonitor.League> GetLeagues(LeagueGetCriteria criteria)
+        {
+            if (criteria.EventDate.Date == DateTime.Today)
+            {
+                criteria.IsLatestDate = true;
+            }
+
+            return DataService.GetData<Models.MatchMonitor.League>(criteria);
+        }
+
+        public static object VerifyMatch(VerifyMatchCriteria criteria)
+        {
+            DataService.UpdateData(criteria);
+
+            return null;
         }
 
         private static Match GetMatch(Models.MatchMonitor.Match match, IEnumerable<Models.MatchMonitor.FraudCase> fraudCases)
