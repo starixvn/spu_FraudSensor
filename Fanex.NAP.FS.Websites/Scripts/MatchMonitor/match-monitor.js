@@ -33,6 +33,38 @@ function load_page_events() {
         var paged_data = sliceData(page_idx, pageSize);
         renderGrid(paged_data);
     })
+
+    $("#back").click(function () {
+        var indexer = $("#page_index");
+
+        var page_idx = parseInt(indexer.val());
+
+        var new_page_idx = Math.max(page_idx - 1, 0);
+
+        indexer.val(new_page_idx);
+
+        if (new_page_idx == 0) {
+            $(this).parent.addClass("disabled")
+        }
+    });
+
+    $("#next").click(function () {
+        var indexer = $("#page_index");
+
+        var page_idx = parseInt(indexer.val());
+
+        var max_page = data_holder.length / pageSize + Math.min(data_holder.length % pageSize, 1);
+
+        var new_page_idx = Math.min(page_idx + 1, max_page);
+
+        indexer.val(new_page_idx);
+
+        $("#back").parent.removeClass("disabled");
+
+        if (new_page_idx == max_page) {
+            $(this).parent.addClass("disabled");
+        }
+    })
 }
 
 function load_grid() {
@@ -56,11 +88,14 @@ function load_grid() {
 function renderGrid(data) {
     if (data != null && data.Matches != null && data.Matches.length > 0) {
         renderFraudCasesHeader(data.FraudCases);
-        $("tbody").empty().append(data.Matches.map((m, i) => buildRow(data.FraudCases, m, i)));
+        $("tbody").empty().append(data.Matches.map((m, i) => buildRow(data.FraudCases, m, data.PageIdx * pageSize + i)));
+        $("#table_summary").text("Displaying "+ (data.PageIdx * pageSize + 1) + " to "+ (data.PageIdx * pageSize + pageSize) + " of " +  (data_holder.Matches.length)  + "item(s)")
     }
     else {
         renderFraudCasesHeader([]);
         $("tbody").empty().append("<tr class='text-center'><td  colspan='6'>There's no data</td></tr>");
+        $("#table_summary").text("");
+        $("#back, #next").parent.addClass("disabled");
     }
 
     $("#match_grid").show();
@@ -165,9 +200,11 @@ function renderLeagueDropdown(data) {
         export_btn.prop("disabled", false).addClass("-export");
     }
     else {
-        league_selector.append("<option>No available league</option>");
+        league_selector.append("<option value=''>No available league</option>");
+
         generate_btn.prop("disabled", true).removeClass("-primary");
         export_btn.prop("disabled", true).removeClass("-export");
+        $("#refresh_interval").val("--");
     }
 }
 
@@ -221,7 +258,8 @@ function sliceData(page = 0, pageSize = 50) {
     let sliced_data =
         {
             FraudCases: data_holder.FraudCases,
-            Matches: data_holder.Matches.slice(page, page + pageSize)
+            Matches: data_holder.Matches.slice(page, page + pageSize),
+            PageIdx: page
         };
 
     return sliced_data;

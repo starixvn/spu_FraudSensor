@@ -54,7 +54,7 @@
     <div class="top-header">
         <div class="refresh">
             <select class="refresh-option" id="refresh_interval">
-                <option>Not refresh</option>
+                <option value="--">Not refresh</option>
                 <option value="10">10s</option>
                 <option value="20">20s</option>
                 <option value="60">1m</option>
@@ -114,21 +114,20 @@
         <div class="page-size">
             <span>Page size</span>
             <select class="size" id="pager">
-                <option>1</option>
                 <option>50</option>
                 <option>100</option>
                 <option>200</option>
             </select>
             <ul class="pages">
-                <li class="page-prev disabled" style="margin-top: 3%"><a href="#">Back</a></li>
+                <li class="page-prev disabled" style="margin-top: 3%"><a id="back" href="#">Back</a></li>
                 <li>
                     <select id="page_index">
                     </select>
                 </li>
-                <li class="page-next" style="margin-top: 3%"><a href="#">Next</a></li>
+                <li class="page-next" style="margin-top: 3%"><a id="next" href="#">Next</a></li>
             </ul>
         </div>
-        <span>Displaying 1 to 50 of 94 item(s)</span>
+        <span id="table_summary"></span>
     </div>
 </div>
 
