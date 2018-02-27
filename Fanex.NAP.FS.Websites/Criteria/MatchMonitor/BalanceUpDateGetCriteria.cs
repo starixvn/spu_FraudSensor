@@ -6,7 +6,7 @@ namespace Fanex.NAP.FS.Websites.Criteria.MatchMonitor
     {
         public override string GetSettingKey()
         {
-            throw new System.NotImplementedException();
+            return "Age_SelBalanceUpDay";
         }
 
         public override bool IsValid()

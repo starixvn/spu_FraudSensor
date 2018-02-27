@@ -40,6 +40,11 @@ namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
             return null;
         }
 
+        public static Models.MatchMonitor.BalanceUpDate GetBalanceUpDate()
+        {
+            return DataService.GetData<Models.MatchMonitor.BalanceUpDate>(new BalanceUpDateGetCriteria()).First();
+        }
+
         private static Match GetMatch(Models.MatchMonitor.Match match, IEnumerable<Models.MatchMonitor.FraudCase> fraudCases)
         {
             var userService = new Core.Service.Impl.UserService();

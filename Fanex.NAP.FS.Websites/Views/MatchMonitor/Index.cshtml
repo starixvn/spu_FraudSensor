@@ -1,4 +1,5 @@
 ﻿@using Fanex.NAP.FS.Websites.ViewModels.MatchMonitor
+@model Fanex.NAP.FS.Websites.Models.MatchMonitor.BalanceUpDate
 
 @{
     ViewBag.Title = "MATCH MONITOR";
@@ -113,6 +114,7 @@
         <div class="page-size">
             <span>Page size</span>
             <select class="size" id="pager">
+                <option>1</option>
                 <option>50</option>
                 <option>100</option>
                 <option>200</option>
@@ -133,6 +135,8 @@
 @section scripts{
     <script>
         var columns = @Html.Raw(Match.Columns);
+
+        var balanceUpDay = new Date(@Model.BalanceUpDay.Year, @Model.BalanceUpDay.Month, @Model.BalanceUpDay.Day);
     </script>
     @Scripts.Render("~/match-monitor")
 }

@@ -9,7 +9,8 @@ function load_page_events() {
 
     $("#event_date")
         .datepicker({
-            dateFormat: "yy-mm-dd"
+            dateFormat: "yy-mm-dd",
+            minDate: balanceUpDay
         })
         .change(getLeague);
 
@@ -19,12 +20,19 @@ function load_page_events() {
 
     pageSize = parseInt($("#pager").val());
 
-    $("#page").change(function () {
+    $("#pager").change(function () {
         pageSize = $(this).val();
         page();
         var paged_data = sliceData(0, pageSize);
         renderGrid(paged_data);
     });
+
+    $("#page_index").change(function () {
+        var page_idx = parseInt($(this).val());
+
+        var paged_data = sliceData(page_idx, pageSize);
+        renderGrid(paged_data);
+    })
 }
 
 function load_grid() {
@@ -213,7 +221,7 @@ function sliceData(page = 0, pageSize = 50) {
     let sliced_data =
         {
             FraudCases: data_holder.FraudCases,
-            Matches: data_holder.Matches.slice(page, page + pageSize - 1)
+            Matches: data_holder.Matches.slice(page, page + pageSize)
         };
 
     return sliced_data;

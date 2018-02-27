@@ -11,7 +11,7 @@ namespace Fanex.NAP.FS.Websites.Controllers
         // GET: MatchMonitor
         public ActionResult Index()
         {
-            return View();
+            return View(MatchMonitorService.GetBalanceUpDate());
         }
 
         [HttpPost]
