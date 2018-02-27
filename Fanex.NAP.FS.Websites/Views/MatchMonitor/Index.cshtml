@@ -28,20 +28,20 @@
         <select class="control" id="is_verified">
             <option>All</option>
             <option value="true">Yes</option>
-            <option value="false">No</option>
+            <option value="false" selected>No</option>
         </select>
     </div>
     <div class="group width-160">
         <label class="text">Match Status</label>
         <select class="control" id="match_status">
             <option>All</option>
-            <option value="running">In-Play</option>
+            <option value="running" selected>In-Play</option>
             <option value="completed">Completed</option>
         </select>
     </div>
     <div class="group">
         <label class="checkbox">
-            <input type="checkbox" id="is_main_market"/>
+            <input type="checkbox" checked id="is_main_market"/>
             <span>Main Markets Only</span>
         </label>
     </div>
@@ -112,18 +112,18 @@
     <div class="pagination">
         <div class="page-size">
             <span>Page size</span>
-            <select class="size">
+            <select class="size" id="pager">
                 <option>50</option>
+                <option>100</option>
+                <option>200</option>
             </select>
             <ul class="pages">
-                <li class="page-prev disabled"><a href="#">Back</a></li>
+                <li class="page-prev disabled" style="margin-top: 3%"><a href="#">Back</a></li>
                 <li>
-                    <select>
-                        <option>1</option>
-                        <option>2</option>
+                    <select id="page_index">
                     </select>
                 </li>
-                <li class="page-next"><a href="#">Next</a></li>
+                <li class="page-next" style="margin-top: 3%"><a href="#">Next</a></li>
             </ul>
         </div>
         <span>Displaying 1 to 50 of 94 item(s)</span>

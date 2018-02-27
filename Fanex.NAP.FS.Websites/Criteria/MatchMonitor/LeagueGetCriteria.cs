@@ -9,8 +9,6 @@ namespace Fanex.NAP.FS.Websites.Criteria.MatchMonitor
 
         public int SportId { get; set; }
 
-        public bool IsLatestDate { get; set; }
-
         public override string GetSettingKey()
         {
             return "FS_Rpt_MatchMonitor_League_Get";

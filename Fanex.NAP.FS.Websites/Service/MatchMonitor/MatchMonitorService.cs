@@ -21,40 +21,6 @@ namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
 
                     return new MatchList
                     {
-                        Matches = new[]
-                        {
-                            new Match
-                            {
-                                Event = new Event
-                                {
-                                    HomeName = "String theorist",
-                                    AwayName = "Loop theorist",
-                                    LeagueName = "Gravity"
-                                },
-                                FraudCases = new Dictionary<string, FraudCase>
-                                {
-                                    {  "String theory", new FraudCase{ FraudCaseId = 1, FraudCaseName = "String theory", Violations = 10} },
-                                    {  "Loop theory", new FraudCase{ FraudCaseId = 1, FraudCaseName = "Loop theory", Violations = 0} },
-                                    {  "Vacuum theory", new FraudCase{ FraudCaseId = 1, FraudCaseName = "Vacuum theory", Violations = null} }
-                                },
-                                MatchId = 5,
-                                Score = "0 - 0",
-                                Status = "completed",
-                                Verified = false,
-                                VerifiedBy = "Simon"
-                            }
-                        },
-                        FraudCases = new[]
-                        {
-                            "String theory",
-                            "Loop theory",
-                            "Vacuum theory"
-                        }
-                    };
-
-
-                    return new MatchList
-                    {
                         Matches = matches.GroupJoin(fraudCases, m => m.MatchId, f => f.MatchId, GetMatch),
                         FraudCases = fraudCases.GroupBy(f => f.FraudCaseName).Select(g => g.Key)
                     };
@@ -64,25 +30,6 @@ namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
 
         public static IEnumerable<Models.MatchMonitor.League> GetLeagues(LeagueGetCriteria criteria)
         {
-            if (criteria.EventDate.Date == DateTime.Today)
-            {
-                criteria.IsLatestDate = true;
-            }
-
-            return new[]
-            {
-                new Models.MatchMonitor.League
-                {
-                    LeagueId = 1,
-                    LeagueName = "Gravity"
-                },
-                new Models.MatchMonitor.League
-                {
-                    LeagueId = 2,
-                    LeagueName = "Vacuum"
-                }
-            };
-
             return DataService.GetData<Models.MatchMonitor.League>(criteria);
         }
 
@@ -95,12 +42,14 @@ namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
 
         private static Match GetMatch(Models.MatchMonitor.Match match, IEnumerable<Models.MatchMonitor.FraudCase> fraudCases)
         {
+            var userService = new Core.Service.Impl.UserService();
+
             return new Match
             {
                 Event = new Event
                 {
-                    HomeName = RefData.GetTeamName(match.Home).ToString(),
-                    AwayName = RefData.GetTeamName(match.Away).ToString(),
+                    HomeName = match.Home == null ? "-" : RefData.GetTeamName(match.Home).ToString(),
+                    AwayName = match.Away == null ? "-" : RefData.GetTeamName(match.Away).ToString(),
                     LeagueName = match.LeagueName
                 },
                 FraudCases =
@@ -110,7 +59,7 @@ namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
                     .ToDictionary(f => f.FraudCaseName),
                 MatchId = match.MatchId,
                 Verified = match.IsVerified,
-                VerifiedBy = match.VerifiedBy,
+                VerifiedBy = match.VerifiedBy == null ? null : userService.Get(match.VerifiedBy.Value).Username,
                 Status = match.EventStatus,
                 Score = string.Format("{0} - {1}", match.LiveHomeScore, match.LiveAwayScore)
             };

@@ -8,7 +8,7 @@
 
         public bool IsVerified { get; set; }
 
-        public string VerifiedBy { get; set; }
+        public int? VerifiedBy { get; set; }
 
         public string Home { get; set; }
 

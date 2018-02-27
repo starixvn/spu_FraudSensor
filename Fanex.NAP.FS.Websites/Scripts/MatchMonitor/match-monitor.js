@@ -1,4 +1,6 @@
 ﻿var timeout_holder = null;
+var data_holder = null;
+var pageSize = 0;
 
 function load_page_events() {
     $("#generate").click(load_grid);
@@ -14,6 +16,15 @@ function load_page_events() {
     $(".icon-calendar-text").click(() => $("#event_date").focus());
 
     $("#refresh_interval").change(e => refreshChange($(e.target)));
+
+    pageSize = parseInt($("#pager").val());
+
+    $("#page").change(function () {
+        pageSize = $(this).val();
+        page();
+        var paged_data = sliceData(0, pageSize);
+        renderGrid(paged_data);
+    });
 }
 
 function load_grid() {
@@ -26,7 +37,12 @@ function load_grid() {
     dto.LeagueIds = $("#league").val();
     dto.IsMainMarket = $("#is_main_market:checked").length > 0;
 
-    $.post(url, dto, renderGrid);
+    $.post(url, dto, function (data) {
+        data_holder = data;
+        page()
+        var paged_data = sliceData(0, pageSize);
+        renderGrid(paged_data);
+    });
 }
 
 function renderGrid(data) {
@@ -36,7 +52,7 @@ function renderGrid(data) {
     }
     else {
         renderFraudCasesHeader([]);
-        $("tbody").empty().append("<tr colspan='6'><td>There's no data</td></tr>");
+        $("tbody").empty().append("<tr class='text-center'><td  colspan='6'>There's no data</td></tr>");
     }
 
     $("#match_grid").show();
@@ -54,12 +70,12 @@ function buildRow(fraudCases, rowObj, index) {
     row.append(
         "<td class='text-center'> "
         + "<label class='checkbox'>"
-        + "<input type= 'checkbox' class='verified-checkbox'" + (rowObj.Verified ? "checked" : "") + "data-match-id='" + rowObj.MatchId + "'/>"
+        + "<input type= 'checkbox' class='verified-checkbox'" + (rowObj.Verified ? "checked" : "") + " data-match-id='" + rowObj.MatchId + "'/>"
         + "<span></span></label></td>"
     );
 
     // render verified by
-    row.append("<td>" + rowObj.VerifiedBy + "</td>");
+    row.append("<td>" + (rowObj.VerifiedBy == null ? "-" : rowObj.VerifiedBy) + "</td>");
 
     // render event
     row.append(
@@ -187,6 +203,32 @@ function updateVerification() {
             $target.next().text("-");
         }
     });
+}
+
+function sliceData(page = 0, pageSize = 50) {
+    if (data_holder == null) {
+        return null;
+    }
+
+    let sliced_data =
+        {
+            FraudCases: data_holder.FraudCases,
+            Matches: data_holder.Matches.slice(page, page + pageSize - 1)
+        };
+
+    return sliced_data;
+}
+
+function page() {
+    if (data_holder != null) {
+        var n = parseInt(data_holder.Matches.length / pageSize) + Math.min(data_holder.Matches.length % pageSize, 1);
+
+        var indexer = $("#page_index").empty();
+
+        for (var i = 0; i < n; i++) {
+            indexer.append("<option value='" + i + "'>" + (i + 1) + "</option>");
+        }
+    }
 }
 
 $(load_page_events);
