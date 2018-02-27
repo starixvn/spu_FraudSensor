@@ -9,7 +9,7 @@
 <div class="form-filter">
     <div class="group calendar">
         <label class="text">Event Date</label>
-        <input type="text" class="control" value="@DateTime.Today.ToString("yyyy-MM-dd")">
+        <input type="text" id="event_date" class="control" value="@DateTime.Today.ToString("yyyy-MM-dd")">
         <span class="icon-calendar-text"></span>
     </div>
     <div class="group width-160">
@@ -24,11 +24,11 @@
         </select>
     </div>
     <div class="group width-160">
-        <label class="text" id="is_verified">Verified</label>
-        <select class="control">
+        <label class="text">Verified</label>
+        <select class="control" id="is_verified">
             <option>All</option>
-            <option value="1">Yes</option>
-            <option value="0">No</option>
+            <option value="true">Yes</option>
+            <option value="false">No</option>
         </select>
     </div>
     <div class="group width-160">
@@ -45,239 +45,90 @@
             <span>Main Markets Only</span>
         </label>
     </div>
-    <button class="button -primary">Generate</button>
-    <button class="button -export"><span class="icon-export-excel"></span>Export</button>
+    <button class="button -primary" id="generate">Generate</button>
+    <button class="button -export" id="export"><span class="icon-export-excel"></span>Export</button>
 </div>
 
-<div class="top-header">
-    <div class="refresh">
-        <select class="refresh-option">
-            <option>Not refresh</option>
-        </select>
-        <div class="refresh-action">
-            <button class="icon"><span class="icon-autorenew"></span></button>
-            <span class="number">45</span>
+<div id="match_grid" hidden>
+    <div class="top-header">
+        <div class="refresh">
+            <select class="refresh-option" id="refresh_interval">
+                <option>Not refresh</option>
+                <option value="10">10s</option>
+                <option value="20">20s</option>
+                <option value="60">1m</option>
+                <option value="300">5m</option>
+            </select>
+            <div class="refresh-action">
+                <span class="number" id="refresh_countdown">-</span>
+            </div>
         </div>
     </div>
-</div>
 
-<table class="table table-striped width-100per">
-    <thead>
-        <tr>
-            <th class="col-no">#</th>
-            <th class="col-verified">Verified</th>
-            <th>Last Verified By</th>
-            <th>Event</th>
-            <th>Score</th>
-            <th class="col-status">Status</th>
-            <th class="col-bsng">BSNG</th>
-            <th class="col-flagged-acc">Flagged Acc</th>
-            <th class="col-delay-goal">Delay Goal</th>
-            <th>Note</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td class="text-center">1</td>
-            <td class="text-center">
-                <label class="checkbox">
-                    <input type="checkbox" />
-                    <span></span>
-                </label>
-            </td>
-            <td>
-                Tracy
-            </td>
-            <td>
-                <span class="team-home">U23 Vietnam</span> vs <span class="team-away">U23 Quatar</span>
-                <div class="league-name">AFC U23 Championship</div>
-            </td>
-            <td class="text-center">0-0</td>
-            <td class="text-center">In-Play</td>
-            <td class="has-icon text-center"><span class="icon-check"></span></td>
-            <td class="has-icon text-center"><span class="icon-check"></span></td>
-            <td class="has-icon text-center"><span class="icon-close"></span></td>
-            <td class="col-note">
-                <div class="note">
-                    <input type="text" class="input-note" value="Tracy: need to report this case">
-                    <span class="icon-dots-horizontal-circle icon-note"></span>
-                </div>
-            </td>
-        </tr>
-        <tr>
-            <td class="text-center">2</td>
-            <td class="text-center">
-                <label class="checkbox">
-                    <input type="checkbox" />
-                    <span></span>
-                </label>
-            </td>
-            <td>
-                Tracy
-            </td>
-            <td>
-                <span class="team-home">U23 Vietnam</span> vs <span class="team-away">U23 Quatar</span>
-                <div class="league-name">AFC U23 Championship</div>
-            </td>
-            <td class="text-center">0-0</td>
-            <td class="text-center">In-Play</td>
-            <td class="has-icon text-center">
-                <div class="warning">
-                    <span class="icon-alert-circle"></span>
-                    <span class="number">22</span>
-                </div>
-            </td>
-            <td class="has-icon text-center"><span class="icon-timer-sand"></span></td>
-            <td class="has-icon text-center"><span class="icon-close"></span></td>
-            <td class="col-note">
-                <div class="note">
-                    <input type="text" class="input-note" value="Tracy: need to report this case">
-                    <span class="icon-dots-horizontal-circle icon-note"></span>
-                </div>
-            </td>
-        </tr>
-        <tr>
-            <td class="text-center">3</td>
-            <td class="text-center">
-                <label class="checkbox">
-                    <input type="checkbox" />
-                    <span></span>
-                </label>
-            </td>
-            <td>
-                Tracy
-            </td>
-            <td>
-                <span class="team-home">U23 Vietnam</span> vs <span class="team-away">U23 Quatar</span>
-                <div class="league-name">AFC U23 Championship</div>
-            </td>
-            <td class="text-center">0-0</td>
-            <td class="text-center">In-Play</td>
-            <td class="has-icon text-center">
-                <div class="warning">
-                    <span class="icon-alert-circle"></span>
-                    <span class="number">22</span>
-                </div>
-            </td>
-            <td class="has-icon text-center"><span class="icon-check"></span></td>
-            <td class="has-icon text-center"><span class="icon-close"></span></td>
-            <td class="col-note">
-                <div class="note">
-                    <input type="text" class="input-note" value="Tracy: need to report this case">
-                    <span class="icon-dots-horizontal-circle icon-note"></span>
-                </div>
-            </td>
-        </tr>
-        <tr>
-            <td class="text-center">4</td>
-            <td class="text-center">
-                <label class="checkbox">
-                    <input type="checkbox" />
-                    <span></span>
-                </label>
-            </td>
-            <td>
-                Tracy
-            </td>
-            <td>
-                <span class="team-home">U23 Vietnam</span> vs <span class="team-away">U23 Quatar</span>
-                <div class="league-name">AFC U23 Championship</div>
-            </td>
-            <td class="text-center">0-0</td>
-            <td class="text-center">In-Play</td>
-            <td class="has-icon text-center"><span class="icon-check"></span></td>
-            <td class="has-icon text-center"><span class="icon-check"></span></td>
-            <td class="has-icon text-center"><span class="icon-close"></span></td>
-            <td class="col-note">
-                <div class="note">
-                    <input type="text" class="input-note" value="Tracy: need to report this case">
-                    <span class="icon-dots-horizontal-circle icon-note"></span>
-                </div>
-            </td>
-        </tr>
-        <tr>
-            <td class="text-center">5</td>
-            <td class="text-center">
-                <label class="checkbox">
-                    <input type="checkbox" />
-                    <span></span>
-                </label>
-            </td>
-            <td>
-                Tracy
-            </td>
-            <td>
-                <span class="team-home">U23 Vietnam</span> vs <span class="team-away">U23 Quatar</span>
-                <div class="league-name">AFC U23 Championship</div>
-            </td>
-            <td class="text-center">0-0</td>
-            <td class="text-center">In-Play</td>
-            <td class="has-icon text-center"><span class="icon-check"></span></td>
-            <td class="has-icon text-center"><span class="icon-check"></span></td>
-            <td class="has-icon text-center"><span class="icon-timer-sand"></span></td>
-            <td class="col-note">
-                <div class="note">
-                    <input type="text" class="input-note" value="Tracy: need to report this case">
-                    <span class="icon-dots-horizontal-circle icon-note"></span>
-                </div>
-            </td>
-        </tr>
-        <tr>
-            <td class="text-center">6</td>
-            <td class="text-center">
-                <label class="checkbox">
-                    <input type="checkbox" />
-                    <span></span>
-                </label>
-            </td>
-            <td>
-                Tracy
-            </td>
-            <td>
-                <span class="team-home">U23 Vietnam</span> vs <span class="team-away">U23 Quatar</span>
-                <div class="league-name">AFC U23 Championship</div>
-            </td>
-            <td class="text-center">0-0</td>
-            <td class="text-center">In-Play</td>
-            <td class="has-icon text-center"><span class="icon-check"></span></td>
-            <td class="has-icon text-center"><span class="icon-check"></span></td>
-            <td class="has-icon text-center"><span class="icon-close"></span></td>
-            <td class="col-note">
-                <div class="note">
-                    <input type="text" class="input-note" value="Tracy: need to report this case">
-                    <span class="icon-dots-horizontal-circle icon-note"></span>
-                </div>
-            </td>
-        </tr>
-        <tr>
-            <td class="text-center">7</td>
-            <td class="text-center">
-                <label class="checkbox">
-                    <input type="checkbox" />
-                    <span></span>
-                </label>
-            </td>
-            <td>
-                Tracy
-            </td>
-            <td>
-                <span class="team-home">U23 Vietnam</span> vs <span class="team-away">U23 Quatar</span>
-                <div class="league-name">AFC U23 Championship</div>
-            </td>
-            <td class="text-center">0-0</td>
-            <td class="text-center">In-Play</td>
-            <td class="has-icon text-center"><span class="icon-check"></span></td>
-            <td class="has-icon text-center"><span class="icon-check"></span></td>
-            <td class="has-icon text-center"><span class="icon-close"></span></td>
-            <td class="col-note">
-                <div class="note">
-                    <input type="text" class="input-note" value="Tracy: need to report this case">
-                    <span class="icon-dots-horizontal-circle icon-note"></span>
-                </div>
-            </td>
-        </tr>
-    </tbody>
-</table>
+    <table class="table table-striped width-100per">
+        <thead>
+            <tr>
+                <th class="col-no">#</th>
+                <th class="col-verified">Verified</th>
+                <th>Last Verified By</th>
+                <th>Event</th>
+                <th>Score</th>
+                <th class="col-status">Status</th>
+                <th hidden id="start"></th>
+                <th hidden id="end"></th>
+                @*<th>Note</th>*@
+            </tr>
+        </thead>
+        <tbody>
+            @*<tr>
+                    <td class="text-center">1</td>
+                    <td class="text-center">
+                        <label class="checkbox">
+                            <input type="checkbox" />
+                            <span></span>
+                        </label>
+                    </td>
+                    <td>
+                        Tracy
+                    </td>
+                    <td>
+                        <span class="team-home">U23 Vietnam</span> vs <span class="team-away">U23 Quatar</span>
+                        <div class="league-name">AFC U23 Championship</div>
+                    </td>
+                    <td class="text-center">0-0</td>
+                    <td class="text-center">In-Play</td>
+                    <td class="has-icon text-center"><span class="icon-check"></span></td>
+                    <td class="has-icon text-center"><span class="icon-check"></span></td>
+                    <td class="has-icon text-center"><span class="icon-close"></span></td>
+                    @*<td class="col-note">
+                        <div class="note">
+                            <input type="text" class="input-note" value="Tracy: need to report this case">
+                            <span class="icon-dots-horizontal-circle icon-note"></span>
+                        </div>
+                    </td>
+                </tr>*@
+        </tbody>
+    </table>
+    <div class="pagination">
+        <div class="page-size">
+            <span>Page size</span>
+            <select class="size">
+                <option>50</option>
+            </select>
+            <ul class="pages">
+                <li class="page-prev disabled"><a href="#">Back</a></li>
+                <li>
+                    <select>
+                        <option>1</option>
+                        <option>2</option>
+                    </select>
+                </li>
+                <li class="page-next"><a href="#">Next</a></li>
+            </ul>
+        </div>
+        <span>Displaying 1 to 50 of 94 item(s)</span>
+    </div>
+</div>
 
 @section scripts{
     <script>

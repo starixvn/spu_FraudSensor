@@ -10,7 +10,7 @@ namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
 {
     public static class MatchMonitorService
     {
-        public static IEnumerable<Match> GetMatches(MatchGetAllCriteria criteria)
+        public static MatchList GetMatches(MatchGetAllCriteria criteria)
         {
             using (var db = new ObjectDb(criteria.GetSettingKey()))
             {
@@ -19,7 +19,45 @@ namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
                     var fraudCases = query.Read<Models.MatchMonitor.FraudCase>();
                     var matches = query.Read<Models.MatchMonitor.Match>();
 
-                    return matches.GroupJoin(fraudCases, m => m.MatchId, f => f.MatchId, GetMatch).ToList();
+                    return new MatchList
+                    {
+                        Matches = new[]
+                        {
+                            new Match
+                            {
+                                Event = new Event
+                                {
+                                    HomeName = "String theorist",
+                                    AwayName = "Loop theorist",
+                                    LeagueName = "Gravity"
+                                },
+                                FraudCases = new Dictionary<string, FraudCase>
+                                {
+                                    {  "String theory", new FraudCase{ FraudCaseId = 1, FraudCaseName = "String theory", Violations = 10} },
+                                    {  "Loop theory", new FraudCase{ FraudCaseId = 1, FraudCaseName = "Loop theory", Violations = 0} },
+                                    {  "Vacuum theory", new FraudCase{ FraudCaseId = 1, FraudCaseName = "Vacuum theory", Violations = null} }
+                                },
+                                MatchId = 5,
+                                Score = "0 - 0",
+                                Status = "completed",
+                                Verified = false,
+                                VerifiedBy = "Simon"
+                            }
+                        },
+                        FraudCases = new[]
+                        {
+                            "String theory",
+                            "Loop theory",
+                            "Vacuum theory"
+                        }
+                    };
+
+
+                    return new MatchList
+                    {
+                        Matches = matches.GroupJoin(fraudCases, m => m.MatchId, f => f.MatchId, GetMatch),
+                        FraudCases = fraudCases.GroupBy(f => f.FraudCaseName).Select(g => g.Key)
+                    };
                 }
             }
         }
@@ -30,6 +68,20 @@ namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
             {
                 criteria.IsLatestDate = true;
             }
+
+            return new[]
+            {
+                new Models.MatchMonitor.League
+                {
+                    LeagueId = 1,
+                    LeagueName = "Gravity"
+                },
+                new Models.MatchMonitor.League
+                {
+                    LeagueId = 2,
+                    LeagueName = "Vacuum"
+                }
+            };
 
             return DataService.GetData<Models.MatchMonitor.League>(criteria);
         }
@@ -47,7 +99,8 @@ namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
             {
                 Event = new Event
                 {
-                    MatchName = string.Format("{0} vs {1}", RefData.GetTeamName(match.Home), RefData.GetTeamName(match.Away)),
+                    HomeName = RefData.GetTeamName(match.Home).ToString(),
+                    AwayName = RefData.GetTeamName(match.Away).ToString(),
                     LeagueName = match.LeagueName
                 },
                 FraudCases =

@@ -10,9 +10,11 @@ namespace Fanex.NAP.FS.Websites.Criteria.MatchMonitor
 
         public int MatchId { get; set; }
 
+        public int ErrCode { get; set; }
+
         public override string GetSettingKey()
         {
-            throw new System.NotImplementedException();
+            return "FS_Rpt_MatchMonitoringVerificationUpdate";
         }
 
         public override bool IsValid()

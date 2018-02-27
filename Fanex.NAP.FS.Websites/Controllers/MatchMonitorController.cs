@@ -6,7 +6,7 @@ using System.Web.Mvc;
 namespace Fanex.NAP.FS.Websites.Controllers
 {
     [NapSuperAuth]
-    public class MatchMonitorController : Controller
+    public class MatchMonitorController : BaseController
     {
         // GET: MatchMonitor
         public ActionResult Index()
@@ -29,6 +29,8 @@ namespace Fanex.NAP.FS.Websites.Controllers
         [HttpPost]
         public ActionResult VerifyMatch(VerifyMatchCriteria criteria)
         {
+            criteria.Verifier = CurrentSession.UserId;
+
             return Json(MatchMonitorService.VerifyMatch(criteria));
         }
     }

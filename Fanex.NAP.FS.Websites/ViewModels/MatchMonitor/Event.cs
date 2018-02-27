@@ -2,7 +2,9 @@
 {
     public class Event
     {
-        public string MatchName { get; set; }
+        public string HomeName { get; set; }
+
+        public string AwayName { get; set; }
 
         public string LeagueName { get; set; }
     }
