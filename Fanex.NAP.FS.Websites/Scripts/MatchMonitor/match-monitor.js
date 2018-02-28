@@ -86,6 +86,7 @@ function load_grid() {
         var paged_data = sliceData(0, pageSize);
         renderGrid(paged_data);
         common.closeLoading();
+        $("#refresh_interval").val(60).change();
     });
 }
 
