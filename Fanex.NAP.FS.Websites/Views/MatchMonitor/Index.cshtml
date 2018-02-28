@@ -36,8 +36,8 @@
         <label class="text">Match Status</label>
         <select class="control" id="match_status">
             <option>All</option>
-            <option value="running" selected>In-Play</option>
-            <option value="completed">Completed</option>
+            <option value="running" selected>running</option>
+            <option value="completed">completed</option>
         </select>
     </div>
     <div class="group">
@@ -61,6 +61,7 @@
                 <option value="300">5m</option>
             </select>
             <div class="refresh-action">
+                <button class="icon" id="refresh_btn"><span class="icon-autorenew"></span></button>
                 <span class="number" id="refresh_countdown">-</span>
             </div>
         </div>
@@ -135,7 +136,7 @@
     <script>
         var columns = @Html.Raw(Match.Columns);
 
-        var balanceUpDay = new Date(@Model.BalanceUpDay.Year, @Model.BalanceUpDay.Month, @Model.BalanceUpDay.Day);
+        var balanceUpDay = new Date(@Model.BalanceUpDay.Year, @(Model.BalanceUpDay.Month - 1), @Model.BalanceUpDay.Day);
     </script>
     @Scripts.Render("~/match-monitor")
 }

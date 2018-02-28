@@ -3,7 +3,7 @@ var data_holder = null;
 var pageSize = 0;
 
 function load_page_events() {
-    $("#generate").click(load_grid);
+    $("#generate, #refresh_btn").click(load_grid);
 
     getLeague();
 
