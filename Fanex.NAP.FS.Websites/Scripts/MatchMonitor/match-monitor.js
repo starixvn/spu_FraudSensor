@@ -78,11 +78,14 @@ function load_grid() {
     dto.LeagueIds = $("#league").val();
     dto.IsMainMarket = $("#is_main_market:checked").length > 0;
 
+    common.showLoading();
+
     $.post(url, dto, function (data) {
         data_holder = data;
         page()
         var paged_data = sliceData(0, pageSize);
         renderGrid(paged_data);
+        common.closeLoading();
     });
 }
 
@@ -90,7 +93,7 @@ function renderGrid(data) {
     if (data != null && data.Matches != null && data.Matches.length > 0) {
         renderFraudCasesHeader(data.FraudCases);
         $("tbody").empty().append(data.Matches.map((m, i) => buildRow(data.FraudCases, m, data.PageIdx * pageSize + i)));
-        $("#table_summary").text("Displaying " + (data.PageIdx * pageSize + 1) + " to " + (data.PageIdx * pageSize + pageSize) + " of " + (data_holder.Matches.length) + "item(s)")
+        $("#table_summary").text("Displaying " + (data.PageIdx * pageSize + 1) + " to " + (data.PageIdx * pageSize + pageSize) + " of " + (data_holder.Matches.length) + " item(s)")
     }
     else {
         renderFraudCasesHeader([]);

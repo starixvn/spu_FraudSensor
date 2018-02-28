@@ -35,6 +35,7 @@ namespace Fanex.NAP.FS.Websites
         private static void RegisterFSCoreBundles(BundleCollection bundles)
         {
             bundles.Add(new ScriptBundle("~/core").Include(
+                "~/Scripts/common.js",
                 "~/Scripts/Fanex.Grid/Fanex.Grid.js",
                 "~/Scripts/Fanex.Grid/Fanex.Pagination.js",
                 "~/Scripts/auto-grid.js"));
