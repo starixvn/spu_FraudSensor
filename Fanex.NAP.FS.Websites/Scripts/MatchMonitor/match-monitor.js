@@ -91,15 +91,17 @@ function load_grid() {
 
 function renderGrid(data) {
     if (data != null && data.Matches != null && data.Matches.length > 0) {
-        renderFraudCasesHeader(data.FraudCases);
-        $("tbody").empty().append(data.Matches.map((m, i) => buildRow(data.FraudCases, m, data.PageIdx * pageSize + i)));
+        var fraudCases = ["BSNG", "Flagged Accounts", "Delay Goal"];
+
+        renderFraudCasesHeader(fraudCases);
+        $("tbody").empty().append(data.Matches.map((m, i) => buildRow(fraudCases, m, data.PageIdx * pageSize + i)));
         $("#table_summary").text("Displaying " + (data.PageIdx * pageSize + 1) + " to " + (data.PageIdx * pageSize + pageSize) + " of " + (data_holder.Matches.length) + " item(s)")
     }
     else {
-        renderFraudCasesHeader([]);
-        $("tbody").empty().append("<tr class='text-center'><td  colspan='6'>There's no data</td></tr>");
+        renderFraudCasesHeader(["BSNG", "Flagged Accounts", "Delay Goal"]);
+        $("tbody").empty().append("<tr class='text-center'><td  colspan='9'>There's no data</td></tr>");
         $("#table_summary").text("");
-        $("#back, #next").parent.addClass("disabled");
+        $("#back, #next").parent().addClass("disabled");
     }
 
     $("#match_grid").show();
