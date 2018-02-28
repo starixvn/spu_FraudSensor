@@ -384,6 +384,8 @@
     <Content Include="Areas\UserLogin\themes\fonts\Fraud-Sensor.eot" />
     <Content Include="Areas\UserLogin\themes\fonts\Fraud-Sensor.ttf" />
     <Content Include="Areas\UserLogin\themes\fonts\Fraud-Sensor.woff" />
+    <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
+    <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\Fanex.Grid\Fanex.Grid.css" />
     <Content Include="Scripts\Fanex.Grid\Fanex.Grid.js" />
@@ -441,12 +443,15 @@
     <Content Include="Scripts\_references.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Views\Web.config" />
     <Content Include="Views\_ViewStart.cshtml" />
@@ -475,35 +480,33 @@
     <Content Include="Scripts\popper.js.map" />
     <Content Include="Scripts\popper-utils.min.js.map" />
     <Content Include="Scripts\popper-utils.js.map" />
-    <None Include="Web.AppSettings.config" />
-    <None Include="Web.ConnectionString.config" />
-    <Content Include="WebConfigs\Web.LOCAL.config" />
+    <Content Include="Web.AppSettings.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Web.ConnectionString.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="WebConfigs\Web.AppSettings.LOCAL.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="WebConfigs\Web.AppSettings.PRO.config" />
     <None Include="WebConfigs\Web.AppSettings.UAT.config" />
-    <None Include="WebConfigs\Web.AppSettings.LOCAL.config" />
+    <Content Include="WebConfigs\Web.ConnectionString.LOCAL.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="WebConfigs\Web.ConnectionString.PRO.config" />
     <None Include="WebConfigs\Web.ConnectionString.UAT.config" />
-    <None Include="WebConfigs\Web.ConnectionString.LOCAL.config" />
+    <Content Include="WebConfigs\Web.LOCAL.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Include="WebConfigs\Web.LOCAL.Debug.config" />
+    <None Include="WebConfigs\Web.LOCAL.Release.config" />
     <None Include="WebConfigs\Web.PRO.config" />
-    <None Include="WebConfigs\Web.PRO.Debug.config">
-      <DependentUpon>Web.PRO.config</DependentUpon>
-    </None>
-    <None Include="WebConfigs\Web.PRO.Release.config">
-      <DependentUpon>Web.PRO.config</DependentUpon>
-    </None>
+    <None Include="WebConfigs\Web.PRO.Debug.config" />
+    <None Include="WebConfigs\Web.PRO.Release.config" />
     <None Include="WebConfigs\Web.UAT.config" />
-    <None Include="WebConfigs\Web.UAT.Debug.config">
-      <DependentUpon>Web.UAT.config</DependentUpon>
-    </None>
-    <None Include="WebConfigs\Web.UAT.Release.config">
-      <DependentUpon>Web.UAT.config</DependentUpon>
-    </None>
-    <None Include="WebConfigs\Web.LOCAL.Debug.config">
-      <DependentUpon>Web.LOCAL.config</DependentUpon>
-    </None>
-    <None Include="WebConfigs\Web.LOCAL.Release.config">
-      <DependentUpon>Web.LOCAL.config</DependentUpon>
-    </None>
+    <None Include="WebConfigs\Web.UAT.Debug.config" />
+    <None Include="WebConfigs\Web.UAT.Release.config" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
