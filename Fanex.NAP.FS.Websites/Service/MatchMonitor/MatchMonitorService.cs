@@ -49,12 +49,15 @@ namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
         {
             var userService = new Core.Service.Impl.UserService();
 
+            var homeName = RefData.GetTeamName(match.HomeId.ToString());
+            var awayName = RefData.GetTeamName(match.AwayId.ToString());
+
             return new Match
             {
                 Event = new Event
                 {
-                    HomeName = match.Home == null ? "-" : RefData.GetTeamName(match.Home).ToString(),
-                    AwayName = match.Away == null ? "-" : RefData.GetTeamName(match.Away).ToString(),
+                    HomeName =  homeName == null ? "-" : homeName[1].ToString(),
+                    AwayName =   awayName == null? "-" : awayName[1].ToString(),
                     LeagueName = match.LeagueName
                 },
                 FraudCases =

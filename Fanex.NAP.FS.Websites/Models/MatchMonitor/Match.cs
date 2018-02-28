@@ -10,9 +10,9 @@
 
         public int? VerifiedBy { get; set; }
 
-        public string Home { get; set; }
+        public int HomeId { get; set; }
 
-        public string Away { get; set; }
+        public int AwayId { get; set; }
 
         public string EventStatus { get; set; }
 
