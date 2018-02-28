@@ -154,7 +154,7 @@ function buildFraudCase(fraudCase, rowObj) {
     var fraud_case = rowObj.FraudCases[fraudCase];
 
     if (fraud_case.Violations == null) {
-        return '<td class="has-icon text-center"><span class="icon-timer-sand"></span></td>';
+        return '<td class="has-icon text-center"><span class="icon-close"></span></td>';
     }
 
     if (fraud_case.Violations == 0) {
