@@ -32,6 +32,7 @@ function load_page_events() {
 
         var paged_data = sliceData(page_idx, pageSize);
         renderGrid(paged_data);
+        changeStageBackNext(page_idx);
     })
 
     $("#back").click(function () {
@@ -41,10 +42,10 @@ function load_page_events() {
 
         var new_page_idx = Math.max(page_idx - 1, 0);
 
-        indexer.val(new_page_idx);
+        indexer.val(new_page_idx).change();
 
         if (new_page_idx == 0) {
-            $(this).parent.addClass("disabled")
+            $(this).parent().addClass("disabled")
         }
     });
 
@@ -53,16 +54,16 @@ function load_page_events() {
 
         var page_idx = parseInt(indexer.val());
 
-        var max_page = data_holder.length / pageSize + Math.min(data_holder.length % pageSize, 1);
+        var max_page = parseInt(data_holder.Matches.length / pageSize) - 1;
 
         var new_page_idx = Math.min(page_idx + 1, max_page);
 
-        indexer.val(new_page_idx);
+        indexer.val(new_page_idx).change();
 
-        $("#back").parent.removeClass("disabled");
+        $("#back").parent().removeClass("disabled");
 
         if (new_page_idx == max_page) {
-            $(this).parent.addClass("disabled");
+            $(this).parent().addClass("disabled");
         }
     })
 }
@@ -89,7 +90,7 @@ function renderGrid(data) {
     if (data != null && data.Matches != null && data.Matches.length > 0) {
         renderFraudCasesHeader(data.FraudCases);
         $("tbody").empty().append(data.Matches.map((m, i) => buildRow(data.FraudCases, m, data.PageIdx * pageSize + i)));
-        $("#table_summary").text("Displaying "+ (data.PageIdx * pageSize + 1) + " to "+ (data.PageIdx * pageSize + pageSize) + " of " +  (data_holder.Matches.length)  + "item(s)")
+        $("#table_summary").text("Displaying " + (data.PageIdx * pageSize + 1) + " to " + (data.PageIdx * pageSize + pageSize) + " of " + (data_holder.Matches.length) + "item(s)")
     }
     else {
         renderFraudCasesHeader([]);
@@ -274,6 +275,24 @@ function page() {
         for (var i = 0; i < n; i++) {
             indexer.append("<option value='" + i + "'>" + (i + 1) + "</option>");
         }
+    }
+}
+
+function changeStageBackNext(page_idx = 0) {
+    if (page_idx == 0) {
+        $("#back").parent().addClass("disabled");
+    }
+    else {
+        $("#back").parent().removeClass("disabled");
+    }
+
+    var max_page = parseInt(data_holder.Matches.length / pageSize);
+
+    if (page_idx == max_page) {
+        $("#next").parent().addClass("disabled");
+    }
+    else {
+        $("#next").parent().removeClass("disabled");
     }
 }
 
