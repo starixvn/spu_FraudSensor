@@ -8,6 +8,6 @@
 
         public string FraudCaseName { get; set; }
 
-        public int? SuspiciousTickets { get; set; }
+        public int? SuspiciousTicketsCount { get; set; }
     }
 }

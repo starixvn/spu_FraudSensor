@@ -64,7 +64,7 @@ namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
                     fraudCases
                     .GroupBy(f => Tuple.Create(f.FraudCaseId, f.FraudCaseName))
                     .Select(g => new FraudCase(g.Key.Item1, g.Key.Item2, g))
-                    .ToDictionary(f => f.FraudCaseName),
+                    .ToDictionary(f => f.FraudCaseId.ToString()),
                 MatchId = match.MatchId,
                 Verified = match.IsVerified,
                 VerifiedBy = match.VerifiedBy == null ? null : userService.Get(match.VerifiedBy.Value).Username,

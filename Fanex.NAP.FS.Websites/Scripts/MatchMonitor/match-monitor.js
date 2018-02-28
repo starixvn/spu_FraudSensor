@@ -148,11 +148,13 @@ function buildRow(fraudCases, rowObj, index) {
 }
 
 function buildFraudCase(fraudCase, rowObj) {
-    if (rowObj.FraudCases[fraudCase] == null) {
+    var fraud_idx = mappingFraudCase(fraudCase).toString();
+
+    if (rowObj.FraudCases[fraud_idx] == null) {
         return "<td class='has-icon text-center'><span class='icon-close'></span></td>";
     }
 
-    var fraud_case = rowObj.FraudCases[fraudCase];
+    var fraud_case = rowObj.FraudCases[fraud_idx];
 
     if (fraud_case.Violations == null) {
         return '<td class="has-icon text-center"><span class="icon-close"></span></td>';
@@ -299,6 +301,19 @@ function changeStageBackNext(page_idx = 0) {
     }
     else {
         $("#next").parent().removeClass("disabled");
+    }
+}
+
+function mappingFraudCase(fraudCase = "") {
+    switch (fraudCase) {
+        case "BSNG":
+            return 1;
+        case "Flagged Accounts":
+            return 6;
+        case "Delay Goal":
+            return 8;
+        default:
+            throw "not impletmented"
     }
 }
 

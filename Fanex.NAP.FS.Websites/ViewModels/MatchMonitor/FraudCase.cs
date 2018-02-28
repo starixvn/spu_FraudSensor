@@ -12,13 +12,13 @@ namespace Fanex.NAP.FS.Websites.ViewModels.MatchMonitor
             FraudCaseName = name;
             FraudCaseId = id;
 
-            if (data.All(f => !f.SuspiciousTickets.HasValue))
+            if (data.All(f => !f.SuspiciousTicketsCount.HasValue))
             {
                 Violations = null;
             }
             else
             {
-                Violations = data.Sum(f => f.SuspiciousTickets.GetValueOrDefault());
+                Violations = data.Sum(f => f.SuspiciousTicketsCount.GetValueOrDefault());
             }
         }
 
