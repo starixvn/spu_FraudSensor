@@ -96,7 +96,7 @@ function renderGrid(data) {
 
         renderFraudCasesHeader(fraudCases);
         $("tbody").empty().append(data.Matches.map((m, i) => buildRow(fraudCases, m, data.PageIdx * pageSize + i)));
-        $("#table_summary").text("Displaying " + (data.PageIdx * pageSize + 1) + " to " + (data.PageIdx * pageSize + pageSize) + " of " + (data_holder.Matches.length) + " item(s)")
+        $("#table_summary").text("Displaying " + (data.PageIdx * pageSize + 1) + " to " + (data.PageIdx * pageSize + data.Matches.length) + " of " + (data_holder.Matches.length) + " item(s)")
     }
     else {
         renderFraudCasesHeader(["BSNG", "Flagged Accounts", "Delay Goal"]);
