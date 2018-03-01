@@ -25,7 +25,12 @@ namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
 
                     return new MatchList
                     {
-                        Matches = matches.GroupJoin(fraudCases, m => m.MatchId, f => f.MatchId, GetMatch),
+                        Matches =
+                            matches
+                            .GroupJoin(fraudCases, m => m.MatchId, f => f.MatchId, GetMatch)
+                            .OrderBy(m => m.Status == "running" ? 0 : 1)
+                            .ThenByDescending(m => m.FraudCases.Sum(f => f.Value.Violations.Value))
+                            .ThenBy(m => m.MatchId),
                         FraudCases = fraudCases.GroupBy(f => f.FraudCaseName).Select(g => g.Key)
                     };
                 }
@@ -126,7 +131,7 @@ namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
             {
                 Color = IndexedColors.RoyalBlue.Index
             };
-            
+
             result.Append(e.LeagueName, leagueFont);
 
             return result;
