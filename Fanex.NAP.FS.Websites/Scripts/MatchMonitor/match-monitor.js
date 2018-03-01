@@ -66,6 +66,8 @@ function load_page_events() {
             $(this).parent().addClass("disabled");
         }
     })
+
+    $("#export").click(exportExcel);
 }
 
 function load_grid() {
@@ -81,12 +83,19 @@ function load_grid() {
     common.showLoading();
 
     $.post(url, dto, function (data) {
+        $("#event_date").datepicker("hide");
         data_holder = data;
         page()
         var paged_data = sliceData(0, pageSize);
         renderGrid(paged_data);
         common.closeLoading();
-        $("#refresh_interval").val(60).change();
+        changeStageBackNext();
+        if ($("#refresh_interval").hasClass("first")) {
+            $("#refresh_interval").val(60).change().removeClass("first");
+        }
+        else {
+            $("#refresh_interval").change();
+        }
     });
 }
 
@@ -315,6 +324,19 @@ function mappingFraudCase(fraudCase = "") {
         default:
             throw "not impletmented"
     }
+}
+
+function exportExcel() {
+    var url = "matchmonitor/ExportExcel";
+    var dto = {};
+
+    dto.EventDate = $("#event_date").val();
+    dto.IsVerified = $("#is_verified").val();
+    dto.MatchStatus = $("#match_status").val();
+    dto.LeagueIds = $("#league").val();
+    dto.IsMainMarket = $("#is_main_market:checked").length > 0;
+
+    common.DownloadFile(url, dto);
 }
 
 $(load_page_events);

@@ -33,5 +33,12 @@ namespace Fanex.NAP.FS.Websites.Controllers
 
             return Json(MatchMonitorService.VerifyMatch(criteria));
         }
+
+        public ActionResult ExportExcel(MatchGetAllCriteria criteria)
+        {
+            var templatePath = Server.MapPath("~/App_Data/Excel Template/MatchMonitor/template.xlsx");
+
+            return File(MatchMonitorService.ExportExcel(criteria, templatePath), "application/vnd.ms-excel", "match monitor.xlsx");
+        }
     }
 }

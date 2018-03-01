@@ -19,6 +19,23 @@
     this.closeLoading = function () {
         loading.dialog("close");
     }
+
+    this.DownloadFile = function (url, parameters) {
+        if (url && parameters) {
+            var downloadUrl = url + '?';
+            var iframe = $('body iframe');
+
+            parameters = typeof parameters === 'string' ? parameters : $.param(parameters);
+            downloadUrl += parameters;
+
+            if (iframe.length === 0) {
+                iframe = $('<iframe width="0" height="0" class="display-none"></iframe>');
+                iframe.appendTo('body');
+            }
+
+            iframe.attr('src', downloadUrl);
+        }
+    };
 }
 
 var common = new UICommon();
