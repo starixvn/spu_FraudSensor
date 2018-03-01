@@ -9,7 +9,7 @@ function load_page_events() {
 
     $("#event_date")
         .datepicker({
-            dateFormat: "yy-mm-dd",
+            dateFormat: "M dd,yy",
             minDate: balanceUpDay
         })
         .change(getLeague);
