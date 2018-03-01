@@ -176,9 +176,22 @@ function buildFraudCase(fraudCase, rowObj) {
     return "<td class='has-icon text-center'>"
         + "<div class='warning'>"
         + "<span class='icon-alert-circle'></span>"
-        + "<span class='number'>" + fraud_case.Violations + "</span>"
+        + "<span class='number'>" + renderViolations(fraud_case.Violations) + "</span>"
         + "</div>"
         + "</td>";
+}
+
+function renderViolations(violation = 1) {
+    if (violation < 100) {
+        return violation;
+    }
+
+    if (parseInt(violation / 1e6) != 0) {
+        return (violation / 1e6).toFixed(1) + "M";
+    }
+    else {
+        return (violation / 1e3).toFixed(1) + "K";
+    }
 }
 
 function renderFraudCasesHeader(fraudCases) {
