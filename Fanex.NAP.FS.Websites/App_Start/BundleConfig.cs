@@ -24,6 +24,7 @@ namespace Fanex.NAP.FS.Websites
                       "~/Scripts/respond.js"));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
+                      "~/Content/select2.min.css",
                       "~/Content/style.css",
                       "~/Content/index.min.css",
                       "~/Content/themes/base/jquery-ui.min.css"));
@@ -35,6 +36,7 @@ namespace Fanex.NAP.FS.Websites
         private static void RegisterFSCoreBundles(BundleCollection bundles)
         {
             bundles.Add(new ScriptBundle("~/core").Include(
+                "~/Scripts/select2.min.js",
                 "~/Scripts/common.js",
                 "~/Scripts/Fanex.Grid/Fanex.Grid.js",
                 "~/Scripts/Fanex.Grid/Fanex.Pagination.js",

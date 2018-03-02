@@ -5,6 +5,8 @@ var pageSize = 0;
 function load_page_events() {
     $("#generate, #refresh_btn").click(load_grid);
 
+    $("#league").select2();
+
     getLeague();
 
     $("#event_date")
@@ -141,7 +143,7 @@ function buildRow(fraudCases, rowObj, index) {
     row.append(
         "<td>"
         + "<span class='team-home'>" + rowObj.Event.HomeName + "</span>"
-        + " vs "
+        + " - vs - "
         + "<span class='team-away'>" + rowObj.Event.AwayName + "</span>"
         + "<div class='league-name'>" + rowObj.Event.LeagueName + "</div>"
         + "</td>");
@@ -188,10 +190,10 @@ function renderViolations(violation = 1) {
     }
 
     if (parseInt(violation / 1e6) != 0) {
-        return (violation / 1e6).toFixed(1) + "M";
+        return parseInt(violation / 1e6) + "M";
     }
     else {
-        return (violation / 1e3).toFixed(1) + "K";
+        return parseInt(violation / 1e3) + "K";
     }
 }
 

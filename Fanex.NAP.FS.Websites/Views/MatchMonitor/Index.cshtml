@@ -36,8 +36,8 @@
         <label class="text">Match Status</label>
         <select class="control" id="match_status">
             <option>All</option>
-            <option value="running" selected>running</option>
-            <option value="completed">completed</option>
+            <option value="running" selected>Running</option>
+            <option value="completed">Completed</option>
         </select>
     </div>
     <div class="group">
@@ -55,10 +55,10 @@
         <div class="refresh">
             <select class="refresh-option first" id="refresh_interval">
                 <option value="--">Not refresh</option>
-                <option value="60">1m</option>
-                <option value="120">2m</option>
-                <option value="300">5m</option>
-                <option value="600">10m</option>
+                <option value="60">60s</option>
+                <option value="90">90s</option>
+                <option value="120">120s</option>
+                <option value="180">180s</option>
             </select>
             <div class="refresh-action">
                 <button class="icon" id="refresh_btn"><span class="icon-autorenew"></span></button>

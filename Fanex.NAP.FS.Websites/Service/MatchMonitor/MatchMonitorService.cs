@@ -123,7 +123,7 @@ namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
             };
 
             result.Append(e.HomeName, font);
-            result.Append(" vs ");
+            result.Append(" - vs - ");
             result.Append(e.AwayName, font);
             result.Append("\n");
 
@@ -152,10 +152,36 @@ namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
             }
             else
             {
-                result.Append(fraudCase.Violations.Value.ToString(), new XSSFFont { Color = IndexedColors.Red.Index });
+                var violations = fraudCase.Violations.Value;
+
+                var font = new XSSFFont { Color = IndexedColors.Red.Index };
+
+                result.Append(violations < 1000 ? violations.ToString() : FormatNumber(violations), font);
             }
 
             return result;
+        }
+
+        private static string FormatNumber(int num)
+        {
+            var stack = new Stack<string>();
+
+            var a = num;
+
+            while (a / 1000 != 0)
+            {
+                var modResult = a % 1000;
+
+                stack.Push(string.Format("{0}{1}{2}", modResult / 100, modResult % 100 / 10, modResult % 10));
+                a = a / 1000;
+            }
+
+            if (a != 0)
+            {
+                stack.Push(a.ToString());
+            }
+
+            return string.Join(",", stack);
         }
 
         private static Match GetMatch(Models.MatchMonitor.Match match, IEnumerable<Models.MatchMonitor.FraudCase> fraudCases)
@@ -181,7 +207,7 @@ namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
                 MatchId = match.MatchId,
                 Verified = match.IsVerified,
                 VerifiedBy = match.VerifiedBy == null ? null : userService.Get(match.VerifiedBy.Value).Username,
-                Status = match.EventStatus,
+                Status = (char)(match.EventStatus[0] - 32) + match.EventStatus.Remove(0, 1),
                 Score = string.Format("{0} - {1}", match.LiveHomeScore, match.LiveAwayScore)
             };
         }

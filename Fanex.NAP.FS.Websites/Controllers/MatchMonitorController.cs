@@ -1,6 +1,7 @@
 ﻿using Fanex.NAP.Core.Web.Attribute;
 using Fanex.NAP.FS.Websites.Criteria.MatchMonitor;
 using Fanex.NAP.FS.Websites.Service.MatchMonitor;
+using System;
 using System.Web.Mvc;
 
 namespace Fanex.NAP.FS.Websites.Controllers
@@ -38,7 +39,9 @@ namespace Fanex.NAP.FS.Websites.Controllers
         {
             var templatePath = Server.MapPath("~/App_Data/Excel Template/MatchMonitor/template.xlsx");
 
-            return File(MatchMonitorService.ExportExcel(criteria, templatePath), "application/vnd.ms-excel", "match monitor.xlsx");
+            var fileName = DateTime.Now.ToString("MMM-d-yyyy") + ".xlsx";
+
+            return File(MatchMonitorService.ExportExcel(criteria, templatePath), "application/vnd.ms-excel", fileName);
         }
     }
 }
