@@ -23,7 +23,7 @@ namespace Fanex.NAP.FS.Websites
                       "~/Scripts/bootstrap.js",
                       "~/Scripts/respond.js"));
 
-            bundles.Add(new StyleBundle("~/Content/css").Include(
+            bundles.Add(new StyleBundle("~/Content/styles").Include(
                       "~/Content/select2.min.css",
                       "~/Content/style.css",
                       "~/Content/index.min.css",
