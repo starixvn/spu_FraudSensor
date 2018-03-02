@@ -9,7 +9,7 @@ function load_page_events() {
 
     $("#event_date")
         .datepicker({
-            dateFormat: "M dd,yy",
+            dateFormat: "M dd, yy",
             minDate: balanceUpDay
         })
         .change(getLeague);
@@ -21,10 +21,11 @@ function load_page_events() {
     pageSize = parseInt($("#pager").val());
 
     $("#pager").change(function () {
-        pageSize = $(this).val();
+        pageSize = parseInt($(this).val());
         page();
         var paged_data = sliceData(0, pageSize);
         renderGrid(paged_data);
+        changeStageBackNext(0)
     });
 
     $("#page_index").change(function () {
@@ -54,7 +55,7 @@ function load_page_events() {
 
         var page_idx = parseInt(indexer.val());
 
-        var max_page = parseInt(data_holder.Matches.length / pageSize) - 1;
+        var max_page = parseInt(data_holder.Matches.length / pageSize);
 
         var new_page_idx = Math.min(page_idx + 1, max_page);
 
@@ -182,7 +183,7 @@ function buildFraudCase(fraudCase, rowObj) {
 }
 
 function renderViolations(violation = 1) {
-    if (violation < 100) {
+    if (violation < 1000) {
         return violation;
     }
 
@@ -289,7 +290,7 @@ function sliceData(page = 0, pageSize = 50) {
     let sliced_data =
         {
             FraudCases: data_holder.FraudCases,
-            Matches: data_holder.Matches.slice(page, page + pageSize),
+            Matches: data_holder.Matches.slice(page * pageSize, page * pageSize + pageSize),
             PageIdx: page
         };
 
