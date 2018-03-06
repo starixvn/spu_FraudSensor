@@ -117,14 +117,14 @@
     <Compile Include="FSMQ\MessageQueue\FSMessageQueue.cs" />
     <Compile Include="FSMQ\MessageQueue\MessageQueueSender.cs" />
     <Compile Include="FSMQ\MessageQueue\IMessageQueueSender.cs" />
+    <Compile Include="FSMQ\SendingCase\AddingCase.cs" />
     <Compile Include="FSMQ\SendingCase\DeactivatingCase.cs" />
     <Compile Include="FSMQ\SendingCase\ActivatingCase.cs" />
+    <Compile Include="FSMQ\SendingCase\RemovingCase.cs" />
+    <Compile Include="FSMQ\SendingCase\UpdatingCase.cs" />
     <Compile Include="FSMQ\SendingMessage\ISendingMessage.cs" />
     <Compile Include="FSMQ\SendingMessage\SendingMessage.cs" />
     <Compile Include="FSMQ\SendingMessage\SendingMessageFactory.cs" />
-    <Compile Include="FSMQ\SendingTask\RemovingTask.cs" />
-    <Compile Include="FSMQ\SendingTask\UpdatingTask.cs" />
-    <Compile Include="FSMQ\SendingTask\AddingTask.cs" />
     <Compile Include="FSMQ\SendingType\SendingType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

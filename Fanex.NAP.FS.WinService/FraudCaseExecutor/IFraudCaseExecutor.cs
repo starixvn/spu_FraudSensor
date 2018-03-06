@@ -1,6 +1,6 @@
 ﻿namespace Fanex.NAP.FS.WinService
 {
-    public interface ITaskExecutor
+    public interface IFraudCaseExecutor
     {
         void Start();
 

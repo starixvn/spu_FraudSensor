@@ -8,11 +8,11 @@
 
     public partial class FraudSensorService : ServiceBase
     {
-        private ITaskLoader _taskLoader;
+        private IFraudCaseLoader _caseLoader;
 
         private IReceivingMessageHandler _receivingMessageHandler;
 
-        public FraudSensorService(ITaskLoader taskLoader = null, IReceivingMessageHandler receivingMessageHandler = null)
+        public FraudSensorService(IFraudCaseLoader caseLoader = null, IReceivingMessageHandler receivingMessageHandler = null)
         {
             DbSettingProviderManager
                .StartNewSession()
@@ -20,7 +20,7 @@
                .UseDefaultDbSettingProvider(resourcePath: "~/App_Data", enableWatching: true)
                .Run();
 
-            _taskLoader = taskLoader ?? new TaskLoader();
+            _caseLoader = caseLoader ?? new FraudCaseLoader();
 
             _receivingMessageHandler = receivingMessageHandler ?? new ReceivingMessageHandler();
 
@@ -50,7 +50,7 @@
             var queue = new MessageQueueReceiver();
             queue.Clear();
 
-            _taskLoader.LoadTasks();
+            _caseLoader.LoadFraudCases();
 
             _receivingMessageHandler.TriggerReceivingMessage();
 

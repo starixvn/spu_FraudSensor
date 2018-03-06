@@ -7,7 +7,7 @@
     using System.Diagnostics;
     using System.Timers;
 
-    public abstract class TaskExecutor : ITaskExecutor, IDisposable
+    public abstract class FraudCaseExecutor : IFraudCaseExecutor, IDisposable
     {
         private Timer _timer;
 
@@ -15,7 +15,7 @@
 
         private bool _isStoppedManually;
 
-        protected TaskExecutor()
+        protected FraudCaseExecutor()
         {
         }
 
