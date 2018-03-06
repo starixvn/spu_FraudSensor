@@ -3,12 +3,18 @@ using System.Web.Mvc;
 
 namespace Fanex.NAP.FS.Websites.Controllers
 {
-    [NapSuperAuth]
+    [NapAuth(FunctionKey =FSFunctionKeys.Home)]
     public class HomeController : BaseController
     {
         public ActionResult Index()
         {
             return View();
+        }
+
+        [ChildActionOnly]
+        public PartialViewResult Menu()
+        {
+            return PartialView("~/Views/Shared/_Menu.cshtml", CurrentSession.MenuItemList);
         }
 
         public ActionResult About()

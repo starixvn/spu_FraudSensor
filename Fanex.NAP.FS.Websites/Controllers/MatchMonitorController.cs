@@ -6,28 +6,30 @@ using System.Web.Mvc;
 
 namespace Fanex.NAP.FS.Websites.Controllers
 {
-    [NapSuperAuth]
     public class MatchMonitorController : BaseController
     {
-        // GET: MatchMonitor
+        [NapAuth(FunctionKey = FSFunctionKeys.MatchMonitoring, Policy = Core.Business.Constant.Policy.Read)]
         public ActionResult Index()
         {
             return View(MatchMonitorService.GetBalanceUpDate());
         }
 
         [HttpPost]
+        [NapAuth(FunctionKey = FSFunctionKeys.MatchMonitoring, Policy = Core.Business.Constant.Policy.Read)]
         public ActionResult GetMatches(MatchGetAllCriteria criteria)
         {
             return Json(MatchMonitorService.GetMatches(criteria));
         }
 
         [HttpPost]
+        [NapAuth(FunctionKey = FSFunctionKeys.MatchMonitoring, Policy = Core.Business.Constant.Policy.Read)]
         public ActionResult GetLeagues(LeagueGetCriteria criteria)
         {
             return Json(MatchMonitorService.GetLeagues(criteria));
         }
 
         [HttpPost]
+        [NapAuth(FunctionKey = FSFunctionKeys.MatchMonitoring, Policy = Core.Business.Constant.Policy.Host)]
         public ActionResult VerifyMatch(VerifyMatchCriteria criteria)
         {
             criteria.Verifier = CurrentSession.UserId;
@@ -35,6 +37,7 @@ namespace Fanex.NAP.FS.Websites.Controllers
             return Json(MatchMonitorService.VerifyMatch(criteria));
         }
 
+        [NapAuth(FunctionKey = FSFunctionKeys.MatchMonitoring, Policy = Core.Business.Constant.Policy.Read)]
         public ActionResult ExportExcel(MatchGetAllCriteria criteria)
         {
             var templatePath = Server.MapPath("~/App_Data/Excel Template/MatchMonitor/template.xlsx");

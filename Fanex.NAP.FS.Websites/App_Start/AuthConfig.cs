@@ -2,6 +2,7 @@
 using Fanex.NAP.Core.Service.Impl;
 using Fanex.NAP.Core.Web.Auth;
 using Fanex.NAP.Core.Web.Session;
+using Fanex.NAP.FS.Service.Utilities;
 using System.Web;
 using System.Web.Security;
 
@@ -39,15 +40,6 @@ namespace Fanex.NAP.FS.Websites.App_Start
                 var principal = new NapPrincipal(identity, udata);
                 context.User = principal;
             }
-        }
-
-        public static void SignOut()
-        {
-            var currentSession = new CurrentSession();
-            var userService = new SecurityService();
-            
-            userService.Logout(currentSession.OnUserId);
-            currentSession.ClearAll();
         }
     }
 }

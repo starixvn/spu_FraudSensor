@@ -16,7 +16,8 @@
             <img src="~/Content/images/logo.png" alt="Fraud Sensor">
         </a>
         <div class="header-right">
-            <ul class="main-menu">
+            @Html.Action("Menu", "Home")
+            @*<ul class="main-menu">
                 <li class="menu-item">
                     <a href="#" class="link has-child"><span class="icon icon-chart-scatterplot-hexbin"></span>Report</a>
                     <ul class="sub-menu">
@@ -42,7 +43,7 @@
                         <li class="sub-menu-item"><a href="#" class="link">Message Master</a></li>
                     </ul>
                 </li>
-            </ul>
+            </ul>*@
             @Html.Partial("_LoginPartial")
         </div>
     </header>

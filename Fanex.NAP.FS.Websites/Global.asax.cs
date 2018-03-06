@@ -26,11 +26,6 @@
             BundleConfig.RegisterBundles(BundleTable.Bundles);
         }
 
-        protected void Session_End(object sender, EventArgs e)
-        {
-            AuthConfig.SignOut();
-        }
-
         protected void Application_AuthenticateRequest(object sender, EventArgs e)
         {
             AuthConfig.RegisterAuth(Context);
