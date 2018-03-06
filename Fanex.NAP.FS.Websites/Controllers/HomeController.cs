@@ -3,7 +3,7 @@ using System.Web.Mvc;
 
 namespace Fanex.NAP.FS.Websites.Controllers
 {
-    [NapAuth(FunctionKey =FSFunctionKeys.Home)]
+    [NapSuperAuth]
     public class HomeController : BaseController
     {
         public ActionResult Index()
