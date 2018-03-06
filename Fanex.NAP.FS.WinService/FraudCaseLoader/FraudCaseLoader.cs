@@ -1,24 +1,32 @@
 ﻿namespace Fanex.NAP.FS.WinService
 {
-    using Fanex.NAP.FS.Library.FSMQ;
+    using Library.FSMQ;
+    using Library.Services;
 
     public class FraudCaseLoader : IFraudCaseLoader
     {
         private readonly ISendingMessage _sendingCase;
 
-        public FraudCaseLoader()
-        {
-            _sendingCase = new AddingCase(new MessageQueueSender());
-        }
+        private readonly IFraudCaseService _fraudCaseService;
 
-        public FraudCaseLoader(IMessageQueueSender messageQueue)
+        public FraudCaseLoader(IMessageQueueSender messageQueue = null)
         {
-            _sendingCase = new AddingCase(messageQueue);
+            var queue = messageQueue ?? new MessageQueueSender();
+            _sendingCase = new AddingCase(queue);
+            _fraudCaseService = new FraudCaseService();
         }
 
         public void LoadFraudCases()
         {
-            ////??
+            var fraudCases = _fraudCaseService.GetAll();
+
+            foreach (var fraudCase in fraudCases)
+            {
+                if (fraudCase.IsActive)
+                {
+                    _sendingCase.Send(fraudCase.FraudCaseId);
+                }
+            }
         }
     }
 }

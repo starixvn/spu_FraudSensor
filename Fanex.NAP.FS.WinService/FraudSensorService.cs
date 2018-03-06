@@ -1,14 +1,14 @@
 ﻿namespace Fanex.NAP.FS.WinService
 {
-    using Fanex.Data;
-    using Fanex.Logging;
-    using Fanex.MailDelivery.Client;
+    using Data;
+    using Logging;
+    using MailDelivery.Client;
     using System.Configuration;
     using System.ServiceProcess;
 
     public partial class FraudSensorService : ServiceBase
     {
-        private IFraudCaseLoader _caseLoader;
+        private IFraudCaseLoader _fraudCaseLoader;
 
         private IReceivingMessageHandler _receivingMessageHandler;
 
@@ -20,7 +20,7 @@
                .UseDefaultDbSettingProvider(resourcePath: "~/App_Data", enableWatching: true)
                .Run();
 
-            _caseLoader = caseLoader ?? new FraudCaseLoader();
+            _fraudCaseLoader = caseLoader ?? new FraudCaseLoader();
 
             _receivingMessageHandler = receivingMessageHandler ?? new ReceivingMessageHandler();
 
@@ -36,9 +36,20 @@
         {
             Logger.Log.Info("SPU FS Service Stopped");
 
-            _receivingMessageHandler.ClearTasks();
+            _receivingMessageHandler.ClearCases();
 
             SendMailInform(false);
+        }
+
+        protected override void OnShutdown()
+        {
+            SendMailInform(false);
+
+            Logger.Log.Info("SPU FS Service Stopped");
+
+            _receivingMessageHandler.ClearCases();
+
+            MailClientHandler.Stop();
         }
 
         public void RunOnStart()
@@ -50,7 +61,7 @@
             var queue = new MessageQueueReceiver();
             queue.Clear();
 
-            _caseLoader.LoadFraudCases();
+            _fraudCaseLoader.LoadFraudCases();
 
             _receivingMessageHandler.TriggerReceivingMessage();
 

@@ -592,18 +592,18 @@
     <Content Include="Web.ConnectionString.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Web.AppSettings.LOCAL.config">
+    <Content Include="WebConfigs\Web.AppSettings.LOCAL.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Views\Shared\_Menu.cshtml" />
     <None Include="WebConfigs\Web.AppSettings.PRO.config" />
     <None Include="WebConfigs\Web.AppSettings.UAT.config" />
-    <Content Include="Web.ConnectionString.LOCAL.config">
+    <Content Include="WebConfigs\Web.ConnectionString.LOCAL.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="WebConfigs\Web.ConnectionString.PRO.config" />
     <None Include="WebConfigs\Web.ConnectionString.UAT.config" />
-    <Content Include="Web.LOCAL.config">
+    <Content Include="WebConfigs\Web.LOCAL.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="WebConfigs\Web.LOCAL.Debug.config" />
