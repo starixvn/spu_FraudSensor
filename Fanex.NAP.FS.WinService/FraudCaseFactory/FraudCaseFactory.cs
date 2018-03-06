@@ -10,7 +10,7 @@
             switch (fraudCase.FraudCaseId)
             {
                 case 1:
-                    throw new ArgumentOutOfRangeException();
+                    return new BigStakeNearGoalExecutor(fraudCase);
 
                 case 2:
                     throw new ArgumentOutOfRangeException();

@@ -27,7 +27,7 @@
         {
             _timer = new Timer
             {
-                Interval = FraudCase.FraudCaseInterval,
+                Interval = FraudCase.FraudCaseInterval * 1000,
                 AutoReset = true,
                 Enabled = true
             };
@@ -58,8 +58,6 @@
                     ExecuteRule();
 
                     TakeNextAction();
-
-                    TriggerOtherTasks();
                 }
             }
             catch (Exception exception)
@@ -84,7 +82,7 @@
 
         protected abstract void TakeNextAction();
 
-        protected void WriteLog(Exception exception)
+        protected static void WriteLog(Exception exception)
         {
             var message = "\r\nError: " + exception.Message +
                           "\r\nStackTrace: " + exception.StackTrace;
@@ -92,6 +90,18 @@
             Logger.Log.Error(message);
         }
 
+        protected virtual void Dispose(bool disposing)
+        {
+            _timer.Dispose();
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        #region private method
         private void PreExecute(object sender, ElapsedEventArgs elapsedEventArgs)
         {
             if (_isRunning || _isStoppedManually)
@@ -116,21 +126,6 @@
             Console.WriteLine("{0} - {1} spent {2} running", FraudCase.FraudCaseId, FraudCase.FraudCaseName, stopwatch.Elapsed.ToString());
 #endif
         }
-
-        private void TriggerOtherTasks()
-        {
-            ////??
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            _timer.Dispose();
-        }
+        #endregion
     }
 }
