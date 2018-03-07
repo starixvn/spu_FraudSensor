@@ -47,6 +47,7 @@
         var msg = $(".msg-error");
         var fst_load = true;
         var has_error_message = @(Model != null ? "true": "false");
+        var format = /[!#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
 
         if (has_error_message) {
             setTimeout(() => msg.text(""), 3000);
@@ -65,12 +66,24 @@
                 return false;
             }
 
+            if (format.test(username.val())) {
+                msg.html("Input can't have special character<br/>Special characters: !#$%^&*()_+\-=\[\]{};':\"\\|,.<>\/?");
+                username.addClass("invalid");
+                return false;
+            }
+
+            if (format.test(password.val())) {
+                msg.html("Input can't have special character<br/>Special characters: !#$%^&*()_+\-=\[\]{};':\"\\|,.<>\/?");
+                password.addClass("invalid");
+                return false;
+            }
+
             return true;
         }
 
         function reset_input() {
             $("input").removeClass("invalid");
-            if (!fst_load) msg.text("");
+            if (!fst_load) msg.html("");
             fst_load = false;
         }
 
