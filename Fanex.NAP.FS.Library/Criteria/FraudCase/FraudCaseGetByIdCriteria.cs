@@ -8,7 +8,7 @@
 
         public override string GetSettingKey()
         {
-            return "FS_FraudCaseGetById";
+            return "FS_FraudCase_GetById";
         }
 
         public override bool IsValid()

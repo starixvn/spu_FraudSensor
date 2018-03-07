@@ -153,6 +153,9 @@
     <Compile Include="Core\Utilities\ConfigSettings.cs" />
     <Compile Include="Criteria\FraudCase\FraudCaseGetByIdCriteria.cs" />
     <Compile Include="Criteria\FraudCase\FraudCaseGetAllCriteria.cs" />
+    <Compile Include="Criteria\FraudSensorTask\BigStakeNearGoalRuleCriteria.cs" />
+    <Compile Include="Criteria\FraudSensorTask\BigStakeNearGoalPreconditionCriteria.cs" />
+    <Compile Include="DTO\Match.cs" />
     <Compile Include="DTO\FraudCase.cs" />
     <Compile Include="FSMQ\MessageQueue\FSMessageQueue.cs" />
     <Compile Include="FSMQ\MessageQueue\MessageQueueSender.cs" />
@@ -168,6 +171,8 @@
     <Compile Include="FSMQ\SendingType\SendingType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\Implement\FraudCaseService.cs" />
+    <Compile Include="Services\Implement\FraudSensorTaskService.cs" />
+    <Compile Include="Services\Interface\IFraudSensorTaskService.cs" />
     <Compile Include="Services\Interface\IFraudCaseService.cs" />
   </ItemGroup>
   <ItemGroup>

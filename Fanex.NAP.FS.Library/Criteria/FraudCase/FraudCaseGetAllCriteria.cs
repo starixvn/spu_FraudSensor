@@ -6,7 +6,7 @@
     {
         public override string GetSettingKey()
         {
-            return "FS_FraudCaseGetAll";
+            return "FS_FraudCase_GetAll";
         }
 
         public override bool IsValid()

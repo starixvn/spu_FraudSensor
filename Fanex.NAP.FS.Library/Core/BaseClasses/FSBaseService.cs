@@ -28,6 +28,16 @@
             }
         }
 
+        public void Execute(CriteriaBase criteria)
+        {
+            using (var db = new ObjectDb(criteria.GetSettingKey()))
+            {
+                var param = criteria.GetSpParams();
+
+                db.ExecuteNonQuery(param);
+            }
+        }
+
         public ICommandResult UpdateData(ICriteria criteria)
         {
             using (var db = new ObjectDb(criteria.GetSettingKey()))

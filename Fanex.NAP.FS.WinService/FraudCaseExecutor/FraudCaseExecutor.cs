@@ -2,6 +2,7 @@
 {
     using Fanex.Logging;
     using Library.DTO;
+    using Library.Services;
     using Sunplus.UMControllerLibrary;
     using System;
     using System.Configuration;
@@ -16,9 +17,12 @@
 
         private bool _isStoppedManually;
 
+        protected readonly FraudSensorTaskService _fraudSensorTaskService;
+
         protected FraudCaseExecutor(FraudCase fraudCase)
         {
             FraudCase = fraudCase;
+            _fraudSensorTaskService = new FraudSensorTaskService();
         }
 
         public FraudCase FraudCase { get; private set; }
