@@ -55,30 +55,26 @@
 
         function check_before_submit() {
             if (username.val().length == 0) {
-                msg.text("Username cant be empty");
                 username.addClass("invalid");
-                return false;
             }
 
             if (password.val().length == 0) {
-                msg.text("Password cant be empty");
                 password.addClass("invalid");
-                return false;
             }
 
-            if (format.test(username.val())) {
-                msg.html("Input can't have special character<br/>Special characters: !#$%^&*()_+\-=\[\]{};':\"\\|,.<>\/?");
-                username.addClass("invalid");
-                return false;
+            var notEmpty = username.val().length != 0 && password.val().length != 0;
+
+            if (notEmpty) {
+                if (format.test(username.val()) || format.test(password.val())) {
+                    msg.html("Invalid Username or Password");
+                    setTimeout(() => msg.text(""), 3000);
+                    return false;
+                }
+
+                return true;
             }
 
-            if (format.test(password.val())) {
-                msg.html("Input can't have special character<br/>Special characters: !#$%^&*()_+\-=\[\]{};':\"\\|,.<>\/?");
-                password.addClass("invalid");
-                return false;
-            }
-
-            return true;
+            return false;
         }
 
         function reset_input() {
