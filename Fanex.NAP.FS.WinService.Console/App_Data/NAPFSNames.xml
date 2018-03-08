@@ -1,12 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Functions>
   <Function Name="FraudCase">
-    <Setting Key="FS_FraudCaseGetAll" SpName="FS_FraudCaseGetAll" DbName="DBFD.FraudDetection.bodbSPUNet"/>
-    <Setting Key="FS_FraudCaseGetById" SpName="FS_FraudCaseGetById" DbName="DBFD.FraudDetection.bodbSPUNet"/>
+    <Setting Key="FS_FraudCase_GetAll" SpName="FS_FraudCase_GetAll" DbName="DBFD.FraudDetection.bodbSPUNet"/>
+    <Setting Key="FS_FraudCase_GetById" SpName="FS_FraudCase_GetById" DbName="DBFD.FraudDetection.bodbSPUNet"/>
   </Function>
 
   <Function Name="BigStakeNearGoal">
     <Setting Key="FS_FraudCase_BSNG_PreCondition" SpName="FS_FraudCase_BSNG_PreCondition" DbName="DBFD.FraudDetection.bodbSPUNet"/>
     <Setting Key="FS_FraudCase_BSNG_Rule" SpName="FS_FraudCase_BSNG_Rule" DbName="DBFD.FraudDetection.bodbSPUNet"/>
+  </Function>
+
+  <Function Name="FlaggedAccount">
+    <Setting Key="FS_FraudCase_FlaggedAccount_PreCondition" SpName="FS_FraudCase_FlaggedAccount_PreCondition" DbName="DBFD.FraudDetection.bodbSPUNet"/>
+    <Setting Key="FS_FraudCase_FlaggedAccount_Rule" SpName="FS_FraudCase_FlaggedAccount_Rule" DbName="DBFD.FraudDetection.bodbSPUNet"/>
   </Function>
 </Functions>

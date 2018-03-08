@@ -9,4 +9,9 @@
     <Setting Key="FS_FraudCase_BSNG_PreCondition" SpName="FS_FraudCase_BSNG_PreCondition" DbName="DBFD.FraudDetection.bodbSPUNet"/>
     <Setting Key="FS_FraudCase_BSNG_Rule" SpName="FS_FraudCase_BSNG_Rule" DbName="DBFD.FraudDetection.bodbSPUNet"/>
   </Function>
+
+  <Function Name="FlaggedAccount">
+    <Setting Key="FS_FraudCase_FlaggedAccount_PreCondition" SpName="FS_FraudCase_FlaggedAccount_PreCondition" DbName="DBFD.FraudDetection.bodbSPUNet"/>
+    <Setting Key="FS_FraudCase_FlaggedAccount_Rule" SpName="FS_FraudCase_FlaggedAccount_Rule" DbName="DBFD.FraudDetection.bodbSPUNet"/>
+  </Function>
 </Functions>

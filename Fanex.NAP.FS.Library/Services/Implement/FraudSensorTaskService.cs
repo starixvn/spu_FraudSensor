@@ -19,5 +19,18 @@
                 MatchIds = matchIds
             });
         }
+
+        public IEnumerable<Match>FlaggedAccountExecutePrecondition()
+        {
+            return GetData<Match>(new BigStakeNearGoalPreconditionCriteria());
+        }
+
+        public void FlaggedAccountExecuteRule(string matchIds)
+        {
+            Execute(new BigStakeNearGoalRuleCriteria
+            {
+                MatchIds = matchIds
+            });
+        }
     }
 }

@@ -153,6 +153,8 @@
     <Compile Include="Core\Utilities\ConfigSettings.cs" />
     <Compile Include="Criteria\FraudCase\FraudCaseGetByIdCriteria.cs" />
     <Compile Include="Criteria\FraudCase\FraudCaseGetAllCriteria.cs" />
+    <Compile Include="Criteria\FraudSensorTask\FlaggedAccountPreconditionCriteria.cs" />
+    <Compile Include="Criteria\FraudSensorTask\FlaggedAccountRuleCriteria.cs" />
     <Compile Include="Criteria\FraudSensorTask\BigStakeNearGoalRuleCriteria.cs" />
     <Compile Include="Criteria\FraudSensorTask\BigStakeNearGoalPreconditionCriteria.cs" />
     <Compile Include="DTO\Match.cs" />

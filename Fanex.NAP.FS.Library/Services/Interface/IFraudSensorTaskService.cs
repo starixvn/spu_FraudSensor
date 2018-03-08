@@ -8,5 +8,9 @@
         IEnumerable<Match> BigStakeNearGoalExecutePrecondition();
 
         void BigStakeNearGoalExecuteRule(string matchIds);
+
+        IEnumerable<Match> FlaggedAccountExecutePrecondition();
+
+        void FlaggedAccountExecuteRule(string matchIds);
     }
 }

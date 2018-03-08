@@ -11,7 +11,7 @@
     {
         private IEnumerable<Match> _matches;
 
-        private List<Task> _threads;
+        private readonly List<Task> _threads;
 
         public BigStakeNearGoalExecutor(FraudCase fraudCase) : base(fraudCase)
         {

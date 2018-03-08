@@ -12,20 +12,11 @@
                 case 1:
                     return new BigStakeNearGoalExecutor(fraudCase);
 
-                case 2:
-                    throw new ArgumentOutOfRangeException();
-
-                case 3:
-                    throw new ArgumentOutOfRangeException();
-
-                case 4:
-                    throw new ArgumentOutOfRangeException();
-
-                case 5:
-                    throw new ArgumentOutOfRangeException();
+                case 6:
+                    return new FlaggedAccountExecutor(fraudCase);
 
                 default:
-                    throw new ArgumentOutOfRangeException();
+                    return new GhostExecutor(fraudCase);
             }
         }
     }
