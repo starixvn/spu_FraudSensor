@@ -71,6 +71,29 @@ function load_page_events() {
     })
 
     $("#export").click(exportExcel);
+
+    $("table").DataTable({
+        ordering: false,
+        searching: false,
+        lengthMenu: [50, 100, 200],
+        createdRow: function (row, data, idx) {
+            var $tds = $("td", row);
+
+            var center = [0, 1, 4, 5, 6, 7, 8];
+
+            for (var i = 0; i < center.length; i++) {
+                $tds.eq(center[i]).addClass("text-center");
+            }
+
+            var icon = [6, 7, 8];
+
+            for (var i = 0; i < icon.length; i++) {
+                $tds.eq(icon[i]).addClass("has-icon");
+            }
+        },
+        scrollY: "55vh",
+        scrollCollapse: true
+    });
 }
 
 function load_grid() {
@@ -87,12 +110,13 @@ function load_grid() {
 
     $.post(url, dto, function (data) {
         $("#event_date").datepicker("hide");
+
         data_holder = data;
-        page()
-        var paged_data = sliceData(0, pageSize);
-        renderGrid(paged_data);
+
+        renderGrid(data);
+
         common.closeLoading();
-        changeStageBackNext();
+
         if ($("#refresh_interval").hasClass("first")) {
             $("#refresh_interval").val(60).change().removeClass("first");
         }
@@ -103,58 +127,51 @@ function load_grid() {
 }
 
 function renderGrid(data) {
+    $("#match_grid").show();
+
+    var matches = [];
+
     if (data != null && data.Matches != null && data.Matches.length > 0) {
         var fraudCases = ["BSNG", "Flagged Accounts", "Delay Goal"];
-
-        renderFraudCasesHeader(fraudCases);
-        $("tbody").empty().append(data.Matches.map((m, i) => buildRow(fraudCases, m, data.PageIdx * pageSize + i)));
-        $("#table_summary").text("Displaying " + (data.PageIdx * pageSize + 1) + " to " + (data.PageIdx * pageSize + data.Matches.length) + " of " + (data_holder.Matches.length) + " item(s)")
-    }
-    else {
-        renderFraudCasesHeader(["BSNG", "Flagged Accounts", "Delay Goal"]);
-        $("tbody").empty().append("<tr class='text-center'><td  colspan='9'>There's no data</td></tr>");
-        $("#table_summary").text("");
-        $("#back, #next").parent().addClass("disabled");
+        matches = data.Matches.map((m, i) => buildRow(fraudCases, m, i));
     }
 
-    $("#match_grid").show();
+    var table = $("table").DataTable();
+
+    table.clear();
+    table.rows.add(matches)
+    table.draw();
 
     $(".verified-checkbox").change(updateVerification);
 }
 
-function buildRow(fraudCases, rowObj, index) {
-    var row = $("<tr></tr>");
+function buildRow(fraudCases = [], rowObj, index) {
+    var rowNo = index + 1;
 
-    // render row no
-    row.append("<td class='text-center'>" + (index + 1) + "</td>");
-
-    // render checkbox
-    row.append(
-        "<td class='text-center'> "
-        + "<label class='checkbox'>"
+    var verified =
+        "<label class='checkbox'>"
         + "<input type= 'checkbox' class='verified-checkbox'" + (rowObj.Verified ? "checked" : "") + " data-match-id='" + rowObj.MatchId + "'/>"
-        + "<span></span></label></td>"
-    );
+        + "<span></span></label>";
 
-    // render verified by
-    row.append("<td>" + (rowObj.VerifiedBy == null ? "-" : rowObj.VerifiedBy) + "</td>");
+    var verifiedBy = rowObj.VerifiedBy == null ? "-" : rowObj.VerifiedBy;
 
-    // render event
-    row.append(
-        "<td>"
-        + "<span class='team-home'>" + rowObj.Event.HomeName + "</span>"
+    var event =
+        "<span class='team-home'>" + rowObj.Event.HomeName + "</span>"
         + " - vs - "
         + "<span class='team-away'>" + rowObj.Event.AwayName + "</span>"
-        + "<div class='league-name'>" + rowObj.Event.LeagueName + "</div>"
-        + "</td>");
+        + "<div class='league-name'>" + rowObj.Event.LeagueName + "</div>";
 
-    //render score
-    row.append("<td class='text-center'>" + rowObj.Score + "</td>");
+    var score = rowObj.Score;
 
-    //render status
-    row.append("<td class='text-center'>" + rowObj.Status + "</td>");
+    var status = rowObj.Status;
 
-    row.append(fraudCases.map(f => buildFraudCase(f, rowObj)));
+    var note = "adfdaf";
+
+    var row = [rowNo, verified, verifiedBy, event, score, status];
+
+    fraudCases.map(f => buildFraudCase(f, rowObj)).map(e => row.push(e));
+
+    row.push(note);
 
     return row;
 }
@@ -163,25 +180,24 @@ function buildFraudCase(fraudCase, rowObj) {
     var fraud_idx = mappingFraudCase(fraudCase).toString();
 
     if (rowObj.FraudCases[fraud_idx] == null) {
-        return "<td class='has-icon text-center'><span class='icon-close'></span></td>";
+        return "<span class='icon-close'></span>";
     }
 
     var fraud_case = rowObj.FraudCases[fraud_idx];
 
     if (fraud_case.Violations == null) {
-        return '<td class="has-icon text-center"><span class="icon-close"></span></td>';
+        return '<span class="icon-close"></span>';
     }
 
     if (fraud_case.Violations == 0) {
-        return '<td class="has-icon text-center"><span class="icon-check"></span></td>';
+        return '<span class="icon-check"></span>';
     }
 
-    return "<td class='has-icon text-center'>"
-        + "<div class='warning'>"
+    return 
+        "<div class='warning'>"
         + "<span class='icon-alert-circle'></span>"
         + "<span class='number'>" + renderViolations(fraud_case.Violations) + "</span>"
-        + "</div>"
-        + "</td>";
+        + "</div>";
 }
 
 function renderViolations(violation = 1) {
@@ -352,7 +368,7 @@ function exportExcel() {
     dto.LeagueIds = $("#league").val();
     dto.IsMainMarket = $("#is_main_market:checked").length > 0;
 
-    common.DownloadFile(url, dto);
+    common.downloadFile(url, dto);
 }
 
 $(load_page_events);

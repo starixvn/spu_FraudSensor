@@ -137,7 +137,7 @@ namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
             return result;
         }
 
-        private static IRichTextString WriteFraudCase(FraudCase fraudCase)
+        private static IRichTextString WriteFraudCase(ViewModels.MatchMonitor.FraudCase fraudCase)
         {
             if (fraudCase == null)
             {
@@ -202,7 +202,7 @@ namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
                 FraudCases =
                     fraudCases
                     .GroupBy(f => Tuple.Create(f.FraudCaseId, f.FraudCaseName))
-                    .Select(g => new FraudCase(g.Key.Item1, g.Key.Item2, g))
+                    .Select(g => new ViewModels.MatchMonitor.FraudCase(g.Key.Item1, g.Key.Item2, g))
                     .ToDictionary(f => f.FraudCaseId.ToString()),
                 MatchId = match.MatchId,
                 Verified = match.IsVerified,

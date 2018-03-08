@@ -14,7 +14,7 @@ namespace Fanex.NAP.FS.Websites.Criteria.MatchMonitor
 
         public override string GetSettingKey()
         {
-            return "FS_Rpt_MatchMonitoringVerificationUpdate";
+            return "FS_SuspiciousMatchVerification_Update";
         }
 
         public override bool IsValid()

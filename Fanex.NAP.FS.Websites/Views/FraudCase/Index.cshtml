@@ -1,0 +1,20 @@
+﻿@model Fanex.NAP.FS.Websites.Models.FraudCase.FraudCase
+
+@if(Model != null)
+{
+    <p>Schedule: In every @Model.ScheduleTime seconds</p>
+    <div>
+        Match to scan:
+        @foreach (var rule in Model.MatchRules)
+        {
+            <p>@rule</p>
+        }
+    </div>
+    <div>
+        Ticket in rules:
+        @foreach (var rule in Model.TicketRules)
+        {
+            <p>@rule</p>
+        }
+    </div>
+}

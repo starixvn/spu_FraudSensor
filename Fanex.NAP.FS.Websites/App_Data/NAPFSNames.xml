@@ -4,9 +4,12 @@
     <Setting Key="FS_Rpt_Test" SpName="FS_Rpt_Test" DbName="DBFD.FraudDetection.bodbSPUNet"/>
   </Function>
   <Function Name="MatchMonitor">
-    <Setting Key="FS_Rpt_MatchMonitorReportGet" SpName="FS_Rpt_MatchMonitorReportGet" DbName="DBFD.FraudDetection.bodbSPUNet"/>
-    <Setting Key="FS_Rpt_MatchMonitor_League_Get" SpName="FS_Rpt_MatchMonitor_League_Get" DbName="DBFD.FraudDetection.bodbSPUNet"/>
-    <Setting Key="FS_Rpt_MatchMonitoringVerificationUpdate" SpName="FS_Rpt_MatchMonitoringVerificationUpdate" DbName="DBFD.FraudDetection.bodbSPUNet"/>
+    <Setting Key="FS_Rpt_MatchMonitor_Get" SpName="FS_Rpt_MatchMonitor_Get" DbName="DBFD.FraudDetection.bodbSPUNet"/>
+    <Setting Key="FS_League_Get" SpName="FS_League_Get" DbName="DBFD.FraudDetection.bodbSPUNet"/>
+    <Setting Key="FS_SuspiciousMatchVerification_Update" SpName="FS_SuspiciousMatchVerification_Update" DbName="DBFD.FraudDetection.bodbSPUNet"/>
     <Setting Key="Age_SelBalanceUpDay" SpName="Age_SelBalanceUpDay" DbName="DB.bodb02.bodbAdminNet"/>
+  </Function>
+  <Function Name="FraudCase">
+    <Setting Key="FS_FraudCase_GetById" SpName="FS_FraudCase_GetById" DbName="DBFD.FraudDetection.bodbSPUNet"/>
   </Function>
 </Functions>

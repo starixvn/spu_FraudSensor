@@ -21,5 +21,13 @@ namespace Fanex.NAP.FS.Websites.Service
                 db.ExecuteNonQuery(criteria);
             }
         }
+
+        public static T GetSingle<T>(CriteriaBase criteria)
+        {
+            using (var db = new ObjectDb(criteria.GetSettingKey()))
+            {
+                return db.QueryEntity<T>(criteria);
+            }
+        }
     }
 }

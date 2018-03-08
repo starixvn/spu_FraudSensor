@@ -1,6 +1,8 @@
 ﻿function UICommon() {
     $("#progress_bar").progressbar({ value: false });
 
+    var reg = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
+
     var loading = $("#loading").dialog({
         autoOpen: false,
         modal: true,
@@ -20,7 +22,7 @@
         loading.dialog("close");
     }
 
-    this.DownloadFile = function (url, parameters) {
+    this.downloadFile = function (url, parameters) {
         if (url && parameters) {
             var downloadUrl = url + '?';
             var iframe = $('body iframe');
@@ -36,6 +38,14 @@
             iframe.attr('src', downloadUrl);
         }
     };
+
+    this.hasSpecialCharacter = function (str = "") {
+        if (str == null) {
+            return false;
+        }
+
+        return reg.test(str);
+    }
 }
 
 var common = new UICommon();

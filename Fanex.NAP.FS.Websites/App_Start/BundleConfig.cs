@@ -27,7 +27,8 @@ namespace Fanex.NAP.FS.Websites
                       "~/Content/select2.min.css",
                       "~/Content/style.css",
                       "~/Content/index.min.css",
-                      "~/Content/themes/base/jquery-ui.min.css"));
+                      "~/Content/themes/base/jquery-ui.min.css",
+                      "~/Content/DataTables/css/jquery.dataTables.min.css"));
 
             RegisterFSCoreBundles(bundles);
             RegisterMatchMonitorBundles(bundles);
@@ -40,7 +41,7 @@ namespace Fanex.NAP.FS.Websites
                 "~/Scripts/common.js",
                 "~/Scripts/Fanex.Grid/Fanex.Grid.js",
                 "~/Scripts/Fanex.Grid/Fanex.Pagination.js",
-                "~/Scripts/auto-grid.js"));
+                "~/Scripts/DataTables/jquery.datatables.min.js"));
         }
 
         private static void RegisterMatchMonitorBundles(BundleCollection bundles)
