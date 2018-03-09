@@ -56,11 +56,7 @@
                 }
 
                 var match = _matches.ElementAt(count);
-
-                var thread = Task.Factory.StartNew(m =>
-                {
-                    _fraudSensorTaskService.BigStakeNearGoalExecuteRule(((Match)m).MatchId.ToString());
-                }, match);
+                var thread = ExecuteSingle(match);
 
                 _threads.Add(thread);
 
@@ -82,11 +78,7 @@
                 }
 
                 var match = _matches.ElementAt(count);
-
-                var thread = Task.Factory.StartNew(m =>
-                {
-                    _fraudSensorTaskService.BigStakeNearGoalExecuteRule(((Match)m).MatchId.ToString());
-                }, match);
+                var thread = ExecuteSingle(match);
 
                 _threads.Add(thread);
 
@@ -94,6 +86,32 @@
 
                 Thread.Sleep(10);
             }
+        }
+
+        private Task ExecuteSingle(Match match)
+        {
+            var thread = Task.Factory.StartNew(m =>
+            {
+                try
+                {
+                    _fraudSensorTaskService.FlaggedAccountExecuteRule(((Match)m).MatchId.ToString());
+
+                    _errorTimes = 0;
+                }
+                catch (Exception exception)
+                {
+                    var error = "<b>Error:</b> " + exception.Message +
+                              "<br><b>StackTrace:</b> " + exception.StackTrace;
+                    var message = string.Format("<b>Problem with FraudCaseId = {0}, FraudCaseName = {1}</b><br><br>", FraudCase.FraudCaseId, FraudCase.FraudCaseName) + error;
+
+                    if (_errorTimes++ < 10)
+                    {
+                        SendMailInform(message);
+                    }
+                }
+            }, match);
+
+            return thread;
         }
         #endregion
     }

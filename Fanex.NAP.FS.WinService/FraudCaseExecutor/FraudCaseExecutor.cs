@@ -3,6 +3,7 @@
     using Fanex.Logging;
     using Library.DTO;
     using Library.Services;
+    using MailDelivery.Client;
     using Sunplus.UMControllerLibrary;
     using System;
     using System.Configuration;
@@ -19,10 +20,13 @@
 
         protected readonly FraudSensorTaskService _fraudSensorTaskService;
 
+        protected int _errorTimes;
+
         protected FraudCaseExecutor(FraudCase fraudCase)
         {
             FraudCase = fraudCase;
             _fraudSensorTaskService = new FraudSensorTaskService();
+            _errorTimes = 0;
         }
 
         public FraudCase FraudCase { get; private set; }
@@ -82,6 +86,12 @@
 #endif
         }
 
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
         protected abstract void ClearOldResult();
 
         protected abstract void ExecutePrecondition();
@@ -103,10 +113,24 @@
             _timer.Dispose();
         }
 
-        public void Dispose()
+        protected void SendMailInform(string message)
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
+            try
+            {
+                var newMail = new Fanex.MailDelivery.Core.Models.Mail
+                {
+                    Subject = "SPU FS Error",
+                    Title = "SPU FS Error",
+                    Body = message,
+                    MailingListId = int.Parse(ConfigurationManager.AppSettings["MailingListId"])
+                };
+
+                MailClientHandler.SendFunctionMail(newMail);
+            }
+            catch (Exception exception)
+            {
+                WriteLog(exception);
+            }
         }
 
         #region private method
