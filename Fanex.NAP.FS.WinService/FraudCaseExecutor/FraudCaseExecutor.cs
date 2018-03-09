@@ -76,6 +76,10 @@
             _timer.Elapsed -= PreExecute;
             _timer.Stop();
             _timer.Close();
+
+#if DEBUG
+            Console.WriteLine("{0} - {1} stopped manually!", FraudCase.FraudCaseId, FraudCase.FraudCaseName);
+#endif
         }
 
         protected abstract void ClearOldResult();

@@ -22,12 +22,12 @@
 
         public IEnumerable<Match>FlaggedAccountExecutePrecondition()
         {
-            return GetData<Match>(new BigStakeNearGoalPreconditionCriteria());
+            return GetData<Match>(new FlaggedAccountPreconditionCriteria());
         }
 
         public void FlaggedAccountExecuteRule(string matchIds)
         {
-            Execute(new BigStakeNearGoalRuleCriteria
+            Execute(new FlaggedAccountRuleCriteria
             {
                 MatchIds = matchIds
             });

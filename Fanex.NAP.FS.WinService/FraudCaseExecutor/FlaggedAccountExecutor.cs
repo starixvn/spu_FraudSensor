@@ -85,7 +85,7 @@
 
                 var thread = Task.Factory.StartNew(m =>
                 {
-                    _fraudSensorTaskService.BigStakeNearGoalExecuteRule(((Match)m).MatchId.ToString());
+                    _fraudSensorTaskService.FlaggedAccountExecuteRule(((Match)m).MatchId.ToString());
                 }, match);
 
                 _threads.Add(thread);
