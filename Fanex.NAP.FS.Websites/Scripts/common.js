@@ -14,6 +14,31 @@
         height: 80
     });
 
+    var confirmation = $("#confirmation").dialog({
+        autoOpen: false,
+        modal: true,
+        draggable: false,
+        resizable: false,
+    });
+
+    var success = $("#success").dialog({
+        autoOpen: false,
+        draggable: false,
+        resizable: false,
+        height: 75,
+        position: { my: "top", at: "top", of: window }
+    });
+
+    var error = $("#error").dialog({
+        autoOpen: false,
+        draggable: false,
+        resizable: false,
+        height: 75,
+        position: { my: "top", at: "top", of: window }
+    });
+
+    $(document).ajaxError(() => showDialog(error, "Internal Error", 3000));
+
     this.showLoading = function () {
         loading.dialog("open");
     };
@@ -45,6 +70,46 @@
         }
 
         return reg.test(str);
+    }
+
+    this.showConfirmation = function (html, yesCallback, noCallback) {
+        confirmation.empty().html(html).dialog("open");
+
+        var yesBtn =
+            {
+                text: "Yes",
+                click: function () {
+                    confirmation.dialog("close");
+
+                    if (yesCallback != null) {
+                        yesCallback()
+                    }
+                }
+            };
+
+        var noBtn =
+            {
+                text: "No",
+                click: function () {
+                    confirmation.dialog("close");
+
+                    if (noCallback != null) {
+                        noCallback()
+                    }
+                }
+            }
+
+        confirmation.dialog("option", "buttons", [yesBtn, noBtn])
+    }
+
+    this.showSuccess = (str = "Success", timeout = 3000) => showDialog(success, str, timeout);
+
+    this.showError = (str = "Internal Error", timeout = 3000) => showDialog(error, str, timeout);
+
+    function showDialog(target, str, timeout) {
+        target.text(str).dialog("open");
+
+        setTimeout(() => target.dialog("close"), timeout);
     }
 }
 

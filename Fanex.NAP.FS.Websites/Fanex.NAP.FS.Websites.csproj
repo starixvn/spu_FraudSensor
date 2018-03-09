@@ -264,6 +264,7 @@
     <Compile Include="Criteria\MatchMonitor\BalanceUpDateGetCriteria.cs" />
     <Compile Include="Criteria\MatchMonitor\LeagueGetCriteria.cs" />
     <Compile Include="Criteria\MatchMonitor\MatchGetAllCriteria.cs" />
+    <Compile Include="Criteria\MatchMonitor\UpdateNoteCriteria.cs" />
     <Compile Include="Criteria\MatchMonitor\VerifyMatchCriteria.cs" />
     <Compile Include="Criteria\FraudCase\UpdateFraudCaseStatusCriteria.cs" />
     <Compile Include="FSFunctionKeys.cs">
@@ -276,6 +277,7 @@
     </Compile>
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\DBResult.cs" />
     <Compile Include="Models\FraudCaseId.cs" />
     <Compile Include="Models\FraudCase\DelayedGoal\Customer.cs" />
     <Compile Include="Models\FraudCase\FraudCase.cs" />
@@ -285,6 +287,8 @@
     <Compile Include="Models\MatchMonitor\Match.cs" />
     <Compile Include="Models\NpoiStream.cs" />
     <Compile Include="Service\FraudCase\FraudCaseService.cs" />
+    <Compile Include="Service\Utilities\Excel.cs" />
+    <Compile Include="ViewModels\FraudCase\DelayedGoal\Customer.cs" />
     <Compile Include="ViewModels\MatchMonitor\Event.cs" />
     <Compile Include="ViewModels\MatchMonitor\FraudCase.cs" />
     <Compile Include="Models\MatchMonitor\FraudCase.cs" />
@@ -493,8 +497,17 @@
     <Content Include="Content\DataTables\images\sort_desc.png" />
     <Content Include="Content\DataTables\images\sort_desc_disabled.png" />
     <Content Include="Content\DataTables\swf\flashExport.swf" />
+    <Content Include="Content\flashExport.swf" />
     <Content Include="Content\fonts\Fraud-Sensor.svg" />
+    <Content Include="Content\FraudCase\fraud-case.min.css" />
+    <Content Include="Content\images\details_close.png" />
+    <Content Include="Content\images\details_open.png" />
     <Content Include="Content\images\logo.png" />
+    <Content Include="Content\images\sort_asc.png" />
+    <Content Include="Content\images\sort_asc_disabled.png" />
+    <Content Include="Content\images\sort_both.png" />
+    <Content Include="Content\images\sort_desc.png" />
+    <Content Include="Content\images\sort_desc_disabled.png" />
     <Content Include="Content\index.min.css" />
     <Content Include="Content\select2.min.css" />
     <Content Include="Content\style.css" />
@@ -559,6 +572,8 @@
     <Content Include="Content\themes\base\tabs.css" />
     <Content Include="Content\themes\base\theme.css" />
     <Content Include="Content\themes\base\tooltip.css" />
+    <Content Include="fonts\flashExport.swf" />
+    <Content Include="fonts\Fraud-Sensor.svg" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="FSFunctionKeys.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -680,6 +695,10 @@
     <Content Include="Content\DataTables\css\semanticui.scss" />
     <Content Include="Content\DataTables\css\mixins.scss" />
     <Content Include="Content\DataTables\css\common.scss" />
+    <Content Include="fonts\Fraud-Sensor.eot" />
+    <Content Include="fonts\Fraud-Sensor.ttf" />
+    <Content Include="fonts\Fraud-Sensor.woff" />
+    <Content Include="App_Data\Excel Template\FraudCase\DelayedGoal\template.xlsx" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile2.pubxml" />
@@ -712,6 +731,8 @@
     <Content Include="Scripts\Fanex.Grid\ThirdParties\Numeral\languages.min.js" />
     <Content Include="Scripts\Fanex.Grid\ThirdParties\Numeral\numeral.min.js" />
     <None Include="Scripts\jquery-3.0.0-vsdoc.js" />
+    <Content Include="Scripts\FraudCase\delayed-goal.js" />
+    <Content Include="Scripts\FraudCase\fraud-case.js" />
     <Content Include="Scripts\i18n\af.js" />
     <Content Include="Scripts\i18n\ar.js" />
     <Content Include="Scripts\i18n\az.js" />
@@ -844,6 +865,7 @@
     </Content>
     <Content Include="Views\Shared\_Menu.cshtml" />
     <Content Include="Views\FraudCase\Index.cshtml" />
+    <Content Include="Views\FraudCase\DelayedGoal\Dialog.cshtml" />
     <None Include="WebConfigs\Web.AppSettings.PRO.config" />
     <None Include="WebConfigs\Web.AppSettings.UAT.config" />
     <Content Include="WebConfigs\Web.ConnectionString.LOCAL.config">

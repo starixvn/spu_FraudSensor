@@ -1,20 +1,97 @@
-﻿@model Fanex.NAP.FS.Websites.Models.FraudCase.FraudCase
+﻿@using Fanex.NAP.FS.Websites.Models
+@model Fanex.NAP.FS.Websites.Models.FraudCase.FraudCase
 
-@if(Model != null)
+@section styles{
+    @Styles.Render("~/fraud-case-styles")
+}
+
+<h1 class="title">Fraud case rules</h1>
+
+@using (Html.BeginForm())
 {
-    <p>Schedule: In every @Model.ScheduleTime seconds</p>
-    <div>
-        Match to scan:
-        @foreach (var rule in Model.MatchRules)
-        {
-            <p>@rule</p>
-        }
+    <div class="form-filter">
+        <div class="group width-160">
+            <label class="text">Fraud case</label>
+            <select class="control" name="fraudCaseId">
+                @foreach (var item in Enum.GetValues(typeof(FraudCaseId)).OfType<FraudCaseId>().OrderBy(id => id))
+                {
+                    <option value="@((int) item)" @(Model != null && Model.FraudCaseId == (int)item ? "selected" : "")>
+                        @switch (item)
+                        {
+                            case FraudCaseId.BSNG:
+                                @("BSNG")
+                                break;
+                            case FraudCaseId.FlaggedAccount:
+                                @("Flagged Account")
+                                break;
+                            case FraudCaseId.DelayedGoal:
+                                @("Delay Goal")
+                                break;
+                            default:
+                                break;
+                        }
+                    </option>
+                }
+            </select>
+        </div>
+        <button class="button -primary">Search</button>
     </div>
-    <div>
-        Ticket in rules:
-        @foreach (var rule in Model.TicketRules)
-        {
-            <p>@rule</p>
-        }
+}
+
+@if (Model != null)
+{
+    <div class="info">
+        <div class="row">
+            <div class="info-name">Active</div>
+            <div class="info-value">
+                <div class="switch">
+                    <input class="switch-input button-activate {$modifiers}" id="fraud-case-activator" data-active="1" data-id="@(Model.FraudCaseId)" type="checkbox" @(Model.IsActive ? "checked='checked'" : "")>
+                    <label class="switch-paddle" for="fraud-case-activator"></label>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="info-name">Schedule</div>
+            <div class="info-value">In every @Model.ScheduleTime seconds</div>
+        </div>
+
+        <div class="row">
+            <div class="info-name">Match to scan</div>
+            <div class="info-value">
+                @foreach (var rule in Model.MatchRules)
+                {
+                    <p class="detail">@Html.Raw(rule)</p>
+                }
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="info-name">Ticket in rules</div>
+            <div class="info-value">
+                @foreach (var rule in Model.TicketRules)
+                {
+                    <p class="detail">@Html.Raw(rule)</p>
+                }
+                @*Ticket from customers which are in the list <a href="#" class="view-list">View List</a>*@
+            </div>
+        </div>
     </div>
+
+    if (Model.FraudCaseId == (int)FraudCaseId.DelayedGoal)
+    {
+        @Html.Partial("DelayedGoal/Dialog")
+    }
+}
+
+@section scripts{
+    @Scripts.Render("~/fraud-case-scripts")
+
+    @if (Model != null)
+    {
+        if (Model.FraudCaseId == (int)FraudCaseId.DelayedGoal)
+        {
+            @Scripts.Render("~/fraud-case-scripts/delayed-goal")
+        }
+    }
 }

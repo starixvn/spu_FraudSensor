@@ -111,6 +111,8 @@
         var columns = @Html.Raw(Match.Columns);
 
         var balanceUpDay = new Date(@Model.BalanceUpDay.Year, @(Model.BalanceUpDay.Month - 1), @Model.BalanceUpDay.Day);
+
+        var username = "@ViewBag.Username";
     </script>
     @Scripts.Render("~/match-monitor")
 }

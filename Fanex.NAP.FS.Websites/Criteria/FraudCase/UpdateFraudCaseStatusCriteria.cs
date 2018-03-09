@@ -10,7 +10,7 @@ namespace Fanex.NAP.FS.Websites.Criteria.FraudCase
 
         public override string GetSettingKey()
         {
-            throw new System.NotImplementedException();
+            return "FS_FraudCase_CaseStatus_Update";
         }
 
         public override bool IsValid()

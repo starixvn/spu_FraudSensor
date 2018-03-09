@@ -7,14 +7,16 @@ namespace Fanex.NAP.FS.Websites.Criteria.FraudCase.DelayedGoal
     {
         public int CustId { get; set; }
 
+        public int UserId { get; set; }
+
         public override string GetSettingKey()
         {
-            throw new NotImplementedException();
+            return "FS_DelayGoalAccount_Delete";
         }
 
         public override bool IsValid()
         {
-            throw new NotImplementedException();
+            return true;
         }
     }
 }

@@ -7,10 +7,12 @@ namespace Fanex.NAP.FS.Websites.Models.FraudCase.DelayedGoal
 {
     public class Customer
     {
-        public int Id { get; set; }
+        public int CustId { get; set; }
 
-        public int CreatorId { get; set; }
+        public string AccountName { get; set; }
 
-        public DateTime AddedDate { get; set; }
+        public string CreatedBy { get; set; }
+
+        public DateTime CreatedDate { get; set; }
     }
 }

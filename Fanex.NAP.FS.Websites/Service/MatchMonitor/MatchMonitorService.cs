@@ -44,9 +44,9 @@ namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
 
         public static object VerifyMatch(VerifyMatchCriteria criteria)
         {
-            DataService.UpdateData(criteria);
+            DataService.UpdateData(criteria, "MatchMonitor");
 
-            return null;
+            return new object();
         }
 
         public static Models.MatchMonitor.BalanceUpDate GetBalanceUpDate()

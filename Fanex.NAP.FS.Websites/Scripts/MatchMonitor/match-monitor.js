@@ -1,6 +1,4 @@
 ﻿var timeout_holder = null;
-var data_holder = null;
-var pageSize = 0;
 
 function load_page_events() {
     $("#generate, #refresh_btn").click(load_grid);
@@ -19,56 +17,6 @@ function load_page_events() {
     $(".icon-calendar-text").click(() => $("#event_date").focus());
 
     $("#refresh_interval").change(e => refreshChange($(e.target)));
-
-    pageSize = parseInt($("#pager").val());
-
-    $("#pager").change(function () {
-        pageSize = parseInt($(this).val());
-        page();
-        var paged_data = sliceData(0, pageSize);
-        renderGrid(paged_data);
-        changeStageBackNext(0)
-    });
-
-    $("#page_index").change(function () {
-        var page_idx = parseInt($(this).val());
-
-        var paged_data = sliceData(page_idx, pageSize);
-        renderGrid(paged_data);
-        changeStageBackNext(page_idx);
-    })
-
-    $("#back").click(function () {
-        var indexer = $("#page_index");
-
-        var page_idx = parseInt(indexer.val());
-
-        var new_page_idx = Math.max(page_idx - 1, 0);
-
-        indexer.val(new_page_idx).change();
-
-        if (new_page_idx == 0) {
-            $(this).parent().addClass("disabled")
-        }
-    });
-
-    $("#next").click(function () {
-        var indexer = $("#page_index");
-
-        var page_idx = parseInt(indexer.val());
-
-        var max_page = parseInt(data_holder.Matches.length / pageSize);
-
-        var new_page_idx = Math.min(page_idx + 1, max_page);
-
-        indexer.val(new_page_idx).change();
-
-        $("#back").parent().removeClass("disabled");
-
-        if (new_page_idx == max_page) {
-            $(this).parent().addClass("disabled");
-        }
-    })
 
     $("#export").click(exportExcel);
 
@@ -90,6 +38,8 @@ function load_page_events() {
             for (var i = 0; i < icon.length; i++) {
                 $tds.eq(icon[i]).addClass("has-icon");
             }
+
+            $tds.eq($tds.length - 1).addClass("col-note");
         },
         scrollY: "55vh",
         scrollCollapse: true
@@ -139,7 +89,7 @@ function renderGrid(data) {
     var table = $("table").DataTable();
 
     table.clear();
-    table.rows.add(matches)
+    table.rows.add(matches);
     table.draw();
 
     $(".verified-checkbox").change(updateVerification);
@@ -165,7 +115,11 @@ function buildRow(fraudCases = [], rowObj, index) {
 
     var status = rowObj.Status;
 
-    var note = "adfdaf";
+    var note =
+        "<div class='note'>"
+        + "adfdaf"
+        + "<span class='icon-dots-horizontal-circle icon-note'></span>"
+        + "</div>";
 
     var row = [rowNo, verified, verifiedBy, event, score, status];
 
@@ -193,8 +147,7 @@ function buildFraudCase(fraudCase, rowObj) {
         return '<span class="icon-check"></span>';
     }
 
-    return 
-        "<div class='warning'>"
+    return "<div class='warning'>"
         + "<span class='icon-alert-circle'></span>"
         + "<span class='number'>" + renderViolations(fraud_case.Violations) + "</span>"
         + "</div>";
@@ -295,54 +248,12 @@ function updateVerification() {
 
     $.post("matchmonitor/VerifyMatch", dto, function () {
         if (!dto.IsVerified) {
-            $target.next().text("-");
+            $target.parents("td").next().text("-");
+        }
+        else {
+            $target.parents("td").next().text(username);
         }
     });
-}
-
-function sliceData(page = 0, pageSize = 50) {
-    if (data_holder == null) {
-        return null;
-    }
-
-    let sliced_data =
-        {
-            FraudCases: data_holder.FraudCases,
-            Matches: data_holder.Matches.slice(page * pageSize, page * pageSize + pageSize),
-            PageIdx: page
-        };
-
-    return sliced_data;
-}
-
-function page() {
-    if (data_holder != null) {
-        var n = parseInt(data_holder.Matches.length / pageSize) + Math.min(data_holder.Matches.length % pageSize, 1);
-
-        var indexer = $("#page_index").empty();
-
-        for (var i = 0; i < n; i++) {
-            indexer.append("<option value='" + i + "'>" + (i + 1) + "</option>");
-        }
-    }
-}
-
-function changeStageBackNext(page_idx = 0) {
-    if (page_idx == 0) {
-        $("#back").parent().addClass("disabled");
-    }
-    else {
-        $("#back").parent().removeClass("disabled");
-    }
-
-    var max_page = parseInt(data_holder.Matches.length / pageSize);
-
-    if (page_idx == max_page) {
-        $("#next").parent().addClass("disabled");
-    }
-    else {
-        $("#next").parent().removeClass("disabled");
-    }
 }
 
 function mappingFraudCase(fraudCase = "") {
@@ -354,7 +265,7 @@ function mappingFraudCase(fraudCase = "") {
         case "Delay Goal":
             return 8;
         default:
-            throw "not impletmented"
+            throw "not impletmented";
     }
 }
 

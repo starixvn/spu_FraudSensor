@@ -54,7 +54,7 @@ namespace Fanex.NAP.FS.Websites.Models.FraudCase
 
                     result.TicketRules = new[]
                     {
-                        "Customer = Delay Goal List"
+                        "Customer = Delay Goal List <a href='#' class='view-list'>View List</a>"
                     };
 
                     break;

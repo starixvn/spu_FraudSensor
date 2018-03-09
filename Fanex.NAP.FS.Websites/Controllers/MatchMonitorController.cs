@@ -11,6 +11,8 @@ namespace Fanex.NAP.FS.Websites.Controllers
         [NapAuth(FunctionKey = FSFunctionKeys.MatchMonitoring, Policy = Core.Business.Constant.Policy.Read)]
         public ActionResult Index()
         {
+            ViewBag.Username = this.User.Identity.Name;
+
             return View(MatchMonitorService.GetBalanceUpDate());
         }
 
@@ -32,7 +34,7 @@ namespace Fanex.NAP.FS.Websites.Controllers
         [NapAuth(FunctionKey = FSFunctionKeys.MatchMonitoring, Policy = Core.Business.Constant.Policy.Host)]
         public ActionResult VerifyMatch(VerifyMatchCriteria criteria)
         {
-            criteria.Verifier = CurrentSession.UserId;
+            criteria.UserId = CurrentSession.UserId;
 
             return Json(MatchMonitorService.VerifyMatch(criteria));
         }

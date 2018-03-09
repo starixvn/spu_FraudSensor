@@ -6,7 +6,7 @@ namespace Fanex.NAP.FS.Websites.Criteria.FraudCase.DelayedGoal
     {
         public override string GetSettingKey()
         {
-            throw new System.NotImplementedException();
+            return "FS_DelayGoalAccount_GetAll";
         }
 
         public override bool IsValid()

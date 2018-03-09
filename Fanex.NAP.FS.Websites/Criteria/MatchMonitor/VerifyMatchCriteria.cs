@@ -6,7 +6,7 @@ namespace Fanex.NAP.FS.Websites.Criteria.MatchMonitor
     {
         public bool IsVerified { get; set; }
 
-        public int Verifier { get; set; }
+        public int UserId { get; set; }
 
         public int MatchId { get; set; }
 
@@ -14,7 +14,7 @@ namespace Fanex.NAP.FS.Websites.Criteria.MatchMonitor
 
         public override string GetSettingKey()
         {
-            return "FS_SuspiciousMatchVerification_Update";
+            return "FS_Rpt_MatchMonitorVerification_Update";
         }
 
         public override bool IsValid()

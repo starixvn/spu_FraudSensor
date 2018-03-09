@@ -8,6 +8,7 @@
     <link href="https://fonts.googleapis.com/css?family=Lato:400,400i,700" rel="stylesheet">
     <title>Fraud Sensor</title>
     @Styles.Render("~/Content/styles")
+    @RenderSection("styles", false)
     @Scripts.Render("~/bundles/modernizr")
 </head>
 <body>
@@ -55,6 +56,9 @@
     <div id="loading" title="Loading">
         <div id="progress_bar"></div>
     </div>
+    <div id="confirmation" title="Confirmation"></div>
+    <div id="success" style="color: #4f971f" class="text-center"></div>
+    <div id="error" style="color:red" class="text-center"></div>
     @Scripts.Render("~/bundles/jquery")
     @if (NapSettings.Settings.EnableReCheckIn)
     {
