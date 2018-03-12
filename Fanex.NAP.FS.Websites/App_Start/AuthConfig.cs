@@ -6,7 +6,7 @@ using Fanex.NAP.FS.Service.Utilities;
 using System.Web;
 using System.Web.Security;
 
-namespace Fanex.NAP.FS.Websites.App_Start
+namespace Fanex.NAP.FS.Websites
 {
     public static class AuthConfig
     {
