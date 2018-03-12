@@ -573,7 +573,6 @@
     <Content Include="Content\themes\base\theme.css" />
     <Content Include="Content\themes\base\tooltip.css" />
     <Content Include="fonts\flashExport.swf" />
-    <Content Include="fonts\Fraud-Sensor.svg" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="FSFunctionKeys.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -695,9 +694,6 @@
     <Content Include="Content\DataTables\css\semanticui.scss" />
     <Content Include="Content\DataTables\css\mixins.scss" />
     <Content Include="Content\DataTables\css\common.scss" />
-    <Content Include="fonts\Fraud-Sensor.eot" />
-    <Content Include="fonts\Fraud-Sensor.ttf" />
-    <Content Include="fonts\Fraud-Sensor.woff" />
     <Content Include="App_Data\Excel Template\FraudCase\DelayedGoal\template.xlsx" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
