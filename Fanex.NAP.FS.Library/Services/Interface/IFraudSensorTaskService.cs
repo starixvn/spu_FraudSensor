@@ -12,5 +12,9 @@
         IEnumerable<Match> FlaggedAccountExecutePrecondition();
 
         void FlaggedAccountExecuteRule(string matchIds);
+
+        IEnumerable<Match> DelayGoalExecutePrecondition();
+
+        void DelayGoalExecuteRule(string matchIds);
     }
 }

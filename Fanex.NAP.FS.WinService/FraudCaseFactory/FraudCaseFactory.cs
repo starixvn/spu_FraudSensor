@@ -15,6 +15,9 @@
                 case 6:
                     return new FlaggedAccountExecutor(fraudCase);
 
+                case 8:
+                    return new DelayGoalExecutor(fraudCase);
+
                 default:
                     return new GhostExecutor(fraudCase);
             }
