@@ -151,6 +151,8 @@
   <ItemGroup>
     <Compile Include="Core\BaseClasses\FSBaseService.cs" />
     <Compile Include="Core\Utilities\ConfigSettings.cs" />
+    <Compile Include="Criteria\Api\FlaggedAccountDeleteCriteria.cs" />
+    <Compile Include="Criteria\Api\FlaggedAccountInsertCriteria.cs" />
     <Compile Include="Criteria\FraudCase\FraudCaseGetByIdCriteria.cs" />
     <Compile Include="Criteria\FraudCase\FraudCaseGetAllCriteria.cs" />
     <Compile Include="Criteria\FraudSensorTask\DelayGoalPreconditionCriteria.cs" />
@@ -180,8 +182,10 @@
     <Compile Include="FSMQ\SendingMessage\SendingMessageFactory.cs" />
     <Compile Include="FSMQ\SendingType\SendingType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\Implement\FlaggedAccountService.cs" />
     <Compile Include="Services\Implement\FraudCaseService.cs" />
     <Compile Include="Services\Implement\FraudSensorTaskService.cs" />
+    <Compile Include="Services\Interface\IFlaggedAccountService.cs" />
     <Compile Include="Services\Interface\IFraudSensorTaskService.cs" />
     <Compile Include="Services\Interface\IFraudCaseService.cs" />
   </ItemGroup>
