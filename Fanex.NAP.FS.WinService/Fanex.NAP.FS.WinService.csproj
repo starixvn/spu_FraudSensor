@@ -148,6 +148,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FraudCaseExecutor\DelayGoalExecutor.cs" />
     <Compile Include="FraudCaseExecutor\GhostExecutor.cs" />
     <Compile Include="FraudCaseExecutor\FlaggedAccountExecutor.cs" />
     <Compile Include="FraudCaseExecutor\BigStakeNearGoalExecutor.cs" />

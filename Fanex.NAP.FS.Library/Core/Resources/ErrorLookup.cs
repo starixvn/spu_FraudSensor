@@ -1,7 +1,8 @@
-﻿using System.Resources;
-
-namespace Fanex.NAP.FS.Library
+﻿namespace Fanex.NAP.FS.Library
 {
+    using Fanex.NAP.FS.Library.Core.Resources;
+    using System.Resources;
+
     public static class ErrorLookup
     {
         private static readonly ResourceManager resource = new ResourceManager(typeof(Error));

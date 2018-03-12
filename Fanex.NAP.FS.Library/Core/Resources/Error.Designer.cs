@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Fanex.NAP.FS.Library {
+namespace Fanex.NAP.FS.Library.Core.Resources {
     using System;
     
     
@@ -19,7 +19,7 @@ namespace Fanex.NAP.FS.Library {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Error {
@@ -39,7 +39,7 @@ namespace Fanex.NAP.FS.Library {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Fanex.NAP.FS.Library.Error", typeof(Error).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Fanex.NAP.FS.Library.Core.Resources.Error", typeof(Error).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

@@ -153,18 +153,20 @@
     <Compile Include="Core\Utilities\ConfigSettings.cs" />
     <Compile Include="Criteria\FraudCase\FraudCaseGetByIdCriteria.cs" />
     <Compile Include="Criteria\FraudCase\FraudCaseGetAllCriteria.cs" />
+    <Compile Include="Criteria\FraudSensorTask\DelayGoalPreconditionCriteria.cs" />
+    <Compile Include="Criteria\FraudSensorTask\DelayGoalRuleCriteria.cs" />
     <Compile Include="Criteria\FraudSensorTask\FlaggedAccountPreconditionCriteria.cs" />
     <Compile Include="Criteria\FraudSensorTask\FlaggedAccountRuleCriteria.cs" />
     <Compile Include="Criteria\FraudSensorTask\BigStakeNearGoalRuleCriteria.cs" />
     <Compile Include="Criteria\FraudSensorTask\BigStakeNearGoalPreconditionCriteria.cs" />
     <Compile Include="DTO\Match.cs" />
     <Compile Include="DTO\FraudCase.cs" />
-    <Compile Include="Error.Designer.cs">
+    <Compile Include="Core\Resources\Error.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Error.resx</DependentUpon>
     </Compile>
-    <Compile Include="ErrorLookup.cs" />
+    <Compile Include="Core\Resources\ErrorLookup.cs" />
     <Compile Include="FSMQ\MessageQueue\FSMessageQueue.cs" />
     <Compile Include="FSMQ\MessageQueue\MessageQueueSender.cs" />
     <Compile Include="FSMQ\MessageQueue\IMessageQueueSender.cs" />
@@ -187,7 +189,6 @@
     <Folder Include="Core\Configurations\" />
     <Folder Include="Core\Extensions\" />
     <Folder Include="Core\Helpers\" />
-    <Folder Include="Core\Resources\" />
     <Folder Include="DataAccess\" />
     <Folder Include="Models\" />
   </ItemGroup>
@@ -205,7 +206,7 @@
     <Analyzer Include="..\packages\SonarAnalyzer.CSharp.6.7.1.4347\analyzers\SonarAnalyzer.dll" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Error.resx">
+    <EmbeddedResource Include="Core\Resources\Error.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Error.Designer.cs</LastGenOutput>
     </EmbeddedResource>
