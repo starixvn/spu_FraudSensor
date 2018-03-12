@@ -50,7 +50,7 @@
     <button class="button -export" id="export"><span class="icon-export-excel"></span>Export</button>
 </div>
 
-<div id="match_grid" hidden>
+<div id="match_grid">
     <div class="top-header">
         <div class="refresh">
             <select class="refresh-option first" id="refresh_interval">
@@ -76,10 +76,10 @@
                 <th>Event</th>
                 <th>Score</th>
                 <th class="col-status">Status</th>
-                <th class="col-status">BSNG</th>
-                <th class="col-status">Flagged Accounts</th>
-                <th>Delay Goal</th>
-                <th>Note</th>
+                <th class="col-bsng">BSNG</th>
+                <th class="col-flagged-acc">Flagged Accounts</th>
+                <th class="col-delay-goal">Delay Goal</th>
+                <th colspan="2">Note</th>
             </tr>
         </thead>
         <tbody>
@@ -104,6 +104,10 @@
         </div>
         <span id="table_summary"></span>
     </div>*@
+</div>
+
+<div hidden>
+    @Html.Partial("MatchNote")
 </div>
 
 @section scripts{

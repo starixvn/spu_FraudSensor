@@ -6,9 +6,9 @@ using System.Web.Mvc;
 
 namespace Fanex.NAP.FS.Websites.Controllers
 {
+    [NapAuth(FunctionKey = FSFunctionKeys.MatchMonitoring, Policy = Core.Business.Constant.Policy.Read)]
     public class MatchMonitorController : BaseController
     {
-        [NapAuth(FunctionKey = FSFunctionKeys.MatchMonitoring, Policy = Core.Business.Constant.Policy.Read)]
         public ActionResult Index()
         {
             ViewBag.Username = this.User.Identity.Name;
@@ -17,14 +17,14 @@ namespace Fanex.NAP.FS.Websites.Controllers
         }
 
         [HttpPost]
-        [NapAuth(FunctionKey = FSFunctionKeys.MatchMonitoring, Policy = Core.Business.Constant.Policy.Read)]
         public ActionResult GetMatches(MatchGetAllCriteria criteria)
         {
-            return Json(MatchMonitorService.GetMatches(criteria));
+            var matchList = MatchMonitorService.GetMatches(criteria);
+
+            return Json(new { data = matchList.Matches }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
-        [NapAuth(FunctionKey = FSFunctionKeys.MatchMonitoring, Policy = Core.Business.Constant.Policy.Read)]
         public ActionResult GetLeagues(LeagueGetCriteria criteria)
         {
             return Json(MatchMonitorService.GetLeagues(criteria));
@@ -39,7 +39,6 @@ namespace Fanex.NAP.FS.Websites.Controllers
             return Json(MatchMonitorService.VerifyMatch(criteria));
         }
 
-        [NapAuth(FunctionKey = FSFunctionKeys.MatchMonitoring, Policy = Core.Business.Constant.Policy.Read)]
         public ActionResult ExportExcel(MatchGetAllCriteria criteria)
         {
             var templatePath = Server.MapPath("~/App_Data/Excel Template/MatchMonitor/template.xlsx");
@@ -47,6 +46,14 @@ namespace Fanex.NAP.FS.Websites.Controllers
             var fileName = DateTime.Now.ToString("MMM-d-yyyy") + ".xlsx";
 
             return File(MatchMonitorService.ExportExcel(criteria, templatePath), "application/vnd.ms-excel", fileName);
+        }
+
+        [HttpPost]
+        public ActionResult UpdateMatchNote(MatchNoteUpdateCriteria criteria)
+        {
+            criteria.UserId = CurrentSession.UserId;
+
+            return Json(MatchMonitorService.UpdateMatchNote(criteria));
         }
     }
 }

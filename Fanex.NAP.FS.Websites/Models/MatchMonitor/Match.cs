@@ -19,5 +19,7 @@
         public int LiveHomeScore { get; set; }
 
         public int LiveAwayScore { get; set; }
+
+        public string Notes { get; set; }
     }
 }

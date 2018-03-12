@@ -1,7 +1,7 @@
 ﻿function UICommon() {
     $("#progress_bar").progressbar({ value: false });
 
-    var reg = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
+    var reg = /[!@#$%^&*()_+\-=\[\]{}'"\\|<>\/?]/;
 
     var loading = $("#loading").dialog({
         autoOpen: false,
@@ -11,7 +11,7 @@
         },
         draggable: false,
         resizable: false,
-        height: 80
+        height: 100
     });
 
     var confirmation = $("#confirmation").dialog({
@@ -25,7 +25,7 @@
         autoOpen: false,
         draggable: false,
         resizable: false,
-        height: 75,
+        height: 100,
         position: { my: "top", at: "top", of: window }
     });
 
@@ -33,7 +33,7 @@
         autoOpen: false,
         draggable: false,
         resizable: false,
-        height: 75,
+        height: 100,
         position: { my: "top", at: "top", of: window }
     });
 

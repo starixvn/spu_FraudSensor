@@ -16,28 +16,27 @@
 </head>
 <body>
     <section class="block">
-        <div class="text-center">
+        <div class="logo">
             <img class="login-logo" src="~/Areas/UserLogin/themes/img/login.png" alt="Fraud Sensor">
         </div>
-        <h1 class="login-title text-center">Fraud sensor</h1>
         @using (Html.BeginForm())
         {
-            <div class="form-group">
-                <input type="text" class="form-control" placeholder="Username" id="username" name="username">
-                <span class="icon icon-account-outline"></span>
-            </div>
-            <div class="form-group">
-                <input type="password" class="form-control" placeholder="Password" id="password" name="password">
-                <span class="icon icon-onepassword"></span>
-            </div>
-             <button class="button -primary">Login</button>
+        <div class="form-group">
+            <input type="text" class="form-control" placeholder="Username" id="username" name="username">
+            <span class="icon icon-account-outline"></span>
+        </div>
+        <div class="form-group">
+            <input type="password" class="form-control" placeholder="Password" id="password" name="password">
+            <span class="icon icon-onepassword"></span>
+        </div>
+        <button class="button -primary">Login</button>
         }
 
         <div class="msg-error">
-        @if (Model != null)
-        {
+            @if (Model != null)
+            {
             @Model;
-        }
+            }
         </div>
     </section>
     <script src="~/Scripts/jquery-3.0.0.min.js"></script>

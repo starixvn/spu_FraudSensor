@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'Fraud-Sensor';
-  src:  url('fonts/Fraud-Sensor.eot?5aqpk7');
-  src:  url('fonts/Fraud-Sensor.eot?5aqpk7#iefix') format('embedded-opentype'),
-    url('fonts/Fraud-Sensor.ttf?5aqpk7') format('truetype'),
-    url('fonts/Fraud-Sensor.woff?5aqpk7') format('woff'),
-    url('fonts/Fraud-Sensor.svg?5aqpk7#Fraud-Sensor') format('svg');
+  src:  url('fonts/Fraud-Sensor.eot?fd7oj3');
+  src:  url('fonts/Fraud-Sensor.eot?fd7oj3#iefix') format('embedded-opentype'),
+    url('fonts/Fraud-Sensor.ttf?fd7oj3') format('truetype'),
+    url('fonts/Fraud-Sensor.woff?fd7oj3') format('woff'),
+    url('fonts/Fraud-Sensor.svg?fd7oj3#Fraud-Sensor') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -24,6 +24,12 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.icon-approval:before {
+  content: "\e927";
+}
+.icon-neutral:before {
+  content: "\e928";
+}
 .icon-delete:before {
   content: "\e926";
 }
@@ -69,9 +75,6 @@
 .icon-chart-scatterplot-hexbin:before {
   content: "\e907";
 }
-.icon-check:before {
-  content: "\e908";
-}
 .icon-checkbox-blank-outline:before {
   content: "\e909";
 }
@@ -83,9 +86,6 @@
 }
 .icon-chevron-down:before {
   content: "\e90c";
-}
-.icon-dots-horizontal-circle:before {
-  content: "\e90d";
 }
 .icon-email:before {
   content: "\e90e";
@@ -152,7 +152,4 @@
 }
 .icon-settings:before {
   content: "\e91e";
-}
-.icon-timer-sand:before {
-  content: "\e91f";
 }

@@ -121,6 +121,6 @@
     <value>Username already exists</value>
   </data>
   <data name="FraudCase_DelayedGoal_4001" xml:space="preserve">
-    <value>Username doesnt exist</value>
+    <value>Username doesn't exist</value>
   </data>
 </root>

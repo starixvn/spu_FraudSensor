@@ -79,6 +79,11 @@ namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
             }
         }
 
+        public static DBResult UpdateMatchNote(MatchNoteUpdateCriteria criteria)
+        {
+            return DataService.UpdateData(criteria, "MatchMonitor");
+        }
+
         public static ISheet WriteMatch(ISheet sheet, Match m)
         {
             sheet.ShiftRows(sheet.LastRowNum, sheet.LastRowNum, 1, true, false);
@@ -208,7 +213,8 @@ namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
                 Verified = match.IsVerified,
                 VerifiedBy = match.VerifiedBy == null ? null : userService.Get(match.VerifiedBy.Value).Username,
                 Status = (char)(match.EventStatus[0] - 32) + match.EventStatus.Remove(0, 1),
-                Score = string.Format("{0} - {1}", match.LiveHomeScore, match.LiveAwayScore)
+                Score = string.Format("{0} - {1}", match.LiveHomeScore, match.LiveAwayScore),
+                Notes = match.Notes ?? "-"
             };
         }
     }
