@@ -6,6 +6,18 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+@section styles{
+    <style>
+        .dataTables_wrapper .dataTables_paginate, .dataTables_wrapper .dataTables_info {
+            padding-top: 0
+        }
+
+        .dataTables_wrapper .dataTables_paginate{
+            margin-left: 20px
+        }
+    </style>
+}
+
 <h1 class="title">Match Monitor</h1>
 <div class="form-filter">
     <div class="group calendar">
@@ -21,8 +33,7 @@
     </div>
     <div class="group width-400">
         <label class="text">League</label>
-        <select class="control" id="league">
-        </select>
+        <select class="control" id="league"></select>
     </div>
     <div class="group width-160">
         <label class="text">Verified</label>
@@ -42,7 +53,7 @@
     </div>
     <div class="group">
         <label class="checkbox">
-            <input type="checkbox" checked id="is_main_market"/>
+            <input type="checkbox" checked id="is_main_market" />
             <span>Main Markets Only</span>
         </label>
     </div>
@@ -82,28 +93,27 @@
                 <th colspan="2">Note</th>
             </tr>
         </thead>
-        <tbody>
-        </tbody>
+        <tbody></tbody>
     </table>
     @*<div class="pagination">
-        <div class="page-size">
-            <span>Page size</span>
-            <select class="size" id="pager">
-                <option>50</option>
-                <option>100</option>
-                <option>200</option>
-            </select>
-            <ul class="pages">
-                <li class="page-prev disabled" style="margin-top: 3%"><a id="back" href="#">Back</a></li>
-                <li>
-                    <select id="page_index">
-                    </select>
-                </li>
-                <li class="page-next" style="margin-top: 3%"><a id="next" href="#">Next</a></li>
-            </ul>
-        </div>
-        <span id="table_summary"></span>
-    </div>*@
+            <div class="page-size">
+                <span>Page size</span>
+                <select class="size" id="pager">
+                    <option>50</option>
+                    <option>100</option>
+                    <option>200</option>
+                </select>
+                <ul class="pages">
+                    <li class="page-prev disabled" style="margin-top: 3%"><a id="back" href="#">Back</a></li>
+                    <li>
+                        <select id="page_index">
+                        </select>
+                    </li>
+                    <li class="page-next" style="margin-top: 3%"><a id="next" href="#">Next</a></li>
+                </ul>
+            </div>
+            <span id="table_summary"></span>
+        </div>*@
 </div>
 
 <div hidden>

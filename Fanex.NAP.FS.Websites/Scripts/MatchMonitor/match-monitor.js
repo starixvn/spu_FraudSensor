@@ -39,7 +39,8 @@ function load_page_events() {
             { data: renderNote, className: "col-note" },
             { defaultContent: '<span class="icon-note-text icon-note"></span>', className: "col-note-action" }
         ],
-        autoWidth: false
+        autoWidth: false,
+        dom:"t<'pagination'<'page-size'lp>i>"
     });
 
     $.fn.dataTable.ext.errMode = "none";
@@ -120,6 +121,7 @@ function attachGridEvent(json) {
     $(".icon-note").click(renderNotePopup);
     common.closeLoading();
     $("#refresh_interval").change();
+    $("#event_date").datepicker("hide");
 }
 
 function renderViolations(violation = 1) {
