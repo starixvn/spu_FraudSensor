@@ -1,7 +1,7 @@
 ﻿function UICommon() {
     $("#progress_bar").progressbar({ value: false });
 
-    var reg = /[!@#$%^&*()_+\-=\[\]{}'"\\|<>\/?]/;
+    var reg = /[<>]/;
 
     var loading = $("#loading").dialog({
         autoOpen: false,

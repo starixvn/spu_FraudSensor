@@ -52,6 +52,7 @@ namespace Fanex.NAP.FS.Websites.Controllers
         public ActionResult UpdateMatchNote(MatchNoteUpdateCriteria criteria)
         {
             criteria.UserId = CurrentSession.UserId;
+            criteria.Notes = criteria.Notes ?? string.Empty;
 
             return Json(MatchMonitorService.UpdateMatchNote(criteria));
         }

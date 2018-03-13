@@ -269,16 +269,18 @@ function updateNote(popup, row) {
 function renderNotePopup() {
     var row = $("table").DataTable().row($(this).parents("tr").first()).data();
 
-    $("textarea", "#match-note-popup").text(row.Notes == "-" ? "" : row.Notes);
+    $("#refresh_interval").val("--").change();
 
-    $("#match-note-popup").dialog({
+    $("textarea", "#match-note-popup").val(row.Notes == "-" ? "" : row.Notes);
+
+    $("#match-note-popup").clone().dialog({
         modal: true,
         resizable: false,
         buttons: [
             { text: "Submit", class: "button -primary", click: function () { updateNote(this, row) } }
         ],
         width: 625
-    })
+    });
 }
 
 $(load_page_events);
