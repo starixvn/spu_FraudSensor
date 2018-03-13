@@ -1,10 +1,10 @@
 ﻿namespace Fanex.NAP.FS.WinService
 {
+    using Library.Core.Utilities;
     using Library.DTO;
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Threading;
     using System.Threading.Tasks;
 
     public class DelayGoalExecutor : FraudCaseExecutor
@@ -12,6 +12,8 @@
         private IEnumerable<Match> _matches;
 
         private readonly List<Task> _threads;
+
+        private const int ChunkSize = 100;
 
         public DelayGoalExecutor(FraudCase fraudCase) : base(fraudCase)
         {
@@ -24,6 +26,7 @@
             if (_matches != null && _matches.Any())
             {
                 _matches = Enumerable.Empty<Match>();
+                _threads.Clear();
             }
         }
 
@@ -44,58 +47,25 @@
         #region private method
         private void ExecuteBySaparatedThreads()
         {
-            var coreCount = Environment.ProcessorCount;
-            var matchCount = _matches.Count();
-            var count = 0;
+            var matchChunks = _matches.Chunk(ChunkSize);
 
-            for (; count < matchCount; count++)
+            foreach (var matches in matchChunks)
             {
-                if (count >= coreCount)
-                {
-                    break;
-                }
-
-                var match = _matches.ElementAt(count);
-
-                var thread = ExecuteSingle(match);
+                var thread = ExecuteMultiple(matches.ToList());
 
                 _threads.Add(thread);
-
-                Thread.Sleep(10);
             }
 
-            var threadsHaveDone = 0;
-
-            while (threadsHaveDone < matchCount)
-            {
-                var index = Task.WaitAny(_threads.ToArray());
-
-                threadsHaveDone++;
-                _threads.RemoveAt(index);
-
-                if (count >= matchCount)
-                {
-                    continue;
-                }
-
-                var match = _matches.ElementAt(count);
-                var thread = ExecuteSingle(match);
-
-                _threads.Add(thread);
-
-                count++;
-
-                Thread.Sleep(10);
-            }
+            Task.WaitAll(_threads.ToArray());
         }
 
-        private Task ExecuteSingle(Match match)
+        private Task ExecuteMultiple(List<Match> matches)
         {
             var thread = Task.Factory.StartNew(m =>
             {
                 try
                 {
-                    _fraudSensorTaskService.DelayGoalExecuteRule(((Match)m).MatchId.ToString());
+                    _fraudSensorTaskService.DelayGoalExecuteRule(string.Join(",", ((List<Match>)m).Select(t => t.MatchId.ToString())));
 
                     _errorTimes = 0;
                 }
@@ -110,7 +80,7 @@
                         SendMailInform(message);
                     }
                 }
-            }, match);
+            }, matches);
 
             return thread;
         }

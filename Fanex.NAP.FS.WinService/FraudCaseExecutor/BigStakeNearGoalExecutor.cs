@@ -102,7 +102,7 @@
                 {
                     var error = "<b>Error:</b> " + exception.Message +
                               "<br><b>StackTrace:</b> " + exception.StackTrace;
-                    var message = string.Format("<b>Problem with FraudCaseId = {0}, FraudCaseName = {1}</b><br><br>", FraudCase.FraudCaseId, FraudCase.FraudCaseName) + error;
+                    var message = string.Format("<b>Problem with FraudCaseId = {0}, FraudCaseName = {1}, MatchId = {2}</b><br><br>", FraudCase.FraudCaseId, FraudCase.FraudCaseName, match.MatchId) + error;
 
                     if (_errorTimes++ < 10)
                     {

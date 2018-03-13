@@ -151,6 +151,7 @@
   <ItemGroup>
     <Compile Include="Core\BaseClasses\FSBaseService.cs" />
     <Compile Include="Core\Utilities\ConfigSettings.cs" />
+    <Compile Include="Core\Utilities\Extentions.cs" />
     <Compile Include="Criteria\Api\FlaggedAccountDeleteCriteria.cs" />
     <Compile Include="Criteria\Api\FlaggedAccountInsertCriteria.cs" />
     <Compile Include="Criteria\FraudCase\FraudCaseGetByIdCriteria.cs" />
