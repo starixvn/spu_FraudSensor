@@ -67,7 +67,7 @@ namespace Fanex.NAP.FS.Websites.Models.FraudCase
 
                     result.TicketRules = new[]
                     {
-                        "Customer Evidence = 1.5",
+                        "Customer Evidence = All",
                         "Currency <> Test Currency"
                     };
 
