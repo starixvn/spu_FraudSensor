@@ -66,7 +66,7 @@ namespace Fanex.NAP.FS.Websites.Controllers
         {
             var templatePath = Server.MapPath("~/App_Data/Excel Template/FraudCase/DelayedGoal/template.xlsx");
 
-            var fileName =string.Format( "DelayGoalList_{0}.xlsx", DateTime.Today.ToString("yyyyMMdd")); 
+            var fileName =string.Format( "DelayGoalCustomerList_{0}.xlsx", DateTime.Today.ToString("yyyyMMdd")); 
 
             return File(FraudCaseService.ExportDelayedCustomersToExcel(templatePath, searchString), "application/vnd.ms-excel", fileName);
         }

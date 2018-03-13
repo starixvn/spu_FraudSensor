@@ -811,18 +811,30 @@
     <Content Include="Views\FraudCase\Index.cshtml" />
     <Content Include="Views\FraudCase\DelayedGoal\Dialog.cshtml" />
     <Content Include="Views\MatchMonitor\MatchNote.cshtml" />
-    <None Include="WebConfigs\Web.AppSettings.PRO.config" />
-    <None Include="WebConfigs\Web.AppSettings.UAT.config" />
+    <Content Include="WebConfigs\Web.AppSettings.PRO.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="WebConfigs\Web.AppSettings.UAT.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="WebConfigs\Web.ConnectionString.LOCAL.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <None Include="WebConfigs\Web.ConnectionString.PRO.config" />
-    <None Include="WebConfigs\Web.ConnectionString.UAT.config" />
+    <Content Include="WebConfigs\Web.ConnectionString.PRO.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="WebConfigs\Web.ConnectionString.UAT.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="WebConfigs\Web.LOCAL.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <None Include="WebConfigs\Web.PRO.config" />
-    <None Include="WebConfigs\Web.UAT.config" />
+    <Content Include="WebConfigs\Web.PRO.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="WebConfigs\Web.UAT.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
