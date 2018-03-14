@@ -175,6 +175,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="Fanex.NAP.FS.WinService.exe.LOCAL.config" />
+    <None Include="Fanex.NAP.FS.WinService.exe.PRO.config" />
+    <None Include="Fanex.NAP.FS.WinService.exe.UAT.config" />
     <None Include="Fanex.NAP.FS.WinService.ruleset" />
     <None Include="job_scheduling_data_2_0.xsd">
       <SubType>Designer</SubType>
