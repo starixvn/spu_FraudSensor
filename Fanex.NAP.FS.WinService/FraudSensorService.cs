@@ -13,7 +13,7 @@
 
         private IReceivingMessageHandler _receivingMessageHandler;
 
-        public FraudSensorService(IFraudCaseLoader caseLoader = null, IReceivingMessageHandler receivingMessageHandler = null)
+        public FraudSensorService(IFraudCaseLoader fraudCaseLoader = null, IReceivingMessageHandler receivingMessageHandler = null)
         {
             DbSettingProviderManager
                .StartNewSession()
@@ -21,7 +21,7 @@
                .UseDefaultDbSettingProvider(resourcePath: "~/App_Data", enableWatching: true)
                .Run();
 
-            _fraudCaseLoader = caseLoader ?? new FraudCaseLoader();
+            _fraudCaseLoader = fraudCaseLoader ?? new FraudCaseLoader();
 
             _receivingMessageHandler = receivingMessageHandler ?? new ReceivingMessageHandler();
 

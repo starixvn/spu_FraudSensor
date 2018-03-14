@@ -95,7 +95,10 @@
                     break;
 
                 default:
-                    throw new ArgumentOutOfRangeException();
+#if DEBUG
+                    Console.WriteLine("Wrong sending type!!!");
+#endif
+                    break;
             }
         }
 

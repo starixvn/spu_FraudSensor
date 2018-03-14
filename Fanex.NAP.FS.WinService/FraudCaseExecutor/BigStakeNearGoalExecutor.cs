@@ -94,7 +94,7 @@
             {
                 try
                 {
-                    _fraudSensorTaskService.FlaggedAccountExecuteRule(((Match)m).MatchId.ToString());
+                    _fraudSensorTaskService.BigStakeNearGoalExecuteRule(((Match)m).MatchId.ToString());
 
                     _errorTimes = 0;
                 }

@@ -65,7 +65,7 @@
             {
                 try
                 {
-                    _fraudSensorTaskService.DelayGoalExecuteRule(string.Join(",", ((List<Match>)m).Select(t => t.MatchId.ToString())));
+                    _fraudSensorTaskService.FlaggedAccountExecuteRule(string.Join(",", ((List<Match>)m).Select(t => t.MatchId.ToString())));
 
                     _errorTimes = 0;
                 }
