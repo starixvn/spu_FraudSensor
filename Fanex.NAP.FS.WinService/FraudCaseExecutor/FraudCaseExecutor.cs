@@ -45,6 +45,9 @@
             _timer.Start();
 
             PreExecute(null, null);
+
+            var message = string.Format("{1} (ID = {0}) {2}", FraudCase.FraudCaseId, FraudCase.FraudCaseName, "ACTIVE");
+            SendMailInform(message, message);
         }
 
         public virtual void Execute()
@@ -84,6 +87,8 @@
 #if DEBUG
             Console.WriteLine("{0} - {1} stopped manually!", FraudCase.FraudCaseId, FraudCase.FraudCaseName);
 #endif
+            var message = string.Format("{1} (ID = {0}) {2}", FraudCase.FraudCaseId, FraudCase.FraudCaseName, "INACTIVE");
+            SendMailInform(message, message);
         }
 
         public void Dispose()
@@ -113,14 +118,31 @@
             _timer.Dispose();
         }
 
-        protected void SendMailInform(string message)
+        protected void SendMailInform(string message, string subject = null)
         {
             try
             {
-                var newMail = new Fanex.MailDelivery.Core.Models.Mail
+                var environment = string.Empty;
+                switch (GetEnvironment())
                 {
-                    Subject = "SPU FS Error",
-                    Title = "SPU FS Error",
+                    case 1:
+                        environment = "LOCAL";
+                        break;
+                    case 2:
+                        environment = "UAT";
+                        break;
+                    case 3:
+                        environment = "PRO";
+                        break;
+                    default:
+                        environment = "UNKNOWN";
+                        break;
+                }
+
+                var newMail = new MailDelivery.Core.Models.Mail
+                {
+                    Subject = string.Format("({0}) SPU FS: ", environment) + subject ?? " Error",
+                    Title = string.Format("({0}) SPU FS: ", environment) + subject ?? " Error",
                     Body = message,
                     MailingListId = int.Parse(ConfigurationManager.AppSettings["MailingListId"])
                 };
@@ -157,6 +179,11 @@
 
             Console.WriteLine("{0} - {1} spent {2} running", FraudCase.FraudCaseId, FraudCase.FraudCaseName, stopwatch.Elapsed.ToString());
 #endif
+        }
+
+        private int GetEnvironment()
+        {
+            return int.Parse(ConfigurationManager.AppSettings["Environment"]);
         }
         #endregion
     }
