@@ -1,0 +1,75 @@
+.switch {
+    $width: 35px;
+    $height: 18px;
+
+    display: inline-block;
+    text-align: center;    
+    outline: 0;
+    position: relative;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    color: #fefefe;
+    line-height: 1;
+    
+
+    .switch-input {
+        opacity: 0;
+        display: none;
+        position: absolute;
+    }
+
+    .switch-paddle {
+        background: #a0a3a8;
+        cursor: pointer;
+        display: inline-block;
+        position: relative;
+        width: $width;
+        height: $height;
+        transition: all 0.25s ease-out;
+        border-radius: 40px;
+        color: inherit;
+        font-weight: inherit;
+    }
+
+    input + .switch-paddle {
+        margin: 0;
+    }
+
+    .switch-paddle::after {
+        background: #fefefe;
+        content: '';
+        display: block;
+        position: absolute;
+        height: $height - 2;
+        width: $height - 2;
+        left: 1px;
+        top: 1px;
+        transition: all 0.25s ease-out;
+        -webkit-transform: translate3d(0, 0, 0);
+        transform: translate3d(0, 0, 0);
+        border-radius: 50%;
+    }
+
+    input:checked ~ .switch-paddle {
+        background: #52c04f;
+    }
+
+    input:checked ~ .switch-paddle::after {
+        left: 18px;
+    }
+
+    input:disabled + label {
+        cursor: not-allowed;
+        opacity: .8;
+    }
+
+    [data-whatinput='mouse'] input:focus ~ .switch-paddle {
+        outline: 0;
+    }
+    
+    input:checked + label > .switch-active {
+        display: block;
+    }
+}

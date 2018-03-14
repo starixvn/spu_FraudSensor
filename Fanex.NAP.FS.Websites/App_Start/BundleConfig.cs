@@ -24,11 +24,12 @@ namespace Fanex.NAP.FS.Websites
                       "~/Scripts/respond.js"));
 
             bundles.Add(new StyleBundle("~/Content/styles").Include(
-                      "~/Content/select2.min.css",
-                      "~/Content/themes/base/jquery-ui.min.css",
-                      "~/Content/DataTables/css/jquery.dataTables.min.css",
-                      "~/Content/style.css",
-                      "~/Content/index.min.css"));
+                      "~/Content/scss/vendors/select2.min.css",
+                      "~/Content/scss/vendors/jquery-ui/base/jquery-ui.min.css",
+                      "~/Content/scss/vendors/DataTables/css/jquery.dataTables.min.css",
+                      "~/Content/scss/fonts/Fraud-Sensor/style.css",
+                      "~/Content/scss/base/reset.css",
+                      "~/Content/scss/pages/index.css"));
 
             RegisterFSCoreBundles(bundles);
             RegisterMatchMonitorBundles(bundles);
@@ -52,7 +53,7 @@ namespace Fanex.NAP.FS.Websites
 
         private static void RegisterFraudCaseBundles(BundleCollection bundles)
         {
-           bundles.Add(new StyleBundle("~/fraud-case-styles").Include("~/content/fraudcase/fraud-case.min.css"));
+           bundles.Add(new StyleBundle("~/fraud-case-styles").Include("~/content/scss/pages/configurations/fraud-case.css"));
 
             bundles.Add(new ScriptBundle("~/fraud-case-scripts").Include("~/scripts/fraudcase/fraud-case.js"));
 

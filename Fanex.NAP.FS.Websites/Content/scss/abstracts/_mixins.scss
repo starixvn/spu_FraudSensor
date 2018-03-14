@@ -1,0 +1,152 @@
+// Adds a browser prefix to the property
+// @param {*} $property Property
+// @param {*} $value Value
+
+@mixin css3-prefix($property, $value) {
+  -webkit-#{$property}: #{$value};
+   -khtml-#{$property}: #{$value};
+     -moz-#{$property}: #{$value};
+      -ms-#{$property}: #{$value};
+       -o-#{$property}: #{$value};
+          #{$property}: #{$value};
+}
+
+// Box Shadow
+
+@mixin box-shadow($x: 2px, $y: 2px, $blur: 5px, $color: rgba(0,0,0,.4), $inset: "") {
+  @if ($inset != "") {
+    @include css3-prefix('box-shadow', $inset $x $y $blur $color);
+  } @else {
+    @include css3-prefix('box-shadow', $x $y $blur $color);
+  }
+}
+
+@mixin box-shadow-multiple($string) {
+    @include css3-prefix('box-shadow', $string);
+}
+
+
+// Box Sizing
+// @param {*} $type [border-box] - Type
+// @require {mixin} css3-prefix
+
+@mixin box-sizing($type: border-box) {
+  @include css3-prefix('box-sizing', $type);
+}
+
+// Border Radius
+// @param {Size} $radius [5px] - Radius
+// @require {mixin} css3-prefix
+
+@mixin border-radius($radius: 5px) {
+    @include css3-prefix('border-radius', $radius);
+}
+
+// Transition
+// @param {List} $properties - Properties
+// @require {mixin} css3-prefix
+
+@mixin transition($properties...) {
+
+  @if length($properties) >= 1 {
+    @include css3-prefix('transition', $properties);
+  }
+
+  @else {
+    @include css3-prefix('transition',  "all 0.2s ease-in-out 0s");
+  }
+}
+
+// Transform
+// @param {List} $params - Params
+// @require {mixin} css3-prefix
+
+@mixin transform($params) {
+  @include css3-prefix('transform', $params);
+}
+
+@mixin shadow($top, $left, $blur, $color, $inset: false) {
+ @if $inset {
+    -webkit-box-shadow:inset $top $left $blur $color;
+    -moz-box-shadow:inset $top $left $blur $color;
+    box-shadow:inset $top $left $blur $color;
+  } @else {
+    -webkit-box-shadow: $top $left $blur $color;
+    -moz-box-shadow: $top $left $blur $color;
+    box-shadow: $top $left $blur $color;
+  }
+}
+
+//Keyframes
+@mixin keyframes($animationName) {
+    @-webkit-keyframes #{$animationName} {
+        @content;
+    }
+    @-moz-keyframes #{$animationName} {
+        @content;
+    }
+    @-o-keyframes #{$animationName} {
+        @content;
+    }
+    @keyframes #{$animationName} {
+        @content;
+    }
+}
+
+@mixin icon($height, $width, $x, $y) {
+    background: url(../Images/sprite_01.png);
+    background-position: $x $y;
+    display: inline-block;
+    height: $height;
+    width: $width;
+}
+
+@mixin font($color, $font-size, $font-family) {
+    color: $color;
+    font-size: $font-size;
+    font-family: $font-family;
+}
+
+@mixin align-items($display: flex, $justify-content: space-between, $align-items: center) {
+  display: $display;
+  justify-content: $justify-content;
+  align-items: $align-items;
+}
+
+@mixin input-placeholder($color) {
+  // Chrome/Opera/Safari
+  &::-webkit-input-placeholder {
+    color: $color;
+  }
+
+  // Firefox 19+
+  &::-moz-placeholder {
+      color: $color;
+      opacity: 1;
+  }
+
+  // IE 10+
+  &:-ms-input-placeholder {
+      color: $color;
+  }
+
+  // Firefox 18-
+  &:-moz-placeholder {
+      color: $color;
+      opacity: 1;
+  }
+}
+
+@mixin input-placeholder-focus($color) {
+  &:focus:-moz-placeholder {
+      color: $color;
+  }
+
+  &:focus:-ms-input-placeholder {
+      color: $color;
+  }
+
+  &:focus::-webkit-input-placeholder {
+      color: $color;
+  }
+}

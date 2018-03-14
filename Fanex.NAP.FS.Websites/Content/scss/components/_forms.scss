@@ -1,0 +1,71 @@
+.form-filter {
+    @include align-items($justify-content: flex-start, $align-items: flex-end);
+    flex-wrap: wrap;
+
+    .group {
+        padding-right: 24px;
+        padding-bottom: 10px;
+        
+        .text {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .control {
+            display: block;
+            width: 100%;
+        }
+    }
+
+    .calendar {
+        position: relative;
+        width: 160px;
+
+        .control {
+            width: 100%;
+            padding-right: 26px;
+        }        
+    }
+
+    .icon-calendar-text {
+        position: absolute;
+        bottom: 13px;
+        right: 28px;
+        color: #1d2e4f;
+        font-size: 20px;
+    
+        &.disabled {
+            opacity: .5;
+        }
+    }
+
+    .button {
+        margin-bottom: 10px;
+        margin-right: 24px;
+    }
+
+    .checkbox {
+        display: inline-block;
+        padding-bottom: 6px;
+    }
+}
+
+.form-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .label {
+        display: block;
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .control {
+        width: 100%;
+    }
+}

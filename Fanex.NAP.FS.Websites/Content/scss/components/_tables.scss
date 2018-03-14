@@ -1,0 +1,208 @@
+// Search Table
+.top-header {
+  @include border-radius(2px 2px 0 0);
+  @include align-items($justify-content: flex-end);
+  padding: 8px;
+  border: 1px solid $table-border;
+  border-bottom: none;
+  background-color: #ebebeb;
+
+  .button-export-excel {
+    @include align-items($justify-content: center);
+    border: 1px solid $btn-primary-bg;
+    border-radius: 2px;
+    width: 28px;
+    height: 28px;
+    font-size: 16px;
+    color: #3a6e17;
+    cursor: pointer;
+
+    &:hover {
+      border-color: $btn-primary-bg-hover;
+      background-color: $btn-primary-bg-hover;
+      color: #fff;
+    }
+  }
+
+  &.-only-icon {
+    padding: 4px;
+  }
+}
+
+.top-header-in-popup {
+  @include align-items();  
+
+  .add-component {
+    @include align-items($display: grid);
+    grid-template-columns: 166px 48px;
+    grid-template-rows: 28px;
+    position: relative;
+    width: 214px;
+
+    .text {
+      border-right-width: 0;
+    }
+
+    .button {
+      border-radius: 0 2px 2px 0;
+      font-family: $font-family;
+    }
+  }
+}
+
+.search-export {
+  @include align-items();
+
+  .search-box {
+    position: relative;
+    width: 160px;
+
+    .text {
+      width: 100%;
+      padding-right: 27px;
+    }
+
+    .icon-search {
+      position: absolute;
+      right: 6px;
+      top: 6px;
+      color: #475363;
+      font-size: 18px;
+    }
+  }
+
+  .icon-export-excel {
+    margin-left: 10px;
+    color: #3a6e17;
+    font-size: 16px;
+  }
+}
+
+.table {
+  border-collapse: collapse;
+  border-spacing: 0;
+
+  thead tr th, tbody tr td {
+    border: 1px solid $table-border;
+    padding: 10px 6px;
+    vertical-align: middle;
+  }
+
+  thead th {
+    border-bottom-width: 1px;
+    background-color: $table-header-bg;
+    color: $table-header-color;
+    text-align: center;
+    font-weight: normal;
+
+    &.sub-header {
+      background-color: $table-sub-header-bg;
+    }
+  }
+  
+  tbody {
+    tr:first-child td {
+      border-top: none;
+    }
+
+    tr:hover {
+      background-color: $table-td-bg-hover !important;
+    }
+
+    td {
+      color: #545454;
+    }
+
+    td.group {
+      background-color: #ccd3dd;
+      font-weight: bold;
+    }
+  }
+  
+  &.table-striped {
+    tbody tr:nth-of-type(even) {
+      background-color: $table-col-even-bg;
+    }
+  }
+  //  Icons in table
+  .has-icon {
+    line-height: 1;
+  }
+}
+
+.pagination {
+  @include align-items;
+  border: 1px solid $table-border;
+  border-top: none;
+  padding: 4px 10px;
+  background-color: #ebebeb;
+  color: #545454;
+
+  .page-size {
+    @include align-items;
+  }
+
+  .size {
+    margin-left: 10px;
+  }
+
+  .pages {
+    margin-left: 20px;
+    
+    li {
+      float: left;
+      margin: 0 4px;
+    }
+  }
+
+  .page-prev a, .page-next a {
+    color: #007ec7;
+
+    &:before, &:after {      
+      display: inline-block;
+      position: relative;
+      top: 3px;
+      line-height: 0;
+      font-family: 'Fraud-Sensor';
+      font-size: 18px;
+    }
+  }
+
+  .page-prev a {
+    margin-right: 8px;
+
+    &:before {
+      content: "\e924";
+    }
+  }
+
+  .page-next a {
+    margin-left: 8px;
+
+    &:after {
+      content: "\e925";
+    }
+  }
+
+  .current, .link {
+    border-radius: 2px;
+    padding: 1px 5px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    &:hover {
+      background-color: #2287ca;
+      color: #fff;
+    }
+  }
+
+  .current {    
+    border-color: #2287ca;
+    background-color: #eef9ff;
+    color: #007ec7;
+  }
+
+  .disabled a {
+    color: #b2b2b2;
+    cursor: not-allowed;
+  }
+}

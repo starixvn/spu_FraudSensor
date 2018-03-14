@@ -1,0 +1,134 @@
+%message-has-icon {
+    position: relative;
+    border-width: 1px;
+    border-style: solid;
+    padding: 8px 20px 8px 36px;
+    margin-bottom: 12px;
+
+    &:before {
+        position: absolute;
+        left: 10px;
+        top: 8px;
+        font-family: "hrp";
+        font-size: 20px;
+    }     
+}
+
+.msg-error, .text-danger {    
+    display: block;
+    line-height: 18px;
+    color: $msg-error;
+
+    &.-has-icon {
+        @extend %message-has-icon;
+        border-color: $msg-error-border;
+        background-color: $msg-error-bg;
+        color: $msg-error;        
+        
+        &:before {
+            content: "\e903";
+            color: $msg-error; 
+        }     
+    }
+}
+
+.msg-success {
+    display: block;
+    line-height: 18px;
+    color: $msg-success;
+
+    &.-has-icon {
+        @extend %message-has-icon;
+        border-color: $msg-success-border;
+        background-color: $msg-success-bg;
+        color: $msg-success;
+        
+        &:before {
+            content: "\e913";
+            color: $msg-success; 
+        }     
+    }
+}
+
+.msg-warning {
+    @extend %message-has-icon;
+    border-color: $msg-warning-border;
+    background-color: $msg-warning-bg;
+    color: $msg-warning;
+    
+    
+    &:before {
+        content: "\e913";
+        color: $msg-warning; 
+    }     
+}
+
+.list-message-error {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    border: 1px solid $msg-error-border;
+    padding: 8px 10px;
+    margin: 0 0 12px 0;
+    background-color: $msg-error-bg;
+    color: $msg-error; 
+    
+    .message {
+        line-height: 20px;
+
+        &:before {
+            position: relative;
+            top: 4px;
+            line-height: 0;
+            text-indent: -.7em;
+            content: "• ";
+            color: $msg-error;
+            font-size: 24px;
+        } 
+    }
+
+    .field-validation-valid {
+        display: none;
+    } 
+}
+
+.note {
+    position: absolute;
+    left: 100%;
+    top: -86px;
+    width: 364px;
+    line-height: 18px;
+    margin-left: -8px;
+    padding: 10px;
+    border: 1px solid #3475c7;
+    background-color: #e3f5fa;
+    color: $primary-color;
+    @include border-radius(4px);
+
+    &:before {
+        content: "";
+        position: absolute;
+        left: -9px;
+        bottom: 30px;
+        width: 16px;
+        height: 16px;
+        border: 1px solid #3475c7;
+        border-width: 0 0 1px 1px;
+        background-color: #e3f5fa;
+        transform: rotate(30deg) skew(-26deg);
+    }
+
+    .list {
+        list-style: disc;
+        margin-left: 15px;
+        margin-top: 10px;
+    }
+
+    .list li {
+        margin-bottom: 4px;
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
+}
