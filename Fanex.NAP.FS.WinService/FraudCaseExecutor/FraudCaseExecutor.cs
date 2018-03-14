@@ -8,6 +8,7 @@
     using System;
     using System.Configuration;
     using System.Diagnostics;
+    using System.Threading.Tasks;
     using System.Timers;
 
     public abstract class FraudCaseExecutor : IFraudCaseExecutor, IDisposable
@@ -120,39 +121,26 @@
 
         protected void SendMailInform(string message, string subject = null)
         {
-            try
+            Task.Factory.StartNew(() =>
             {
-                var environment = string.Empty;
-                switch (GetEnvironment())
+                try
                 {
-                    case 1:
-                        environment = "LOCAL";
-                        break;
-                    case 2:
-                        environment = "UAT";
-                        break;
-                    case 3:
-                        environment = "PRO";
-                        break;
-                    default:
-                        environment = "UNKNOWN";
-                        break;
+                    var environment = GetEnvironment();
+                    var newMail = new MailDelivery.Core.Models.Mail
+                    {
+                        Subject = string.Format("[({0}) SPU FS] ", environment) + (string.IsNullOrEmpty(subject) ? " Error" : subject),
+                        Title = "SPU Fraud Sensor",
+                        Body = message,
+                        MailingListId = int.Parse(ConfigurationManager.AppSettings["MailingListId"])
+                    };
+
+                    MailClientHandler.SendFunctionMail(newMail);
                 }
-
-                var newMail = new MailDelivery.Core.Models.Mail
+                catch (Exception exception)
                 {
-                    Subject = string.Format("({0}) SPU FS: ", environment) + subject ?? " Error",
-                    Title = string.Format("({0}) SPU FS: ", environment) + subject ?? " Error",
-                    Body = message,
-                    MailingListId = int.Parse(ConfigurationManager.AppSettings["MailingListId"])
-                };
-
-                MailClientHandler.SendFunctionMail(newMail);
-            }
-            catch (Exception exception)
-            {
-                WriteLog(exception);
-            }
+                    WriteLog(exception);
+                }
+            });
         }
 
         #region private method
@@ -181,9 +169,26 @@
 #endif
         }
 
-        private int GetEnvironment()
+        private static string GetEnvironment()
         {
-            return int.Parse(ConfigurationManager.AppSettings["Environment"]);
+            var environment = string.Empty;
+            switch (int.Parse(ConfigurationManager.AppSettings["Environment"]))
+            {
+                case 1:
+                    environment = "LOCAL";
+                    break;
+                case 2:
+                    environment = "UAT";
+                    break;
+                case 3:
+                    environment = "PRO";
+                    break;
+                default:
+                    environment = "UNKNOWN";
+                    break;
+            }
+
+            return environment;
         }
         #endregion
     }

@@ -5,6 +5,7 @@
     using MailDelivery.Client;
     using System.Configuration;
     using System.ServiceProcess;
+    using System.Threading.Tasks;
 
     public partial class FraudSensorService : ServiceBase
     {
@@ -72,28 +73,31 @@
 
         private void SendMailInform(bool serviceStarting)
         {
-            try
+            Task.Factory.StartNew(() =>
             {
-                var subject = "SPU - New FS Service Started";
-                if (!serviceStarting)
+                try
                 {
-                    subject = "SPU - New FS Service Stopped";
+                    var subject = "SPU - New FS Service Started";
+                    if (!serviceStarting)
+                    {
+                        subject = "SPU - New FS Service Stopped";
+                    }
+
+                    var newMail = new Fanex.MailDelivery.Core.Models.Mail
+                    {
+                        Subject = subject,
+                        Title = "SPU Fraud Sensor",
+                        Body = subject,
+                        MailingListId = int.Parse(ConfigurationManager.AppSettings["MailingListId"])
+                    };
+
+                    MailClientHandler.SendFunctionMail(newMail);
                 }
-
-                var newMail = new Fanex.MailDelivery.Core.Models.Mail
+                catch
                 {
-                    Subject = subject,
-                    Title = subject,
-                    Body = subject,
-                    MailingListId = int.Parse(ConfigurationManager.AppSettings["MailingListId"])
-                };
-
-                MailClientHandler.SendFunctionMail(newMail);
-            }
-            catch
-            {
-                ////ignore comment
-            }
+                    ////ignore comment
+                }
+            });
         }
     }
 }
