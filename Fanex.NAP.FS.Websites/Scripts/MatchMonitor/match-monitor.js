@@ -173,6 +173,7 @@ function renderLeagueDropdown(data) {
         generate_btn.prop("disabled", true).removeClass("-primary");
         export_btn.prop("disabled", true).removeClass("-export");
         $("#refresh_interval").val("--");
+        $("table").DataTable().rows().clear();
     }
 }
 

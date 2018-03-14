@@ -321,6 +321,32 @@
     <Content Include="Areas\UserLogin\Views\Common\Style\Images\UnderMaintenance.gif" />
     <Content Include="Content\fonts\Fraud-Sensor.svg" />
     <Content Include="Content\gulpfile.js" />
+    <Content Include="Content\images\details_close.png" />
+    <Content Include="Content\images\details_open.png" />
+    <Content Include="Content\images\sort_asc.png" />
+    <Content Include="Content\images\sort_asc_disabled.png" />
+    <Content Include="Content\images\sort_both.png" />
+    <Content Include="Content\images\sort_desc.png" />
+    <Content Include="Content\images\sort_desc_disabled.png" />
+    <Content Include="Content\images\ui-bg_flat_0_aaaaaa_40x100.png" />
+    <Content Include="Content\images\ui-bg_flat_75_ffffff_40x100.png" />
+    <Content Include="Content\images\ui-bg_glass_55_fbf9ee_1x400.png" />
+    <Content Include="Content\images\ui-bg_glass_65_ffffff_1x400.png" />
+    <Content Include="Content\images\ui-bg_glass_75_dadada_1x400.png" />
+    <Content Include="Content\images\ui-bg_glass_75_e6e6e6_1x400.png" />
+    <Content Include="Content\images\ui-bg_glass_95_fef1ec_1x400.png" />
+    <Content Include="Content\images\ui-bg_highlight-soft_75_cccccc_1x100.png" />
+    <Content Include="Content\images\ui-icons_222222_256x240.png" />
+    <Content Include="Content\images\ui-icons_2e83ff_256x240.png" />
+    <Content Include="Content\images\ui-icons_444444_256x240.png" />
+    <Content Include="Content\images\ui-icons_454545_256x240.png" />
+    <Content Include="Content\images\ui-icons_555555_256x240.png" />
+    <Content Include="Content\images\ui-icons_777620_256x240.png" />
+    <Content Include="Content\images\ui-icons_777777_256x240.png" />
+    <Content Include="Content\images\ui-icons_888888_256x240.png" />
+    <Content Include="Content\images\ui-icons_cc0000_256x240.png" />
+    <Content Include="Content\images\ui-icons_cd0a0a_256x240.png" />
+    <Content Include="Content\images\ui-icons_ffffff_256x240.png" />
     <Content Include="Content\scss\base\reset.css" />
     <Content Include="Content\scss\fonts\Fraud-Sensor\demo-files\demo.css" />
     <Content Include="Content\scss\fonts\Fraud-Sensor\demo-files\demo.js" />
@@ -328,6 +354,9 @@
     <Content Include="Content\scss\fonts\Fraud-Sensor\fonts\Fraud-Sensor.svg" />
     <Content Include="Content\scss\fonts\Fraud-Sensor\Read Me.txt" />
     <Content Include="Content\scss\fonts\Fraud-Sensor\style.css" />
+    <Content Include="Content\scss\fonts\Fraud-Sensor\style.min.css">
+      <DependentUpon>style.css</DependentUpon>
+    </Content>
     <Content Include="Content\scss\images\login.png" />
     <Content Include="Content\scss\images\logo.png" />
     <Content Include="Content\scss\pages\configurations\fraud-case.css" />
@@ -538,12 +567,39 @@
     <Content Include="Content\scss\vendors\select2.css" />
     <Content Include="Content\scss\vendors\select2.min.css" />
     <Content Include="fonts\flashExport.swf" />
+    <Content Include="fonts\Fraud-Sensor.svg" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="FSFunctionKeys.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>FSFunctionKeys.cs</LastGenOutput>
     </Content>
     <Content Include="Global.asax" />
+    <Content Include="images\details_close.png" />
+    <Content Include="images\details_open.png" />
+    <Content Include="images\sort_asc.png" />
+    <Content Include="images\sort_asc_disabled.png" />
+    <Content Include="images\sort_both.png" />
+    <Content Include="images\sort_desc.png" />
+    <Content Include="images\sort_desc_disabled.png" />
+    <Content Include="images\ui-bg_flat_0_aaaaaa_40x100.png" />
+    <Content Include="images\ui-bg_flat_75_ffffff_40x100.png" />
+    <Content Include="images\ui-bg_glass_55_fbf9ee_1x400.png" />
+    <Content Include="images\ui-bg_glass_65_ffffff_1x400.png" />
+    <Content Include="images\ui-bg_glass_75_dadada_1x400.png" />
+    <Content Include="images\ui-bg_glass_75_e6e6e6_1x400.png" />
+    <Content Include="images\ui-bg_glass_95_fef1ec_1x400.png" />
+    <Content Include="images\ui-bg_highlight-soft_75_cccccc_1x100.png" />
+    <Content Include="images\ui-icons_222222_256x240.png" />
+    <Content Include="images\ui-icons_2e83ff_256x240.png" />
+    <Content Include="images\ui-icons_444444_256x240.png" />
+    <Content Include="images\ui-icons_454545_256x240.png" />
+    <Content Include="images\ui-icons_555555_256x240.png" />
+    <Content Include="images\ui-icons_777620_256x240.png" />
+    <Content Include="images\ui-icons_777777_256x240.png" />
+    <Content Include="images\ui-icons_888888_256x240.png" />
+    <Content Include="images\ui-icons_cc0000_256x240.png" />
+    <Content Include="images\ui-icons_cd0a0a_256x240.png" />
+    <Content Include="images\ui-icons_ffffff_256x240.png" />
     <Content Include="Scripts\auto-grid.js" />
     <Content Include="Fanex.NAP.FS.Websites.ruleset" />
     <Content Include="Areas\UserLogin\Views\Common\AccessDenied.cshtml" />
@@ -675,6 +731,10 @@
     <Content Include="Content\fonts\Fraud-Sensor.eot" />
     <Content Include="Content\fonts\Fraud-Sensor.ttf" />
     <Content Include="Content\fonts\Fraud-Sensor.woff" />
+    <None Include="bundleconfig.json" />
+    <Content Include="fonts\Fraud-Sensor.eot" />
+    <Content Include="fonts\Fraud-Sensor.ttf" />
+    <Content Include="fonts\Fraud-Sensor.woff" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile2.pubxml" />
