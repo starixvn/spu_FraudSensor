@@ -32,7 +32,7 @@ namespace Fanex.NAP.FS.Websites.Models.FraudCase
                     {
                         "Sport = Soccer",
                         "Match = In-play",
-                        "Anytime match gets the goal"
+                        "Score = Got Changed"
                     };
 
                     result.TicketRules = new[]

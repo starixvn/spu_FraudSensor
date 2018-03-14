@@ -319,6 +319,7 @@
     <Content Include="Areas\UserLogin\Views\Common\Style\Error.css" />
     <Content Include="Areas\UserLogin\Views\Common\Style\Images\accessDenied.gif" />
     <Content Include="Areas\UserLogin\Views\Common\Style\Images\UnderMaintenance.gif" />
+    <Content Include="Content\fonts\Fraud-Sensor.svg" />
     <Content Include="Content\gulpfile.js" />
     <Content Include="Content\scss\base\reset.css" />
     <Content Include="Content\scss\fonts\Fraud-Sensor\demo-files\demo.css" />
@@ -671,6 +672,9 @@
     <Content Include="Content\scss\vendors\DataTables\css\semanticui.scss" />
     <Content Include="Content\package-lock.json" />
     <Content Include="Content\package.json" />
+    <Content Include="Content\fonts\Fraud-Sensor.eot" />
+    <Content Include="Content\fonts\Fraud-Sensor.ttf" />
+    <Content Include="Content\fonts\Fraud-Sensor.woff" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile2.pubxml" />
