@@ -3,6 +3,16 @@
 
 @section styles{
     @Styles.Render("~/fraud-case-styles")
+
+    <style>
+        .dataTables_wrapper .dataTables_paginate, .dataTables_wrapper .dataTables_info {
+            padding-top: 0
+        }
+
+        .dataTables_wrapper .dataTables_paginate {
+            margin-left: 20px
+        }
+    </style>
 }
 
 <h1 class="title">Fraud case rules</h1>
