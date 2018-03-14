@@ -61,7 +61,7 @@ namespace Fanex.NAP.FS.Library.Core.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Username already exists.
+        ///   Looks up a localized string similar to Member name already exists.
         /// </summary>
         internal static string FraudCase_DelayedGoal_2627 {
             get {
@@ -70,7 +70,7 @@ namespace Fanex.NAP.FS.Library.Core.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Username doesn&apos;t exist.
+        ///   Looks up a localized string similar to Member name doesn&apos;t exist!.
         /// </summary>
         internal static string FraudCase_DelayedGoal_4001 {
             get {

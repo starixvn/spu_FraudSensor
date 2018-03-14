@@ -118,9 +118,9 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="FraudCase_DelayedGoal_2627" xml:space="preserve">
-    <value>Username already exists</value>
+    <value>Member name already exists</value>
   </data>
   <data name="FraudCase_DelayedGoal_4001" xml:space="preserve">
-    <value>Username doesn't exist</value>
+    <value>Member name doesn't exist!</value>
   </data>
 </root>

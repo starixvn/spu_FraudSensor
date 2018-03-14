@@ -19,7 +19,6 @@
 
     table.DataTable({
         ordering: false,
-        paging: false,
         lengthMenu: [10, 20, 30],
         processing: true,
         ajax: "/FraudCase/GetDelayedGoalCustomerList",
@@ -32,7 +31,7 @@
         ],
         scrollY: '40vh',
         scrollCollapse: true,
-        dom: "ti"
+        dom: "t<'pagination'<'page-size'lp>i>"
     });
 
     $("#add-user-btn").click(addNewUser);

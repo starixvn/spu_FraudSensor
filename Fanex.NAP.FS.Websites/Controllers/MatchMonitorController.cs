@@ -43,7 +43,7 @@ namespace Fanex.NAP.FS.Websites.Controllers
         {
             var templatePath = Server.MapPath("~/App_Data/Excel Template/MatchMonitor/template.xlsx");
 
-            var fileName = DateTime.Now.ToString("MMM-d-yyyy") + ".xlsx";
+            var fileName ="MatchMonitor_" + DateTime.Now.ToString("yyyyMMdd") + ".xlsx";
 
             return File(MatchMonitorService.ExportExcel(criteria, templatePath), "application/vnd.ms-excel", fileName);
         }

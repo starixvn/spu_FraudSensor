@@ -264,6 +264,7 @@
     <Compile Include="Criteria\FraudCase\DelayedGoal\DelayedGoalCustomerAddCriteria.cs" />
     <Compile Include="Criteria\FraudCase\DelayedGoal\DelayedGoalCustomerDeleteCriteria.cs" />
     <Compile Include="Criteria\FraudCase\DelayedGoal\DelayedGoalCustomerGetCriteria.cs" />
+    <Compile Include="Criteria\FraudCase\FraudCaseGetCriteria.cs" />
     <Compile Include="Criteria\FraudCase\GetIsActiveCriteria.cs" />
     <Compile Include="Criteria\MatchMonitor\BalanceUpDateGetCriteria.cs" />
     <Compile Include="Criteria\MatchMonitor\LeagueGetCriteria.cs" />
@@ -314,17 +315,48 @@
     <Content Include="App_Data\NAPFSNames.xml" />
     <Content Include="Areas\UserLogin\scripts\lib\jquery-1.9.0.min.js" />
     <Content Include="Areas\UserLogin\scripts\ReCheckIn.js" />
+    <Content Include="Areas\UserLogin\themes\fonts\Fraud-Sensor.svg" />
+    <Content Include="Areas\UserLogin\themes\img\auth-bg.png" />
+    <Content Include="Areas\UserLogin\themes\img\bg.png" />
+    <Content Include="Areas\UserLogin\themes\img\bkg-pat.png" />
+    <Content Include="Areas\UserLogin\themes\img\firefox_original.png" />
+    <Content Include="Areas\UserLogin\themes\img\header_bg.jpg" />
+    <Content Include="Areas\UserLogin\themes\img\ie.png" />
+    <Content Include="Areas\UserLogin\themes\img\lock.png" />
+    <Content Include="Areas\UserLogin\themes\img\login.png" />
+    <Content Include="Areas\UserLogin\themes\img\logo.png" />
+    <Content Include="Areas\UserLogin\themes\img\logo_FD.png" />
+    <Content Include="Areas\UserLogin\themes\img\password.png" />
+    <Content Include="Areas\UserLogin\themes\img\pattern.png" />
+    <Content Include="Areas\UserLogin\themes\img\pattern6.png" />
+    <Content Include="Areas\UserLogin\themes\img\title-bg.jpg" />
+    <Content Include="Areas\UserLogin\themes\img\username.png" />
+    <Content Include="Areas\UserLogin\themes\img\warn.png" />
+    <Content Include="Areas\UserLogin\themes\img\welcome.png" />
+    <Content Include="Areas\UserLogin\themes\img\welcome2.png" />
+    <Content Include="Areas\UserLogin\themes\login.css" />
+    <Content Include="Areas\UserLogin\themes\login.min.css" />
     <Content Include="Areas\UserLogin\Views\Common\Style\AccessDenied.css" />
     <Content Include="Areas\UserLogin\Views\Common\Style\Error.css" />
     <Content Include="Areas\UserLogin\Views\Common\Style\Images\accessDenied.gif" />
     <Content Include="Areas\UserLogin\Views\Common\Style\Images\UnderMaintenance.gif" />
     <Content Include="Content\gulpfile.js" />
+    <Content Include="Content\scss\base\reset.css" />
+    <Content Include="Content\scss\fonts\Fraud-Sensor\demo-files\demo.css" />
+    <Content Include="Content\scss\fonts\Fraud-Sensor\demo-files\demo.js" />
+    <Content Include="Content\scss\fonts\Fraud-Sensor\demo.html" />
+    <Content Include="Content\scss\fonts\Fraud-Sensor\fonts\Fraud-Sensor.svg" />
+    <Content Include="Content\scss\fonts\Fraud-Sensor\Read Me.txt" />
+    <Content Include="Content\scss\fonts\Fraud-Sensor\style.css" />
+    <Content Include="Content\scss\images\login.png" />
+    <Content Include="Content\scss\images\logo.png" />
+    <Content Include="Content\scss\pages\configurations\fraud-case.css" />
+    <Content Include="Content\scss\pages\index.css" />
     <Content Include="Content\scss\pages\login\login.css" />
     <Content Include="Content\scss\vendors\bootstrap-theme.css" />
     <Content Include="Content\scss\vendors\bootstrap-theme.min.css" />
     <Content Include="Content\scss\vendors\bootstrap.css" />
     <Content Include="Content\scss\vendors\bootstrap.min.css" />
-    <Content Include="Content\scss\vendors\select2.css" />
     <Content Include="Content\scss\vendors\DataTables\css\autoFill.bootstrap.css" />
     <Content Include="Content\scss\vendors\DataTables\css\autoFill.bootstrap.min.css" />
     <Content Include="Content\scss\vendors\DataTables\css\autoFill.bootstrap4.css" />
@@ -482,18 +514,6 @@
     <Content Include="Content\scss\vendors\DataTables\images\sort_desc.png" />
     <Content Include="Content\scss\vendors\DataTables\images\sort_desc_disabled.png" />
     <Content Include="Content\scss\vendors\DataTables\swf\flashExport.swf" />
-    <Content Include="Content\scss\vendors\select2.min.css" />
-    <Content Include="Content\scss\base\reset.css" />
-    <Content Include="Content\scss\fonts\Fraud-Sensor\demo-files\demo.css" />
-    <Content Include="Content\scss\fonts\Fraud-Sensor\demo-files\demo.js" />
-    <Content Include="Content\scss\fonts\Fraud-Sensor\demo.html" />
-    <Content Include="Content\scss\fonts\Fraud-Sensor\fonts\Fraud-Sensor.svg" />
-    <Content Include="Content\scss\fonts\Fraud-Sensor\Read Me.txt" />
-    <Content Include="Content\scss\fonts\Fraud-Sensor\style.css" />
-    <Content Include="Content\scss\images\login.png" />
-    <Content Include="Content\scss\images\logo.png" />
-    <Content Include="Content\scss\pages\configurations\fraud-case.css" />
-    <Content Include="Content\scss\pages\index.css" />
     <Content Include="Content\scss\vendors\jquery-ui\base\accordion.css" />
     <Content Include="Content\scss\vendors\jquery-ui\base\all.css" />
     <Content Include="Content\scss\vendors\jquery-ui\base\autocomplete.css" />
@@ -535,6 +555,8 @@
     <Content Include="Content\scss\vendors\jquery-ui\base\tabs.css" />
     <Content Include="Content\scss\vendors\jquery-ui\base\theme.css" />
     <Content Include="Content\scss\vendors\jquery-ui\base\tooltip.css" />
+    <Content Include="Content\scss\vendors\select2.css" />
+    <Content Include="Content\scss\vendors\select2.min.css" />
     <Content Include="fonts\flashExport.swf" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="FSFunctionKeys.tt">
@@ -544,6 +566,10 @@
     <Content Include="Global.asax" />
     <Content Include="Scripts\auto-grid.js" />
     <Content Include="Fanex.NAP.FS.Websites.ruleset" />
+    <Content Include="Areas\UserLogin\themes\fonts\Abel.woff" />
+    <Content Include="Areas\UserLogin\themes\fonts\OpenSans.woff" />
+    <Content Include="Areas\UserLogin\themes\fonts\YanoneKaffeesatz.woff" />
+    <Content Include="Areas\UserLogin\themes\select-site.less" />
     <Content Include="Areas\UserLogin\Views\Common\AccessDenied.cshtml" />
     <Content Include="Areas\UserLogin\Views\Common\Error.cshtml" />
     <Content Include="Areas\UserLogin\Views\Common\Offline.cshtml" />
@@ -642,10 +668,10 @@
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
     <Content Include="fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="Areas\UserLogin\themes\fonts\Fraud-Sensor.eot" />
+    <Content Include="Areas\UserLogin\themes\fonts\Fraud-Sensor.ttf" />
+    <Content Include="Areas\UserLogin\themes\fonts\Fraud-Sensor.woff" />
     <Content Include="App_Data\Excel Template\MatchMonitor\template.xlsx" />
-    <Content Include="Content\scss\vendors\DataTables\css\semanticui.scss" />
-    <Content Include="Content\scss\vendors\DataTables\css\mixins.scss" />
-    <Content Include="Content\scss\vendors\DataTables\css\common.scss" />
     <Content Include="App_Data\Excel Template\FraudCase\DelayedGoal\template.xlsx" />
     <Content Include="Content\scss\abstracts\_mixins.scss" />
     <Content Include="Content\scss\abstracts\_variables.scss" />
@@ -668,8 +694,11 @@
     <Content Include="Content\scss\pages\configurations\fraud-case.scss" />
     <Content Include="Content\scss\pages\index.scss" />
     <Content Include="Content\scss\pages\login\login.scss" />
-    <Content Include="Content\package.json" />
+    <Content Include="Content\scss\vendors\DataTables\css\common.scss" />
+    <Content Include="Content\scss\vendors\DataTables\css\mixins.scss" />
+    <Content Include="Content\scss\vendors\DataTables\css\semanticui.scss" />
     <Content Include="Content\package-lock.json" />
+    <Content Include="Content\package.json" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile2.pubxml" />
@@ -825,6 +854,7 @@
     </Content>
     <Content Include="WebConfigs\Web.ConnectionString.UAT.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="WebConfigs\Web.LOCAL.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
