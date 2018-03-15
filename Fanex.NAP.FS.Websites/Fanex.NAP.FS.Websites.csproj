@@ -313,8 +313,12 @@
   <ItemGroup>
     <Content Include="App_Data\NAPFrameworkSpNames.xml" />
     <Content Include="App_Data\NAPFSNames.xml" />
-    <Content Include="App_Data\uat\NAPFrameworkSpNames.xml" />
-    <Content Include="App_Data\uat\NAPFSNames.xml" />
+    <Content Include="App_Data\uat\NAPFrameworkSpNames.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="App_Data\uat\NAPFSNames.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Areas\UserLogin\scripts\lib\jquery-1.9.0.min.js" />
     <Content Include="Areas\UserLogin\scripts\ReCheckIn.js" />
     <Content Include="Areas\UserLogin\Views\Common\Style\AccessDenied.css" />
@@ -944,7 +948,7 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <UseIIS>True</UseIIS>
+          <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>57413</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
