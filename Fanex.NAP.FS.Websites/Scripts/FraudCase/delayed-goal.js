@@ -61,7 +61,7 @@
     }
 
     function deleteCustomer(data) {
-        var url = "/FraudCase/DeleteDelayedGoalCustomer";
+        var url = common.modifyRelativeUrl("/FraudCase/DeleteDelayedGoalCustomer");
 
         var $table = table.DataTable();
 
@@ -82,7 +82,7 @@
         }
 
         if (username != null && username.length != 0) {
-            var url = "/FraudCase/AddDelayedGoalCustomer";
+            var url = common.modifyRelativeUrl("/FraudCase/AddDelayedGoalCustomer");
 
             $.post({
                 url: url,

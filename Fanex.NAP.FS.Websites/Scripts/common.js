@@ -122,7 +122,7 @@
 
     this.getTableDefaultOptions = () => Object.assign({}, defaultTableOptions);
 
-    this.modifyRelativeUrl = url => window.location.host.includes("starific") ? "V2" + url : url;
+    this.modifyRelativeUrl = url => window.location.host.includes("starific") ? "/V2" + url : url;
 
     function showDialog(target, str, timeout) {
         target.text(str).dialog("open");
