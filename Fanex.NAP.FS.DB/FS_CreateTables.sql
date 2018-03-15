@@ -184,3 +184,30 @@ CONSTRAINT [PK_MatchLiveScore] PRIMARY KEY CLUSTERED
 ) WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [DATA]
 ) ON [DATA]
 GO
+-------CASEY CREATE TABLE [dbo].[MonitorMatch]--------
+CREATE TABLE [dbo].[MonitorMatch] (
+	[MatchId] [int] NOT NULL,
+	[IsVerified] [bit] NULL,
+	[VerifiedDate] [datetime] NULL,
+	[VerifiedBy] [int] NULL,
+	[Notes] [nvarchar](2000) NULL,
+ CONSTRAINT [PK_MonitorMatchNotes] PRIMARY KEY CLUSTERED 
+(
+	[MatchId] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [DATA]
+) ON [DATA]
+
+GO
+--------CASEY CREATE TABLE [dbo].[DelayGoalMatchScanning]---------
+CREATE TABLE [dbo].[DelayGoalMatchScanning](
+	[MatchId] [int] NOT NULL,
+	[EventDate] [datetime] NOT NULL,
+	[KickOffTime] [datetime] NOT NULL,
+	[fromTransId] [bigint] NOT NULL,
+ CONSTRAINT [PK_DelayGoalMatchScanning] PRIMARY KEY CLUSTERED 
+(
+	[MatchId] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [DATA]
+) ON [DATA]
+
+GO
