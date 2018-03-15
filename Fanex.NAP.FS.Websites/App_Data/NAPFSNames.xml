@@ -3,24 +3,62 @@
   <Function Name="Test">
     <Setting Key="FS_Rpt_Test" SpName="FS_Rpt_Test" DbName="DBFS.FraudSensor.bodbSPUNet"/>
   </Function>
+
   <Function Name="MatchMonitor">
-    <Setting Key="FS_Rpt_MatchMonitor_Get" SpName="FS_Rpt_MatchMonitor_Get" DbName="DBFS.FraudSensor.bodbSPUNet"/>
-    <Setting Key="FS_League_Get" SpName="FS_League_Get" DbName="DBFS.FraudSensor.bodbSPUNet"/>
-    <Setting Key="FS_Rpt_MatchMonitorVerification_Update" SpName="FS_Rpt_MatchMonitorVerification_Update" DbName="DBFS.FraudSensor.bodbSPUNet"/>
-    <Setting Key="Age_SelBalanceUpDay" SpName="Age_SelBalanceUpDay" DbName="DB.bodb02.bodbAdminNet"/>
-    <Setting Key="FS_Rpt_MatchMonitorNotes_Update" SpName="FS_Rpt_MatchMonitorNotes_Update" DbName="DBFS.FraudSensor.bodbSPUNet" />
+    <Setting Key="FS_Rpt_MatchMonitor_Get"
+             SpName="FS_Rpt_MatchMonitor_Get_xtest"
+             DbName="DBFS.FraudSensor.bodbSPUNet"/>
+
+    <Setting Key="FS_League_Get"
+             SpName="FS_League_Get_xtest"
+             DbName="DBFS.FraudSensor.bodbSPUNet"/>
+
+    <Setting Key="FS_Rpt_MatchMonitorVerification_Update"
+             SpName="FS_Rpt_MatchMonitorVerification_Update_xtest"
+             DbName="DBFS.FraudSensor.bodbSPUNet"/>
+
+    <Setting Key="Age_SelBalanceUpDay"
+             SpName="Age_SelBalanceUpDay"
+             DbName="DB.bodb02.bodbAdminNet"/>
+
+    <Setting Key="FS_Rpt_MatchMonitorNotes_Update"
+             SpName="FS_Rpt_MatchMonitorNotes_Update_xtest"
+             DbName="DBFS.FraudSensor.bodbSPUNet" />
   </Function>
+
   <Function Name="FraudCase">
-    <Setting Key="FS_FraudCase_GetById" SpName="FS_FraudCase_GetById" DbName="DBFS.FraudSensor.bodbSPUNet"/>
-    <Setting Key="FS_FraudCase_CaseStatus_Update" SpName="FS_FraudCase_CaseStatus_Update" DbName="DBFS.FraudSensor.bodbSPUNet"/>
-    <Setting Key="FS_DelayGoalAccount_GetAll" SpName="FS_DelayGoalAccount_GetAll" DbName="DBFS.FraudSensor.bodbSPUNet"/>
-    <Setting Key="FS_DelayGoalAccount_Insert" SpName="FS_DelayGoalAccount_Insert" DbName="DBFS.FraudSensor.bodbSPUNet"/>
-    <Setting Key="FS_DelayGoalAccount_Delete" SpName="FS_DelayGoalAccount_Delete" DbName="DBFS.FraudSensor.bodbSPUNet"/>
-    <Setting Key="FS_FraudCase_GetAll" SpName="FS_FraudCase_GetAll" DbName="DBFS.FraudSensor.bodbSPUNet" />
+    <Setting Key="FS_FraudCase_GetById"
+             SpName="FS_FraudCase_GetById_xtest"
+             DbName="DBFS.FraudSensor.bodbSPUNet"/>
+
+    <Setting Key="FS_FraudCase_CaseStatus_Update"
+             SpName="FS_FraudCase_CaseStatus_Update_xtest"
+             DbName="DBFS.FraudSensor.bodbSPUNet"/>
+
+    <Setting Key="FS_DelayGoalAccount_GetAll"
+             SpName="FS_DelayGoalAccount_GetAll_xtest"
+             DbName="DBFS.FraudSensor.bodbSPUNet"/>
+
+    <Setting Key="FS_DelayGoalAccount_Insert"
+             SpName="FS_DelayGoalAccount_Insert_xtest"
+             DbName="DBFS.FraudSensor.bodbSPUNet"/>
+
+    <Setting Key="FS_DelayGoalAccount_Delete"
+             SpName="FS_DelayGoalAccount_Delete_xtest"
+             DbName="DBFS.FraudSensor.bodbSPUNet"/>
+
+    <Setting Key="FS_FraudCase_GetAll"
+             SpName="FS_FraudCase_GetAll_xtest"
+             DbName="DBFS.FraudSensor.bodbSPUNet" />
   </Function>
 
   <Function Name="FS_API">
-    <Setting Key="FS_FlaggedAccount_Insert" SpName="FS_FlaggedAccount_Insert" DbName="DBFS.FraudSensor.bodbSPUNet" />
-    <Setting Key="FS_FlaggedAccount_Delete" SpName="FS_FlaggedAccount_Delete" DbName="DBFS.FraudSensor.bodbSPUNet" />
+    <Setting Key="FS_FlaggedAccount_Insert"
+             SpName="FS_FlaggedAccount_Insert_xtest"
+             DbName="DBFS.FraudSensor.bodbSPUNet" />
+
+    <Setting Key="FS_FlaggedAccount_Delete"
+             SpName="FS_FlaggedAccount_Delete_xtest"
+             DbName="DBFS.FraudSensor.bodbSPUNet" />
   </Function>
 </Functions>
