@@ -23,7 +23,7 @@
     <IISExpressUseClassicPipelineMode />
     <Use64BitIISExpress />
     <UseGlobalApplicationHostFile />
-<!--     <TypeScriptToolsVersion>2.5</TypeScriptToolsVersion> -->
+    <!--     <TypeScriptToolsVersion>2.5</TypeScriptToolsVersion> -->
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -737,6 +737,7 @@
     <Content Include="fonts\Fraud-Sensor.eot" />
     <Content Include="fonts\Fraud-Sensor.ttf" />
     <Content Include="fonts\Fraud-Sensor.woff" />
+    <Content Include="Content\scss\components\_customize-select2.scss" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile2.pubxml" />

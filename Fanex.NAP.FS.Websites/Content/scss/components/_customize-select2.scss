@@ -1,0 +1,20 @@
+.select2-container--default {
+    .select2-selection--single {
+        border-color: $input-border;
+        border-radius: 2px;
+
+        .select2-selection__rendered {
+            line-height: 26px;
+            color: $input-color;
+        }
+    }
+
+    .select2-results__option--highlighted[aria-selected] {
+        background-color: #2197ff;
+    }
+
+    .select2-results__option[aria-selected=true] {
+        background-color: #ddd;
+        color: $input-color;
+    }
+}

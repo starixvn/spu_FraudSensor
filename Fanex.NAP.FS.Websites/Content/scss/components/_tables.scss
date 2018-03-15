@@ -78,9 +78,14 @@
   }
 }
 
+
 .table {
   border-collapse: collapse;
   border-spacing: 0;
+
+  &.dataTable {
+      border-collapse: collapse !important;
+  }
 
   thead tr th, tbody tr td {
     border: 1px solid $table-border;
@@ -130,79 +135,91 @@
   }
 }
 
-.pagination {
-  @include align-items;
-  border: 1px solid $table-border;
-  border-top: none;
-  padding: 4px 10px;
-  background-color: #ebebeb;
-  color: #545454;
-
-  .page-size {
-    @include align-items;
-  }
-
-  .size {
-    margin-left: 10px;
-  }
-
-  .pages {
-    margin-left: 20px;
-    
-    li {
-      float: left;
-      margin: 0 4px;
-    }
-  }
-
-  .page-prev a, .page-next a {
-    color: #007ec7;
-
-    &:before, &:after {      
-      display: inline-block;
-      position: relative;
-      top: 3px;
-      line-height: 0;
-      font-family: 'Fraud-Sensor';
-      font-size: 18px;
-    }
-  }
-
-  .page-prev a {
-    margin-right: 8px;
-
-    &:before {
-      content: "\e924";
-    }
-  }
-
-  .page-next a {
-    margin-left: 8px;
-
-    &:after {
-      content: "\e925";
-    }
-  }
-
-  .current, .link {
-    border-radius: 2px;
-    padding: 1px 5px;
-    border: 1px solid transparent;
-    cursor: pointer;
-    &:hover {
-      background-color: #2287ca;
-      color: #fff;
-    }
-  }
-
-  .current {    
-    border-color: #2287ca;
-    background-color: #eef9ff;
-    color: #007ec7;
-  }
-
-  .disabled a {
-    color: #b2b2b2;
-    cursor: not-allowed;
-  }
+.dataTables_scrollHeadInner {
+    background-color: $table-header-bg;
 }
+
+.dataTables_wrapper.no-footer .dataTables_scrollBody {
+    border-bottom: none;
+}
+
+.pagination {
+    @include align-items;
+    border: 1px solid #c1c1c1;    
+    padding: 4px 10px;
+    margin-top: -1px;
+    background-color: #ebebeb;
+
+    .dataTables_length select {
+        margin-left: 10px;
+    }
+
+    .page-size {
+        @include align-items;
+    }
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+    padding: 2px 5px;
+    color: #3c96c7 !important;
+    &:hover {
+        border-color: #2287ca;
+        background: #2287ca;
+        color: #fff !important;
+    }
+
+    &.current,
+    &.current:hover { 
+        border-color: #2287ca;
+        background: #eef9ff;
+        color: #007ec7 !important;
+    }
+
+    &.next,
+    &.previous {
+        color: #007ec7;
+
+        &:before, &:after {      
+          display: inline-block;
+          position: relative;
+          top: 3px;
+          line-height: 0;
+          font-family: 'Fraud-Sensor';
+          font-size: 18px;
+        }
+
+        &:hover {
+            border-color: transparent;
+            background: none;
+            color: #3c96c7 !important;
+        }
+    }
+
+    &.next {
+        margin-left: 8px;
+
+        &:after {
+            content: "\e925";
+        }
+    }
+
+    &.previous {
+        margin-right: 8px;
+
+        &:before {
+            content: "\e924";
+        }
+    }
+
+    &.disabled,
+    &.disabled:hover,
+    &.disabled:active {
+        color: #b2b2b2 !important;
+        cursor: not-allowed;
+    }
+}
+
+
+
+
+

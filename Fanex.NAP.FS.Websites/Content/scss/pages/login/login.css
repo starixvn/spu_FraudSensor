@@ -68,16 +68,15 @@ input, button {
   .button.-primary {
     background-color: #4f971f;
     color: #fff; }
-    .button.-primary:hover {
+    .button.-primary:hover:not(:disabled) {
       background-color: #5bb023; }
   .button.-export {
     border: 1px solid #4f971f;
     background-color: #fff;
     color: #3a6e17; }
     .button.-export .icon-export-excel {
-      color: #3a6e17;
       margin-right: 10px; }
-    .button.-export:hover {
+    .button.-export:hover:not(:disabled) {
       border-color: #5bb023;
       background-color: #5bb023;
       color: #fff; }
@@ -89,6 +88,19 @@ a.button, a.button:hover {
 
 .button:not(:disabled) {
   cursor: pointer; }
+
+.button[disabled] {
+  background-color: #c9cdd1;
+  color: #fff;
+  cursor: not-allowed; }
+
+.button.-export[disabled] {
+  border-color: #c9cdd1;
+  background-color: #fff;
+  color: #c9cdd1; }
+  .button.-export[disabled] .icon-export-excel,
+  .button.-export[disabled]:hover .icon-export-excel {
+    color: #c9cdd1; }
 
 body {
   background-color: #1d2e4f;
