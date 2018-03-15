@@ -21,7 +21,7 @@
         ordering: false,
         lengthMenu: [10, 20, 30],
         processing: true,
-        ajax: "/FraudCase/GetDelayedGoalCustomerList",
+        ajax: common.modifyRelativeUrl("/FraudCase/GetDelayedGoalCustomerList"),
         columns: [
             { data: "rowNum", className: "text-center" },
             { data: "data.Name", className: "text-center" },

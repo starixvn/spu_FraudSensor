@@ -2,7 +2,7 @@
     $("#fraud-case-activator").change(function () {
         var $this = $(this);
 
-        var url = "/FraudCase/ChangeCaseStatus";
+        var url = common.modifyRelativeUrl("/FraudCase/ChangeCaseStatus");
 
         console.log("adfadf");
 
