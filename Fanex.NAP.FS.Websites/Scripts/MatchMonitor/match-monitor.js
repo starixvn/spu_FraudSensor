@@ -40,7 +40,15 @@ function load_page_events() {
             { defaultContent: '<span class="icon-note-text icon-note"></span>', className: "col-note-action" }
         ],
         autoWidth: false,
-        dom:"t<'pagination'<'page-size'lp>i>"
+        dom: "t<'pagination'<'page-size'lp>i>",
+        language: {
+            lengthMenu: "Page size _MENU_",
+            paginate: {
+               previous: "Back"
+            },
+            info: "Displaying _START_ to _END_ of _TOTAL_ item(s)",
+            infoEmpty: ""
+        }
     });
 
     $.fn.dataTable.ext.errMode = "none";
@@ -171,7 +179,7 @@ function renderLeagueDropdown(data) {
         league_selector.append("<option value=''>No available league</option>");
 
         generate_btn.prop("disabled", true).removeClass("-primary");
-        export_btn.prop("disabled", true).removeClass("-export");
+        export_btn.prop("disabled", true);
         $("#refresh_interval").val("--");
         $("table").DataTable().rows().clear();
     }

@@ -37,6 +37,20 @@
         position: { my: "top", at: "top", of: window }
     });
 
+    var defaultTableOptions = {
+        ordering: false,
+        searching: false,
+        dom: "t<'pagination'<'page-size'lp>i>",
+        language: {
+            lengthMenu: "Page size _MENU_",
+            paginate: {
+                previous: "Back"
+            },
+            info: "Displaying _START_ to _END_ of _TOTAL_ item(s)",
+            infoEmpty: ""
+        }
+    }
+
     $(document).ajaxError(() => showDialog(error, "Internal Error", 3000));
 
     this.showLoading = function () {
@@ -105,6 +119,8 @@
     this.showSuccess = (str = "Success", timeout = 3000) => showDialog(success, str, timeout);
 
     this.showError = (str = "Internal Error", timeout = 3000) => showDialog(error, str, timeout);
+
+    this.getTableDefaultOptions = () => Object.assign({}, defaultTableOptions);
 
     function showDialog(target, str, timeout) {
         target.text(str).dialog("open");
