@@ -938,6 +938,9 @@ select[disabled] {
 .table .col-status {
   width: 100px; }
 
+.table .col-note {
+  width: 220px; }
+
 .table .col-bsng,
 .table .col-flagged-acc,
 .table .col-delay-goal {
