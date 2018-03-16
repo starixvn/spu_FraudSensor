@@ -9,7 +9,7 @@ namespace Fanex.NAP.FS.Websites.ViewModels.FraudCase.DelayedGoal
             Id = customer.CustId;
             Name = customer.AccountName ?? "-";
             Creator = customer.CreatedBy ?? "-";
-            AddedDate = customer.CreatedDate.ToString("MMM dd,yyyy hh:mm tt");
+            AddedDate = customer.CreatedDate.ToString("MMM dd, yyyy hh:mm tt");
         }
 
         public int Id { get; set; }

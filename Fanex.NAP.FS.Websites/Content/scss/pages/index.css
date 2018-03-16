@@ -1,10 +1,12 @@
 body {
-  padding: 0;
-  margin: 0;
-  background-color: #fff;
-  font-size: 14px;
-  font-family: "Lato", Arial, Tahoma, sans-serif;
-  color: #666; }
+    padding: 0;
+    margin: 0;
+    background-color: #fff;
+    font-size: 14px;
+    font-family: "Lato", Arial, Tahoma, sans-serif;
+    color: #666;
+    min-height: 100vh;
+}
 
 *, :before, :after {
   -webkit-box-sizing: border-box;
@@ -759,12 +761,22 @@ select[disabled] {
     -ms-transform: scaleY(0.8);
     -o-transform: scaleY(0.8);
     transform: scaleY(0.8);
-    -webkit-transition: opacity .2s .1s ease-out, -webkit-transform .2s .1s ease-out;
-    transition: opacity .2s .1s ease-out, -webkit-transform .2s .1s ease-out;
-    -o-transition: opacity .2s .1s ease-out, -o-transform .2s .1s ease-out;
-    -moz-transition: transform .2s .1s ease-out, opacity .2s .1s ease-out, -moz-transform .2s .1s ease-out;
-    transition: transform .2s .1s ease-out, opacity .2s .1s ease-out;
-    transition: transform .2s .1s ease-out, opacity .2s .1s ease-out, -webkit-transform .2s .1s ease-out, -moz-transform .2s .1s ease-out, -o-transform .2s .1s ease-out;
+    -webkit-transition: opacity .2s .1s ease-out,
+ -webkit-transform .2s .1s ease-out;
+    transition: opacity .2s .1s ease-out,
+ -webkit-transform .2s .1s ease-out;
+    -o-transition: opacity .2s .1s ease-out,
+ -o-transform .2s .1s ease-out;
+    -moz-transition: transform .2s .1s ease-out,
+ opacity .2s .1s ease-out,
+ -moz-transform .2s .1s ease-out;
+    transition: transform .2s .1s ease-out,
+ opacity .2s .1s ease-out;
+    transition: transform .2s .1s ease-out,
+ opacity .2s .1s ease-out,
+ -webkit-transform .2s .1s ease-out,
+ -moz-transform .2s .1s ease-out,
+ -o-transform .2s .1s ease-out;
     -webkit-transform-origin: 0 0;
     -moz-transform-origin: 0 0;
     -ms-transform-origin: 0 0;
@@ -998,3 +1010,11 @@ select[disabled] {
 
 .table .team-home, .table .team-away {
   font-weight: bold; }
+
+.dataTables_wrapper .dataTables_paginate, .dataTables_wrapper .dataTables_info {
+    padding-top: 0
+}
+
+.dataTables_wrapper .dataTables_paginate {
+    margin-left: 20px
+}

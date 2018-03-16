@@ -153,6 +153,10 @@
     }    
 }
 
+body {
+    min-height: 100vh;
+}
+
 // Content
 
 .content {
@@ -305,4 +309,12 @@
     .team-home, .team-away {
         font-weight: bold;
     }
+}
+
+.dataTables_wrapper .dataTables_paginate, .dataTables_wrapper .dataTables_info {
+    padding-top: 0
+}
+
+.dataTables_wrapper .dataTables_paginate {
+    margin-left: 20px
 }

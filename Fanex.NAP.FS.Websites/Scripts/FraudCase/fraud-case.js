@@ -6,6 +6,10 @@
 
         console.log("adfadf");
 
-        $.post(url, { fraudCaseId: $this.attr("data-id"), isActive: $this.prop("checked")}, () => common.showSuccess());
-    })
+        $.post(url, { fraudCaseId: $this.attr("data-id"), isActive: $this.prop("checked") }, () => common.showSuccess());
+    });
+
+    $("select").select2({
+        minimumResultsForSearch: -1
+    });
 })

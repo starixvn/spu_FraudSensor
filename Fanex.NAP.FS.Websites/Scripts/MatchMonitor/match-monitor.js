@@ -5,6 +5,10 @@ function load_page_events() {
 
     $("#league").select2();
 
+    $("#sport, #is_verified, #match_status, #refresh_interval").select2({
+        minimumResultsForSearch: -1
+    })
+
     getLeague();
 
     $("#event_date")
@@ -180,8 +184,8 @@ function renderLeagueDropdown(data) {
 
         generate_btn.prop("disabled", true).removeClass("-primary");
         export_btn.prop("disabled", true);
-        $("#refresh_interval").val("--");
-        $("table").DataTable().rows().clear();
+        $("#refresh_interval").val("--").change();
+        $("table").DataTable().clear().draw();
     }
 }
 

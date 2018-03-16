@@ -24,14 +24,22 @@
         ajax: common.modifyRelativeUrl("/FraudCase/GetDelayedGoalCustomerList"),
         columns: [
             { data: "rowNum", className: "text-center" },
-            { data: "data.Name", className: "text-center" },
+            { data: "data.Name" },
             { data: "data.Creator" },
             { data: "data.AddedDate", className: "text-center" },
             { defaultContent: "<span class='icon-delete' style='cursor: pointer'></span>", className: "has-icon text-center", createdCell: c => $("span", c).click(deleteFlow) }
         ],
         scrollY: '40vh',
         scrollCollapse: true,
-        dom: "t<'pagination'<'page-size'lp>i>"
+        dom: "t<'pagination'<'page-size'lp>i>",
+        language: {
+            lengthMenu: "Page size _MENU_",
+            paginate: {
+                previous: "Back"
+            },
+            info: "Displaying _START_ to _END_ of _TOTAL_ item(s)",
+            infoEmpty: ""
+        }
     });
 
     $("#add-user-btn").click(addNewUser);

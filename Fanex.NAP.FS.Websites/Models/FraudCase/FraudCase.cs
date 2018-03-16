@@ -37,7 +37,7 @@ namespace Fanex.NAP.FS.Websites.Models.FraudCase
 
                     result.TicketRules = new[]
                     {
-                        "Bet type in: HDP, O/U, FT. 1X2, 1H HDP, 1H O/U, 1H 1X2",
+                        "Bet type = HDP, O/U, FT. 1X2, 1H HDP, 1H O/U, 1H 1X2",
                         "Transaction Date = Danger Period (90s before goal)",
                         "Total stake in danger period ≥ 40% Max Bet",
                         "Currency <> Test Currency"
