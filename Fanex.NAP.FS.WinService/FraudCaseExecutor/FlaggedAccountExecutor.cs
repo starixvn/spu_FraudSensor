@@ -47,16 +47,19 @@
         #region private method
         private void ExecuteBySaparatedThreads()
         {
-            var matchChunks = _matches.Chunk(ChunkSize);
-
-            foreach (var matches in matchChunks)
+            if (_matches != null)
             {
-                var thread = ExecuteMultiple(matches.ToList());
+                var matchChunks = _matches.Chunk(ChunkSize);
 
-                _threads.Add(thread);
+                foreach (var matches in matchChunks)
+                {
+                    var thread = ExecuteMultiple(matches.ToList());
+
+                    _threads.Add(thread);
+                }
+
+                Task.WaitAll(_threads.ToArray());
             }
-
-            Task.WaitAll(_threads.ToArray());
         }
 
         private Task ExecuteMultiple(List<Match> matches)

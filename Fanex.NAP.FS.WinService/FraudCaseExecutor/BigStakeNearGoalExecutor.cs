@@ -4,7 +4,6 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Threading;
     using System.Threading.Tasks;
 
     public class BigStakeNearGoalExecutor : FraudCaseExecutor
@@ -24,6 +23,7 @@
             if (_matches != null && _matches.Any())
             {
                 _matches = Enumerable.Empty<Match>();
+                _threads.Clear();
             }
         }
 
@@ -44,47 +44,16 @@
         #region private method
         private void ExecuteBySaparatedThreads()
         {
-            var coreCount = Environment.ProcessorCount;
-            var matchCount = _matches.Count();
-            var count = 0;
-
-            for (; count < matchCount; count++)
+            if (_matches != null)
             {
-                if (count >= coreCount)
+                foreach (var match in _matches)
                 {
-                    break;
+                    var thread = ExecuteSingle(match);
+
+                    _threads.Add(thread);
                 }
 
-                var match = _matches.ElementAt(count);
-                var thread = ExecuteSingle(match);
-
-                _threads.Add(thread);
-
-                Thread.Sleep(10);
-            }
-
-            var threadsHaveDone = 0;
-
-            while (threadsHaveDone < matchCount)
-            {
-                var index = Task.WaitAny(_threads.ToArray());
-
-                threadsHaveDone++;
-                _threads.RemoveAt(index);
-
-                if (count >= matchCount)
-                {
-                    continue;
-                }
-
-                var match = _matches.ElementAt(count);
-                var thread = ExecuteSingle(match);
-
-                _threads.Add(thread);
-
-                count++;
-
-                Thread.Sleep(10);
+                Task.WaitAll(_threads.ToArray());
             }
         }
 
