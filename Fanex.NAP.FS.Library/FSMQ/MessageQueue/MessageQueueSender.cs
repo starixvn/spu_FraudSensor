@@ -7,14 +7,14 @@
             _messageQueue.Purge();
         }
 
-        public void Send(object fraudCase)
+        public void Send(object task)
         {
-            _messageQueue.Send(fraudCase);
+            _messageQueue.Send(task);
         }
 
-        public void Send(object fraudCase, string label)
+        public void Send(object task, string label)
         {
-            _messageQueue.Send(fraudCase, label);
+            _messageQueue.Send(task, label);
         }
     }
 }

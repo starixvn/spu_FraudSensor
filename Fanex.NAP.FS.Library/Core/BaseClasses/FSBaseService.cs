@@ -10,7 +10,7 @@
 
     public class FSBaseService
     {
-        public IEnumerable<T> GetData<T>(CriteriaBase criteria)
+        public static IEnumerable<T> GetData<T>(CriteriaBase criteria)
         {
             using (var db = new ObjectDb(criteria.GetSettingKey()))
             {
@@ -18,7 +18,7 @@
             }
         }
 
-        public T GetSingle<T>(CriteriaBase criteria)
+        public static T GetSingle<T>(CriteriaBase criteria)
         {
             using (var db = new ObjectDb(criteria.GetSettingKey()))
             {
@@ -28,7 +28,7 @@
             }
         }
 
-        public void Execute(CriteriaBase criteria)
+        public static void Execute(CriteriaBase criteria)
         {
             using (var db = new ObjectDb(criteria.GetSettingKey()))
             {
