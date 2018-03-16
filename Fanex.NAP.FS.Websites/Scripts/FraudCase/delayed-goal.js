@@ -19,7 +19,7 @@
 
     table.DataTable({
         ordering: false,
-        lengthMenu: [10, 20, 30],
+        lengthMenu: [10, 20, 50, 100, 500],
         processing: true,
         ajax: common.modifyRelativeUrl("/FraudCase/GetDelayedGoalCustomerList"),
         columns: [
