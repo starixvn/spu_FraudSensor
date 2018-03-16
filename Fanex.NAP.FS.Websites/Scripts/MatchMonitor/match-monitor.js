@@ -123,6 +123,11 @@ function load_grid() {
 
     var dto = buildGridParam();
 
+    if (dto.LeagueIds == null || dto.LeagueIds.length == 0) {
+        common.closeLoading();
+        return;
+    }
+
     $.post(url, dto, attachGridEvent)
 }
 
@@ -174,15 +179,15 @@ function renderLeagueDropdown(data) {
             league_selector.append("<option value='" + data[i].LeagueId + "'>" + data[i].LeagueName + "</option>");
         }
 
-        generate_btn.prop("disabled", false).addClass("-primary");
-        export_btn.prop("disabled", false).addClass("-export");
+        generate_btn.prop("disabled", false);
+        export_btn.prop("disabled", false);
 
         load_grid();
     }
     else {
         league_selector.append("<option value=''>No available league</option>");
 
-        generate_btn.prop("disabled", true).removeClass("-primary");
+        generate_btn.prop("disabled", true);
         export_btn.prop("disabled", true);
         $("#refresh_interval").val("--").change();
         $("table").DataTable().clear().draw();
