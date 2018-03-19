@@ -10,7 +10,7 @@ using System.Web.Mvc;
 namespace Fanex.NAP.FS.Websites.Controllers
 {
     [NapAuth(FunctionKey = FSFunctionKeys.FraudCase, Policy = Core.Business.Constant.Policy.Read)]
-    public class FraudCaseController : BaseController
+    public class FraudCaseController : ConfigurationsController
     {
         public ActionResult Index()
         {

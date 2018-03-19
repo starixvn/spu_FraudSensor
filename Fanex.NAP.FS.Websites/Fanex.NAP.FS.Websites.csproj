@@ -258,9 +258,11 @@
     <Compile Include="Areas\UserLogin\UserLoginAreaRegistration.cs" />
     <Compile Include="Controllers\Api\ApiFPSController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Controllers\ConfigurationsController.cs" />
     <Compile Include="Controllers\FraudCaseController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\MatchMonitorController.cs" />
+    <Compile Include="Controllers\ReportsController.cs" />
     <Compile Include="Criteria\FraudCase\DelayedGoal\DelayedGoalCustomerAddCriteria.cs" />
     <Compile Include="Criteria\FraudCase\DelayedGoal\DelayedGoalCustomerDeleteCriteria.cs" />
     <Compile Include="Criteria\FraudCase\DelayedGoal\DelayedGoalCustomerGetCriteria.cs" />
@@ -922,6 +924,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Areas\UserLogin\Models\" />
+    <Folder Include="Views\Reports\" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />

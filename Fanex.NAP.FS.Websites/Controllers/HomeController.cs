@@ -12,8 +12,10 @@ namespace Fanex.NAP.FS.Websites.Controllers
         }
 
         [ChildActionOnly]
-        public PartialViewResult Menu()
+        public PartialViewResult Menu(string activeMenu)
         {
+            ViewBag.ActiveMenu = activeMenu;
+
             return PartialView("~/Views/Shared/_Menu.cshtml", CurrentSession.MenuItemList);
         }
 

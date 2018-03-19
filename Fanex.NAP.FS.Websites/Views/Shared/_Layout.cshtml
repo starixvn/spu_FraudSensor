@@ -13,11 +13,11 @@
 </head>
 <body>
     <header class="header">
-        <a href="home/index" class="logo">
+        <a href="/home/index" class="logo">
             <img src="~/Content/scss/images/logo.png" alt="Fraud Sensor">
         </a>
         <div class="header-right">
-            @Html.Action("Menu", "Home")
+            @Html.Action("Menu", "Home",new { activeMenu = ViewContext.Controller.GetType().BaseType.Name } )
             @*<ul class="main-menu">
                 <li class="menu-item">
                     <a href="#" class="link has-child"><span class="icon icon-chart-scatterplot-hexbin"></span>Report</a>

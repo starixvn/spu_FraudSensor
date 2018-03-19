@@ -96,7 +96,7 @@
                     confirmation.dialog("close");
 
                     if (yesCallback != null) {
-                        yesCallback()
+                        yesCallback(this)
                     }
                 }
             };
@@ -108,7 +108,7 @@
                     confirmation.dialog("close");
 
                     if (noCallback != null) {
-                        noCallback()
+                        noCallback(this)
                     }
                 }
             }

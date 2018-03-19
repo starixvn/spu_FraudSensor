@@ -17,6 +17,8 @@
                 throw new NotImplementedException("No support for " + menuName);
         }
     };
+
+    var controllerBaseType = ViewBag.ActiveMenu as string;
 }
 
 <ul class="main-menu">
@@ -25,7 +27,7 @@
         var subMenus = Model.Where(m => m.Parent != null && m.IsActive && m.Parent.Id == menu.Id).OrderBy(m => m.DisplayOrder);
 
         <li class="menu-item">
-            <a href="#" class="link @(subMenus.Any()? "has-child" : "")">@Html.Raw(iconLookup(menu.Name)) @menu.Name</a>
+            <a href="#" class="link @(subMenus.Any()? "has-child" : "") @(controllerBaseType.Contains(menu.Name) ? "active" : "")">@Html.Raw(iconLookup(menu.Name)) @menu.Name</a>
             @if (subMenus.Any())
             {
             <ul class="sub-menu">

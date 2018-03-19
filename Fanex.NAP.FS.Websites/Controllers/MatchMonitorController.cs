@@ -7,7 +7,7 @@ using System.Web.Mvc;
 namespace Fanex.NAP.FS.Websites.Controllers
 {
     [NapAuth(FunctionKey = FSFunctionKeys.MatchMonitoring, Policy = Core.Business.Constant.Policy.Read)]
-    public class MatchMonitorController : BaseController
+    public class MatchMonitorController : ReportsController
     {
         public ActionResult Index()
         {
