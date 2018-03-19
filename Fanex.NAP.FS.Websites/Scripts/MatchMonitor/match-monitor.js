@@ -14,7 +14,9 @@ function load_page_events() {
     $("#event_date")
         .datepicker({
             dateFormat: "M dd, yy",
-            minDate: balanceUpDay
+            minDate: balanceUpDay,
+            changeMonth: true,
+            changeYear: true
         })
         .change(getLeague);
 

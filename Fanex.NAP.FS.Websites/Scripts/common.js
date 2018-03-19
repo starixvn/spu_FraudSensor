@@ -124,6 +124,8 @@
 
     this.modifyRelativeUrl = url => window.location.host.includes("starific") ? "/V2" + url : url;
 
+    this.makeNonSearchSelect = select => $(select).select2({ minimumResultsForSearch: -1 })
+
     function showDialog(target, str, timeout) {
         target.text(str).dialog("open");
 
