@@ -184,16 +184,15 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="Fanex.NAP.FS.WinService.exe.LOCAL.config" />
-    <None Include="Fanex.NAP.FS.WinService.exe.PRO.config" />
+    <None Include="Fanex.NAP.FS.WinService.exe.PRO.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Fanex.NAP.FS.WinService.exe.UAT.config" />
     <None Include="Fanex.NAP.FS.WinService.ruleset" />
     <None Include="job_scheduling_data_2_0.xsd">
       <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
-    <None Include="WebConfigs\App.PRO.config" />
-    <None Include="WebConfigs\App.UAT.config" />
-    <None Include="WebConfigs\App.LOCAL.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Fanex.NAP.FS.Library\Fanex.NAP.FS.Library.csproj">
