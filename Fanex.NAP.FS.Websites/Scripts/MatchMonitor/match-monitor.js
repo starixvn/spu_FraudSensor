@@ -33,17 +33,16 @@ function load_page_events() {
         scrollY: "55vh",
         scrollCollapse: true,
         columns: [
-            { data: (row, type,set, meta) => meta.row + 1, className: "text-center" },
-            { data: renderVerifyCheckBox, className: "text-center" },
-            { data: (row) => row.VerifiedBy == null ? "-" : row.VerifiedBy },
+            { data: (row, type,set, meta) => meta.row + 1, className: "text-center", width: "40px" },
+            { data: renderVerifyCheckBox, className: "text-center", width: "74px" },
+            { data: (row) => row.VerifiedBy == null ? "-" : row.VerifiedBy, width: "130px" },
             { data: renderEvent },
-            { data: row => row.Score, className: "text-center" },
-            { data: row => row.Status, className: "text-center" },
-            { data: row => renderFraudCase(row, 1), className: "has-icon text-center" },
-            { data: row => renderFraudCase(row, 6), className: "has-icon text-center" },
-            { data: row => renderFraudCase(row, 8), className: "has-icon text-center" },
-            { data: renderNote, className: "col-note" },
-            { defaultContent: '<span class="icon-note-text icon-note"></span>', className: "col-note-action" }
+            { data: row => row.Score, className: "text-center", width: "100px" },
+            { data: row => row.Status, className: "text-center", width: "120px" },
+            { data: row => renderFraudCase(row, 1), className: "has-icon text-center", width: "100px" },
+            { data: row => renderFraudCase(row, 6), className: "has-icon text-center", width: "120px" },
+            { data: row => renderFraudCase(row, 8), className: "has-icon text-center", width: "100px" },
+            { data: renderNote, className: "col-note", width: "270px" }
         ],
         autoWidth: false,
         dom: "t<'pagination'<'page-size'lp>i>",
@@ -112,9 +111,9 @@ function renderNote(obj) {
         result = result.substring(0, 40) + "...";
     }
 
-    return "<div class='note'>"
-        + result
-        + "<span class='icon-dots-horizontal-circle icon-note'></span>"
+    return "<div class='container-note'>"
+        + '<div class="note-content">' + result + '</div>'
+        + '<div class="icon-note-text icon-note"></div>'
         + "</div>";
 }
 

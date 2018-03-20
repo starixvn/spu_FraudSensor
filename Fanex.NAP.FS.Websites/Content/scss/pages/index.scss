@@ -50,9 +50,9 @@
         display: flex;
         flex-direction: column;
         justify-content: space-between;
-        padding: 10px 0;
         min-width: 190px;
-        box-shadow: 0 0 4px rgba(0,0,0, .2);
+        border: 1px solid #d0d0d0;
+        box-shadow: 0 0 4px rgba(0,0,0, .3);
         background-color: #fff;
         transform: scaleY(0.8);
         transition: transform .2s .1s ease-out,
@@ -228,35 +228,41 @@ body {
     }
 }
 
+
 .table {
     // Columns
-    .col-no {
-        width: 34px;
+    .col-note {
+        width: 270px;
+        padding: 0 !important;
     }
 
-    .col-verified {
-        width: 72px;
+    .container-note {
+        display: grid;
+        grid-template-columns: 1fr 50px;
+        grid-template-rows: 1fr;
+        justify-content: space-between;
+        align-items: center;
+        height: 100%;
+
+        .note-content {
+            border-right: 1px solid $table-border;
+            padding: 19px 8px;
+        }
+
+        .icon-note {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #8c8c8c;
+            cursor: pointer;
+        }
+
+        .icon-note:hover {
+            color: #2197ff;
+        }
     }
 
-    .col-last-verified-by {
-        width: 130px;
-    }
-
-    .col-status {
-        width: 100px;
-    }
-
-    .col-bsng,
-    .col-flagged-acc,
-    .col-delay-goal {
-        width: 100px;
-    }
-
-    .col-note-action {
-        width: 50px;
-        text-align: center;
-    }
-
+    
     // Icons
     [class^="icon"] {
         font-size: 20px;
@@ -274,15 +280,7 @@ body {
         color: #ed7600;
     }
 
-    .icon-note {
-        color: #8c8c8c;
-        cursor: pointer;
-
-        &:hover {
-            color: #2197ff;
-        }
-    }
-
+    
     .warning {
         position: relative;
         display: inline-block;
