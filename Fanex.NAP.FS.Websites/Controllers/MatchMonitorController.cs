@@ -1,7 +1,10 @@
 ﻿using Fanex.NAP.Core.Web.Attribute;
 using Fanex.NAP.FS.Websites.Criteria.MatchMonitor;
+using Fanex.NAP.FS.Websites.Models.FraudCase;
 using Fanex.NAP.FS.Websites.Service.MatchMonitor;
+using Fanex.NAP.FS.Websites.ViewModels.MatchMonitor.FraudCaseDetails;
 using System;
+using System.Linq;
 using System.Web.Mvc;
 
 namespace Fanex.NAP.FS.Websites.Controllers
@@ -46,6 +49,37 @@ namespace Fanex.NAP.FS.Websites.Controllers
             var fileName ="MatchMonitor_" + DateTime.Now.ToString("yyyyMMdd") + ".xlsx";
 
             return File(MatchMonitorService.ExportExcel(criteria, templatePath), "application/vnd.ms-excel", fileName);
+        }
+
+        public ActionResult GetFraudCaseDetails(int fraudCaseId, int matchId)
+        {
+            var model = new MatchFraudCaseInfo
+            {
+                Event = "String vs Loop",
+                FraudCase = "Gravity",
+                HTScore = "0 - 0",
+                FTScore = "0 - 0",
+                FraudCaseId = fraudCaseId,
+                MatchId =  matchId
+            };
+
+            return View("FraudCaseDetails/Index", model);
+        }
+
+        public ActionResult GetFraudCaseTicketDetails(int fraudCaseId, int matchId)
+        {
+            var data = 
+                FraudCaseDetailsService.GetTicketDetails(matchId, fraudCaseId)
+                .GroupBy(t => t.Bettype);
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult GetFraudCaseCustomerDetails(int fraudCaseId, int matchId)
+        {
+            var data = FraudCaseDetailsService.GetCustomerDetails(matchId, fraudCaseId);
+
+            return Json(data, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]

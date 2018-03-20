@@ -50,7 +50,8 @@ namespace Fanex.NAP.FS.Websites
 
         private static void RegisterMatchMonitorBundles(BundleCollection bundles)
         {
-            bundles.Add(new ScriptBundle("~/match-monitor").Include("~/scripts/MatchMonitor/*.js"));
+            bundles.Add(new ScriptBundle("~/scripts/match-monitor").Include("~/scripts/MatchMonitor/*.js"));
+            bundles.Add(new ScriptBundle("~/scripts/match-monitor/fraud-case-details").Include("~/scripts/matchmonitor/fraudcasedetails/*.js"));
         }
 
         private static void RegisterFraudCaseBundles(BundleCollection bundles)

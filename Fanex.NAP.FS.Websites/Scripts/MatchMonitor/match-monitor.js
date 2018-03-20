@@ -95,10 +95,10 @@ function renderFraudCase(obj, selector) {
         return '<span class="icon-approval"></span>';
     }
 
-    return "<div class='warning'>"
-        + "<span class='icon-alert-circle'></span>"
-        + "<span class='number'>" + renderViolations(fraudCase.Violations) + "</span>"
-        + "</div>";
+    return `<div class='warning'>
+            <a href='MatchMonitor/GetFraudCaseDetails?fraudCaseId=${selector}&matchId=${obj.MatchId}' class='icon-alert-circle' target='_new'></a>
+            <span class='number'>${renderViolations(fraudCase.Violations)}</span>
+        </div>`;
 }
 
 function renderNote(obj) {
