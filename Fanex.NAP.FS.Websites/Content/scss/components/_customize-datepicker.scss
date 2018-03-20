@@ -1,0 +1,113 @@
+﻿.ui-datepicker.ui-widget-content {
+    padding: 20px;
+    width: 293px;
+    border: 1px solid #d0d0d0;
+    box-shadow: 0 0 4px rgba(0,0,0, .3);
+    font-family: $font-family;
+
+    th {
+        text-transform: uppercase;
+        color: #4b6478;
+        font-size: 12px;
+    }
+
+    td {
+        padding: 3px 6px;
+    }
+
+    .ui-datepicker-title {
+        margin-left: 18px;
+        margin-right: 18px;
+
+        select {
+            width: 40%;
+            margin: 1px 8px;
+            border-color: #ececec;
+            font-weight: bold;
+            font-family: $font-family;
+            color: #545454;
+        }
+    }
+
+    .ui-state-default {
+        width: 26px;
+        height: 26px;
+        line-height: 23px;
+        text-align: center;
+        border-radius: 50%;
+        border: none;
+        background: none;
+        color: #545454;
+
+        &.ui-state-hover {
+            background-color: rgba(0,0,0,.15);
+        }
+
+        &.ui-state-highlight {
+            background-color: #556678;
+            color: #fff;
+        }
+
+        &.ui-state-active {
+            background-color: #4e9721;
+            color: #fff;
+        }
+    }
+}
+
+.ui-datepicker .ui-datepicker-header {
+    margin-bottom: 6px;
+    background-color: transparent;
+    border: none;
+
+    .ui-datepicker-prev span,
+    .ui-datepicker-next span {
+        margin-top: -7px;
+        background: none;
+        font-family: $font-icon;
+        font-weight: normal;        
+
+        &:before {
+            float: left;
+            font-size: 22px;
+            margin: 0;
+            text-indent: 0;
+            color: #808080;
+        }
+    }
+
+    .ui-datepicker-prev span {
+        margin-left: -18px;
+
+        &:before {
+            content: "\e924";
+        }
+    }
+
+    .ui-datepicker-next span {
+        margin-left: 0;
+
+        &:before {
+            content: "\e925";
+        }
+    }
+
+    .ui-datepicker-prev-hover,
+    .ui-datepicker-next-hover {
+	    top: 2px;
+        border: none;
+        background: none;
+
+        &:hover {
+            cursor: pointer;
+        }
+    }
+
+    .ui-datepicker-prev-hover {
+	    left: 2px;
+    }
+
+    .ui-datepicker-next-hover {
+	    right: 2px;
+    }
+}

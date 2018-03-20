@@ -5,6 +5,7 @@
 @import "../components/textbox";
 @import "../components/checkbox";
 @import "../components/customize-select2";
+@import "../components/customize-datepicker";
 @import "../components/forms";
 @import "../components/dropdown";
 @import "../components/tables";
@@ -72,6 +73,10 @@
             background-color: $primary-color;
             color: #fff;
         }
+
+        &.-small {
+            min-width: 120px;
+        }
     }
 }
 
@@ -110,7 +115,7 @@
 
 .login-info {
     @include align-items;
-    margin-right: 15px;
+    margin-right: 25px;
 
     .icon-announcement {
         position: relative;
@@ -182,53 +187,6 @@ body {
 }
 
 // Table
-
-.refresh {
-    @include align-items($justify-content: flex-start);
-
-    .refresh-option {
-        margin-right: 6px;
-    }
-
-    .refresh-action {
-        @include align-items($display: grid); 
-        grid-template-columns: repeat(2, 29px);
-        grid-template-rows: 28px;
-        border-radius: 2px;
-        background-color: #5aab24;
-        color: #fff;
-
-        &:hover {
-            background-color: $btn-primary-bg-hover;
-        }
-
-        .icon {
-            background-color: transparent;
-            border: none;
-            color: #fff;
-            height: 100%;
-            font-size: 18px;
-
-            &:hover {
-                cursor: pointer;
-            }
-        }
-
-        .number {
-            border-left: 1px solid #ebebeb;
-            height: 100%;
-            line-height: 28px;
-            font-size: 13px;
-            text-align: center;
-
-            &:hover {
-                cursor: pointer;
-            }
-        }
-    }
-}
-
-
 .table {
     // Columns
     .col-note {
