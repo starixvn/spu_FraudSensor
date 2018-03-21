@@ -4,13 +4,13 @@
     {
         public ActivatingCase()
         {
-            Type = SendingType.ActivatingCase;
+            Type = SendingType.Activating;
         }
 
         public ActivatingCase(IMessageQueueSender messageQueue)
             : base(messageQueue)
         {
-            Type = SendingType.ActivatingCase;
+            Type = SendingType.Activating;
         }
     }
 }

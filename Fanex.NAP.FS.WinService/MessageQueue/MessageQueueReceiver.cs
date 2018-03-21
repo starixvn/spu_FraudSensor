@@ -1,6 +1,6 @@
 ﻿namespace Fanex.NAP.FS.WinService
 {
-    using Fanex.NAP.FS.Library.FSMQ;
+    using Library.FSMQ;
     using System;
     using System.Messaging;
 

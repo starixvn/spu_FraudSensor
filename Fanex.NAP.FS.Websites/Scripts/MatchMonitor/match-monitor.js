@@ -1,80 +1,65 @@
 ﻿var timeout_holder = null;
-var data_holder = null;
-var pageSize = 0;
 
 function load_page_events() {
     $("#generate, #refresh_btn").click(load_grid);
 
     $("#league").select2();
 
+    $("#sport, #is_verified, #match_status, #refresh_interval").select2({
+        minimumResultsForSearch: -1
+    })
+
     getLeague();
 
     $("#event_date")
         .datepicker({
             dateFormat: "M dd, yy",
-            minDate: balanceUpDay
+            minDate: balanceUpDay,
+            changeMonth: true,
+            changeYear: true
         })
         .change(getLeague);
 
     $(".icon-calendar-text").click(() => $("#event_date").focus());
 
-    $("#refresh_interval").change(e => refreshChange($(e.target)));
-
-    pageSize = parseInt($("#pager").val());
-
-    $("#pager").change(function () {
-        pageSize = parseInt($(this).val());
-        page();
-        var paged_data = sliceData(0, pageSize);
-        renderGrid(paged_data);
-        changeStageBackNext(0)
-    });
-
-    $("#page_index").change(function () {
-        var page_idx = parseInt($(this).val());
-
-        var paged_data = sliceData(page_idx, pageSize);
-        renderGrid(paged_data);
-        changeStageBackNext(page_idx);
-    })
-
-    $("#back").click(function () {
-        var indexer = $("#page_index");
-
-        var page_idx = parseInt(indexer.val());
-
-        var new_page_idx = Math.max(page_idx - 1, 0);
-
-        indexer.val(new_page_idx).change();
-
-        if (new_page_idx == 0) {
-            $(this).parent().addClass("disabled")
-        }
-    });
-
-    $("#next").click(function () {
-        var indexer = $("#page_index");
-
-        var page_idx = parseInt(indexer.val());
-
-        var max_page = parseInt(data_holder.Matches.length / pageSize);
-
-        var new_page_idx = Math.min(page_idx + 1, max_page);
-
-        indexer.val(new_page_idx).change();
-
-        $("#back").parent().removeClass("disabled");
-
-        if (new_page_idx == max_page) {
-            $(this).parent().addClass("disabled");
-        }
-    })
+    $("#refresh_interval").val(60).change(e => refreshChange($(e.target))).change();
 
     $("#export").click(exportExcel);
+
+    $("table").DataTable({
+        ordering: false,
+        searching: false,
+        lengthMenu: [10, 20, 50, 100, 500],
+        scrollY: "55vh",
+        scrollCollapse: true,
+        columns: [
+            { data: (row, type,set, meta) => meta.row + 1, className: "text-center", width: "40px" },
+            { data: renderVerifyCheckBox, className: "text-center", width: "74px" },
+            { data: (row) => row.VerifiedBy == null ? "-" : row.VerifiedBy, width: "130px" },
+            { data: renderEvent },
+            { data: row => row.Score, className: "text-center", width: "100px" },
+            { data: row => row.Status, className: "text-center", width: "120px" },
+            { data: row => renderFraudCase(row, 1), className: "has-icon text-center", width: "100px" },
+            { data: row => renderFraudCase(row, 6), className: "has-icon text-center", width: "120px" },
+            { data: row => renderFraudCase(row, 8), className: "has-icon text-center", width: "100px" },
+            { data: renderNote, className: "col-note", width: "270px" }
+        ],
+        autoWidth: false,
+        dom: "t<'pagination'<'page-size'lp>i>",
+        language: {
+            lengthMenu: "Page size _MENU_",
+            paginate: {
+               previous: "Back"
+            },
+            info: "Displaying _START_ to _END_ of _TOTAL_ item(s)",
+            infoEmpty: ""
+        }
+    });
+
+    $.fn.dataTable.ext.errMode = "none";
 }
 
-function load_grid() {
-    var url = "matchmonitor/GetMatches";
+function buildGridParam() {
     var dto = {};
 
     dto.EventDate = $("#event_date").val();
@@ -83,105 +68,78 @@ function load_grid() {
     dto.LeagueIds = $("#league").val();
     dto.IsMainMarket = $("#is_main_market:checked").length > 0;
 
+    return dto
+}
+
+function renderVerifyCheckBox(obj) {
+    return "<label class='checkbox'>"
+        + "<input type= 'checkbox' class='verified-checkbox'" + (obj.Verified ? "checked" : "") + " data-match-id='" + obj.MatchId + "'/>"
+        + "<span></span></label>";
+}
+
+function renderEvent(obj) {
+    return "<span class='team-home'>" + obj.Event.HomeName + "</span>"
+        + " - vs - "
+        + "<span class='team-away'>" + obj.Event.AwayName + "</span>"
+        + "<div class='league-name'>" + obj.Event.LeagueName + "</div>";
+}
+
+function renderFraudCase(obj, selector) {
+    var fraudCase = obj.FraudCases[selector];
+
+    if (fraudCase == null) {
+        return "<span class='icon-neutral'></span>";
+    }
+
+    if (fraudCase.Violations == 0) {
+        return '<span class="icon-approval"></span>';
+    }
+
+    return `<div class='warning'>
+            <a href='MatchMonitor/GetFraudCaseDetails?fraudCaseId=${selector}&matchId=${obj.MatchId}' class='icon-alert-circle' target='_new'></a>
+            <span class='number'>${renderViolations(fraudCase.Violations)}</span>
+        </div>`;
+}
+
+function renderNote(obj) {
+    var result = obj.Notes;
+
+    if (result == "-") {
+        result = "-" + new Array(42).join(" ");
+    }
+    else if (result.length > 40) {
+        result = result.substring(0, 40) + "...";
+    }
+
+    return "<div class='container-note'>"
+        + '<div class="note-content">' + result + '</div>'
+        + '<div class="icon-note-text icon-note"></div>'
+        + "</div>";
+}
+
+function load_grid() {
     common.showLoading();
 
-    $.post(url, dto, function (data) {
-        $("#event_date").datepicker("hide");
-        data_holder = data;
-        page()
-        var paged_data = sliceData(0, pageSize);
-        renderGrid(paged_data);
+    var url = "matchmonitor/GetMatches";
+
+    var dto = buildGridParam();
+
+    if (dto.LeagueIds == null || dto.LeagueIds.length == 0) {
         common.closeLoading();
-        changeStageBackNext();
-        if ($("#refresh_interval").hasClass("first")) {
-            $("#refresh_interval").val(60).change().removeClass("first");
-        }
-        else {
-            $("#refresh_interval").change();
-        }
-    });
+        return;
+    }
+
+    $.post(url, dto, attachGridEvent)
 }
 
-function renderGrid(data) {
-    if (data != null && data.Matches != null && data.Matches.length > 0) {
-        var fraudCases = ["BSNG", "Flagged Accounts", "Delay Goal"];
-
-        renderFraudCasesHeader(fraudCases);
-        $("tbody").empty().append(data.Matches.map((m, i) => buildRow(fraudCases, m, data.PageIdx * pageSize + i)));
-        $("#table_summary").text("Displaying " + (data.PageIdx * pageSize + 1) + " to " + (data.PageIdx * pageSize + data.Matches.length) + " of " + (data_holder.Matches.length) + " item(s)")
-    }
-    else {
-        renderFraudCasesHeader(["BSNG", "Flagged Accounts", "Delay Goal"]);
-        $("tbody").empty().append("<tr class='text-center'><td  colspan='9'>There's no data</td></tr>");
-        $("#table_summary").text("");
-        $("#back, #next").parent().addClass("disabled");
-    }
-
-    $("#match_grid").show();
+function attachGridEvent(json) {
+    $("table").DataTable().clear().rows.add(json.data).draw();
 
     $(".verified-checkbox").change(updateVerification);
-}
-
-function buildRow(fraudCases, rowObj, index) {
-    var row = $("<tr></tr>");
-
-    // render row no
-    row.append("<td class='text-center'>" + (index + 1) + "</td>");
-
-    // render checkbox
-    row.append(
-        "<td class='text-center'> "
-        + "<label class='checkbox'>"
-        + "<input type= 'checkbox' class='verified-checkbox'" + (rowObj.Verified ? "checked" : "") + " data-match-id='" + rowObj.MatchId + "'/>"
-        + "<span></span></label></td>"
-    );
-
-    // render verified by
-    row.append("<td>" + (rowObj.VerifiedBy == null ? "-" : rowObj.VerifiedBy) + "</td>");
-
-    // render event
-    row.append(
-        "<td>"
-        + "<span class='team-home'>" + rowObj.Event.HomeName + "</span>"
-        + " - vs - "
-        + "<span class='team-away'>" + rowObj.Event.AwayName + "</span>"
-        + "<div class='league-name'>" + rowObj.Event.LeagueName + "</div>"
-        + "</td>");
-
-    //render score
-    row.append("<td class='text-center'>" + rowObj.Score + "</td>");
-
-    //render status
-    row.append("<td class='text-center'>" + rowObj.Status + "</td>");
-
-    row.append(fraudCases.map(f => buildFraudCase(f, rowObj)));
-
-    return row;
-}
-
-function buildFraudCase(fraudCase, rowObj) {
-    var fraud_idx = mappingFraudCase(fraudCase).toString();
-
-    if (rowObj.FraudCases[fraud_idx] == null) {
-        return "<td class='has-icon text-center'><span class='icon-close'></span></td>";
-    }
-
-    var fraud_case = rowObj.FraudCases[fraud_idx];
-
-    if (fraud_case.Violations == null) {
-        return '<td class="has-icon text-center"><span class="icon-close"></span></td>';
-    }
-
-    if (fraud_case.Violations == 0) {
-        return '<td class="has-icon text-center"><span class="icon-check"></span></td>';
-    }
-
-    return "<td class='has-icon text-center'>"
-        + "<div class='warning'>"
-        + "<span class='icon-alert-circle'></span>"
-        + "<span class='number'>" + renderViolations(fraud_case.Violations) + "</span>"
-        + "</div>"
-        + "</td>";
+    $(".icon-note").click(renderNotePopup);
+    common.closeLoading();
+    $("#refresh_interval").change();
+    $("#event_date").datepicker("hide");
 }
 
 function renderViolations(violation = 1) {
@@ -195,14 +153,6 @@ function renderViolations(violation = 1) {
     else {
         return parseInt(violation / 1e3) + "K";
     }
-}
-
-function renderFraudCasesHeader(fraudCases) {
-    var start = $("#start");
-
-    start.nextUntil("#end").remove();
-
-    start.after(fraudCases.map(f => "<th class='col-status'>" + f + "</th>"));
 }
 
 function getLeague() {
@@ -230,15 +180,18 @@ function renderLeagueDropdown(data) {
             league_selector.append("<option value='" + data[i].LeagueId + "'>" + data[i].LeagueName + "</option>");
         }
 
-        generate_btn.prop("disabled", false).addClass("-primary");
-        export_btn.prop("disabled", false).addClass("-export");
+        generate_btn.prop("disabled", false);
+        export_btn.prop("disabled", false);
+
+        load_grid();
     }
     else {
         league_selector.append("<option value=''>No available league</option>");
 
-        generate_btn.prop("disabled", true).removeClass("-primary");
-        export_btn.prop("disabled", true).removeClass("-export");
-        $("#refresh_interval").val("--");
+        generate_btn.prop("disabled", true);
+        export_btn.prop("disabled", true);
+        $("#refresh_interval").val("--").change();
+        $("table").DataTable().clear().draw();
     }
 }
 
@@ -279,54 +232,12 @@ function updateVerification() {
 
     $.post("matchmonitor/VerifyMatch", dto, function () {
         if (!dto.IsVerified) {
-            $target.next().text("-");
+            $target.parents("td").next().text("-");
+        }
+        else {
+            $target.parents("td").next().text(username);
         }
     });
-}
-
-function sliceData(page = 0, pageSize = 50) {
-    if (data_holder == null) {
-        return null;
-    }
-
-    let sliced_data =
-        {
-            FraudCases: data_holder.FraudCases,
-            Matches: data_holder.Matches.slice(page * pageSize, page * pageSize + pageSize),
-            PageIdx: page
-        };
-
-    return sliced_data;
-}
-
-function page() {
-    if (data_holder != null) {
-        var n = parseInt(data_holder.Matches.length / pageSize) + Math.min(data_holder.Matches.length % pageSize, 1);
-
-        var indexer = $("#page_index").empty();
-
-        for (var i = 0; i < n; i++) {
-            indexer.append("<option value='" + i + "'>" + (i + 1) + "</option>");
-        }
-    }
-}
-
-function changeStageBackNext(page_idx = 0) {
-    if (page_idx == 0) {
-        $("#back").parent().addClass("disabled");
-    }
-    else {
-        $("#back").parent().removeClass("disabled");
-    }
-
-    var max_page = parseInt(data_holder.Matches.length / pageSize);
-
-    if (page_idx == max_page) {
-        $("#next").parent().addClass("disabled");
-    }
-    else {
-        $("#next").parent().removeClass("disabled");
-    }
 }
 
 function mappingFraudCase(fraudCase = "") {
@@ -338,7 +249,7 @@ function mappingFraudCase(fraudCase = "") {
         case "Delay Goal":
             return 8;
         default:
-            throw "not impletmented"
+            throw "not impletmented";
     }
 }
 
@@ -352,7 +263,45 @@ function exportExcel() {
     dto.LeagueIds = $("#league").val();
     dto.IsMainMarket = $("#is_main_market:checked").length > 0;
 
-    common.DownloadFile(url, dto);
+    common.downloadFile(url, dto);
+}
+
+function updateNote(popup, row) {
+    var notes = $("textarea", popup).val();
+
+    if (common.hasSpecialCharacter(notes)) {
+        common.showError("Invalid input");
+        return;
+    }
+
+    var dto = {
+        MatchId: row.MatchId,
+        Notes: notes
+    }
+
+    var url = "/MatchMonitor/UpdateMatchNote";
+
+    $.post(url, dto, function () {
+        $(popup).dialog("close");
+        load_grid();
+    });
+}
+
+function renderNotePopup() {
+    var row = $("table").DataTable().row($(this).parents("tr").first()).data();
+
+    $("#refresh_interval").val("--").change();
+
+    $("textarea", "#match-note-popup").val(row.Notes == "-" ? "" : row.Notes);
+
+    $("#match-note-popup").clone().dialog({
+        modal: true,
+        resizable: false,
+        buttons: [
+            { text: "Submit", class: "button -primary", click: function () { updateNote(this, row) } }
+        ],
+        width: 625
+    });
 }
 
 $(load_page_events);

@@ -7,6 +7,8 @@ namespace Fanex.NAP.FS.Websites
         // For more information on bundling, visit http://go.microsoft.com/fwlink/?LinkId=301862
         public static void RegisterBundles(BundleCollection bundles)
         {
+            BundleTable.EnableOptimizations = true;
+
             bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
                         "~/Scripts/jquery-{version}.js",
                         "~/Scripts/jquery-ui-1.12.1.min.js"));
@@ -24,13 +26,16 @@ namespace Fanex.NAP.FS.Websites
                       "~/Scripts/respond.js"));
 
             bundles.Add(new StyleBundle("~/Content/styles").Include(
-                      "~/Content/select2.min.css",
-                      "~/Content/style.css",
-                      "~/Content/index.min.css",
-                      "~/Content/themes/base/jquery-ui.min.css"));
+                      "~/Content/scss/vendors/select2.min.css",
+                      "~/Content/scss/vendors/jquery-ui/base/jquery-ui.min.css",
+                      "~/Content/scss/vendors/DataTables/css/jquery.dataTables.min.css",
+                      "~/Content/scss/fonts/Fraud-Sensor/style.css",
+                      "~/Content/scss/base/reset.css",
+                      "~/Content/scss/pages/index.css"));
 
             RegisterFSCoreBundles(bundles);
             RegisterMatchMonitorBundles(bundles);
+            RegisterFraudCaseBundles(bundles);
         }
 
         private static void RegisterFSCoreBundles(BundleCollection bundles)
@@ -40,12 +45,22 @@ namespace Fanex.NAP.FS.Websites
                 "~/Scripts/common.js",
                 "~/Scripts/Fanex.Grid/Fanex.Grid.js",
                 "~/Scripts/Fanex.Grid/Fanex.Pagination.js",
-                "~/Scripts/auto-grid.js"));
+                "~/Scripts/DataTables/jquery.datatables.min.js"));
         }
 
         private static void RegisterMatchMonitorBundles(BundleCollection bundles)
         {
-            bundles.Add(new ScriptBundle("~/match-monitor").Include("~/scripts/MatchMonitor/*.js"));
+            bundles.Add(new ScriptBundle("~/scripts/match-monitor").Include("~/scripts/MatchMonitor/*.js"));
+            bundles.Add(new ScriptBundle("~/scripts/match-monitor/fraud-case-details").Include("~/scripts/matchmonitor/fraudcasedetails/*.js"));
+        }
+
+        private static void RegisterFraudCaseBundles(BundleCollection bundles)
+        {
+           bundles.Add(new StyleBundle("~/fraud-case-styles").Include("~/content/scss/pages/configurations/fraud-case.css"));
+
+            bundles.Add(new ScriptBundle("~/fraud-case-scripts").Include("~/scripts/fraudcase/fraud-case.js"));
+
+            bundles.Add(new ScriptBundle("~/fraud-case-scripts/delayed-goal").Include("~/scripts/fraudcase/delayed-goal.js"));
         }
     }
 }

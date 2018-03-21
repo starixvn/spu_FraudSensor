@@ -1,0 +1,52 @@
+﻿@model Fanex.NAP.FS.Websites.ViewModels.MatchMonitor.FraudCaseDetails.MatchFraudCaseInfo
+
+@{
+    ViewBag.Title = "FRAUD CASE DETAILS";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section styles{
+    @Styles.Render("~/fraud-case-styles")
+}
+
+<h1 class="title">@ViewBag.Title</h1>
+
+<div class="info fraud-case-details">
+    <div class="row">
+        <div class="info-name">Event</div>
+        <div class="info-value">@Model.Event</div>
+        <div class="info-name">Fraud case</div>
+        <div class="info-value">@Model.FraudCase</div>
+    </div>
+    <div class="row">
+        <div class="info-name">HT Score</div>
+        <div class="info-value">@Model.HTScore</div>
+        <div class="info-name">FT Score</div>
+        <div class="info-value">@Model.FTScore</div>
+    </div>
+</div>
+
+<button class="button -export">Export</button>
+
+<div id="detailTabs">
+    <ul>
+        <li><a href="#ticket-tab" id="tickets">By Ticket (59)</a></li>
+        <li><a href="#customer-tab" id="customers">By Customers (35)</a></li>
+    </ul>
+
+    @Html.Partial("FraudCaseDetails/TicketDetails")
+
+    @Html.Partial("FraudCaseDetails/CustomerDetails") 
+</div>
+
+@section scripts{
+    <script>
+        var parameters =
+            {
+                fraudCaseId: @Model.FraudCaseId,
+                matchId: @Model.MatchId
+            };
+    </script>
+
+    @Scripts.Render("~/scripts/match-monitor/fraud-case-details")
+}

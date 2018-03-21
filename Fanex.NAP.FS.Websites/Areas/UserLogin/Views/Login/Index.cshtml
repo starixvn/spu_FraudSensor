@@ -8,36 +8,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <link href="https://fonts.googleapis.com/css?family=Lato:400,400i,700" rel="stylesheet">
-    <link rel="stylesheet" href="~/Content/style.css">
-    <!-- <link rel="stylesheet" href="assets/styles/base/reset.css">
-    <link rel="stylesheet" href="assets/styles/pages/login/login.css"> -->
-    <link rel="stylesheet" href="~/Areas/UserLogin/themes/login.min.css">
+    <link rel="stylesheet" href="~/Content/scss/fonts/Fraud-Sensor/style.css">
+    <link rel="stylesheet" href="~/Content/scss/base/reset.css">
+    <link rel="stylesheet" href="~/Content/scss/pages/login/login.css">
     <title>Fraud Sensor</title>
 </head>
 <body>
     <section class="block">
-        <div class="text-center">
-            <img class="login-logo" src="~/Areas/UserLogin/themes/img/login.png" alt="Fraud Sensor">
+        <div class="logo">
+            <img class="login-logo" src="~/Content/scss/images/login.png" alt="Fraud Sensor">
         </div>
-        <h1 class="login-title text-center">Fraud sensor</h1>
         @using (Html.BeginForm())
         {
-            <div class="form-group">
-                <input type="text" class="form-control" placeholder="Username" id="username" name="username">
-                <span class="icon icon-account-outline"></span>
-            </div>
-            <div class="form-group">
-                <input type="password" class="form-control" placeholder="Password" id="password" name="password">
-                <span class="icon icon-onepassword"></span>
-            </div>
-             <button class="button -primary">Login</button>
+        <div class="form-group">
+            <input type="text" class="form-control" placeholder="Username" id="username" name="username">
+            <span class="icon icon-account-outline"></span>
+        </div>
+        <div class="form-group">
+            <input type="password" class="form-control" placeholder="Password" id="password" name="password">
+            <span class="icon icon-onepassword"></span>
+        </div>
+        <button class="button -primary">Login</button>
         }
 
         <div class="msg-error">
-        @if (Model != null)
-        {
+            @if (Model != null)
+            {
             @Model;
-        }
+            }
         </div>
     </section>
     <script src="~/Scripts/jquery-3.0.0.min.js"></script>
@@ -47,6 +45,7 @@
         var msg = $(".msg-error");
         var fst_load = true;
         var has_error_message = @(Model != null ? "true": "false");
+        var format = /[!#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
 
         if (has_error_message) {
             setTimeout(() => msg.text(""), 3000);
@@ -54,23 +53,31 @@
 
         function check_before_submit() {
             if (username.val().length == 0) {
-                msg.text("Username cant be empty");
                 username.addClass("invalid");
-                return false;
             }
 
             if (password.val().length == 0) {
-                msg.text("Password cant be empty");
                 password.addClass("invalid");
-                return false;
             }
 
-            return true;
+            var notEmpty = username.val().length != 0 && password.val().length != 0;
+
+            if (notEmpty) {
+                if (format.test(username.val()) || format.test(password.val())) {
+                    msg.html("Invalid Username or Password");
+                    setTimeout(() => msg.text(""), 3000);
+                    return false;
+                }
+
+                return true;
+            }
+
+            return false;
         }
 
         function reset_input() {
             $("input").removeClass("invalid");
-            if (!fst_load) msg.text("");
+            if (!fst_load) msg.html("");
             fst_load = false;
         }
 

@@ -4,14 +4,14 @@
     {
         None,
 
-        AddingTask,
+        Adding,
 
-        UpdatingTask,
+        Updating,
 
-        RemovingTask,
+        Removing,
 
-        DeactivatingCase,
+        Deactivating,
 
-        ActivatingCase
+        Activating
     }
 }

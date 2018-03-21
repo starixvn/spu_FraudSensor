@@ -4,13 +4,13 @@
     {
         public DeactivatingCase()
         {
-            Type = SendingType.DeactivatingCase;
+            Type = SendingType.Deactivating;
         }
 
         public DeactivatingCase(IMessageQueueSender messageQueue)
             : base(messageQueue)
         {
-            Type = SendingType.DeactivatingCase;
+            Type = SendingType.Deactivating;
         }
     }
 }

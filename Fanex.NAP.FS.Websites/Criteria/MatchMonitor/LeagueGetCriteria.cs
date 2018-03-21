@@ -11,7 +11,7 @@ namespace Fanex.NAP.FS.Websites.Criteria.MatchMonitor
 
         public override string GetSettingKey()
         {
-            return "FS_Rpt_MatchMonitor_League_Get";
+            return "FS_League_Get";
         }
 
         public override bool IsValid()

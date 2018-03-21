@@ -25,7 +25,7 @@ namespace Fanex.NAP.FS.Websites.ViewModels.MatchMonitor
         public Dictionary<string, FraudCase> FraudCases { get; set; }
 
         [Column("Note")]
-        public IEnumerable<string> Notes { get; set; }
+        public string Notes { get; set; }
 
         static Match()
         {

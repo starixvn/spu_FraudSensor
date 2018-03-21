@@ -8,15 +8,17 @@
     <link href="https://fonts.googleapis.com/css?family=Lato:400,400i,700" rel="stylesheet">
     <title>Fraud Sensor</title>
     @Styles.Render("~/Content/styles")
+    @RenderSection("styles", false)
     @Scripts.Render("~/bundles/modernizr")
 </head>
 <body>
     <header class="header">
-        <a href="home/index" class="logo">
-            <img src="~/Content/images/logo.png" alt="Fraud Sensor">
+        <a href="/home/index" class="logo">
+            <img src="~/Content/scss/images/logo.png" alt="Fraud Sensor">
         </a>
         <div class="header-right">
-            <ul class="main-menu">
+            @Html.Action("Menu", "Home",new { activeMenu = ViewContext.Controller.GetType().BaseType.Name } )
+            @*<ul class="main-menu">
                 <li class="menu-item">
                     <a href="#" class="link has-child"><span class="icon icon-chart-scatterplot-hexbin"></span>Report</a>
                     <ul class="sub-menu">
@@ -42,7 +44,7 @@
                         <li class="sub-menu-item"><a href="#" class="link">Message Master</a></li>
                     </ul>
                 </li>
-            </ul>
+            </ul>*@
             @Html.Partial("_LoginPartial")
         </div>
     </header>
@@ -54,6 +56,9 @@
     <div id="loading" title="Loading">
         <div id="progress_bar"></div>
     </div>
+    <div id="confirmation" title="Confirmation"></div>
+    <div id="success" style="color: #4f971f" class="text-center"></div>
+    <div id="error" style="color:red" class="text-center"></div>
     @Scripts.Render("~/bundles/jquery")
     @if (NapSettings.Settings.EnableReCheckIn)
     {

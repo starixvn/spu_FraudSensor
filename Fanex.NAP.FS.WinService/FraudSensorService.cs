@@ -1,18 +1,19 @@
 ﻿namespace Fanex.NAP.FS.WinService
 {
-    using Fanex.Data;
-    using Fanex.Logging;
-    using Fanex.MailDelivery.Client;
+    using Data;
+    using Logging;
+    using MailDelivery.Client;
     using System.Configuration;
     using System.ServiceProcess;
+    using System.Threading.Tasks;
 
     public partial class FraudSensorService : ServiceBase
     {
-        private ITaskLoader _taskLoader;
+        private IFraudCaseLoader _fraudCaseLoader;
 
         private IReceivingMessageHandler _receivingMessageHandler;
 
-        public FraudSensorService(ITaskLoader taskLoader = null, IReceivingMessageHandler receivingMessageHandler = null)
+        public FraudSensorService(IFraudCaseLoader fraudCaseLoader = null, IReceivingMessageHandler receivingMessageHandler = null)
         {
             DbSettingProviderManager
                .StartNewSession()
@@ -20,7 +21,7 @@
                .UseDefaultDbSettingProvider(resourcePath: "~/App_Data", enableWatching: true)
                .Run();
 
-            _taskLoader = taskLoader ?? new TaskLoader();
+            _fraudCaseLoader = fraudCaseLoader ?? new FraudCaseLoader();
 
             _receivingMessageHandler = receivingMessageHandler ?? new ReceivingMessageHandler();
 
@@ -36,9 +37,20 @@
         {
             Logger.Log.Info("SPU FS Service Stopped");
 
-            _receivingMessageHandler.ClearTasks();
+            _receivingMessageHandler.ClearCases();
 
             SendMailInform(false);
+        }
+
+        protected override void OnShutdown()
+        {
+            SendMailInform(false);
+
+            Logger.Log.Info("SPU FS Service Stopped");
+
+            _receivingMessageHandler.ClearCases();
+
+            MailClientHandler.Stop();
         }
 
         public void RunOnStart()
@@ -50,7 +62,7 @@
             var queue = new MessageQueueReceiver();
             queue.Clear();
 
-            _taskLoader.LoadTasks();
+            _fraudCaseLoader.LoadFraudCases();
 
             _receivingMessageHandler.TriggerReceivingMessage();
 
@@ -61,28 +73,31 @@
 
         private void SendMailInform(bool serviceStarting)
         {
-            try
+            Task.Factory.StartNew(() =>
             {
-                var subject = "SPU - New FS Service Started";
-                if (!serviceStarting)
+                try
                 {
-                    subject = "SPU - New FS Service Stopped";
+                    var subject = "SPU - New FS Service Started";
+                    if (!serviceStarting)
+                    {
+                        subject = "SPU - New FS Service Stopped";
+                    }
+
+                    var newMail = new Fanex.MailDelivery.Core.Models.Mail
+                    {
+                        Subject = subject,
+                        Title = "SPU Fraud Sensor",
+                        Body = subject,
+                        MailingListId = int.Parse(ConfigurationManager.AppSettings["MailingListId"])
+                    };
+
+                    MailClientHandler.SendFunctionMail(newMail);
                 }
-
-                var newMail = new Fanex.MailDelivery.Core.Models.Mail
+                catch
                 {
-                    Subject = subject,
-                    Title = subject,
-                    Body = subject,
-                    MailingListId = int.Parse(ConfigurationManager.AppSettings["MailingListId"])
-                };
-
-                MailClientHandler.SendFunctionMail(newMail);
-            }
-            catch
-            {
-                ////ignore comment
-            }
+                    ////ignore comment
+                }
+            });
         }
     }
 }

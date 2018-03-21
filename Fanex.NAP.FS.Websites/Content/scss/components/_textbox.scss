@@ -1,0 +1,41 @@
+input[type="text"],
+input[type="search"],
+input[type="email"],
+input[type="number"],
+input[type="password"] {
+    @include input-placeholder($input-color);
+    outline: none;
+    height: 28px;
+    line-height: 28px;
+    padding-left: 6px;
+    padding-right: 6px;
+    border-radius: 2px;    
+    border: 1px solid $border-color;
+    background-color: #fff;
+    font-size: inherit;
+    color: $input-color;
+    transition: $transition-input;
+
+    &:focus {
+      border-color: #2197ff;
+      box-shadow: 0 0 1px 2px rgba(33,151,255, .35);
+    }
+}
+
+textarea {
+  @include input-placeholder($input-color);
+  outline: none;
+  padding-left: 6px;
+  padding-right: 6px;
+  border-radius: 2px;    
+  border: 1px solid $border-color;
+  background-color: #fff;
+  font-size: inherit;
+  color: $input-color;
+  transition: $transition-input;
+
+  &:focus {
+    border-color: #2197ff;
+    box-shadow: 0 0 1px 2px rgba(33,151,255, .35);
+  }
+}

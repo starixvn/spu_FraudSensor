@@ -44,9 +44,9 @@ namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
 
         public static object VerifyMatch(VerifyMatchCriteria criteria)
         {
-            DataService.UpdateData(criteria);
+            DataService.UpdateData(criteria, "MatchMonitor");
 
-            return null;
+            return new object();
         }
 
         public static Models.MatchMonitor.BalanceUpDate GetBalanceUpDate()
@@ -62,6 +62,8 @@ namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
             {
                 var excel = new XSSFWorkbook(stream);
                 var sheet = excel.GetSheetAt(0);
+
+                WriteLegend(sheet, criteria);
 
                 sheet = data.Matches.Aggregate(sheet, WriteMatch);
 
@@ -79,6 +81,11 @@ namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
             }
         }
 
+        public static DBResult UpdateMatchNote(MatchNoteUpdateCriteria criteria)
+        {
+            return DataService.UpdateData(criteria, "MatchMonitor");
+        }
+
         public static ISheet WriteMatch(ISheet sheet, Match m)
         {
             sheet.ShiftRows(sheet.LastRowNum, sheet.LastRowNum, 1, true, false);
@@ -89,7 +96,7 @@ namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
 
             CopyRow(lastRow, row);
 
-            row.GetCell(0).SetCellValue(row.RowNum);
+            row.GetCell(0).SetCellValue(row.RowNum - 2);
             row.GetCell(1).SetCellValue(m.Verified ? "Yes" : "No");
             row.GetCell(2).SetCellValue(m.VerifiedBy ?? "-");
             row.GetCell(3).SetCellValue(WriteEvent(m.Event));
@@ -98,6 +105,7 @@ namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
             row.GetCell(6).SetCellValue(WriteFraudCase(m.FraudCases.ContainsKey("1") ? m.FraudCases["1"] : null));
             row.GetCell(7).SetCellValue(WriteFraudCase(m.FraudCases.ContainsKey("6") ? m.FraudCases["6"] : null));
             row.GetCell(8).SetCellValue(WriteFraudCase(m.FraudCases.ContainsKey("8") ? m.FraudCases["8"] : null));
+            row.GetCell(9).SetCellValue(m.Notes ?? "-");
 
             return sheet;
         }
@@ -137,7 +145,7 @@ namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
             return result;
         }
 
-        private static IRichTextString WriteFraudCase(FraudCase fraudCase)
+        private static IRichTextString WriteFraudCase(ViewModels.MatchMonitor.FraudCase fraudCase)
         {
             if (fraudCase == null)
             {
@@ -202,14 +210,39 @@ namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
                 FraudCases =
                     fraudCases
                     .GroupBy(f => Tuple.Create(f.FraudCaseId, f.FraudCaseName))
-                    .Select(g => new FraudCase(g.Key.Item1, g.Key.Item2, g))
+                    .Select(g => new ViewModels.MatchMonitor.FraudCase(g.Key.Item1, g.Key.Item2, g))
                     .ToDictionary(f => f.FraudCaseId.ToString()),
                 MatchId = match.MatchId,
                 Verified = match.IsVerified,
                 VerifiedBy = match.VerifiedBy == null ? null : userService.Get(match.VerifiedBy.Value).Username,
                 Status = (char)(match.EventStatus[0] - 32) + match.EventStatus.Remove(0, 1),
-                Score = string.Format("{0} - {1}", match.LiveHomeScore, match.LiveAwayScore)
+                Score = string.Format("{0} - {1}", match.LiveHomeScore, match.LiveAwayScore),
+                Notes = string.IsNullOrEmpty(match.Notes) ? "-" : match.Notes
             };
+        }
+
+        private static void WriteLegend(ISheet sheet, MatchGetAllCriteria criteria)
+        {
+            var row = sheet.GetRow(1);
+
+            var legend0 = new XSSFRichTextString();
+            var legend1 = new XSSFRichTextString();
+
+            WriteLegend(legend0, "Event Date", criteria.EventDate.ToString("MMM dd, yyyy"));
+            WriteLegend(legend0, "Sport", "Soccer");
+            WriteLegend(legend0, "Match Status", criteria.MatchStatus);
+            WriteLegend(legend1, "League", criteria.LeagueIds.Contains(",") ? "All Leagues" : RefData.GetLeagueName(criteria.LeagueIds)[1].ToString());
+            WriteLegend(legend1, "Verified", criteria.IsVerified == null ? "All" : criteria.IsVerified.Value ? "Yes" : "No");
+            WriteLegend(legend1, "Main Markets Only", criteria.IsMainMarket ? "Yes" : "No");
+
+            row.GetCell(0).SetCellValue(legend0);
+            row.GetCell(3).SetCellValue(legend1);
+        }
+
+        private static void WriteLegend(XSSFRichTextString legend, string prop, string value)
+        {
+            legend.Append(prop + ": ", new XSSFFont { IsBold = true });
+            legend.Append(value + "\n");
         }
     }
 }

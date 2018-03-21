@@ -1,0 +1,58 @@
+$font-family: 'Lato', Arial, Tahoma, sans-serif;
+$font-icon: 'Fraud-Sensor';
+$font-size: 14px;
+$page-bg: #fff;
+$text-color: #666;
+
+$primary-color: #1d2e4f;
+
+$link-color: #3c96c7;
+$link-hover-color: darken($link-color, 10%);
+
+$border-color: #d6d6d6;
+
+$input-color: #545454;
+$input-border: #d6d6d6;
+$input-border-focus: #1a87d3;
+$input-border-error: #ff4545;
+
+$btn-primary-bg: #4f971f;
+$btn-primary-color: #fff;
+$btn-primary-bg-hover: #5bb023;
+
+$btn-disabled-bg: #c9cdd1;
+$btn-disabled-color: #fff;
+
+$msg-error: #fe0000; 
+$msg-error-border: #ff0000; 
+$msg-error-bg: #ffebea;
+
+$msg-success: #18aa3a; 
+$msg-success-border: #329a37; 
+$msg-success-bg: #e5ffeb;
+
+$msg-warning: #ff7a04; 
+$msg-warning-border: #ffac63; 
+$msg-warning-bg: #ffedd3;
+
+$transition-common: all ease-in-out .3s;
+$transition-input: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+
+$tab-color: #333;
+$tab-active-color: #333;
+$tab-line: #f57d14;
+
+$table-bg: #fff;
+$table-border: #c1c1c1;
+$table-header-bg: #465262;
+$table-header-color: #fff;
+$table-sub-header-bg: #465262;
+$table-sub-header-color: #fff;
+$table-color: #545454;
+$table-td-bg-hover: #fff3ed;
+$table-col-even-bg: #fafafa;
+$table-row-level-parent: #eee;
+
+$loader-color: #1973b2;
+$loader-size: 32px;
+$loader-animation-duration: 1.15s;

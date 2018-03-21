@@ -1,0 +1,68 @@
+.button {
+    display: inline-block;
+    height: 28px;
+    line-height: 20px;
+    padding-left: 12px;
+    padding-right: 12px;
+    border-radius: 2px;
+    border: none;
+    outline: none;
+    font-size: inherit;
+    text-transform: capitalize;
+    text-align: center;
+    text-shadow: none;
+
+    &.-primary {
+        background-color: $btn-primary-bg;
+        color: $btn-primary-color;
+
+        &:hover:not(:disabled) {
+            background-color: $btn-primary-bg-hover;
+        }
+    }
+
+    &.-export {
+        border: 1px solid $btn-primary-bg;
+        background-color: #fff;
+        color: #3a6e17;
+
+        .icon-export-excel {
+            margin-right: 10px;
+        }
+
+        &:hover:not(:disabled) {
+            border-color: $btn-primary-bg-hover;
+            background-color: $btn-primary-bg-hover;
+            color: #fff;
+        }
+
+        &:hover .icon-export-excel {
+            color: #fff;
+        }        
+    }
+}
+
+a.button, a.button:hover {
+    text-decoration: none;
+}
+
+.button:not(:disabled) {
+    cursor: pointer;
+}
+
+.button[disabled] {
+    background-color: $btn-disabled-bg;
+    color: $btn-disabled-color;
+    cursor: not-allowed;
+}
+
+.button.-export[disabled] {
+    border-color: $btn-disabled-bg;
+    background-color: #fff;
+    color: $btn-disabled-bg;
+
+    .icon-export-excel,
+    &:hover .icon-export-excel {
+        color: $btn-disabled-bg;
+    }
+}

@@ -1,0 +1,100 @@
+@import "../../abstracts/variables";
+@import "../../abstracts/mixins";
+@import "../../base/scaffolding";
+@import "../../components/buttons";
+
+body {
+    background-color: #1d2e4f;
+    font-size: 14px;
+}
+
+.block {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    width: 390px;
+    min-height: 424px;
+    margin: 120px auto 0;
+    padding: 50px 40px 50px;
+    border-radius: 2px;
+    background-color: #fff;
+    box-shadow: 0 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.logo {
+    padding-bottom: 40px;
+    text-align: center;
+}
+
+.form-group {
+    position: relative;
+    margin-bottom: 18px;
+
+    .icon {
+        position: absolute;
+        left: 0;
+        bottom: 10px;
+        color: #47668a;
+    }
+
+    .icon-account-outline {
+        font-size: 22px;
+    }
+
+    .icon-onepassword {
+        font-size: 18px;
+    }
+}
+
+.form-control {
+    @include input-placeholder(#47668a);
+    @include input-placeholder-focus(#2197ff);
+    outline: none;
+    height: 40px;
+    line-height: 40px;
+    width: 100%;
+    padding-left: 33px;
+    background-color: #fff;
+    border: none;
+    border-bottom: 1px solid #47668a;    
+    font-size: inherit;
+    color: #47668a;
+    transition: $transition-input;
+
+    &:focus {
+        border-bottom: 2px solid #2197ff;
+        color: #2197ff;
+    }
+
+    &:focus + .icon {
+        color: #2197ff;
+    }
+
+    &.invalid {
+        @include input-placeholder(#ff0000);
+        border-bottom-color: #ff0000;
+        color: #ff0000;
+
+        &:focus {
+            color: #2197ff;
+        }
+    }
+
+    &.invalid + .icon {
+        color: #ff0000;
+    }
+}
+
+.msg-error {
+    padding-top: 10px;
+    margin-bottom: 20px;
+    color: #ff0000;
+}
+
+.button {
+    height: 40px;
+    width: 100%;
+    margin-top: 20px;
+    text-transform: uppercase;
+}

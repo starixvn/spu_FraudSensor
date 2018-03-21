@@ -1,0 +1,44 @@
+﻿@using System.Collections.Generic;
+@using Fanex.NAP.Core.Models;
+@model IList<MenuItem>
+
+@{
+    Func<string, string> iconLookup = menuName =>
+    {
+        switch (menuName)
+        {
+            case "Reports":
+                return "<span class='icon icon-chart-scatterplot-hexbin'></span>";
+            case "Configurations":
+                return "<span class='icon icon-settings'></span>";
+            case "Notification":
+                return "<span class='icon icon-email'></span>";
+            default:
+                throw new NotImplementedException("No support for " + menuName);
+        }
+    };
+
+    var controllerBaseType = ViewBag.ActiveMenu as string;
+}
+
+<ul class="main-menu">
+    @foreach (var menu in Model.Where(m => m.Parent == null && m.IsActive && m.Name != "Home").OrderBy(m => m.DisplayOrder))
+    {
+        var subMenus = Model.Where(m => m.Parent != null && m.IsActive && m.Parent.Id == menu.Id).OrderBy(m => m.DisplayOrder);
+
+        <li class="menu-item">
+            <a href="#" class="link @(subMenus.Any()? "has-child" : "") @(controllerBaseType.Contains(menu.Name) ? "active" : "")">@Html.Raw(iconLookup(menu.Name)) @menu.Name</a>
+            @if (subMenus.Any())
+            {
+            <ul class="sub-menu">
+                @foreach (var subMenu in subMenus)
+                {
+                    <li class="sub-menu-item">
+                        <a href="@Url.Content(subMenu.ValidUrl)" class="link">@subMenu.Name</a>
+                    </li>
+                }
+            </ul>
+            }
+        </li>
+    }
+</ul>

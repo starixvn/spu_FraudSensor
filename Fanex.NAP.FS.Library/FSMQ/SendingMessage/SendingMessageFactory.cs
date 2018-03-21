@@ -8,19 +8,19 @@
         {
             switch (type)
             {
-                case SendingType.AddingTask:
-                    return new AddingTask();
+                case SendingType.Adding:
+                    return new AddingCase();
 
-                case SendingType.UpdatingTask:
-                    return new UpdatingTask();
+                case SendingType.Updating:
+                    return new UpdatingCase();
 
-                case SendingType.RemovingTask:
-                    return new RemovingTask();
+                case SendingType.Removing:
+                    return new RemovingCase();
 
-                case SendingType.DeactivatingCase:
+                case SendingType.Deactivating:
                     return new DeactivatingCase();
 
-                case SendingType.ActivatingCase:
+                case SendingType.Activating:
                     return new ActivatingCase();
 
                 default:

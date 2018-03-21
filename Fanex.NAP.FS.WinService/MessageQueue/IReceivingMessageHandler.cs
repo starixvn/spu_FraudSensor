@@ -8,6 +8,6 @@
 
         void TriggerReceivingMessage();
 
-        void ClearTasks();
+        void ClearCases();
     }
 }

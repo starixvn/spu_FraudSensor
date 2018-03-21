@@ -1,0 +1,44 @@
+input[type="radio"] {
+  display: none;
+}
+
+input[type="radio"] + span {
+  position: relative;
+  cursor: pointer;
+  padding-left: 17px;
+
+  &:before {
+    border-radius: 100%;
+    content: '';
+    position: absolute;
+    left: 0;            
+    top: 2px;        
+    height: 13px;            
+    width: 13px;
+    border: 1px solid #c8c8c8;
+    background-color: #fff;
+  }
+
+  &:after {
+    background-color: $primary-color;
+    border-radius: 100%;
+    content: "";
+    position: absolute;
+    top: 5px;
+    left: 3px;
+    height: 7px;
+    width: 7px;
+    transition: all ease-in-out .3s;
+    opacity: 0;
+  }
+}
+
+// Box checked
+input[type="radio"]:checked + span:after {
+  opacity: 1;
+}
+
+// Disabled state label.
+input[type="radio"]:disabled + span {
+  opacity: 0.5;
+}

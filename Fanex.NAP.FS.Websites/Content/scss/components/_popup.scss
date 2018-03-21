@@ -1,0 +1,63 @@
+.ui-dialog {
+    top: 120px !important;
+    padding: 0;
+    font-family: $font-family;
+
+    .ui-dialog-content {
+        padding-top: 20px;
+    }
+
+    .table thead tr th,
+    .table tbody tr td {
+        padding: 8px 6px;
+    }
+
+    .ui-dialog-buttonpane {
+        border-top: none;
+        margin-top: 0;
+        padding-bottom: 20px;
+    }
+
+    .ui-dialog-buttonpane button {
+        padding: 0 24px;
+        margin: 0;
+    } 
+
+    .ui-button:hover,
+    .ui-button:focus,
+    .ui-button:active {
+        border: none;
+    }
+
+    .ui-dialog-titlebar {
+        padding: 10px;
+        border: none;
+        border-radius: 0;
+        background-color: #1e2e4f;
+        color: #fff;
+        font-weight: normal;
+        font-size: 15px;
+    }
+
+    .ui-dialog-titlebar-close {
+        background: none;
+        border: none;
+    }
+}
+
+.ui-button .ui-icon {
+    width: auto;
+    height: auto;
+    margin-left: -11px;
+    margin-top: -10px;
+    background: none;
+    font-family: 'Fraud-Sensor';
+    text-indent: 0;
+
+    &:before {
+        display: inline-block;
+        content: "\e920";
+        color: #fff;
+        font-size: 20px;
+    }
+}

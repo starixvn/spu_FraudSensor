@@ -11,6 +11,14 @@ namespace Fanex.NAP.FS.Websites.Controllers
             return View();
         }
 
+        [ChildActionOnly]
+        public PartialViewResult Menu(string activeMenu)
+        {
+            ViewBag.ActiveMenu = activeMenu;
+
+            return PartialView("~/Views/Shared/_Menu.cshtml", CurrentSession.MenuItemList);
+        }
+
         public ActionResult About()
         {
             ViewBag.Message = "Your application description page.";

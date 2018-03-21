@@ -18,6 +18,7 @@ namespace Fanex.NAP.FS.Websites.Controllers
         public BaseController()
         {
             CurrentContext = new CurrentContext();
+            UserService = new UserService();
 
             if (NapSettings.Settings != null)
             {
@@ -52,6 +53,8 @@ namespace Fanex.NAP.FS.Websites.Controllers
             get;
             set;
         }
+
+        public IUserService UserService { get; }
 
         /// <summary>
         /// Return the HTML string of a View.
