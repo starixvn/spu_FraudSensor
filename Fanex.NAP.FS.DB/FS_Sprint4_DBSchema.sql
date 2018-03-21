@@ -87,3 +87,18 @@ CREATE CLUSTERED INDEX CIX_CustomerVerified_CustIdFraudCaseId ON [dbo].[Customer
 	[FraudCaseId]			ASC
 ) ON IDX;
 GO
+---------------
+CREATE TABLE [dbo].[EvidenceTypes](
+	[EviGroupID]			INT NOT NULL,
+	[EviCode]				NVARCHAR(50) NOT NULL,
+	[IsActive]				BIT DEFAULT((1)) NULL,
+	[EviName]				NVARCHAR(150) NULL,
+	[EviDescription]		NVARCHAR(200) NULL,
+	[EviPriority]			INT NULL,
+	[OrderNo]				SMALLINT NULL,
+ CONSTRAINT [PK_EvidenceTypes] PRIMARY KEY CLUSTERED 
+(
+	[EviCode] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [DATA]
+) ON [DATA]
+GO
