@@ -742,6 +742,7 @@
     <Content Include="fonts\Fraud-Sensor.ttf" />
     <Content Include="fonts\Fraud-Sensor.woff" />
     <Content Include="Content\scss\components\_customize-select2.scss" />
+    <Content Include="Content\scss\components\_customize-datepicker.scss" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile2.pubxml" />
