@@ -61,14 +61,16 @@ GO
 ---------------
 CREATE TABLE [dbo].[CustomerMonitorAssignment](
 	[CustId]				INT NOT NULL,
-	[Assignee]				NVARCHAR(50) NOT NULL,
+	[AssigneeId]			INT NOT NULL,
 	[LastModifiedDate]		DATETIME NOT NULL,
 	[CreatorId]				INT NOT NULL,
- CONSTRAINT [PK_CustomerMonitorAssignment] PRIMARY KEY CLUSTERED 
-(
-	[CustId]				ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [DATA]
 ) ON [DATA]
+GO
+
+CREATE CLUSTERED INDEX CIX_CustomerMonitorAssignment_CustIdAssigneeId ON [dbo].[CustomerMonitorAssignment] (
+	[CustId]				ASC,
+	[AssigneeId]			ASC
+) ON IDX;
 GO
 ---------------
 CREATE TABLE [dbo].[CustomerVerified](
