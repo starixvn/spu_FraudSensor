@@ -131,14 +131,14 @@
         autoWidth: false,
         scrollY: '57vh',
         columns: [
-            { data: (obj, type, set, meta) => meta.row + 1, className: "text-center" },
+            { data: (obj, type, set, meta) => meta.row + 1, className: "text-center", width: "40px" },
             { data: obj => obj.Member },
             { data: obj => obj.Tickets },
             { data: obj => obj.TotalStake.toFixed(2) },
             { data: obj => obj.TotalWinLoss.toFixed(2) },
             { data: obj => obj.Evidence },
             { data: obj => obj.AssociatedAccounts },
-            { defaultContent: '<span class="icon-settings icon-config"></span>', className: "has-icon text-center" }
+            { defaultContent: '<span class="icon-settings icon-config"></span>', className: "has-icon text-center", width: "156px" }
         ]
     })
 
