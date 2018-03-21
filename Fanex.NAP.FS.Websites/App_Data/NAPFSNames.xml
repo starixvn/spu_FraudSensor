@@ -10,6 +10,11 @@
     <Setting Key="Age_SelBalanceUpDay" SpName="Age_SelBalanceUpDay" DbName="DB.bodb02.bodbAdminNet"/>
     <Setting Key="FS_Rpt_MatchMonitorNotes_Update" SpName="FS_Rpt_MatchMonitorNotes_Update" DbName="DBFS.FraudSensor.bodbSPUNet" />
   </Function>
+  <Function Name="FraudCaseDetails">
+    <Setting Key="FS_Rpt_MatchMonitor_Details_Get_MatchInfo" SpName="FS_Rpt_MatchMonitor_Details_Get_MatchInfo" DbName="DBFS.FraudSensor.bodbSPUNet"/>
+    <Setting Key="FS_Rpt_MatchMonitor_Details_Get_ByCustomer" SpName="FS_Rpt_MatchMonitor_Details_Get_ByCustomer" DbName="DBFS.FraudSensor.bodbSPUNet"/>
+    <Setting Key="FS_Rpt_MatchMonitor_Details_Get_ByTicket" SpName="FS_Rpt_MatchMonitor_Details_Get_ByTicket" DbName="DBFS.FraudSensor.bodbSPUNet"/>
+  </Function>
   <Function Name="FraudCase">
     <Setting Key="FS_FraudCase_GetById" SpName="FS_FraudCase_GetById" DbName="DBFS.FraudSensor.bodbSPUNet"/>
     <Setting Key="FS_FraudCase_CaseStatus_Update" SpName="FS_FraudCase_CaseStatus_Update" DbName="DBFS.FraudSensor.bodbSPUNet"/>

@@ -18,5 +18,7 @@ namespace Fanex.NAP.FS.Websites.ViewModels.MatchMonitor.FraudCaseDetails
         public string HTScore { get; set; }
 
         public string FTScore { get; set; }
+
+        public DateTime EventDate { get; set; }
     }
 }

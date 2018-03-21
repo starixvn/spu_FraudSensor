@@ -18,7 +18,11 @@
 
             table.clear().rows.add(process_ticket_json(json)).draw();
 
-            $("#tickets").text(`By Tickets (${json.reduce((a, arr) => a + arr.length, 0)})`)
+            var n = json.reduce((a, arr) => a + arr.data.length, 0);
+
+            $("#tickets").text(`By Tickets (${n})`);
+
+            $("#DataTables_Table_0_info").text(`Displaying 1 to ${n} of ${n} item(s)`);
         });
     }
 
@@ -35,13 +39,15 @@
     function process_ticket_json(json) {
         var result = [];
 
-        for (var bt in json) {
-            result.push({ key: true, value: bt });
+        for (var i = 0; i < json.length; i++) {
+            var bt = json[i];
 
-            var data = json[bt];
+            result.push({ key: true, value: bt.key });
 
-            for (var i = 0; i < data.length; i++) {
-                result.push(data[i]);
+            var data = bt.data;
+
+            for (var j = 0; j < data.length; j++) {
+                result.push(data[j]);
             }
         }
 
@@ -75,6 +81,12 @@
         }
     }
 
+    function exportExcel() {
+        var url = common.modifyRelativeUrl("/MatchMonitor/ExportExcelForDetail");
+
+        common.downloadFile(url, parameters);
+    }
+
     ticket_grid.DataTable({
         ordering: false,
         paging: false,
@@ -90,17 +102,18 @@
         },
         autoWidth: false,
         scrollY: '57vh',
+        scrollCollapse: true,
         columns: [
             { data: obj => obj.key ? obj.value : ++global_idx, className: "text-center", width: "40px" },
             { data: obj => obj.Member },
-            { data: obj => obj.TransDate, className: "text-center", width: "200px" },
+            { data: obj => moment(obj.TransDate).format("MMM D, YYYY"), className: "text-center", width: "200px" },
             { data: obj => obj.BetID },
             { data: obj => obj.Choice },
             { data: obj => obj.Score, className: "text-center", width: "80px" },
-            { data: obj => obj.Odds, width: "84px" },
-            { data: obj => obj.Stake == null ? null : obj.Stake.toFixed(2) },
-            { data: obj => obj.WinLoss == null ? null : obj.WinLoss.toFixed(2) },
-            { data: obj => obj.Status, className: "text-center", width: "110px" },
+            { data: obj => obj.Odds != null ? `${obj.Odds.Value}<p>${obj.Odds.Type}</p>` : null, width: "84px" },
+            { data: obj => obj.Stake == null ? null : obj.Stake.toFixed(2), className: "text-right" },
+            { data: obj => obj.WinLoss == null ? null : obj.WinLoss.toFixed(2), className: "text-right" },
+            { data: obj => obj.Status, width: "110px" },
             { data: obj => obj.IP }
         ],
         columnDefs: [{ targets: "_all", defaultContent: "-" }],
@@ -112,7 +125,7 @@
             } else {
                 $(row).attr("data-bettype-item", obj.Bettype);
             }
-        },
+        }
     });
 
     customer_grid.DataTable({
@@ -130,14 +143,15 @@
         },
         autoWidth: false,
         scrollY: '57vh',
+        scrollCollapse: true,
         columns: [
             { data: (obj, type, set, meta) => meta.row + 1, className: "text-center", width: "40px" },
             { data: obj => obj.Member },
-            { data: obj => obj.Tickets },
-            { data: obj => obj.TotalStake.toFixed(2) },
-            { data: obj => obj.TotalWinLoss.toFixed(2) },
+            { data: obj => obj.Tickets, className: "text-right" },
+            { data: obj => obj.TotalStake.toFixed(2), className: "text-right" },
+            { data: obj => obj.TotalWinLoss.toFixed(2), className: "text-right" },
             { data: obj => obj.Evidence },
-            { data: obj => obj.AssociatedAccounts },
+            { data: obj => obj.AssociatedAccounts, className: "text-right" },
             { defaultContent: '<span class="icon-settings icon-config"></span>', className: "has-icon text-center", width: "156px" }
         ]
     })
@@ -149,6 +163,8 @@
     detail_tabs.tabs({
         activate: (e, ui) => switchTab(ui)
     });
+
+    $(".-export").click(exportExcel);
 }
 
 $(fraud_case_details)

@@ -19,10 +19,10 @@
         <div class="info-value">@Model.FraudCase</div>
     </div>
     <div class="row">
-        <div class="info-name">HT Score</div>
-        <div class="info-value">@Model.HTScore</div>
-        <div class="info-name">FT Score</div>
-        <div class="info-value">@Model.FTScore</div>
+        <div class="info-name">Date</div>
+        <div class="info-value">@Model.EventDate.ToString("MMM dd, yyyy")</div>
+        <div class="info-name">HT/FT Score</div>
+        <div class="info-value">@Model.HTScore / @Model.FTScore</div>
     </div>
 </div>
 
@@ -46,7 +46,8 @@
         var parameters =
             {
                 fraudCaseId: @Model.FraudCaseId,
-                matchId: @Model.MatchId
+                matchId: @Model.MatchId,
+                eventDate: '@Model.EventDate.ToShortDateString()'
             };
     </script>
 

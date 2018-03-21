@@ -5,11 +5,11 @@ using System.Web;
 
 namespace Fanex.NAP.FS.Websites.ViewModels.MatchMonitor.FraudCaseDetails
 {
-    public class TIcketDetails
+    public class TicketDetails
     {
         public string Member { get; set; }
 
-        public string TransDate { get; set; }
+        public DateTime TransDate { get; set; }
 
         public string BetID { get; set; }
 
@@ -17,11 +17,11 @@ namespace Fanex.NAP.FS.Websites.ViewModels.MatchMonitor.FraudCaseDetails
 
         public string Score { get; set; }
 
-        public string Odds { get; set; }
+        public OddsDetails Odds { get; set; }
 
-        public double Stake { get; set; }
+        public decimal Stake { get; set; }
 
-        public double WinLoss { get; set; }
+        public decimal WinLoss { get; set; }
 
         public string Status { get; set; }
 

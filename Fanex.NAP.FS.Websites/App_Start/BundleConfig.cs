@@ -41,6 +41,7 @@ namespace Fanex.NAP.FS.Websites
         private static void RegisterFSCoreBundles(BundleCollection bundles)
         {
             bundles.Add(new ScriptBundle("~/core").Include(
+                "~/Scripts/moment.min.js",
                 "~/Scripts/select2.min.js",
                 "~/Scripts/common.js",
                 "~/Scripts/Fanex.Grid/Fanex.Grid.js",

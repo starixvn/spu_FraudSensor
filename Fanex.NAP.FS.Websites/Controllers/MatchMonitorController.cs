@@ -51,35 +51,37 @@ namespace Fanex.NAP.FS.Websites.Controllers
             return File(MatchMonitorService.ExportExcel(criteria, templatePath), "application/vnd.ms-excel", fileName);
         }
 
-        public ActionResult GetFraudCaseDetails(int fraudCaseId, int matchId)
+        public ActionResult GetFraudCaseDetails(int fraudCaseId, int matchId, DateTime eventDate)
         {
-            var model = new MatchFraudCaseInfo
-            {
-                Event = "String vs Loop",
-                FraudCase = "Gravity",
-                HTScore = "0 - 0",
-                FTScore = "0 - 0",
-                FraudCaseId = fraudCaseId,
-                MatchId =  matchId
-            };
+            var model = FraudCaseDetailsService.GetInfo(matchId, fraudCaseId, eventDate);
 
             return View("FraudCaseDetails/Index", model);
         }
 
-        public ActionResult GetFraudCaseTicketDetails(int fraudCaseId, int matchId)
+        public ActionResult GetFraudCaseTicketDetails(int fraudCaseId, int matchId, DateTime eventDate)
         {
             var data = 
-                FraudCaseDetailsService.GetTicketDetails(matchId, fraudCaseId)
-                .GroupBy(t => t.Bettype);
+                FraudCaseDetailsService.GetTicketDetails(matchId, fraudCaseId, eventDate)
+                .GroupBy(t => t.Bettype)
+                .Select(g => new { key = g.Key, data = g.AsEnumerable() });
 
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult GetFraudCaseCustomerDetails(int fraudCaseId, int matchId)
+        public ActionResult GetFraudCaseCustomerDetails(int fraudCaseId, int matchId, DateTime eventDate)
         {
-            var data = FraudCaseDetailsService.GetCustomerDetails(matchId, fraudCaseId);
+            var data = FraudCaseDetailsService.GetCustomerDetails(matchId, fraudCaseId, eventDate);
 
             return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult ExportExcelForDetail(int fraudCaseId, int matchId, DateTime eventDate)
+        {
+            var template = Server.MapPath("~/App_Data/Excel Template/MatchMonitor/FraudCaseDetail/template.xlsx");
+
+            var fileName = string.Format("FraudCaseDetail_{0}.xlsx", DateTime.Today.ToString("yyyyMMdd"));
+
+            return File(FraudCaseDetailsService.ExportExcel(matchId, fraudCaseId, eventDate, template), "application/vnd.ms-excel", fileName);
         }
 
         [HttpPost]
