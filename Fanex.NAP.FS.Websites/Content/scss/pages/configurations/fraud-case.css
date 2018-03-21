@@ -105,6 +105,11 @@
     padding: 12px 6px;
     border: 1px solid #d6d6d6; }
 
+.export-in-tabs {
+  position: absolute;
+  right: 0;
+  top: -1px; }
+
 .info {
   display: -webkit-box;
   display: -webkit-flex;

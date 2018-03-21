@@ -26,13 +26,15 @@
     </div>
 </div>
 
-<button class="button -export">Export</button>
+
 
 <div id="detailTabs">
     <ul>
         <li><a href="#ticket-tab" id="tickets">By Ticket (59)</a></li>
         <li><a href="#customer-tab" id="customers">By Customers (35)</a></li>
     </ul>
+
+    <button class="button -export export-in-tabs"><span class="icon-export-excel"></span>Export</button>
 
     @Html.Partial("FraudCaseDetails/TicketDetails")
 

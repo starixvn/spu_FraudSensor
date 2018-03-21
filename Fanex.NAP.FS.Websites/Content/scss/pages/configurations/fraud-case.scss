@@ -3,6 +3,12 @@
 @import "../../components/switch-button";
 @import "../../components/tabs";
 
+.export-in-tabs {
+    position: absolute;
+    right: 0;
+    top: -1px;
+}
+
 .info {
     display: flex;
     flex-direction: column;
