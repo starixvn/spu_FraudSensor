@@ -22,7 +22,9 @@
 
             $("#tickets").text(`By Tickets (${n})`);
 
-            $("#DataTables_Table_0_info").text(`Displaying 1 to ${n} of ${n} item(s)`);
+            if (n != 0) {
+                $("#DataTables_Table_0_info").text(`Displaying 1 to ${n} of ${n} item(s)`);
+            }
         });
     }
 

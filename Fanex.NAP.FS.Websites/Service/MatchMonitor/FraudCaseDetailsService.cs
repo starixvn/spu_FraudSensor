@@ -1,4 +1,7 @@
-﻿using Fanex.Data;
+﻿using Fanex.BetList.Core.Builder;
+using Fanex.BetList.Core.Entities;
+using Fanex.BetList.Core.TicketHelper;
+using Fanex.Data;
 using Fanex.NAP.FS.Websites.Criteria.MatchMonitor.FraudCaseDetails;
 using Fanex.NAP.FS.Websites.Models;
 using Fanex.NAP.FS.Websites.Models.MatchMonitor.FraudCaseDetails;
@@ -26,20 +29,29 @@ namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
                 MatchId = matchId
             };
 
-            return DataService.GetData<TicketInfo>(criteria)
-                .Select(a => new TicketDetails
-                {
-                    Member = a.Username,
-                    Bettype = RefData.GetBetTypeName(a.Bettype.ToString(), "en"),
-                    TransDate = a.TransDate,
-                    BetID = a.TransId.ToString(),
-                    IP = a.IP,
-                    Odds = new OddsDetails { Value = a.Odds, Type = RefData.GetOddsTypeName(a.OddsType.ToString(), "en") },
-                    Score = string.Format("{0}-{1}", a.LiveHomeScore, a.LiveAwayScore),
-                    Stake = a.Stake,
-                    Status = a.Status,
-                    WinLoss = a.Winlost,
-                    Choice = "a"
+            var builder = new BetListHTMLBuilder();
+            var ticketHelper = new TicketHelper();
+
+            return DataService.GetData<Ticket>(criteria)
+                .Select(a => {
+                    var bettype = RefData.GetBetTypeName(a.BetTypeId.ToString(), "en");
+
+                    bettype = bettype.Contains("Handicap") || bettype.Contains("Over/Under") ? bettype : "Others";
+
+                    return new TicketDetails
+                    {
+                        Member = a.UserName,
+                        Bettype = bettype,
+                        TransDate = a.TransDate,
+                        BetID = a.TransId.ToString(),
+                        IP = a.IP,
+                        Odds = new OddsDetails { Value = (double)a.Odds, Type = RefData.GetOddsTypeName(a.OddsType, "en") },
+                        Score = string.Format("{0}-{1}", a.LiveHomeScore, a.LiveAwayScore),
+                        Stake = a.Stake,
+                        Status = a.Status,
+                        WinLoss = a.Winlost,
+                        Choice = builder.BuildChoice(a, ticketHelper, null , false)
+                    };
                 })
                 .OrderBy(t => GetOrder(t.Bettype))
                 .ThenBy(t => t.Member)
