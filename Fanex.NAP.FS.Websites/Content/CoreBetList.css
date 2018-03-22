@@ -1,0 +1,234 @@
+a {
+    text-decoration: none;
+}
+
+.line {
+    border-bottom: 1px solid #A0A0A0;
+    margin-bottom: 5px;
+    margin-top: 5px;
+    overflow: hidden;
+    text-align: left;
+    width: 100%;
+}
+
+.underdog {
+    color: #01122B;
+    font-weight: bold !important;
+}
+
+.favorite {
+    color: #B50000;
+    font-weight: bold !important;
+}
+
+.handicap .odds {
+    color: #003399;
+    font-size: 8pt;
+}
+
+.excluding-choices {
+    color: #484848;
+    font-weight: normal;
+}
+
+div.match + div.league + div.no-details {
+    color: #666666;
+    line-height: 15px;
+    margin-top: 1px;
+}
+
+div.match + div.league + div.no-details {
+    background: none repeat scroll 0 0 transparent;
+    font-weight: normal;
+    text-align: right;
+    text-transform: none;
+}
+
+.bettype {
+    color: #003399;
+    font-weight: 600;
+}
+
+.firstGoal {
+    background: url("Images/firstGoal.gif") no-repeat scroll center center transparent;
+    display: inline;
+    height: 10px;
+    padding: 0 4px;
+    width: 14px;
+}
+
+.lastGoal {
+    background: url("Images/lastGoal.gif") no-repeat scroll center center transparent;
+    display: inline;
+    height: 10px;
+    padding: 0 4px;
+    width: 14px;
+}
+
+.fhFirstGoal {
+    background: url(Images/1F.gif) no-repeat scroll center center transparent;
+    display: inline;
+    height: 10px;
+    padding: 0 4px;
+    width: 14px;
+}
+
+.fhLastGoal {
+    background: url(Images/1L.gif) no-repeat scroll center center transparent;
+    display: inline;
+    height: 10px;
+    padding: 0 4px;
+    width: 14px;
+}
+
+.match {
+    color: #000000;
+    font-weight: normal;
+    line-height: 15px;
+}
+
+.oddstype {
+    color: #586985;
+}
+
+.colorHandicap, .handicap {
+    color: #606060;
+}
+
+    .handicap.custom {
+        font-weight: bold;
+    }
+
+.sport {
+    color: #0066CC;
+}
+
+.iplink {
+    color: #1E1EEB;
+    cursor: pointer;
+    font-size: 11px;
+}
+
+.detail {
+    background: url("Images/q_Icon2_1.png") no-repeat scroll center center transparent;
+    color: #755200;
+    display: inline;
+    font-weight: bold;
+    height: 10px;
+    line-height: 20px;
+    padding: 0 1px 0 65px;
+    width: 14px;
+}
+
+.detail:hover {
+    background: url("Images/q_Icon_2.png") no-repeat scroll center center transparent;
+    color: #755200;
+    cursor: pointer;
+    display: inline;
+    font-weight: bold;
+    height: 10px;
+    padding: 0 1px 0 65px;
+    width: 14px;
+}
+
+.combinationLink {
+    line-height: 20px;
+}
+
+.offer-name {
+    color: #3a3a3a;
+}
+
+.offer-name-list {
+    color: #3a3a3a;
+    font-weight: bold;
+}
+
+.detail-link {
+    color: #755200;
+    font-weight: bold;
+}
+
+.detail-link:hover,
+.detail-link:focus {
+    color: #755200;
+}
+
+.scoremap {
+    float: left;
+}
+
+.scoremapIcon {
+    background: url("Images/ScoreMapWL.png") no-repeat scroll 0 0 transparent;
+    height: 18px;
+    margin: 3px;
+    width: 18px;
+}
+
+.gamegroupname {
+    color: #008000;
+}
+
+/* Trans */
+.iplink, .betsliplink {
+    cursor: pointer;
+    color: #1E1EEB;
+    font-size: 11px;
+}
+
+.time {
+    color: #434343;
+    font-size: 7pt;
+    font-weight: normal;
+    text-align: center;
+    margin-top: 10px;
+}
+
+/* Status */
+
+.status {
+    color: #606060;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+.result {
+    cursor: pointer;
+    color: rgb(27, 164, 237);
+}
+
+.ip {
+    color: #434343;
+    font-size: 7pt;
+    font-weight: normal;
+    text-align: center;
+}
+
+.blue {
+    color: #2673CE;
+}
+
+.light-blue {
+    color: #0017CD;
+}
+
+.dark-orange {
+    color: #AF5319;
+}
+
+/* Stake */
+.stake {
+    display: inline-block;
+    width: 100%;
+}
+
+.bonus-icon {
+    background: url(Images/bonus.png) no-repeat scroll center center transparent;
+    display: inline-block;
+    height: 18px;
+    width: 18px;
+}
+
+.bonus-icon:hover {
+    cursor: pointer
+}

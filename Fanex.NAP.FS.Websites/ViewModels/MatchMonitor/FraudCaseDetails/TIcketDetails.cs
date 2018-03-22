@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Fanex.BetList.Core.Templates;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -28,5 +29,7 @@ namespace Fanex.NAP.FS.Websites.ViewModels.MatchMonitor.FraudCaseDetails
         public string IP { get; set; }
 
         public string Bettype { get; set; }
+
+        public Choice_Template ChoiceExcel { get; set; }
     }
 }

@@ -8,6 +8,8 @@
 
     var filter = {};
 
+    var totalTicket = 0;
+
     function load_ticket_grid() {
         global_idx = 0;
 
@@ -25,6 +27,9 @@
             if (n != 0) {
                 $("#DataTables_Table_0_info").text(`Displaying 1 to ${n} of ${n} item(s)`);
             }
+
+            totalTicket = n;
+            removeMatchLeague();
         });
     }
 
@@ -72,6 +77,8 @@
         }
 
         table.draw(false);
+
+        $("#DataTables_Table_0_info").text(`Displaying 1 to ${totalTicket} of ${totalTicket} item(s)`);
     }
 
     function switchTab() {
@@ -87,6 +94,10 @@
         var url = common.modifyRelativeUrl("/MatchMonitor/ExportExcelForDetail");
 
         common.downloadFile(url, parameters);
+    }
+
+    function removeMatchLeague() {
+        $(".match, .league").remove();
     }
 
     ticket_grid.DataTable({
@@ -112,7 +123,7 @@
             { data: obj => obj.BetID },
             { data: obj => obj.Choice },
             { data: obj => obj.Score, className: "text-center", width: "80px" },
-            { data: obj => obj.Odds != null ? `${obj.Odds.Value}<p>${obj.Odds.Type}</p>` : null, width: "84px" },
+            { data: obj => obj.Odds != null ? `<span class="underdog"><font color='#B50000'>${obj.Odds.Value}</font></span><br /><span class="oddstype">${obj.Odds.Type}</span>` : null, width: "84px" },
             { data: obj => obj.Stake == null ? null : obj.Stake.toFixed(2), className: "text-right" },
             { data: obj => obj.WinLoss == null ? null : obj.WinLoss.toFixed(2), className: "text-right" },
             { data: obj => obj.Status, width: "110px" },

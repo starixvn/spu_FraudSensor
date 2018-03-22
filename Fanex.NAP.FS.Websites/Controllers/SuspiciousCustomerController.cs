@@ -48,7 +48,7 @@
             return Json(fraudCases, JsonRequestBehavior.AllowGet);
         }
 
-        private static List<Core.Models.User> GetUsers()
+        public ActionResult GetUsers()
         {
             var siteId = int.Parse(ConfigurationManager.AppSettings["SiteId"]);
             var users = new UserService().GetUserPolicies(FSFunctionKeys.MatchMonitoring, siteId);
@@ -64,7 +64,7 @@
                 result.Add(user.User);
             }
 
-            return result;
+            return Json(result, JsonRequestBehavior.AllowGet);
         }
     }
 }

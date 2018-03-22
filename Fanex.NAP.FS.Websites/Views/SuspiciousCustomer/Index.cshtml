@@ -12,133 +12,89 @@
 <div class="form-filter">
     <div class="group width-160">
         <label class="text">Event Date</label>
-        <select class="control">
-            <option>Specify</option>
+        <select class="control" id="date_type">
+            <option value="0">Today</option>
+            <option value="1">Yesterday</option>
+            <option value="2">This Week</option>
+            <option value="3">Last Week</option>
+            <option value="4">This Month</option>
+            <option value="5">Last Month</option>
+            <option value="6">Since Last Month</option>
+            <option value="7">Specific Date</option>
         </select>
     </div>
+
     <div class="group calendar date-range">
-        <label class="text">Date range</label>
-        <input type="text" id="event_date" class="control" value="01/24/2018-02/17/2018">
+        <label class="text">From</label>
+        <input type="text" id="event_date" class="control">
         <span class="icon-calendar-text"></span>
     </div>
+
+    <div class="group calendar date-range">
+        <label class="text">To</label>
+        <input type="text" id="event_date2" class="control"/>
+        <span class="icon-calendar-text"></span>
+    </div>
+
     <div class="group  width-220">
         <label class="text">Member</label>
-        <input type="text" class="control" />
+        <input type="text" id="member" class="control" />
     </div>
+
     <div class="group width-160">
         <label class="text">Fraud Case</label>
-        <select class="control">
-            <option>All</option>
-        </select>
+        <select class="control" id="fraud_case"></select>
     </div>
+
     <div class="group width-160">
         <label class="text">Verified</label>
-        <select class="control">
+        <select class="control" id="is_verified">
             <option>All</option>
+            <option value="1">Verified</option>
+            <option value="0">Not Verified</option>
         </select>
     </div>
+
     <div class="group width-160">
         <label class="text">Classification</label>
-        <select class="control">
-            <option>All</option>
+        <select class="control" id="classification">
+            <option value="0">All</option>
+            <option value="1">Delinquency</option>
+            <option value="2">Dirty</option>
+            <option value="3">Hedge</option>
         </select>
     </div>
+
     <div class="group width-160">
         <label class="text">Assignees</label>
-        <select class="control">
-            <option>All</option>
-        </select>
+        <select class="control" id="assignee"></select>
     </div>
+
     <button class="button -primary">Generate</button>
     <button class="button -export"><span class="icon-export-excel"></span>Export</button>
 </div>
 
-<table class="table table-striped width-100per">
-    <thead>
-        <tr>
-            <th class="col-no">#</th>
-            <th class="col-classification">Classification</th>
-            <th class="col-logs-notes">Logs Notes</th>
-            <th class="col-verified">Verified</th>
-            <th>Member</th>
-            <th>Evidence</th>
-            <th>Total Violations</th>
-            <th>Violated Cases</th>
-            <th>Bet Count</th>
-            <th>Assignees</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td class="has-icon text-center">1</td>
-            <td class="has-icon text-center list-icon">
-                <span class="icon-dirty"></span>
-                <span class="icon-delinquency"></span>
-                <span class="icon-hedge"></span>              
-            </td>
-            <td class="has-icon text-center"><span class="icon-note-text icon-note"></span></td>
-            <td class="has-icon text-center"><span class="icon-approval"></span></td>
-            <td><a href="#">IHBB234LBBOBU</a></td>
-            <td>71</td>
-            <td>71</td>
-            <td>71</td>
-            <td>71</td>
-            <td>-</td>
-        </tr>
-        <tr>
-            <td class="has-icon text-center">2</td>
-            <td class="has-icon text-center list-icon">
-                <span class="icon-delinquency"></span>
-            </td>
-            <td class="has-icon text-center"><span class="icon-note-text icon-note"></span></td>
-            <td class="has-icon text-center"><span class="icon-approval"></span></td>
-            <td><a href="#">IHBB234LBBOBU</a></td>
-            <td>71</td>
-            <td>71</td>
-            <td>71</td>
-            <td>71</td>
-            <td>-</td>
-        </tr>
-        <tr>
-            <td class="has-icon text-center">3</td>
-            <td class="has-icon text-center list-icon"></td>
-            <td class="has-icon text-center"><span class="icon-note-text icon-note"></span></td>
-            <td class="has-icon text-center"><span class="icon-approval"></span></td>
-            <td><a href="#">IHBB234LBBOBU</a></td>
-            <td>71</td>
-            <td>71</td>
-            <td>71</td>
-            <td>71</td>
-            <td>-</td>
-        </tr>
-        <tr>
-            <td class="has-icon text-center">4</td>
-            <td class="has-icon text-center list-icon">
-                <span class="icon-hedge"></span>
-            </td>
-            <td class="has-icon text-center"><span class="icon-note-text icon-note"></span></td>
-            <td class="has-icon text-center"><span class="icon-approval"></span></td>
-            <td><a href="#">IHBB234LBBOBU</a></td>
-            <td>71</td>
-            <td>71</td>
-            <td>71</td>
-            <td>71</td>
-            <td>-</td>
-        </tr>
-        <tr>
-            <td class="has-icon text-center">5</td>
-            <td class="has-icon text-center list-icon">
-                <span class="icon-delinquency"></span>
-                <span class="icon-hedge"></span>
-            </td>
-            <td class="has-icon text-center"><span class="icon-note-text icon-note"></span></td>
-            <td class="has-icon text-center"><span class="icon-approval"></span></td>
-            <td><a href="#">IHBB234LBBOBU</a></td>
-            <td>71</td>
-            <td>71</td>
-            <td>71</td>
-            <td>71</td>
-            <td>-</td>
-        </tr>
-    </tbody>
-</table>
+<div id='customer_grid' hidden>
+    <table class="table table-striped width-100per">
+        <thead>
+            <tr>
+                <th class="col-no">#</th>
+                <th class="col-classification">Classification</th>
+                <th class="col-logs-notes">Notes</th>
+                <th class="col-verified">Verified</th>
+                <th>Member</th>
+                <th>Evidence</th>
+                <th>Total Violations</th>
+                <th>Violated Cases</th>
+                <th>Bet Count</th>
+                <th>Assignee</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+
+
+@section scripts{
+    @Scripts.Render("~/scripts/suspicious-customer")
+}

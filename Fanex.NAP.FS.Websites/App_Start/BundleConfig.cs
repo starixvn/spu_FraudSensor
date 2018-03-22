@@ -54,6 +54,7 @@ namespace Fanex.NAP.FS.Websites
         {
             bundles.Add(new ScriptBundle("~/scripts/match-monitor").Include("~/scripts/MatchMonitor/*.js"));
             bundles.Add(new ScriptBundle("~/scripts/match-monitor/fraud-case-details").Include("~/scripts/matchmonitor/fraudcasedetails/*.js"));
+            bundles.Add(new StyleBundle("~/Contents/CoreBetList").Include("~/Content/CoreBetList.css"));
         }
 
         private static void RegisterFraudCaseBundles(BundleCollection bundles)
@@ -68,6 +69,7 @@ namespace Fanex.NAP.FS.Websites
         private static void RegisterSuspiciousCustomerBundles(BundleCollection bundles)
         {
             bundles.Add(new StyleBundle("~/suspicious-customer-styles").Include("~/content/scss/pages/suspicious-customer/suspicious-customer.css"));
+            bundles.Add(new StyleBundle("~/scripts/suspicious-customer").Include("~/scripts/suspiciouscustomer/suspicious-customer.js"));
         }
     }
 }

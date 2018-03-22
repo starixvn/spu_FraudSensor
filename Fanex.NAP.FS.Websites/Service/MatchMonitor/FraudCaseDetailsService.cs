@@ -7,6 +7,7 @@ using Fanex.NAP.FS.Websites.Models;
 using Fanex.NAP.FS.Websites.Models.MatchMonitor.FraudCaseDetails;
 using Fanex.NAP.FS.Websites.Service.Utilities;
 using Fanex.NAP.FS.Websites.ViewModels.MatchMonitor.FraudCaseDetails;
+using HtmlAgilityPack;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using RemotingRef;
@@ -14,13 +15,15 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Web;
+using System.Xml.Linq;
 
 namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
 {
     public static class FraudCaseDetailsService
     {
-        public static IEnumerable<TicketDetails> GetTicketDetails(int matchId, int fraudCaseId, DateTime eventDate)
+        public static IEnumerable<TicketDetails> GetTicketDetails(int matchId, int fraudCaseId, DateTime eventDate, bool saveChoice = false)
         {
             var criteria = new GetTicketCriteria
             {
@@ -29,14 +32,14 @@ namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
                 MatchId = matchId
             };
 
-            var builder = new BetListHTMLBuilder();
+            var html_builder = new BetListHTMLBuilder();
             var ticketHelper = new TicketHelper();
 
             return DataService.GetData<Ticket>(criteria)
                 .Select(a => {
                     var bettype = RefData.GetBetTypeName(a.BetTypeId.ToString(), "en");
 
-                    bettype = bettype.Contains("Handicap") || bettype.Contains("Over/Under") ? bettype : "Others";
+                    bettype = GetOrder(bettype) != BettypeOrder.Other ? bettype : "Others";
 
                     return new TicketDetails
                     {
@@ -50,7 +53,8 @@ namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
                         Stake = a.Stake,
                         Status = a.Status,
                         WinLoss = a.Winlost,
-                        Choice = builder.BuildChoice(a, ticketHelper, null , false)
+                        Choice = html_builder.BuildChoice(a, ticketHelper, null, false),
+                        ChoiceExcel = saveChoice ? html_builder.BuildChoiceBlock(a, ticketHelper, null, false) : null
                     };
                 })
                 .OrderBy(t => GetOrder(t.Bettype))
@@ -100,7 +104,7 @@ namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
 
                 var legend = GetInfo(matchId, fraudCaseId, eventDate);
 
-                WriteTickets(tickets, GetTicketDetails(matchId, fraudCaseId, eventDate), legend);
+                WriteTickets(tickets, GetTicketDetails(matchId, fraudCaseId, eventDate, true), legend);
                 WriteCustomers(customers, GetCustomerDetails(matchId, fraudCaseId, eventDate), legend);
 
                 using (var mem = new NpoiStream())
@@ -211,7 +215,7 @@ namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
             row.GetCell(1).SetCellValue(ticket.Member);
             row.GetCell(2).SetCellValue(ticket.TransDate);
             row.GetCell(3).SetCellValue(ticket.BetID);
-            row.GetCell(4).SetCellValue(ticket.Choice);
+            GetChoiceExcel(ticket, row.GetCell(4));
             row.GetCell(5).SetCellValue(ticket.Bettype);
             row.GetCell(6).SetCellValue(ticket.Score);
             new XSSFRichTextString().Write(ticket.Odds.Value + "\n").Write(ticket.Odds.Type).SetValue(row.GetCell(7));
@@ -219,6 +223,30 @@ namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
             row.GetCell(9).SetCellValue((double)ticket.WinLoss);
             row.GetCell(10).SetCellValue(ticket.Status);
             row.GetCell(11).SetCellValue(ticket.IP);
+        }
+
+        private static void GetChoiceExcel(TicketDetails t, ICell cell)
+        {
+            var bet_team = new StringBuilder(t.ChoiceExcel.betTeam);
+
+            bet_team
+                .Replace("&nbsp;", "")
+                .Replace("<span class=\"underdog\">", "")
+                .Replace("</span>", "");
+
+            var handicap = new StringBuilder(t.ChoiceExcel.Handicap);
+
+            handicap
+                .Replace("<span class='handicap'>", "")
+                .Replace("</span>", "");
+
+            var bet_type = new StringBuilder(t.ChoiceExcel.BetType);
+
+            bet_type
+                .Replace("<div class=\"bettype\">", "")
+                .Replace("</div>", "");
+
+            cell.SetCellValue(string.Format("{0}{1}\n{2}", bet_team, handicap, bet_type.ToString().Trim()));
         }
 
         private static void WriteCustomer(ISheet sheet, CustomerDetails customer, int idx)
@@ -244,23 +272,25 @@ namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
         {
             if (bettype.Contains("1H"))
             {
-                if (bettype.Contains("Handicap"))
+                var tmp_bettype = bettype.Replace("1H", "").Trim();
+
+                if (tmp_bettype == "Handicap")
                 {
                     return BettypeOrder.FHDP;
                 }
 
-                if (bettype.Contains("Over/Under"))
+                if (tmp_bettype == "Over/Under")
                 {
                     return BettypeOrder.FOU;
                 }
             }
 
-            if (bettype.Contains("Handicap"))
+            if (bettype == "Handicap")
             {
                 return BettypeOrder.HDP;
             }
 
-            if (bettype.Contains("Over/Under"))
+            if (bettype == "Over/Under")
             {
                 return BettypeOrder.OU;
             }
