@@ -1,5 +1,6 @@
 ﻿namespace Fanex.NAP.FS.Library.Criteria
 {
+    using Data;
     using Data.Repository;
     using System;
 
@@ -15,13 +16,37 @@
 
         public int? FraudCaseId { get; set; }
 
-        public int? Classification { get; set; }
+        [SpParam(Ignored = true)]
+        public int Classification { get; set; }
 
-        public int? Assignee { get; set; }
+        public bool IsDelinquent
+        {
+            get
+            {
+                return Classification == 0 || Classification == 1;
+            }
+        }
+
+        public bool IsDirty
+        {
+            get
+            {
+                return Classification == 0 || Classification == 2;
+            }
+        }
+        public bool IsHedge
+        {
+            get
+            {
+                return Classification == 0 || Classification == 3;
+            }
+        }
+
+        public int? AssigneeId { get; set; }
 
         public override string GetSettingKey()
         {
-            return "FD_SuspiciousCustomerReportGet";
+            return "FS_Rpt_SuspiciousCustomer_Get";
         }
 
         public override bool IsValid()

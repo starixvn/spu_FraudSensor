@@ -2,6 +2,8 @@
 {
     public class SuspiciousCustomerReportModel
     {
+        public int CustId { get; set; }
+
         public string Username { get; set; }
 
         public bool IsHedge { get; set; }
@@ -16,12 +18,12 @@
 
         public string Evidence { get; set; }
 
-        public int TotalViolations { get; set; }
+        public int TotalViolation { get; set; }
 
         public int BetCount { get; set; }
 
         public int ViolatedCases { get; set; }
 
-        public string Assignees { get; set; }
+        public string Assignee { get; set; }
     }
 }

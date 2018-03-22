@@ -3,6 +3,9 @@
   <Function Name="Test">
     <Setting Key="FS_Rpt_Test" SpName="FS_Rpt_Test" DbName="DBFS.FraudSensor.bodbSPUNet"/>
   </Function>
+  <Function Name="SuspiciousCustomerReport">
+  <Setting Key="FS_Rpt_SuspiciousCustomer_Get" SpName="FS_Rpt_SuspiciousCustomer_Get" DbName="DBFS.FraudSensor.bodbSPUNet"/>
+</Function>
   <Function Name="MatchMonitor">
     <Setting Key="FS_Rpt_MatchMonitor_Get" SpName="FS_Rpt_MatchMonitor_Get" DbName="DBFS.FraudSensor.bodbSPUNet"/>
     <Setting Key="FS_League_Get" SpName="FS_League_Get" DbName="DBFS.FraudSensor.bodbSPUNet"/>
