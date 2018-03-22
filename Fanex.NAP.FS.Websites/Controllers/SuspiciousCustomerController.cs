@@ -1,6 +1,7 @@
 ﻿namespace Fanex.NAP.FS.Websites.Controllers
 {
     using Core.Business;
+    using Core.Service.Impl;
     using Core.Web.Attribute;
     using Library.Criteria;
     using Library.DTO;
@@ -9,9 +10,8 @@
     using System.Configuration;
     using System.Linq;
     using System.Web.Mvc;
-    using Fanex.NAP.Core.Service.Impl;
 
-    [NapAuth(FunctionKey = FSFunctionKeys.MatchMonitoring, Policy = Core.Business.Constant.Policy.Read)]
+    [NapAuth(FunctionKey = FSFunctionKeys.MatchMonitoring, Policy = Constant.Policy.Read)]
     public class SuspiciousCustomerController : ReportsController
     {
         private readonly ISuspiciousCustomerReportService _suspiciousCustomerReportService;
@@ -46,6 +46,25 @@
             fraudCases = fraudCases ?? new List<FraudCase>();
 
             return Json(fraudCases, JsonRequestBehavior.AllowGet);
+        }
+
+        private static List<Core.Models.User> GetUsers()
+        {
+            var siteId = int.Parse(ConfigurationManager.AppSettings["SiteId"]);
+            var users = new UserService().GetUserPolicies(FSFunctionKeys.MatchMonitoring, siteId);
+            var result = new List<Core.Models.User>();
+
+            foreach (var user in users)
+            {
+                if (user.Policy != (decimal)Constant.Policy.Read && user.Policy != (decimal)Constant.Policy.Host)
+                {
+                    continue;
+                }
+
+                result.Add(user.User);
+            }
+
+            return result;
         }
     }
 }
