@@ -4,7 +4,7 @@
 
     .group {
         padding-right: 24px;
-        padding-bottom: 10px;
+        padding-bottom: 12px;
         
         .text {
             display: block;
@@ -24,7 +24,11 @@
         .control {
             width: 100%;
             padding-right: 26px;
-        }        
+        }
+        
+        &.date-range {
+            width: 230px;
+        }      
     }
 
     .icon-calendar-text {

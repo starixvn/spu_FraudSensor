@@ -359,7 +359,7 @@ input[type="checkbox"]:disabled + span {
   flex-wrap: wrap; }
   .form-filter .group {
     padding-right: 24px;
-    padding-bottom: 10px; }
+    padding-bottom: 12px; }
     .form-filter .group .text {
       display: block;
       margin-bottom: 5px; }
@@ -372,6 +372,8 @@ input[type="checkbox"]:disabled + span {
     .form-filter .calendar .control {
       width: 100%;
       padding-right: 26px; }
+    .form-filter .calendar.date-range {
+      width: 230px; }
   .form-filter .icon-calendar-text {
     position: absolute;
     bottom: 13px;
@@ -670,7 +672,7 @@ select[disabled] {
   .table.table-striped tbody tr:nth-of-type(even) {
     background-color: #fafafa; }
   .table .has-icon {
-    line-height: 1; }
+    line-height: 0; }
 
 .dataTables_scrollHeadInner {
   background-color: #465262; }
@@ -1047,26 +1049,28 @@ body {
   .table .container-note .note-content {
     border-right: 1px solid #c1c1c1;
     padding: 19px 8px; }
-  .table .container-note .icon-note {
-    display: -webkit-box;
-    display: -webkit-flex;
-    display: -moz-box;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-box-pack: center;
-    -webkit-justify-content: center;
-    -moz-box-pack: center;
-    -ms-flex-pack: center;
-    justify-content: center;
-    -webkit-box-align: center;
-    -webkit-align-items: center;
-    -moz-box-align: center;
-    -ms-flex-align: center;
-    align-items: center;
-    color: #8c8c8c;
-    cursor: pointer; }
-  .table .container-note .icon-note:hover {
-    color: #2197ff; }
+
+.table .icon-note {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -moz-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  -moz-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  color: #8c8c8c;
+  cursor: pointer; }
+
+.table .icon-note:hover {
+  color: #2197ff; }
 
 .table [class^="icon"] {
   font-size: 20px; }

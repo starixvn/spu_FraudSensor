@@ -1,3 +1,144 @@
 ﻿@{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
+@section styles{
+
+    <link href="~/Content/scss/fonts/Fraud-Sensor/style.css" rel="stylesheet" />
+    @Styles.Render("~/suspicious-customer-styles")
+}
+
+<h1 class="title">Suspicious Customer</h1>
+<div class="form-filter">
+    <div class="group width-160">
+        <label class="text">Event Date</label>
+        <select class="control">
+            <option>Specify</option>
+        </select>
+    </div>
+    <div class="group calendar date-range">
+        <label class="text">Date range</label>
+        <input type="text" id="event_date" class="control" value="01/24/2018-02/17/2018">
+        <span class="icon-calendar-text"></span>
+    </div>
+    <div class="group  width-220">
+        <label class="text">Member</label>
+        <input type="text" class="control" />
+    </div>
+    <div class="group width-160">
+        <label class="text">Fraud Case</label>
+        <select class="control">
+            <option>All</option>
+        </select>
+    </div>
+    <div class="group width-160">
+        <label class="text">Verified</label>
+        <select class="control">
+            <option>All</option>
+        </select>
+    </div>
+    <div class="group width-160">
+        <label class="text">Classification</label>
+        <select class="control">
+            <option>All</option>
+        </select>
+    </div>
+    <div class="group width-160">
+        <label class="text">Assignees</label>
+        <select class="control">
+            <option>All</option>
+        </select>
+    </div>
+    <button class="button -primary">Generate</button>
+    <button class="button -export"><span class="icon-export-excel"></span>Export</button>
+</div>
+
+<table class="table table-striped width-100per">
+    <thead>
+        <tr>
+            <th class="col-no">#</th>
+            <th class="col-classification">Classification</th>
+            <th class="col-logs-notes">Logs Notes</th>
+            <th class="col-verified">Verified</th>
+            <th>Member</th>
+            <th>Evidence</th>
+            <th>Total Violations</th>
+            <th>Violated Cases</th>
+            <th>Bet Count</th>
+            <th>Assignees</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="has-icon text-center">1</td>
+            <td class="has-icon text-center list-icon">
+                <span class="icon-dirty"></span>
+                <span class="icon-delinquency"></span>
+                <span class="icon-hedge"></span>              
+            </td>
+            <td class="has-icon text-center"><span class="icon-note-text icon-note"></span></td>
+            <td class="has-icon text-center"><span class="icon-approval"></span></td>
+            <td><a href="#">IHBB234LBBOBU</a></td>
+            <td>71</td>
+            <td>71</td>
+            <td>71</td>
+            <td>71</td>
+            <td>-</td>
+        </tr>
+        <tr>
+            <td class="has-icon text-center">2</td>
+            <td class="has-icon text-center list-icon">
+                <span class="icon-delinquency"></span>
+            </td>
+            <td class="has-icon text-center"><span class="icon-note-text icon-note"></span></td>
+            <td class="has-icon text-center"><span class="icon-approval"></span></td>
+            <td><a href="#">IHBB234LBBOBU</a></td>
+            <td>71</td>
+            <td>71</td>
+            <td>71</td>
+            <td>71</td>
+            <td>-</td>
+        </tr>
+        <tr>
+            <td class="has-icon text-center">3</td>
+            <td class="has-icon text-center list-icon"></td>
+            <td class="has-icon text-center"><span class="icon-note-text icon-note"></span></td>
+            <td class="has-icon text-center"><span class="icon-approval"></span></td>
+            <td><a href="#">IHBB234LBBOBU</a></td>
+            <td>71</td>
+            <td>71</td>
+            <td>71</td>
+            <td>71</td>
+            <td>-</td>
+        </tr>
+        <tr>
+            <td class="has-icon text-center">4</td>
+            <td class="has-icon text-center list-icon">
+                <span class="icon-hedge"></span>
+            </td>
+            <td class="has-icon text-center"><span class="icon-note-text icon-note"></span></td>
+            <td class="has-icon text-center"><span class="icon-approval"></span></td>
+            <td><a href="#">IHBB234LBBOBU</a></td>
+            <td>71</td>
+            <td>71</td>
+            <td>71</td>
+            <td>71</td>
+            <td>-</td>
+        </tr>
+        <tr>
+            <td class="has-icon text-center">5</td>
+            <td class="has-icon text-center list-icon">
+                <span class="icon-delinquency"></span>
+                <span class="icon-hedge"></span>
+            </td>
+            <td class="has-icon text-center"><span class="icon-note-text icon-note"></span></td>
+            <td class="has-icon text-center"><span class="icon-approval"></span></td>
+            <td><a href="#">IHBB234LBBOBU</a></td>
+            <td>71</td>
+            <td>71</td>
+            <td>71</td>
+            <td>71</td>
+            <td>-</td>
+        </tr>
+    </tbody>
+</table>

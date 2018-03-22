@@ -1,0 +1,41 @@
+@import "../../abstracts/variables";
+@import "../../abstracts/mixins";
+
+.width-160 {
+    width: 160px;
+}
+
+.width-220 {
+    width: 220px;
+}
+
+.col-classification {
+    width: 110px;
+}
+
+.col-logs-notes {
+    width: 88px;
+}
+
+.col-verified {
+    width: 70px;
+}
+
+.list-icon {
+    [class^="icon"] {
+        font-size: 16px;
+        margin: 0 6px;
+    }
+
+    .icon-dirty {
+        color: #e8333a;
+    }
+
+    .icon-delinquency {
+        color: #e77247;
+    }
+
+    .icon-hedge {
+        color: #465163;
+    }
+}

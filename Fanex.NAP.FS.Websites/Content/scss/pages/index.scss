@@ -206,20 +206,20 @@ body {
             border-right: 1px solid $table-border;
             padding: 19px 8px;
         }
-
-        .icon-note {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: #8c8c8c;
-            cursor: pointer;
-        }
-
-        .icon-note:hover {
-            color: #2197ff;
-        }
+        
     }
 
+    .icon-note {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: #8c8c8c;
+        cursor: pointer;
+    }
+
+    .icon-note:hover {
+        color: #2197ff;
+    }
     
     // Icons
     [class^="icon"] {
