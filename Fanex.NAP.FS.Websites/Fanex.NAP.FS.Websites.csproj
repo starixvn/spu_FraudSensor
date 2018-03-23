@@ -387,7 +387,9 @@
       <DependentUpon>style.css</DependentUpon>
     </Content>
     <Content Include="Content\scss\images\login.png" />
+    <Content Include="Content\scss\images\login.svg" />
     <Content Include="Content\scss\images\logo.png" />
+    <Content Include="Content\scss\images\logo.svg" />
     <Content Include="Content\scss\pages\configurations\fraud-case.css" />
     <Content Include="Content\scss\pages\index.css" />
     <Content Include="Content\scss\pages\login\login.css" />

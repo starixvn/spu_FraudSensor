@@ -14,37 +14,12 @@
 <body>
     <header class="header">
         <a href="/home/index" class="logo">
-            <img src="~/Content/scss/images/logo.png" alt="Fraud Sensor">
+            <svg width="183" height="32">
+                <image xlink:href="~/Content/scss/images/logo.svg" src="~/Content/scss/images/logo.png" width="183" height="32" alt="Fraud Sensor" />
+            </svg>
         </a>
         <div class="header-right">
             @Html.Action("Menu", "Home",new { activeMenu = ViewContext.Controller.GetType().BaseType.Name } )
-            @*<ul class="main-menu">
-                <li class="menu-item">
-                    <a href="#" class="link has-child"><span class="icon icon-chart-scatterplot-hexbin"></span>Report</a>
-                    <ul class="sub-menu">
-                        <li class="sub-menu-item"><a href="#" class="link">Suspicious Customer</a></li>
-                        <li class="sub-menu-item"><a href="~/MatchMonitor" class="link">Match Monitoring</a></li>
-                        <li class="sub-menu-item"><a href="#" class="link">Office IPs</a></li>
-                        <li class="sub-menu-item"><a href="#" class="link">Live Match Monitoring</a></li>
-                    </ul>
-                </li>
-                <li class="menu-item">
-                    <a href="#" class="link has-child"><span class="icon icon-settings"></span>Configurations</a>
-                    <ul class="sub-menu">
-                        <li class="sub-menu-item"><a href="#" class="link">Customer Group</a></li>
-                        <li class="sub-menu-item"><a href="#" class="link">Fraud Case</a></li>
-                        <li class="sub-menu-item"><a href="#" class="link">Parameter</a></li>
-                        <li class="sub-menu-item"><a href="#" class="link">Customer Betting Group</a></li>
-                    </ul>
-                </li>
-                <li class="menu-item">
-                    <a href="#" class="link has-child"><span class="icon icon-email"></span>Notification</a>
-                    <ul class="sub-menu">
-                        <li class="sub-menu-item"><a href="#" class="link">Mail Master</a></li>
-                        <li class="sub-menu-item"><a href="#" class="link">Message Master</a></li>
-                    </ul>
-                </li>
-            </ul>*@
             @Html.Partial("_LoginPartial")
         </div>
     </header>
