@@ -10,7 +10,7 @@
 
         public bool IsDirty { get; set; }
 
-        public bool IsDelinquency { get; set; }
+        public bool IsDelinquent { get; set; }
 
         public bool HasNote { get; set; }
 

@@ -19,26 +19,41 @@
         [SpParam(Ignored = true)]
         public int Classification { get; set; }
 
-        public bool IsDelinquent
+        public bool? IsDelinquent
         {
             get
             {
-                return Classification == 0 || Classification == 1;
+                if(Classification == 0 || Classification == 1)
+                {
+                    return true;
+                }
+
+                return null;
             }
         }
 
-        public bool IsDirty
+        public bool? IsDirty
         {
             get
             {
-                return Classification == 0 || Classification == 2;
+                if (Classification == 0 || Classification == 2)
+                {
+                    return true;
+                }
+
+                return null;
             }
         }
-        public bool IsHedge
+        public bool? IsHedge
         {
             get
             {
-                return Classification == 0 || Classification == 3;
+                if (Classification == 0 || Classification == 3)
+                {
+                    return true;
+                }
+
+                return null;
             }
         }
 

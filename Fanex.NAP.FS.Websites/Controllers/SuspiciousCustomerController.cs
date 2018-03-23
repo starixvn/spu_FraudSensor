@@ -9,6 +9,7 @@
     using Library.ExportExcel;
     using Library.Services;
     using NPOI.SS.UserModel;
+    using System;
     using System.Collections.Generic;
     using System.Configuration;
     using System.Linq;
@@ -84,7 +85,7 @@
                     new Legend("Member", criteria.Username),
                     new Legend("Fraud Case", fraudCaseName),
                     new Legend("Verified", criteria.IsVerified == null ? "All" : (criteria.IsVerified.Value ? "Yes" : "No")),
-                    new Legend("Classification", criteria.Classification == 0 ? "All" : (criteria.Classification == 2 ? "Delq. Only" : "Non-Delq. Only")),
+                    new Legend("Classification", criteria.Classification == 0 ? "All" : (criteria.Classification == 1 ? "Delinquency" : (criteria.Classification == 2 ? "Dirty" : "Hedge"))),
                     new Legend("Assignees", assignee)
                 },
                 GetSuspiciousCustomerHeaders(),

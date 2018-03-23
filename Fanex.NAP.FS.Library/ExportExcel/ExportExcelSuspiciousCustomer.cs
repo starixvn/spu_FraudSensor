@@ -40,7 +40,7 @@
                 var dataRow = _data.ElementAt(i - 1);
                 var row = Sheet.CreateRow(RowIndex);
                 SetUpACell(row, 0, i.ToString(), ReportContentFont(), ReportContentCellStyle(HorizontalAlignment.Center));
-                SetUpACell(row, 1, dataRow.IsDelinquency ? "Yes" : "No", ReportContentFont(), ReportContentCellStyle(HorizontalAlignment.Center));
+                SetUpACell(row, 1, dataRow.IsDelinquent ? "Yes" : "No", ReportContentFont(), ReportContentCellStyle(HorizontalAlignment.Center));
                 SetUpACell(row, 2, dataRow.IsHedge ? "Yes" : "No", ReportContentFont(), ReportContentCellStyle(HorizontalAlignment.Center));
                 SetUpACell(row, 3, dataRow.IsDirty ? "Yes" : "No", ReportContentFont(), ReportContentCellStyle(HorizontalAlignment.Center));
                 SetUpACell(row, 4, dataRow.IsVerified ? "Yes" : "No", ReportContentFont(), ReportContentCellStyle(HorizontalAlignment.Center));
