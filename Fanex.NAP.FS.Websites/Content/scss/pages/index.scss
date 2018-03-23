@@ -207,6 +207,7 @@ body {
         .note-content {
             border-right: 1px solid $table-border;
             padding: 19px 8px;
+            word-break: break-all;
         }
         
     }

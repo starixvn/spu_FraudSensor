@@ -28,11 +28,10 @@
     }
 
     .ui-dialog-buttonpane button {
-        float: right;
         padding: 0 24px;
         margin: 0 13px;
 
-        &:first-child {
+        &:last-child {
             margin-right: 0;
         }
     } 

@@ -91,7 +91,7 @@
 
         var yesBtn =
             {
-                'class':'button -primary',
+                'class':'button -export',
                 text: "Yes",
                 click: function () {
                     confirmation.dialog("close");
@@ -104,7 +104,7 @@
 
         var noBtn =
             {
-                'class':'button -export',
+                'class':'button -primary',
                 text: "No",
                 click: function () {
                     confirmation.dialog("close");

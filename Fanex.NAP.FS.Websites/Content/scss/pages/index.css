@@ -861,10 +861,9 @@ select[disabled] {
     margin-top: 0;
     padding-bottom: 20px; }
   .ui-dialog .ui-dialog-buttonpane button {
-    float: right;
     padding: 0 24px;
     margin: 0 13px; }
-    .ui-dialog .ui-dialog-buttonpane button:first-child {
+    .ui-dialog .ui-dialog-buttonpane button:last-child {
       margin-right: 0; }
   .ui-dialog .ui-button.-primary:hover,
   .ui-dialog .ui-button.-primary:focus,
@@ -1146,7 +1145,8 @@ body {
   height: 100%; }
   .table .container-note .note-content {
     border-right: 1px solid #c1c1c1;
-    padding: 19px 8px; }
+    padding: 19px 8px;
+    word-break: break-all; }
 
 .table .icon-note {
   display: -webkit-box;
