@@ -3,9 +3,12 @@
     using Core.Business;
     using Core.Service.Impl;
     using Core.Web.Attribute;
+    using Library.Core;
     using Library.Criteria;
     using Library.DTO;
+    using Library.ExportExcel;
     using Library.Services;
+    using NPOI.SS.UserModel;
     using System.Collections.Generic;
     using System.Configuration;
     using System.Linq;
@@ -65,6 +68,58 @@
             }
 
             return Json(result, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult ExportExcel(SuspiciousCustomerReportGetCriteria criteria, string fraudCaseName, string assignee)
+        {
+            var suspiciousCustomers = _suspiciousCustomerReportService.GetSuspiciousCustomerReport(criteria);
+
+            var excelExporter = new ExportExcelSuspiciousCustomer(
+                Server.MapPath("~/ExcelFiles"),
+                "SuspiciousCustomerReport",
+                new List<Legend>
+                {
+                    new Legend("From Date", criteria.FromDate.ToShortDateString()),
+                    new Legend("To Date", criteria.ToDate.ToShortDateString()),
+                    new Legend("Member", criteria.Username),
+                    new Legend("Fraud Case", fraudCaseName),
+                    new Legend("Verified", criteria.IsVerified == null ? "All" : (criteria.IsVerified.Value ? "Yes" : "No")),
+                    new Legend("Classification", criteria.Classification == 0 ? "All" : (criteria.Classification == 2 ? "Delq. Only" : "Non-Delq. Only")),
+                    new Legend("Assignees", assignee)
+                },
+                GetSuspiciousCustomerHeaders(),
+                suspiciousCustomers);
+
+            var saveAsFileName = excelExporter.GenerateExcelFile();
+            ResponseStreamExcel(excelExporter.Workbook, saveAsFileName);
+
+            return new EmptyResult();
+        }
+
+        private static List<string> GetSuspiciousCustomerHeaders()
+        {
+            var headers = new List<string>();
+            headers.Insert(0, "#");
+            headers.Insert(1, "Delinquent");
+            headers.Insert(2, "Hegde");
+            headers.Insert(3, "Dirty");
+            headers.Insert(4, "Verified");
+            headers.Insert(5, "Member");
+            headers.Insert(6, "Evidence");
+            headers.Insert(7, "Total Violations");
+            headers.Insert(8, "Violated Cases");
+            headers.Insert(9, "Bet Count");
+            headers.Insert(10, "Assignee");
+
+            return headers;
+        }
+
+        private void ResponseStreamExcel(IWorkbook workbook, string fileName)
+        {
+            Response.Clear();
+            Response.ContentType = "application/vnd.ms-excel";
+            Response.AddHeader("Content-Disposition", string.Format("attachment; filename={0}.xls", fileName));
+            workbook.Write(Response.OutputStream);
         }
     }
 }
