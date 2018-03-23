@@ -596,6 +596,7 @@
     <Content Include="Content\scss\vendors\jquery-ui\base\tooltip.css" />
     <Content Include="Content\scss\vendors\select2.css" />
     <Content Include="Content\scss\vendors\select2.min.css" />
+    <Content Include="Content\scss\vendors\toast\jquery.toast.css" />
     <Content Include="fonts\flashExport.swf" />
     <Content Include="fonts\Fraud-Sensor.svg" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
@@ -768,6 +769,8 @@
     <Content Include="fonts\Fraud-Sensor.woff" />
     <Content Include="Content\scss\components\_customize-select2.scss" />
     <Content Include="Content\scss\pages\suspicious-customer\suspicious-customer.scss" />
+    <Content Include="Content\scss\components\_customize-datepicker.scss" />
+    <Content Include="Content\scss\components\_customize-toast.scss" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile2.pubxml" />
@@ -858,6 +861,7 @@
     <Content Include="Scripts\select2.js" />
     <Content Include="Scripts\select2.min.js" />
     <Content Include="Scripts\SuspiciousCustomer\suspicious-customer.js" />
+    <Content Include="Scripts\toast\jquery.toast.js" />
     <Content Include="Scripts\umd\popper-utils.js" />
     <Content Include="Scripts\umd\popper-utils.min.js" />
     <Content Include="Scripts\umd\popper.js" />

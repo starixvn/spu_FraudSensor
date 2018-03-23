@@ -91,6 +91,7 @@
 
         var yesBtn =
             {
+                'class':'button -primary',
                 text: "Yes",
                 click: function () {
                     confirmation.dialog("close");
@@ -103,6 +104,7 @@
 
         var noBtn =
             {
+                'class':'button -export',
                 text: "No",
                 click: function () {
                     confirmation.dialog("close");
@@ -113,7 +115,11 @@
                 }
             }
 
-        confirmation.dialog("option", "buttons", [yesBtn, noBtn])
+        confirmation.dialog("option", {
+            dialogClass: "dialog-confirmation",
+            buttons: [yesBtn, noBtn],
+            width: 460
+        })
     }
 
     this.showSuccess = (str = "Success", timeout = 3000) => showDialog(success, str, timeout);

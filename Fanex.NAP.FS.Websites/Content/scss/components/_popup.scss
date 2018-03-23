@@ -1,3 +1,12 @@
+.ui-widget-overlay {
+    background: #000;
+    opacity: 0.4;
+}
+
+.ui-widget.ui-widget-content {
+    border: none;
+}
+
 .ui-dialog {
     top: 120px !important;
     padding: 0;
@@ -19,13 +28,18 @@
     }
 
     .ui-dialog-buttonpane button {
+        float: right;
         padding: 0 24px;
-        margin: 0;
+        margin: 0 13px;
+
+        &:first-child {
+            margin-right: 0;
+        }
     } 
 
-    .ui-button:hover,
-    .ui-button:focus,
-    .ui-button:active {
+    .ui-button.-primary:hover,
+    .ui-button.-primary:focus,
+    .ui-button.-primary:active {
         border: none;
     }
 
@@ -59,5 +73,13 @@
         content: "\e920";
         color: #fff;
         font-size: 20px;
+    }
+}
+
+// Confirmation
+.dialog-confirmation {
+    .ui-dialog-content  {
+        padding: 32px 12px;
+        font-size: 16px;
     }
 }

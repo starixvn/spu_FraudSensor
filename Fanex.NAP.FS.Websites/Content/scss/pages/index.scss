@@ -6,10 +6,12 @@
 @import "../components/checkbox";
 @import "../components/customize-select2";
 @import "../components/customize-datepicker";
+@import "../components/customize-toast";
 @import "../components/forms";
 @import "../components/dropdown";
 @import "../components/tables";
 @import "../components/popup";
+
 
 .header {
     @include align-items(grid);
@@ -248,6 +250,7 @@ body {
             position: absolute;
             left: 13px;
             top: -7px;
+            line-height: 1;
             padding: 2px;
             border-radius: 2px;
             border: 1px solid #e73339;

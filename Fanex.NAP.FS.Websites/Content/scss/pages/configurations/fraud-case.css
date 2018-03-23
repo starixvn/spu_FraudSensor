@@ -167,6 +167,9 @@
   color: #e8333a;
   font-size: 19px; }
 
+.table .icon-delete:not(:disabled):hover {
+  cursor: pointer; }
+
 .table .col-no {
   width: 40px; }
 

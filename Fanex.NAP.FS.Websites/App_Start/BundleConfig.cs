@@ -29,6 +29,7 @@ namespace Fanex.NAP.FS.Websites
                       "~/Content/scss/vendors/select2.min.css",
                       "~/Content/scss/vendors/jquery-ui/base/jquery-ui.min.css",
                       "~/Content/scss/vendors/DataTables/css/jquery.dataTables.min.css",
+                      "~/Content/scss/vendors/toast/jquery.toast.css",
                       "~/Content/scss/fonts/Fraud-Sensor/style.css",
                       "~/Content/scss/base/reset.css",
                       "~/Content/scss/pages/index.css"));
@@ -47,7 +48,8 @@ namespace Fanex.NAP.FS.Websites
                 "~/Scripts/common.js",
                 "~/Scripts/Fanex.Grid/Fanex.Grid.js",
                 "~/Scripts/Fanex.Grid/Fanex.Pagination.js",
-                "~/Scripts/DataTables/jquery.datatables.min.js"));
+                "~/Scripts/DataTables/jquery.datatables.min.js",
+                "~/Scripts/toast/jquery.toast.js"));
         }
 
         private static void RegisterMatchMonitorBundles(BundleCollection bundles)

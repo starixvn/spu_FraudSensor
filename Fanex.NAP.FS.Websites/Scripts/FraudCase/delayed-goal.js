@@ -27,7 +27,7 @@
             { data: "data.Name" },
             { data: "data.Creator" },
             { data: "data.AddedDate", className: "text-center" },
-            { defaultContent: "<span class='icon-delete' style='cursor: pointer'></span>", className: "has-icon text-center", createdCell: c => $("span", c).click(deleteFlow) }
+            { defaultContent: "<span class='icon-delete'></span>", className: "has-icon text-center", createdCell: c => $("span", c).click(deleteFlow) }
         ],
         scrollY: '40vh',
         scrollCollapse: true,
