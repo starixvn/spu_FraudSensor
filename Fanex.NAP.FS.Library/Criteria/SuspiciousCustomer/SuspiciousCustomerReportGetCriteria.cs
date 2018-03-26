@@ -44,6 +44,7 @@
                 return null;
             }
         }
+
         public bool? IsHedge
         {
             get

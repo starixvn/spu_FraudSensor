@@ -91,7 +91,8 @@
             ToDate: to.val(),
             FraudCaseId: fraud_case.val(),
             IsVerified: parseInt(is_verified.val()),
-            AssigneedId: assignee.val()
+            AssigneedId: assignee.val(),
+            Classification: classification.val()
         }
 
         saved_dto = dto;
@@ -225,7 +226,19 @@
 
         var dto = {};
 
-        dto.criteria = Object.assign({}, saved_dto);
+        if (saved_dto == null) {
+            dto = {
+                Username: $("#member").val(),
+                FromDate: from.val(),
+                ToDate: to.val(),
+                FraudCaseId: fraud_case.val(),
+                IsVerified: parseInt(is_verified.val()),
+                AssigneedId: assignee.val(),
+                Classification: classification.val()
+            }
+        } else {
+            dto = Object.assign({}, saved_dto);
+        }
 
         dto.fraudCaseName = fraud_case.find(":selected").text();
 
