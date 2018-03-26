@@ -29,7 +29,7 @@
             }
 
             totalTicket = n;
-            removeMatchLeague();
+            //removeMatchLeague();
         });
     }
 

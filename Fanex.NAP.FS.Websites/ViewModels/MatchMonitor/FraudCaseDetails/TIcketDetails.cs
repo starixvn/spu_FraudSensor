@@ -31,5 +31,6 @@ namespace Fanex.NAP.FS.Websites.ViewModels.MatchMonitor.FraudCaseDetails
         public string Bettype { get; set; }
 
         public Choice_Template ChoiceExcel { get; set; }
+        public string BettypeRealName { get; internal set; }
     }
 }

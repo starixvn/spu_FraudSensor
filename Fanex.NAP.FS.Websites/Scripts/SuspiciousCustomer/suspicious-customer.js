@@ -31,7 +31,7 @@
     get_fraud_case();
 
     get_assignee();
-
+    
     assignee.select2();
 
     $([date_type, fraud_case, is_verified, classification]).select2({
@@ -60,14 +60,14 @@
             { data: obj => obj.HasNote ? '<span class="icon-note-text icon-note"></span>' : null, className: "has-icon text-center" },
             { data: obj => obj.IsVerified ? '<span class="icon-approval"></span>' : null, className: "has-icon text-center" },
             { data: obj => `<a>${obj.Username}</a>` },
-            { data: obj => obj.Evidence },
             { data: obj => obj.TotalViolation },
             { data: obj => obj.ViolatedCases },
             { data: obj => obj.BetCount },
             { data: obj => obj.Assignee }
         ],
         columnDefs: [
-            { defaultContent: "-", targets: "_all" }
+            { defaultContent: "-", targets: "_all" },
+            { targets: [-2, -3, -4], className: "text-right"}
         ]
     })
 
@@ -90,7 +90,7 @@
             FromDate: from.val(),
             ToDate: to.val(),
             FraudCaseId: fraud_case.val(),
-            IsVerified: parseInt(is_verified.val()),
+            IsVerified: is_verified.val(),
             AssigneedId: assignee.val(),
             Classification: classification.val()
         }
@@ -141,7 +141,7 @@
 
         if (obj.IsDirty) result += '<span class="icon-dirty"></span>';
 
-        if (obj.IsDelinquency) result += '<span class="icon - delinquency"></span>';
+        if (obj.IsDelinquent) result += '<span class="icon-delinquency"></span>';
 
         if (obj.IsHedge) result += '<span class="icon-hedge"></span>';
 

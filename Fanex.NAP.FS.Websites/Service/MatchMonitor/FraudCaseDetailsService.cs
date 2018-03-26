@@ -39,12 +39,12 @@ namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
                 .Select(a => {
                     var bettype = RefData.GetBetTypeName(a.BetTypeId.ToString(), "en");
 
-                    bettype = GetOrder(bettype) != BettypeOrder.Other ? bettype : "Others";
+                    var grouped_bettype = GetOrder(bettype) != BettypeOrder.Other ? bettype : "Others";
 
                     return new TicketDetails
                     {
                         Member = a.UserName,
-                        Bettype = bettype,
+                        Bettype = grouped_bettype,
                         TransDate = a.TransDate,
                         BetID = a.TransId.ToString(),
                         IP = a.IP,
@@ -54,7 +54,8 @@ namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
                         Status = a.Status,
                         WinLoss = a.Winlost,
                         Choice = html_builder.BuildChoice(a, ticketHelper, null, false),
-                        ChoiceExcel = saveChoice ? html_builder.BuildChoiceBlock(a, ticketHelper, null, false) : null
+                        ChoiceExcel = saveChoice ? html_builder.BuildChoiceBlock(a, ticketHelper, null, false) : null,
+                        BettypeRealName = bettype
                     };
                 })
                 .OrderBy(t => GetOrder(t.Bettype))
@@ -215,7 +216,7 @@ namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
             row.GetCell(1).SetCellValue(ticket.Member);
             row.GetCell(2).SetCellValue(ticket.TransDate);
             row.GetCell(3).SetCellValue(ticket.BetID);
-            row.GetCell(4).SetCellValue(ticket.Bettype);
+            row.GetCell(4).SetCellValue(ticket.BettypeRealName);
             GetChoiceExcel(ticket, row.GetCell(5));
             row.GetCell(6).SetCellValue(ticket.Score);
             row.GetCell(7).SetCellValue(string.Format("{0} ({1})", ticket.Odds.Value, ticket.Odds.Type));
