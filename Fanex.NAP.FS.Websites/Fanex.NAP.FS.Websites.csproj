@@ -774,6 +774,7 @@
     <Content Include="Content\scss\pages\suspicious-customer\suspicious-customer.scss" />
     <Content Include="Content\scss\components\_customize-datepicker.scss" />
     <Content Include="Content\scss\components\_customize-toast.scss" />
+    <Content Include="Content\scss\components\_loading.scss" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile2.pubxml" />

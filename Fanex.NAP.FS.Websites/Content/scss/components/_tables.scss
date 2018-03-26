@@ -170,6 +170,15 @@
     td.group {
       background-color: #ccd3dd;
       font-weight: bold;
+      color: #465262;
+      cursor: pointer;
+    }
+
+    .group [class^="icon"] {
+        float: left;
+        position: relative;
+        top: -3px;
+        margin-right: 4px;
     }
   }
   

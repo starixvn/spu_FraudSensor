@@ -132,7 +132,7 @@
         columnDefs: [{ targets: "_all", defaultContent: "-" }],
         createdRow: function (row, obj) {
             if (obj.key) {
-                var td = $(`<td colspan='11' class='group'>${obj.value}</td>`);
+                var td = $(`<td colspan='11' class='group'><span class='icon-chevron-down'></span> ${obj.value}</td>`);
 
                 $(row).empty().html(td).click(() => show_hide_bettype_items(obj.value));
             } else {
