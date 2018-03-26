@@ -8,7 +8,7 @@
 // </summary>
 //
 // <history>
-// Lasted generated date: 3/6/2018 12:44:06
+// Lasted generated date: 3/26/2018 9:12:21 AM
 // </history>
 
 using System.Diagnostics.CodeAnalysis;
@@ -21,33 +21,34 @@ public static class FSFunctionKeys
 {
     public const string Administration = "Administration";
 
-        public const string AssignFunctionToGroup = "AssignFunctionToGroup";
+    public const string AssignFunctionToGroup = "AssignFunctionToGroup";
 
-        public const string AssignFunctionToUser = "AssignFunctionToUser";
+    public const string AssignFunctionToUser = "AssignFunctionToUser";
 
-        public const string AssignSiteToUser = "AssignSiteToUser";
+    public const string AssignSiteToUser = "AssignSiteToUser";
 
-        public const string Configurations = "Configurations";
+    public const string Configurations = "Configurations";
 
-        public const string FraudCase = "FraudCase";
+    public const string FraudCase = "FraudCase";
 
-        public const string Home = "Home";
+    public const string Home = "Home";
 
-        public const string ManageFunction = "ManageFunction";
+    public const string ManageFunction = "ManageFunction";
 
-        public const string ManageGroup = "ManageGroup";
+    public const string ManageGroup = "ManageGroup";
 
-        public const string ManageMenu = "ManageMenu";
+    public const string ManageMenu = "ManageMenu";
 
-        public const string ManageUser = "ManageUser";
+    public const string ManageUser = "ManageUser";
 
-        public const string MatchMonitoring = "MatchMonitoring";
+    public const string MatchMonitoring = "MatchMonitoring";
 
-        public const string Notification = "Notification";
+    public const string Notification = "Notification";
 
-        public const string Reports = "Reports";
+    public const string Reports = "Reports";
 
-        public const string SystemConfiguration = "SystemConfiguration";
+    public const string SuspiciousCustomer = "SuspiciousCustomer";
 
-    }
- 
+    public const string SystemConfiguration = "SystemConfiguration";
+
+}

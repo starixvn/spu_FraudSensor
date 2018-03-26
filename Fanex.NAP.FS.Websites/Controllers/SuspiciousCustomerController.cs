@@ -9,13 +9,12 @@
     using Library.ExportExcel;
     using Library.Services;
     using NPOI.SS.UserModel;
-    using System;
     using System.Collections.Generic;
     using System.Configuration;
     using System.Linq;
     using System.Web.Mvc;
 
-    [NapAuth(FunctionKey = FSFunctionKeys.MatchMonitoring, Policy = Constant.Policy.Read)]
+    [NapAuth(FunctionKey = FSFunctionKeys.SuspiciousCustomer, Policy = Constant.Policy.Read)]
     public class SuspiciousCustomerController : ReportsController
     {
         private readonly ISuspiciousCustomerReportService _suspiciousCustomerReportService;
