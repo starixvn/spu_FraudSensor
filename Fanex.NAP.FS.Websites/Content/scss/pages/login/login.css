@@ -12,10 +12,10 @@ body {
   box-sizing: border-box; }
 
 a, .link {
-  color: #3c96c7;
+  color: #2097fd;
   text-decoration: none; }
   a:hover, .link:hover {
-    color: #2e79a2;
+    color: #027ee8;
     text-decoration: none; }
 
 .bold {
@@ -82,6 +82,11 @@ input, button {
       color: #fff; }
     .button.-export:hover .icon-export-excel {
       color: #fff; }
+  .button.-cancel {
+    background-color: #929292;
+    color: #fff; }
+    .button.-cancel:hover:not(:disabled) {
+      background-color: #929292; }
 
 a.button, a.button:hover {
   text-decoration: none; }

@@ -353,7 +353,6 @@
     <Content Include="Areas\UserLogin\Views\Common\Style\Images\accessDenied.gif" />
     <Content Include="Areas\UserLogin\Views\Common\Style\Images\UnderMaintenance.gif" />
     <Content Include="Content\CoreBetList.css" />
-    <Content Include="Content\fonts\Fraud-Sensor.svg" />
     <Content Include="Content\gulpfile.js" />
     <Content Include="Content\images\details_close.png" />
     <Content Include="Content\images\details_open.png" />
@@ -766,9 +765,6 @@
     <Content Include="Content\scss\vendors\DataTables\css\semanticui.scss" />
     <Content Include="Content\package-lock.json" />
     <Content Include="Content\package.json" />
-    <Content Include="Content\fonts\Fraud-Sensor.eot" />
-    <Content Include="Content\fonts\Fraud-Sensor.ttf" />
-    <Content Include="Content\fonts\Fraud-Sensor.woff" />
     <Content Include="App_Data\Excel Template\MatchMonitor\FraudCaseDetail\template.xlsx" />
     <None Include="bundleconfig.json" />
     <Content Include="fonts\Fraud-Sensor.eot" />

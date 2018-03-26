@@ -40,6 +40,15 @@
             color: #fff;
         }        
     }
+
+    &.-cancel {
+        background-color: $btn-cancel-bg;
+        color: $btn-cancel-color;
+
+        &:hover:not(:disabled) {
+            background-color: $btn-cancel-bg-hover;
+        }
+    }
 }
 
 a.button, a.button:hover {

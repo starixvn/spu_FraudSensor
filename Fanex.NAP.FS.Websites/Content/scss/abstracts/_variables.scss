@@ -6,7 +6,7 @@ $text-color: #666;
 
 $primary-color: #1d2e4f;
 
-$link-color: #3c96c7;
+$link-color: #2097fd;
 $link-hover-color: darken($link-color, 10%);
 
 $border-color: #d6d6d6;
@@ -22,6 +22,10 @@ $btn-primary-bg-hover: #5bb023;
 
 $btn-disabled-bg: #c9cdd1;
 $btn-disabled-color: #fff;
+
+$btn-cancel-bg: #929292;
+$btn-cancel-color: #fff;
+$btn-cancel-bg-hover: #929292;
 
 $msg-error: #fe0000; 
 $msg-error-border: #ff0000; 

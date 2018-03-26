@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'Fraud-Sensor';
-  src:  url('fonts/Fraud-Sensor.eot?mz7lny');
-  src:  url('fonts/Fraud-Sensor.eot?mz7lny#iefix') format('embedded-opentype'),
-    url('fonts/Fraud-Sensor.ttf?mz7lny') format('truetype'),
-    url('fonts/Fraud-Sensor.woff?mz7lny') format('woff'),
-    url('fonts/Fraud-Sensor.svg?mz7lny#Fraud-Sensor') format('svg');
+  src:  url('fonts/Fraud-Sensor.eot?hp3kb9');
+  src:  url('fonts/Fraud-Sensor.eot?hp3kb9#iefix') format('embedded-opentype'),
+    url('fonts/Fraud-Sensor.ttf?hp3kb9') format('truetype'),
+    url('fonts/Fraud-Sensor.woff?hp3kb9') format('woff'),
+    url('fonts/Fraud-Sensor.svg?hp3kb9#Fraud-Sensor') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -24,6 +24,9 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.icon-help-circle:before {
+  content: "\e92b";
+}
 .icon-checkbox-marked-circle-outline:before {
   content: "\e929";
 }

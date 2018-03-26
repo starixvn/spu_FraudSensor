@@ -30,7 +30,6 @@ namespace Fanex.NAP.FS.Websites
                       "~/Content/scss/vendors/jquery-ui/base/jquery-ui.min.css",
                       "~/Content/scss/vendors/DataTables/css/jquery.dataTables.min.css",
                       "~/Content/scss/vendors/toast/jquery.toast.css",
-                      "~/Content/scss/fonts/Fraud-Sensor/style.css",
                       "~/Content/scss/base/reset.css",
                       "~/Content/scss/pages/index.css"));
 
