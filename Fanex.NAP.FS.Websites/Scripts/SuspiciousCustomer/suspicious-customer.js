@@ -221,9 +221,17 @@
     }
 
     function export_excel() {
-        var url = common.modifyRelativeUrl("insert url here");
-        throw "insert url";
-        common.downloadFile(url, saved_dto);
+        var url = common.modifyRelativeUrl("/suspiciouscustomer/ExportExcel");
+
+        var dto = {};
+
+        dto.criteria = Object.assign({}, saved_dto);
+
+        dto.fraudCaseName = fraud_case.find(":selected").text();
+
+        dto.assignee = assignee.find(":selected").text();
+
+        common.downloadFile(url, dto);
     }
 }
 

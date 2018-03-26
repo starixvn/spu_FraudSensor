@@ -123,7 +123,7 @@
             { data: obj => obj.BetID },
             { data: obj => obj.Choice },
             { data: obj => obj.Score, className: "text-center", width: "80px" },
-            { data: obj => obj.Odds != null ? `<span class="underdog"><font color='#B50000'>${obj.Odds.Value}</font></span><br /><span class="oddstype">${obj.Odds.Type}</span>` : null, width: "84px" },
+            { data: obj => obj.Odds != null ? obj.Odds.Html : null, width: "84px" },
             { data: obj => obj.Stake == null ? null : obj.Stake.toFixed(2), className: "text-right" },
             { data: obj => obj.WinLoss == null ? null : obj.WinLoss.toFixed(2), className: "text-right" },
             { data: obj => obj.Status, width: "110px" },

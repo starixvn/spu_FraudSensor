@@ -118,7 +118,7 @@
         {
             Response.Clear();
             Response.ContentType = "application/vnd.ms-excel";
-            Response.AddHeader("Content-Disposition", string.Format("attachment; filename={0}.xls", fileName));
+            Response.AddHeader("Content-Disposition", string.Format("attachment; filename={0}", fileName));
             workbook.Write(Response.OutputStream);
         }
     }

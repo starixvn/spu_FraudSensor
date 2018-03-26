@@ -48,7 +48,7 @@ namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
                         TransDate = a.TransDate,
                         BetID = a.TransId.ToString(),
                         IP = a.IP,
-                        Odds = new OddsDetails { Value = (double)a.Odds, Type = RefData.GetOddsTypeName(a.OddsType, "en") },
+                        Odds = new OddsDetails { Value = (double)a.Odds, Type = RefData.GetOddsTypeName(a.OddsType, "en"), Html = html_builder.BuildOdds(a, null, CacheRef.GetOddsTypeName) },
                         Score = string.Format("{0}-{1}", a.LiveHomeScore, a.LiveAwayScore),
                         Stake = a.Stake,
                         Status = a.Status,
@@ -215,10 +215,10 @@ namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
             row.GetCell(1).SetCellValue(ticket.Member);
             row.GetCell(2).SetCellValue(ticket.TransDate);
             row.GetCell(3).SetCellValue(ticket.BetID);
-            GetChoiceExcel(ticket, row.GetCell(4));
-            row.GetCell(5).SetCellValue(ticket.Bettype);
+            row.GetCell(4).SetCellValue(ticket.Bettype);
+            GetChoiceExcel(ticket, row.GetCell(5));
             row.GetCell(6).SetCellValue(ticket.Score);
-            new XSSFRichTextString().Write(ticket.Odds.Value + "\n").Write(ticket.Odds.Type).SetValue(row.GetCell(7));
+            row.GetCell(7).SetCellValue(string.Format("{0} ({1})", ticket.Odds.Value, ticket.Odds.Type));
             row.GetCell(8).SetCellValue((double)ticket.Stake);
             row.GetCell(9).SetCellValue((double)ticket.WinLoss);
             row.GetCell(10).SetCellValue(ticket.Status);
@@ -240,13 +240,7 @@ namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
                 .Replace("<span class='handicap'>", "")
                 .Replace("</span>", "");
 
-            var bet_type = new StringBuilder(t.ChoiceExcel.BetType);
-
-            bet_type
-                .Replace("<div class=\"bettype\">", "")
-                .Replace("</div>", "");
-
-            cell.SetCellValue(string.Format("{0}{1}\n{2}", bet_team, handicap, bet_type.ToString().Trim()));
+            cell.SetCellValue(string.Format("{0}{1}", bet_team, handicap));
         }
 
         private static void WriteCustomer(ISheet sheet, CustomerDetails customer, int idx)

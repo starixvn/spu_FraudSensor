@@ -122,9 +122,37 @@
         })
     }
 
-    this.showSuccess = (str = "Success", timeout = 3000) => showDialog(success, str, timeout);
+    this.showSuccess = function (str = "Success", timeout = 3000) {
+        $.toast({
+            text: `<div class='toast-content'>${str}</div>`, // Text that is to be shown in the toast
+            heading: 'Successful!', // Optional heading to be shown on the toast
+            icon: 'success', // Type of toast icon
+            showHideTransition: 'fade', // fade, slide or plain
+            allowToastClose: true, // Boolean value true or false
+            hideAfter: timeout, // false to make it sticky or number representing the miliseconds as time after which toast needs to be hidden
+            stack: 5, // false if there should be only one toast at a time or a number representing the maximum number of toasts to be shown at a time
+            position: 'top-center', // bottom-left or bottom-right or bottom-center or top-left or top-right or top-center or mid-center or an object representing the left, right, top, bottom values
+            textAlign: 'left',  // Text alignment i.e. left, right or center
+            loader: true,  // Whether to show loader or not. True by default
+            loaderBg: '#fff',  // Background color of the toast loader
+        });
+    }
 
-    this.showError = (str = "Internal Error", timeout = 3000) => showDialog(error, str, timeout);
+    this.showError = function (str = "Internal Error", timeout = 3000) {
+        $.toast({
+            text: `<div class='toast-content'>${str}</div>`, // Text that is to be shown in the toast
+            heading: 'Error!', // Optional heading to be shown on the toast
+            icon: 'error', // Type of toast icon
+            showHideTransition: 'fade', // fade, slide or plain
+            allowToastClose: true, // Boolean value true or false
+            hideAfter: timeout, // false to make it sticky or number representing the miliseconds as time after which toast needs to be hidden
+            stack: 5, // false if there should be only one toast at a time or a number representing the maximum number of toasts to be shown at a time
+            position: 'top-center', // bottom-left or bottom-right or bottom-center or top-left or top-right or top-center or mid-center or an object representing the left, right, top, bottom values
+            textAlign: 'left',  // Text alignment i.e. left, right or center
+            loader: true,  // Whether to show loader or not. True by default
+            loaderBg: '#fff',  // Background color of the toast loader
+        });
+    }
 
     this.getTableDefaultOptions = () => Object.assign({}, defaultTableOptions);
 
@@ -133,9 +161,7 @@
     this.makeNonSearchSelect = select => $(select).select2({ minimumResultsForSearch: -1 })
 
     function showDialog(target, str, timeout) {
-        target.text(str).dialog("open");
 
-        setTimeout(() => target.dialog("close"), timeout);
     }
 }
 
