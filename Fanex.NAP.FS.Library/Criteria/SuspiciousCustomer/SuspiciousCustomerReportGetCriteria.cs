@@ -23,7 +23,7 @@
         {
             get
             {
-                if(Classification == 0 || Classification == 1)
+                if(Classification == 1)
                 {
                     return true;
                 }
@@ -36,7 +36,7 @@
         {
             get
             {
-                if (Classification == 0 || Classification == 2)
+                if (Classification == 2)
                 {
                     return true;
                 }
@@ -49,7 +49,7 @@
         {
             get
             {
-                if (Classification == 0 || Classification == 3)
+                if (Classification == 3)
                 {
                     return true;
                 }
