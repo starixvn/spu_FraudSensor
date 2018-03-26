@@ -277,6 +277,7 @@
     <Compile Include="Controllers\SuspiciousCustomerController.cs" />
     <Compile Include="Controllers\MatchMonitorController.cs" />
     <Compile Include="Controllers\ReportsController.cs" />
+    <Compile Include="Controllers\SuspiciousCustomerDetailsController.cs" />
     <Compile Include="Criteria\FraudCase\DelayedGoal\DelayedGoalCustomerAddCriteria.cs" />
     <Compile Include="Criteria\FraudCase\DelayedGoal\DelayedGoalCustomerDeleteCriteria.cs" />
     <Compile Include="Criteria\FraudCase\DelayedGoal\DelayedGoalCustomerGetCriteria.cs" />
@@ -950,6 +951,7 @@
     <Content Include="Views\MatchMonitor\FraudCaseDetails\TicketDetails.cshtml" />
     <Content Include="Views\MatchMonitor\FraudCaseDetails\CustomerDetails.cshtml" />
     <Content Include="Views\SuspiciousCustomer\Index.cshtml" />
+    <Content Include="Views\SuspiciousCustomerDetails\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
