@@ -8,7 +8,6 @@ ALTER TABLE [dbo].[SuspiciousInfo]
 ADD [ViolationCounter]		INT NULL; 
 GO
 
-
 ALTER TABLE [dbo].[SuspiciousInfo]
 ADD [TicketCounter]			INT NULL; 
 GO
@@ -20,6 +19,28 @@ GO
 CREATE INDEX CIX_SuspiciousCustomer_Dirty ON [dbo].[SuspiciousCustomer] (
 	[IsDirty]               ASC
 )
+GO
+---------------
+ALTER TABLE [dbo].[MonitorMatch]
+ADD [IsDelinquent]			BIT DEFAULT ((0)) NULL;
+GO
+
+ALTER TABLE [dbo].[MonitorMatch]
+ADD [DelinquentedBy]		INT NULL;
+GO
+
+ALTER TABLE [dbo].[MonitorMatch]
+ADD [DelinquentedDate]		DATETIME NULL;
+GO
+
+ALTER TABLE [dbo].[MonitorMatch]
+ADD [IsSuspicious]			BIT DEFAULT ((0)) NULL;
+GO
+
+
+CREATE NONCLUSTERED INDEX CIX_MonitorMatch_IsVerified ON [dbo].[MonitorMatch] (
+	IsVerified				ASC
+) ON IDX;
 GO
 ---------------
 ALTER TABLE [dbo].[OddsLog] 
