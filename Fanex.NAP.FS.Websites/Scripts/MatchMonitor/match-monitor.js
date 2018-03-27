@@ -45,7 +45,6 @@ function load_page_events() {
             { data: row => renderFraudCase(row, 8), className: "has-icon text-center", width: "50px" },
             { data: renderNote, className: "col-note", width: "270px" }
         ],
-        autoWidth: false,
         dom: "t<'pagination'<'page-size'lp>i>",
         language: {
             lengthMenu: "Page size _MENU_",

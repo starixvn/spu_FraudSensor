@@ -297,6 +297,7 @@
     <Compile Include="Criteria\MatchMonitor\UpdateNoteCriteria.cs" />
     <Compile Include="Criteria\MatchMonitor\VerifyMatchCriteria.cs" />
     <Compile Include="Criteria\FraudCase\UpdateFraudCaseStatusCriteria.cs" />
+    <Compile Include="Criteria\SuspiciousCustomer\SuspiciousCustomerNoteGetCriteria.cs" />
     <Compile Include="FSFunctionKeys.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -319,8 +320,10 @@
     <Compile Include="Models\MatchMonitor\League.cs" />
     <Compile Include="Models\MatchMonitor\Match.cs" />
     <Compile Include="Models\NpoiStream.cs" />
+    <Compile Include="Models\SuspiciousCustomer\SuspiciousCustomerNote.cs" />
     <Compile Include="Service\FraudCase\FraudCaseService.cs" />
     <Compile Include="Service\MatchMonitor\FraudCaseDetailsService.cs" />
+    <Compile Include="Service\SuspiciousCustomer\SuspiciousCustomerService.cs" />
     <Compile Include="Service\Utilities\Excel.cs" />
     <Compile Include="ViewModels\FraudCase\DelayedGoal\Customer.cs" />
     <Compile Include="ViewModels\MatchMonitor\Event.cs" />
@@ -342,6 +345,7 @@
     <Compile Include="Util\WebRendering\Column.cs" />
     <Compile Include="Util\WebRendering\Ignore.cs" />
     <Compile Include="ViewModels\MatchMonitor\MatchList.cs" />
+    <Compile Include="ViewModels\SuspiciousCustomer\SuspiciousCustomerNoteView.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Data\NAPFrameworkSpNames.xml" />
@@ -957,6 +961,7 @@
     <Content Include="Views\MatchMonitor\FraudCaseDetails\CustomerDetails.cshtml" />
     <Content Include="Views\SuspiciousCustomer\Index.cshtml" />
     <Content Include="Views\SuspiciousCustomerDetails\Index.cshtml" />
+    <Content Include="Views\SuspiciousCustomer\Note.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />

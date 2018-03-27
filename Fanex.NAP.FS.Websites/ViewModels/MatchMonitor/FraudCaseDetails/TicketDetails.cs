@@ -25,7 +25,7 @@ namespace Fanex.NAP.FS.Websites.ViewModels.MatchMonitor.FraudCaseDetails
 
         public decimal Stake { get; set; }
 
-        public decimal WinLoss { get; set; }
+        public decimal? WinLoss { get; set; }
 
         public string Status { get; set; }
 

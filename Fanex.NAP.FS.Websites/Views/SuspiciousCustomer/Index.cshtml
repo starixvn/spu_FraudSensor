@@ -30,7 +30,7 @@
 
     <div class="group calendar date-range">
         <label class="text">To</label>
-        <input type="text" id="event_date2" class="control"/>
+        <input type="text" id="event_date2" class="control" />
         <span class="icon-calendar-text"></span>
     </div>
 
@@ -73,7 +73,7 @@
 </div>
 
 <div id='customer_grid' hidden>
-    <table class="table table-striped width-100per">
+    <table class="table table-striped width-100per" style="width: 100%">
         <thead>
             <tr>
                 <th class="col-no">#</th>
@@ -83,12 +83,16 @@
                 <th>Member</th>
                 <th>Total Violations</th>
                 <th>Violated Cases</th>
-                <th>Bet Count</th>
+                <th>#Tickets</th>
                 <th>Assignee</th>
             </tr>
         </thead>
         <tbody></tbody>
     </table>
+</div>
+
+<div id="note_popup">
+    @Html.Partial("Note")
 </div>
 
 @section scripts{

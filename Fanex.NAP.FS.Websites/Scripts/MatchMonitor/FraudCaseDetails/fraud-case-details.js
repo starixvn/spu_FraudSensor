@@ -67,15 +67,25 @@
         if (filter[bettype_value] != null) {
             $.fn.dataTable.ext.search[filter[bettype_value]] = () => true;
             filter[bettype_value] = null;
-            $("span", target).removeClass("icon-chevron-down").addClass("icon-chevron-up");
+
+            if ($(target).is("span")) {
+                $(target).removeClass("icon-chevron-down").addClass("icon-chevron-up");
+            } else {
+                $("span", target).removeClass("icon-chevron-down").addClass("icon-chevron-up");
+            }
         }
         else {
             var n = $.fn.dataTable.ext.search.push(function (settings, data, idx) {
                 return $(table.row(idx).node()).attr("data-bettype-item") != bettype_value;
             });
 
-            $("span", target).addClass("icon-chevron-down").removeClass("icon-chevron-up");
-
+            if ($(target).is("span")) {
+                $(target).addClass("icon-chevron-down").removeClass("icon-chevron-up");
+            }
+            else {
+                $("span", target).addClass("icon-chevron-down").removeClass("icon-chevron-up");
+            }
+            
             filter[bettype_value] = n - 1;
         }
 
@@ -84,12 +94,20 @@
         $("#DataTables_Table_0_info").text(`Displaying 1 to ${totalTicket} of ${totalTicket} item(s)`);
     }
 
-    function switchTab() {
+    function switchTab(ui) {
+        console.log(ui)
+
         if (first_time) {
-            customer_grid.DataTable().draw();
             customer_grid.DataTable().draw();
 
             first_time = false;
+        }
+
+        if (ui.newPanel.is("#customer-tab")) {
+            customer_grid.DataTable().draw();
+        }
+        else {
+            ticket_grid.DataTable().draw()
         }
     }
 
@@ -117,22 +135,21 @@
             infoFiltered: "",
             thousands: ",",
         },
-        autoWidth: false,
         scrollY: '57vh',
         scrollCollapse: true,
         columns: [
             { data: obj => obj.key ? obj.value : ++global_idx, className: "text-center", width: "40px" },
-            { data: obj => obj.Member },
+            { data: obj => obj.Member, width: "100px" },
             { data: obj => obj.CurrencyName, className: "text-center", width: "10px" },
-            { data: obj => moment(obj.TransDate).format("MMM D, YYYY hh:mm:ss A"), className: "text-center", width: "200px" },
-            { data: obj => obj.BetID },
-            { data: obj => obj.Choice, width: "200px" },
-            { data: obj => obj.Score, className: "text-center", width: "80px" },
+            { data: obj => moment(obj.TransDate).format("MMM D, YYYY<br/>hh:mm:ss A"), className: "text-center", width: "100px" },
+            { data: obj => obj.BetID, width: "100px" },
+            { data: obj => obj.Choice },
+            { data: obj => obj.Score, className: "text-center", width: "40px" },
             { data: obj => obj.Odds != null ? obj.Odds.Html : null, width: "50px" },
-            { data: obj => obj.Stake == null ? null : numeral(obj.Stake).format("0,0.00"), className: "text-right" },
-            { data: obj => obj.WinLoss == null ? null : obj.WinLoss >= 0 ? numeral(obj.WinLoss).format("0,0.00") : `<font color='#B50000'>${numeral(obj.WinLoss).format('0,0.00')}</font>`, className: "text-right" },
-            { data: obj => obj.Status, width: "60px" },
-            { data: obj => obj.IP }
+            { data: obj => obj.Stake == null ? null : numeral(obj.Stake).format("0,0.00"), className: "text-right", width: "100px" },
+            { data: obj => obj.WinLoss == null ? null : obj.WinLoss >= 0 ? numeral(obj.WinLoss).format("0,0.00") : `<font color='#B50000'>${numeral(obj.WinLoss).format('0,0.00')}</font>`, className: "text-right", width: "100px" },
+            { data: obj => obj.Status, width: "60px", className: "text-center" },
+            { data: obj => obj.IP, width: "100px" }
         ],
         columnDefs: [{ targets: "_all", defaultContent: "-" }],
         createdRow: function (row, obj) {
@@ -159,7 +176,6 @@
             info: "Displaying _START_ to _END_ of _TOTAL_ item(s)",
             infoEmpty: ""
         },
-        autoWidth: false,
         scrollY: '57vh',
         scrollCollapse: true,
         columns: [

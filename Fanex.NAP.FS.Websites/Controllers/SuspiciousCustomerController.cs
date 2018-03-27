@@ -3,6 +3,7 @@
     using Core.Business;
     using Core.Service.Impl;
     using Core.Web.Attribute;
+    using Fanex.NAP.FS.Websites.Service.SuspiciousCustomer;
     using Library.Core;
     using Library.Criteria;
     using Library.DTO;
@@ -36,7 +37,6 @@
             return Json(suspiciousCustomers, JsonRequestBehavior.AllowGet);
         }
 
-        [HttpGet]
         public ActionResult GetFraudCases()
         {
             var fraudCaseService = new FraudCaseService();
@@ -95,6 +95,11 @@
             ResponseStreamExcel(excelExporter.Workbook, saveAsFileName);
 
             return new EmptyResult();
+        }
+
+        public ActionResult GetSuspiciousCustomerNote(int custId)
+        {
+            return Json(SuspiciousCustomerService.GetNoteViews(custId), JsonRequestBehavior.AllowGet);
         }
 
         private static List<string> GetSuspiciousCustomerHeaders()

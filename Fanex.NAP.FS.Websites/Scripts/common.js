@@ -175,6 +175,14 @@
 
         $input.addClass("control").datepicker(options);
     }
+
+    this.makeWrapString = function (str = "", maxLength = 0) {
+        if (str == null) return str;
+
+        if (str.length > maxLength) return str.substring(0, maxLength - 3) + "...";
+
+        return str;
+    }
 }
 
 var common = new UICommon();

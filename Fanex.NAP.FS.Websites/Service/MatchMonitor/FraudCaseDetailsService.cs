@@ -36,7 +36,13 @@ namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
 
             var html_builder = new BetListHTMLBuilder();
             var ticketHelper = new TicketHelper();
-            
+
+            var null_winloss = new HashSet<string>
+            {
+                "running",
+                "reject"
+            };
+
             return DataService.GetData<TicketInfo>(criteria)
                 .Select(a => {
                     a.HomeId = legend.HomeId;
@@ -57,7 +63,7 @@ namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
                         Score = string.Format("{0}-{1}", a.LiveHomeScore, a.LiveAwayScore),
                         Stake = a.Stake,
                         Status = a.Status,
-                        WinLoss = a.Winlost,
+                        WinLoss = null_winloss.Contains(a.Status.ToLowerInvariant()) ? null : new decimal?(a.Winlost),
                         Choice = html_builder.BuildChoice(a, ticketHelper, null, false),
                         ChoiceExcel = saveChoice ? html_builder.BuildChoiceBlock(a, ticketHelper, null, false) : null,
                         BettypeRealName = bettype,
@@ -147,7 +153,7 @@ namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
                     var home = RefData.GetTeamName(info.homeid.ToString())[1];
                     var away = RefData.GetTeamName(info.awayid.ToString())[1];
 
-                    var eventName = string.Format("{0} -vs- {1}", home, away);
+                    var eventName = string.Format("<b>{0}</b> - vs - <b>{1}</b>", home, away);
 
                     var htScore = string.Format("{0}-{1}", info.HTHomeScore, info.HTAwayScore);
                     var ftScore = string.Format("{0}-{1}", info.finalhomescore, info.finalawayscore);

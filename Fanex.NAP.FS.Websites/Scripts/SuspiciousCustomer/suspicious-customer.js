@@ -5,12 +5,46 @@
         is_verified = $("#is_verified"),
         classification = $("#classification"),
         assignee = $("#assignee"),
-        customer_table = $("table"),
-        date_type = $("#date_type");
+        customer_table = $("#customer_grid table"),
+        date_type = $("#date_type"),
+        note_popup = $("#note_popup");
 
     var first_time = true;
 
     var saved_dto = null;
+
+    $("table", note_popup).DataTable({
+        ordering: false,
+        searching: false,
+        lengthMenu: [10, 20, 50, 100, 500],
+        pageLength: 50,
+        scrollCollapse: true,
+        dom: "t<'pagination'<'page-size'lp>i>",
+        language: {
+            lengthMenu: "Page size _MENU_",
+            paginate: {
+                previous: "Back"
+            },
+            info: "Displaying _START_ to _END_ of _TOTAL_ item(s)",
+            infoEmpty: ""
+        },
+        columnDefs: [
+            { defaultContent: "-", targets: "_all", width: "120px" },
+        ],
+        columns: [
+            { data: (obj, typet, set, meta) => meta.row + 1, className: "text-center", width: "40px" },
+            { data: obj => obj.Date, className: "text-center", width: "200px" },
+            { data: obj => common.makeWrapString(obj.Description, 50), width: "700px" },
+            { data: obj => obj.Author },
+            { data: obj => obj.Type }
+        ]
+    })
+
+    note_popup.dialog({
+        autoOpen: false,
+        maxHeight: 300,
+        width: 700,
+    })
 
     from.datepicker({
         dateFormat: "M dd, yy",
@@ -45,7 +79,6 @@
         pageLength: 50,
         scrollY: "70vh",
         scrollCollapse: true,
-        autoWidth: false,
         dom: "t<'pagination'<'page-size'lp>i>",
         language: {
             lengthMenu: "Page size _MENU_",
@@ -54,21 +87,21 @@
             },
             info: "Displaying _START_ to _END_ of _TOTAL_ item(s)",
             infoEmpty: ""
-        },
-        columns: [
-            { data: (obj, typet, set, meta) => meta.row + 1, className: "text-center" },
-            { data: build_classification, className: "has-icon text-center list-icon" },
-            { data: obj => obj.HasNote ? '<span class="icon-note-text icon-note"></span>' : null, className: "has-icon text-center" },
-            { data: obj => obj.IsVerified ? '<span class="icon-approval"></span>' : null, className: "has-icon text-center" },
-            { data: obj => `<a>${obj.Username}</a>` },
+        },        columns: [
+            { data: (obj, typet, set, meta) => meta.row + 1, className: "text-center", width: "40px" },
+            { data: build_classification, className: "has-icon text-center list-icon", width: "120px" },
+            { data: obj => obj.HasNote ? '<span class="icon-note-text icon-note"></span>' : null, className: "has-icon text-center", width: "90px" },
+            { data: obj => obj.IsVerified ? '<span class="icon-approval"></span>' : null, className: "has-icon text-center", width: "90px" },
+            { data: obj => `<a>${obj.Username}</a>`, width: "300px" },
             { data: obj => obj.TotalViolation },
             { data: obj => obj.ViolatedCases },
             { data: obj => obj.BetCount },
             { data: obj => obj.Assignee }
         ],
+
         columnDefs: [
             { defaultContent: "-", targets: "_all" },
-            { targets: [-2, -3, -4], className: "text-right"}
+            { targets: [-2, -3, -4], className: "text-right", width: "120px" }
         ]
     })
 
@@ -109,8 +142,11 @@
 
             if (first_time) {
                 customer_table.DataTable().draw();
+                customer_table.DataTable().draw();
                 first_time = false;
             }
+
+            $("span.icon-note-text").click(e => create_popup(customer_table.DataTable().row($(e.target).parents("tr")).data()))
 
             common.closeLoading();
         });
@@ -249,6 +285,14 @@
         dto.assignee = assignee.find(":selected").text();
 
         common.downloadFile(url, dto);
+    }
+
+    function create_popup(data) {
+        note_popup.dialog("option", "title", `Notes for ${data.Username}`).dialog("open");
+
+        var url = common.modifyRelativeUrl("/SuspiciousCustomer/GetSuspiciousCustomerNote");
+
+        $.get(url, { custId: data.CustId }, data => $("table", note_popup).DataTable().clear().rows.add(data).draw());
     }
 }
 
