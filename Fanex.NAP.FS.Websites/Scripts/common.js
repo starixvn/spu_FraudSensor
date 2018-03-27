@@ -3,16 +3,7 @@
 
     var reg = /[<>]/;
 
-    var loading = $("#loading").dialog({
-        autoOpen: false,
-        modal: true,
-        open: function (e, ui) {
-            $(".ui-dialog-titlebar-close", ui.dialog | ui).hide();
-        },
-        draggable: false,
-        resizable: false,
-        height: 100
-    });
+    var loading = $("#loading").hide();
 
     var confirmation = $("#confirmation").dialog({
         autoOpen: false,
@@ -54,11 +45,11 @@
     $(document).ajaxError(() => showDialog(error, "Internal Error", 3000));
 
     this.showLoading = function () {
-        loading.dialog("open");
+        loading.show();
     };
 
     this.closeLoading = function () {
-        loading.dialog("close");
+        loading.hide();
     }
 
     this.downloadFile = function (url, parameters) {

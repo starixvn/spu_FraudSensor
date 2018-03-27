@@ -122,14 +122,14 @@
         columns: [
             { data: obj => obj.key ? obj.value : ++global_idx, className: "text-center", width: "40px" },
             { data: obj => obj.Member },
-            { data: obj => obj.CurrencyName, className: "text-center", width: "20px" },
-            { data: obj => moment(obj.TransDate).format("MMM D, YYYY"), className: "text-center", width: "100px" },
+            { data: obj => obj.CurrencyName, className: "text-center", width: "10px" },
+            { data: obj => moment(obj.TransDate).format("MMM D, YYYY hh:mm:ss A"), className: "text-center", width: "200px" },
             { data: obj => obj.BetID },
             { data: obj => obj.Choice, width: "200px" },
             { data: obj => obj.Score, className: "text-center", width: "80px" },
             { data: obj => obj.Odds != null ? obj.Odds.Html : null, width: "50px" },
             { data: obj => obj.Stake == null ? null : obj.Stake.toFixed(2), className: "text-right" },
-            { data: obj => obj.WinLoss == null ? null : obj.WinLoss.toFixed(2), className: "text-right" },
+            { data: obj => obj.WinLoss == null ? null : obj.WinLoss >= 0 ? obj.WinLoss.toFixed(2) : `<font color='#B50000'>${obj.WinLoss.toFixed(2)}</font>`, className: "text-right" },
             { data: obj => obj.Status, width: "60px" },
             { data: obj => obj.IP }
         ],
