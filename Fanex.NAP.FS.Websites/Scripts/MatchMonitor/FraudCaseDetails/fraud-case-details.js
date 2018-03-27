@@ -61,17 +61,20 @@
         return result;
     }
 
-    function show_hide_bettype_items(bettype_value) {
+    function show_hide_bettype_items(target, bettype_value) {
         var table = ticket_grid.DataTable();
 
         if (filter[bettype_value] != null) {
             $.fn.dataTable.ext.search[filter[bettype_value]] = () => true;
             filter[bettype_value] = null;
+            $("span", target).removeClass("icon-chevron-down").addClass("icon-chevron-up");
         }
         else {
             var n = $.fn.dataTable.ext.search.push(function (settings, data, idx) {
                 return $(table.row(idx).node()).attr("data-bettype-item") != bettype_value;
             });
+
+            $("span", target).addClass("icon-chevron-down").removeClass("icon-chevron-up");
 
             filter[bettype_value] = n - 1;
         }
@@ -119,6 +122,7 @@
         columns: [
             { data: obj => obj.key ? obj.value : ++global_idx, className: "text-center", width: "40px" },
             { data: obj => obj.Member },
+            { data: obj => obj.CurrencyName, className: "text-center" },
             { data: obj => moment(obj.TransDate).format("MMM D, YYYY"), className: "text-center", width: "200px" },
             { data: obj => obj.BetID },
             { data: obj => obj.Choice },
@@ -132,9 +136,9 @@
         columnDefs: [{ targets: "_all", defaultContent: "-" }],
         createdRow: function (row, obj) {
             if (obj.key) {
-                var td = $(`<td colspan='11' class='group'><span class='icon-chevron-up'></span> ${obj.value}</td>`);
+                var td = $(`<td colspan='12' class='group'><span class='icon-chevron-up'></span> ${obj.value}</td>`);
 
-                $(row).empty().html(td).click(() => show_hide_bettype_items(obj.value));
+                $(row).empty().html(td).click(e => show_hide_bettype_items(e.target, obj.value));
             } else {
                 $(row).attr("data-bettype-item", obj.Bettype);
             }
@@ -160,9 +164,10 @@
         columns: [
             { data: (obj, type, set, meta) => meta.row + 1, className: "text-center", width: "40px" },
             { data: obj => obj.Member },
+            { data: obj => obj.CurrencyName, className: "text-center" },
             { data: obj => obj.Tickets, className: "text-right" },
             { data: obj => obj.TotalStake.toFixed(2), className: "text-right" },
-            { data: obj => obj.TotalWinLoss.toFixed(2), className: "text-right" },
+            { data: obj => obj.TotalWinLoss >= 0 ? obj.TotalWinLoss.toFixed(2) : `<font color='#B50000'>${obj.TotalWinLoss.toFixed(2)}</font>`, className: "text-right" },
             { data: obj => obj.Evidence },
             { data: obj => obj.AssociatedAccounts, className: "text-right" },
             { defaultContent: '<span class="icon-settings icon-config"></span>', className: "has-icon text-center", width: "156px" }

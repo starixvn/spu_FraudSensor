@@ -1,4 +1,7 @@
-﻿using Fanex.BetList.Core.Templates;
+﻿using Fanex.BetList.Core.Builder.OddsBuilder;
+using Fanex.BetList.Core.Templates;
+using Fanex.NAP.FS.Websites.Models.MatchMonitor.FraudCaseDetails;
+using NPOI.SS.UserModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,6 +34,11 @@ namespace Fanex.NAP.FS.Websites.ViewModels.MatchMonitor.FraudCaseDetails
         public string Bettype { get; set; }
 
         public Choice_Template ChoiceExcel { get; set; }
-        public string BettypeRealName { get; internal set; }
+
+        public string BettypeRealName { get; set; }
+
+        public string CurrencyName { get; set; }
+
+        public TicketInfo RawData { get; internal set; }
     }
 }

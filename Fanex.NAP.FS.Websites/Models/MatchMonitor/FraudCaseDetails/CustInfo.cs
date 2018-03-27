@@ -16,5 +16,7 @@ namespace Fanex.NAP.FS.Websites.Models.MatchMonitor.FraudCaseDetails
         public decimal TotalStake { get; set; }
 
         public decimal TotalWinlost { get; set; }
+
+        public string CurrencyName { get; set; }
     }
 }

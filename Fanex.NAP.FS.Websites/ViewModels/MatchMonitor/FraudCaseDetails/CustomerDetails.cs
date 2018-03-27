@@ -13,5 +13,7 @@
         public string Evidence { get; set; }
 
         public int AssociatedAccounts { get; set; }
+
+        public string CurrencyName { get; set; }
     }
 }

@@ -78,9 +78,12 @@
     restrict_date_range();
 
     from.change(restrict_to_date);
+
     to.change(restrict_from_date);
 
     $(".-export").click(export_excel);
+
+    $(".icon-calendar-text").click(e => $(e.target).prev().focus());
 
     function get_customers() {
         common.showLoading();

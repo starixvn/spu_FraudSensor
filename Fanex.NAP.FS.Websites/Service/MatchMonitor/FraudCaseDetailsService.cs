@@ -32,11 +32,16 @@ namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
                 MatchId = matchId
             };
 
+            var legend = GetInfo(matchId, fraudCaseId, eventDate);
+
             var html_builder = new BetListHTMLBuilder();
             var ticketHelper = new TicketHelper();
 
-            return DataService.GetData<Ticket>(criteria)
+            return DataService.GetData<TicketInfo>(criteria)
                 .Select(a => {
+                    a.HomeId = legend.HomeId;
+                    a.AwayId = legend.AwayId;
+
                     var bettype = RefData.GetBetTypeName(a.BetTypeId.ToString(), "en");
 
                     var grouped_bettype = GetOrder(bettype) != BettypeOrder.Other ? bettype : "Others";
@@ -55,7 +60,9 @@ namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
                         WinLoss = a.Winlost,
                         Choice = html_builder.BuildChoice(a, ticketHelper, null, false),
                         ChoiceExcel = saveChoice ? html_builder.BuildChoiceBlock(a, ticketHelper, null, false) : null,
-                        BettypeRealName = bettype
+                        BettypeRealName = bettype,
+                        CurrencyName = a.CurrencyName,
+                        RawData = saveChoice ? a : null
                     };
                 })
                 .OrderBy(t => GetOrder(t.Bettype))
@@ -73,7 +80,7 @@ namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
             };
 
             using (var db = new ObjectDb(criteria.GetSettingKey()))
-            using(var query = db.QueryMultiple(criteria))
+            using (var query = db.QueryMultiple(criteria))
             {
                 var custInfo = query.Read<CustInfo>();
                 var custEvidence = query.Read<CustEvidence>();
@@ -84,12 +91,13 @@ namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
                     evid => evid.CustId,
                     (info, evidence) => new CustomerDetails
                     {
-                         Member = info.Username,
-                         TotalWinLoss = (double)info.TotalWinlost,
-                         TotalStake = (double)info.TotalStake,
-                         Tickets = info.NoOfTickets,
-                         Evidence = string.Join(", ", evidence.Select(e => e.EvidenceCode + "-" + e.EvidenceName)),
-                         AssociatedAccounts = 0
+                        Member = info.Username,
+                        TotalWinLoss = (double)info.TotalWinlost,
+                        TotalStake = (double)info.TotalStake,
+                        Tickets = info.NoOfTickets,
+                        Evidence = string.Join(", ", evidence.Select(e => e.EvidenceCode + "-" + e.EvidenceName)),
+                        AssociatedAccounts = 0,
+                        CurrencyName = info.CurrencyName
                     }).OrderBy(c => c.Member);
             }
         }
@@ -129,9 +137,9 @@ namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
                 FraudCaseId = fraudCaseId
             };
 
-            using(var db = new ObjectDb(criteria.GetSettingKey()))
+            using (var db = new ObjectDb(criteria.GetSettingKey()))
             {
-                using(var query = db.QueryMultiple(criteria))
+                using (var query = db.QueryMultiple(criteria))
                 {
                     var info = query.ReadSingle();
                     var fraudCaseName = query.ReadSingle<string>();
@@ -198,7 +206,7 @@ namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
                 .WriteBold("Event: ").Write(legend.Event + "\n")
                 .WriteBold("Date: ").Write(legend.EventDate.ToString("MMM dd, yyyy") + "\n")
                 .WriteBold("Fraud Case: ").Write(legend.FraudCase + "\n")
-                .WriteBold("HT/FT Score: ").Write(legend.HTScore + " / " +  legend.FTScore + "\n")
+                .WriteBold("HT/FT Score: ").Write(legend.HTScore + " / " + legend.FTScore + "\n")
                 .SetValue(cell1);
         }
 
@@ -212,18 +220,47 @@ namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
 
             Excel.CopyRow(lastRow, row);
 
-            row.GetCell(0).SetCellValue(idx + 1);
-            row.GetCell(1).SetCellValue(ticket.Member);
-            row.GetCell(2).SetCellValue(ticket.TransDate);
-            row.GetCell(3).SetCellValue(ticket.BetID);
-            row.GetCell(4).SetCellValue(ticket.BettypeRealName);
-            GetChoiceExcel(ticket, row.GetCell(5));
-            row.GetCell(6).SetCellValue(ticket.Score);
-            row.GetCell(7).SetCellValue(string.Format("{0} ({1})", ticket.Odds.Value, ticket.Odds.Type));
-            row.GetCell(8).SetCellValue((double)ticket.Stake);
-            row.GetCell(9).SetCellValue((double)ticket.WinLoss);
-            row.GetCell(10).SetCellValue(ticket.Status);
-            row.GetCell(11).SetCellValue(ticket.IP);
+            var cell_idx = 0;
+
+            row.GetCell(cell_idx++).SetCellValue(idx + 1);
+            row.GetCell(cell_idx++).SetCellValue(ticket.Member);
+            row.GetCell(cell_idx++).SetCellValue(ticket.CurrencyName);
+            row.GetCell(cell_idx++).SetCellValue(ticket.TransDate);
+            row.GetCell(cell_idx++).SetCellValue(ticket.BetID);
+            row.GetCell(cell_idx++).SetCellValue(ticket.BettypeRealName);
+            GetChoiceExcel(ticket, row.GetCell(cell_idx++));
+            row.GetCell(cell_idx++).SetCellValue(ticket.Score);
+            GetOddsExcel(ticket, row.GetCell(cell_idx++));
+            row.GetCell(cell_idx++).SetCellValue((double)ticket.Stake);
+            row.GetCell(cell_idx++).SetCellValue((double)ticket.WinLoss);
+            row.GetCell(cell_idx++).SetCellValue(ticket.Status);
+#pragma warning disable S1854 // Dead stores should be removed
+            row.GetCell(cell_idx++).SetCellValue(ticket.IP);
+#pragma warning restore S1854 // Dead stores should be removed
+        }
+
+        private static void WriteCustomer(ISheet sheet, CustomerDetails customer, int idx)
+        {
+            sheet.ShiftRows(sheet.LastRowNum, sheet.LastRowNum, 1, true, false);
+
+            var lastRow = sheet.GetRow(sheet.LastRowNum);
+
+            var row = sheet.CreateRow(sheet.LastRowNum - 1);
+
+            Excel.CopyRow(lastRow, row);
+
+            var cell_idx = 0;
+
+            row.GetCell(cell_idx++).SetCellValue(idx + 1);
+            row.GetCell(cell_idx++).SetCellValue(customer.Member);
+            row.GetCell(cell_idx++).SetCellValue(customer.CurrencyName);
+            row.GetCell(cell_idx++).SetCellValue(customer.Tickets);
+            row.GetCell(cell_idx++).SetCellValue(customer.TotalStake);
+            row.GetCell(cell_idx++).SetCellValue(customer.TotalWinLoss);
+            row.GetCell(cell_idx++).SetCellValue(customer.Evidence);
+#pragma warning disable S1854 // ok here
+            row.GetCell(cell_idx++).SetCellValue(customer.AssociatedAccounts);
+#pragma warning restore S1854 // ok here
         }
 
         private static void GetChoiceExcel(TicketDetails t, ICell cell)
@@ -244,23 +281,21 @@ namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
             cell.SetCellValue(string.Format("{0}{1}", bet_team, handicap));
         }
 
-        private static void WriteCustomer(ISheet sheet, CustomerDetails customer, int idx)
+        private static void GetOddsExcel(TicketDetails t, ICell cell)
         {
-            sheet.ShiftRows(sheet.LastRowNum, sheet.LastRowNum, 1, true, false);
+            var splitter = new[] 
+            {
+                "<span class=\"underdog\">",
+                "</span>",
+                "<br />",
+                "<span class=\"oddstype\">",
+                "<font color='#B50000'>",
+                "</font>"
+            };
 
-            var lastRow = sheet.GetRow(sheet.LastRowNum);
+            var arr = t.Odds.Html.Split(splitter, StringSplitOptions.RemoveEmptyEntries);
 
-            var row = sheet.CreateRow(sheet.LastRowNum - 1);
-
-            Excel.CopyRow(lastRow, row);
-
-            row.GetCell(0).SetCellValue(idx + 1);
-            row.GetCell(1).SetCellValue(customer.Member);
-            row.GetCell(2).SetCellValue(customer.Tickets);
-            row.GetCell(3).SetCellValue(customer.TotalStake);
-            row.GetCell(4).SetCellValue(customer.TotalWinLoss);
-            row.GetCell(5).SetCellValue(customer.Evidence);
-            row.GetCell(6).SetCellValue(customer.AssociatedAccounts);
+            cell.SetCellValue(string.Format("{0} ({1})", arr.Length == 0 ? "" : arr[0], arr.Length == 1 ? "" : arr[1]));
         }
 
         private static BettypeOrder GetOrder(string bettype)
