@@ -30,18 +30,18 @@ function load_page_events() {
         ordering: false,
         searching: false,
         lengthMenu: [10, 20, 50, 100, 500],
-        scrollY: "55vh",
+        scrollY: "65vh",
         scrollCollapse: true,
         columns: [
             { data: (row, type,set, meta) => meta.row + 1, className: "text-center", width: "40px" },
-            { data: renderVerifyCheckBox, className: "text-center", width: "74px" },
-            { data: (row) => row.VerifiedBy == null ? "-" : row.VerifiedBy, width: "130px" },
+            { data: renderVerifyCheckBox, className: "text-center", width: "40px" },
+            { data: (row) => row.VerifiedBy == null ? "-" : row.VerifiedBy, width: "100px" },
             { data: renderEvent },
-            { data: row => row.Score, className: "text-center", width: "100px" },
-            { data: row => row.Status, className: "text-center", width: "120px" },
-            { data: row => renderFraudCase(row, 1), className: "has-icon text-center", width: "100px" },
-            { data: row => renderFraudCase(row, 6), className: "has-icon text-center", width: "120px" },
-            { data: row => renderFraudCase(row, 8), className: "has-icon text-center", width: "100px" },
+            { data: row => row.Score, className: "text-center", width: "50px" },
+            { data: row => row.Status, className: "text-center", width: "70px" },
+            { data: row => renderFraudCase(row, 1), className: "has-icon text-center", width: "50px" },
+            { data: row => renderFraudCase(row, 6), className: "has-icon text-center", width: "50px" },
+            { data: row => renderFraudCase(row, 8), className: "has-icon text-center", width: "50px" },
             { data: renderNote, className: "col-note", width: "270px" }
         ],
         autoWidth: false,
@@ -53,7 +53,8 @@ function load_page_events() {
             },
             info: "Displaying _START_ to _END_ of _TOTAL_ item(s)",
             infoEmpty: ""
-        }
+        },
+        headerCallback: th => $("th", th).removeClass("has-icon")
     });
 
     $.fn.dataTable.ext.errMode = "none";
@@ -97,10 +98,10 @@ function renderFraudCase(obj, selector) {
 
     var eventDate = $("#event_date").val();
 
-    return `<div class='warning'>
-            <a href='MatchMonitor/GetFraudCaseDetails?fraudCaseId=${selector}&matchId=${obj.MatchId}&eventDate=${eventDate}' class='icon-alert-circle' target='_blank'></a>
+    return `<a class='warning' href='MatchMonitor/GetFraudCaseDetails?fraudCaseId=${selector}&matchId=${obj.MatchId}&eventDate=${eventDate}' target='_blank'>
+            <span class='icon-alert-circle' ></span>
             <span class='number'>${renderViolations(fraudCase.Violations)}</span>
-        </div>`;
+        </a>`;
 }
 
 function renderNote(obj) {
@@ -110,7 +111,7 @@ function renderNote(obj) {
         result = "-" + new Array(42).join(" ");
     }
     else if (result.length > 40) {
-        result = result.substring(0, 40) + "...";
+        result = result.substring(0, 27) + "...";
     }
 
     return "<div class='container-note'>"
@@ -142,6 +143,8 @@ function attachGridEvent(json) {
     common.closeLoading();
     $("#refresh_interval").change();
     $("#event_date").datepicker("hide");
+
+    //$("span .number").click(e => $(e.target).parent().find("a").click());
 }
 
 function renderViolations(violation = 1) {

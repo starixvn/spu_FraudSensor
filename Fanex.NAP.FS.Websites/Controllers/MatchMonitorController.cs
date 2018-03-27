@@ -34,7 +34,7 @@ namespace Fanex.NAP.FS.Websites.Controllers
         }
 
         [HttpPost]
-        [NapAuth(Policy = Core.Business.Constant.Policy.Host)]
+        [NapAuth(FunctionKey = FSFunctionKeys.MatchMonitoring, Policy = Core.Business.Constant.Policy.Host)]
         public ActionResult VerifyMatch(VerifyMatchCriteria criteria)
         {
             criteria.UserId = CurrentSession.UserId;
@@ -79,7 +79,7 @@ namespace Fanex.NAP.FS.Websites.Controllers
         {
             var template = Server.MapPath("~/App_Data/Excel Template/MatchMonitor/FraudCaseDetail/template.xlsx");
 
-            var fileName = string.Format("FraudCaseDetail_{0}.xlsx", DateTime.Today.ToString("yyyyMMdd"));
+            var fileName = string.Format("FraudCaseDetails_{0}.xlsx", DateTime.Today.ToString("yyyyMMdd"));
             return File(FraudCaseDetailsService.ExportExcel(matchId, fraudCaseId, eventDate, template), "application/vnd.ms-excel", fileName);
         }
 

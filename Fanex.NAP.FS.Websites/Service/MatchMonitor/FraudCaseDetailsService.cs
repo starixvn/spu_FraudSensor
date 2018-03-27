@@ -36,7 +36,7 @@ namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
 
             var html_builder = new BetListHTMLBuilder();
             var ticketHelper = new TicketHelper();
-
+            
             return DataService.GetData<TicketInfo>(criteria)
                 .Select(a => {
                     a.HomeId = legend.HomeId;

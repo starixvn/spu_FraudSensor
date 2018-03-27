@@ -42,7 +42,7 @@
         }
     }
 
-    $(document).ajaxError(() => showDialog(error, "Internal Error", 3000));
+    $(document).ajaxError(() => this.showError());
 
     this.showLoading = function () {
         loading.show();
@@ -151,8 +151,29 @@
 
     this.makeNonSearchSelect = select => $(select).select2({ minimumResultsForSearch: -1 })
 
-    function showDialog(target, str, timeout) {
+    this.makeDatePicker = function (input, options) {
+        var $input = $();
 
+        if (input instanceof jQuery) {
+            $input = input;
+        }
+        else {
+            $input = $(input);
+        }
+
+        var next_element = $input.next();
+
+        if (next_element.is("span") && !next_element.hasClass("icon-calendar-text")) {
+                next_element.addClass("icon-calendar-text");
+        }
+        else {
+            next_element = $('<span class="icon-calendar-text"></span>');
+            $input.after(next_element);
+        }
+
+        next_element.click(() => $input.focus());
+
+        $input.addClass("control").datepicker(options);
     }
 }
 

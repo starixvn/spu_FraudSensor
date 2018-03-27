@@ -94,7 +94,7 @@
             ToDate: to.val(),
             FraudCaseId: fraud_case.val(),
             IsVerified: is_verified.val(),
-            AssigneedId: assignee.val(),
+            AssigneeId: assignee.val(),
             Classification: classification.val()
         }
 
@@ -236,7 +236,7 @@
                 ToDate: to.val(),
                 FraudCaseId: fraud_case.val(),
                 IsVerified: parseInt(is_verified.val()),
-                AssigneedId: assignee.val(),
+                AssigneeId: assignee.val(),
                 Classification: classification.val()
             }
         } else {
