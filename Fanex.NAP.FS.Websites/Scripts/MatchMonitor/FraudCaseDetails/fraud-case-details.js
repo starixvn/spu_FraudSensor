@@ -182,6 +182,7 @@
         activate: (e, ui) => switchTab(ui)
     });
 
+
     $(".-export").click(exportExcel);
 }
 
