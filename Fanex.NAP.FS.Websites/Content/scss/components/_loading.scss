@@ -6,7 +6,7 @@
   @return round($size * 0.70710678118) + $size;
 }
 
-@mixin loader07(
+@mixin loader(
   $size: $loader-size,
   $color: $loader-color,
   $duration: $loader-animation-duration,
@@ -17,16 +17,18 @@
   width: $size;
   height: $size;
   border-radius: 50%;
-  position: relative;
-  animation: #{'loader07-'}#{$unique-name} $duration linear infinite;
+  position: fixed;
+  left: 50%;
+  margin-top: -$size / 2;
+  margin-left: -$size / 2;
+  animation: #{'loader-'}#{$unique-name} $duration linear infinite;
   @if ($align == center) {
-    margin: 0 auto;
+    top: 50%;
   }
   @if ($align == middle) {
-    top: 50%;
-    margin: -$size / 2 auto 0;
+    top: 240px;    
   }
-  @keyframes #{'loader07-'}#{$unique-name} {
+  @keyframes #{'loader-'}#{$unique-name} {
     0% {
       box-shadow: // Top
 						      0 (- circle-normal($size)) 0 0 nth($dot-color, 1),
@@ -201,7 +203,7 @@
 }
 
 
-.loader07 {
-  @include loader07($size: 16px, $align: middle);
+.loader {
+  @include loader($size: 16px, $align: middle);
   z-index: 10000;
 }
