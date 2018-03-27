@@ -50,7 +50,7 @@ namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
                     {
                         Member = a.UserName,
                         Bettype = grouped_bettype,
-                        TransDate = a.TransDate,
+                        TransDate = a.TransDate.ToString("MMM dd, yyyy hh:mm:ss tt"),
                         BetID = a.TransId.ToString(),
                         IP = a.IP,
                         Odds = new OddsDetails { Value = (double)a.Odds, Type = RefData.GetOddsTypeName(a.OddsType, "en"), Html = html_builder.BuildOdds(a, null, CacheRef.GetOddsTypeName) },
@@ -272,13 +272,15 @@ namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
             bet_team
                 .Replace("&nbsp;", "")
                 .Replace("<span class=\"underdog\">", "")
-                .Replace("</span>", "");
+                .Replace("</span>", "")
+                .Replace("<span class=\"favorite\">", "");
 
             var handicap = new StringBuilder(t.ChoiceExcel.Handicap);
 
             handicap
                 .Replace("<span class='handicap'>", "")
-                .Replace("</span>", "");
+                .Replace("</span>", "")
+                .Replace("<span class=\"favorite\">", "");
 
             cell.SetCellValue(string.Format("{0}{1}", bet_team, handicap));
         }

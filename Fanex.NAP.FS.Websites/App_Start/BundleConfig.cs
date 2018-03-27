@@ -46,7 +46,8 @@ namespace Fanex.NAP.FS.Websites
                 "~/Scripts/Fanex.Grid/Fanex.Grid.js",
                 "~/Scripts/Fanex.Grid/Fanex.Pagination.js",
                 "~/Scripts/DataTables/jquery.datatables.min.js",
-                "~/Scripts/toast/jquery.toast.js"));
+                "~/Scripts/toast/jquery.toast.js",
+                "~/Scripts/numeral/numeral.min.js"));
         }
 
         private static void RegisterMatchMonitorBundles(BundleCollection bundles)

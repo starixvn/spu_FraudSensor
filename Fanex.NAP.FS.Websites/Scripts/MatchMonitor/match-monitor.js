@@ -30,6 +30,7 @@ function load_page_events() {
         ordering: false,
         searching: false,
         lengthMenu: [10, 20, 50, 100, 500],
+        pageLength: 50,
         scrollY: "65vh",
         scrollCollapse: true,
         columns: [

@@ -13,7 +13,7 @@ namespace Fanex.NAP.FS.Websites.ViewModels.MatchMonitor.FraudCaseDetails
     {
         public string Member { get; set; }
 
-        public DateTime TransDate { get; set; }
+        public string TransDate { get; set; }
 
         public string BetID { get; set; }
 

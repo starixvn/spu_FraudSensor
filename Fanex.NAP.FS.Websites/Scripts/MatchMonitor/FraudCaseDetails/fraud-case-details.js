@@ -114,7 +114,8 @@
             },
             info: "Displaying _START_ to _MAX_ of _MAX_ item(s)",
             infoEmpty: "",
-            infoFiltered: ""
+            infoFiltered: "",
+            thousands: ",",
         },
         autoWidth: false,
         scrollY: '57vh',
@@ -128,8 +129,8 @@
             { data: obj => obj.Choice, width: "200px" },
             { data: obj => obj.Score, className: "text-center", width: "80px" },
             { data: obj => obj.Odds != null ? obj.Odds.Html : null, width: "50px" },
-            { data: obj => obj.Stake == null ? null : obj.Stake.toFixed(2), className: "text-right" },
-            { data: obj => obj.WinLoss == null ? null : obj.WinLoss >= 0 ? obj.WinLoss.toFixed(2) : `<font color='#B50000'>${obj.WinLoss.toFixed(2)}</font>`, className: "text-right" },
+            { data: obj => obj.Stake == null ? null : numeral(obj.Stake).format("0,0.00"), className: "text-right" },
+            { data: obj => obj.WinLoss == null ? null : obj.WinLoss >= 0 ? numeral(obj.WinLoss).format("0,0.00") : `<font color='#B50000'>${numeral(obj.WinLoss).format('0,0.00')}</font>`, className: "text-right" },
             { data: obj => obj.Status, width: "60px" },
             { data: obj => obj.IP }
         ],
@@ -166,9 +167,9 @@
             { data: obj => obj.Member },
             { data: obj => obj.CurrencyName, className: "text-center", width: "20px" },
             { data: obj => obj.Tickets, className: "text-right", width: "40px" },
-            { data: obj => obj.TotalStake.toFixed(2), className: "text-right" },
-            { data: obj => obj.TotalWinLoss >= 0 ? obj.TotalWinLoss.toFixed(2) : `<font color='#B50000'>${obj.TotalWinLoss.toFixed(2)}</font>`, className: "text-right" },
-            { data: obj => obj.Evidence },
+            { data: obj => numeral(obj.TotalStake).format("0,0.00"), className: "text-right" },
+            { data: obj => obj.TotalWinLoss >= 0 ? numeral(obj.TotalWinLoss).format("0,0.00") : `<font color='#B50000'>${numeral(obj.TotalWinLoss).format("0,0.00")}</font>`, className: "text-right" },
+            { data: obj => obj.Evidence != null && obj.Evidence.length > 78 ? `<span title='${obj.Evidence}'>${obj.Evidence.substring(0,75)}...</span>` : obj.Evidence, width: "500px" },
             { data: obj => obj.AssociatedAccounts, className: "text-right", width: "50px" },
             { defaultContent: '<span class="icon-settings icon-config"></span>', className: "has-icon text-center", width: "40px" }
         ]
