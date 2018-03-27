@@ -122,15 +122,15 @@
         columns: [
             { data: obj => obj.key ? obj.value : ++global_idx, className: "text-center", width: "40px" },
             { data: obj => obj.Member },
-            { data: obj => obj.CurrencyName, className: "text-center" },
-            { data: obj => moment(obj.TransDate).format("MMM D, YYYY"), className: "text-center", width: "200px" },
+            { data: obj => obj.CurrencyName, className: "text-center", width: "20px" },
+            { data: obj => moment(obj.TransDate).format("MMM D, YYYY"), className: "text-center", width: "100px" },
             { data: obj => obj.BetID },
-            { data: obj => obj.Choice },
+            { data: obj => obj.Choice, width: "200px" },
             { data: obj => obj.Score, className: "text-center", width: "80px" },
-            { data: obj => obj.Odds != null ? obj.Odds.Html : null, width: "84px" },
+            { data: obj => obj.Odds != null ? obj.Odds.Html : null, width: "50px" },
             { data: obj => obj.Stake == null ? null : obj.Stake.toFixed(2), className: "text-right" },
             { data: obj => obj.WinLoss == null ? null : obj.WinLoss.toFixed(2), className: "text-right" },
-            { data: obj => obj.Status, width: "110px" },
+            { data: obj => obj.Status, width: "60px" },
             { data: obj => obj.IP }
         ],
         columnDefs: [{ targets: "_all", defaultContent: "-" }],
@@ -164,13 +164,13 @@
         columns: [
             { data: (obj, type, set, meta) => meta.row + 1, className: "text-center", width: "40px" },
             { data: obj => obj.Member },
-            { data: obj => obj.CurrencyName, className: "text-center" },
-            { data: obj => obj.Tickets, className: "text-right" },
+            { data: obj => obj.CurrencyName, className: "text-center", width: "20px" },
+            { data: obj => obj.Tickets, className: "text-right", width: "40px" },
             { data: obj => obj.TotalStake.toFixed(2), className: "text-right" },
             { data: obj => obj.TotalWinLoss >= 0 ? obj.TotalWinLoss.toFixed(2) : `<font color='#B50000'>${obj.TotalWinLoss.toFixed(2)}</font>`, className: "text-right" },
             { data: obj => obj.Evidence },
-            { data: obj => obj.AssociatedAccounts, className: "text-right" },
-            { defaultContent: '<span class="icon-settings icon-config"></span>', className: "has-icon text-center", width: "156px" }
+            { data: obj => obj.AssociatedAccounts, className: "text-right", width: "50px" },
+            { defaultContent: '<span class="icon-settings icon-config"></span>', className: "has-icon text-center", width: "40px" }
         ]
     })
 
@@ -181,7 +181,6 @@
     detail_tabs.tabs({
         activate: (e, ui) => switchTab(ui)
     });
-
 
     $(".-export").click(exportExcel);
 }

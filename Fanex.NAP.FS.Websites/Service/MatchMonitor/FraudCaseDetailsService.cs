@@ -160,7 +160,9 @@ namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
                         FraudCase = fraudCaseName,
                         Event = eventName,
                         HTScore = htScore,
-                        FTScore = ftScore
+                        FTScore = ftScore,
+                        AwayId = info.awayid,
+                        HomeId = info.homeid
                     };
                 }
             }
