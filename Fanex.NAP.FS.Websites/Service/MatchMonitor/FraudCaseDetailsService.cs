@@ -240,7 +240,16 @@ namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
             row.GetCell(cell_idx++).SetCellValue(ticket.Score);
             GetOddsExcel(ticket, row.GetCell(cell_idx++));
             row.GetCell(cell_idx++).SetCellValue((double)ticket.Stake);
-            row.GetCell(cell_idx++).SetCellValue((double)ticket.WinLoss);
+            
+            if(ticket.WinLoss == null)
+            {
+                row.GetCell(cell_idx++).SetCellValue("-");
+            }
+            else
+            {
+                row.GetCell(cell_idx++).SetCellValue((double)ticket.WinLoss);
+            }
+
             row.GetCell(cell_idx++).SetCellValue(ticket.Status);
 #pragma warning disable S1854 // Dead stores should be removed
             row.GetCell(cell_idx++).SetCellValue(ticket.IP);

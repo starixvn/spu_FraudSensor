@@ -183,6 +183,8 @@
 
         return str;
     }
+
+    this.formatNumber = (n = 0, format = "0,0.00") => numeral(n).format(format);
 }
 
 var common = new UICommon();
