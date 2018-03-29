@@ -71,11 +71,12 @@
         }
 
         public ActionResult ExportExcel(SuspiciousCustomerReportGetCriteria criteria, string fraudCaseName, string assignee)
-        {
+        {            
             var suspiciousCustomers = _suspiciousCustomerReportService.GetSuspiciousCustomerReport(criteria);
 
             var excelExporter = new ExportExcelSuspiciousCustomer(
-                Server.MapPath("~/ExcelFiles"),
+                //Server.MapPath("~/ExcelFiles"),
+                Server.MapPath("~/App_Data/Excel Template/SuspiciousCustomer/template.xlsx"),
                 "SuspiciousCustomerReport",
                 new List<Legend>
                 {

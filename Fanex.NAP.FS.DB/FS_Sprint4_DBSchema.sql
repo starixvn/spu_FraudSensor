@@ -29,36 +29,23 @@ CREATE INDEX CIX_SuspiciousCustomer_Dirty ON [dbo].[SuspiciousCustomer] (
 )
 GO
 ---------------
-ALTER TABLE [dbo].[MonitorMatch]
-ADD [IsDelinquent]			BIT DEFAULT ((0)) NULL;
-GO
-
-ALTER TABLE [dbo].[MonitorMatch]
-ADD [DelinquentedBy]		INT NULL;
-GO
-
-ALTER TABLE [dbo].[MonitorMatch]
-ADD [DelinquentedDate]		DATETIME NULL;
-GO
-
-ALTER TABLE [dbo].[MonitorMatch]
-ADD [IsSuspicious]			BIT DEFAULT ((0)) NULL;
-GO
-
-
-CREATE NONCLUSTERED INDEX CIX_MonitorMatch_IsVerified ON [dbo].[MonitorMatch] (
-	IsVerified				ASC
-) ON IDX;
-GO
----------------
 ALTER TABLE [dbo].[OddsLog] 
 DROP CONSTRAINT [PK_OddsLog];   
 GO  
 
-CREATE NONCLUSTERED INDEX CIX_OddsLog_OddsId ON [dbo].[OddsLog] (
-	[LogDate]				ASC,
-	[OddsId]				ASC
-) ON IDX;
+ALTER TABLE [dbo].[OddsLog] 
+ALTER COLUMN [LogDate]		DATETIME NOT NULL;
+GO
+
+ALTER TABLE [dbo].[OddsLog] 
+ALTER COLUMN [OddsId]		INT NOT NULL;
+GO
+
+ALTER TABLE [dbo].[OddsLog] 
+ADD CONSTRAINT PK_OddsLog PRIMARY KEY (
+		LogDate				DESC
+	,	OddsId				DESC
+)
 GO
 ---------------
 CREATE TABLE [dbo].[CustomerLogType](

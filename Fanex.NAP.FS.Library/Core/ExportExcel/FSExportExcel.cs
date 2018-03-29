@@ -236,7 +236,7 @@
             var cellStyle = Workbook.CreateCellStyle();
             cellStyle = DecorateCellAlignment(cellStyle, HorizontalAlignment.Center);
             cellStyle = DecorateCellWrapText(cellStyle, true);
-            cellStyle = DecorateCellBackground(cellStyle, IndexedColors.RoyalBlue.Index);
+            cellStyle = DecorateCellBackground(cellStyle, IndexedColors.Grey50Percent.Index);
 
             return cellStyle;
         }
