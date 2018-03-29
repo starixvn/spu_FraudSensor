@@ -1,8 +1,15 @@
 /*
 Creator: 20180320@LongLuu
+		+ 20180318@CaseyHuynh: 
+			- Table "FraudCase" Add Column [IsInternal](0: External, 1: Internal)
+			- Table "SuspiciousCustomer" Add Column [IsVerified]
 Task:  Create tables for Fraud Sensor
 Server:  bodb_FraudSensor
 */
+
+ALTER TABLE [dbo].[FraudCase]
+ADD [IsInternal]		BIT NULL;
+GO
 
 ALTER TABLE [dbo].[SuspiciousInfo]
 ADD [ViolationCounter]		INT NULL; 
@@ -13,7 +20,8 @@ ADD [TicketCounter]			INT NULL;
 GO
 ---------------
 ALTER TABLE [dbo].[SuspiciousCustomer]
-ADD [IsDirty]				BIT DEFAULT ((0)) NULL; 
+ADD [IsDirty]				BIT DEFAULT ((0)) NULL 
+	,[IsVerified]			BIT DEFAULT ((0)) NULL;
 GO
 
 CREATE INDEX CIX_SuspiciousCustomer_Dirty ON [dbo].[SuspiciousCustomer] (
