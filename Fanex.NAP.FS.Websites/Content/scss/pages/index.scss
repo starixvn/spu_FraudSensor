@@ -221,7 +221,8 @@ body {
         cursor: pointer;
     }
 
-    .icon-note:hover {
+    .icon-note:hover,
+    .icon-note.active {
         color: #2197ff;
     }
     

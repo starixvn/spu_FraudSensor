@@ -26,6 +26,23 @@
 .list-icon .icon-hedge {
   color: #465163; }
 
+.popover {
+  display: none;
+  position: absolute;
+  padding: 12px;
+  background-color: #fff;
+  -webkit-box-shadow: 1px 2px 12px rgba(0, 0, 0, 0.3);
+  -moz-box-shadow: 1px 2px 12px rgba(0, 0, 0, 0.3);
+  box-shadow: 1px 2px 12px rgba(0, 0, 0, 0.3); }
+  .popover.suspicious-note {
+    width: 626px; }
+  .popover .top-header {
+    -webkit-box-pack: start;
+    -webkit-justify-content: flex-start;
+    -moz-box-pack: start;
+    -ms-flex-pack: start;
+    justify-content: flex-start; }
+
 .customer-info {
   display: inline-block;
   -webkit-border-radius: 2px;

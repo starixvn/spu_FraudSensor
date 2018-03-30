@@ -1311,7 +1311,8 @@ body {
   color: #8c8c8c;
   cursor: pointer; }
 
-.table .icon-note:hover {
+.table .icon-note:hover,
+.table .icon-note.active {
   color: #2197ff; }
 
 .table [class^="icon"] {

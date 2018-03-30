@@ -40,6 +40,22 @@
     }
 }
 
+.popover {
+    display: none;
+    position: absolute;
+    padding: 12px;
+    background-color: #fff;
+    box-shadow: 1px 2px 12px rgba(0, 0, 0, 0.3); 
+
+    &.suspicious-note {
+        width: 626px;
+    }
+
+    .top-header {
+        justify-content: flex-start;
+    }
+}
+
 // Customer details
 
 .customer-info {
