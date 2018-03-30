@@ -153,7 +153,7 @@ namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
                     var home = RefData.GetTeamName(info.homeid.ToString())[1];
                     var away = RefData.GetTeamName(info.awayid.ToString())[1];
 
-                    var eventName = string.Format("<b>{0}</b> - vs - <b>{1}</b>", home, away);
+                    var eventName = string.Format("<span class='underdog'>{0}</span> - vs - <span class='underdog'>{1}</span>", home, away);
 
                     var htScore = string.Format("{0}-{1}", info.HTHomeScore, info.HTAwayScore);
                     var ftScore = string.Format("{0}-{1}", info.finalhomescore, info.finalawayscore);
@@ -168,7 +168,9 @@ namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
                         HTScore = htScore,
                         FTScore = ftScore,
                         AwayId = info.awayid,
-                        HomeId = info.homeid
+                        HomeId = info.homeid,
+                        Home = home,
+                        Away = away
                     };
                 }
             }
@@ -211,7 +213,7 @@ namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
             var cell1 = row.GetCell(0);
 
             new XSSFRichTextString()
-                .WriteBold("Event: ").Write(legend.Event + "\n")
+                .WriteBold("Event: ").Write(string.Format("{0} - vs - {1}\n", legend.Home as string, legend.Away as string))
                 .WriteBold("Date: ").Write(legend.EventDate.ToString("MMM dd, yyyy") + "\n")
                 .WriteBold("Fraud Case: ").Write(legend.FraudCase + "\n")
                 .WriteBold("HT/FT Score: ").Write(legend.HTScore + " / " + legend.FTScore + "\n")

@@ -24,5 +24,7 @@ namespace Fanex.NAP.FS.Websites.ViewModels.MatchMonitor.FraudCaseDetails
         public int AwayId { get; set; }
 
         public DateTime EventDate { get; set; }
+        public dynamic Away { get; internal set; }
+        public dynamic Home { get; internal set; }
     }
 }
