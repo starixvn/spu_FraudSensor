@@ -54,7 +54,7 @@
         public ActionResult GetUsers()
         {
             var siteId = int.Parse(ConfigurationManager.AppSettings["SiteId"]);
-            var users = new UserService().GetUserPolicies(FSFunctionKeys.MatchMonitoring, siteId);
+            var users = new UserService().GetUserPolicies(FSFunctionKeys.SuspiciousCustomer, siteId);
             var result = new List<Core.Models.User>();
 
             foreach (var user in users)
