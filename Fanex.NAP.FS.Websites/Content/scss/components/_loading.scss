@@ -12,7 +12,6 @@
   $duration: $loader-animation-duration,
   $align: null
 ) {
-	$unique-name: unique-id();
   $dot-color: rgba($color, 0.05), rgba($color, 0.1), rgba($color, 0.2), rgba($color, 0.3), rgba($color, 0.4), rgba($color, 0.6), rgba($color, 0.8), rgba($color, 1);
   width: $size;
   height: $size;
@@ -21,14 +20,14 @@
   left: 50%;
   margin-top: -$size / 2;
   margin-left: -$size / 2;
-  animation: #{'loader-'}#{$unique-name} $duration linear infinite;
+  animation: #{'loader'} $duration linear infinite;
   @if ($align == center) {
     top: 50%;
   }
   @if ($align == middle) {
-    top: 240px;    
+    top: 240px;
   }
-  @keyframes #{'loader-'}#{$unique-name} {
+  @keyframes #{'loader'} {
     0% {
       box-shadow: // Top
 						      0 (- circle-normal($size)) 0 0 nth($dot-color, 1),
