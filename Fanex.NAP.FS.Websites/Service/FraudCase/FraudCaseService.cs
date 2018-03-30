@@ -80,7 +80,7 @@ namespace Fanex.NAP.FS.Websites.Service.FraudCase
                     idx++;
                 }
 
-                sheet.RemoveRow(sheet.CreateRow(sheet.LastRowNum + 1));
+                sheet.RemoveRow(sheet.GetRow(sheet.LastRowNum));
 
                 using (var mem = new NpoiStream())
                 {
