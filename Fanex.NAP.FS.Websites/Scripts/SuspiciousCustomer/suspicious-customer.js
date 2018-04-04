@@ -40,11 +40,9 @@
         ]
     })
 
-    note_popup.dialog({
-        autoOpen: false,
-        maxHeight: 300,
-        width: 700,
-    })
+    note_popup.draggable({
+        containment: "parent"
+    });
 
     from.datepicker({
         dateFormat: "M dd, yy",
@@ -119,6 +117,16 @@
 
     $(".icon-calendar-text").click(e => $(e.target).prev().focus());
 
+    $(document).click(function (e) {
+        var target = $(e.target);
+
+        var inside_note_click = target.is(note_popup) || target.parents("#note_popup").length != 0;
+
+        if (!inside_note_click) {
+            note_popup.hide();
+        }
+    })
+
     function get_customers() {
         common.showLoading();
 
@@ -146,7 +154,7 @@
                 first_time = false;
             }
 
-            $("span.icon-note-text").click(e => create_popup(customer_table.DataTable().row($(e.target).parents("tr")).data()))
+            $("span.icon-note-text").click(e => create_popup(e, customer_table.DataTable().row($(e.target).parents("tr")).data()))
 
             common.closeLoading();
         });
@@ -287,12 +295,20 @@
         common.downloadFile(url, dto);
     }
 
-    function create_popup(data) {
-        note_popup.dialog("option", "title", `Notes for ${data.Username}`).dialog("open");
-
+    function create_popup(e, data) {
         var url = common.modifyRelativeUrl("/SuspiciousCustomer/GetSuspiciousCustomerNote");
 
-        $.get(url, { custId: data.CustId }, data => $("table", note_popup).DataTable().clear().rows.add(data).draw());
+        $.get(url, { custId: data.CustId }, function (json) {
+            $("table", note_popup).DataTable().clear().rows.add(json).draw();
+
+            $("table", note_popup).DataTable().draw();
+
+            note_popup.css({ top: e.clientY, left: e.clientX, position: "absolute" });
+
+            $("h2", note_popup).text(data.Username);
+
+            note_popup.show();
+        });
     }
 }
 
