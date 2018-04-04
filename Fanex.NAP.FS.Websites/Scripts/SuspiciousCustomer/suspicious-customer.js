@@ -33,8 +33,8 @@
         ],
         columns: [
             { data: (obj, typet, set, meta) => meta.row + 1, className: "text-center", width: "40px" },
-            { data: obj => obj.Date, className: "text-center", width: "200px" },
-            { data: obj => common.makeWrapString(obj.Description, 50), width: "700px" },
+            { data: obj => obj.Date, className: "text-center"},
+            { data: obj =>  common.makeWrapString(obj.Description, 50), width: "500px" },
             { data: obj => obj.Author },
             { data: obj => obj.Type }
         ]
@@ -85,7 +85,8 @@
             },
             info: "Displaying _START_ to _END_ of _TOTAL_ item(s)",
             infoEmpty: ""
-        },        columns: [
+        },
+        columns: [
             { data: (obj, typet, set, meta) => meta.row + 1, className: "text-center", width: "40px" },
             { data: build_classification, className: "has-icon text-center list-icon", width: "120px" },
             { data: obj => obj.HasNote ? '<span class="icon-note-text icon-note"></span>' : null, className: "has-icon text-center", width: "90px" },
