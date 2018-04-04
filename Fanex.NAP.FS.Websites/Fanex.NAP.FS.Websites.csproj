@@ -298,6 +298,10 @@
     <Compile Include="Criteria\MatchMonitor\VerifyMatchCriteria.cs" />
     <Compile Include="Criteria\FraudCase\UpdateFraudCaseStatusCriteria.cs" />
     <Compile Include="Criteria\SuspiciousCustomer\SuspiciousCustomerNoteGetCriteria.cs" />
+    <Compile Include="ExcelConfig\MatchMonitor\CustomerDetailConfig.cs" />
+    <Compile Include="ExcelConfig\MatchMonitor\TicketDetailConfig.cs" />
+    <Compile Include="ExcelConfig\SuspiciousCustomer\SuspiciousCustomerConfig.cs" />
+    <Compile Include="ExcelConfig\Utilities.cs" />
     <Compile Include="FSFunctionKeys.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -321,8 +325,10 @@
     <Compile Include="Models\MatchMonitor\Match.cs" />
     <Compile Include="Models\NpoiStream.cs" />
     <Compile Include="Models\SuspiciousCustomer\SuspiciousCustomerNote.cs" />
+    <Compile Include="ExcelConfig\FraudCase\DelayedGoal\DelayedGoalExcelConfig.cs" />
     <Compile Include="Service\FraudCase\FraudCaseService.cs" />
     <Compile Include="Service\MatchMonitor\FraudCaseDetailsService.cs" />
+    <Compile Include="ExcelConfig\MatchMonitor\MatchMonitorExcelConfig.cs" />
     <Compile Include="Service\SuspiciousCustomer\SuspiciousCustomerService.cs" />
     <Compile Include="Service\Utilities\Excel.cs" />
     <Compile Include="ViewModels\FraudCase\DelayedGoal\Customer.cs" />

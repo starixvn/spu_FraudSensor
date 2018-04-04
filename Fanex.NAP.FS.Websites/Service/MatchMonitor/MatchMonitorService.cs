@@ -1,5 +1,7 @@
 ﻿using Fanex.Data;
+using Fanex.NAP.FS.Library.Core.ExportExcel;
 using Fanex.NAP.FS.Websites.Criteria.MatchMonitor;
+using Fanex.NAP.FS.Websites.ExcelConfig.MatchMonitor;
 using Fanex.NAP.FS.Websites.Models;
 using Fanex.NAP.FS.Websites.ViewModels.MatchMonitor;
 using NPOI.SS.UserModel;
@@ -58,138 +60,16 @@ namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
         {
             var data = GetMatches(criteria);
 
-            using (var stream = File.Open(template, FileMode.Open, FileAccess.Read))
-            {
-                var excel = new XSSFWorkbook(stream);
-                var sheet = excel.GetSheetAt(0);
+            var wb = ExcelUtilities.GetWorkbook(template);
 
-                WriteLegend(sheet, criteria);
+            new MatchMonitorExcelConfig().RenderExcel(wb, criteria, data.Matches, null);
 
-                sheet = data.Matches.Aggregate(sheet, WriteMatch);
-
-                sheet.RemoveRow(sheet.GetRow(sheet.LastRowNum));
-
-                using (var mem = new NpoiStream())
-                {
-                    excel.Write(mem);
-                    mem.Position = 0;
-
-                    mem.AllowClose = true;
-
-                    return mem.ToArray();
-                }
-            }
+            return wb.ToBytes();
         }
 
         public static DBResult UpdateMatchNote(MatchNoteUpdateCriteria criteria)
         {
             return DataService.UpdateData(criteria, "MatchMonitor");
-        }
-
-        public static ISheet WriteMatch(ISheet sheet, Match m)
-        {
-            sheet.ShiftRows(sheet.LastRowNum, sheet.LastRowNum, 1, true, false);
-
-            var lastRow = sheet.GetRow(sheet.LastRowNum);
-
-            var row = sheet.CreateRow(sheet.LastRowNum - 1);
-
-            CopyRow(lastRow, row);
-
-            row.GetCell(0).SetCellValue(row.RowNum - 2);
-            row.GetCell(1).SetCellValue(m.Verified ? "Yes" : "No");
-            row.GetCell(2).SetCellValue(m.VerifiedBy ?? "-");
-            row.GetCell(3).SetCellValue(WriteEvent(m.Event));
-            row.GetCell(4).SetCellValue(m.Score);
-            row.GetCell(5).SetCellValue(m.Status);
-            row.GetCell(6).SetCellValue(WriteFraudCase(m.FraudCases.ContainsKey("1") ? m.FraudCases["1"] : null));
-            row.GetCell(7).SetCellValue(WriteFraudCase(m.FraudCases.ContainsKey("6") ? m.FraudCases["6"] : null));
-            row.GetCell(8).SetCellValue(WriteFraudCase(m.FraudCases.ContainsKey("8") ? m.FraudCases["8"] : null));
-            row.GetCell(9).SetCellValue(m.Notes ?? "-");
-
-            return sheet;
-        }
-
-        private static void CopyRow(IRow source, IRow target)
-        {
-            foreach (var cell in source.Cells)
-            {
-                var targetCell = target.CreateCell(cell.ColumnIndex);
-                targetCell.CellStyle = cell.CellStyle;
-            }
-
-            target.Height = source.Height;
-        }
-
-        private static IRichTextString WriteEvent(Event e)
-        {
-            var result = new XSSFRichTextString();
-
-            var font = new XSSFFont
-            {
-                IsBold = true
-            };
-
-            result.Append(e.HomeName, font);
-            result.Append(" - vs - ");
-            result.Append(e.AwayName, font);
-            result.Append("\n");
-
-            var leagueFont = new XSSFFont
-            {
-                Color = IndexedColors.RoyalBlue.Index
-            };
-
-            result.Append(e.LeagueName, leagueFont);
-
-            return result;
-        }
-
-        private static IRichTextString WriteFraudCase(ViewModels.MatchMonitor.FraudCase fraudCase)
-        {
-            if (fraudCase == null)
-            {
-                return new XSSFRichTextString("-");
-            }
-
-            var result = new XSSFRichTextString();
-
-            if (fraudCase.Violations == 0)
-            {
-                result.Append("0", new XSSFFont { Color = IndexedColors.Green.Index });
-            }
-            else
-            {
-                var violations = fraudCase.Violations.Value;
-
-                var font = new XSSFFont { Color = IndexedColors.Red.Index };
-
-                result.Append(violations < 1000 ? violations.ToString() : FormatNumber(violations), font);
-            }
-
-            return result;
-        }
-
-        private static string FormatNumber(int num)
-        {
-            var stack = new Stack<string>();
-
-            var a = num;
-
-            while (a / 1000 != 0)
-            {
-                var modResult = a % 1000;
-
-                stack.Push(string.Format("{0}{1}{2}", modResult / 100, modResult % 100 / 10, modResult % 10));
-                a = a / 1000;
-            }
-
-            if (a != 0)
-            {
-                stack.Push(a.ToString());
-            }
-
-            return string.Join(",", stack);
         }
 
         private static Match GetMatch(Models.MatchMonitor.Match match, IEnumerable<Models.MatchMonitor.FraudCase> fraudCases)
@@ -219,30 +99,6 @@ namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
                 Score = string.Format("{0} - {1}", match.LiveHomeScore, match.LiveAwayScore),
                 Notes = string.IsNullOrEmpty(match.Notes) ? "-" : match.Notes
             };
-        }
-
-        private static void WriteLegend(ISheet sheet, MatchGetAllCriteria criteria)
-        {
-            var row = sheet.GetRow(1);
-
-            var legend0 = new XSSFRichTextString();
-            var legend1 = new XSSFRichTextString();
-
-            WriteLegend(legend0, "Event Date", criteria.EventDate.ToString("MMM dd, yyyy"));
-            WriteLegend(legend0, "Sport", "Soccer");
-            WriteLegend(legend0, "Match Status", criteria.MatchStatus);
-            WriteLegend(legend1, "League", criteria.LeagueIds.Contains(",") ? "All Leagues" : RefData.GetLeagueName(criteria.LeagueIds)[1].ToString());
-            WriteLegend(legend1, "Verified", criteria.IsVerified == null ? "All" : criteria.IsVerified.Value ? "Yes" : "No");
-            WriteLegend(legend1, "Main Markets Only", criteria.IsMainMarket ? "Yes" : "No");
-
-            row.GetCell(0).SetCellValue(legend0);
-            row.GetCell(3).SetCellValue(legend1);
-        }
-
-        private static void WriteLegend(XSSFRichTextString legend, string prop, string value)
-        {
-            legend.Append(prop + ": ", new XSSFFont { IsBold = true });
-            legend.Append(value + "\n");
         }
     }
 }

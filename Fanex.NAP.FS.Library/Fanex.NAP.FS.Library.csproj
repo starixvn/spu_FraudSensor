@@ -158,8 +158,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\BaseClasses\FSBaseService.cs" />
+    <Compile Include="Core\ExportExcel\ExcelUtilities.cs" />
+    <Compile Include="Core\ExportExcel\FSExcelConfig.cs" />
     <Compile Include="Core\ExportExcel\FSExportExcel.cs" />
+    <Compile Include="Core\ExportExcel\IDataFillerConfig.cs" />
+    <Compile Include="Core\ExportExcel\IHeaderModifierConfig.cs" />
     <Compile Include="Core\ExportExcel\Legend.cs" />
+    <Compile Include="Core\ExportExcel\ExcelStream.cs" />
     <Compile Include="Core\Utilities\ConfigSettings.cs" />
     <Compile Include="Core\Utilities\Extentions.cs" />
     <Compile Include="Criteria\Api\FlaggedAccountDeleteCriteria.cs" />
@@ -194,6 +199,7 @@
     <Compile Include="FSMQ\SendingMessage\SendingMessage.cs" />
     <Compile Include="FSMQ\SendingMessage\SendingMessageFactory.cs" />
     <Compile Include="FSMQ\SendingType\SendingType.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Models\SuspiciousCustomerReportModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\Implement\SuspiciousCustomerReportService.cs" />

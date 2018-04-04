@@ -1,13 +1,10 @@
 ﻿using Fanex.NAP.FS.Websites.Criteria.FraudCase;
 using Fanex.NAP.FS.Websites.Models;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Fanex.NAP.FS.Websites.Criteria.FraudCase.DelayedGoal;
-using System.IO;
-using NPOI.XSSF.UserModel;
-using NPOI.SS.UserModel;
-using Fanex.NAP.FS.Websites.Service.Utilities;
+using Fanex.NAP.FS.Library.Core.ExportExcel;
+using Fanex.NAP.FS.Websites.ExcelConfig.FraudCase.DelayedGoal;
 
 namespace Fanex.NAP.FS.Websites.Service.FraudCase
 {
@@ -60,54 +57,12 @@ namespace Fanex.NAP.FS.Websites.Service.FraudCase
         public static byte[] ExportDelayedCustomersToExcel(string template, string searchString)
         {
             var data = GetDelayedGoalCustomers();
+            
+            var wb = ExcelUtilities.GetWorkbook(template);
 
-            var idx = 0;
+            new DelayedGoalExcelConfig().RenderExcel(wb, searchString, data.Where(u => string.IsNullOrWhiteSpace(searchString) || u.Name.ToLowerInvariant().Contains(searchString)), null);
 
-            using (var file = File.OpenRead(template))
-            {
-                var wb = new XSSFWorkbook(file);
-                var sheet = wb.GetSheetAt(0);
-
-                var param = new XSSFRichTextString();
-
-                param.Append("Search string: ", new XSSFFont { IsBold = true });
-                param.Append(searchString);
-                sheet.GetRow(1).GetCell(0).SetCellValue(param);
-
-                foreach (var cust in data.Where(u => string.IsNullOrWhiteSpace(searchString) || u.Name.ToLowerInvariant().Contains(searchString)))
-                {
-                    WriteCustomer(sheet, idx, cust);
-                    idx++;
-                }
-
-                sheet.RemoveRow(sheet.GetRow(sheet.LastRowNum));
-
-                using (var mem = new NpoiStream())
-                {
-                    wb.Write(mem);
-                    mem.Position = 0;
-
-                    mem.AllowClose = true;
-
-                    return mem.ToArray();
-                }
-            }
-        }
-
-        private static void WriteCustomer(ISheet sheet, int idx, ViewModels.FraudCase.DelayedGoal.Customer customer)
-        {
-            sheet.ShiftRows(sheet.LastRowNum, sheet.LastRowNum, 1, true, false);
-
-            var lastRow = sheet.GetRow(sheet.LastRowNum);
-
-            var row = sheet.CreateRow(sheet.LastRowNum - 1);
-
-            Excel.CopyRow(lastRow, row);
-
-            row.GetCell(0).SetCellValue(idx + 1);
-            row.GetCell(1).SetCellValue(customer.Name);
-            row.GetCell(2).SetCellValue(customer.Creator);
-            row.GetCell(3).SetCellValue(customer.AddedDate);
+            return wb.ToBytes();
         }
     }
 }

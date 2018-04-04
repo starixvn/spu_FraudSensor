@@ -2,7 +2,9 @@
 using Fanex.BetList.Core.Entities;
 using Fanex.BetList.Core.TicketHelper;
 using Fanex.Data;
+using Fanex.NAP.FS.Library.Core.ExportExcel;
 using Fanex.NAP.FS.Websites.Criteria.MatchMonitor.FraudCaseDetails;
+using Fanex.NAP.FS.Websites.ExcelConfig.MatchMonitor;
 using Fanex.NAP.FS.Websites.Models;
 using Fanex.NAP.FS.Websites.Models.MatchMonitor.FraudCaseDetails;
 using Fanex.NAP.FS.Websites.Service.Utilities;
@@ -110,28 +112,17 @@ namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
 
         public static byte[] ExportExcel(int matchId, int fraudCaseId, DateTime eventDate, string templatePath)
         {
-            using (var file = File.Open(templatePath, FileMode.Open))
-            {
-                var wb = new XSSFWorkbook(file);
+            var legend = GetInfo(matchId, fraudCaseId, eventDate);
 
-                var tickets = wb.GetSheetAt(0);
-                var customers = wb.GetSheetAt(1);
+            var tickets = GetTicketDetails(matchId, fraudCaseId, eventDate, true);
+            var customers = GetCustomerDetails(matchId, fraudCaseId, eventDate);
 
-                var legend = GetInfo(matchId, fraudCaseId, eventDate);
+            var wb = 
+                ExcelUtilities.GetWorkbook(templatePath)
+                    .RenderSheet(new TicketDetailConfig(tickets.Count()), legend, tickets, null)
+                    .RenderSheet(new CustomerDetailConfig(customers.Count()), legend, customers, null);
 
-                WriteTickets(tickets, GetTicketDetails(matchId, fraudCaseId, eventDate, true), legend);
-                WriteCustomers(customers, GetCustomerDetails(matchId, fraudCaseId, eventDate), legend);
-
-                using (var mem = new NpoiStream())
-                {
-                    wb.Write(mem);
-                    mem.Position = 0;
-
-                    mem.AllowClose = true;
-
-                    return mem.ToArray();
-                }
-            }
+            return wb.ToBytes();
         }
 
         public static MatchFraudCaseInfo GetInfo(int matchId, int fraudCaseId, DateTime eventDate)
@@ -174,149 +165,6 @@ namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
                     };
                 }
             }
-        }
-
-        private static void WriteTickets(ISheet sheet, IEnumerable<TicketDetails> data, MatchFraudCaseInfo legend)
-        {
-            var idx = 0;
-
-            WriteLegend(sheet, legend);
-
-            foreach (var item in data)
-            {
-                WriteTicket(sheet, item, idx++);
-            }
-
-            sheet.RemoveRow(sheet.GetRow(sheet.LastRowNum));
-            sheet.Workbook.SetSheetName(0, string.Format("By Tickets ({0})", data.Count()));
-        }
-
-        private static void WriteCustomers(ISheet sheet, IEnumerable<CustomerDetails> data, MatchFraudCaseInfo legend)
-        {
-            var idx = 0;
-
-            WriteLegend(sheet, legend);
-
-            foreach (var item in data)
-            {
-                WriteCustomer(sheet, item, idx++);
-            }
-
-            sheet.RemoveRow(sheet.GetRow(sheet.LastRowNum));
-            sheet.Workbook.SetSheetName(1, string.Format("By Customers ({0})", data.Count()));
-        }
-
-        private static void WriteLegend(ISheet sheet, MatchFraudCaseInfo legend)
-        {
-            var row = sheet.GetRow(1);
-
-            var cell1 = row.GetCell(0);
-
-            new XSSFRichTextString()
-                .WriteBold("Event: ").Write(string.Format("{0} - vs - {1}\n", legend.Home as string, legend.Away as string))
-                .WriteBold("Date: ").Write(legend.EventDate.ToString("MMM dd, yyyy") + "\n")
-                .WriteBold("Fraud Case: ").Write(legend.FraudCase + "\n")
-                .WriteBold("HT/FT Score: ").Write(legend.HTScore + " / " + legend.FTScore + "\n")
-                .SetValue(cell1);
-        }
-
-        private static void WriteTicket(ISheet sheet, TicketDetails ticket, int idx)
-        {
-            sheet.ShiftRows(sheet.LastRowNum, sheet.LastRowNum, 1, true, false);
-
-            var lastRow = sheet.GetRow(sheet.LastRowNum);
-
-            var row = sheet.CreateRow(sheet.LastRowNum - 1);
-
-            Excel.CopyRow(lastRow, row);
-
-            var cell_idx = 0;
-
-            row.GetCell(cell_idx++).SetCellValue(idx + 1);
-            row.GetCell(cell_idx++).SetCellValue(ticket.Member);
-            row.GetCell(cell_idx++).SetCellValue(ticket.CurrencyName);
-            row.GetCell(cell_idx++).SetCellValue(ticket.TransDate);
-            row.GetCell(cell_idx++).SetCellValue(ticket.BetID);
-            row.GetCell(cell_idx++).SetCellValue(ticket.BettypeRealName);
-            GetChoiceExcel(ticket, row.GetCell(cell_idx++));
-            row.GetCell(cell_idx++).SetCellValue(ticket.Score);
-            GetOddsExcel(ticket, row.GetCell(cell_idx++));
-            row.GetCell(cell_idx++).SetCellValue((double)ticket.Stake);
-            
-            if(ticket.WinLoss == null)
-            {
-                row.GetCell(cell_idx++).SetCellValue("-");
-            }
-            else
-            {
-                row.GetCell(cell_idx++).SetCellValue((double)ticket.WinLoss);
-            }
-
-            row.GetCell(cell_idx++).SetCellValue(ticket.Status);
-#pragma warning disable S1854 // Dead stores should be removed
-            row.GetCell(cell_idx++).SetCellValue(ticket.IP);
-#pragma warning restore S1854 // Dead stores should be removed
-        }
-
-        private static void WriteCustomer(ISheet sheet, CustomerDetails customer, int idx)
-        {
-            sheet.ShiftRows(sheet.LastRowNum, sheet.LastRowNum, 1, true, false);
-
-            var lastRow = sheet.GetRow(sheet.LastRowNum);
-
-            var row = sheet.CreateRow(sheet.LastRowNum - 1);
-
-            Excel.CopyRow(lastRow, row);
-
-            var cell_idx = 0;
-
-            row.GetCell(cell_idx++).SetCellValue(idx + 1);
-            row.GetCell(cell_idx++).SetCellValue(customer.Member);
-            row.GetCell(cell_idx++).SetCellValue(customer.CurrencyName);
-            row.GetCell(cell_idx++).SetCellValue(customer.Tickets);
-            row.GetCell(cell_idx++).SetCellValue(customer.TotalStake);
-            row.GetCell(cell_idx++).SetCellValue(customer.TotalWinLoss);
-            row.GetCell(cell_idx++).SetCellValue(customer.Evidence);
-#pragma warning disable S1854 // ok here
-            row.GetCell(cell_idx++).SetCellValue(customer.AssociatedAccounts);
-#pragma warning restore S1854 // ok here
-        }
-
-        private static void GetChoiceExcel(TicketDetails t, ICell cell)
-        {
-            var bet_team = new StringBuilder(t.ChoiceExcel.betTeam);
-
-            bet_team
-                .Replace("&nbsp;", "")
-                .Replace("<span class=\"underdog\">", "")
-                .Replace("</span>", "")
-                .Replace("<span class=\"favorite\">", "");
-
-            var handicap = new StringBuilder(t.ChoiceExcel.Handicap);
-
-            handicap
-                .Replace("<span class='handicap'>", "")
-                .Replace("</span>", "")
-                .Replace("<span class=\"favorite\">", "");
-
-            cell.SetCellValue(string.Format("{0}{1}", bet_team, handicap));
-        }
-
-        private static void GetOddsExcel(TicketDetails t, ICell cell)
-        {
-            var splitter = new[] 
-            {
-                "<span class=\"underdog\">",
-                "</span>",
-                "<br />",
-                "<span class=\"oddstype\">",
-                "<font color='#B50000'>",
-                "</font>"
-            };
-
-            var arr = t.Odds.Html.Split(splitter, StringSplitOptions.RemoveEmptyEntries);
-
-            cell.SetCellValue(string.Format("{0} ({1})", arr.Length == 0 ? "" : arr[0], arr.Length == 1 ? "" : arr[1]));
         }
 
         private static BettypeOrder GetOrder(string bettype)
