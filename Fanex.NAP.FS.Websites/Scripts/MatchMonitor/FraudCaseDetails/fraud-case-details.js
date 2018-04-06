@@ -1,10 +1,10 @@
 ﻿function fraud_case_details() {
     var ticket_grid = $("#ticket-tab table"),
         detail_tabs = $("#detailTabs"),
-        customer_grid = $("#customer-tab table");
+        customer_grid = $("#customer-tab table")
+        associated_accounts = $("#associated-accounts");
 
-    var global_idx = 0,
-        first_time = true;
+    var global_idx = 0;
 
     var filter = {};
 
@@ -40,6 +40,14 @@
             customer_grid.DataTable().clear().rows.add(json).draw();
 
             $("#customers").text(`By Customers (${json.length})`);
+
+            $(".action").change(function (e) {
+                var tr = $(e.target).parents("tr");
+
+                var obj = customer_grid.DataTable().row(tr).data();
+
+                renderAssociatedAccounts(obj, []);
+            })
         });
     }
 
@@ -95,20 +103,7 @@
     }
 
     function switchTab(ui) {
-        console.log(ui)
-
-        if (first_time) {
-            customer_grid.DataTable().draw();
-
-            first_time = false;
-        }
-
-        if (ui.newPanel.is("#customer-tab")) {
-            customer_grid.DataTable().draw();
-        }
-        else {
-            ticket_grid.DataTable().draw()
-        }
+        $.fn.dataTable.tables({ visible: true, api: true }).columns.adjust();
     }
 
     function exportExcel() {
@@ -119,6 +114,24 @@
 
     function removeMatchLeague() {
         $(".match, .league").remove();
+    }
+
+    function renderCustomerAction() {
+        var options = [
+            "<option value='0'>View Suspicious History</option>",
+            "<option value='1'>View tickets of last 7 days</option>",
+            "<option value='2'>View Associated Accounts</option>"
+        ]
+
+        return `<div class='group'><button>adfdaf</button><select class='action'>${options.join("")}</select></div>`;
+    }
+
+    function renderAssociatedAccounts(obj, json) {
+        associated_accounts
+            .dialog("option", "title", obj.Member)
+            .dialog("open");
+
+        $("table", associated_accounts).DataTable().clear().rows.add(json).draw();
     }
 
     ticket_grid.DataTable({
@@ -189,7 +202,7 @@
             { data: obj => obj.TotalWinLoss >= 0 ? numeral(obj.TotalWinLoss).format("0,0.00") : `<font color='#B50000'>${numeral(obj.TotalWinLoss).format("0,0.00")}</font>`, className: "text-right" },
             { data: obj => obj.Evidence != null && obj.Evidence.length > 78 ? `<span title='${obj.Evidence}'>${obj.Evidence.substring(0,75)}...</span>` : obj.Evidence, width: "500px" },
             { data: obj => obj.AssociatedAccounts, className: "text-right", width: "50px" },
-            { defaultContent: '<span class="icon-settings icon-config"></span>', className: "has-icon text-center", width: "40px" }
+            { defaultContent: renderCustomerAction(), className: "has-icon text-center", width: "40px" }
         ],
     })
 
@@ -202,6 +215,50 @@
     });
 
     $(".-export").click(exportExcel);
+
+    associated_accounts.dialog({
+        height: "auto",
+        width: 1000,
+        modal: true,
+        autoOpen: false,
+        resizable: false,
+        draggable: false
+    });
+
+    $("table", associated_accounts).DataTable({
+        ordering: false,
+        searching: false,
+        lengthMenu: [10, 20, 50, 100, 500],
+        pageLength: 50,
+        scrollY: "70vh",
+        scrollCollapse: true,
+        dom: "t<'pagination'<'page-size'lp>i>",
+        language: {
+            lengthMenu: "Page size _MENU_",
+            paginate: {
+                previous: "Back"
+            },
+            info: "Displaying _START_ to _END_ of _TOTAL_ item(s)",
+            infoEmpty: "",
+            zeroRecords: "There's no data"
+        },
+        columnDefs: [
+            { defaultContent: "-", targets: "_all" }
+        ],
+        columns: [
+            { data: (obj, typet, set, meta) => meta.row + 1, className: "text-center", width: "40px" },
+            { data: obj => obj.Member },
+            { data: obj => obj.TransDate },
+            { data: obj => obj.BetID },
+            { data: obj => obj.Bettype },
+            { data: obj => obj.Choice },
+            { data: obj => obj.Result },
+            { data: obj => obj.Odds },
+            { data: obj => obj.Stake },
+            { data: obj => obj.Winloss },
+            { data: obj => obj.Status }
+        ]
+    })
 }
 
 $(fraud_case_details)

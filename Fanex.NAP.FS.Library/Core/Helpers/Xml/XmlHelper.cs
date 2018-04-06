@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Linq;
 using System.Xml.Serialization;
 
@@ -48,7 +46,7 @@ namespace Fanex.NAP.FS.Library.Core.Helpers.Xml
 
         private static IEnumerable<Assembly> GetAssemblies()
         {
-            var main_assembly = Assembly.GetEntryAssembly();
+            var main_assembly = Assembly.GetExecutingAssembly();
 
             var satellite_assemlies = 
                 main_assembly

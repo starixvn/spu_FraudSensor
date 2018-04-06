@@ -98,7 +98,6 @@
             { data: obj => obj.BetCount },
             { data: obj => obj.Assignee }
         ],
-
         columnDefs: [
             { defaultContent: "-", targets: "_all" },
             { targets: [-2, -3, -4], className: "text-right", width: "120px" }

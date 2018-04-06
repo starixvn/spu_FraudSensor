@@ -966,6 +966,7 @@
     <Content Include="Views\SuspiciousCustomer\Index.cshtml" />
     <Content Include="Views\SuspiciousCustomerDetails\Index.cshtml" />
     <Content Include="Views\SuspiciousCustomer\Note.cshtml" />
+    <Content Include="Views\MatchMonitor\FraudCaseDetails\AssociatedAccounts.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Fanex.NAP.FS.Library.Core.Helpers.Xml;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.ServiceProcess;
@@ -15,10 +16,12 @@ namespace Fanex.NAP.FS.WinService
         static void Main()
         {
             ServiceBase[] ServicesToRun;
+
             ServicesToRun = new ServiceBase[] 
             { 
                 new FraudSensorService() 
             };
+
             ServiceBase.Run(ServicesToRun);
         }
     }
