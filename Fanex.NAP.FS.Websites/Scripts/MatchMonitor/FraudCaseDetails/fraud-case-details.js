@@ -133,7 +133,7 @@
             "<option value='2'>View Associated Accounts</option>"
         ]
 
-        return `<div class='group'><button>a</button><select class='action'>${options.join("")}</select></div>`;
+        return `<div class='group'><button class='hide '></button><select class='action'>${options.join("") }</select></div>`;
     }
 
     function renderAssociatedAccounts(obj, json) {

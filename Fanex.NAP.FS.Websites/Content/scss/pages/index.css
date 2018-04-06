@@ -535,6 +535,36 @@ select[disabled] {
   border-color: #d9d9d9;
   color: #777; }
 
+.ui-selectmenu-button.ui-button {
+  border: none;
+  background-color: transparent; }
+  .ui-selectmenu-button.ui-button .ui-icon {
+    background: none; }
+  .ui-selectmenu-button.ui-button .ui-icon:before {
+    content: "\e91e";
+    font-size: 20px;
+    color: #455360; }
+  .ui-selectmenu-button.ui-button.ui-selectmenu-button-open .ui-icon:before {
+    color: #2197ff; }
+  .ui-selectmenu-button.ui-button .ui-selectmenu-text {
+    display: none; }
+
+.ui-selectmenu-menu .ui-widget-content {
+  margin-top: 6px;
+  border: 1px solid #d0d0d0;
+  -webkit-box-shadow: 0 0 4px rgba(0, 0, 0, 0.3);
+  -moz-box-shadow: 0 0 4px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.3);
+  background-color: #fff; }
+
+.ui-selectmenu-menu .ui-menu-item-wrapper {
+  padding: 10px 20px; }
+
+.ui-selectmenu-menu .ui-state-active {
+  border: none;
+  background: #1e2e4f;
+  color: #fff; }
+
 .top-header {
   -webkit-border-radius: 2px 2px 0 0;
   -moz-border-radius: 2px 2px 0 0;
