@@ -118,10 +118,6 @@ namespace Fanex.NAP.FS.Library.Core.ExportExcel
 
             row.Sheet.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(row.RowNum, row.RowNum, row.FirstCellNum, row.LastCellNum - 1));
 
-            //row.RowStyle.Alignment = HorizontalAlignment.Center;
-
-            //row.RowStyle.VerticalAlignment = VerticalAlignment.Center;
-
             row.GetCell(0).SetCellValue("There's no data");
         }
     }

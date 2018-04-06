@@ -6,10 +6,6 @@ namespace Fanex.NAP.FS.WinService.Console
     {
         static void Main(string[] args)
         {
-            //Test();
-
-            //return;
-
             var service = new FraudSensorService();
 
             System.Console.WriteLine("Start to run window service manually.");
@@ -17,6 +13,7 @@ namespace Fanex.NAP.FS.WinService.Console
             service.RunOnStart();
 
             System.Console.WriteLine("Window service is running now.");
+
             while (true)
             {
             }

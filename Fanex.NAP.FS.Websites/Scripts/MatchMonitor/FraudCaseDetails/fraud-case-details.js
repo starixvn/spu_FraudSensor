@@ -57,7 +57,9 @@
                 }
             });
 
-            $(".group").controlgroup();
+            $(".group-action").controlgroup();
+
+            $(".group-action button").click(e => $(e.target).next().selectmenu("open"));
         });
     }
 
@@ -133,7 +135,7 @@
             "<option value='2'>View Associated Accounts</option>"
         ]
 
-        return `<div class='group'><button class='hide '></button><select class='action'>${options.join("") }</select></div>`;
+        return `<div class='group-action'><button class='hide'></button><select class='action'>${options.join("")}</select></div>`;
     }
 
     function renderAssociatedAccounts(obj, json) {
@@ -212,7 +214,7 @@
             { data: obj => obj.TotalWinLoss >= 0 ? numeral(obj.TotalWinLoss).format("0,0.00") : `<font color='#B50000'>${numeral(obj.TotalWinLoss).format("0,0.00")}</font>`, className: "text-right" },
             { data: obj => obj.Evidence != null && obj.Evidence.length > 78 ? `<span title='${obj.Evidence}'>${obj.Evidence.substring(0,75)}...</span>` : obj.Evidence, width: "500px" },
             { data: obj => obj.AssociatedAccounts, className: "text-right", width: "50px" },
-            { defaultContent: renderCustomerAction(), className: "has-icon text-center", width: "100px" }
+            { defaultContent: renderCustomerAction(), className: "has-icon text-center", width: "70px" }
         ],
     })
 
