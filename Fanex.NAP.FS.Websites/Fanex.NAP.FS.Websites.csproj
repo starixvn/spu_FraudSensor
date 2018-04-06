@@ -348,8 +348,6 @@
     <Compile Include="Service\Utilities\PermissionService.cs" />
     <Compile Include="Service\Utilities\SessionManager.cs" />
     <Compile Include="Startup.cs" />
-    <Compile Include="Util\WebRendering\Column.cs" />
-    <Compile Include="Util\WebRendering\Ignore.cs" />
     <Compile Include="ViewModels\MatchMonitor\MatchList.cs" />
     <Compile Include="ViewModels\SuspiciousCustomer\SuspiciousCustomerNoteView.cs" />
   </ItemGroup>

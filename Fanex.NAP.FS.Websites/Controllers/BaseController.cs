@@ -4,6 +4,7 @@ using Fanex.NAP.Core.Service.Impl;
 using Fanex.NAP.Core.Service.Interface;
 using Fanex.NAP.Core.Web.Context;
 using Fanex.NAP.Core.Web.Session;
+using System.Collections.Generic;
 using System.IO;
 using System.Web.Mvc;
 
@@ -108,6 +109,21 @@ namespace Fanex.NAP.FS.Websites.Controllers
                 JsonRequestBehavior = behavior,
                 MaxJsonLength = int.MaxValue
             };
+        }
+
+        protected ActionResult ExcelFile(byte[] contents, string fileName, string extension = "xlsx")
+        {
+            return File(contents, "application/vnd.ms-excel", fileName + "." + extension);
+        }
+
+        protected new ActionResult Json(object data)
+        {
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        protected ActionResult JData<T>(IEnumerable<T> data)
+        {
+            return Json(new { data });
         }
     }
 }

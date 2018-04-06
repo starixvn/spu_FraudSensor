@@ -134,6 +134,7 @@
             infoEmpty: "",
             infoFiltered: "",
             thousands: ",",
+            zeroRecords: "There's no data"
         },
         scrollY: '57vh',
         scrollCollapse: true,
@@ -174,7 +175,8 @@
                 previous: "Back"
             },
             info: "Displaying _START_ to _END_ of _TOTAL_ item(s)",
-            infoEmpty: ""
+            infoEmpty: "",
+            zeroRecords: "There's no data"
         },
         scrollY: '57vh',
         scrollCollapse: true,
@@ -188,7 +190,7 @@
             { data: obj => obj.Evidence != null && obj.Evidence.length > 78 ? `<span title='${obj.Evidence}'>${obj.Evidence.substring(0,75)}...</span>` : obj.Evidence, width: "500px" },
             { data: obj => obj.AssociatedAccounts, className: "text-right", width: "50px" },
             { defaultContent: '<span class="icon-settings icon-config"></span>', className: "has-icon text-center", width: "40px" }
-        ]
+        ],
     })
 
     load_ticket_grid();

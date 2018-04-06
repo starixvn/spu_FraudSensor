@@ -26,7 +26,8 @@
                 previous: "Back"
             },
             info: "Displaying _START_ to _END_ of _TOTAL_ item(s)",
-            infoEmpty: ""
+            infoEmpty: "",
+            zeroRecords: "There's no data"
         },
         columnDefs: [
             { defaultContent: "-", targets: "_all", width: "120px" },
@@ -35,8 +36,7 @@
             { data: (obj, typet, set, meta) => meta.row + 1, className: "text-center", width: "40px" },
             { data: obj => obj.Date, className: "text-center"},
             { data: obj =>  common.makeWrapString(obj.Description, 50), width: "500px" },
-            { data: obj => obj.Author },
-            { data: obj => obj.Type }
+            { data: obj => obj.Author }
         ]
     })
 
@@ -84,7 +84,8 @@
                 previous: "Back"
             },
             info: "Displaying _START_ to _END_ of _TOTAL_ item(s)",
-            infoEmpty: ""
+            infoEmpty: "",
+            zeroRecords: "There's no data"
         },
         columns: [
             { data: (obj, typet, set, meta) => meta.row + 1, className: "text-center", width: "40px" },

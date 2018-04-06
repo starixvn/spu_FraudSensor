@@ -1,5 +1,6 @@
 ﻿using NPOI.SS.UserModel;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Fanex.NAP.FS.Library.Core.ExportExcel
 {
@@ -64,9 +65,16 @@ namespace Fanex.NAP.FS.Library.Core.ExportExcel
                 summary_template = null;
             }
 
-            foreach (var item in data)
+            if (data.Any())
             {
-                WriteBodyRow(data_template, item);
+                foreach (var item in data)
+                {
+                    WriteBodyRow(data_template, item);
+                }
+            }
+            else
+            {
+                WriteEmpty(data_template);
             }
 
             if (summary_template != null)
@@ -96,6 +104,25 @@ namespace Fanex.NAP.FS.Library.Core.ExportExcel
             var row = template;
 
             FillSummary(row, summary);
+        }
+
+        protected virtual void WriteEmpty(IRow template)
+        {
+            var sheet = template.Sheet;
+
+            sheet.ShiftRows(template.RowNum, sheet.LastRowNum, 1, true, false);
+
+            var row = sheet.CreateRow(template.RowNum - 1);
+
+            ExcelUtilities.CopyRow(template, row);
+
+            row.Sheet.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(row.RowNum, row.RowNum, row.FirstCellNum, row.LastCellNum - 1));
+
+            //row.RowStyle.Alignment = HorizontalAlignment.Center;
+
+            //row.RowStyle.VerticalAlignment = VerticalAlignment.Center;
+
+            row.GetCell(0).SetCellValue("There's no data");
         }
     }
 }

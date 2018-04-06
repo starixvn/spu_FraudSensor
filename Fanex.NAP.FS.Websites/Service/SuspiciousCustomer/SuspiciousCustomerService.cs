@@ -29,7 +29,7 @@ namespace Fanex.NAP.FS.Websites.Service.SuspiciousCustomer
             return GetNotesData(custId)
                 .Select(d => new SuspiciousCustomerNoteView
                 {
-                    Date = d.LogDate.ToString("MMM dd, yyyy"),
+                    Date = d.LogDate.ToString("MMM dd, yyyy hh:mm:ss tt"),
                     Description = d.Description,
                     Type = d.LogType,
                     Author = user_service.Get(d.CreatorId).Username

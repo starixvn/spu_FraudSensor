@@ -23,12 +23,7 @@ namespace Fanex.NAP.FS.Websites.ExcelConfig.FraudCase.DelayedGoal
 
         protected override void FillLegend(IRow row, string legend)
         {
-            var param = new XSSFRichTextString();
-
-            param.Append("Search string: ", new XSSFFont { IsBold = true });
-            param.Append(legend);
-
-            row.GetCell(0).SetCellValue(param);
+            //// no need to fill legend in this config
         }
     }
 }

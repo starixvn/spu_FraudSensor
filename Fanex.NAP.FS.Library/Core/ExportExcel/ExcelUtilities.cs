@@ -32,6 +32,17 @@ namespace Fanex.NAP.FS.Library.Core.ExportExcel
             return target;
         }
 
+        public static XSSFRichTextString WriteLegend(this XSSFRichTextString target, IDictionary<string, string> pairs)
+        {
+            foreach (var item in pairs)
+            {
+                target.WriteBold(item.Key + ": ");
+                target.Write(item.Value + "\n");
+            }
+
+            return target;
+        }
+
         public static void SetValue(this XSSFRichTextString value, ICell target)
         {
             target.SetCellValue(value);

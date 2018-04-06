@@ -1,9 +1,15 @@
-﻿namespace Fanex.NAP.FS.WinService.Console
+﻿using Fanex.NAP.FS.Library.Core.Helpers.Xml;
+
+namespace Fanex.NAP.FS.WinService.Console
 {
     static class Program
     {
         static void Main(string[] args)
         {
+            //Test();
+
+            //return;
+
             var service = new FraudSensorService();
 
             System.Console.WriteLine("Start to run window service manually.");

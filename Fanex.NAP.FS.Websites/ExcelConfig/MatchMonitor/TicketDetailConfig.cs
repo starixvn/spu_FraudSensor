@@ -95,7 +95,18 @@ namespace Fanex.NAP.FS.Websites.ExcelConfig.MatchMonitor
 
             var arr = t.Odds.Html.Split(splitter, StringSplitOptions.RemoveEmptyEntries);
 
-            cell.SetCellValue(string.Format("{0} ({1})", arr.Length == 0 ? "" : arr[0], arr.Length == 1 ? "" : arr[1]));
+            if(arr.Length == 1)
+            {
+                cell.SetCellValue(arr[0]);
+            }
+            else if(arr.Length == 2)
+            {
+                cell.SetCellValue(arr[0] + "(" + arr[1] + ")");
+            }
+            else
+            {
+                cell.SetCellValue("");
+            }
         }
     }
 }

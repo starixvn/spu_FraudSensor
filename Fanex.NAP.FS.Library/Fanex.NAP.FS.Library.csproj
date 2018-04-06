@@ -160,11 +160,9 @@
     <Compile Include="Core\BaseClasses\FSBaseService.cs" />
     <Compile Include="Core\ExportExcel\ExcelUtilities.cs" />
     <Compile Include="Core\ExportExcel\FSExcelConfig.cs" />
-    <Compile Include="Core\ExportExcel\FSExportExcel.cs" />
-    <Compile Include="Core\ExportExcel\IDataFillerConfig.cs" />
-    <Compile Include="Core\ExportExcel\IHeaderModifierConfig.cs" />
-    <Compile Include="Core\ExportExcel\Legend.cs" />
     <Compile Include="Core\ExportExcel\ExcelStream.cs" />
+    <Compile Include="Core\Helpers\Xml\IXml.cs" />
+    <Compile Include="Core\Helpers\Xml\XmlHelper.cs" />
     <Compile Include="Core\Utilities\ConfigSettings.cs" />
     <Compile Include="Core\Utilities\Extentions.cs" />
     <Compile Include="Criteria\Api\FlaggedAccountDeleteCriteria.cs" />
@@ -186,7 +184,6 @@
       <DependentUpon>Error.resx</DependentUpon>
     </Compile>
     <Compile Include="Core\Resources\ErrorLookup.cs" />
-    <Compile Include="ExportExcel\ExportExcelSuspiciousCustomer.cs" />
     <Compile Include="FSMQ\MessageQueue\FSMessageQueue.cs" />
     <Compile Include="FSMQ\MessageQueue\MessageQueueSender.cs" />
     <Compile Include="FSMQ\MessageQueue\IMessageQueueSender.cs" />
@@ -214,8 +211,8 @@
   <ItemGroup>
     <Folder Include="Core\Configurations\" />
     <Folder Include="Core\Extensions\" />
-    <Folder Include="Core\Helpers\" />
     <Folder Include="DataAccess\" />
+    <Folder Include="ExportExcel\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
