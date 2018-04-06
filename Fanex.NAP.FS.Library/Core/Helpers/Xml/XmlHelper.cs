@@ -80,7 +80,7 @@ namespace Fanex.NAP.FS.Library.Core.Helpers.Xml
             {
                 Func<object, object> f = null;
 
-                if(prop.PropertyType.IsPrimitive || prop.PropertyType == typeof(string))
+                if(prop.PropertyType.IsPrimitive || prop.PropertyType == typeof(string) || prop.PropertyType == typeof(decimal))
                 {
                     f = CreatePrimitivePropReader(prop);
                 }

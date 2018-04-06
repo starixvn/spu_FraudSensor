@@ -41,13 +41,23 @@
 
             $("#customers").text(`By Customers (${json.length})`);
 
-            $(".action").change(function (e) {
-                var tr = $(e.target).parents("tr");
+            $(".action").selectmenu({
+                classes: {
+                    "ui-selectmenu-button": "ui-button-icon-only demo-splitbutton-select"
+                },
+                position: { my: "left top", at: "left bottom", collision: "flip" },
+                select: function () {
+                    var tr = $(this).parents("tr");
 
-                var obj = customer_grid.DataTable().row(tr).data();
+                    var obj = customer_grid.DataTable().row(tr).data();
 
-                renderAssociatedAccounts(obj, []);
-            })
+                    if (this.value == "2") {
+                        renderAssociatedAccounts(obj, []);
+                    }
+                }
+            });
+
+            $(".group").controlgroup();
         });
     }
 
@@ -123,7 +133,7 @@
             "<option value='2'>View Associated Accounts</option>"
         ]
 
-        return `<div class='group'><button>adfdaf</button><select class='action'>${options.join("")}</select></div>`;
+        return `<div class='group'><button>a</button><select class='action'>${options.join("")}</select></div>`;
     }
 
     function renderAssociatedAccounts(obj, json) {
@@ -202,7 +212,7 @@
             { data: obj => obj.TotalWinLoss >= 0 ? numeral(obj.TotalWinLoss).format("0,0.00") : `<font color='#B50000'>${numeral(obj.TotalWinLoss).format("0,0.00")}</font>`, className: "text-right" },
             { data: obj => obj.Evidence != null && obj.Evidence.length > 78 ? `<span title='${obj.Evidence}'>${obj.Evidence.substring(0,75)}...</span>` : obj.Evidence, width: "500px" },
             { data: obj => obj.AssociatedAccounts, className: "text-right", width: "50px" },
-            { defaultContent: renderCustomerAction(), className: "has-icon text-center", width: "40px" }
+            { defaultContent: renderCustomerAction(), className: "has-icon text-center", width: "100px" }
         ],
     })
 
@@ -218,7 +228,7 @@
 
     associated_accounts.dialog({
         height: "auto",
-        width: 1000,
+        width: 500,
         modal: true,
         autoOpen: false,
         resizable: false,
@@ -228,9 +238,9 @@
     $("table", associated_accounts).DataTable({
         ordering: false,
         searching: false,
+        paging: false,
         lengthMenu: [10, 20, 50, 100, 500],
         pageLength: 50,
-        scrollY: "70vh",
         scrollCollapse: true,
         dom: "t<'pagination'<'page-size'lp>i>",
         language: {
