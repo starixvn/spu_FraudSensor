@@ -1,8 +1,9 @@
 ﻿function fraud_case_details() {
     var ticket_grid = $("#ticket-tab table"),
         detail_tabs = $("#detailTabs"),
-        customer_grid = $("#customer-tab table")
-        associated_accounts = $("#associated-accounts");
+        customer_grid = $("#customer-tab table"),
+        associated_accounts = $("#associated-accounts"),
+        ticket_last_7_days = $("#tickets-last-7-days");
 
     var global_idx = 0;
 
@@ -52,7 +53,10 @@
                     var obj = customer_grid.DataTable().row(tr).data();
 
                     if (this.value == "2") {
-                        renderAssociatedAccounts(obj, []);
+                        renderAssociatedAccounts(obj);
+                    }
+                    else if (this.value == "1") {
+                        renderLast7DaysTickets(obj);
                     }
                 }
             });
@@ -138,12 +142,36 @@
         return `<div class='group-action'><button class='hide'></button><select class='action'>${options.join("")}</select></div>`;
     }
 
-    function renderAssociatedAccounts(obj, json) {
+    function renderAssociatedAccounts(obj) {
+        var json = []
+
+        for (var i = 0; i < 500; i++) {
+            json.push({ Currency: "Won", Member: "adfadfadfadfadfdafadf" });
+        }
+
         associated_accounts
             .dialog("option", "title", obj.Member)
             .dialog("open");
 
         $("table", associated_accounts).DataTable().clear().rows.add(json).draw();
+    }
+
+    function renderLast7DaysTickets(obj) {
+        var url = common.modifyRelativeUrl("/MatchMonitor/GetLast7DaysTicket")
+
+        common.showLoading();
+
+        $.get(url, { custId: obj.CustId }, function (json) {
+            var from = moment().add(-7, "d");
+
+            ticket_last_7_days
+                .dialog("option", "title", `Tickets from ${from.format("MMM d, YYYY")}`)
+                .dialog("open");
+
+            $("table", ticket_last_7_days).DataTable().clear().rows.add(json).draw();
+
+            common.closeLoading();
+        });
     }
 
     ticket_grid.DataTable({
@@ -167,7 +195,7 @@
             { data: obj => obj.key ? obj.value : ++global_idx, className: "text-center", width: "40px" },
             { data: obj => obj.Member, width: "100px" },
             { data: obj => obj.CurrencyName, className: "text-center", width: "10px" },
-            { data: obj => moment(obj.TransDate).format("MMM D, YYYY<br/>hh:mm:ss A"), className: "text-center", width: "100px" },
+            { data: obj => moment(obj.TransDate, "MMM D, YYYY hh:mm:ss A").format("MMM D, YYYY<br/>hh:mm:ss A"), className: "text-center", width: "100px" },
             { data: obj => obj.BetID, width: "100px" },
             { data: obj => obj.Choice },
             { data: obj => obj.Score, className: "text-center", width: "40px" },
@@ -229,12 +257,57 @@
     $(".-export").click(exportExcel);
 
     associated_accounts.dialog({
-        height: "auto",
+        height: 500,
         width: 500,
         modal: true,
         autoOpen: false,
         resizable: false,
         draggable: false
+    });
+
+    ticket_last_7_days.dialog({
+        maxHeight: 700,
+        width: 1500,
+        modal: true,
+        autoOpen: false,
+        resizable: false,
+        draggable: false
+    });
+
+    $("table", ticket_last_7_days).DataTable({
+        ordering: false,
+        searching: false,
+        lengthMenu: [10, 20, 50, 100, 500],
+        pageLength: 50,
+        scrollCollapse: true,
+        scrollY: "50vh",
+        dom: "t<'pagination'<'page-size'lp>i>",
+        language: {
+            lengthMenu: "Page size _MENU_",
+            paginate: {
+                previous: "Back"
+            },
+            info: "Displaying _START_ to _END_ of _TOTAL_ item(s)",
+            infoEmpty: "",
+            zeroRecords: "There's no data"
+        },
+        columnDefs: [
+            { defaultContent: "-", targets: "_all" },
+            { targets: [0, 1, -1, 3, 5], className: "text-center" },
+            { targets: [-2, -3], className: "text-right" }
+        ],
+        columns: [
+            { data: (obj, typet, set, meta) => meta.row + 1, width: "40px" },
+            { data: obj => obj.TransDate, width: "170px" },
+            { data: obj => obj.BetID },
+            { data: obj => obj.Bettype },
+            { data: obj => obj.Choice },
+            { data: obj => `HT: ${obj.Result.HTHomeScore} - ${obj.Result.HTAwayScore}<br/><b>FT: ${obj.Result.FinalHomeScore} - ${obj.Result.FinalAwayScore}</b>`, class: "text-center" },
+            { data: obj => obj.Odds != null ? obj.Odds.Html : null },
+            { data: obj => common.formatNumber(obj.Stake) },
+            { data: obj => obj.WinLoss == null ? null : obj.WinLoss >= 0 ? common.formatNumber(obj.WinLoss) : `<font color='#B50000'>${common.formatNumber(obj.WinLoss)}</font>` },
+            { data: obj => obj.Status }
+        ]
     });
 
     $("table", associated_accounts).DataTable({
@@ -244,6 +317,7 @@
         lengthMenu: [10, 20, 50, 100, 500],
         pageLength: 50,
         scrollCollapse: true,
+        scrollY: "40vh",
         dom: "t<'pagination'<'page-size'lp>i>",
         language: {
             lengthMenu: "Page size _MENU_",
@@ -259,18 +333,10 @@
         ],
         columns: [
             { data: (obj, typet, set, meta) => meta.row + 1, className: "text-center", width: "40px" },
+            { data: obj => obj.Currency, className: "text-center", width: "100px" },
             { data: obj => obj.Member },
-            { data: obj => obj.TransDate },
-            { data: obj => obj.BetID },
-            { data: obj => obj.Bettype },
-            { data: obj => obj.Choice },
-            { data: obj => obj.Result },
-            { data: obj => obj.Odds },
-            { data: obj => obj.Stake },
-            { data: obj => obj.Winloss },
-            { data: obj => obj.Status }
         ]
-    })
+    });
 }
 
-$(fraud_case_details)
+$(fraud_case_details);

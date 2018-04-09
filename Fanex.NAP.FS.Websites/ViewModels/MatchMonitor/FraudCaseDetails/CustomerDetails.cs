@@ -15,5 +15,7 @@
         public int AssociatedAccounts { get; set; }
 
         public string CurrencyName { get; set; }
+
+        public int CustId { get; set; }
     }
 }

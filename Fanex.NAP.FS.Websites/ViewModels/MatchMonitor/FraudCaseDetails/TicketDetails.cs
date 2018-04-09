@@ -1,14 +1,8 @@
-﻿using Fanex.BetList.Core.Builder.OddsBuilder;
-using Fanex.BetList.Core.Templates;
-using Fanex.NAP.FS.Websites.Models.MatchMonitor.FraudCaseDetails;
-using NPOI.SS.UserModel;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-
-namespace Fanex.NAP.FS.Websites.ViewModels.MatchMonitor.FraudCaseDetails
+﻿namespace Fanex.NAP.FS.Websites.ViewModels.MatchMonitor.FraudCaseDetails
 {
+    using Fanex.BetList.Core.Templates;
+    using Fanex.NAP.FS.Websites.Models.MatchMonitor.FraudCaseDetails;
+
     public class TicketDetails
     {
         public string Member { get; set; }
@@ -39,6 +33,8 @@ namespace Fanex.NAP.FS.Websites.ViewModels.MatchMonitor.FraudCaseDetails
 
         public string CurrencyName { get; set; }
 
-        public TicketInfo RawData { get; internal set; }
+        public TicketInfo RawData { get; set; }
+
+        public Result Result { get; set; }
     }
 }

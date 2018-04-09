@@ -48,6 +48,10 @@
     <Setting Key="FS_Rpt_MatchMonitor_Details_Get_ByTicket" 
              SpName="FS_Rpt_MatchMonitor_Details_Get_ByTicket" 
              DbName="DBFS.FraudSensor.bodbSPUNet"/>
+
+    <Setting Key="FS_Rpt_Ticket_Get"
+             SpName="FS_Rpt_Ticket_Get"
+             DbName="DBFS.FraudSensor.bodbSPUNet"/>
   </Function>
   
   <Function Name="FraudCase">

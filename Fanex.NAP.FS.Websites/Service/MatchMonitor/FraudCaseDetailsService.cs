@@ -99,6 +99,7 @@ namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
                     evid => evid.CustId,
                     (info, evidence) => new CustomerDetails
                     {
+                        CustId = info.CustId,
                         Member = info.Username,
                         TotalWinLoss = (double)info.TotalWinlost,
                         TotalStake = (double)info.TotalStake,
@@ -167,6 +168,52 @@ namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
             }
         }
 
+        public static IEnumerable<TicketDetails> GetLast7DaysDetails(int custId)
+        {
+            var null_winloss = new HashSet<string>
+            {
+                "running",
+                "reject"
+            };
+
+            var html_builder = new BetListHTMLBuilder();
+            var ticketHelper = new TicketHelper();
+
+            return GetLast7DaysInfo(custId)
+                .Select(a =>
+                {
+                    var bettype = RefData.GetBetTypeName(a.BetTypeId.ToString(), "en");
+
+                    var grouped_bettype = GetOrder(bettype) != BettypeOrder.Other ? bettype : "Others";
+
+                    return new TicketDetails
+                    {
+                        Member = a.UserName,
+                        Bettype = grouped_bettype,
+                        TransDate = a.TransDate.ToString("MMM dd, yyyy hh:mm:ss tt"),
+                        BetID = a.TransId.ToString(),
+                        IP = a.IP,
+                        Odds = new OddsDetails { Value = (double)a.Odds, Type = RefData.GetOddsTypeName(a.OddsType, "en"), Html = html_builder.BuildOdds(a, null, CacheRef.GetOddsTypeName) },
+                        Score = string.Format("{0}-{1}", a.LiveHomeScore, a.LiveAwayScore),
+                        Stake = a.Stake,
+                        Status = a.Status,
+                        WinLoss = null_winloss.Contains(a.Status.ToLowerInvariant()) ? null : new decimal?(a.Winlost),
+                        Choice = html_builder.BuildChoice(a, ticketHelper, null, false),
+                        ChoiceExcel = null,
+                        BettypeRealName = bettype,
+                        CurrencyName = a.CurrencyName,
+                        RawData = null,
+                        Result = new Result
+                        {
+                            HTHomeScore = a.HTHomeScore,
+                            HTAwayScore = a.HTAwayScore,
+                            FinalHomeScore = a.FinalHomeScore,
+                            FinalAwayScore = a.FinalAwayScore
+                        }
+                    };
+                });
+        }
+
         private static BettypeOrder GetOrder(string bettype)
         {
             if (bettype.Contains("1H"))
@@ -195,6 +242,11 @@ namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
             }
 
             return BettypeOrder.Other;
+        }
+
+        private static IEnumerable<TicketInfo> GetLast7DaysInfo(int custId)
+        {
+            return DataService.GetData<TicketInfo>(new Last7DaysTicketGetCriteria { CustId = custId });
         }
     }
 }

@@ -1,8 +1,6 @@
 ﻿using Fanex.NAP.Core.Web.Attribute;
 using Fanex.NAP.FS.Websites.Criteria.MatchMonitor;
-using Fanex.NAP.FS.Websites.Models.FraudCase;
 using Fanex.NAP.FS.Websites.Service.MatchMonitor;
-using Fanex.NAP.FS.Websites.ViewModels.MatchMonitor.FraudCaseDetails;
 using System;
 using System.Linq;
 using System.Web.Mvc;
@@ -90,6 +88,11 @@ namespace Fanex.NAP.FS.Websites.Controllers
             criteria.Notes = criteria.Notes ?? string.Empty;
 
             return Json(MatchMonitorService.UpdateMatchNote(criteria));
+        }
+
+        public ActionResult GetLast7DaysTicket(int custId)
+        {
+            return Json(FraudCaseDetailsService.GetLast7DaysDetails(custId));
         }
     }
 }

@@ -291,6 +291,7 @@
     <Compile Include="Criteria\MatchMonitor\FraudCaseDetails\GetCustomerCriteria.cs" />
     <Compile Include="Criteria\MatchMonitor\FraudCaseDetails\GetMatchInfoCriteria.cs" />
     <Compile Include="Criteria\MatchMonitor\FraudCaseDetails\GetTicketCriteria.cs" />
+    <Compile Include="Criteria\MatchMonitor\FraudCaseDetails\Last7DaysTicketGetCriteria.cs" />
     <Compile Include="Criteria\MatchMonitor\LeagueGetCriteria.cs" />
     <Compile Include="Criteria\MatchMonitor\MatchGetAllCriteria.cs" />
     <Compile Include="Criteria\MatchMonitor\MatchNoteUpdateCriteria.cs" />
@@ -339,6 +340,7 @@
     <Compile Include="ViewModels\MatchMonitor\FraudCaseDetails\CustomerDetails.cs" />
     <Compile Include="ViewModels\MatchMonitor\FraudCaseDetails\MatchFraudCaseInfo.cs" />
     <Compile Include="ViewModels\MatchMonitor\FraudCaseDetails\OddsDetails.cs" />
+    <Compile Include="ViewModels\MatchMonitor\FraudCaseDetails\Result.cs" />
     <Compile Include="ViewModels\MatchMonitor\FraudCaseDetails\TicketDetails.cs" />
     <Compile Include="ViewModels\MatchMonitor\Match.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -967,6 +969,7 @@
     <Content Include="Views\SuspiciousCustomerDetails\Index.cshtml" />
     <Content Include="Views\SuspiciousCustomer\Note.cshtml" />
     <Content Include="Views\MatchMonitor\FraudCaseDetails\AssociatedAccounts.cshtml" />
+    <Content Include="Views\MatchMonitor\FraudCaseDetails\TicketLast7Days.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
