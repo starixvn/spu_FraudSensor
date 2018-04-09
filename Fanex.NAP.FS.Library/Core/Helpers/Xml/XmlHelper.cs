@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -28,16 +29,28 @@ namespace Fanex.NAP.FS.Library.Core.Helpers.Xml
         {
             var t = o.GetType();
 
-            if (!typeLookup.ContainsKey(t))
+            if(typeof(IEnumerable).IsAssignableFrom(t))
+            {
+                var generic_param = t.IsArray ? t.GetElementType() : t.GetGenericArguments()[0];
+
+                RegisterType(generic_param);
+
+                var list = o as IEnumerable;
+
+                var xml_parts = list.Cast<object>().Select(a => a.ToXmlObj());
+
+                return new XElement("root", xml_parts);
+            }
+            else
             {
                 RegisterType(t);
+
+                var children =
+                    typeLookup[t]
+                    .Select(f => f(o));
+
+                return new XElement(t.Name, children);
             }
-
-            var children =
-                typeLookup[t]
-                .Select(f => f(o));
-
-            return new XElement(t.Name, children);
         }
 
         public static string ToXmlString(this object o) => o.ToXmlObj().ToString();
