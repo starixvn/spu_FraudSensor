@@ -58,7 +58,9 @@
                     else if (this.value == "1") {
                         renderLast7DaysTickets(obj);
                     }
-                }
+
+                    $(this).val(0);
+                },
             });
 
             $(".group-action").controlgroup();
@@ -162,7 +164,7 @@
         common.showLoading();
 
         $.get(url, { custId: obj.CustId }, function (json) {
-            var from = moment().add(-7, "d");
+            var from = moment().add(-6, "d");
 
             ticket_last_7_days
                 .dialog("option", "title", `Tickets from ${from.format("MMM d, YYYY")}`)
@@ -293,20 +295,20 @@
         },
         columnDefs: [
             { defaultContent: "-", targets: "_all" },
-            { targets: [0, 1, -1, 3, 5], className: "text-center" },
-            { targets: [-2, -3], className: "text-right" }
+            { targets: [0, 1, 4], className: "text-center" },
+            { targets: [-3, -4], className: "text-right" }
         ],
         columns: [
             { data: (obj, typet, set, meta) => meta.row + 1, width: "40px" },
             { data: obj => obj.TransDate, width: "170px" },
             { data: obj => obj.BetID },
-            { data: obj => obj.Bettype },
             { data: obj => obj.Choice },
             { data: obj => `HT: ${obj.Result.HTHomeScore} - ${obj.Result.HTAwayScore}<br/><b>FT: ${obj.Result.FinalHomeScore} - ${obj.Result.FinalAwayScore}</b>`, class: "text-center" },
             { data: obj => obj.Odds != null ? obj.Odds.Html : null },
             { data: obj => common.formatNumber(obj.Stake) },
             { data: obj => obj.WinLoss == null ? null : obj.WinLoss >= 0 ? common.formatNumber(obj.WinLoss) : `<font color='#B50000'>${common.formatNumber(obj.WinLoss)}</font>` },
-            { data: obj => obj.Status }
+            { data: obj => obj.Status },
+            { data: obj => obj.IP}
         ]
     });
 

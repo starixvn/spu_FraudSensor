@@ -180,6 +180,7 @@ namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
             var ticketHelper = new TicketHelper();
 
             return GetLast7DaysInfo(custId)
+                .OrderBy(a => a.TransId)
                 .Select(a =>
                 {
                     var bettype = RefData.GetBetTypeName(a.BetTypeId.ToString(), "en");
