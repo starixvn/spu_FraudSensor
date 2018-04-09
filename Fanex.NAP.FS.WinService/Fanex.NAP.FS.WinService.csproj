@@ -70,6 +70,10 @@
       <HintPath>..\packages\Fanex.Data.2.1.0.1\lib\net40\Fanex.Data.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Fanex.Data.Repository, Version=1.0.2.1, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Fanex.Data.Repository.1.0.2.1\lib\net40\Fanex.Data.Repository.dll</HintPath>
+    </Reference>
     <Reference Include="Fanex.Logging, Version=1.0.4.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Fanex.Logging.1.0.4\lib\net40\Fanex.Logging.dll</HintPath>
       <Private>True</Private>
@@ -150,6 +154,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FraudCaseExecutor\FPSGetAssociationAccountExecutor.cs" />
     <Compile Include="FraudCaseExecutor\DelayGoalExecutor.cs" />
     <Compile Include="FraudCaseExecutor\GhostExecutor.cs" />
     <Compile Include="FraudCaseExecutor\FlaggedAccountExecutor.cs" />

@@ -170,6 +170,8 @@
     <Compile Include="Core\Utilities\Extentions.cs" />
     <Compile Include="Criteria\Api\FlaggedAccountDeleteCriteria.cs" />
     <Compile Include="Criteria\Api\FlaggedAccountInsertCriteria.cs" />
+    <Compile Include="Criteria\DelayGoal\DelayGoalAssociationAccountInsertCriteria.cs" />
+    <Compile Include="Criteria\DelayGoal\DelayGoalManualAccountGetCriteria.cs" />
     <Compile Include="Criteria\FraudCase\FraudCaseGetByIdCriteria.cs" />
     <Compile Include="Criteria\FraudCase\FraudCaseGetAllCriteria.cs" />
     <Compile Include="Criteria\FraudSensorTask\DelayGoalPreconditionCriteria.cs" />
@@ -179,6 +181,11 @@
     <Compile Include="Criteria\FraudSensorTask\BigStakeNearGoalRuleCriteria.cs" />
     <Compile Include="Criteria\FraudSensorTask\BigStakeNearGoalPreconditionCriteria.cs" />
     <Compile Include="Criteria\SuspiciousCustomer\SuspiciousCustomerReportGetCriteria.cs" />
+    <Compile Include="DTO\CustomerEvidence.cs" />
+    <Compile Include="DTO\CustomerEvidenceList.cs" />
+    <Compile Include="DTO\CustomerTotalAssociation.cs" />
+    <Compile Include="DTO\CustomerList.cs" />
+    <Compile Include="DTO\CustomerAssociation.cs" />
     <Compile Include="DTO\Match.cs" />
     <Compile Include="DTO\FraudCase.cs" />
     <Compile Include="Core\Resources\Error.Designer.cs">
@@ -202,10 +209,14 @@
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Models\SuspiciousCustomerReportModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\Implement\DelayGoalAccountService.cs" />
+    <Compile Include="Services\Implement\HttpWebService.cs" />
     <Compile Include="Services\Implement\SuspiciousCustomerReportService.cs" />
     <Compile Include="Services\Implement\FlaggedAccountService.cs" />
     <Compile Include="Services\Implement\FraudCaseService.cs" />
     <Compile Include="Services\Implement\FraudSensorTaskService.cs" />
+    <Compile Include="Services\Interface\IDelayGoalAccountService.cs" />
+    <Compile Include="Services\Interface\IHttpWebService.cs" />
     <Compile Include="Services\Interface\ISuspiciousCustomerReportService.cs" />
     <Compile Include="Services\Interface\IFlaggedAccountService.cs" />
     <Compile Include="Services\Interface\IFraudSensorTaskService.cs" />
