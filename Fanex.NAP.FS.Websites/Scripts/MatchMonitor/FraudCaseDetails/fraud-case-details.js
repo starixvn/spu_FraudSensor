@@ -316,7 +316,7 @@
             { data: obj => obj.BetID, width: "100px" },
 	        { data: obj => obj.Choice},
             { data: obj => `<div class='row-ht'>HT: ${obj.Result.HTHomeScore} - ${obj.Result.HTAwayScore}</div><div class='row-ft'>FT: ${obj.Result.FinalHomeScore} - ${obj.Result.FinalAwayScore}</div>`, width: "60px" },
-            { data: obj => obj.Odds != null ? obj.Odds.Html : null, width: "66px" },
+            { data: obj => obj.Odds != null ? obj.Odds.Html : null, width: "50px" },
             { data: obj => common.formatNumber(obj.Stake), width: "100px" },
             { data: obj => obj.WinLoss == null ? null : obj.WinLoss >= 0 ? common.formatNumber(obj.WinLoss) : `<span class='text-red'>${common.formatNumber(obj.WinLoss)}</span>`, width: "100px"  },
             { data: obj => obj.Status, width: "82px", className: "text-center" },
