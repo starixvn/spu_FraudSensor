@@ -157,7 +157,7 @@
 
         $.get(url, { custId: obj.CustId }, function (json) {
             associated_accounts
-                .dialog("option", "title", obj.Member)
+                .dialog("option", "title", `Associated accounts of customer ${obj.Member}`)
                 .dialog("open");
 
             for (var i = 0; i < 500; i++) {
@@ -271,7 +271,7 @@
     $(".-export").click(exportExcel);
 
     associated_accounts.dialog({
-        maxHeight: 500,
+        maxHeight: 600,
         width: 500,
         modal: true,
         autoOpen: false,
@@ -294,7 +294,7 @@
         lengthMenu: [10, 20, 50, 100, 500],
         pageLength: 50,
         scrollCollapse: true,
-        scrollY: "50vh",
+        scrollY: "55vh",
         dom: "t<'pagination'<'page-size'lp>i>",
         language: {
             lengthMenu: "Page size _MENU_",
@@ -319,7 +319,7 @@
             { data: obj => obj.Odds != null ? obj.Odds.Html : null, width: "50px" },
             { data: obj => common.formatNumber(obj.Stake), width: "100px" },
             { data: obj => obj.WinLoss == null ? null : obj.WinLoss >= 0 ? common.formatNumber(obj.WinLoss) : `<span class='text-red'>${common.formatNumber(obj.WinLoss)}</span>`, width: "100px"  },
-            { data: obj => obj.Status, width: "82px", className: "text-center" },
+            { data: obj => obj.Status, width: "82px" },
             { data: obj => obj.IP,  width: "100px"}
         ]
     });
@@ -331,7 +331,7 @@
         lengthMenu: [10, 20, 50, 100, 500],
         pageLength: 50,
         scrollCollapse: true,
-        scrollY: "300px",
+        scrollY: "370px",
         dom: "t<'pagination'<'page-size'lp>i>",
         language: {
             lengthMenu: "Page size _MENU_",
