@@ -100,6 +100,8 @@ div.match + div.league + div.no-details {
     }
 
 .sport {
+    display: block;
+    padding-bottom: 4px;    
     color: #0066CC;
 }
 

@@ -199,12 +199,12 @@
             { data: obj => obj.CurrencyName, className: "text-center", width: "10px" },
             { data: obj => moment(obj.TransDate, "MMM D, YYYY hh:mm:ss A").format("MMM D, YYYY<br/>hh:mm:ss A"), className: "text-center", width: "100px" },
             { data: obj => obj.BetID, width: "100px" },
-            { data: obj => obj.Choice },
+            { data: obj => obj.Choice, className: "text-right" },
             { data: obj => obj.Score, className: "text-center", width: "40px" },
-            { data: obj => obj.Odds != null ? obj.Odds.Html : null, width: "50px" },
+            { data: obj => obj.Odds != null ? obj.Odds.Html : null, width: "50px", className: "text-right" },
             { data: obj => obj.Stake == null ? null : numeral(obj.Stake).format("0,0.00"), className: "text-right", width: "100px" },
-            { data: obj => obj.WinLoss == null ? null : obj.WinLoss >= 0 ? numeral(obj.WinLoss).format("0,0.00") : `<font color='#B50000'>${numeral(obj.WinLoss).format('0,0.00')}</font>`, className: "text-right", width: "100px" },
-            { data: obj => obj.Status, width: "60px", className: "text-center" },
+            { data: obj => obj.WinLoss == null ? null : obj.WinLoss >= 0 ? numeral(obj.WinLoss).format("0,0.00") : `<span class='text-red'>${numeral(obj.WinLoss).format('0,0.00')}</span>`, className: "text-right", width: "100px" },
+            { data: obj => obj.Status, width: "82px", className: "text-center uppercase" },
             { data: obj => obj.IP, width: "100px" }
         ],
         columnDefs: [{ targets: "_all", defaultContent: "-" }],
@@ -241,7 +241,7 @@
             { data: obj => obj.CurrencyName, className: "text-center", width: "20px" },
             { data: obj => obj.Tickets, className: "text-right", width: "40px" },
             { data: obj => numeral(obj.TotalStake).format("0,0.00"), className: "text-right" },
-            { data: obj => obj.TotalWinLoss >= 0 ? numeral(obj.TotalWinLoss).format("0,0.00") : `<font color='#B50000'>${numeral(obj.TotalWinLoss).format("0,0.00")}</font>`, className: "text-right" },
+            { data: obj => obj.TotalWinLoss >= 0 ? numeral(obj.TotalWinLoss).format("0,0.00") : `<span class='text-red'>${numeral(obj.TotalWinLoss).format("0,0.00")}</span>`, className: "text-right" },
             { data: obj => obj.Evidence != null && obj.Evidence.length > 78 ? `<span title='${obj.Evidence}'>${obj.Evidence.substring(0,75)}...</span>` : obj.Evidence, width: "500px" },
             { data: obj => obj.AssociatedAccounts, className: "text-right", width: "50px" },
             { defaultContent: renderCustomerAction(), className: "has-icon text-center", width: "70px" }
@@ -269,7 +269,7 @@
 
     ticket_last_7_days.dialog({
         maxHeight: 700,
-        width: 1500,
+        width: 1200,
         modal: true,
         autoOpen: false,
         resizable: false,
@@ -295,20 +295,20 @@
         },
         columnDefs: [
             { defaultContent: "-", targets: "_all" },
-            { targets: [0, 1, 4], className: "text-center" },
-            { targets: [-3, -4], className: "text-right" }
+            { targets: [0, 1, 2], className: "text-center" },
+            { targets: [3, 5, -3, -4], className: "text-right" }
         ],
         columns: [
             { data: (obj, typet, set, meta) => meta.row + 1, width: "40px" },
-            { data: obj => obj.TransDate, width: "170px" },
+            { data: obj => obj.TransDate, width: "100px" },
             { data: obj => obj.BetID },
-            { data: obj => obj.Choice },
-            { data: obj => `HT: ${obj.Result.HTHomeScore} - ${obj.Result.HTAwayScore}<br/><b>FT: ${obj.Result.FinalHomeScore} - ${obj.Result.FinalAwayScore}</b>`, class: "text-center" },
-            { data: obj => obj.Odds != null ? obj.Odds.Html : null },
+	        { data: obj => obj.Choice},
+            { data: obj => `<div class='row-ht'>HT: ${obj.Result.HTHomeScore} - ${obj.Result.HTAwayScore}</div><div class='row-ft'>FT: ${obj.Result.FinalHomeScore} - ${obj.Result.FinalAwayScore}</div>` },
+            { data: obj => obj.Odds != null ? obj.Odds.Html : null, width: "66px" },
             { data: obj => common.formatNumber(obj.Stake) },
-            { data: obj => obj.WinLoss == null ? null : obj.WinLoss >= 0 ? common.formatNumber(obj.WinLoss) : `<font color='#B50000'>${common.formatNumber(obj.WinLoss)}</font>` },
-            { data: obj => obj.Status },
-            { data: obj => obj.IP}
+            { data: obj => obj.WinLoss == null ? null : obj.WinLoss >= 0 ? common.formatNumber(obj.WinLoss) : `<span class='text-red'>${common.formatNumber(obj.WinLoss)}</span>` },
+            { data: obj => obj.Status, width: "82px", className: "text-center uppercase" },
+            { data: obj => obj.IP,  width: "100px"}
         ]
     });
 

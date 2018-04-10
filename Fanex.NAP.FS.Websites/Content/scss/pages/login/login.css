@@ -50,6 +50,9 @@ input, button {
 .hide {
   display: none; }
 
+.uppercase {
+  text-transform: uppercase !important; }
+
 .button {
   display: inline-block;
   height: 28px;

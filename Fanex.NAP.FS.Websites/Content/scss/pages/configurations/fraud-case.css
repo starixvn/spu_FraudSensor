@@ -182,17 +182,5 @@
 .customer-list {
   display: none; }
 
-.col-trans-date {
-  width: 164px; }
-
-.icon-config {
-  color: #455360;
-  cursor: pointer; }
-  .icon-config:hover {
-    color: #2197ff; }
-
-.col-action {
-  width: 150px; }
-
-.col-status {
-  width: 110px; }
+.row-ft {
+  font-weight: bold; }

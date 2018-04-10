@@ -50,6 +50,9 @@ input, button {
 .hide {
   display: none; }
 
+.uppercase {
+  text-transform: uppercase !important; }
+
 .button {
   display: inline-block;
   height: 28px;
@@ -768,7 +771,8 @@ select[disabled] {
     border-collapse: collapse !important; }
   .table thead tr th, .table tbody tr td {
     border: 1px solid #c1c1c1;
-    padding: 10px 6px;
+    line-height: 20px;
+    padding: 8px 6px;
     vertical-align: middle; }
   .table thead th {
     border-bottom-width: 1px;
@@ -798,12 +802,18 @@ select[disabled] {
     background-color: #fafafa; }
   .table .has-icon {
     line-height: 0; }
+  .table .text-red {
+    color: #e73239 !important; }
 
 .dataTables_scrollHeadInner {
   background-color: #465262; }
 
 .dataTables_wrapper.no-footer .dataTables_scrollBody {
   border-bottom: none; }
+
+.dataTables_scrollHeadInner,
+.dataTables_wrapper .dataTables_scroll div.dataTables_scrollBody {
+  border-right: 1px solid #c1c1c1; }
 
 .pagination {
   display: -webkit-box;
@@ -893,10 +903,7 @@ select[disabled] {
   padding: 0;
   font-family: "Lato", Arial, Tahoma, sans-serif; }
   .ui-dialog .ui-dialog-content {
-    padding-top: 20px; }
-  .ui-dialog .table thead tr th,
-  .ui-dialog .table tbody tr td {
-    padding: 8px 6px; }
+    padding: 12px; }
   .ui-dialog .ui-dialog-buttonpane {
     border-top: none;
     margin-top: 0;

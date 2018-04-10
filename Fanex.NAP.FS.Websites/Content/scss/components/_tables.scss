@@ -138,7 +138,8 @@
 
   thead tr th, tbody tr td {
     border: 1px solid $table-border;
-    padding: 10px 6px;
+    line-height: 20px;
+    padding: 8px 6px;
     vertical-align: middle;
   }
 
@@ -188,9 +189,13 @@
     }
   }
   //  Icons in table
-  .has-icon {
-    line-height: 0;
-  }
+    .has-icon {
+        line-height: 0;
+    }
+
+    .text-red {
+        color: #e73239 !important;
+    }
 }
 
 .dataTables_scrollHeadInner {
@@ -201,10 +206,15 @@
     border-bottom: none;
 }
 
+.dataTables_scrollHeadInner,
+.dataTables_wrapper .dataTables_scroll div.dataTables_scrollBody {
+    border-right: 1px solid $table-border;
+}
+
 .pagination {
     @include align-items;
     height: 38px;
-    border: 1px solid #c1c1c1;    
+    border: 1px solid $table-border;    
     padding: 4px 10px;
     margin-top: -1px;
     background-color: #ebebeb;
