@@ -3,6 +3,9 @@ using Fanex.BetList.Core.Entities;
 using Fanex.BetList.Core.TicketHelper;
 using Fanex.Data;
 using Fanex.NAP.FS.Library.Core.ExportExcel;
+using Fanex.NAP.FS.Library.Core.Helpers;
+using Fanex.NAP.FS.Library.Core.Helpers.Api;
+using Fanex.NAP.FS.Library.DTO;
 using Fanex.NAP.FS.Websites.Criteria.MatchMonitor.FraudCaseDetails;
 using Fanex.NAP.FS.Websites.ExcelConfig.MatchMonitor;
 using Fanex.NAP.FS.Websites.Models;
@@ -93,6 +96,8 @@ namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
                 var custInfo = query.Read<CustInfo>();
                 var custEvidence = query.Read<CustEvidence>();
 
+                //var totalAssociation = GetTotalAssociations(custInfo.Select(i => i.CustId)).ToDictionary(o => o.CustId, o => o.TotalAssociation);
+
                 return custInfo.GroupJoin(
                     custEvidence,
                     info => info.CustId,
@@ -105,7 +110,7 @@ namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
                         TotalStake = (double)info.TotalStake,
                         Tickets = info.NoOfTickets,
                         Evidence = string.Join(", ", evidence.Select(e => e.EvidenceCode + "-" + e.EvidenceName)),
-                        AssociatedAccounts = 0,
+                        AssociatedAccounts = 0, //totalAssociation.ContainsKey(info.CustId) ? totalAssociation[info.CustId] : 0,
                         CurrencyName = info.CurrencyName
                     }).OrderBy(c => c.Member);
             }
@@ -248,6 +253,18 @@ namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
         private static IEnumerable<TicketInfo> GetLast7DaysInfo(int custId)
         {
             return DataService.GetData<TicketInfo>(new Last7DaysTicketGetCriteria { CustId = custId });
+        }
+
+        private static IEnumerable<CustomerTotalAssociation> GetTotalAssociations(IEnumerable<int> custIds)
+        {
+            var param = new CustomerList
+            {
+                CustIdList = string.Join(",", custIds)
+            };
+
+            var url = AppSettings.Get("FPS_WEBAPI_GET_TOTAL_ASSOCIATION");
+
+            return ApiHelper.Post<CustomerList, IEnumerable<CustomerTotalAssociation>>(url, param).Result;
         }
     }
 }

@@ -164,6 +164,7 @@
     <Compile Include="Core\ExportExcel\FSExcelConfig.cs" />
     <Compile Include="Core\ExportExcel\ExcelStream.cs" />
     <Compile Include="Core\Helpers\Api\ApiHelper.cs" />
+    <Compile Include="Core\Helpers\AppSettings.cs" />
     <Compile Include="Core\Helpers\Xml\IXml.cs" />
     <Compile Include="Core\Helpers\Xml\XmlHelper.cs" />
     <Compile Include="Core\Utilities\ConfigSettings.cs" />

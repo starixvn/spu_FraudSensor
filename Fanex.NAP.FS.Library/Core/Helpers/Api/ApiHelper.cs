@@ -10,7 +10,12 @@ namespace Fanex.NAP.FS.Library.Core.Helpers.Api
             using (var web = new HttpClient())
             {
                 var response = await web.PostAsJsonAsync(url, param).ConfigureAwait(false);
-                
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    return default(TResult);
+                }
+
                 return await response.Content.ReadAsAsync<TResult>().ConfigureAwait(false);
             }
         }
