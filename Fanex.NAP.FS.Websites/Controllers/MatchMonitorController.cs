@@ -94,5 +94,10 @@ namespace Fanex.NAP.FS.Websites.Controllers
         {
             return Json(FraudCaseDetailsService.GetLast7DaysDetails(custId));
         }
+
+        public ActionResult GetAssociation(int custId)
+        {
+            return Json(FraudCaseDetailsService.GetAssociatedAccounts(custId));
+        }
     }
 }

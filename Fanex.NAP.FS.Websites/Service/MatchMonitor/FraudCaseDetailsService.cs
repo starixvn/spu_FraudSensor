@@ -220,6 +220,13 @@ namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
                 });
         }
 
+        public static IEnumerable<AssociatedCustomer> GetAssociatedAccounts(int custId)
+        {
+            return GetAssociations(custId)
+                .Select(a => new AssociatedCustomer { Username = a.Username })
+                .OrderBy(a => a.Username);
+        }
+
         private static BettypeOrder GetOrder(string bettype)
         {
             if (bettype.Contains("1H"))
@@ -265,6 +272,28 @@ namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
             var url = AppSettings.Get("FPS_WEBAPI_GET_TOTAL_ASSOCIATION");
 
             return ApiHelper.Post<CustomerList, IEnumerable<CustomerTotalAssociation>>(url, param).Result;
+        }
+
+        private static IEnumerable<CustomerAssociation> GetAssociations(int custId)
+        {
+            var param = new CustomerList
+            {
+                CustIdList = custId.ToString()
+            };
+
+            var url = AppSettings.Get("FPS_WEBAPI_GET_ASSOCIATION_ACCOUNT");
+
+            return ApiHelper.Post<CustomerList, IEnumerable<CustomerAssociation>>(url, param).Result;
+
+            //for (int i = 0; i < 50; i++)
+            //{
+            //    yield return new CustomerAssociation
+            //    {
+            //        FromCustId = custId,
+            //        ToCustId = 8,
+            //        Username = "Hehe"
+            //    };
+            //}
         }
     }
 }

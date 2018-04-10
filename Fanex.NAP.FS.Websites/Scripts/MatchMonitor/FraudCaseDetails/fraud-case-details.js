@@ -121,7 +121,13 @@
     }
 
     function switchTab(ui) {
-        $.fn.dataTable.tables({ visible: true, api: true }).columns.adjust();
+        if (ui.newPanel.is("#customer-tab")) {
+            customer_grid.DataTable().columns.adjust();
+            customer_grid.DataTable().columns.adjust();
+        }
+        else {
+            ticket_grid.DataTable().columns.adjust();
+        }
     }
 
     function exportExcel() {
@@ -145,17 +151,23 @@
     }
 
     function renderAssociatedAccounts(obj) {
-        var json = []
+        var url = common.modifyRelativeUrl("/MatchMonitor/GetAssociation");
 
-        for (var i = 0; i < 500; i++) {
-            json.push({ Currency: "Won", Member: "adfadfadfadfadfdafadf" });
-        }
+        common.showLoading();
 
-        associated_accounts
-            .dialog("option", "title", obj.Member)
-            .dialog("open");
+        $.get(url, { custId: obj.CustId }, function (json) {
+            associated_accounts
+                .dialog("option", "title", obj.Member)
+                .dialog("open");
 
-        $("table", associated_accounts).DataTable().clear().rows.add(json).draw();
+            for (var i = 0; i < 500; i++) {
+                json.push({ Currency: "Won", Username: "adfadfadfadfadfdafadf" });
+            }
+
+            $("table", associated_accounts).DataTable().clear().rows.add(json).draw();
+
+            common.closeLoading();
+        })
     }
 
     function renderLast7DaysTickets(obj) {
@@ -167,10 +179,10 @@
             var from = moment().add(-6, "d");
 
             ticket_last_7_days
-                .dialog("option", "title", `Tickets from ${from.format("MMM d, YYYY")}`)
+                .dialog("option", "title", `Tickets from ${from.format("MMM d, YYYY")} of customer ${obj.Member}`)
                 .dialog("open");
 
-            $("table", ticket_last_7_days).DataTable().clear().rows.add(json).draw();
+            $("table", ticket_last_7_days).DataTable().clear().rows.add(json).draw().columns.adjust();
 
             common.closeLoading();
         });
@@ -259,7 +271,7 @@
     $(".-export").click(exportExcel);
 
     associated_accounts.dialog({
-        height: 500,
+        maxHeight: 500,
         width: 500,
         modal: true,
         autoOpen: false,
@@ -295,19 +307,19 @@
         },
         columnDefs: [
             { defaultContent: "-", targets: "_all" },
-            { targets: [0, 1, 2], className: "text-center" },
+            { targets: [0, 1, 4, -2], className: "text-center" },
             { targets: [3, 5, -3, -4], className: "text-right" }
         ],
         columns: [
             { data: (obj, typet, set, meta) => meta.row + 1, width: "40px" },
-            { data: obj => obj.TransDate, width: "100px" },
-            { data: obj => obj.BetID },
+            { data: obj => moment(obj.TransDate, "MMM D, YYYY hh:mm:ss A").format("MMM D, YYYY<br/>hh:mm:ss A"), width: "100px" },
+            { data: obj => obj.BetID, width: "100px" },
 	        { data: obj => obj.Choice},
-            { data: obj => `<div class='row-ht'>HT: ${obj.Result.HTHomeScore} - ${obj.Result.HTAwayScore}</div><div class='row-ft'>FT: ${obj.Result.FinalHomeScore} - ${obj.Result.FinalAwayScore}</div>` },
+            { data: obj => `<div class='row-ht'>HT: ${obj.Result.HTHomeScore} - ${obj.Result.HTAwayScore}</div><div class='row-ft'>FT: ${obj.Result.FinalHomeScore} - ${obj.Result.FinalAwayScore}</div>`, width: "60px" },
             { data: obj => obj.Odds != null ? obj.Odds.Html : null, width: "66px" },
-            { data: obj => common.formatNumber(obj.Stake) },
-            { data: obj => obj.WinLoss == null ? null : obj.WinLoss >= 0 ? common.formatNumber(obj.WinLoss) : `<span class='text-red'>${common.formatNumber(obj.WinLoss)}</span>` },
-            { data: obj => obj.Status, width: "82px", className: "text-center uppercase" },
+            { data: obj => common.formatNumber(obj.Stake), width: "100px" },
+            { data: obj => obj.WinLoss == null ? null : obj.WinLoss >= 0 ? common.formatNumber(obj.WinLoss) : `<span class='text-red'>${common.formatNumber(obj.WinLoss)}</span>`, width: "100px"  },
+            { data: obj => obj.Status, width: "82px", className: "text-center" },
             { data: obj => obj.IP,  width: "100px"}
         ]
     });
@@ -319,7 +331,7 @@
         lengthMenu: [10, 20, 50, 100, 500],
         pageLength: 50,
         scrollCollapse: true,
-        scrollY: "40vh",
+        scrollY: "300px",
         dom: "t<'pagination'<'page-size'lp>i>",
         language: {
             lengthMenu: "Page size _MENU_",
@@ -336,7 +348,7 @@
         columns: [
             { data: (obj, typet, set, meta) => meta.row + 1, className: "text-center", width: "40px" },
             { data: obj => obj.Currency, className: "text-center", width: "100px" },
-            { data: obj => obj.Member },
+            { data: obj => obj.Username },
         ]
     });
 }
