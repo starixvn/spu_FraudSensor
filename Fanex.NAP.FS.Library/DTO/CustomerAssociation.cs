@@ -6,6 +6,6 @@
 
         public int ToCustId { get; set; }
 
-        public string Username { get; set; }
+        public string ToOWUsername { get; set; }
     }
 }

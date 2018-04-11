@@ -26,7 +26,7 @@
         columns: [
             { data: "rowNum", className: "text-center" },
             { data: "data.Name" },
-            { data: "data.Creator" },
+            { data: d => `<span title='${d.data.Creator}'>${common.makeWrapString(d.data.Creator, 40)}</span>`},
             { data: "data.AddedDate", className: "text-center" },
             { defaultContent: "<span class='icon-delete'></span>", className: "has-icon text-center", createdCell: c => $("span", c).click(deleteFlow) }
         ],

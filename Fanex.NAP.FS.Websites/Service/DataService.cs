@@ -32,7 +32,8 @@ namespace Fanex.NAP.FS.Websites.Service
                 return new DBResult
                 {
                     ErrorCode = intCode,
-                    ErrorMsg = ErrorLookup.GetValue(prefix + "_" + intCode)
+                    ErrorMsg = ErrorLookup.GetValue(prefix + "_" + intCode),
+                    OutParam = param
                 };
             }
         }

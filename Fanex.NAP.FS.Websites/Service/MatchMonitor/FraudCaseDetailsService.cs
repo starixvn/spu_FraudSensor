@@ -96,7 +96,7 @@ namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
                 var custInfo = query.Read<CustInfo>();
                 var custEvidence = query.Read<CustEvidence>();
 
-                //var totalAssociation = GetTotalAssociations(custInfo.Select(i => i.CustId)).ToDictionary(o => o.CustId, o => o.TotalAssociation);
+                var totalAssociation = GetTotalAssociations(custInfo.Select(i => i.CustId)).ToDictionary(o => o.CustId, o => o.TotalAssociation);
 
                 return custInfo.GroupJoin(
                     custEvidence,
@@ -110,7 +110,7 @@ namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
                         TotalStake = (double)info.TotalStake,
                         Tickets = info.NoOfTickets,
                         Evidence = string.Join(", ", evidence.Select(e => e.EvidenceCode + "-" + e.EvidenceName)),
-                        AssociatedAccounts = 0, //totalAssociation.ContainsKey(info.CustId) ? totalAssociation[info.CustId] : 0,
+                        AssociatedAccounts = totalAssociation.ContainsKey(info.CustId) ? totalAssociation[info.CustId] : 0,
                         CurrencyName = info.CurrencyName
                     }).OrderBy(c => c.Member);
             }
@@ -223,7 +223,7 @@ namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
         public static IEnumerable<AssociatedCustomer> GetAssociatedAccounts(int custId)
         {
             return GetAssociations(custId)
-                .Select(a => new AssociatedCustomer { Username = a.Username })
+                .Select(a => new AssociatedCustomer { Username = a.ToOWUsername })
                 .OrderBy(a => a.Username);
         }
 
@@ -264,36 +264,18 @@ namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
 
         private static IEnumerable<CustomerTotalAssociation> GetTotalAssociations(IEnumerable<int> custIds)
         {
-            var param = new CustomerList
-            {
-                CustIdList = string.Join(",", custIds)
-            };
+            var tmp = "123,456";
 
             var url = AppSettings.Get("FPS_WEBAPI_GET_TOTAL_ASSOCIATION");
 
-            return ApiHelper.Post<CustomerList, IEnumerable<CustomerTotalAssociation>>(url, param).Result;
+            return ApiHelper.Post<string, IEnumerable<CustomerTotalAssociation>>(url, tmp).Result;
         }
 
         private static IEnumerable<CustomerAssociation> GetAssociations(int custId)
         {
-            var param = new CustomerList
-            {
-                CustIdList = custId.ToString()
-            };
-
             var url = AppSettings.Get("FPS_WEBAPI_GET_ASSOCIATION_ACCOUNT");
 
-            return ApiHelper.Post<CustomerList, IEnumerable<CustomerAssociation>>(url, param).Result;
-
-            //for (int i = 0; i < 50; i++)
-            //{
-            //    yield return new CustomerAssociation
-            //    {
-            //        FromCustId = custId,
-            //        ToCustId = 8,
-            //        Username = "Hehe"
-            //    };
-            //}
+            return ApiHelper.Post<string, IEnumerable<CustomerAssociation>>(url, "123,456").Result;
         }
     }
 }

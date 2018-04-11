@@ -3,7 +3,6 @@
     using Library.DTO;
     using System;
     using System.Configuration;
-    using Fanex.NAP.FS.Library.Services.Interface;
     using Library.Services;
     using System.Linq;
     using Library.Core.Helpers.Api;
@@ -14,8 +13,6 @@
     public class FPSGetAssociationAccountExecutor : FraudCaseExecutor
     {
         private readonly string FPS_WEBAPI = ConfigurationManager.AppSettings["FPS_WEBAPI"];
-
-        private IHttpWebService _webService;
 
         private readonly IDelayGoalAccountService _delayGoalAccountService;
 
@@ -49,10 +46,10 @@
 
             try
             {
-                IEnumerable<CustomerAssociation> customerAssociation =  ApiHelper.Post<CustomerList, IEnumerable<CustomerAssociation>>(FPS_WEBAPI, listManualAccounts).Result;
-                var customerAssociationXML = "<root>" + string.Join("", customerAssociation.Select(l => l.ToXmlString())) + "</root>";
+                IEnumerable<CustomerAssociation> customerAssociation =  ApiHelper.Post<string, IEnumerable<CustomerAssociation>>(FPS_WEBAPI, listManualAccounts.CustIdList).Result;
+                var customerAssociationXML = customerAssociation.ToXmlString();
                 
-                var result = _delayGoalAccountService.InsertAccounts(new DelayGoalAssociationAccountInsertCriteria { CustomerAssociationXML = customerAssociationXML });
+                _delayGoalAccountService.InsertAccounts(new DelayGoalAssociationAccountInsertCriteria { CustomerAssociationXML = customerAssociationXML });
             }
             catch (Exception exception)
             {

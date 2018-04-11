@@ -179,7 +179,7 @@
             var from = moment().add(-6, "d");
 
             ticket_last_7_days
-                .dialog("option", "title", `Tickets from ${from.format("MMM d, YYYY")} of customer ${obj.Member}`)
+                .dialog("option", "title", `Tickets of customer ${obj.Member} from ${from.format("MMM d, YYYY")}`)
                 .dialog("open");
 
             $("table", ticket_last_7_days).DataTable().clear().rows.add(json).draw().columns.adjust();
@@ -280,7 +280,7 @@
     });
 
     ticket_last_7_days.dialog({
-        maxHeight: 700,
+        maxHeight: 800,
         width: 1200,
         modal: true,
         autoOpen: false,
@@ -294,7 +294,7 @@
         lengthMenu: [10, 20, 50, 100, 500],
         pageLength: 50,
         scrollCollapse: true,
-        scrollY: "50vh",
+        scrollY: "55vh",
         dom: "t<'pagination'<'page-size'lp>i>",
         language: {
             lengthMenu: "Page size _MENU_",
