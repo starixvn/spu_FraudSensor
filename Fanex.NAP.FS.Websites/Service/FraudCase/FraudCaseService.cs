@@ -5,6 +5,10 @@ using Fanex.NAP.FS.Websites.ExcelConfig.FraudCase.DelayedGoal;
 using Fanex.NAP.FS.Websites.Models;
 using System.Collections.Generic;
 using System.Linq;
+using Fanex.NAP.FS.Websites.Criteria.FraudCase.DelayedGoal;
+using Fanex.NAP.FS.Library.Core.ExportExcel;
+using Fanex.NAP.FS.Websites.ExcelConfig.FraudCase.DelayedGoal;
+using Fanex.NAP.FS.Library.Criteria;
 
 namespace Fanex.NAP.FS.Websites.Service.FraudCase
 {
@@ -52,6 +56,11 @@ namespace Fanex.NAP.FS.Websites.Service.FraudCase
         public static DBResult AddDelayedGoalCustomer(string username, int userId)
         {
             return DataService.UpdateData(new DelayedGoalCustomerAddCriteria { Username = username, UserId = userId }, "FraudCase_DelayedGoal");
+        }
+
+        public static DBResult AddDelayGoalAssociatedAccount(string customerAssociationXML)
+        {
+            return DataService.UpdateData(new DelayGoalAssociationAccountInsertCriteria { CustomerAssociationXML = customerAssociationXML }, "FraudCase_DelayedGoal");
         }
 
         public static byte[] ExportDelayedCustomersToExcel(string template, string searchString)

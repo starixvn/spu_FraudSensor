@@ -1,17 +1,25 @@
 ﻿namespace Fanex.NAP.FS.Websites.Controllers
 {
     using Fanex.NAP.Core.Web.Attribute;
+    using Fanex.NAP.FS.Library.Core.Helpers.Api;
     using Fanex.NAP.FS.Library.FSMQ;
     using Fanex.NAP.FS.Websites.Models;
     using Fanex.NAP.FS.Websites.Models.FraudCase;
     using Fanex.NAP.FS.Websites.Service.FraudCase;
+    using Library.Core.Helpers.Xml;
     using System;
+    using System.Collections.Generic;
+    using System.Configuration;
     using System.Linq;
     using System.Web.Mvc;
 
     [NapAuth(FunctionKey = FSFunctionKeys.FraudCase, Policy = Core.Business.Constant.Policy.Read)]
     public class FraudCaseController : ConfigurationsController
     {
+        private readonly string FPS_WEBAPI = ConfigurationManager.AppSettings["FPS_WEBAPI"];
+
+        private readonly Library.Services.DelayGoalAccountService _delayGoalAccountService = new Library.Services.DelayGoalAccountService();
+
         public ActionResult Index()
         {
             return View();
@@ -59,7 +67,11 @@
         [HttpPost]
         public ActionResult AddDelayedGoalCustomer(string username)
         {
-            return Json(FraudCaseService.AddDelayedGoalCustomer(username, CurrentSession.UserId));
+            var manualAccount = FraudCaseService.AddDelayedGoalCustomer(username, CurrentSession.UserId).OutParam["CustId"].ToString();
+            IEnumerable<Library.DTO.CustomerAssociation> customerAssociation = ApiHelper.Post<string, IEnumerable<Library.DTO.CustomerAssociation>>(FPS_WEBAPI, manualAccount).Result;
+            var customerAssociationXML = customerAssociation.ToXmlString();
+            
+            return Json(_delayGoalAccountService.InsertAccounts(new Library.Criteria.DelayGoalAssociationAccountInsertCriteria { CustomerAssociationXML = customerAssociationXML }));
         }
 
         public ActionResult ExportDelayedGoalCustomer(string searchString)
