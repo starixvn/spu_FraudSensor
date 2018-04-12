@@ -1,12 +1,5 @@
 ﻿namespace Fanex.NAP.FS.Areas.UserLogin.Controllers
 {
-    using System;
-    using System.CodeDom.Compiler;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Web;
-    using System.Web.Mvc;
-    using System.Web.Security;
     using Fanex.Common;
     using Fanex.Logging;
     using Fanex.NAP.Core.Configuration;
@@ -18,6 +11,12 @@
     using Fanex.NAP.Core.Web.Session;
     using Fanex.NAP.FS.Service.Utilities;
     using Fanex.NAP.FS.Websites.Controllers;
+    using System;
+    using System.CodeDom.Compiler;
+    using System.Linq;
+    using System.Web;
+    using System.Web.Mvc;
+    using System.Web.Security;
 
     /// <summary>
     /// SSO Controller.
@@ -86,7 +85,7 @@
                     _currentSession.SessionId = Session.SessionID;
                     _currentSession.Level = _userService.GetUserLevel(user.Id, SiteId);
 
-                    var currentFunction = _userService.GetPermissions(user.Id, NapSettings.Settings.SiteId, null,NapSettings.Settings.Environment);
+                    var currentFunction = _userService.GetPermissions(user.Id, NapSettings.Settings.SiteId, null, NapSettings.Settings.Environment);
                     AppSession.CurrentUser = user;
                     AppSession.RoleAccess = PermissionService.GetRoleAccess(currentFunction);
 
@@ -142,7 +141,7 @@
                     };
 
                     _securityService.Login(criteria);
-                    
+
                     _currentSession.UserId = user.Id;
                     _currentSession.Username = user.Username;
                     _currentSession.SessionId = Session.SessionID;

@@ -1,15 +1,15 @@
-﻿using Fanex.NAP.Core.Configuration;
-using Fanex.NAP.Core.Context;
-using Fanex.NAP.Core.Service.Impl;
-using Fanex.NAP.Core.Service.Interface;
-using Fanex.NAP.Core.Web.Context;
-using Fanex.NAP.Core.Web.Session;
-using System.Collections.Generic;
-using System.IO;
-using System.Web.Mvc;
-
-namespace Fanex.NAP.FS.Websites.Controllers
+﻿namespace Fanex.NAP.FS.Websites.Controllers
 {
+    using Fanex.NAP.Core.Configuration;
+    using Fanex.NAP.Core.Context;
+    using Fanex.NAP.Core.Service.Impl;
+    using Fanex.NAP.Core.Service.Interface;
+    using Fanex.NAP.Core.Web.Context;
+    using Fanex.NAP.Core.Web.Session;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Web.Mvc;
+
     public class BaseController : Controller
     {
         private readonly string _environment = NapSettings.Settings == null ? string.Empty : NapSettings.Settings.Environment;

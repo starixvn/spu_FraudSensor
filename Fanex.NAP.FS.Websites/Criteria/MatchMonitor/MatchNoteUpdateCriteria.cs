@@ -1,7 +1,7 @@
-﻿using Fanex.Data.Repository;
-
-namespace Fanex.NAP.FS.Websites.Criteria.MatchMonitor
+﻿namespace Fanex.NAP.FS.Websites.Criteria.MatchMonitor
 {
+    using Fanex.Data.Repository;
+
     public class MatchNoteUpdateCriteria : CriteriaBase
     {
         public int UserId { get; set; }

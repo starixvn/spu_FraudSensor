@@ -1,7 +1,6 @@
 ﻿namespace Fanex.NAP.FS.Websites.Criteria.MatchMonitor.FraudCaseDetails
 {
     using Fanex.Data.Repository;
-    using System;
 
     public class Last7DaysTicketGetCriteria : CriteriaBase
     {

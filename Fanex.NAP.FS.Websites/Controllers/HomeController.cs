@@ -1,8 +1,8 @@
-﻿using Fanex.NAP.Core.Web.Attribute;
-using System.Web.Mvc;
-
-namespace Fanex.NAP.FS.Websites.Controllers
+﻿namespace Fanex.NAP.FS.Websites.Controllers
 {
+    using Fanex.NAP.Core.Web.Attribute;
+    using System.Web.Mvc;
+
     [NapSuperAuth]
     public class HomeController : BaseController
     {

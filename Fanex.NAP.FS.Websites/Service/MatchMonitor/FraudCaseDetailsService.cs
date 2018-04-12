@@ -1,31 +1,21 @@
-﻿using Fanex.BetList.Core.Builder;
-using Fanex.BetList.Core.Entities;
-using Fanex.BetList.Core.TicketHelper;
-using Fanex.Data;
-using Fanex.NAP.FS.Library.Core.ExportExcel;
-using Fanex.NAP.FS.Library.Core.Helpers;
-using Fanex.NAP.FS.Library.Core.Helpers.Api;
-using Fanex.NAP.FS.Library.DTO;
-using Fanex.NAP.FS.Websites.Criteria.MatchMonitor.FraudCaseDetails;
-using Fanex.NAP.FS.Websites.ExcelConfig.MatchMonitor;
-using Fanex.NAP.FS.Websites.Models;
-using Fanex.NAP.FS.Websites.Models.MatchMonitor.FraudCaseDetails;
-using Fanex.NAP.FS.Websites.Service.Utilities;
-using Fanex.NAP.FS.Websites.ViewModels.MatchMonitor.FraudCaseDetails;
-using HtmlAgilityPack;
-using NPOI.SS.UserModel;
-using NPOI.XSSF.UserModel;
-using RemotingRef;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Web;
-using System.Xml.Linq;
-
-namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
+﻿namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
 {
+    using Fanex.BetList.Core.Builder;
+    using Fanex.BetList.Core.TicketHelper;
+    using Fanex.Data;
+    using Fanex.NAP.FS.Library.Core.ExportExcel;
+    using Fanex.NAP.FS.Library.Core.Helpers;
+    using Fanex.NAP.FS.Library.Core.Helpers.Api;
+    using Fanex.NAP.FS.Library.DTO;
+    using Fanex.NAP.FS.Websites.Criteria.MatchMonitor.FraudCaseDetails;
+    using Fanex.NAP.FS.Websites.ExcelConfig.MatchMonitor;
+    using Fanex.NAP.FS.Websites.Models.MatchMonitor.FraudCaseDetails;
+    using Fanex.NAP.FS.Websites.ViewModels.MatchMonitor.FraudCaseDetails;
+    using RemotingRef;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+
     public static class FraudCaseDetailsService
     {
         public static IEnumerable<TicketDetails> GetTicketDetails(int matchId, int fraudCaseId, DateTime eventDate, bool saveChoice = false)
@@ -49,7 +39,8 @@ namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
             };
 
             return DataService.GetData<TicketInfo>(criteria)
-                .Select(a => {
+                .Select(a =>
+                {
                     a.HomeId = legend.HomeId;
                     a.AwayId = legend.AwayId;
 
@@ -123,7 +114,7 @@ namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
             var tickets = GetTicketDetails(matchId, fraudCaseId, eventDate, true);
             var customers = GetCustomerDetails(matchId, fraudCaseId, eventDate);
 
-            var wb = 
+            var wb =
                 ExcelUtilities.GetWorkbook(templatePath)
                     .RenderSheet(new TicketDetailConfig(tickets.Count()), legend, tickets, null)
                     .RenderSheet(new CustomerDetailConfig(customers.Count()), legend, customers, null);

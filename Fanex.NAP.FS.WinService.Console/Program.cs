@@ -1,10 +1,8 @@
-﻿using Fanex.NAP.FS.Library.Core.Helpers.Xml;
-
-namespace Fanex.NAP.FS.WinService.Console
+﻿namespace Fanex.NAP.FS.WinService.Console
 {
-    static class Program
+    internal static class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             var service = new FraudSensorService();
 

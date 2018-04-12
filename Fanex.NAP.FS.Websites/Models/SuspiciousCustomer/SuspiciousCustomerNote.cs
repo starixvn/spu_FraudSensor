@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-
-namespace Fanex.NAP.FS.Websites.Models.SuspiciousCustomer
+﻿namespace Fanex.NAP.FS.Websites.Models.SuspiciousCustomer
 {
+    using System;
+
     public class SuspiciousCustomerNote
     {
         public DateTime LogDate { get; set; }

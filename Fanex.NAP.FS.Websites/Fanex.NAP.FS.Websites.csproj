@@ -325,7 +325,6 @@
     <Compile Include="Models\MatchMonitor\FraudCaseDetails\TicketInfo.cs" />
     <Compile Include="Models\MatchMonitor\League.cs" />
     <Compile Include="Models\MatchMonitor\Match.cs" />
-    <Compile Include="Models\NpoiStream.cs" />
     <Compile Include="Models\SuspiciousCustomer\SuspiciousCustomerNote.cs" />
     <Compile Include="ExcelConfig\FraudCase\DelayedGoal\DelayedGoalExcelConfig.cs" />
     <Compile Include="Service\FraudCase\FraudCaseService.cs" />

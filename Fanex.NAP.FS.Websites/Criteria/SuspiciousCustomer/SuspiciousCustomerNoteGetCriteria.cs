@@ -1,11 +1,7 @@
-﻿using Fanex.Data.Repository;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-
-namespace Fanex.NAP.FS.Websites.Criteria.SuspiciousCustomer
+﻿namespace Fanex.NAP.FS.Websites.Criteria.SuspiciousCustomer
 {
+    using Fanex.Data.Repository;
+
     public class SuspiciousCustomerNoteGetCriteria : CriteriaBase
     {
         public int CustId { get; set; }

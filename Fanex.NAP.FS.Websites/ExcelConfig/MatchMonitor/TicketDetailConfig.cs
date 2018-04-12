@@ -1,12 +1,12 @@
-﻿using Fanex.NAP.FS.Library.Core.ExportExcel;
-using Fanex.NAP.FS.Websites.ViewModels.MatchMonitor.FraudCaseDetails;
-using NPOI.SS.UserModel;
-using NPOI.XSSF.UserModel;
-using System;
-using System.Text;
-
-namespace Fanex.NAP.FS.Websites.ExcelConfig.MatchMonitor
+﻿namespace Fanex.NAP.FS.Websites.ExcelConfig.MatchMonitor
 {
+    using Fanex.NAP.FS.Library.Core.ExportExcel;
+    using Fanex.NAP.FS.Websites.ViewModels.MatchMonitor.FraudCaseDetails;
+    using NPOI.SS.UserModel;
+    using NPOI.XSSF.UserModel;
+    using System;
+    using System.Text;
+
     public class TicketDetailConfig : FSExcelConfig<MatchFraudCaseInfo, TicketDetails, object>
     {
         public TicketDetailConfig(int ticketNo)
@@ -95,11 +95,11 @@ namespace Fanex.NAP.FS.Websites.ExcelConfig.MatchMonitor
 
             var arr = t.Odds.Html.Split(splitter, StringSplitOptions.RemoveEmptyEntries);
 
-            if(arr.Length == 1)
+            if (arr.Length == 1)
             {
                 cell.SetCellValue(arr[0]);
             }
-            else if(arr.Length == 2)
+            else if (arr.Length == 2)
             {
                 cell.SetCellValue(arr[0] + "(" + arr[1] + ")");
             }

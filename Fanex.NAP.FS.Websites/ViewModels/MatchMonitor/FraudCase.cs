@@ -1,11 +1,13 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-
-namespace Fanex.NAP.FS.Websites.ViewModels.MatchMonitor
+﻿namespace Fanex.NAP.FS.Websites.ViewModels.MatchMonitor
 {
+    using System.Collections.Generic;
+    using System.Linq;
+
     public class FraudCase
     {
-        public FraudCase() { }
+        public FraudCase()
+        {
+        }
 
         public FraudCase(int id, string name, IEnumerable<Models.MatchMonitor.FraudCase> data)
         {

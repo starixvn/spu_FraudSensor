@@ -1,7 +1,7 @@
-﻿using System.Web.Optimization;
-
-namespace Fanex.NAP.FS.Websites
+﻿namespace Fanex.NAP.FS.Websites
 {
+    using System.Web.Optimization;
+
     public class BundleConfig
     {
         // For more information on bundling, visit http://go.microsoft.com/fwlink/?LinkId=301862
@@ -61,7 +61,7 @@ namespace Fanex.NAP.FS.Websites
 
         private static void RegisterFraudCaseBundles(BundleCollection bundles)
         {
-           bundles.Add(new StyleBundle("~/fraud-case-styles").Include("~/content/scss/pages/configurations/fraud-case.css"));
+            bundles.Add(new StyleBundle("~/fraud-case-styles").Include("~/content/scss/pages/configurations/fraud-case.css"));
 
             bundles.Add(new ScriptBundle("~/fraud-case-scripts").Include("~/scripts/fraudcase/fraud-case.js"));
 

@@ -111,7 +111,7 @@
             else {
                 $("span", target).addClass("icon-chevron-down").removeClass("icon-chevron-up");
             }
-            
+
             filter[bettype_value] = n - 1;
         }
 
@@ -254,7 +254,7 @@
             { data: obj => obj.Tickets, className: "text-right", width: "40px" },
             { data: obj => numeral(obj.TotalStake).format("0,0.00"), className: "text-right" },
             { data: obj => obj.TotalWinLoss >= 0 ? numeral(obj.TotalWinLoss).format("0,0.00") : `<span class='text-red'>${numeral(obj.TotalWinLoss).format("0,0.00")}</span>`, className: "text-right" },
-            { data: obj => obj.Evidence != null && obj.Evidence.length > 78 ? `<span title='${obj.Evidence}'>${obj.Evidence.substring(0,75)}...</span>` : obj.Evidence, width: "500px" },
+            { data: obj => obj.Evidence != null && obj.Evidence.length > 78 ? `<span title='${obj.Evidence}'>${obj.Evidence.substring(0, 75)}...</span>` : obj.Evidence, width: "500px" },
             { data: obj => obj.AssociatedAccounts, className: "text-right", width: "50px" },
             { defaultContent: renderCustomerAction(), className: "has-icon text-center", width: "70px" }
         ],
@@ -314,13 +314,13 @@
             { data: (obj, typet, set, meta) => meta.row + 1, width: "40px" },
             { data: obj => moment(obj.TransDate, "MMM D, YYYY hh:mm:ss A").format("MMM D, YYYY<br/>hh:mm:ss A"), width: "100px" },
             { data: obj => obj.BetID, width: "100px" },
-	        { data: obj => obj.Choice},
+            { data: obj => obj.Choice },
             { data: obj => `<div class='row-ht'>HT: ${obj.Result.HTHomeScore} - ${obj.Result.HTAwayScore}</div><div class='row-ft'>FT: ${obj.Result.FinalHomeScore} - ${obj.Result.FinalAwayScore}</div>`, width: "60px" },
             { data: obj => obj.Odds != null ? obj.Odds.Html : null, width: "50px" },
             { data: obj => common.formatNumber(obj.Stake), width: "100px" },
-            { data: obj => obj.WinLoss == null ? null : obj.WinLoss >= 0 ? common.formatNumber(obj.WinLoss) : `<span class='text-red'>${common.formatNumber(obj.WinLoss)}</span>`, width: "100px"  },
+            { data: obj => obj.WinLoss == null ? null : obj.WinLoss >= 0 ? common.formatNumber(obj.WinLoss) : `<span class='text-red'>${common.formatNumber(obj.WinLoss)}</span>`, width: "100px" },
             { data: obj => obj.Status, width: "82px" },
-            { data: obj => obj.IP,  width: "100px"}
+            { data: obj => obj.IP, width: "100px" }
         ]
     });
 

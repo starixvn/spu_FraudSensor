@@ -10,12 +10,10 @@
 
 namespace Fanex.NAP.FS.Areas.UserLogin.Controllers
 {
-    using System.Web.Mvc;
-    using System.Web.Security;
-    using Fanex.NAP.Core.Service.Impl;
-    using Fanex.NAP.Core.Service.Interface;
     using ONEbook.UM.Services;
     using ONEbook.UM.Services.Impl;
+    using System.Web.Mvc;
+    using System.Web.Security;
 
     /// <summary>
     /// Common Controller.

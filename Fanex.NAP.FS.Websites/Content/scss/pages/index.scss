@@ -13,7 +13,6 @@
 @import "../components/popup";
 @import "../components/loading";
 
-
 .header {
     @include align-items(grid);
     grid-template-columns: 216px 1fr;
@@ -64,7 +63,7 @@
         transform-origin: 0 0;
         opacity: 0;
         z-index: -1;
-    
+
         .sub-menu-item > .link {
             display: block;
             padding: 10px 20px;
@@ -96,7 +95,7 @@
             font-family: 'Fraud-Sensor';
             content: "\e90c";
             font-size: 14px;
-        }        
+        }
     }
 
     .menu-item > .link {
@@ -153,12 +152,12 @@
             font-size: 14px;
         }
 
-        .sub-menu {            
+        .sub-menu {
             left: auto;
             right: 0;
             line-height: 1;
         }
-    }    
+    }
 }
 
 body {
@@ -210,7 +209,6 @@ body {
             padding: 19px 8px;
             word-break: break-all;
         }
-        
     }
 
     .icon-note {
@@ -225,14 +223,14 @@ body {
     .icon-note.active {
         color: #2197ff;
     }
-    
+
     // Icons
     [class^="icon"] {
         font-size: 20px;
     }
 
     .icon-approval {
-        color: #49a30d;        
+        color: #49a30d;
     }
 
     .icon-alert-circle {
@@ -243,7 +241,6 @@ body {
         color: #ed7600;
     }
 
-    
     .warning {
         position: relative;
         display: inline-block;

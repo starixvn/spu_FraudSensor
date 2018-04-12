@@ -1,7 +1,6 @@
-﻿
-// This file is used by Code Analysis to maintain SuppressMessage 
+﻿// This file is used by Code Analysis to maintain SuppressMessage
 // attributes that are applied to this project.
-// Project-level suppressions either have no target or are given 
+// Project-level suppressions either have no target or are given
 // a specific target and scoped to a namespace, type, member, etc.
 
 #pragma warning disable S103 // Lines should not be too long
@@ -16,4 +15,3 @@
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Major Code Smell", "S1172:Unused method parameters should be removed", Justification = "<Pending>", Scope = "member", Target = "~M:Fanex.NAP.FS.Websites.Service.MatchMonitor.FraudCaseDetailsService.GetTotalAssociations(System.Collections.Generic.IEnumerable{System.Int32})~System.Collections.Generic.IEnumerable{Fanex.NAP.FS.Library.DTO.CustomerTotalAssociation}")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Major Code Smell", "S1172:Unused method parameters should be removed", Justification = "<Pending>", Scope = "member", Target = "~M:Fanex.NAP.FS.Websites.Service.MatchMonitor.FraudCaseDetailsService.GetAssociations(System.Int32)~System.Collections.Generic.IEnumerable{Fanex.NAP.FS.Library.DTO.CustomerAssociation}")]
 #pragma warning restore S103 // Lines should not be too long
-

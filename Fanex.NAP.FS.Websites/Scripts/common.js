@@ -82,7 +82,7 @@
 
         var yesBtn =
             {
-                'class':'button -export',
+                'class': 'button -export',
                 text: "Yes",
                 click: function () {
                     confirmation.dialog("close");
@@ -95,7 +95,7 @@
 
         var noBtn =
             {
-                'class':'button -primary',
+                'class': 'button -primary',
                 text: "No",
                 click: function () {
                     confirmation.dialog("close");
@@ -164,7 +164,7 @@
         var next_element = $input.next();
 
         if (next_element.is("span") && !next_element.hasClass("icon-calendar-text")) {
-                next_element.addClass("icon-calendar-text");
+            next_element.addClass("icon-calendar-text");
         }
         else {
             next_element = $('<span class="icon-calendar-text"></span>');

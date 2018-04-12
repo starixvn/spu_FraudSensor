@@ -144,6 +144,7 @@
         }
 
         #region private method
+
         private void PreExecute(object sender, ElapsedEventArgs elapsedEventArgs)
         {
             if (_isRunning || _isStoppedManually)
@@ -177,12 +178,15 @@
                 case 1:
                     environment = "LOCAL";
                     break;
+
                 case 2:
                     environment = "UAT";
                     break;
+
                 case 3:
                     environment = "PRO";
                     break;
+
                 default:
                     environment = "UNKNOWN";
                     break;
@@ -190,6 +194,7 @@
 
             return environment;
         }
-        #endregion
+
+        #endregion private method
     }
 }

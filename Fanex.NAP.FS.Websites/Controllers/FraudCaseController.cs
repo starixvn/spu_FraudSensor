@@ -1,14 +1,14 @@
-﻿using Fanex.NAP.Core.Web.Attribute;
-using Fanex.NAP.FS.Library.FSMQ;
-using Fanex.NAP.FS.Websites.Models;
-using Fanex.NAP.FS.Websites.Models.FraudCase;
-using Fanex.NAP.FS.Websites.Service.FraudCase;
-using System;
-using System.Linq;
-using System.Web.Mvc;
-
-namespace Fanex.NAP.FS.Websites.Controllers
+﻿namespace Fanex.NAP.FS.Websites.Controllers
 {
+    using Fanex.NAP.Core.Web.Attribute;
+    using Fanex.NAP.FS.Library.FSMQ;
+    using Fanex.NAP.FS.Websites.Models;
+    using Fanex.NAP.FS.Websites.Models.FraudCase;
+    using Fanex.NAP.FS.Websites.Service.FraudCase;
+    using System;
+    using System.Linq;
+    using System.Web.Mvc;
+
     [NapAuth(FunctionKey = FSFunctionKeys.FraudCase, Policy = Core.Business.Constant.Policy.Read)]
     public class FraudCaseController : ConfigurationsController
     {
@@ -66,7 +66,7 @@ namespace Fanex.NAP.FS.Websites.Controllers
         {
             var templatePath = Server.MapPath("~/App_Data/Excel Template/FraudCase/DelayedGoal/template.xlsx");
 
-            var fileName =string.Format( "DelayGoalCustomerList_{0}.xlsx", DateTime.Today.ToString("yyyyMMdd")); 
+            var fileName = string.Format("DelayGoalCustomerList_{0}.xlsx", DateTime.Today.ToString("yyyyMMdd"));
 
             return File(FraudCaseService.ExportDelayedCustomersToExcel(templatePath, searchString), "application/vnd.ms-excel", fileName);
         }

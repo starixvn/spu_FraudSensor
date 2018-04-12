@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-
-namespace Fanex.NAP.FS.Websites.Models.FraudCase
+﻿namespace Fanex.NAP.FS.Websites.Models.FraudCase
 {
+    using System;
+    using System.Collections.Generic;
+
     public class FraudCase
     {
         public int FraudCaseId { get; set; }
@@ -44,6 +42,7 @@ namespace Fanex.NAP.FS.Websites.Models.FraudCase
                     };
 
                     break;
+
                 case Models.FraudCaseId.DelayedGoal:
                     result.MatchRules = new[]
                     {
@@ -58,6 +57,7 @@ namespace Fanex.NAP.FS.Websites.Models.FraudCase
                     };
 
                     break;
+
                 case Models.FraudCaseId.FlaggedAccount:
                     result.MatchRules = new[]
                     {
@@ -72,6 +72,7 @@ namespace Fanex.NAP.FS.Websites.Models.FraudCase
                     };
 
                     break;
+
                 default:
                     throw new NotImplementedException("Fraud case id " + id + " hasn't been implemented");
             }

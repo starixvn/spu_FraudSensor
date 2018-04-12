@@ -79,6 +79,7 @@
         }
 
         #region private method
+
         private bool Exist(FraudCase fraudCase)
         {
             return FraudCaseExecutors.Any(x => x.FraudCase.FraudCaseId == fraudCase.FraudCaseId);
@@ -91,6 +92,7 @@
 
             Logger.Log.Error(message);
         }
-        #endregion
+
+        #endregion private method
     }
 }

@@ -1,14 +1,14 @@
 ﻿namespace Fanex.NAP.FS.WinService
 {
-    using Library.DTO;
-    using System;
-    using System.Configuration;
-    using Library.Services;
-    using System.Linq;
     using Library.Core.Helpers.Api;
-    using System.Collections.Generic;
-    using Library.Criteria;
     using Library.Core.Helpers.Xml;
+    using Library.Criteria;
+    using Library.DTO;
+    using Library.Services;
+    using System;
+    using System.Collections.Generic;
+    using System.Configuration;
+    using System.Linq;
 
     public class FPSGetAssociationAccountExecutor : FraudCaseExecutor
     {
@@ -39,6 +39,7 @@
         }
 
         #region private method
+
         private void GetAssociationAccounts()
         {
             var custIDs = _delayGoalAccountService.GetManualAccounts().ToArray();
@@ -46,9 +47,9 @@
 
             try
             {
-                IEnumerable<CustomerAssociation> customerAssociation =  ApiHelper.Post<string, IEnumerable<CustomerAssociation>>(FPS_WEBAPI, listManualAccounts.CustIdList).Result;
+                IEnumerable<CustomerAssociation> customerAssociation = ApiHelper.Post<string, IEnumerable<CustomerAssociation>>(FPS_WEBAPI, listManualAccounts.CustIdList).Result;
                 var customerAssociationXML = customerAssociation.ToXmlString();
-                
+
                 _delayGoalAccountService.InsertAccounts(new DelayGoalAssociationAccountInsertCriteria { CustomerAssociationXML = customerAssociationXML });
             }
             catch (Exception exception)
@@ -62,8 +63,8 @@
                     SendMailInform(message);
                 }
             }
-            
         }
-        #endregion
+
+        #endregion private method
     }
 }

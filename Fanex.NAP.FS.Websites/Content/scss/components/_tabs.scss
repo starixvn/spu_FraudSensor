@@ -22,10 +22,10 @@
         background-color: #f0f0f0;
     }
 
-    .ui-tabs-nav li.ui-tabs-active { 
+    .ui-tabs-nav li.ui-tabs-active {
         background-color: #fff;
 
-        &::before {            
+        &::before {
             position: absolute;
             left: 0;
             width: 100%;
@@ -49,7 +49,7 @@
     .ui-state-active a:link,
     .ui-state-active a:visited {
         font-weight: bold;
-        color: #465163;    
+        color: #465163;
     }
 
     .ui-tabs-panel {

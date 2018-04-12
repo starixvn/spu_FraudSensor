@@ -1,11 +1,8 @@
-﻿using Fanex.Data.Repository;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-
-namespace Fanex.NAP.FS.Websites.Criteria.MatchMonitor.FraudCaseDetails
+﻿namespace Fanex.NAP.FS.Websites.Criteria.MatchMonitor.FraudCaseDetails
 {
+    using Fanex.Data.Repository;
+    using System;
+
     public class GetCustomerCriteria : CriteriaBase
     {
         public int MatchId { get; set; }

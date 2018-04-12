@@ -1,12 +1,8 @@
-﻿using Fanex.Data.Repository;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-
-namespace Fanex.NAP.FS.Websites.Criteria.FraudCase
+﻿namespace Fanex.NAP.FS.Websites.Criteria.FraudCase
 {
-    public class FraudCaseGetCriteria:CriteriaBase
+    using Fanex.Data.Repository;
+
+    public class FraudCaseGetCriteria : CriteriaBase
     {
         public override string GetSettingKey()
         {

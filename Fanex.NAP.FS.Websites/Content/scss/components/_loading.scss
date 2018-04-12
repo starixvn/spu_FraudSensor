@@ -201,7 +201,6 @@
   }
 }
 
-
 .loader {
   @include loader($size: 16px, $align: middle);
   z-index: 10000;

@@ -1,7 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Fanex.NAP.FS.Websites.ViewModels
+﻿namespace Fanex.NAP.FS.Websites.ViewModels
 {
+    using System.ComponentModel.DataAnnotations;
+
     public class ExternalLoginConfirmationViewModel
     {
         [Required]

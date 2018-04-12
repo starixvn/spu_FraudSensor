@@ -1,9 +1,9 @@
 ﻿namespace Fanex.NAP.FS.Service.Utilities
 {
-    using System.Collections.Generic;
-    using System.Linq;
     using Fanex.NAP.Core.Models.ValueObject;
     using NAP.Core.Business;
+    using System.Collections.Generic;
+    using System.Linq;
 
     /// <summary>
     /// TODO: Update summary.

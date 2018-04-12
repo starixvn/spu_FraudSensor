@@ -45,7 +45,7 @@
     position: absolute;
     padding: 12px;
     background-color: #fff;
-    box-shadow: 1px 2px 12px rgba(0, 0, 0, 0.3); 
+    box-shadow: 1px 2px 12px rgba(0, 0, 0, 0.3);
 
     &.suspicious-note {
         width: 626px;
@@ -99,7 +99,7 @@
 
     .add-component {
         grid-template-columns: 266px 48px;
-        margin-top: 8px;    
+        margin-top: 8px;
     }
 
     .top-header {
@@ -132,7 +132,7 @@
             margin-bottom: 0;
         }
     }
-    
+
     .icon-help-circle {
         position: relative;
         top: 5px;
@@ -156,4 +156,3 @@
     grid-gap: 14px;
     margin-bottom: 14px;
 }
-

@@ -14,21 +14,18 @@ namespace Fanex.NAP.FS.Library.Core.ExportExcel
 
         protected virtual void ModifyReportName(IRow row)
         {
-
         }
 
         protected abstract void FillLegend(IRow row, TLegend legend);
 
         protected virtual void ModifyHeader(IRow row)
         {
-
         }
 
         protected abstract void FillData(IRow row, TData data);
 
         protected virtual void FillSummary(IRow row, TSummary summary)
         {
-
         }
 
         public virtual void RenderExcel(IWorkbook wb, TLegend legend, IEnumerable<TData> data, TSummary summary)

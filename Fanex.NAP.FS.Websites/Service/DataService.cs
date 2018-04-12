@@ -1,12 +1,12 @@
-﻿using Fanex.Data;
-using Fanex.Data.Repository;
-using Fanex.NAP.FS.Library;
-using Fanex.NAP.FS.Websites.Models;
-using System;
-using System.Collections.Generic;
-
-namespace Fanex.NAP.FS.Websites.Service
+﻿namespace Fanex.NAP.FS.Websites.Service
 {
+    using Fanex.Data;
+    using Fanex.Data.Repository;
+    using Fanex.NAP.FS.Library;
+    using Fanex.NAP.FS.Websites.Models;
+    using System;
+    using System.Collections.Generic;
+
     public static class DataService
     {
         public static IEnumerable<T> GetData<T>(CriteriaBase criteria)

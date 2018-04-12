@@ -1,10 +1,9 @@
-﻿using Fanex.NAP.FS.Library.Core.ExportExcel;
-using Fanex.NAP.FS.Websites.ViewModels.FraudCase.DelayedGoal;
-using NPOI.SS.UserModel;
-using NPOI.XSSF.UserModel;
-
-namespace Fanex.NAP.FS.Websites.ExcelConfig.FraudCase.DelayedGoal
+﻿namespace Fanex.NAP.FS.Websites.ExcelConfig.FraudCase.DelayedGoal
 {
+    using Fanex.NAP.FS.Library.Core.ExportExcel;
+    using Fanex.NAP.FS.Websites.ViewModels.FraudCase.DelayedGoal;
+    using NPOI.SS.UserModel;
+
     public class DelayedGoalExcelConfig : FSExcelConfig<string, Customer, object>
     {
         protected override int SheetIndex => 0;

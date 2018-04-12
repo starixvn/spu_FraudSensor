@@ -1,10 +1,10 @@
-﻿using Fanex.NAP.FS.Websites.Criteria.FraudCase;
+﻿using Fanex.NAP.FS.Library.Core.ExportExcel;
+using Fanex.NAP.FS.Websites.Criteria.FraudCase;
+using Fanex.NAP.FS.Websites.Criteria.FraudCase.DelayedGoal;
+using Fanex.NAP.FS.Websites.ExcelConfig.FraudCase.DelayedGoal;
 using Fanex.NAP.FS.Websites.Models;
 using System.Collections.Generic;
 using System.Linq;
-using Fanex.NAP.FS.Websites.Criteria.FraudCase.DelayedGoal;
-using Fanex.NAP.FS.Library.Core.ExportExcel;
-using Fanex.NAP.FS.Websites.ExcelConfig.FraudCase.DelayedGoal;
 
 namespace Fanex.NAP.FS.Websites.Service.FraudCase
 {
@@ -37,7 +37,7 @@ namespace Fanex.NAP.FS.Websites.Service.FraudCase
         {
             var criteria = new DelayedGoalCustomerGetCriteria();
 
-            return 
+            return
                 DataService
                 .GetData<Models.FraudCase.DelayedGoal.Customer>(criteria)
                 .Select(u => new ViewModels.FraudCase.DelayedGoal.Customer(u))
@@ -57,7 +57,7 @@ namespace Fanex.NAP.FS.Websites.Service.FraudCase
         public static byte[] ExportDelayedCustomersToExcel(string template, string searchString)
         {
             var data = GetDelayedGoalCustomers();
-            
+
             var wb = ExcelUtilities.GetWorkbook(template);
 
             new DelayedGoalExcelConfig().RenderExcel(wb, searchString, data.Where(u => string.IsNullOrWhiteSpace(searchString) || u.Name.ToLowerInvariant().Contains(searchString)), null);

@@ -7,7 +7,7 @@
     public interface IDelayGoalAccountService
     {
         ICommandResult InsertAccounts(ICriteria criteria);
-                
+
         IEnumerable<int> GetManualAccounts();
     }
 }

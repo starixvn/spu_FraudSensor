@@ -23,7 +23,7 @@
         {
             get
             {
-                if(Classification == 1)
+                if (Classification == 1)
                 {
                     return true;
                 }

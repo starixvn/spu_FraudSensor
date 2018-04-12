@@ -2,7 +2,7 @@ select {
     @include border-radius(2px);
     outline: none;
     height: 28px;
-    line-height: 28px;    
+    line-height: 28px;
     padding-left: 6px;
     padding-right: 10px;
     background-color: #fff;
@@ -55,14 +55,12 @@ select[disabled] {
 }
 
 .ui-selectmenu-menu {
-
     .ui-widget-content {
         margin-top: 6px;
         border: 1px solid #d0d0d0;
         box-shadow: 0 0 4px rgba(0,0,0, .3);
         background-color: #fff;
     }
-    
 
     .ui-menu-item-wrapper {
         padding: 10px 20px;
@@ -74,4 +72,3 @@ select[disabled] {
         color: #fff;
     }
 }
-

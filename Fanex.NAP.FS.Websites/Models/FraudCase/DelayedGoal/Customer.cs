@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-
-namespace Fanex.NAP.FS.Websites.Models.FraudCase.DelayedGoal
+﻿namespace Fanex.NAP.FS.Websites.Models.FraudCase.DelayedGoal
 {
+    using System;
+
     public class Customer
     {
         public int CustId { get; set; }

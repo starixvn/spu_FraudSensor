@@ -1,13 +1,10 @@
-﻿using Fanex.NAP.Core.Auth;
-using Fanex.NAP.Core.Service.Impl;
-using Fanex.NAP.Core.Web.Auth;
-using Fanex.NAP.Core.Web.Session;
-using Fanex.NAP.FS.Service.Utilities;
-using System.Web;
-using System.Web.Security;
-
-namespace Fanex.NAP.FS.Websites
+﻿namespace Fanex.NAP.FS.Websites
 {
+    using Fanex.NAP.Core.Auth;
+    using Fanex.NAP.Core.Web.Auth;
+    using System.Web;
+    using System.Web.Security;
+
     public static class AuthConfig
     {
         public static void RegisterAuth(HttpContext context)

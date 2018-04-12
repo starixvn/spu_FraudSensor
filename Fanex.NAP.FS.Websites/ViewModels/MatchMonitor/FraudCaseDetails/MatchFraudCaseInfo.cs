@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-
-namespace Fanex.NAP.FS.Websites.ViewModels.MatchMonitor.FraudCaseDetails
+﻿namespace Fanex.NAP.FS.Websites.ViewModels.MatchMonitor.FraudCaseDetails
 {
+    using System;
+
     public class MatchFraudCaseInfo
     {
         public int FraudCaseId { get; set; }
@@ -24,7 +21,9 @@ namespace Fanex.NAP.FS.Websites.ViewModels.MatchMonitor.FraudCaseDetails
         public int AwayId { get; set; }
 
         public DateTime EventDate { get; set; }
-        public dynamic Away { get; internal set; }
-        public dynamic Home { get; internal set; }
+
+        public dynamic Away { get; set; }
+
+        public dynamic Home { get; set; }
     }
 }

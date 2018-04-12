@@ -1,13 +1,12 @@
-﻿using Fanex.NAP.Core.Web.Attribute;
-using Fanex.NAP.FS.Websites.Criteria.MatchMonitor;
-using Fanex.NAP.FS.Websites.Service.MatchMonitor;
-using System;
-using System.Linq;
-using System.Net.Http;
-using System.Web.Mvc;
-
-namespace Fanex.NAP.FS.Websites.Controllers
+﻿namespace Fanex.NAP.FS.Websites.Controllers
 {
+    using Fanex.NAP.Core.Web.Attribute;
+    using Fanex.NAP.FS.Websites.Criteria.MatchMonitor;
+    using Fanex.NAP.FS.Websites.Service.MatchMonitor;
+    using System;
+    using System.Linq;
+    using System.Web.Mvc;
+
     [NapAuth(FunctionKey = FSFunctionKeys.MatchMonitoring, Policy = Core.Business.Constant.Policy.Read)]
     public class MatchMonitorController : ReportsController
     {
@@ -45,7 +44,7 @@ namespace Fanex.NAP.FS.Websites.Controllers
         {
             var templatePath = Server.MapPath("~/App_Data/Excel Template/MatchMonitor/template.xlsx");
 
-            var fileName ="MatchMonitor_" + DateTime.Now.ToString("yyyyMMdd") + ".xlsx";
+            var fileName = "MatchMonitor_" + DateTime.Now.ToString("yyyyMMdd") + ".xlsx";
 
             return File(MatchMonitorService.ExportExcel(criteria, templatePath), "application/vnd.ms-excel", fileName);
         }
@@ -59,7 +58,7 @@ namespace Fanex.NAP.FS.Websites.Controllers
 
         public ActionResult GetFraudCaseTicketDetails(int fraudCaseId, int matchId, DateTime eventDate)
         {
-            var data = 
+            var data =
                 FraudCaseDetailsService.GetTicketDetails(matchId, fraudCaseId, eventDate)
                 .GroupBy(t => t.Bettype)
                 .Select(g => new { key = g.Key, data = g.AsEnumerable() });

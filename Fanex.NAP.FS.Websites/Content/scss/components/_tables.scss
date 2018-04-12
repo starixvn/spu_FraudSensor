@@ -37,7 +37,7 @@
     }
 
     .refresh-action {
-        @include align-items($display: grid); 
+        @include align-items($display: grid);
         grid-template-columns: repeat(2, 29px);
         grid-template-rows: 28px;
         margin-left: 8px;
@@ -127,7 +127,6 @@
     }
 }
 
-
 .table {
   border-collapse: collapse;
   border-spacing: 0;
@@ -154,7 +153,7 @@
       background-color: $table-sub-header-bg;
     }
   }
-  
+
   tbody {
     tr:first-child td {
       border-top: none;
@@ -182,7 +181,7 @@
         margin-right: 4px;
     }
   }
-  
+
   &.table-striped {
     tbody tr:nth-of-type(even) {
       background-color: $table-col-even-bg;
@@ -214,7 +213,7 @@
 .pagination {
     @include align-items;
     height: 38px;
-    border: 1px solid $table-border;    
+    border: 1px solid $table-border;
     padding: 4px 10px;
     margin-top: -1px;
     background-color: #ebebeb;
@@ -238,7 +237,7 @@
     }
 
     &.current,
-    &.current:hover { 
+    &.current:hover {
         border-color: #2287ca;
         background: #eef9ff;
         color: #007ec7 !important;
@@ -248,7 +247,7 @@
     &.previous {
         color: #007ec7;
 
-        &:before, &:after {      
+        &:before, &:after {
           display: inline-block;
           position: relative;
           top: 3px;
@@ -287,8 +286,3 @@
         cursor: not-allowed;
     }
 }
-
-
-
-
-

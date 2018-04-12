@@ -1,9 +1,9 @@
 ﻿namespace Fanex.NAP.FS.Service.Utilities
 {
-    using System;
-    using System.Collections.Generic;
     using Fanex.NAP.Core.Models;
     using Logging;
+    using System;
+    using System.Collections.Generic;
 
     /// <summary>
     /// AppSession class.

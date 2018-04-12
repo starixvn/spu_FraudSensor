@@ -1,7 +1,7 @@
-﻿using Fanex.Data.Repository;
-
-namespace Fanex.NAP.FS.Websites.Criteria.FraudCase.DelayedGoal
+﻿namespace Fanex.NAP.FS.Websites.Criteria.FraudCase.DelayedGoal
 {
+    using Fanex.Data.Repository;
+
     public class DelayedGoalCustomerAddCriteria : CriteriaBase
     {
         public string Username { get; set; }

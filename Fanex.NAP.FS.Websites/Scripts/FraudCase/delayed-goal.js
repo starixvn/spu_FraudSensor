@@ -24,11 +24,11 @@
         processing: true,
         ajax: common.modifyRelativeUrl("/FraudCase/GetDelayedGoalCustomerList"),
         columns: [
-            { data: "rowNum", className: "text-center" },
-            { data: "data.Name" },
-            { data: d => `<span title='${d.data.Creator}'>${common.makeWrapString(d.data.Creator, 40)}</span>`},
-            { data: "data.AddedDate", className: "text-center" },
-            { defaultContent: "<span class='icon-delete'></span>", className: "has-icon text-center", createdCell: c => $("span", c).click(deleteFlow) }
+            { data: "rowNum", className: "text-center", width: "40px" },
+            { data: "data.Name", width: "100px" },
+            { data: d => `<span title='${d.data.Creator}'>${common.makeWrapString(d.data.Creator, 60)}</span>` },
+            { data: "data.AddedDate", className: "text-center", width: "170px" },
+            { defaultContent: "<span class='icon-delete'></span>", className: "has-icon text-center", createdCell: c => $("span", c).click(deleteFlow), width: "40px" }
         ],
         scrollY: '40vh',
         scrollCollapse: true,
@@ -114,7 +114,7 @@
     function exportData() {
         var url = "/FraudCase/ExportDelayedGoalCustomer";
 
-        common.downloadFile(url, { searchString: $("#username-search").val()})
+        common.downloadFile(url, { searchString: $("#username-search").val() })
     }
 }
 

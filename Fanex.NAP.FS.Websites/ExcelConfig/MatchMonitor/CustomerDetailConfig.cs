@@ -1,10 +1,10 @@
-﻿using Fanex.NAP.FS.Library.Core.ExportExcel;
-using Fanex.NAP.FS.Websites.ViewModels.MatchMonitor.FraudCaseDetails;
-using NPOI.SS.UserModel;
-using NPOI.XSSF.UserModel;
-
-namespace Fanex.NAP.FS.Websites.ExcelConfig.MatchMonitor
+﻿namespace Fanex.NAP.FS.Websites.ExcelConfig.MatchMonitor
 {
+    using Fanex.NAP.FS.Library.Core.ExportExcel;
+    using Fanex.NAP.FS.Websites.ViewModels.MatchMonitor.FraudCaseDetails;
+    using NPOI.SS.UserModel;
+    using NPOI.XSSF.UserModel;
+
     public class CustomerDetailConfig : FSExcelConfig<MatchFraudCaseInfo, CustomerDetails, object>
     {
         public CustomerDetailConfig(int customerNo)
@@ -14,7 +14,7 @@ namespace Fanex.NAP.FS.Websites.ExcelConfig.MatchMonitor
 
         protected override int SheetIndex => 1;
 
-        protected override string SheetName { get;  }
+        protected override string SheetName { get; }
 
         protected override void FillData(IRow row, CustomerDetails data)
         {

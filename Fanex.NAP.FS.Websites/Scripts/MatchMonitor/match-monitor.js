@@ -34,7 +34,7 @@ function load_page_events() {
         scrollY: "65vh",
         scrollCollapse: true,
         columns: [
-            { data: (row, type,set, meta) => meta.row + 1, className: "text-center", width: "40px" },
+            { data: (row, type, set, meta) => meta.row + 1, className: "text-center", width: "40px" },
             { data: renderVerifyCheckBox, className: "text-center", width: "40px" },
             { data: (row) => row.VerifiedBy == null ? "-" : row.VerifiedBy, width: "100px" },
             { data: renderEvent },
@@ -49,7 +49,7 @@ function load_page_events() {
         language: {
             lengthMenu: "Page size _MENU_",
             paginate: {
-               previous: "Back"
+                previous: "Back"
             },
             info: "Displaying _START_ to _END_ of _TOTAL_ item(s)",
             infoEmpty: "",

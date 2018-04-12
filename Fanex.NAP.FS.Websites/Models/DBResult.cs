@@ -1,7 +1,7 @@
-﻿using System.Collections;
-
-namespace Fanex.NAP.FS.Websites.Models
+﻿namespace Fanex.NAP.FS.Websites.Models
 {
+    using System.Collections;
+
     public class DBResult
     {
         public int ErrorCode { get; set; }

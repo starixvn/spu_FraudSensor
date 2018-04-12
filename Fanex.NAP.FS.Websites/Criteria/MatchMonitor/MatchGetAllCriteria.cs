@@ -1,8 +1,8 @@
-﻿using Fanex.Data.Repository;
-using System;
-
-namespace Fanex.NAP.FS.Websites.Criteria.MatchMonitor
+﻿namespace Fanex.NAP.FS.Websites.Criteria.MatchMonitor
 {
+    using Fanex.Data.Repository;
+    using System;
+
     public class MatchGetAllCriteria : CriteriaBase
     {
         public DateTime EventDate { get; set; }

@@ -3,7 +3,7 @@
     $height: 18px;
 
     display: inline-block;
-    text-align: center;    
+    text-align: center;
     outline: 0;
     position: relative;
     -webkit-user-select: none;
@@ -12,7 +12,6 @@
     user-select: none;
     color: #fefefe;
     line-height: 1;
-    
 
     .switch-input {
         opacity: 0;
@@ -68,7 +67,7 @@
     [data-whatinput='mouse'] input:focus ~ .switch-paddle {
         outline: 0;
     }
-    
+
     input:checked + label > .switch-active {
         display: block;
     }

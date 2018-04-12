@@ -6,10 +6,8 @@ using Fanex.NAP.FS.Websites.Criteria.SuspiciousCustomer;
 using Fanex.NAP.FS.Websites.ExcelConfig.SuspiciousCustomer;
 using Fanex.NAP.FS.Websites.Models.SuspiciousCustomer;
 using Fanex.NAP.FS.Websites.ViewModels.SuspiciousCustomer;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 
 namespace Fanex.NAP.FS.Websites.Service.SuspiciousCustomer
 {
@@ -44,7 +42,7 @@ namespace Fanex.NAP.FS.Websites.Service.SuspiciousCustomer
                 ExcelUtilities.GetWorkbook(template)
                 .RenderSheet(new SuspiciousCustomerConfig(fraudCaseName, assignee), criteria, data, null);
 
-            return wb.ToBytes();    
+            return wb.ToBytes();
         }
     }
 }

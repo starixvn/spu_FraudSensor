@@ -51,7 +51,7 @@
             var array = renderRow(columns, data[i], callback);
 
             row_arrays.push(array);
-        }    
+        }
 
         return row_arrays;
     }

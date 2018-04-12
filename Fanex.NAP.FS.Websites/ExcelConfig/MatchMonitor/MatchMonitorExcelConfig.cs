@@ -1,13 +1,13 @@
-﻿using Fanex.NAP.FS.Library.Core.ExportExcel;
-using Fanex.NAP.FS.Websites.Criteria.MatchMonitor;
-using Fanex.NAP.FS.Websites.ViewModels.MatchMonitor;
-using NPOI.SS.UserModel;
-using NPOI.XSSF.UserModel;
-using RemotingRef;
-using System.Collections.Generic;
-
-namespace Fanex.NAP.FS.Websites.ExcelConfig.MatchMonitor
+﻿namespace Fanex.NAP.FS.Websites.ExcelConfig.MatchMonitor
 {
+    using Fanex.NAP.FS.Library.Core.ExportExcel;
+    using Fanex.NAP.FS.Websites.Criteria.MatchMonitor;
+    using Fanex.NAP.FS.Websites.ViewModels.MatchMonitor;
+    using NPOI.SS.UserModel;
+    using NPOI.XSSF.UserModel;
+    using RemotingRef;
+    using System.Collections.Generic;
+
     public class MatchMonitorExcelConfig : FSExcelConfig<MatchGetAllCriteria, Match, object>
     {
         protected override int SheetIndex => 0;

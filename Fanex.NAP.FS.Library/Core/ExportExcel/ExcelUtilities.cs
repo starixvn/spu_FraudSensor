@@ -50,7 +50,7 @@ namespace Fanex.NAP.FS.Library.Core.ExportExcel
 
         public static IWorkbook GetWorkbook(string template)
         {
-            using(var template_file = File.OpenRead(template))
+            using (var template_file = File.OpenRead(template))
             {
                 return new XSSFWorkbook(template_file);
             }

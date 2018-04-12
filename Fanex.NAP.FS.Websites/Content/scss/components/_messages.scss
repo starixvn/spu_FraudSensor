@@ -11,10 +11,10 @@
         top: 8px;
         font-family: "hrp";
         font-size: 20px;
-    }     
+    }
 }
 
-.msg-error, .text-danger {    
+.msg-error, .text-danger {
     display: block;
     line-height: 18px;
     color: $msg-error;
@@ -23,12 +23,12 @@
         @extend %message-has-icon;
         border-color: $msg-error-border;
         background-color: $msg-error-bg;
-        color: $msg-error;        
-        
+        color: $msg-error;
+
         &:before {
             content: "\e903";
-            color: $msg-error; 
-        }     
+            color: $msg-error;
+        }
     }
 }
 
@@ -42,11 +42,11 @@
         border-color: $msg-success-border;
         background-color: $msg-success-bg;
         color: $msg-success;
-        
+
         &:before {
             content: "\e913";
-            color: $msg-success; 
-        }     
+            color: $msg-success;
+        }
     }
 }
 
@@ -55,12 +55,11 @@
     border-color: $msg-warning-border;
     background-color: $msg-warning-bg;
     color: $msg-warning;
-    
-    
+
     &:before {
         content: "\e913";
-        color: $msg-warning; 
-    }     
+        color: $msg-warning;
+    }
 }
 
 .list-message-error {
@@ -71,8 +70,8 @@
     padding: 8px 10px;
     margin: 0 0 12px 0;
     background-color: $msg-error-bg;
-    color: $msg-error; 
-    
+    color: $msg-error;
+
     .message {
         line-height: 20px;
 
@@ -84,12 +83,12 @@
             content: "• ";
             color: $msg-error;
             font-size: 24px;
-        } 
+        }
     }
 
     .field-validation-valid {
         display: none;
-    } 
+    }
 }
 
 .note {

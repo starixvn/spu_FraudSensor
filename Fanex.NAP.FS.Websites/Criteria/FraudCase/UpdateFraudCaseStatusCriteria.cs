@@ -1,7 +1,7 @@
-﻿using Fanex.Data.Repository;
-
-namespace Fanex.NAP.FS.Websites.Criteria.FraudCase
+﻿namespace Fanex.NAP.FS.Websites.Criteria.FraudCase
 {
+    using Fanex.Data.Repository;
+
     public class UpdateFraudCaseStatusCriteria : CriteriaBase
     {
         public int FraudCaseId { get; set; }

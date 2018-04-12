@@ -2,7 +2,6 @@
 {
     using Data.Repository;
     using NAP.Core.Command;
-    using System.Collections.Generic;
 
     public interface IFlaggedAccountService
     {

@@ -42,6 +42,7 @@
         }
 
         #region private method
+
         private void ExecuteBySaparatedThreads()
         {
             if (_matches != null)
@@ -82,6 +83,7 @@
 
             return thread;
         }
-        #endregion
+
+        #endregion private method
     }
 }

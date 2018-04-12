@@ -34,8 +34,8 @@
         ],
         columns: [
             { data: (obj, typet, set, meta) => meta.row + 1, className: "text-center", width: "40px" },
-            { data: obj => obj.Date, className: "text-center"},
-            { data: obj =>  common.makeWrapString(obj.Description, 50), width: "500px" },
+            { data: obj => obj.Date, className: "text-center" },
+            { data: obj => common.makeWrapString(obj.Description, 50), width: "500px" },
             { data: obj => obj.Author }
         ]
     })
@@ -63,7 +63,7 @@
     get_fraud_case();
 
     get_assignee();
-    
+
     assignee.select2();
 
     $([date_type, fraud_case, is_verified, classification]).select2({
@@ -202,7 +202,7 @@
 
         var from_date, to_date;
 
-        if (type == 0) { 
+        if (type == 0) {
             from_date = moment().toDate();
             to_date = from_date;
         } //today

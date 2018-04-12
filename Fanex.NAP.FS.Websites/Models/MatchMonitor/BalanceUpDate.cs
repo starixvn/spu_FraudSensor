@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace Fanex.NAP.FS.Websites.Models.MatchMonitor
+﻿namespace Fanex.NAP.FS.Websites.Models.MatchMonitor
 {
+    using System;
+
     public class BalanceUpDate
     {
         public DateTime BalanceUpDay { get; set; }

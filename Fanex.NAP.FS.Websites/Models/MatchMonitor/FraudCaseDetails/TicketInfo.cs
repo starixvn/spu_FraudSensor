@@ -1,8 +1,8 @@
-﻿using Fanex.BetList.Core.Entities;
-
-namespace Fanex.NAP.FS.Websites.Models.MatchMonitor.FraudCaseDetails
+﻿namespace Fanex.NAP.FS.Websites.Models.MatchMonitor.FraudCaseDetails
 {
-    public class TicketInfo:Ticket
+    using Fanex.BetList.Core.Entities;
+
+    public class TicketInfo : Ticket
     {
         public string CurrencyName { get; set; }
 

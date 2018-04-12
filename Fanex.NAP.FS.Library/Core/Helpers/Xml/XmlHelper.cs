@@ -29,7 +29,7 @@ namespace Fanex.NAP.FS.Library.Core.Helpers.Xml
         {
             var t = o.GetType();
 
-            if(typeof(IEnumerable).IsAssignableFrom(t))
+            if (typeof(IEnumerable).IsAssignableFrom(t))
             {
                 var generic_param = t.IsArray ? t.GetElementType() : t.GetGenericArguments()[0];
 
@@ -61,7 +61,7 @@ namespace Fanex.NAP.FS.Library.Core.Helpers.Xml
         {
             var main_assembly = Assembly.GetExecutingAssembly();
 
-            var satellite_assemlies = 
+            var satellite_assemlies =
                 main_assembly
                 .GetReferencedAssemblies()
                 .Where(a => a.Name.Contains("Fanex.NAP.FS"))
@@ -93,7 +93,7 @@ namespace Fanex.NAP.FS.Library.Core.Helpers.Xml
             {
                 Func<object, object> f = null;
 
-                if(prop.PropertyType.IsPrimitive || prop.PropertyType == typeof(string) || prop.PropertyType == typeof(decimal))
+                if (prop.PropertyType.IsPrimitive || prop.PropertyType == typeof(string) || prop.PropertyType == typeof(decimal))
                 {
                     f = CreatePrimitivePropReader(prop);
                 }
@@ -117,15 +117,15 @@ namespace Fanex.NAP.FS.Library.Core.Helpers.Xml
 
             var prop_expr = Expression.Convert(Expression.Property(obj_expr, prop), typeof(object));
 
-            var attribute_expr = 
+            var attribute_expr =
                 Expression.New(
-                    typeof(XAttribute).GetConstructor(new[] { typeof(XName), typeof(object) }), 
-                    Expression.Constant((XName) prop.Name), prop_expr);
+                    typeof(XAttribute).GetConstructor(new[] { typeof(XName), typeof(object) }),
+                    Expression.Constant((XName)prop.Name), prop_expr);
 
             var lambda_expr = Expression.Lambda<Func<object, object>>(attribute_expr, arg_expr);
 
             return lambda_expr.Compile();
-        } 
+        }
 
         private static Func<object, object> CreateCompositePropReader(PropertyInfo prop)
         {

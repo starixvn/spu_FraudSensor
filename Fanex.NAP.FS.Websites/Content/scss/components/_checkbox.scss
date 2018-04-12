@@ -4,15 +4,15 @@ input[type="checkbox"] {
 }
 
 input[type="checkbox"] + span {
-  position: relative;  
+  position: relative;
   padding-left: 22px;
   cursor: pointer;
 
   &:before {
     position: absolute;
-    left: 0;            
-    top: 0;        
-    height: 16px;            
+    left: 0;
+    top: 0;
+    height: 16px;
     width: 16px;
     border-radius: 2px;
     border: 1px solid #545454;

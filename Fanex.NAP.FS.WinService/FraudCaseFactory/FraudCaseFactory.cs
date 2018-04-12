@@ -1,7 +1,6 @@
 ﻿namespace Fanex.NAP.FS.WinService
 {
     using Library.DTO;
-    using System;
 
     public static class FraudCaseFactory
     {

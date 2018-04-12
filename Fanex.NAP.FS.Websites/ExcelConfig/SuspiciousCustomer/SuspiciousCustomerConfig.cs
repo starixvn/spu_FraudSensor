@@ -1,15 +1,11 @@
-﻿using Fanex.NAP.FS.Library.Core.ExportExcel;
-using Fanex.NAP.FS.Library.Criteria;
-using Fanex.NAP.FS.Library.Models;
-using NPOI.SS.UserModel;
-using NPOI.XSSF.UserModel;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-
-namespace Fanex.NAP.FS.Websites.ExcelConfig.SuspiciousCustomer
+﻿namespace Fanex.NAP.FS.Websites.ExcelConfig.SuspiciousCustomer
 {
+    using Fanex.NAP.FS.Library.Core.ExportExcel;
+    using Fanex.NAP.FS.Library.Criteria;
+    using Fanex.NAP.FS.Library.Models;
+    using NPOI.SS.UserModel;
+    using NPOI.XSSF.UserModel;
+
     public class SuspiciousCustomerConfig : FSExcelConfig<SuspiciousCustomerReportGetCriteria, SuspiciousCustomerReportModel, object>
     {
         private readonly string fraudCaseName;
