@@ -1,16 +1,16 @@
-﻿using Fanex.Data;
-using Fanex.NAP.FS.Library.Core.ExportExcel;
-using Fanex.NAP.FS.Websites.Criteria.MatchMonitor;
-using Fanex.NAP.FS.Websites.ExcelConfig.MatchMonitor;
-using Fanex.NAP.FS.Websites.Models;
-using Fanex.NAP.FS.Websites.ViewModels.MatchMonitor;
-using RemotingRef;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
+﻿namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
 {
+    using Fanex.Data;
+    using Fanex.NAP.FS.Library.Core.ExportExcel;
+    using Fanex.NAP.FS.Websites.Criteria.MatchMonitor;
+    using Fanex.NAP.FS.Websites.ExcelConfig.MatchMonitor;
+    using Fanex.NAP.FS.Websites.Models;
+    using Fanex.NAP.FS.Websites.ViewModels.MatchMonitor;
+    using RemotingRef;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+
     public static class MatchMonitorService
     {
         public static MatchList GetMatches(MatchGetAllCriteria criteria)

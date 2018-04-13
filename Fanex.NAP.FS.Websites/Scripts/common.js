@@ -186,7 +186,7 @@
 
     this.formatNumber = (n = 0, format = "0,0.00") => numeral(n).format(format);
 
-    this.encode = encodeURIComponent;
+    this.encodeString = encodeURIComponent;
 }
 
 var common = new UICommon();

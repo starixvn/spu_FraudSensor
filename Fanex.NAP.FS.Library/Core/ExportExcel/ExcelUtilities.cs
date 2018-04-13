@@ -1,10 +1,10 @@
-﻿using NPOI.SS.UserModel;
-using NPOI.XSSF.UserModel;
-using System.Collections.Generic;
-using System.IO;
-
-namespace Fanex.NAP.FS.Library.Core.ExportExcel
+﻿namespace Fanex.NAP.FS.Library.Core.ExportExcel
 {
+    using NPOI.SS.UserModel;
+    using NPOI.XSSF.UserModel;
+    using System.Collections.Generic;
+    using System.IO;
+
     public static class ExcelUtilities
     {
         public static void CopyRow(IRow source, IRow target)

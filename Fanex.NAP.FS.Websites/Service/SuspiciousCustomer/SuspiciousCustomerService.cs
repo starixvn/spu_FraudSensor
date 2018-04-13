@@ -1,16 +1,16 @@
-﻿using Fanex.NAP.Core.Service.Impl;
-using Fanex.NAP.FS.Library.Core.ExportExcel;
-using Fanex.NAP.FS.Library.Criteria;
-using Fanex.NAP.FS.Library.Models;
-using Fanex.NAP.FS.Websites.Criteria.SuspiciousCustomer;
-using Fanex.NAP.FS.Websites.ExcelConfig.SuspiciousCustomer;
-using Fanex.NAP.FS.Websites.Models.SuspiciousCustomer;
-using Fanex.NAP.FS.Websites.ViewModels.SuspiciousCustomer;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace Fanex.NAP.FS.Websites.Service.SuspiciousCustomer
+﻿namespace Fanex.NAP.FS.Websites.Service.SuspiciousCustomer
 {
+    using Fanex.NAP.Core.Service.Impl;
+    using Fanex.NAP.FS.Library.Core.ExportExcel;
+    using Fanex.NAP.FS.Library.Criteria;
+    using Fanex.NAP.FS.Library.Models;
+    using Fanex.NAP.FS.Websites.Criteria.SuspiciousCustomer;
+    using Fanex.NAP.FS.Websites.ExcelConfig.SuspiciousCustomer;
+    using Fanex.NAP.FS.Websites.Models.SuspiciousCustomer;
+    using Fanex.NAP.FS.Websites.ViewModels.SuspiciousCustomer;
+    using System.Collections.Generic;
+    using System.Linq;
+
     public static class SuspiciousCustomerService
     {
         private static IEnumerable<SuspiciousCustomerNote> GetNotesData(int custId)

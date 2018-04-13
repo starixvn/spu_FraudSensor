@@ -1,7 +1,7 @@
-﻿using System.IO;
-
-namespace Fanex.NAP.FS.Library.Core.ExportExcel
+﻿namespace Fanex.NAP.FS.Library.Core.ExportExcel
 {
+    using System.IO;
+
     internal class ExcelStream : MemoryStream
     {
         public bool AllowClose { get; set; }

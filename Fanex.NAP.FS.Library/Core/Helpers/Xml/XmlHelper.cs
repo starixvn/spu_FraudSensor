@@ -1,14 +1,14 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Reflection;
-using System.Xml.Linq;
-using System.Xml.Serialization;
-
-namespace Fanex.NAP.FS.Library.Core.Helpers.Xml
+﻿namespace Fanex.NAP.FS.Library.Core.Helpers.Xml
 {
+    using System;
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Linq.Expressions;
+    using System.Reflection;
+    using System.Xml.Linq;
+    using System.Xml.Serialization;
+
     public static class XmlHelper
     {
         private static IDictionary<Type, IEnumerable<Func<object, object>>> typeLookup = new Dictionary<Type, IEnumerable<Func<object, object>>>();

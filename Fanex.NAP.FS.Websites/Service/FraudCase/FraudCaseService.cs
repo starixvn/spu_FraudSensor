@@ -1,17 +1,17 @@
-﻿using Fanex.NAP.FS.Library.Core.ExportExcel;
-using Fanex.NAP.FS.Websites.Criteria.FraudCase;
-using Fanex.NAP.FS.Websites.Criteria.FraudCase.DelayedGoal;
-using Fanex.NAP.FS.Websites.ExcelConfig.FraudCase.DelayedGoal;
-using Fanex.NAP.FS.Websites.Models;
-using System.Collections.Generic;
-using System.Linq;
+﻿namespace Fanex.NAP.FS.Websites.Service.FraudCase
+{
+    using Fanex.NAP.FS.Library.Core.ExportExcel;
+    using Fanex.NAP.FS.Websites.Criteria.FraudCase;
+    using Fanex.NAP.FS.Websites.Criteria.FraudCase.DelayedGoal;
+    using Fanex.NAP.FS.Websites.ExcelConfig.FraudCase.DelayedGoal;
+    using Fanex.NAP.FS.Websites.Models;
+    using System.Collections.Generic;
+    using System.Linq;
 using Fanex.NAP.FS.Websites.Criteria.FraudCase.DelayedGoal;
 using Fanex.NAP.FS.Library.Core.ExportExcel;
 using Fanex.NAP.FS.Websites.ExcelConfig.FraudCase.DelayedGoal;
 using Fanex.NAP.FS.Library.Criteria;
 
-namespace Fanex.NAP.FS.Websites.Service.FraudCase
-{
     public static class FraudCaseService
     {
         public static bool CheckActiveFraudCase(FraudCaseId id)

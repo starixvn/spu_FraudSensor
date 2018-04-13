@@ -296,7 +296,6 @@
     <Compile Include="Criteria\MatchMonitor\LeagueGetCriteria.cs" />
     <Compile Include="Criteria\MatchMonitor\MatchGetAllCriteria.cs" />
     <Compile Include="Criteria\MatchMonitor\MatchNoteUpdateCriteria.cs" />
-    <Compile Include="Criteria\MatchMonitor\UpdateNoteCriteria.cs" />
     <Compile Include="Criteria\MatchMonitor\VerifyMatchCriteria.cs" />
     <Compile Include="Criteria\FraudCase\UpdateFraudCaseStatusCriteria.cs" />
     <Compile Include="Criteria\SuspiciousCustomer\SuspiciousCustomerNoteGetCriteria.cs" />
@@ -331,7 +330,6 @@
     <Compile Include="Service\MatchMonitor\FraudCaseDetailsService.cs" />
     <Compile Include="ExcelConfig\MatchMonitor\MatchMonitorExcelConfig.cs" />
     <Compile Include="Service\SuspiciousCustomer\SuspiciousCustomerService.cs" />
-    <Compile Include="Service\Utilities\Excel.cs" />
     <Compile Include="ViewModels\FraudCase\DelayedGoal\Customer.cs" />
     <Compile Include="ViewModels\MatchMonitor\Event.cs" />
     <Compile Include="ViewModels\MatchMonitor\FraudCase.cs" />

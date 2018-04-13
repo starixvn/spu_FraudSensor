@@ -1,9 +1,9 @@
-﻿using NPOI.SS.UserModel;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace Fanex.NAP.FS.Library.Core.ExportExcel
+﻿namespace Fanex.NAP.FS.Library.Core.ExportExcel
 {
+    using NPOI.SS.UserModel;
+    using System.Collections.Generic;
+    using System.Linq;
+
     public abstract class FSExcelConfig<TLegend, TData, TSummary>
     {
         protected abstract int SheetIndex { get; }

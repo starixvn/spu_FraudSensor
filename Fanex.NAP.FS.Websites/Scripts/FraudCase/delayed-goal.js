@@ -15,6 +15,8 @@
     view_link.click(function () {
         customer_list.dialog("open");
         table.DataTable().ajax.reload();
+        $("#username-search").val("").keyup();
+        $("#username").val("");
     });
 
     table.DataTable({
@@ -25,8 +27,8 @@
         ajax: common.modifyRelativeUrl("/FraudCase/GetDelayedGoalCustomerList"),
         columns: [
             { data: "rowNum", className: "text-center", width: "40px" },
-            { data: "data.Name", width: "100px" },
-            { data: d => `<span title='${d.data.Creator}'>${common.makeWrapString(d.data.Creator, 60)}</span>` },
+            { data: "data.Name", width: "150px" },
+            { data: d => `<span title='${d.data.Creator}'>${common.makeWrapString(d.data.Creator, 50)}</span>` },
             { data: "data.AddedDate", className: "text-center", width: "170px" },
             { defaultContent: "<span class='icon-delete'></span>", className: "has-icon text-center", createdCell: c => $("span", c).click(deleteFlow), width: "40px" }
         ],
