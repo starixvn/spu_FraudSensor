@@ -1,21 +1,21 @@
 ﻿namespace Fanex.NAP.FS.Library.Services
 {
-    using Core;
-    using Criteria;
+    using Core.BaseClasses;
+    using Criteria.FraudCase.DelayedGoal;
     using Data.Repository;
-    using NAP.Core.Command;
+    using Models;
     using System.Collections.Generic;
 
-    public class DelayGoalAccountService : FSBaseService, IDelayGoalAccountService
+    public class DelayGoalAccountService : IDelayGoalAccountService
     {
-        public ICommandResult InsertAccounts(ICriteria criteria)
+        public DBResult InsertAccounts(CriteriaBase criteria)
         {
-            return UpdateData(criteria);
+            return DataService.UpdateData(criteria, "Insert Delay Goal Account");
         }
 
         public IEnumerable<int> GetManualAccounts()
         {
-            return GetData<int>(new DelayGoalManualAccountGetCriteria());
+            return DataService.GetData<int>(new DelayGoalManualAccountGetCriteria());
         }
     }
 }

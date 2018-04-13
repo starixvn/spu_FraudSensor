@@ -3,7 +3,6 @@
     using Core.Business;
     using Core.Service.Impl;
     using Core.Web.Attribute;
-    using Fanex.NAP.FS.Websites.Service.SuspiciousCustomer;
     using Library.Criteria;
     using Library.DTO;
     using Library.Services;
@@ -70,7 +69,7 @@
 
         public ActionResult ExportExcel(SuspiciousCustomerReportGetCriteria criteria, string fraudCaseName, string assignee)
         {
-            var file = SuspiciousCustomerService.ExportExcel(criteria, fraudCaseName, assignee, Server.MapPath("~/App_Data/Excel Template/SuspiciousCustomer/template.xlsx"));
+            var file = _suspiciousCustomerReportService.ExportExcel(criteria, fraudCaseName, assignee, Server.MapPath("~/App_Data/Excel Template/SuspiciousCustomer/template.xlsx"));
 
             var fileName = string.Format("SuspiciousCustomer_{0}.xlsx", DateTime.Now.ToString("yyyyMMdd"));
 
@@ -79,7 +78,7 @@
 
         public ActionResult GetSuspiciousCustomerNote(int custId)
         {
-            return Json(SuspiciousCustomerService.GetNoteViews(custId), JsonRequestBehavior.AllowGet);
+            return Json(_suspiciousCustomerReportService.GetNoteViews(custId), JsonRequestBehavior.AllowGet);
         }
     }
 }

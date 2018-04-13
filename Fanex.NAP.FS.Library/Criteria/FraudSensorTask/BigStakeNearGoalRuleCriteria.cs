@@ -1,4 +1,4 @@
-﻿namespace Fanex.NAP.FS.Library.Criteria
+﻿namespace Fanex.NAP.FS.Library.Criteria.FraudSensorTask
 {
     using Data.Repository;
 

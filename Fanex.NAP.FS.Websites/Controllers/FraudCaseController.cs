@@ -3,10 +3,11 @@
     using Fanex.NAP.Core.Web.Attribute;
     using Fanex.NAP.FS.Library.Core.Helpers.Api;
     using Fanex.NAP.FS.Library.FSMQ;
-    using Fanex.NAP.FS.Websites.Models;
-    using Fanex.NAP.FS.Websites.Models.FraudCase;
-    using Fanex.NAP.FS.Websites.Service.FraudCase;
+    using Fanex.NAP.FS.Library.Models;
+    using Fanex.NAP.FS.Library.Models.FraudCase;
     using Library.Core.Helpers.Xml;
+    using Library.Criteria.FraudCase.DelayedGoal;
+    using Library.Services;
     using System;
     using System.Collections.Generic;
     using System.Configuration;
@@ -18,7 +19,15 @@
     {
         private readonly string FPS_WEBAPI = ConfigurationManager.AppSettings["FPS_WEBAPI"];
 
-        private readonly Library.Services.DelayGoalAccountService _delayGoalAccountService = new Library.Services.DelayGoalAccountService();
+        private readonly IDelayGoalAccountService _delayGoalAccountService;
+
+        private readonly IFraudCaseService _fraudCaseService;
+
+        public FraudCaseController()
+        {
+            _delayGoalAccountService = new DelayGoalAccountService();
+            _fraudCaseService = new FraudCaseService();
+        }
 
         public ActionResult Index()
         {
@@ -32,7 +41,7 @@
 
             var fraudCase = FraudCase.GetFraudCase(caseid);
 
-            fraudCase.IsActive = FraudCaseService.CheckActiveFraudCase(caseid);
+            fraudCase.IsActive = _fraudCaseService.CheckActiveFraudCase(caseid);
 
             return View(fraudCase);
         }
@@ -40,7 +49,7 @@
         [HttpPost]
         public ActionResult ChangeCaseStatus(int fraudCaseId, bool isActive)
         {
-            FraudCaseService.ChangeFraudCaseStatus((FraudCaseId)fraudCaseId, CurrentSession.UserId);
+            _fraudCaseService.ChangeFraudCaseStatus((FraudCaseId)fraudCaseId, CurrentSession.UserId);
 
             var sender = SendingMessageFactory.GetSender(isActive ? SendingType.Activating : SendingType.Deactivating);
             sender.Send(fraudCaseId);
@@ -52,7 +61,7 @@
         {
             var json = new
             {
-                data = FraudCaseService.GetDelayedGoalCustomers().Select((c, i) => new { rowNum = i + 1, data = c })
+                data = _fraudCaseService.GetDelayedGoalCustomers().Select((c, i) => new { rowNum = i + 1, data = c })
             };
 
             return Json(json, JsonRequestBehavior.AllowGet);
@@ -61,17 +70,17 @@
         [HttpPost]
         public ActionResult DeleteDelayedGoalCustomer(int custId)
         {
-            return Json(FraudCaseService.DeleteDelayedGoalCustomer(custId, CurrentSession.UserId));
+            return Json(_fraudCaseService.DeleteDelayedGoalCustomer(custId, CurrentSession.UserId));
         }
 
         [HttpPost]
         public ActionResult AddDelayedGoalCustomer(string username)
         {
-            var manualAccount = FraudCaseService.AddDelayedGoalCustomer(username, CurrentSession.UserId).OutParam["CustId"].ToString();
+            var manualAccount = _fraudCaseService.AddDelayedGoalCustomer(username, CurrentSession.UserId).OutParam["CustId"].ToString();
             IEnumerable<Library.DTO.CustomerAssociation> customerAssociation = ApiHelper.Post<string, IEnumerable<Library.DTO.CustomerAssociation>>(FPS_WEBAPI, manualAccount).Result;
             var customerAssociationXML = customerAssociation.ToXmlString();
             
-            return Json(_delayGoalAccountService.InsertAccounts(new Library.Criteria.DelayGoalAssociationAccountInsertCriteria { CustomerAssociationXML = customerAssociationXML }));
+            return Json(_delayGoalAccountService.InsertAccounts(new DelayGoalAssociationAccountInsertCriteria { CustomerAssociationXML = customerAssociationXML }));
         }
 
         public ActionResult ExportDelayedGoalCustomer(string searchString)
@@ -80,7 +89,7 @@
 
             var fileName = string.Format("DelayGoalCustomerList_{0}.xlsx", DateTime.Today.ToString("yyyyMMdd"));
 
-            return File(FraudCaseService.ExportDelayedCustomersToExcel(templatePath, searchString), "application/vnd.ms-excel", fileName);
+            return File(_fraudCaseService.ExportDelayedCustomersToExcel(templatePath, searchString), "application/vnd.ms-excel", fileName);
         }
     }
 }

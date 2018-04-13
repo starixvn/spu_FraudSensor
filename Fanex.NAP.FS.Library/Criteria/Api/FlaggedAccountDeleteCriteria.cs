@@ -1,4 +1,4 @@
-﻿namespace Fanex.NAP.FS.Library.Criteria
+﻿namespace Fanex.NAP.FS.Library.Criteria.Api
 {
     using Fanex.Data.Repository;
 

@@ -1,12 +1,12 @@
 ﻿namespace Fanex.NAP.FS.Library.Services
 {
     using Data.Repository;
-    using NAP.Core.Command;
+    using Models;
 
     public interface IFlaggedAccountService
     {
-        ICommandResult InsertAccounts(ICriteria criteria);
+        DBResult InsertAccounts(CriteriaBase criteria);
 
-        ICommandResult DeleteAccounts(ICriteria criteria);
+        DBResult DeleteAccounts(CriteriaBase criteria);
     }
 }

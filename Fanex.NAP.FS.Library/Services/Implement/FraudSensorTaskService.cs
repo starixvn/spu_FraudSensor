@@ -1,20 +1,20 @@
 ﻿namespace Fanex.NAP.FS.Library.Services
 {
-    using Core;
-    using Criteria;
+    using Core.BaseClasses;
+    using Criteria.FraudSensorTask;
     using DTO;
     using System.Collections.Generic;
 
-    public class FraudSensorTaskService : FSBaseService, IFraudSensorTaskService
+    public class FraudSensorTaskService : IFraudSensorTaskService
     {
         public IEnumerable<Match> BigStakeNearGoalExecutePrecondition()
         {
-            return GetData<Match>(new BigStakeNearGoalPreconditionCriteria());
+            return DataService.GetData<Match>(new BigStakeNearGoalPreconditionCriteria());
         }
 
         public void BigStakeNearGoalExecuteRule(string matchIds)
         {
-            Execute(new BigStakeNearGoalRuleCriteria
+            DataService.Execute(new BigStakeNearGoalRuleCriteria
             {
                 MatchIds = matchIds
             });
@@ -22,12 +22,12 @@
 
         public IEnumerable<Match> FlaggedAccountExecutePrecondition()
         {
-            return GetData<Match>(new FlaggedAccountPreconditionCriteria());
+            return DataService.GetData<Match>(new FlaggedAccountPreconditionCriteria());
         }
 
         public void FlaggedAccountExecuteRule(string matchIds)
         {
-            Execute(new FlaggedAccountRuleCriteria
+            DataService.Execute(new FlaggedAccountRuleCriteria
             {
                 MatchIds = matchIds
             });
@@ -35,12 +35,12 @@
 
         public IEnumerable<Match> DelayGoalExecutePrecondition()
         {
-            return GetData<Match>(new DelayGoalPreconditionCriteria());
+            return DataService.GetData<Match>(new DelayGoalPreconditionCriteria());
         }
 
         public void DelayGoalExecuteRule(string matchIds)
         {
-            Execute(new DelayGoalRuleCriteria
+            DataService.Execute(new DelayGoalRuleCriteria
             {
                 MatchIds = matchIds
             });

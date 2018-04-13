@@ -1,7 +1,7 @@
 ﻿namespace Fanex.NAP.FraudDetection.Controller.Api
 {
-    using Core.Command;
-    using FS.Library.Criteria;
+    using FS.Library.Criteria.Api;
+    using FS.Library.Models;
     using FS.Library.Services;
     using System.Web.Http;
 
@@ -15,7 +15,7 @@
         }
 
         [HttpPost]
-        public ICommandResult AddEvidence([FromBody]FlaggedAccountInsertCriteria criteria)
+        public DBResult AddEvidence([FromBody]FlaggedAccountInsertCriteria criteria)
         {
             criteria.EviCode = criteria.EviCode ?? string.Empty;
             criteria.IndirectAccounts = criteria.IndirectAccounts ?? string.Empty;
@@ -24,7 +24,7 @@
         }
 
         [HttpPost]
-        public ICommandResult RemoveEvidence([FromBody]FlaggedAccountDeleteCriteria criteria)
+        public DBResult RemoveEvidence([FromBody]FlaggedAccountDeleteCriteria criteria)
         {
             criteria.EviCode = criteria.EviCode ?? string.Empty;
             criteria.IndirectAccounts = criteria.IndirectAccounts ?? string.Empty;

@@ -1,0 +1,21 @@
+﻿namespace Fanex.NAP.FS.Library.ViewModels.FraudCase.DelayedGoal
+{
+    public class Customer
+    {
+        public Customer(Fanex.NAP.FS.Library.Models.FraudCase.DelayedGoal.Customer customer)
+        {
+            Id = customer.CustId;
+            Name = customer.AccountName ?? "-";
+            Creator = customer.CreatedBy ?? "-";
+            AddedDate = customer.CreatedDate.ToString("MMM dd, yyyy hh:mm:ss tt");
+        }
+
+        public int Id { get; set; }
+
+        public string Name { get; set; }
+
+        public string Creator { get; set; }
+
+        public string AddedDate { get; set; }
+    }
+}

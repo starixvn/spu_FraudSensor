@@ -1,19 +1,19 @@
 ﻿namespace Fanex.NAP.FS.Library.Services
 {
-    using Core;
+    using Core.BaseClasses;
     using Data.Repository;
-    using NAP.Core.Command;
+    using Models;
 
-    public class FlaggedAccountService : FSBaseService, IFlaggedAccountService
+    public class FlaggedAccountService : IFlaggedAccountService
     {
-        public ICommandResult InsertAccounts(ICriteria criteria)
+        public DBResult InsertAccounts(CriteriaBase criteria)
         {
-            return UpdateData(criteria);
+            return DataService.UpdateData(criteria, "Insert Flagged Account");
         }
 
-        public ICommandResult DeleteAccounts(ICriteria criteria)
+        public DBResult DeleteAccounts(CriteriaBase criteria)
         {
-            return UpdateData(criteria);
+            return DataService.UpdateData(criteria, "Delete Flagged Account");
         }
     }
 }

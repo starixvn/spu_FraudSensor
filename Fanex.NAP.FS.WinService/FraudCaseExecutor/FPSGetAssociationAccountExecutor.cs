@@ -2,7 +2,7 @@
 {
     using Library.Core.Helpers.Api;
     using Library.Core.Helpers.Xml;
-    using Library.Criteria;
+    using Library.Criteria.FraudCase.DelayedGoal;
     using Library.DTO;
     using Library.Services;
     using System;
