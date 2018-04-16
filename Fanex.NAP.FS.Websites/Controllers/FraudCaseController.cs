@@ -7,6 +7,7 @@
     using Fanex.NAP.FS.Library.Models.FraudCase;
     using Library.Core.Helpers.Xml;
     using Library.Criteria.FraudCase.DelayedGoal;
+    using Library.DTO;
     using Library.Services;
     using System;
     using System.Collections.Generic;
@@ -17,7 +18,7 @@
     [NapAuth(FunctionKey = FSFunctionKeys.FraudCase, Policy = Core.Business.Constant.Policy.Read)]
     public class FraudCaseController : ConfigurationsController
     {
-        private readonly string FPS_WEBAPI = ConfigurationManager.AppSettings["FPS_WEBAPI"];
+        private readonly string FPS_WEBAPI_GET_ASSOCIATION_ACCOUNT = ConfigurationManager.AppSettings["FPS_WEBAPI_GET_ASSOCIATION_ACCOUNT"];
 
         private readonly IDelayGoalAccountService _delayGoalAccountService;
 
@@ -39,7 +40,7 @@
         {
             var caseid = (FraudCaseId)fraudCaseId;
 
-            var fraudCase = FraudCase.GetFraudCase(caseid);
+            var fraudCase = Library.Models.FraudCase.FraudCase.GetFraudCase(caseid);
 
             fraudCase.IsActive = _fraudCaseService.CheckActiveFraudCase(caseid);
 
@@ -76,11 +77,16 @@
         [HttpPost]
         public ActionResult AddDelayedGoalCustomer(string username)
         {
-            var manualAccount = _fraudCaseService.AddDelayedGoalCustomer(username, CurrentSession.UserId).OutParam["CustId"].ToString();
-            IEnumerable<Library.DTO.CustomerAssociation> customerAssociation = ApiHelper.Post<string, IEnumerable<Library.DTO.CustomerAssociation>>(FPS_WEBAPI, manualAccount).Result;
-            var customerAssociationXML = customerAssociation.ToXmlString();
-            
-            return Json(_delayGoalAccountService.InsertAccounts(new DelayGoalAssociationAccountInsertCriteria { CustomerAssociationXML = customerAssociationXML }));
+            var dbresult = _fraudCaseService.AddDelayedGoalCustomer(username, CurrentSession.UserId);
+            var manualAccount = _fraudCaseService.AddDelayedGoalCustomer(username, CurrentSession.UserId).OutParam["UserId"].ToString();
+            IEnumerable<CustomerAssociation> customerAssociation = ApiHelper.Post<string, IEnumerable<CustomerAssociation>>(FPS_WEBAPI_GET_ASSOCIATION_ACCOUNT, manualAccount).Result;
+            if (customerAssociation.Any())
+            {
+                var customerAssociationXML = customerAssociation.ToXmlString();
+                dbresult = _delayGoalAccountService.InsertAccounts(new DelayGoalAssociationAccountInsertCriteria { CustomerAssociationXML = customerAssociationXML });
+            }
+
+            return Json(dbresult);
         }
 
         public ActionResult ExportDelayedGoalCustomer(string searchString)

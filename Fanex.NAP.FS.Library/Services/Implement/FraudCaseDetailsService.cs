@@ -258,10 +258,17 @@
         public IEnumerable<CustomerTotalAssociation> GetTotalAssociations(IEnumerable<int> custIds)
         {
             var tmp = "123,456";
-
             var url = AppSettings.Get("FPS_WEBAPI_GET_TOTAL_ASSOCIATION");
 
             return ApiHelper.Post<string, IEnumerable<CustomerTotalAssociation>>(url, tmp).Result;
+        }
+
+        public IEnumerable<CustomerEvidence> GetCustomerEvidence(IEnumerable<int> custIds, IEnumerable<string> evidences)
+        {
+            var tmp = "1.5,1.3";
+            var url = AppSettings.Get("FPS_WEBAPI_GET_CUSTOMER_EVIDENCE");
+
+            return ApiHelper.Post<string, IEnumerable<CustomerEvidence>>(url, tmp).Result;
         }
 
         public IEnumerable<CustomerAssociation> GetAssociations(int custId)
