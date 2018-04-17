@@ -67,7 +67,7 @@
 
                     result.TicketRules = new[]
                     {
-                        "Customer Evidence = All",
+                        "Customer has evidence on FPS",
                         "Currency <> Test Currency"
                     };
 

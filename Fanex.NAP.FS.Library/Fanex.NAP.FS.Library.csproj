@@ -252,6 +252,7 @@
     <Compile Include="Models\MatchMonitor\FraudCase.cs" />
     <Compile Include="Models\MatchMonitor\FraudCaseDetails\CustEvidence.cs" />
     <Compile Include="Models\MatchMonitor\FraudCaseDetails\CustInfo.cs" />
+    <Compile Include="Models\MatchMonitor\FraudCaseDetails\MatchInfo.cs" />
     <Compile Include="Models\MatchMonitor\FraudCaseDetails\TicketInfo.cs" />
     <Compile Include="Models\MatchMonitor\League.cs" />
     <Compile Include="Models\MatchMonitor\Match.cs" />

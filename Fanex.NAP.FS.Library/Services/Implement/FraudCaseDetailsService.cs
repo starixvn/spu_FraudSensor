@@ -136,16 +136,16 @@
             {
                 using (var query = db.QueryMultiple(criteria))
                 {
-                    var info = query.ReadSingle();
+                    var info = query.ReadSingle<MatchInfo>();
                     var fraudCaseName = query.ReadSingle<string>();
 
-                    var home = RefData.GetTeamName(info.homeid.ToString())[1];
-                    var away = RefData.GetTeamName(info.awayid.ToString())[1];
+                    var home = RefData.GetTeamName(info.HomeId.ToString())[1];
+                    var away = RefData.GetTeamName(info.AwayId.ToString())[1];
 
                     var eventName = string.Format("<span class='underdog'>{0}</span> - vs - <span class='underdog'>{1}</span>", home, away);
 
                     var htScore = string.Format("{0}-{1}", info.HTHomeScore, info.HTAwayScore);
-                    var ftScore = string.Format("{0}-{1}", info.finalhomescore, info.finalawayscore);
+                    var ftScore = string.Format("{0}-{1}", info.FinalHomeScore, info.FinalAwayScore);
 
                     return new MatchFraudCaseInfo
                     {
@@ -156,8 +156,8 @@
                         Event = eventName,
                         HTScore = htScore,
                         FTScore = ftScore,
-                        AwayId = info.awayid,
-                        HomeId = info.homeid,
+                        AwayId = info.AwayId,
+                        HomeId = info.HomeId,
                         Home = home,
                         Away = away
                     };

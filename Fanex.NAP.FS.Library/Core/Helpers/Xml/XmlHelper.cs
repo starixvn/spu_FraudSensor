@@ -137,7 +137,7 @@
 
             var f = Expression.Lambda<Func<object, object>>(prop_expr, arg_expr).Compile();
 
-            return obj => f(obj).ToXmlObj();
+            return obj => ToXObject(f(obj), prop.PropertyType);
         }
     }
 }
