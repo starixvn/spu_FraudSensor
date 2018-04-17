@@ -25,10 +25,12 @@
             }
         }
 
-        public static XElement ToXmlObj(this object o)
-        {
-            var t = o.GetType();
+        public static XElement ToXmlObj<T>(this T o) => ToXObject(o, typeof(T));
 
+        public static string ToXmlString<T>(this T o) => o.ToXmlObj().ToString();
+
+        private static XElement ToXObject(object o, Type t)
+        {
             if (typeof(IEnumerable).IsAssignableFrom(t))
             {
                 var generic_param = t.IsArray ? t.GetElementType() : t.GetGenericArguments()[0];
@@ -37,7 +39,7 @@
 
                 var list = o as IEnumerable;
 
-                var xml_parts = list.Cast<object>().Select(a => a.ToXmlObj());
+                var xml_parts = list.Cast<object>().Select(a => ToXObject(a, generic_param));
 
                 return new XElement("Root", xml_parts);
             }
@@ -52,8 +54,6 @@
                 return new XElement(t.Name, children);
             }
         }
-
-        public static string ToXmlString(this object o) => o.ToXmlObj().ToString();
 
         public static void RegisterType<T>() => RegisterType(typeof(T));
 
