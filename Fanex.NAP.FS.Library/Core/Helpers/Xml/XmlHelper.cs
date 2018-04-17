@@ -39,7 +39,7 @@
 
                 var xml_parts = list.Cast<object>().Select(a => a.ToXmlObj());
 
-                return new XElement("root", xml_parts);
+                return new XElement("Root", xml_parts);
             }
             else
             {

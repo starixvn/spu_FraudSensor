@@ -160,7 +160,7 @@
                 .dialog("option", "title", `Associated accounts of customer ${obj.Member}`)
                 .dialog("open");
 
-            $("table", associated_accounts).DataTable().clear().rows.add(json).draw();
+            $("table", associated_accounts).DataTable().clear().columns.adjust().rows.add(json).draw();
 
             common.closeLoading();
         })
@@ -267,7 +267,6 @@
     $(".-export").click(exportExcel);
 
     associated_accounts.dialog({
-        maxHeight: 600,
         width: 500,
         modal: true,
         autoOpen: false,
@@ -343,7 +342,7 @@
         ],
         columns: [
             { data: (obj, typet, set, meta) => meta.row + 1, className: "text-center", width: "40px" },
-            { data: obj => obj.Currency, className: "text-center", width: "100px" },
+            { data: obj => obj.Currency, className: "text-center", width: "20px" },
             { data: obj => obj.Username },
         ]
     });

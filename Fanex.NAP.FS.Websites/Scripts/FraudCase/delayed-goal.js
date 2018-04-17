@@ -14,7 +14,7 @@
 
     view_link.click(function () {
         customer_list.dialog("open");
-        table.DataTable().ajax.reload();
+        table.DataTable().columns.adjust().ajax.reload();
         $("#username-search").val("").keyup();
         $("#username").val("");
     });
