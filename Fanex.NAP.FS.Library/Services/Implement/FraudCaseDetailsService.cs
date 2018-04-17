@@ -261,14 +261,6 @@
             return ApiHelper.Post<string, IEnumerable<CustomerTotalAssociation>>(url, string.Join(",", custIds)).Result;
         }
 
-        public IEnumerable<CustomerEvidence> GetCustomerEvidence(IEnumerable<int> custIds, IEnumerable<string> evidences)
-        {
-            var tmp = "1.5,1.3";
-            var url = AppSettings.Get("FPS_WEBAPI_GET_CUSTOMER_EVIDENCE");
-
-            return ApiHelper.Post<string, IEnumerable<CustomerEvidence>>(url, tmp).Result;
-        }
-
         public IEnumerable<CustomerAssociation> GetAssociations(int custId)
         {
             var url = AppSettings.Get("FPS_WEBAPI_GET_ASSOCIATION_ACCOUNT");
@@ -278,7 +270,7 @@
 
         private IEnumerable<CustomerEvidence> GetEvidences(IEnumerable<int> custIds)
         {
-            var url = AppSettings.Get("FPS_WEBAPI_GET_EVIDENCE");
+            var url = AppSettings.Get("FPS_WEBAPI_GET_CUSTOMER_EVIDENCE");
 
             var param = new CustomerEvidenceList
             {
