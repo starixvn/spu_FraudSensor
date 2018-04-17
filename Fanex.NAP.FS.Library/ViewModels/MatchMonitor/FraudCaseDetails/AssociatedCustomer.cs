@@ -3,5 +3,7 @@
     public class AssociatedCustomer
     {
         public string Username { get; set; }
+
+        public string Currency { get; set; }
     }
 }

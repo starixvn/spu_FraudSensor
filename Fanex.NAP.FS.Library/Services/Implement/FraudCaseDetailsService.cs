@@ -215,7 +215,7 @@
         public IEnumerable<AssociatedCustomer> GetAssociatedAccounts(int custId)
         {
             return GetAssociations(custId)
-                .Select(a => new AssociatedCustomer { Username = a.ToOWUsername })
+                .Select(a => new AssociatedCustomer { Username = a.ToOWUsername, Currency = a.CurrencyName })
                 .OrderBy(a => a.Username);
         }
 

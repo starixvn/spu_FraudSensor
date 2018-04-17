@@ -4,7 +4,6 @@
     using Fanex.NAP.FS.Library.Core.Helpers.Api;
     using Fanex.NAP.FS.Library.FSMQ;
     using Fanex.NAP.FS.Library.Models;
-    using Fanex.NAP.FS.Library.Models.FraudCase;
     using Library.Core.Helpers.Xml;
     using Library.Criteria.FraudCase.DelayedGoal;
     using Library.DTO;
@@ -78,9 +77,10 @@
         public ActionResult AddDelayedGoalCustomer(string username)
         {
             var dbresult = _fraudCaseService.AddDelayedGoalCustomer(username, CurrentSession.UserId);
-            if (dbresult.ErrorCode != 0)
+
+            if (dbresult.ErrorCode == 0)
             {
-                var manualAccount = _fraudCaseService.AddDelayedGoalCustomer(username, CurrentSession.UserId).OutParam["UserId"].ToString();
+                var manualAccount = dbresult.OutParam["addedcustid"].ToString();
                 IEnumerable<CustomerAssociation> customerAssociation = ApiHelper.Post<string, IEnumerable<CustomerAssociation>>(FPS_WEBAPI_GET_ASSOCIATION_ACCOUNT, manualAccount).Result;
 
                 if (customerAssociation.Any())
