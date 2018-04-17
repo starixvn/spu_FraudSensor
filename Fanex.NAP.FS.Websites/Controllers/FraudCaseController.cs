@@ -80,6 +80,7 @@
             var dbresult = _fraudCaseService.AddDelayedGoalCustomer(username, CurrentSession.UserId);
             var manualAccount = _fraudCaseService.AddDelayedGoalCustomer(username, CurrentSession.UserId).OutParam["UserId"].ToString();
             IEnumerable<CustomerAssociation> customerAssociation = ApiHelper.Post<string, IEnumerable<CustomerAssociation>>(FPS_WEBAPI_GET_ASSOCIATION_ACCOUNT, manualAccount).Result;
+
             if (customerAssociation.Any())
             {
                 var customerAssociationXML = customerAssociation.ToXmlString();

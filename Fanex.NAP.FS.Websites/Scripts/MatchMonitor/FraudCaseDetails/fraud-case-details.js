@@ -160,10 +160,6 @@
                 .dialog("option", "title", `Associated accounts of customer ${obj.Member}`)
                 .dialog("open");
 
-            for (var i = 0; i < 500; i++) {
-                json.push({ Currency: "Won", Username: "adfadfadfadfadfdafadf" });
-            }
-
             $("table", associated_accounts).DataTable().clear().rows.add(json).draw();
 
             common.closeLoading();
