@@ -179,7 +179,6 @@
     <Compile Include="Core\Helpers\Xml\IXml.cs" />
     <Compile Include="Core\Helpers\Xml\XmlHelper.cs" />
     <Compile Include="Core\Utilities\ConfigSettings.cs" />
-    <Compile Include="Core\Utilities\Excel.cs" />
     <Compile Include="Core\Utilities\Extentions.cs" />
     <Compile Include="Criteria\Api\FlaggedAccountDeleteCriteria.cs" />
     <Compile Include="Criteria\Api\FlaggedAccountInsertCriteria.cs" />
@@ -207,7 +206,6 @@
     <Compile Include="Criteria\MatchMonitor\LeagueGetCriteria.cs" />
     <Compile Include="Criteria\MatchMonitor\MatchGetAllCriteria.cs" />
     <Compile Include="Criteria\MatchMonitor\MatchNoteUpdateCriteria.cs" />
-    <Compile Include="Criteria\MatchMonitor\UpdateNoteCriteria.cs" />
     <Compile Include="Criteria\MatchMonitor\VerifyMatchCriteria.cs" />
     <Compile Include="Criteria\SuspiciousCustomer\SuspiciousCustomerNoteGetCriteria.cs" />
     <Compile Include="Criteria\SuspiciousCustomer\SuspiciousCustomerReportGetCriteria.cs" />

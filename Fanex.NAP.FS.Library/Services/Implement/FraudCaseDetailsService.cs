@@ -16,7 +16,6 @@
     using System.Collections.Generic;
     using System.Linq;
     using Core.BaseClasses;
-    using Core;
 
     public class FraudCaseDetailsService : IFraudCaseDetailsService
     {
@@ -87,7 +86,7 @@
             using (var query = db.QueryMultiple(criteria))
             {
                 var custInfo = query.Read<CustInfo>();
-                var custEvidence = query.Read<CustEvidence>();
+                var custEvidence = GetEvidences(custInfo.Select(info => info.CustId));
 
                 var totalAssociation = GetTotalAssociations(custInfo.Select(i => i.CustId)).ToDictionary(o => o.CustId, o => o.TotalAssociation);
 
@@ -257,10 +256,9 @@
 
         public IEnumerable<CustomerTotalAssociation> GetTotalAssociations(IEnumerable<int> custIds)
         {
-            var tmp = "123,456";
             var url = AppSettings.Get("FPS_WEBAPI_GET_TOTAL_ASSOCIATION");
 
-            return ApiHelper.Post<string, IEnumerable<CustomerTotalAssociation>>(url, tmp).Result;
+            return ApiHelper.Post<string, IEnumerable<CustomerTotalAssociation>>(url, string.Join(",", custIds)).Result;
         }
 
         public IEnumerable<CustomerEvidence> GetCustomerEvidence(IEnumerable<int> custIds, IEnumerable<string> evidences)
@@ -275,7 +273,19 @@
         {
             var url = AppSettings.Get("FPS_WEBAPI_GET_ASSOCIATION_ACCOUNT");
 
-            return ApiHelper.Post<string, IEnumerable<CustomerAssociation>>(url, "123,456").Result;
+            return ApiHelper.Post<string, IEnumerable<CustomerAssociation>>(url, custId.ToString()).Result;
+        }
+
+        private IEnumerable<CustomerEvidence> GetEvidences(IEnumerable<int> custIds)
+        {
+            var url = AppSettings.Get("FPS_WEBAPI_GET_EVIDENCE");
+
+            var param = new CustomerEvidenceList
+            {
+                CustIdList = string.Join(",", custIds)
+            };
+
+            return ApiHelper.Post<CustomerEvidenceList, IEnumerable<CustomerEvidence>>(url, param).Result;
         }
     }
 }
