@@ -6,6 +6,8 @@
     {
         public string MatchIds { get; set; }
 
+        public string FlaggedAccountsXML { get; set; }
+
         public override string GetSettingKey()
         {
             return "FS_FraudCase_FlaggedAccount_Rule";

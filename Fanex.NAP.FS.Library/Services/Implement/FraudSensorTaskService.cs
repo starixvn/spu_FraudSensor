@@ -25,11 +25,12 @@
             return DataService.GetData<Match>(new FlaggedAccountPreconditionCriteria());
         }
 
-        public void FlaggedAccountExecuteRule(string matchIds)
+        public void FlaggedAccountExecuteRule(string matchIds, string flaggedAccounts)
         {
             DataService.Execute(new FlaggedAccountRuleCriteria
             {
-                MatchIds = matchIds
+                MatchIds = matchIds,
+                FlaggedAccountsXML = flaggedAccounts
             });
         }
 

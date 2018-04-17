@@ -245,6 +245,7 @@
     <Compile Include="Models\DBResult.cs" />
     <Compile Include="Models\FraudCaseId.cs" />
     <Compile Include="Models\FraudCase\DelayedGoal\Customer.cs" />
+    <Compile Include="Models\FraudCase\FlaggedAccount\FlaggedCustomer.cs" />
     <Compile Include="Models\FraudCase\FraudCase.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\MatchMonitor\BalanceUpDate.cs" />

@@ -1,9 +1,13 @@
 ﻿namespace Fanex.NAP.FS.WinService
 {
+    using Library.Core.Helpers.Api;
+    using Library.Core.Helpers.Xml;
     using Library.Core.Utilities;
     using Library.DTO;
+    using Library.Models.FraudCase.FlaggedAccount;
     using System;
     using System.Collections.Generic;
+    using System.Configuration;
     using System.Linq;
     using System.Threading.Tasks;
 
@@ -11,14 +15,26 @@
     {
         private IEnumerable<Match> _matches;
 
+        private IEnumerable<FlaggedCustomer> _flaggedCustomers;
+
         private readonly List<Task> _threads;
 
         private const int ChunkSize = 100;
+
+        private readonly string FPS_WEBAPI_GET_CUSTOMER_EVIDENCE = ConfigurationManager.AppSettings["FPS_WEBAPI_GET_CUSTOMER_EVIDENCE"];
 
         public FlaggedAccountExecutor(FraudCase fraudCase) : base(fraudCase)
         {
             _matches = new List<Match>();
             _threads = new List<Task>();
+
+            var param = new CustomerEvidenceList
+            {
+                CustIdList = string.Empty,
+                EvidenceCodeList = string.Empty
+            };
+
+            _flaggedCustomers = ApiHelper.Post<CustomerEvidenceList, IEnumerable<FlaggedCustomer>>(FPS_WEBAPI_GET_CUSTOMER_EVIDENCE, param).Result;
         }
 
         protected override void ClearOldResult()
@@ -69,7 +85,8 @@
             {
                 try
                 {
-                    _fraudSensorTaskService.FlaggedAccountExecuteRule(string.Join(",", ((List<Match>)m).Select(t => t.MatchId.ToString())));
+                    var flaggedAccountsXml = XmlHelper.ToXmlString(_flaggedCustomers);
+                    _fraudSensorTaskService.FlaggedAccountExecuteRule(string.Join(",", ((List<Match>)m).Select(t => t.MatchId.ToString())), flaggedAccountsXml);
 
                     _errorTimes = 0;
                 }

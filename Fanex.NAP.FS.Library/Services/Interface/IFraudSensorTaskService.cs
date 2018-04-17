@@ -11,7 +11,7 @@
 
         IEnumerable<Match> FlaggedAccountExecutePrecondition();
 
-        void FlaggedAccountExecuteRule(string matchIds);
+        void FlaggedAccountExecuteRule(string matchIds, string flaggedAccounts);
 
         IEnumerable<Match> DelayGoalExecutePrecondition();
 
