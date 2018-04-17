@@ -19,5 +19,6 @@
     <Setting Key="FS_FraudCase_DelayGoal_PreCondition" SpName="FS_FraudCase_DelayGoal_PreCondition" DbName="DBFS.FraudSensor.bodbSPUNet" />
     <Setting Key="FS_FraudCase_DelayGoal_Rule" SpName="FS_FraudCase_DelayGoal_Rule" DbName="DBFS.FraudSensor.bodbSPUNet" />
     <Setting Key="FS_DelayGoalAccount_GetManualAccount" SpName="FS_DelayGoalAccount_GetManualAccount" DbName="DBFS.FraudSensor.bodbSPUNet" />
+    <Setting Key="FS_DelayGoalAccount_ImportFromFPS" SpName="FS_DelayGoalAccount_ImportFromFPS" DbName="DBFS.FraudSensor.bodbSPUNet" />
   </Function>
 </Functions>
