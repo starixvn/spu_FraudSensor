@@ -78,13 +78,16 @@
         public ActionResult AddDelayedGoalCustomer(string username)
         {
             var dbresult = _fraudCaseService.AddDelayedGoalCustomer(username, CurrentSession.UserId);
-            var manualAccount = _fraudCaseService.AddDelayedGoalCustomer(username, CurrentSession.UserId).OutParam["UserId"].ToString();
-            IEnumerable<CustomerAssociation> customerAssociation = ApiHelper.Post<string, IEnumerable<CustomerAssociation>>(FPS_WEBAPI_GET_ASSOCIATION_ACCOUNT, manualAccount).Result;
-
-            if (customerAssociation.Any())
+            if (dbresult.ErrorCode != 0)
             {
-                var customerAssociationXML = customerAssociation.ToXmlString();
-                dbresult = _delayGoalAccountService.InsertAccounts(new DelayGoalAssociationAccountInsertCriteria { CustomerAssociationXML = customerAssociationXML });
+                var manualAccount = _fraudCaseService.AddDelayedGoalCustomer(username, CurrentSession.UserId).OutParam["UserId"].ToString();
+                IEnumerable<CustomerAssociation> customerAssociation = ApiHelper.Post<string, IEnumerable<CustomerAssociation>>(FPS_WEBAPI_GET_ASSOCIATION_ACCOUNT, manualAccount).Result;
+
+                if (customerAssociation.Any())
+                {
+                    var customerAssociationXML = customerAssociation.ToXmlString();
+                    dbresult = _delayGoalAccountService.InsertAccounts(new DelayGoalAssociationAccountInsertCriteria { CustomerAssociationXML = customerAssociationXML });
+                }
             }
 
             return Json(dbresult);
