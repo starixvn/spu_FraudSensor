@@ -254,7 +254,7 @@ input[type="checkbox"]:disabled + span {
   -moz-border-radius: 2px;
   border-radius: 2px; }
   .select2-container--default .select2-selection--single .select2-selection__rendered {
-    line-height: 26px;
+    line-height: 25px;
     color: #545454; }
 
 .select2-container--default .select2-results__option--highlighted[aria-selected] {
@@ -546,8 +546,8 @@ select[disabled] {
   .ui-selectmenu-button.ui-button .ui-icon:before {
     content: "\e91e";
     font-size: 20px;
-    color: #455360; }
-  .ui-selectmenu-button.ui-button.ui-selectmenu-button-open .ui-icon:before {
+    color: #737373; }
+  .ui-selectmenu-button.ui-button.ui-selectmenu-button-open .ui-icon:before, .ui-selectmenu-button.ui-button:hover .ui-icon:before {
     color: #2197ff; }
   .ui-selectmenu-button.ui-button .ui-selectmenu-text {
     display: none; }
@@ -750,11 +750,11 @@ select[disabled] {
     -webkit-border-bottom-right-radius: 0;
     -moz-border-radius-bottomright: 0;
     border-bottom-right-radius: 0; }
-  .add-component .text:focus {
-    -webkit-box-shadow: none;
-    -moz-box-shadow: none;
-    box-shadow: none;
-    border-right-color: #2197ff; }
+    .add-component .text:focus {
+      -webkit-box-shadow: none;
+      -moz-box-shadow: none;
+      box-shadow: none;
+      border-right-color: #2197ff; }
   .add-component .button {
     -webkit-border-top-left-radius: 0;
     -moz-border-radius-topleft: 0;
@@ -804,6 +804,11 @@ select[disabled] {
     line-height: 0; }
   .table .text-red {
     color: #e73239 !important; }
+
+table.dataTable {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box; }
 
 .dataTables_scrollHeadInner {
   background-color: #465262; }
@@ -931,6 +936,11 @@ select[disabled] {
     background: none;
     border: none; }
 
+.ui-button:hover .ui-icon {
+  background: none; }
+  .ui-button:hover .ui-icon:before {
+    color: #fff; }
+
 .ui-button .ui-icon {
   width: auto;
   height: auto;
@@ -942,7 +952,7 @@ select[disabled] {
   .ui-button .ui-icon:before {
     display: inline-block;
     content: "\e920";
-    color: #fff;
+    color: #909bad;
     font-size: 20px; }
 
 .dialog-confirmation .ui-dialog-content {
@@ -1345,7 +1355,7 @@ body {
   -moz-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  color: #8c8c8c;
+  color: #737373;
   cursor: pointer; }
 
 .table .icon-note:hover,

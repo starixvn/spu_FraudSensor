@@ -40,10 +40,11 @@ select[disabled] {
     .ui-icon:before {
         content: "\e91e";
         font-size: 20px;
-        color: #455360;
+        color: #737373;
     }
 
-    &.ui-selectmenu-button-open {
+    &.ui-selectmenu-button-open,
+    &:hover {
         .ui-icon:before {
             color: #2197ff;
         }

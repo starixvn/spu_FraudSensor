@@ -113,11 +113,11 @@
         border-right-color: #4f971f;
         border-top-right-radius: 0;
         border-bottom-right-radius: 0;
-    }
 
-    .text:focus {
-        box-shadow: none;
-        border-right-color: #2197ff;
+        &:focus {
+            box-shadow: none;
+            border-right-color: #2197ff;
+        }
     }
 
     .button {
@@ -195,6 +195,12 @@
     .text-red {
         color: #e73239 !important;
     }
+}
+
+// Customize dataTables
+
+table.dataTable {
+    box-sizing: border-box;
 }
 
 .dataTables_scrollHeadInner {
