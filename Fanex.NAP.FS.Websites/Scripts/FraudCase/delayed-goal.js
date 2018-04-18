@@ -62,7 +62,7 @@
     function deleteFlow() {
         var $table = table.DataTable();
 
-        console.log($table.row($(this).parents("tr")).data());
+        //console.log($table.row($(this).parents("tr")).data());
 
         var $row = $table.row($(this).parents("tr"));
 
@@ -95,10 +95,15 @@
         if (username != null && username.length != 0) {
             var url = common.modifyRelativeUrl("/FraudCase/AddDelayedGoalCustomer");
 
+            common.showLoading();
+
             $.post({
                 url: url,
                 data: { username: username },
-                success: showResponse
+                success: function (data) {
+                    showResponse(data);
+                    common.closeLoading();
+                }
             })
         }
     }

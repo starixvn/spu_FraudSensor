@@ -187,6 +187,11 @@
     this.formatNumber = (n = 0, format = "0,0.00") => numeral(n).format(format);
 
     this.encodeString = encodeURIComponent;
+
+    this.registerAutoLoading = function () {
+        $(document).ajaxStart(() => loading.show());
+        $(document).ajaxComplete(() => loading.hide());
+    }
 }
 
 var common = new UICommon();
