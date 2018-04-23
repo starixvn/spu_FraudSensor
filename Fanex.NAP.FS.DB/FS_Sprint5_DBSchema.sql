@@ -5,42 +5,37 @@ Task:  Create tables for Fraud Sensor - Sprint#5
 			> Alter Table DelayGoalAccount
 			> Drop tables: EvidenceTypes, FlaggedAccount
 Server:  bodb_FraudSensor
+
+Reviewer: Billy
 */ 
+
+USE	bodb_FraudSensor;
+GO
+
 --===========ALTER TABLES
 ALTER TABLE [dbo].[DelayGoalAccount]
-ADD		[IsManualAdd]		BIT DEFAULT ((0)) NULL 
-	,	[IsActive]			BIT DEFAULT ((1)) NULL;
+ADD		[IsManualAdd]		BIT NULL 
+	,	[IsActive]			BIT NULL;
 
 GO
 ALTER TABLE [dbo].[DelayGoalAccount]
-ADD CONSTRAINT PK_DelayGoalAccount PRIMARY KEY
-(
-		CustId				ASC
-	,	CreatedBy			ASC
-)
+DROP CONSTRAINT PK_DelayGoalAccount
 
 GO
+ALTER TABLE [dbo].[DelayGoalAccount]
+ALTER COLUMN CreatedBy INT NOT NULL; 
 
-/* Update primary key of DelayGoalAccount */
-DECLARE @table NVARCHAR(512), @sql NVARCHAR(MAX);
-SELECT @table = N'dbo.[DelayGoalAccount]';
+GO
+ALTER TABLE [dbo].[DelayGoalAccount]
+ADD CONSTRAINT [PK_DelayGoalAccount] PRIMARY KEY CLUSTERED
+(
+	 CustId             ASC
+	,CreatedBy			ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [DATA]
 
-SELECT @sql = 'ALTER TABLE ' + @table + ' DROP CONSTRAINT ' + name + ';'
-FROM sys.key_constraints
-WHERE [type] = 'PK'
-	AND [parent_object_id] = OBJECT_ID(@table);
+GO
+--=========DROP TABLES
+DROP TABLE	FlaggedAccount;
+DROP TABLE	EvidenceTypes;
 
-EXEC sp_executeSQL @sql;
-
-GO --=========DROP TABLES
-IF OBJECT_ID('tempdb..#FlaggedAccount') IS NOT NULL
-	BEGIN
-		DROP TABLE	#FlaggedAccount;
-	END
-
-IF OBJECT_ID('tempdb..#EvidenceTypes') IS NOT NULL
-	BEGIN
-		DROP TABLE	#EvidenceTypes;
-	
-	END	
 	
