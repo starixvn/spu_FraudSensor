@@ -15,7 +15,7 @@
     {
         private IEnumerable<Match> _matches;
 
-        private IEnumerable<FlaggedCustomer> _flaggedCustomers;
+        private readonly IEnumerable<FlaggedCustomer> _flaggedCustomers;
 
         private readonly List<Task> _threads;
 
