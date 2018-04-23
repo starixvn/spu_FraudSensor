@@ -27,6 +27,7 @@
         {
             _matches = new List<Match>();
             _threads = new List<Task>();
+            _flaggedCustomers = new List<FlaggedCustomer>();
 
             var param = new CustomerEvidenceList
             {
