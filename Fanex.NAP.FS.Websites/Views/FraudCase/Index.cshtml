@@ -26,7 +26,7 @@
     </div>
 }
 
-@if (Model != null)
+@if (Model.FraudCaseInfo != null)
 {
     <div class="info">
         <div class="row">
@@ -75,7 +75,7 @@
 @section scripts{
     @Scripts.Render("~/fraud-case-scripts")
 
-    @if (Model != null)
+    @if (Model.FraudCaseInfo != null)
     {
         if (Model.FraudCaseInfo.FraudCaseId == (int)FraudCaseId.DelayedGoal)
         {

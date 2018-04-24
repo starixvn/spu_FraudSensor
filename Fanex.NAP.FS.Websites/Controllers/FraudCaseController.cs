@@ -32,7 +32,10 @@
 
         public ActionResult Index()
         {
-            return View();
+            var fraudCaseViewModel = new FraudCaseViewModel();
+            fraudCaseViewModel.FraudCaseList = _fraudCaseService.Get(true, true, int.Parse(ConfigurationManager.AppSettings["Environment"]));
+
+            return View(fraudCaseViewModel);
         }
 
         [HttpPost]
