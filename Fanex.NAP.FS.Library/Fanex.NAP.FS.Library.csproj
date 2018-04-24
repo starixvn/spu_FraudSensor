@@ -188,7 +188,6 @@
     <Compile Include="Criteria\FraudCase\DelayedGoal\DelayedGoalAccountDeleteCriteria.cs" />
     <Compile Include="Criteria\FraudCase\DelayedGoal\DelayedGoalAccountGetCriteria.cs" />
     <Compile Include="Criteria\FraudCase\FraudCaseGetByIdCriteria.cs" />
-    <Compile Include="Criteria\FraudCase\FraudCaseGetAllCriteria.cs" />
     <Compile Include="Criteria\FraudCase\FraudCaseGetCriteria.cs" />
     <Compile Include="Criteria\FraudCase\GetIsActiveCriteria.cs" />
     <Compile Include="Criteria\FraudCase\UpdateFraudCaseStatusCriteria.cs" />

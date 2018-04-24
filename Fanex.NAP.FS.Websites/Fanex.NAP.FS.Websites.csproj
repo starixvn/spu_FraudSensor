@@ -297,6 +297,7 @@
     <Compile Include="Service\Utilities\PermissionService.cs" />
     <Compile Include="Service\Utilities\SessionManager.cs" />
     <Compile Include="Startup.cs" />
+    <Compile Include="ViewModels\FraudCase\FraudCaseViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Data\NAPFrameworkSpNames.xml" />

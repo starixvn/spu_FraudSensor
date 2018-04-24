@@ -211,7 +211,7 @@
         {
             try
             {
-                if (!ConfigurationManager.AppSettings["IsLocalTest"].Equals("1"))
+                if (!ConfigurationManager.AppSettings["Environment"].Equals("1"))
                 {
                     var maintenanceInfo = _maintenanceService.GetUnderMaintenanceTime();
 

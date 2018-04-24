@@ -37,7 +37,7 @@
         public ActionResult GetFraudCases()
         {
             var fraudCaseService = new FraudCaseService();
-            var fraudCases = fraudCaseService.GetAll();
+            var fraudCases = fraudCaseService.Get(false, true, int.Parse(ConfigurationManager.AppSettings["Environment"]));
             if (fraudCases != null && fraudCases.Any())
             {
                 fraudCases = fraudCases.Where(t => !t.IsTest);

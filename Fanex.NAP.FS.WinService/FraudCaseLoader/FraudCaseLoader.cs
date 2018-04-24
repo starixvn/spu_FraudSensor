@@ -2,6 +2,7 @@
 {
     using Library.FSMQ;
     using Library.Services;
+    using System.Configuration;
 
     public class FraudCaseLoader : IFraudCaseLoader
     {
@@ -18,7 +19,7 @@
 
         public void LoadFraudCases()
         {
-            var fraudCases = _fraudCaseService.GetAll();
+            var fraudCases = _fraudCaseService.Get(false, true, int.Parse(ConfigurationManager.AppSettings["Environment"]));
 
             foreach (var fraudCase in fraudCases)
             {

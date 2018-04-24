@@ -8,6 +8,7 @@
     using Library.Criteria.FraudCase.DelayedGoal;
     using Library.DTO;
     using Library.Services;
+    using ViewModels.FraudCase;
     using System;
     using System.Collections.Generic;
     using System.Configuration;
@@ -38,12 +39,12 @@
         public ActionResult Index(int fraudCaseId)
         {
             var caseid = (FraudCaseId)fraudCaseId;
+            var fraudCaseViewModel = new FraudCaseViewModel();
+            fraudCaseViewModel.FraudCaseInfo = Library.Models.FraudCase.FraudCase.GetFraudCase(caseid);
+            fraudCaseViewModel.FraudCaseList = _fraudCaseService.Get(true, true, int.Parse(ConfigurationManager.AppSettings["Environment"]));
+            fraudCaseViewModel.FraudCaseInfo.IsActive = _fraudCaseService.CheckActiveFraudCase(caseid);
 
-            var fraudCase = Library.Models.FraudCase.FraudCase.GetFraudCase(caseid);
-
-            fraudCase.IsActive = _fraudCaseService.CheckActiveFraudCase(caseid);
-
-            return View(fraudCase);
+            return View(fraudCaseViewModel);
         }
 
         [HttpPost]

@@ -13,9 +13,9 @@
 
     public class FraudCaseService : IFraudCaseService
     {
-        public IEnumerable<FraudCase> GetAll()
+        public IEnumerable<FraudCase> Get(bool isInternal, bool isActive, int environment)
         {
-            return DataService.GetData<FraudCase>(new FraudCaseGetAllCriteria());
+            return DataService.GetData<FraudCase>(new FraudCaseGetCriteria(isInternal, isActive, environment));
         }
 
         public FraudCase GetByFraudCaseId(int fraudCaseId)
