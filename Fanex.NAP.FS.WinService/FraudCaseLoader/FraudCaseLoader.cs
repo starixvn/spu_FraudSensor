@@ -19,7 +19,7 @@
 
         public void LoadFraudCases()
         {
-            var fraudCases = _fraudCaseService.Get(false, true, int.Parse(ConfigurationManager.AppSettings["Environment"]));
+            var fraudCases = _fraudCaseService.Get(null, 1, int.Parse(ConfigurationManager.AppSettings["Environment"]));
 
             foreach (var fraudCase in fraudCases)
             {

@@ -33,7 +33,9 @@
         public ActionResult Index()
         {
             var fraudCaseViewModel = new FraudCaseViewModel();
-            fraudCaseViewModel.FraudCaseList = _fraudCaseService.Get(true, true, int.Parse(ConfigurationManager.AppSettings["Environment"]));
+            fraudCaseViewModel.FraudCaseInfo = Library.Models.FraudCase.FraudCase.GetFraudCase(FraudCaseId.BSNG);
+            fraudCaseViewModel.FraudCaseList = _fraudCaseService.Get(null, null, int.Parse(ConfigurationManager.AppSettings["Environment"]));
+            fraudCaseViewModel.FraudCaseInfo.IsActive = _fraudCaseService.CheckActiveFraudCase(FraudCaseId.BSNG);
 
             return View(fraudCaseViewModel);
         }
@@ -44,7 +46,7 @@
             var caseid = (FraudCaseId)fraudCaseId;
             var fraudCaseViewModel = new FraudCaseViewModel();
             fraudCaseViewModel.FraudCaseInfo = Library.Models.FraudCase.FraudCase.GetFraudCase(caseid);
-            fraudCaseViewModel.FraudCaseList = _fraudCaseService.Get(true, true, int.Parse(ConfigurationManager.AppSettings["Environment"]));
+            fraudCaseViewModel.FraudCaseList = _fraudCaseService.Get(null, null, int.Parse(ConfigurationManager.AppSettings["Environment"]));
             fraudCaseViewModel.FraudCaseInfo.IsActive = _fraudCaseService.CheckActiveFraudCase(caseid);
 
             return View(fraudCaseViewModel);

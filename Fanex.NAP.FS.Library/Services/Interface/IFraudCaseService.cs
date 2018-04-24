@@ -8,7 +8,7 @@
     {
         FraudCase GetByFraudCaseId(int fraudCaseId);
 
-        IEnumerable<FraudCase> Get(bool isInternal, bool isActive, int environment);
+        IEnumerable<FraudCase> Get(int? isInternal, int? isActive, int environment);
 
         bool CheckActiveFraudCase(FraudCaseId id);
 

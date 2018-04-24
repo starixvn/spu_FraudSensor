@@ -4,13 +4,13 @@
 
     public class FraudCaseGetCriteria : CriteriaBase
     {
-        public bool IsInternal { get; set; }
+        public int? IsInternal { get; set; }
 
-        public bool IsActive { get; set; }
+        public int? IsActive { get; set; }
 
         public int Environment { get; set; }
 
-        public FraudCaseGetCriteria(bool isInternal = true, bool isActive = true, int environment = 1)
+        public FraudCaseGetCriteria(int? isInternal, int? isActive, int environment = 1)
         {
             IsInternal = isInternal;
             IsActive = isActive;

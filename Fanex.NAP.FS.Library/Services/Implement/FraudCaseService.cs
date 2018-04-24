@@ -13,7 +13,7 @@
 
     public class FraudCaseService : IFraudCaseService
     {
-        public IEnumerable<FraudCase> Get(bool isInternal, bool isActive, int environment)
+        public IEnumerable<FraudCase> Get(int? isInternal, int? isActive, int environment)
         {
             return DataService.GetData<FraudCase>(new FraudCaseGetCriteria(isInternal, isActive, environment));
         }
