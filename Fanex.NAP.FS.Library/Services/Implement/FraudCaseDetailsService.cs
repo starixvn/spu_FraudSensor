@@ -19,6 +19,16 @@
 
     public class FraudCaseDetailsService : IFraudCaseDetailsService
     {
+        public int environment { get; set; }
+
+        public int mailingListId { get; set; }
+
+        public FraudCaseDetailsService(int env, int mailId)
+        {
+            environment = env;
+            mailingListId = mailId;
+        }
+
         public IEnumerable<TicketDetails> GetTicketDetails(int matchId, int fraudCaseId, DateTime eventDate, bool saveChoice = false)
         {
             var criteria = new GetTicketCriteria
@@ -258,14 +268,14 @@
         {
             var url = AppSettings.Get("FPS_WEBAPI_GET_TOTAL_ASSOCIATION");
 
-            return ApiHelper.Post<string, IEnumerable<CustomerTotalAssociation>>(url, string.Join(",", custIds)).Result;
+            return ApiHelper.Post<string, IEnumerable<CustomerTotalAssociation>>(url, string.Join(",", custIds), environment, mailingListId).Result;
         }
 
         public IEnumerable<CustomerAssociation> GetAssociations(int custId)
         {
             var url = AppSettings.Get("FPS_WEBAPI_GET_ASSOCIATION_ACCOUNT");
 
-            return ApiHelper.Post<string, IEnumerable<CustomerAssociation>>(url, custId.ToString()).Result;
+            return ApiHelper.Post<string, IEnumerable<CustomerAssociation>>(url, custId.ToString(), environment, mailingListId).Result;
         }
 
         private IEnumerable<CustomerEvidence> GetEvidences(IEnumerable<int> custIds)
@@ -277,7 +287,7 @@
                 CustIdList = string.Join(",", custIds)
             };
 
-            return ApiHelper.Post<CustomerEvidenceList, IEnumerable<CustomerEvidence>>(url, param).Result;
+            return ApiHelper.Post<CustomerEvidenceList, IEnumerable<CustomerEvidence>>(url, param, environment, mailingListId).Result;
         }
     }
 }

@@ -87,7 +87,7 @@
             if (dbresult.ErrorCode == 0)
             {
                 var manualAccount = dbresult.OutParam["addedcustid"].ToString();
-                IEnumerable<CustomerAssociation> customerAssociation = ApiHelper.Post<string, IEnumerable<CustomerAssociation>>(FPS_WEBAPI_GET_ASSOCIATION_ACCOUNT, manualAccount).Result;
+                IEnumerable<CustomerAssociation> customerAssociation = ApiHelper.Post<string, IEnumerable<CustomerAssociation>>(FPS_WEBAPI_GET_ASSOCIATION_ACCOUNT, manualAccount,int.Parse(ConfigurationManager.AppSettings["Environment"]), int.Parse(ConfigurationManager.AppSettings["MailingListId"])).Result;
 
                 if (customerAssociation.Any())
                 {

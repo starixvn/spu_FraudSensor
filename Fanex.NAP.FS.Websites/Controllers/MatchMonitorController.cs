@@ -6,6 +6,7 @@
     using Service;
     using Service.MatchMonitor;
     using System;
+    using System.Configuration;
     using System.Linq;
     using System.Web.Mvc;
 
@@ -17,7 +18,7 @@
 
         public MatchMonitorController()
         {
-            _fraudCaseDetailService = new FraudCaseDetailsService();
+            _fraudCaseDetailService = new FraudCaseDetailsService(int.Parse(ConfigurationManager.AppSettings["Environment"]), int.Parse(ConfigurationManager.AppSettings["MailingListId"]));
             _matchMonitorService = new MatchMonitorService();
         }
 

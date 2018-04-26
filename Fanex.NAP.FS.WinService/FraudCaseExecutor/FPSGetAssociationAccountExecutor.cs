@@ -47,7 +47,7 @@
 
             try
             {
-                IEnumerable<CustomerAssociation> customerAssociation = ApiHelper.Post<string, IEnumerable<CustomerAssociation>>(FPS_WEBAPI, listManualAccounts.CustIdList).Result;
+                IEnumerable<CustomerAssociation> customerAssociation = ApiHelper.Post<string, IEnumerable<CustomerAssociation>>(FPS_WEBAPI, listManualAccounts.CustIdList, 2, 82).Result;
                 var customerAssociationXML = customerAssociation.ToXmlString();
 
                 _delayGoalAccountService.InsertAccounts(new DelayGoalAssociationAccountInsertCriteria { CustomerAssociationXML = customerAssociationXML });
