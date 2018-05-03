@@ -21,7 +21,7 @@ namespace Fanex.NAP.FS.Websites.Controllers
 
         public MatchMonitorController()
         {
-            _fraudCaseDetailService = new FraudCaseDetailsService(int.Parse(ConfigurationManager.AppSettings["Environment"]), int.Parse(ConfigurationManager.AppSettings["MailingListId"]));
+            _fraudCaseDetailService = new FraudCaseDetailsService(int.Parse(ConfigurationManager.AppSettings["Environment"]), int.Parse(ConfigurationManager.AppSettings["MailGroupId"]));
             _matchMonitorService = new MatchMonitorService();
         }
 
