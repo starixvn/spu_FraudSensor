@@ -907,6 +907,7 @@
     <Content Include="Views\SuspiciousCustomer\Note.cshtml" />
     <Content Include="Views\MatchMonitor\FraudCaseDetails\AssociatedAccounts.cshtml" />
     <Content Include="Views\MatchMonitor\FraudCaseDetails\TicketLast7Days.cshtml" />
+    <Content Include="Views\MatchMonitor\FraudCaseDetails\TicketByIP.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />

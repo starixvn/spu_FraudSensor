@@ -1,4 +1,6 @@
-﻿namespace Fanex.NAP.FS.Websites.Controllers
+﻿#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
+
+namespace Fanex.NAP.FS.Websites.Controllers
 {
     using Fanex.NAP.Core.Web.Attribute;
     using Fanex.NAP.FS.Library.Criteria.MatchMonitor;
@@ -8,6 +10,7 @@
     using System;
     using System.Configuration;
     using System.Linq;
+    using System.Threading.Tasks;
     using System.Web.Mvc;
 
     [NapAuth(FunctionKey = FSFunctionKeys.MatchMonitoring, Policy = Core.Business.Constant.Policy.Read)]
@@ -68,7 +71,7 @@
             return View("FraudCaseDetails/Index", model);
         }
 
-        public ActionResult GetFraudCaseTicketDetails(int fraudCaseId, int matchId, DateTime eventDate)
+        public async Task<ActionResult> GetFraudCaseTicketDetails(int fraudCaseId, int matchId, DateTime eventDate)
         {
             var data =
                 _fraudCaseDetailService.GetTicketDetails(matchId, fraudCaseId, eventDate)
@@ -78,7 +81,7 @@
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult GetFraudCaseCustomerDetails(int fraudCaseId, int matchId, DateTime eventDate)
+        public async Task<ActionResult> GetFraudCaseCustomerDetails(int fraudCaseId, int matchId, DateTime eventDate)
         {
             var data = _fraudCaseDetailService.GetCustomerDetails(matchId, fraudCaseId, eventDate);
 
@@ -113,3 +116,5 @@
         }
     }
 }
+
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously

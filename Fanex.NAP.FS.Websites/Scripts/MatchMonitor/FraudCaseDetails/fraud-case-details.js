@@ -3,7 +3,8 @@
         detail_tabs = $("#detailTabs"),
         customer_grid = $("#customer-tab table"),
         associated_accounts = $("#associated-accounts"),
-        ticket_last_7_days = $("#tickets-last-7-days");
+        ticket_last_7_days = $("#tickets-last-7-days"),
+        ticket_by_ip = $("#ticket-by-ip");
 
     var global_idx = 0;
 
@@ -30,7 +31,8 @@
             }
 
             totalTicket = n;
-            //removeMatchLeague();
+
+            $(".ip-link").click(renderTicketByIp);
         });
     }
 
@@ -184,6 +186,20 @@
         });
     }
 
+    function renderTicketByIp(e) {
+        var parent = $(e.target).parents("tr");
+
+        var obj = ticket_grid.DataTable().row(parent).data();
+
+        var from = moment().add(-6, "d");
+
+        ticket_by_ip
+            .dialog("option", "title", `Tickets of IP: ${obj.IP} from ${from.format("MMM d, YYYY")}`)
+            .dialog("open");
+
+        $("table", ticket_by_ip).DataTable().columns.adjust();
+    }
+
     ticket_grid.DataTable({
         ordering: false,
         paging: false,
@@ -213,7 +229,7 @@
             { data: obj => obj.Stake == null ? null : numeral(obj.Stake).format("0,0.00"), className: "text-right", width: "100px" },
             { data: obj => obj.WinLoss == null ? null : obj.WinLoss >= 0 ? numeral(obj.WinLoss).format("0,0.00") : `<span class='text-red'>${numeral(obj.WinLoss).format('0,0.00')}</span>`, className: "text-right", width: "100px" },
             { data: obj => obj.Status, width: "82px", className: "text-center uppercase" },
-            { data: obj => obj.IP, width: "100px" }
+            { data: obj => `<span class='link ip-link'>${obj.IP}</span>`, width: "100px" }
         ],
         columnDefs: [{ targets: "_all", defaultContent: "-" }],
         createdRow: function (row, obj) {
@@ -275,6 +291,15 @@
     });
 
     ticket_last_7_days.dialog({
+        maxHeight: 800,
+        width: 1200,
+        modal: true,
+        autoOpen: false,
+        resizable: false,
+        draggable: false
+    });
+
+    ticket_by_ip.dialog({
         maxHeight: 800,
         width: 1200,
         modal: true,
@@ -346,6 +371,43 @@
             { data: obj => obj.Username },
         ]
     });
+
+    $("table", ticket_by_ip).DataTable({
+        ordering: false,
+        searching: false,
+        lengthMenu: [10, 20, 50, 100, 500],
+        pageLength: 50,
+        scrollCollapse: true,
+        scrollY: "55vh",
+        dom: "t<'pagination'<'page-size'lp>i>",
+        language: {
+            lengthMenu: "Page size _MENU_",
+            paginate: {
+                previous: "Back"
+            },
+            info: "Displaying _START_ to _END_ of _TOTAL_ item(s)",
+            infoEmpty: "",
+            zeroRecords: "There's no data"
+        },
+        columnDefs: [
+            { defaultContent: "-", targets: "_all" },
+            //{ targets: [0, 1, 4, -2], className: "text-center" },
+            //{ targets: [3, 5, -3, -4], className: "text-right" }
+        ],
+        columns: [
+            { data: (obj, typet, set, meta) => meta.row + 1, className: "text-center", width: "40px" },
+            { data: obj => obj.Member, width: "100px" },
+            { data: obj => obj.CurrencyName, className: "text-center" },
+            { data: obj => moment(obj.TransDate, "MMM D, YYYY hh:mm:ss A").format("MMM D, YYYY<br/>hh:mm:ss A"), className: "text-center", width: "100px" },
+            { data: obj => obj.BetID, width: "100px" },
+            { data: obj => obj.Choice, className: "text-right" },
+            { data: obj => `<div class='row-ht'>HT: ${obj.Result.HTHomeScore} - ${obj.Result.HTAwayScore}</div><div class='row-ft'>FT: ${obj.Result.FinalHomeScore} - ${obj.Result.FinalAwayScore}</div>` },
+            { data: obj => obj.Odds != null ? obj.Odds.Html : null},
+            { data: obj => obj.Stake == null ? null : numeral(obj.Stake).format("0,0.00"), className: "text-right"},
+            { data: obj => obj.WinLoss == null ? null : obj.WinLoss >= 0 ? numeral(obj.WinLoss).format("0,0.00") : `<span class='text-red'>${numeral(obj.WinLoss).format('0,0.00')}</span>`, className: "text-right" },
+            { data: obj => obj.Status }
+        ]
+    })
 }
 
 $(fraud_case_details);
