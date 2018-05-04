@@ -9,6 +9,12 @@ Reviewer: Billy
 USE	bodb_FraudSensor;
 GO
 
+--ALTER DATABASE bodb_FraudSensor  
+--ADD FILEGROUP IDX;
+--GO
+
+ALTER DATABASE bodb_FraudSensor ADD FILE (NAME='idx_file', FILENAME='d:\idx\idx_file') TO FILEGROUP IDX;  
+
 --=========== CREATE TABLES
 CREATE TABLE [dbo].[TicketsByIP](
 	[TransId]				BIGINT NOT NULL,
@@ -20,7 +26,7 @@ CONSTRAINT [PK_TicketsByIP] PRIMARY KEY CLUSTERED
 ) ON [DATA]
 GO
 
-CREATE CLUSTERED INDEX CIX_TicketsByIP_IP ON [dbo].[TicketsByIP] (
+CREATE NONCLUSTERED INDEX CIX_TicketsByIP_IP ON [dbo].[TicketsByIP] (
 	[IP]					ASC
 ) ON IDX;
 GO
