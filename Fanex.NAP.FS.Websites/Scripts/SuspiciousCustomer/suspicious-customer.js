@@ -92,7 +92,7 @@
             { data: build_classification, className: "has-icon text-center list-icon", width: "120px" },
             { data: obj => obj.HasNote ? '<span class="icon-note-text icon-note"></span>' : null, className: "has-icon text-center", width: "90px" },
             { data: obj => obj.IsVerified ? '<span class="icon-approval"></span>' : null, className: "has-icon text-center", width: "90px" },
-            { data: obj => `<a>${obj.Username}</a>`, width: "300px" },
+            { data: obj => `<a href="${common.modifyRelativeUrl(`/SuspiciousCustomerDetails?custId=${obj.CustId}&from=${from.val()}&to=${to.val()}&custname=${obj.Username}`)}" target='_blank'>${obj.Username}</a>`, width: "300px" },
             { data: obj => obj.TotalViolation },
             { data: obj => obj.ViolatedCases },
             { data: obj => obj.BetCount },

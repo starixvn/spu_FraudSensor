@@ -5,7 +5,7 @@
 
     public class SuspiciousCustomerDetailsController : Controller
     {
-        public ActionResult Index(int custId, DateTime from, DateTime to)
+        public ActionResult Index(int custId, string custName, DateTime from, DateTime to)
         {
             return View();
         }

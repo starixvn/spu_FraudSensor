@@ -228,7 +228,7 @@
 
         var from = moment({ year: today.year(), month: today.month(), day: 1 });
 
-        var url = `/SuspiciousCustomerDetails?custid=${obj.CustId}&from=${from.format("MMM D, YYYY")}&to=${today.format("MMM D, YYYY")}`
+        var url = `/SuspiciousCustomerDetails?custid=${obj.CustId}&from=${from.format("MMM D, YYYY")}&to=${today.format("MMM D, YYYY")}&custName=${obj.Member}`
 
         window.open(common.modifyRelativeUrl(url));
     }
