@@ -214,6 +214,12 @@
     <Compile Include="Criteria\MatchMonitor\MatchGetAllCriteria.cs" />
     <Compile Include="Criteria\MatchMonitor\MatchNoteUpdateCriteria.cs" />
     <Compile Include="Criteria\MatchMonitor\VerifyMatchCriteria.cs" />
+    <Compile Include="Criteria\SuspiciousCustomerDetails\SuspiciousCustomerDetailsFraudCaseVerifyCriteria.cs" />
+    <Compile Include="Criteria\SuspiciousCustomerDetails\SuspiciousCustomerDetailsLogNoteDeleteCriteria.cs" />
+    <Compile Include="Criteria\SuspiciousCustomerDetails\SuspiciousCustomerDetailsCustomerInfoUpdateCriteria.cs" />
+    <Compile Include="Criteria\SuspiciousCustomerDetails\SuspiciousCustomerDetailsLogNoteInsertCriteria.cs" />
+    <Compile Include="Criteria\SuspiciousCustomerDetails\SuspiciousCustomerDetailsLogNoteGetCriteria.cs" />
+    <Compile Include="Criteria\SuspiciousCustomerDetails\SuspiciousCustomerDetailsFraudCaseGetCriteria.cs" />
     <Compile Include="Criteria\SuspiciousCustomer\SuspiciousCustomerNoteGetCriteria.cs" />
     <Compile Include="Criteria\SuspiciousCustomer\SuspiciousCustomerReportGetCriteria.cs" />
     <Compile Include="DTO\CustomerEvidence.cs" />
@@ -300,7 +306,6 @@
   <ItemGroup>
     <Folder Include="Core\Configurations\" />
     <Folder Include="Core\Extensions\" />
-    <Folder Include="Criteria\SuspiciousCustomerDetails\" />
     <Folder Include="DataAccess\" />
     <Folder Include="Models\SuspiciousCustomerDetails\" />
     <Folder Include="ViewModels\SuspiciousCustomerDetails\" />
