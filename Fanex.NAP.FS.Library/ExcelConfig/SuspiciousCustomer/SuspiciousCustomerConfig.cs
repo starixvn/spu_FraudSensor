@@ -1,8 +1,8 @@
 ﻿namespace Fanex.NAP.FS.Library.ExcelConfig.SuspiciousCustomer
 {
+    using Criteria.SuspiciousCustomer;
     using Fanex.NAP.FS.Library.Core.ExportExcel;
-    using Fanex.NAP.FS.Library.Criteria;
-    using Fanex.NAP.FS.Library.Models;
+    using Models.SuspiciousCustomer;
     using NPOI.SS.UserModel;
     using NPOI.XSSF.UserModel;
 

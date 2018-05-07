@@ -1,4 +1,4 @@
-﻿namespace Fanex.NAP.FS.Library.Models
+﻿namespace Fanex.NAP.FS.Library.Models.SuspiciousCustomer
 {
     public class SuspiciousCustomerReportModel
     {

@@ -2,13 +2,17 @@
 {
     using Fanex.Data.Repository;
 
-    public class SuspiciousCustomerDetailsCustomerInfoUpdateCriteria : CriteriaBase
+    public class SuspiciousCustomerAssigneeInsertCriteria : CriteriaBase
     {
         public int CustId { get; set; }
 
+        public int AssigneeId { get; set; }
+
+        public int UserId { get; set; }
+
         public override string GetSettingKey()
         {
-            return "FS_Rpt_SuspiciousCustomer_GetNotes";
+            return "FS_Tbl_CustomerMonitorAssignment_Insert";
         }
 
         public override bool IsValid()

@@ -3,7 +3,7 @@
     using Core.Business;
     using Core.Service.Impl;
     using Core.Web.Attribute;
-    using Library.Criteria;
+    using Library.Criteria.SuspiciousCustomer;
     using Library.DTO;
     using Library.Services;
     using System;

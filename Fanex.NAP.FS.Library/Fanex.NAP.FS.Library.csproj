@@ -214,13 +214,13 @@
     <Compile Include="Criteria\MatchMonitor\MatchGetAllCriteria.cs" />
     <Compile Include="Criteria\MatchMonitor\MatchNoteUpdateCriteria.cs" />
     <Compile Include="Criteria\MatchMonitor\VerifyMatchCriteria.cs" />
-    <Compile Include="Criteria\SuspiciousCustomerDetails\SuspiciousCustomerDetailsFraudCaseVerifyCriteria.cs" />
-    <Compile Include="Criteria\SuspiciousCustomerDetails\SuspiciousCustomerDetailsLogNoteDeleteCriteria.cs" />
-    <Compile Include="Criteria\SuspiciousCustomerDetails\SuspiciousCustomerDetailsCustomerInfoUpdateCriteria.cs" />
-    <Compile Include="Criteria\SuspiciousCustomerDetails\SuspiciousCustomerDetailsLogNoteInsertCriteria.cs" />
-    <Compile Include="Criteria\SuspiciousCustomerDetails\SuspiciousCustomerDetailsLogNoteGetCriteria.cs" />
-    <Compile Include="Criteria\SuspiciousCustomerDetails\SuspiciousCustomerDetailsFraudCaseGetCriteria.cs" />
+    <Compile Include="Criteria\SuspiciousInfo\SuspiciousInfoUpdateCriteria.cs" />
+    <Compile Include="Criteria\SuspiciousInfo\SuspiciousInfoGetCriteria.cs" />
+    <Compile Include="Criteria\SuspiciousCustomer\SuspiciousCustomerAssigneeInsertCriteria.cs" />
+    <Compile Include="Criteria\SuspiciousCustomer\SuspiciousCustomerNoteDeleteCriteria.cs" />
+    <Compile Include="Criteria\SuspiciousCustomer\SuspiciousCustomerNoteInsertCriteria.cs" />
     <Compile Include="Criteria\SuspiciousCustomer\SuspiciousCustomerNoteGetCriteria.cs" />
+    <Compile Include="Criteria\SuspiciousCustomer\SuspiciousCustomerUpdateCriteria.cs" />
     <Compile Include="Criteria\SuspiciousCustomer\SuspiciousCustomerReportGetCriteria.cs" />
     <Compile Include="DTO\CustomerEvidence.cs" />
     <Compile Include="DTO\CustomerEvidenceList.cs" />
@@ -270,8 +270,10 @@
     <Compile Include="Models\MatchMonitor\FraudCaseDetails\TicketInfo.cs" />
     <Compile Include="Models\MatchMonitor\League.cs" />
     <Compile Include="Models\MatchMonitor\Match.cs" />
+    <Compile Include="Models\SuspiciousCustomer\SuspiciousCustomerModel.cs" />
+    <Compile Include="Models\SuspiciousInfo\SuspiciousCustomerFraudCaseModel.cs" />
     <Compile Include="Models\SuspiciousCustomer\SuspiciousCustomerReportModel.cs" />
-    <Compile Include="Models\SuspiciousCustomer\SuspiciousCustomerNote.cs" />
+    <Compile Include="Models\SuspiciousCustomer\SuspiciousCustomerNoteModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\Implement\DelayGoalAccountService.cs" />
     <Compile Include="Services\Implement\FraudCaseDetailsService.cs" />
@@ -306,6 +308,7 @@
   <ItemGroup>
     <Folder Include="Core\Configurations\" />
     <Folder Include="Core\Extensions\" />
+    <Folder Include="Criteria\SuspiciousCustomerDetails\" />
     <Folder Include="DataAccess\" />
     <Folder Include="Models\SuspiciousCustomerDetails\" />
     <Folder Include="ViewModels\SuspiciousCustomerDetails\" />

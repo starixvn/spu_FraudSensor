@@ -2,7 +2,7 @@
 {
     using System;
 
-    public class SuspiciousCustomerNote
+    public class SuspiciousCustomerNoteModel
     {
         public DateTime LogDate { get; set; }
 

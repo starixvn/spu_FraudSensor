@@ -4,14 +4,36 @@
     <Setting Key="FS_Rpt_Test" SpName="FS_Rpt_Test" DbName="DBFS.FraudSensor.bodbSPUNet" />
   </Function>
 
-  <Function Name="SuspiciousCustomerReport">
-    <Setting Key="FS_Rpt_SuspiciousCustomer_Get"
-           SpName="FS_Rpt_SuspiciousCustomer_Get"
+  <Function Name="FSuspiciousCustomerReport">
+    <Setting Key="FS_Tbl_Rpt_SuspiciousCustomer_Get"
+           SpName="FS_Tbl_Rpt_SuspiciousCustomer_Get"
            DbName="DBFS.FraudSensor.bodbSPUNet" />
 
-     <Setting Key="FS_Rpt_SuspiciousCustomer_GetNotes"
-              SpName="FS_Rpt_SuspiciousCustomer_GetNotes"
+     <Setting Key="FS_Tbl_CustomerLog_Get"
+              SpName="FS_Tbl_CustomerLog_Get"
               DbName="DBFS.FraudSensor.bodbSPUNet" />
+    
+    <Setting Key="FS_CustomerLog_Insert"
+              SpName="FS_Tbl_CustomerLog_Insert"
+              DbName="DBFS.FraudSensor.bodbSPUNet" />
+
+    <Setting Key="FS_Tbl_CustomerLog_Delete"
+              SpName="FS_Tbl_CustomerLog_Delete"
+              DbName="DBFS.FraudSensor.bodbSPUNet" />
+  </Function>
+    
+  <Function Name="CustomerMonitor"> 
+    <Setting Key="FS_Tbl_CustomerMonitorAssignment_Get"
+         SpName="FS_Tbl_CustomerMonitorAssignment_Get"
+         DbName="DBFS.FraudSensor.bodbSPUNet" />
+
+    <Setting Key="FS_Tbl_CustomerMonitorAssignment_Insert"
+         SpName="FS_Tbl_CustomerMonitorAssignment_Insert"
+         DbName="DBFS.FraudSensor.bodbSPUNet" />
+
+    <Setting Key="FS_Tbl_CustomerMonitorAssignment_Update"
+         SpName="FS_Tbl_CustomerMonitorAssignment_Update"
+         DbName="DBFS.FraudSensor.bodbSPUNet" />
   </Function>
 
   <Function Name="MatchMonitor">
@@ -89,12 +111,28 @@
              SpName="FS_FlaggedAccount_Insert"
              DbName="DBFS.FraudSensor.bodbSPUNet" />
 
-    <Setting Key="FS_FlaggedAccount_Delete"
+    <Setting Key="FlaggedAccount_Delete"
              SpName="FS_FlaggedAccount_Delete"
              DbName="DBFS.FraudSensor.bodbSPUNet" />
     
-    <Setting Key="FS_DelayGoalAccount_ImportFromFPS" 
+    <Setting Key="DelayGoalAccount_ImportFromFPS" 
              SpName="FS_DelayGoalAccount_ImportFromFPS" 
+             DbName="DBFS.FraudSensor.bodbSPUNet" />
+  </Function>
+
+  <Function Name="SuspiciousInfo">
+    <Setting Key="FS_Tbl_SuspiciousInfo_Get"
+             SpName="FS_Tbl_SuspiciousInfo_Get"
+             DbName="DBFS.FraudSensor.bodbSPUNet" />
+
+    <Setting Key="FS_Tbl_SuspiciousInfo_Update"
+             SpName="FS_Tbl_SuspiciousInfo_Update"
+             DbName="DBFS.FraudSensor.bodbSPUNet" />
+  </Function>
+
+  <Function Name="SuspiciousCustomer">
+    <Setting Key="FS_SuspiciousCustomer_Update"
+             SpName="FS_SuspiciousCustomer_Update"
              DbName="DBFS.FraudSensor.bodbSPUNet" />
   </Function>
 </Functions>

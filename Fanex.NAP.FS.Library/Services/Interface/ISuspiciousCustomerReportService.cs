@@ -1,7 +1,6 @@
 ﻿namespace Fanex.NAP.FS.Library.Services
 {
-    using Criteria;
-    using Models;
+    using Criteria.SuspiciousCustomer;
     using Models.SuspiciousCustomer;
     using System.Collections.Generic;
     using ViewModels.SuspiciousCustomer;
@@ -10,7 +9,7 @@
     {
         IEnumerable<SuspiciousCustomerReportModel> GetSuspiciousCustomerReport(SuspiciousCustomerReportGetCriteria criteria);
 
-        IEnumerable<SuspiciousCustomerNote> GetNotesData(int custId);
+        IEnumerable<SuspiciousCustomerNoteModel> GetNotesData(int custId);
 
         IEnumerable<SuspiciousCustomerNoteView> GetNoteViews(int custId);
 

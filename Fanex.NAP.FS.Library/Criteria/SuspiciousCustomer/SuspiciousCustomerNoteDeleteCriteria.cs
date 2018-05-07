@@ -2,15 +2,17 @@
 {
     using Fanex.Data.Repository;
 
-    public class SuspiciousCustomerDetailsFraudCaseVerifyCriteria : CriteriaBase
+    public class SuspiciousCustomerNoteDeleteCriteria : CriteriaBase
     {
         public int CustId { get; set; }
 
-        public int FraudCaseId { get; set; }
+        public int CustLogId { get; set; }
+
+        public int UserId { get; set; }
 
         public override string GetSettingKey()
         {
-            return "FS_Rpt_SuspiciousCustomer_GetNotes";
+            return "FS_Tbl_CustomerLog_Delete";
         }
 
         public override bool IsValid()

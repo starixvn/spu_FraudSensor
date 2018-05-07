@@ -2,10 +2,8 @@
 {
     using Core.BaseClasses;
     using Core.ExportExcel;
-    using Criteria;
     using Criteria.SuspiciousCustomer;
     using ExcelConfig.SuspiciousCustomer;
-    using Models;
     using Models.SuspiciousCustomer;
     using NAP.Core.Service.Impl;
     using System.Collections.Generic;
@@ -19,11 +17,11 @@
             return DataService.GetData<SuspiciousCustomerReportModel>(criteria);
         }
 
-        public IEnumerable<SuspiciousCustomerNote> GetNotesData(int custId)
+        public IEnumerable<SuspiciousCustomerNoteModel> GetNotesData(int custId)
         {
             var criteria = new SuspiciousCustomerNoteGetCriteria { CustId = custId };
 
-            return DataService.GetData<SuspiciousCustomerNote>(criteria);
+            return DataService.GetData<SuspiciousCustomerNoteModel>(criteria);
         }
 
         public IEnumerable<SuspiciousCustomerNoteView> GetNoteViews(int custId)
