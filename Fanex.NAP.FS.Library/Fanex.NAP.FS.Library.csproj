@@ -264,18 +264,20 @@
     <Compile Include="Models\MatchMonitor\FraudCaseDetails\TicketInfo.cs" />
     <Compile Include="Models\MatchMonitor\League.cs" />
     <Compile Include="Models\MatchMonitor\Match.cs" />
-    <Compile Include="Models\SuspiciousCustomerReportModel.cs" />
+    <Compile Include="Models\SuspiciousCustomer\SuspiciousCustomerReportModel.cs" />
     <Compile Include="Models\SuspiciousCustomer\SuspiciousCustomerNote.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\Implement\DelayGoalAccountService.cs" />
     <Compile Include="Services\Implement\FraudCaseDetailsService.cs" />
     <Compile Include="Services\Implement\MatchMonitorService.cs" />
+    <Compile Include="Services\Implement\SuspiciousCustomerReportDetailsService.cs" />
     <Compile Include="Services\Implement\SuspiciousCustomerReportService.cs" />
     <Compile Include="Services\Implement\FlaggedAccountService.cs" />
     <Compile Include="Services\Implement\FraudCaseService.cs" />
     <Compile Include="Services\Implement\FraudSensorTaskService.cs" />
     <Compile Include="Services\Interface\IFraudCaseDetailsService.cs" />
     <Compile Include="Services\Interface\IDelayGoalAccountService.cs" />
+    <Compile Include="Services\Interface\ISuspiciousCustomerReportDetailsService.cs" />
     <Compile Include="Services\Interface\ISuspiciousCustomerReportService.cs" />
     <Compile Include="Services\Interface\IFlaggedAccountService.cs" />
     <Compile Include="Services\Interface\IFraudSensorTaskService.cs" />
@@ -298,7 +300,10 @@
   <ItemGroup>
     <Folder Include="Core\Configurations\" />
     <Folder Include="Core\Extensions\" />
+    <Folder Include="Criteria\SuspiciousCustomerDetails\" />
     <Folder Include="DataAccess\" />
+    <Folder Include="Models\SuspiciousCustomerDetails\" />
+    <Folder Include="ViewModels\SuspiciousCustomerDetails\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
