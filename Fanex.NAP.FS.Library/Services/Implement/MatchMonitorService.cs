@@ -72,21 +72,21 @@
         public Match GetMatch(Library.Models.MatchMonitor.Match match, IEnumerable<Library.Models.MatchMonitor.FraudCase> fraudCases)
         {
             var userService = new Core.Service.Impl.UserService();
-            var homeName = RefData.GetTeamName(match.HomeId.ToString());
-            var awayName = RefData.GetTeamName(match.AwayId.ToString());
+            var homeName = RefData.GetTeamName(match.HomeId.ToString(), "en");
+            var awayName = RefData.GetTeamName(match.AwayId.ToString(), "en");
 
             return new Match
             {
                 Event = new Event
                 {
-                    HomeName = homeName == null ? "-" : homeName[1].ToString(),
-                    AwayName = awayName == null ? "-" : awayName[1].ToString(),
+                    HomeName = homeName ?? "-",
+                    AwayName = awayName ?? "-",
                     LeagueName = match.LeagueName
                 },
                 FraudCases =
                     fraudCases
                     .GroupBy(f => Tuple.Create(f.FraudCaseId, f.FraudCaseName))
-                    .Select(g => new Library.ViewModels.MatchMonitor.FraudCase(g.Key.Item1, g.Key.Item2, g))
+                    .Select(g => new FraudCase(g.Key.Item1, g.Key.Item2, g))
                     .ToDictionary(f => f.FraudCaseId.ToString()),
                 MatchId = match.MatchId,
                 Verified = match.IsVerified,

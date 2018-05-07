@@ -184,7 +184,7 @@
         return str;
     }
 
-    this.formatNumber = (n = 0, format = "0,0.00") => numeral(n).format(format);
+    this.formatNumber = (n = 0, format = "0,0.00") => n == null ? n : numeral(n).format(format);
 
     this.encodeString = encodeURIComponent;
 

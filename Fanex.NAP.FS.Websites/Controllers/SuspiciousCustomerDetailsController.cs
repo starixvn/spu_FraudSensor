@@ -1,11 +1,11 @@
 ﻿namespace Fanex.NAP.FS.Websites.Controllers
 {
+    using System;
     using System.Web.Mvc;
 
     public class SuspiciousCustomerDetailsController : Controller
     {
-        // GET: SuspiciousCustomerDetails
-        public ActionResult Index()
+        public ActionResult Index(int custId, DateTime from, DateTime to)
         {
             return View();
         }

@@ -68,6 +68,8 @@ namespace Fanex.NAP.FS.Websites.Controllers
         {
             var model = _fraudCaseDetailService.GetInfo(matchId, fraudCaseId, eventDate);
 
+            ViewBag.BUDate = _matchMonitorService.GetBalanceUpDate().BalanceUpDay;
+
             return View("FraudCaseDetails/Index", model);
         }
 
@@ -113,6 +115,20 @@ namespace Fanex.NAP.FS.Websites.Controllers
         public ActionResult GetAssociation(int custId)
         {
             return Json(_fraudCaseDetailService.GetAssociatedAccounts(custId));
+        }
+
+        public ActionResult GetTicketFromIP(string ip)
+        {
+            return Json(_fraudCaseDetailService.GetTicketFromIP(ip));
+        }
+
+        public ActionResult GetExcelTicketFromIP(string ip)
+        {
+            var template = Server.MapPath("~/App_Data/Excel Template/MatchMonitor/FraudCaseDetail/ticket by ip.xlsx");
+
+            var fileName = string.Format("Ticket By {0} - {1}", ip, DateTime.Today.ToString("MMM dd, yyyy"));
+
+            return ExcelFile(_fraudCaseDetailService.ExportToExcelIpTickets(ip, template), fileName);
         }
     }
 }

@@ -16,6 +16,10 @@
     using System.Collections.Generic;
     using System.Linq;
     using Core.BaseClasses;
+    using Fanex.NAP.FS.Library.Criteria.MatchMonitor;
+    using Fanex.BetList.Core.Entities;
+    using Fanex.Data.Repository;
+    using Fanex.NAP.FS.Library.Models.MatchMonitor;
 
     public class FraudCaseDetailsService : IFraudCaseDetailsService
     {
@@ -276,6 +280,76 @@
             var url = AppSettings.Get("FPS_WEBAPI_GET_ASSOCIATION_ACCOUNT");
 
             return ApiHelper.Post<string, IEnumerable<CustomerAssociation>>(url, custId.ToString(), environment, mailingListId).Result;
+        }
+
+        public IEnumerable<TicketDetails> GetTicketFromIP(string ip)
+        {
+            var criteria = new GetTicketByIPCriteria { IP = ip };
+
+            var html_builder = new BetListHTMLBuilder();
+            var ticketHelper = new TicketHelper();
+
+            var null_winloss = new HashSet<string>
+            {
+                "running",
+                "reject"
+            };
+
+            return DataService.GetData<TicketInfo>(criteria)
+                .Take(500)
+                .OrderBy(t => t.UserName)
+                .ThenBy(t => t.TransDate)
+                .Select(a =>
+                {
+                    var bettype = RefData.GetBetTypeName(a.BetTypeId.ToString(), "en");
+
+                    var grouped_bettype = GetOrder(bettype) != BettypeOrder.Other ? bettype : "Others";
+
+                    return new TicketDetails
+                    {
+                        Member = a.UserName,
+                        Bettype = grouped_bettype,
+                        TransDate = a.TransDate.ToString("MMM dd, yyyy hh:mm:ss tt"),
+                        BetID = a.TransId.ToString(),
+                        IP = a.IP,
+                        Odds = new OddsDetails { Value = (double)a.Odds, Type = RefData.GetOddsTypeName(a.OddsType, "en"), Html = html_builder.BuildOdds(a, null, CacheRef.GetOddsTypeName) },
+                        Score = string.Format("{0}-{1}", a.LiveHomeScore, a.LiveAwayScore),
+                        Stake = a.Stake,
+                        Status = a.Status,
+                        WinLoss = null_winloss.Contains(a.Status.ToLowerInvariant()) ? null : new decimal?(a.Winlost),
+                        Choice = html_builder.BuildChoice(a, ticketHelper, null, false),
+                        ChoiceExcel = null,
+                        BettypeRealName = bettype,
+                        CurrencyName = a.CurrencyName,
+                        RawData = null,
+                        Result = new Result
+                        {
+                            HTHomeScore = a.HTHomeScore,
+                            HTAwayScore = a.HTAwayScore,
+                            FinalHomeScore = a.FinalHomeScore,
+                            FinalAwayScore = a.FinalAwayScore
+                        }
+                    };
+                });
+        }
+
+        public byte[] ExportToExcelIpTickets(string ip, string template)
+        {
+            var data = 
+                DataService.GetData<TicketInfo>(new GetTicketByIPCriteria { IP = ip })
+                .Take(500)
+                .OrderBy(t => t.UserName)
+                .ThenBy(t => t.TransDate);
+
+            var buDate = DataService.GetSingle<BalanceUpDate>(new BalanceUpDateGetCriteria());
+
+            var config = new TicketByIpConfig(ip, buDate.BalanceUpDay);
+
+            var wb = ExcelUtilities.GetWorkbook(template);
+            
+            config.RenderExcel(wb, null, data, null);
+
+            return wb.ToBytes();
         }
 
         private IEnumerable<CustomerEvidence> GetEvidences(IEnumerable<int> custIds)

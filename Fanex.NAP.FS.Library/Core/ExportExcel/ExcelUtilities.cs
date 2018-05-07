@@ -43,6 +43,20 @@
             return target;
         }
 
+        public static XSSFRichTextString WriteFormat(this XSSFRichTextString target, string format, params object[] args)
+        {
+            target.Append(string.Format(format, args));
+
+            return target;
+        }
+
+        public static XSSFRichTextString WriteBoldFormat(this XSSFRichTextString target, string format, params object[] args)
+        {
+            target.Append(string.Format(format, args), new XSSFFont { IsBold = true });
+
+            return target;
+        }
+
         public static void SetValue(this XSSFRichTextString value, ICell target)
         {
             target.SetCellValue(value);

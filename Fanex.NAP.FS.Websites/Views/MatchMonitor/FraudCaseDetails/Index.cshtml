@@ -71,6 +71,8 @@
                 matchId: @Model.MatchId,
                 eventDate: '@Model.EventDate.ToShortDateString()'
             };
+
+        var bu_date = "@ViewBag.BUDate.ToString("MMM dd, yyyy")";
     </script>
 
     @Scripts.Render("~/scripts/match-monitor/fraud-case-details")

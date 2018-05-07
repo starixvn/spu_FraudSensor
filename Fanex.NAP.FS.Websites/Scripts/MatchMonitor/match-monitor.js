@@ -31,7 +31,7 @@ function load_page_events() {
         searching: false,
         lengthMenu: [10, 20, 50, 100, 500],
         pageLength: 50,
-        scrollY: "65vh",
+        scrollY: "61vh",
         scrollCollapse: true,
         columns: [
             { data: (row, type, set, meta) => meta.row + 1, className: "text-center", width: "40px" },

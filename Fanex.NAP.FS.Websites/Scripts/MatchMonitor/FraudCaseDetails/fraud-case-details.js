@@ -60,6 +60,9 @@
                     else if (this.value == "1") {
                         renderLast7DaysTickets(obj);
                     }
+                    else {
+                        openSuspiciousHistoryLink(obj);
+                    }
 
                     $(this).val(0);
                 },
@@ -191,13 +194,43 @@
 
         var obj = ticket_grid.DataTable().row(parent).data();
 
-        var from = moment().add(-6, "d");
+        var url = common.modifyRelativeUrl("/MatchMonitor/GetTicketFromIP")
 
-        ticket_by_ip
-            .dialog("option", "title", `Tickets of IP: ${obj.IP} from ${from.format("MMM d, YYYY")}`)
-            .dialog("open");
+        var p = {};
 
-        $("table", ticket_by_ip).DataTable().columns.adjust();
+        p.ip = obj.IP;
+
+        common.showLoading();
+
+        $.get(url, p, function (json) {
+            ticket_by_ip
+                .dialog("option", "title", `Tickets of IP: ${obj.IP} from ${bu_date}`)
+                .dialog("open");
+
+            $("table", ticket_by_ip).DataTable().clear().rows.add(json).draw().columns.adjust();
+
+            common.closeLoading();
+
+            bindExportExcelByIP(obj);
+        });
+    }
+
+    function bindExportExcelByIP(obj) {
+        $(".-export", ticket_by_ip).off("click").click(function () {
+            var url = common.modifyRelativeUrl("/MatchMonitor/GetExcelTicketFromIP");
+
+            common.downloadFile(url, { ip: obj.IP });
+        });
+    }
+
+    function openSuspiciousHistoryLink(obj) {
+        var today = moment();
+
+        var from = moment({ year: today.year(), month: today.month(), day: 1 });
+
+        var url = `/SuspiciousCustomerDetails?custid=${obj.CustId}&from=${from.format("MMM D, YYYY")}&to=${today.format("MMM D, YYYY")}`
+
+        window.open(common.modifyRelativeUrl(url));
     }
 
     ticket_grid.DataTable({
@@ -391,21 +424,23 @@
         },
         columnDefs: [
             { defaultContent: "-", targets: "_all" },
-            //{ targets: [0, 1, 4, -2], className: "text-center" },
-            //{ targets: [3, 5, -3, -4], className: "text-right" }
+            { targets: [0, 2, 3, -1, 6], className: "text-center" },
+            { targets: [-2, -3, -4, 5], className: "text-right" },
+            { targets: [3], width: "100px" },
+            { targets: [0, 2], width: "40px"}
         ],
         columns: [
-            { data: (obj, typet, set, meta) => meta.row + 1, className: "text-center", width: "40px" },
-            { data: obj => obj.Member, width: "100px" },
-            { data: obj => obj.CurrencyName, className: "text-center" },
-            { data: obj => moment(obj.TransDate, "MMM D, YYYY hh:mm:ss A").format("MMM D, YYYY<br/>hh:mm:ss A"), className: "text-center", width: "100px" },
-            { data: obj => obj.BetID, width: "100px" },
-            { data: obj => obj.Choice, className: "text-right" },
-            { data: obj => `<div class='row-ht'>HT: ${obj.Result.HTHomeScore} - ${obj.Result.HTAwayScore}</div><div class='row-ft'>FT: ${obj.Result.FinalHomeScore} - ${obj.Result.FinalAwayScore}</div>` },
+            { data: (obj, typet, set, meta) => meta.row + 1, className: "text-center" },
+            { data: obj => obj.Member },
+            { data: obj => obj.CurrencyName },
+            { data: obj => moment(obj.TransDate, "MMM D, YYYY hh:mm:ss A").format("MMM D, YYYY<br/>hh:mm:ss A") },
+            { data: obj => obj.BetID },
+            { data: obj => obj.Choice },
+            { data: obj => `<div class='row-ht'>HT: ${obj.Result.HTHomeScore} - ${obj.Result.HTAwayScore}</div><div class='row-ft'>FT: ${obj.Result.FinalHomeScore} - ${obj.Result.FinalAwayScore}</div>`, width: "60px" },
             { data: obj => obj.Odds != null ? obj.Odds.Html : null},
-            { data: obj => obj.Stake == null ? null : numeral(obj.Stake).format("0,0.00"), className: "text-right"},
-            { data: obj => obj.WinLoss == null ? null : obj.WinLoss >= 0 ? numeral(obj.WinLoss).format("0,0.00") : `<span class='text-red'>${numeral(obj.WinLoss).format('0,0.00')}</span>`, className: "text-right" },
-            { data: obj => obj.Status }
+            { data: obj => obj.Stake == null ? null : numeral(obj.Stake).format("0,0.00") },
+            { data: obj => obj.WinLoss == null ? null : obj.WinLoss >= 0 ? numeral(obj.WinLoss).format("0,0.00") : `<span class='text-red'>${numeral(obj.WinLoss).format('0,0.00')}</span>` },
+            { data: obj => obj.Status, width: "50px"}
         ]
     })
 }

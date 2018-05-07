@@ -27,5 +27,9 @@
         IEnumerable<CustomerTotalAssociation> GetTotalAssociations(IEnumerable<int> custIds);
 
         IEnumerable<CustomerAssociation> GetAssociations(int custId);
+
+        IEnumerable<TicketDetails> GetTicketFromIP(string ip);
+
+        byte[] ExportToExcelIpTickets(string ip, string template);
     }
 }

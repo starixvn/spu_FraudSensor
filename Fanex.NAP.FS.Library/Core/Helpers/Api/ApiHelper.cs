@@ -1,4 +1,6 @@
-﻿namespace Fanex.NAP.FS.Library.Core.Helpers.Api
+﻿#pragma warning disable S3994 // URI Parameters should not be strings
+
+namespace Fanex.NAP.FS.Library.Core.Helpers.Api
 {
     using MailDelivery.Client;
     using System;
@@ -8,6 +10,7 @@
     public static class ApiHelper
     {
         public static async Task<TResult> Post<TParam, TResult>(string url, TParam param, int environment, int mailingListId)
+
         {
             try
             {
@@ -23,7 +26,7 @@
                     return await response.Content.ReadAsAsync<TResult>().ConfigureAwait(false);
                 }
             }
-            catch(Exception exception)
+            catch (Exception exception)
             {
                 var newMail = new MailDelivery.Core.Models.Mail
                 {
@@ -40,3 +43,5 @@
         }
     }
 }
+
+#pragma warning restore S3994 // URI Parameters should not be strings

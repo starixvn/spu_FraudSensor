@@ -182,6 +182,7 @@
     <Compile Include="Core\ExportExcel\ExcelStream.cs" />
     <Compile Include="Core\Helpers\Api\ApiHelper.cs" />
     <Compile Include="Core\Helpers\AppSettings.cs" />
+    <Compile Include="Core\Helpers\BetListHelper.cs" />
     <Compile Include="Core\Helpers\Xml\IXml.cs" />
     <Compile Include="Core\Helpers\Xml\XmlHelper.cs" />
     <Compile Include="Core\Utilities\ConfigSettings.cs" />
@@ -208,6 +209,7 @@
     <Compile Include="Criteria\MatchMonitor\FraudCaseDetails\GetMatchInfoCriteria.cs" />
     <Compile Include="Criteria\MatchMonitor\FraudCaseDetails\GetTicketCriteria.cs" />
     <Compile Include="Criteria\MatchMonitor\FraudCaseDetails\Last7DaysTicketGetCriteria.cs" />
+    <Compile Include="Criteria\MatchMonitor\FraudCaseDetails\GetTicketByIPCriteria.cs" />
     <Compile Include="Criteria\MatchMonitor\LeagueGetCriteria.cs" />
     <Compile Include="Criteria\MatchMonitor\MatchGetAllCriteria.cs" />
     <Compile Include="Criteria\MatchMonitor\MatchNoteUpdateCriteria.cs" />
@@ -230,6 +232,7 @@
     <Compile Include="ExcelConfig\FraudCase\DelayedGoal\DelayedGoalExcelConfig.cs" />
     <Compile Include="ExcelConfig\MatchMonitor\CustomerDetailConfig.cs" />
     <Compile Include="ExcelConfig\MatchMonitor\MatchMonitorExcelConfig.cs" />
+    <Compile Include="ExcelConfig\MatchMonitor\TicketByIpConfig.cs" />
     <Compile Include="ExcelConfig\MatchMonitor\TicketDetailConfig.cs" />
     <Compile Include="ExcelConfig\SuspiciousCustomer\SuspiciousCustomerConfig.cs" />
     <Compile Include="ExcelConfig\Utilities.cs" />

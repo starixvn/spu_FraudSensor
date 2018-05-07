@@ -52,6 +52,10 @@
     <Setting Key="FS_Rpt_Ticket_Get"
              SpName="FS_Rpt_Ticket_Get"
              DbName="DBFS.FraudSensor.bodbSPUNet" />
+
+    <Setting Key="FS_Rpt_Tickets_GetByIP"
+             SpName="FS_Rpt_Tickets_GetByIP"
+             DbName="DBFS.FraudSensor.bodbSPUNet" />
   </Function>
 
   <Function Name="FraudCase">
