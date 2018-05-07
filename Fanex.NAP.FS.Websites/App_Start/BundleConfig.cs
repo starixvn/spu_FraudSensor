@@ -35,6 +35,7 @@
             RegisterMatchMonitorBundles(bundles);
             RegisterFraudCaseBundles(bundles);
             RegisterSuspiciousCustomerBundles(bundles);
+            RegisterSuspiciousCustomerDetailsBundles(bundles);
         }
 
         private static void RegisterFSCoreBundles(BundleCollection bundles)
@@ -73,6 +74,12 @@
             bundles.Add(new StyleBundle("~/suspicious-customer-styles").Include("~/content/scss/pages/suspicious-customer/suspicious-customer.css"));
 
             bundles.Add(new StyleBundle("~/scripts/suspicious-customer").Include("~/scripts/suspiciouscustomer/suspicious-customer.js"));
+        }
+
+        private static void RegisterSuspiciousCustomerDetailsBundles(BundleCollection bundles)
+        {
+            bundles.Add(new ScriptBundle("~/suspicious-customer-scripts").Include(
+                "~/scripts/suspiciouscustomerdetails/*.js"));
         }
     }
 }

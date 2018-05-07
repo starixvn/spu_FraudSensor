@@ -10,9 +10,8 @@ namespace Fanex.NAP.FS.Library.ExcelConfig.MatchMonitor
     using NPOI.SS.UserModel;
     using NPOI.XSSF.UserModel;
     using System;
-    using System.Text.RegularExpressions;
 
-    public class TicketByIpConfig : FSExcelConfig<object, TicketInfo, object>
+    public sealed class TicketByIpConfig : FSExcelConfig<object, TicketInfo, object>, IDisposable
     {
         protected override int SheetIndex => 0;
 
@@ -41,7 +40,6 @@ namespace Fanex.NAP.FS.Library.ExcelConfig.MatchMonitor
 
         protected override void FillData(IRow row, TicketInfo data)
         {
-            var ticket = data;
             var cell_idx = 0;
 
             row.GetCell(cell_idx++).SetCellValue(row.RowNum - 2);
@@ -64,7 +62,7 @@ namespace Fanex.NAP.FS.Library.ExcelConfig.MatchMonitor
         private void RenderChoice(ICell cell, TicketInfo data)
         {
             var template = excelBuilder.CreateChoiceBuilder(data.BetTypeId).Render(data, ticketHelper, null, false);
-            
+
             var choice = template.betTeam.Replace("&nbsp;", "") + BetListHelper.ExtractStringFromHtml(template.Handicap);
 
             var bettype = BetListHelper.ExtractStringFromHtml(template.BetType);
@@ -98,6 +96,11 @@ namespace Fanex.NAP.FS.Library.ExcelConfig.MatchMonitor
             var oddsType = template.oddsType;
 
             cell.SetCellValue(string.IsNullOrEmpty(oddsType) ? odds : string.Format("{0}({1})", odds, oddsType));
+        }
+
+        public void Dispose()
+        {
+            excelBuilder.Dispose();
         }
     }
 }

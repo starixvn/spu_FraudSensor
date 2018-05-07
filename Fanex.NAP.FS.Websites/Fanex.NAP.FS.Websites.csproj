@@ -825,6 +825,7 @@
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\select2.js" />
     <Content Include="Scripts\select2.min.js" />
+    <Content Include="Scripts\SuspiciousCustomerDetails\suspicious-customer-details.js" />
     <Content Include="Scripts\SuspiciousCustomer\suspicious-customer.js" />
     <Content Include="Scripts\toast\jquery.toast.js" />
     <Content Include="Scripts\umd\popper-utils.js" />
