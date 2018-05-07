@@ -296,7 +296,6 @@
             };
 
             return DataService.GetData<TicketInfo>(criteria)
-                .Take(500)
                 .OrderBy(t => t.UserName)
                 .ThenBy(t => t.TransDate)
                 .Select(a =>
@@ -337,7 +336,6 @@
         {
             var data = 
                 DataService.GetData<TicketInfo>(new GetTicketByIPCriteria { IP = ip })
-                .Take(500)
                 .OrderBy(t => t.UserName)
                 .ThenBy(t => t.TransDate);
 

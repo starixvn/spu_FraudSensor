@@ -215,10 +215,14 @@
     <Compile Include="Criteria\MatchMonitor\MatchNoteUpdateCriteria.cs" />
     <Compile Include="Criteria\MatchMonitor\VerifyMatchCriteria.cs" />
     <Compile Include="Criteria\SuspiciousInfo\SuspiciousInfoUpdateCriteria.cs" />
+    <Compile Include="Criteria\SuspiciousCustomerDetails\SuspiciousCustomerDetailsChoiceGetCriteria.cs" />
     <Compile Include="Criteria\SuspiciousInfo\SuspiciousInfoGetCriteria.cs" />
     <Compile Include="Criteria\SuspiciousCustomer\SuspiciousCustomerAssigneeInsertCriteria.cs" />
     <Compile Include="Criteria\SuspiciousCustomer\SuspiciousCustomerNoteDeleteCriteria.cs" />
     <Compile Include="Criteria\SuspiciousCustomer\SuspiciousCustomerNoteInsertCriteria.cs" />
+    <Compile Include="Criteria\SuspiciousCustomerDetails\SuspiciousCustomerDetailsSummaryGetCriteria.cs" />
+    <Compile Include="Criteria\SuspiciousCustomerDetails\SuspiciousCustomerDetailsTop5BettypesGetCriteria.cs" />
+    <Compile Include="Criteria\SuspiciousCustomerDetails\SuspiciousCustomerDetailsTop5SportsGetCriteria.cs" />
     <Compile Include="Criteria\SuspiciousCustomer\SuspiciousCustomerNoteGetCriteria.cs" />
     <Compile Include="Criteria\SuspiciousCustomer\SuspiciousCustomerUpdateCriteria.cs" />
     <Compile Include="Criteria\SuspiciousCustomer\SuspiciousCustomerReportGetCriteria.cs" />
@@ -272,6 +276,11 @@
     <Compile Include="Models\MatchMonitor\Match.cs" />
     <Compile Include="Models\SuspiciousCustomer\SuspiciousCustomerModel.cs" />
     <Compile Include="Models\SuspiciousInfo\SuspiciousCustomerFraudCaseModel.cs" />
+    <Compile Include="Models\SuspiciousCustomerDetails\BettypeStatistics.cs" />
+    <Compile Include="Models\SuspiciousCustomerDetails\ChoiceStatistics.cs" />
+    <Compile Include="Models\SuspiciousCustomerDetails\SportStatistics.cs" />
+    <Compile Include="Models\SuspiciousCustomerDetails\Summary.cs" />
+    <Compile Include="Models\SuspiciousCustomerDetails\WinLossStatistics.cs" />
     <Compile Include="Models\SuspiciousCustomer\SuspiciousCustomerReportModel.cs" />
     <Compile Include="Models\SuspiciousCustomer\SuspiciousCustomerNoteModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -310,7 +319,6 @@
     <Folder Include="Core\Extensions\" />
     <Folder Include="Criteria\SuspiciousCustomerDetails\" />
     <Folder Include="DataAccess\" />
-    <Folder Include="Models\SuspiciousCustomerDetails\" />
     <Folder Include="ViewModels\SuspiciousCustomerDetails\" />
   </ItemGroup>
   <ItemGroup>

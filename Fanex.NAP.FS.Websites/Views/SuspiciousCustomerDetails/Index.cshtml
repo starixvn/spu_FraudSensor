@@ -114,9 +114,6 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td class="text-center" colspan="11">There is no data</td>
-                </tr>
             </tbody>
         </table>
     </div>
@@ -135,16 +132,10 @@
                             <th>Turnover</th>
                             <th>Win Loss</th>
                             <th>Margin (%)</th>
-                            <th>Bet Count</th>
+                            <th>#Tickets</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td class="text-right">13,801,300.00</td>
-                            <td class="text-right text-red">-602,555.50</td>
-                            <td class="text-right text-red">-4.36</td>
-                            <td class="text-right">546</td>
-                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -155,25 +146,13 @@
                 <table class="table table-striped width-100per" id="choice">
                     <thead>
                         <tr>
-                            <th>Sport</th>
+                            <th>Choice</th>
                             <th>Turnover</th>
                             <th>Win Loss</th>
                             <th>Margin (%)</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>Live</td>
-                            <td class="text-right">12,116,500.00</td>
-                            <td class="text-right text-red">-645,659.00</td>
-                            <td class="text-right text-red">-5.32</td>
-                        </tr>
-                        <tr>
-                            <td>None-live</td>
-                            <td class="text-right">1,684,800.00</td>
-                            <td class="text-right">43,103.50</td>
-                            <td class="text-right">2.55</td>
-                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -194,12 +173,6 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>Soccer</td>
-                            <td class="text-right">12,116,500.00</td>
-                            <td class="text-right text-red">-645,659.00</td>
-                            <td class="text-right text-red">-5.32</td>
-                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -211,25 +184,13 @@
                 <table class="table table-striped width-100per" id="top-5-bettype">
                     <thead>
                         <tr>
-                            <th>Sport</th>
+                            <th>Bet type</th>
                             <th>Turnover</th>
                             <th>Win Loss</th>
                             <th>Margin (%)</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>Handicap</td>
-                            <td class="text-right">5,918,900.00</td>
-                            <td class="text-right">978,263.50</td>
-                            <td class="text-right">16.52</td>
-                        </tr>
-                        <tr>
-                            <td>Over/Under</td>
-                            <td class="text-right">7,882,400.00</td>
-                            <td class="text-right text-red">-1,580,819.00</td>
-                            <td class="text-right text-red">-20.05</td>
-                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -238,5 +199,12 @@
 </div>
 
 @section scripts{
+    <script>
+        var custid = 1;
+        var username = "";
+        var from = "2010/8/12";
+        var to = "2010/8/12";
+    </script>
+
     @Scripts.Render("~/suspicious-customer-scripts")    
 }
