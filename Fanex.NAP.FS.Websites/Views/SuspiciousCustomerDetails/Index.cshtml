@@ -12,7 +12,9 @@
         Customer: S312C02A6333(CNY)
         <span class="m-x-12">-</span> Date Range: 11/01/2017 ~ 03/13/2018
     </div>
+
     <h2 class="sub-title">Follow-Up Details</h2>
+
     <div class="block form-filter">
         <div class="group">
             <label class="text text-assignees">Assignees</label>
@@ -24,6 +26,7 @@
         <button class="button -primary">Save</button>
         <button class="button -cancel">Cancel</button>
     </div>
+
     <div class="block">
         <h2 class="sub-title">Fraud Cases</h2>
         <table class="table table-striped -fraud-case">
@@ -51,6 +54,7 @@
             </tbody>
         </table>
     </div>
+
     <div class="block">
         <h2 class="sub-title">Logs/Notes</h2>
         <table class="table table-striped -logs-notes">
@@ -74,6 +78,7 @@
             <button class="button -primary">Add</button>
         </div>
     </div>
+
     <div class="block suspicious-customers">
         <label class="checkbox">
             <input type="checkbox" checked />
@@ -89,9 +94,10 @@
             <span class="icon-help-circle"></span>
         </label>
     </div>
+
     <div class="block">
         <h2 class="sub-title">Daily Violated Tickets</h2>
-        <table class="table table-striped width-100per">
+        <table class="table table-striped width-100per" id="violated-tickets">
             <thead>
                 <tr>
                     <th>#</th>
@@ -114,14 +120,16 @@
             </tbody>
         </table>
     </div>
+
     <div class="block statistic">
         <h2 class="sub-title">Win Loss Statistic</h2>
+
         <div class="win-loss">
             <div>
                 <div class="top-header">
                     <h2>Summary</h2>
                 </div>
-                <table class="table table-striped width-100per">
+                <table class="table table-striped width-100per" id="summary">
                     <thead>
                         <tr>
                             <th>Turnover</th>
@@ -144,7 +152,7 @@
                 <div class="top-header">
                     <h2>Event Choice</h2>
                 </div>
-                <table class="table table-striped width-100per">
+                <table class="table table-striped width-100per" id="choice">
                     <thead>
                         <tr>
                             <th>Sport</th>
@@ -170,12 +178,13 @@
                 </table>
             </div>
         </div>
+
         <div class="win-loss">
             <div>
                 <div class="top-header">
                     <h2>Top 5 sports by margin (%)</h2>
                 </div>
-                <table class="table table-striped width-100per">
+                <table class="table table-striped width-100per" id="top-5-sport">
                     <thead>
                         <tr>
                             <th>Sport</th>
@@ -194,11 +203,12 @@
                     </tbody>
                 </table>
             </div>
+
             <div>
                 <div class="top-header">
                     <h2>Top 5 bet types by margin (%)</h2>
                 </div>
-                <table class="table table-striped width-100per">
+                <table class="table table-striped width-100per" id="top-5-bettype">
                     <thead>
                         <tr>
                             <th>Sport</th>
