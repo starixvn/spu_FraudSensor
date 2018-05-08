@@ -6,9 +6,14 @@
     {
         public int CustId { get; set; }
 
-        public string Note { get; set; }
+        public string LogDesc { get; set; }
 
         public int UserId { get; set; }
+
+        public int LogType { get; set; }
+
+        public int? CaseId { get; set; }
+
 
         public override string GetSettingKey()
         {

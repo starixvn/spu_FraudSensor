@@ -216,8 +216,11 @@
     <Compile Include="Criteria\MatchMonitor\VerifyMatchCriteria.cs" />
     <Compile Include="Criteria\SuspiciousCustomerDetails\SuspiciousCustomerDetailsGeneralCriteria.cs" />
     <Compile Include="Criteria\SuspiciousCustomerDetails\SuspiciousCustomerDetailsStatisticsGetCriteria.cs" />
+    <Compile Include="Criteria\SuspiciousCustomer\SuspiciousCustomerAssigneeGetCriteria.cs" />
+    <Compile Include="Criteria\SuspiciousCustomer\SuspiciousCustomerGetCriteria.cs" />
     <Compile Include="Criteria\SuspiciousCustomerDetails\SuspiciousCustomerDetailsViolatedTicketGetCriteria.cs" />
     <Compile Include="Criteria\SuspiciousInfo\SuspiciousInfoUpdateCriteria.cs" />
+    <Compile Include="Criteria\SuspiciousCustomerDetails\SuspiciousCustomerDetailsChoiceGetCriteria.cs" />
     <Compile Include="Criteria\SuspiciousInfo\SuspiciousInfoGetCriteria.cs" />
     <Compile Include="Criteria\SuspiciousCustomer\SuspiciousCustomerAssigneeInsertCriteria.cs" />
     <Compile Include="Criteria\SuspiciousCustomer\SuspiciousCustomerNoteDeleteCriteria.cs" />

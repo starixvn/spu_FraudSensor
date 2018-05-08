@@ -4,9 +4,7 @@
 
     public class SuspiciousCustomerNoteDeleteCriteria : CriteriaBase
     {
-        public int CustId { get; set; }
-
-        public int CustLogId { get; set; }
+        public int CustomerLogId { get; set; }
 
         public int UserId { get; set; }
 

@@ -6,6 +6,11 @@
     {
         public int CustId { get; set; }
 
+        public SuspiciousCustomerNoteGetCriteria(int custId)
+        {
+            CustId = custId;
+        }
+
         public override string GetSettingKey()
         {
             return "FS_Tbl_CustomerLog_Get";

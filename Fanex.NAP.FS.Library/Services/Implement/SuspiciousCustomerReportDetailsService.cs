@@ -11,10 +11,85 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Models;
+    using Models.SuspiciousInfo;
+    using Models.SuspiciousCustomer;
+    using Core.BaseClasses;
+    using Criteria.SuspiciousCustomer;
+    using Criteria.SuspiciousInfo;
 
     public class SuspiciousCustomerReportDetailsService : ISuspiciousCustomerReportDetailsService
     {
-        #region statistics
+        #region Customer Info
+        public string GetAssginee(int custId)
+        {
+            return DataService.GetSingle<string>(new SuspiciousCustomerAssigneeGetCriteria(custId));
+        }
+
+        public IEnumerable<SuspiciousCustomerFraudCaseModel> GetSuspiciousCustomerFraudCase(int custId)
+        {
+            return DataService.GetData<SuspiciousCustomerFraudCaseModel>(new SuspiciousInfoGetCriteria(custId));
+        }
+
+        public DBResult VerifySuspiciousCustomerFraudCase(int custId, int userId, int fraudCaseId)
+        {
+            var criteria = new SuspiciousInfoUpdateCriteria
+            {
+                Custid = custId,
+                UserId = userId,
+                FraudCaseId = fraudCaseId
+            };
+
+            return DataService.UpdateData(criteria, "Verify Suspicious Customer - Fraud Case");
+        }
+
+        public DBResult InsertCustomerLogNotes(int custId, int userId, string logDesc)
+        {
+            var criteria = new SuspiciousCustomerNoteInsertCriteria
+            {
+                CustId = custId,
+                UserId = userId,
+                LogType = 2, //note
+                CaseId = null,
+                LogDesc = logDesc
+            };
+
+            return DataService.UpdateData(criteria, "Insert Customer Note");
+        }
+
+        public IEnumerable<SuspiciousCustomerNoteModel> GetCustomerLogNotes(int custId)
+        {
+            return DataService.GetData<SuspiciousCustomerNoteModel>(new SuspiciousCustomerNoteGetCriteria(custId));
+        }
+
+        public DBResult DeleteCustomerLogNotes(int userId, int customerLogId)
+        {
+            var criteria = new SuspiciousCustomerNoteDeleteCriteria
+            {
+                UserId = userId,
+                CustomerLogId = customerLogId
+            };
+
+            return DataService.UpdateData(criteria, "Delete Customer Note");
+        }
+
+        public DBResult UpdateSuspiciousCustomerInfo(int custId, int userId, bool isDelinquent, bool isDirty, bool isHedge)
+        {
+            var criteria = new SuspiciousCustomerUpdateCriteria
+            {
+                CustId = custId,
+                UserId = userId,
+                IsDelinquent = isDelinquent,
+                IsDirty = isDirty,
+                IsHedge = isHedge
+            };
+
+            return DataService.UpdateData(criteria, "Update Suspicious Customer Info");
+        }
+
+        #endregion
+
+        #region Statistics
 
         public Statistics GetStatistics(int custId, DateTime from, DateTime to)
         {

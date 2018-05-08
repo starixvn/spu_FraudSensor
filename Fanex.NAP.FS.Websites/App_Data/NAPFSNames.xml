@@ -4,16 +4,16 @@
     <Setting Key="FS_Rpt_Test" SpName="FS_Rpt_Test" DbName="DBFS.FraudSensor.bodbSPUNet" />
   </Function>
 
-  <Function Name="FSuspiciousCustomerReport">
-    <Setting Key="FS_Tbl_Rpt_SuspiciousCustomer_Get"
-           SpName="FS_Tbl_Rpt_SuspiciousCustomer_Get"
+  <Function Name="SuspiciousCustomerReport">
+    <Setting Key="FS_Tbl_SuspiciousCustomer_Get"
+           SpName="FS_Tbl_SuspiciousCustomer_Get"
            DbName="DBFS.FraudSensor.bodbSPUNet" />
 
      <Setting Key="FS_Tbl_CustomerLog_Get"
               SpName="FS_Tbl_CustomerLog_Get"
               DbName="DBFS.FraudSensor.bodbSPUNet" />
     
-    <Setting Key="FS_CustomerLog_Insert"
+    <Setting Key="FS_Tbl_CustomerLog_Insert"
               SpName="FS_Tbl_CustomerLog_Insert"
               DbName="DBFS.FraudSensor.bodbSPUNet" />
 
@@ -27,8 +27,8 @@
          SpName="FS_Tbl_CustomerMonitorAssignment_Get"
          DbName="DBFS.FraudSensor.bodbSPUNet" />
 
-    <Setting Key="FS_Tbl_CustomerMonitorAssignment_Insert"
-         SpName="FS_Tbl_CustomerMonitorAssignment_Insert"
+    <Setting Key="FS_SuspiciousCustomer_Assignee_Update"
+         SpName="FS_SuspiciousCustomer_Assignee_Update"
          DbName="DBFS.FraudSensor.bodbSPUNet" />
 
     <Setting Key="FS_Tbl_CustomerMonitorAssignment_Update"
@@ -121,8 +121,8 @@
   </Function>
 
   <Function Name="SuspiciousInfo">
-    <Setting Key="FS_Tbl_SuspiciousInfo_Get"
-             SpName="FS_Tbl_SuspiciousInfo_Get"
+    <Setting Key="FS_SuspiciousCustomer_FraudCases_Get"
+             SpName="FS_SuspiciousCustomer_FraudCases_Get"
              DbName="DBFS.FraudSensor.bodbSPUNet" />
 
     <Setting Key="FS_Tbl_SuspiciousInfo_Update"

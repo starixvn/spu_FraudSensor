@@ -12,7 +12,7 @@
 
         public override string GetSettingKey()
         {
-            return "FS_Tbl_CustomerMonitorAssignment_Insert";
+            return "FS_SuspiciousCustomer_Assignee_Update";
         }
 
         public override bool IsValid()

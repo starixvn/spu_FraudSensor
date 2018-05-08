@@ -6,9 +6,14 @@
     {
         public int CustId { get; set; }
 
+        public SuspiciousInfoGetCriteria(int custId)
+        {
+            CustId = custId;
+        }
+
         public override string GetSettingKey()
         {
-            return "FS_Tbl_SuspiciousInfo_Get";
+            return "FS_SuspiciousCustomer_FraudCases_Get";
         }
 
         public override bool IsValid()
