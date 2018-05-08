@@ -9,14 +9,14 @@
 
         public string FraudCaseName { get; set; }
 
-        public int VerifyCounter { get; set; }
+        public int TotalVilolation { get; set; }
 
-        public int UnverifyCounter { get; set; }
+        public int Verified { get; set; }
+
+        public int Unverified { get; set; }
 
         public DateTime LastVerifyDate { get; set; }
 
-        public int LastVerifyById { get; set; }
-
-        public string LastVerifyByName { get; set; }
+        public string LastVerifiedBy { get; set; }
     }
 }
