@@ -2,7 +2,7 @@
 {
     using Fanex.Data.Repository;
 
-    public class SuspiciousCustomerAssigneeInsertCriteria : CriteriaBase
+    public class SuspiciousCustomerAssigneeUpdateCriteria : CriteriaBase
     {
         public int CustId { get; set; }
 

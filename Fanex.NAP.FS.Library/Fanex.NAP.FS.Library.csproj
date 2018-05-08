@@ -221,7 +221,7 @@
     <Compile Include="Criteria\SuspiciousCustomerDetails\SuspiciousCustomerDetailsViolatedTicketGetCriteria.cs" />
     <Compile Include="Criteria\SuspiciousInfo\SuspiciousInfoUpdateCriteria.cs" />
     <Compile Include="Criteria\SuspiciousInfo\SuspiciousInfoGetCriteria.cs" />
-    <Compile Include="Criteria\SuspiciousCustomer\SuspiciousCustomerAssigneeInsertCriteria.cs" />
+    <Compile Include="Criteria\SuspiciousCustomer\SuspiciousCustomerAssigneeUpdateCriteria.cs" />
     <Compile Include="Criteria\SuspiciousCustomer\SuspiciousCustomerNoteDeleteCriteria.cs" />
     <Compile Include="Criteria\SuspiciousCustomer\SuspiciousCustomerNoteInsertCriteria.cs" />
     <Compile Include="Criteria\SuspiciousCustomer\SuspiciousCustomerNoteGetCriteria.cs" />
@@ -315,6 +315,7 @@
     <Compile Include="ViewModels\MatchMonitor\FraudCaseDetails\TicketDetails.cs" />
     <Compile Include="ViewModels\MatchMonitor\Match.cs" />
     <Compile Include="ViewModels\MatchMonitor\MatchList.cs" />
+    <Compile Include="ViewModels\SuspiciousCustomerDetails\CustomerDetailsViewModel.cs" />
     <Compile Include="ViewModels\SuspiciousCustomerDetails\TicketDetails.cs" />
     <Compile Include="ViewModels\SuspiciousCustomer\SuspiciousCustomerNoteView.cs" />
   </ItemGroup>

@@ -7,7 +7,7 @@
     {
         public int UserId { get; set; }
 
-        public int Custid { get; set; }
+        public int CustId { get; set; }
 
         public int? MatchId { get; set; }
 

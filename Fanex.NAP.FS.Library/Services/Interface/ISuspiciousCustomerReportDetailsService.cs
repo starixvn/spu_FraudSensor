@@ -10,7 +10,11 @@
     public interface ISuspiciousCustomerReportDetailsService
     {
         #region Customer Info
-        string GetAssginee(int custId);
+        string GetAssignee(int custId);
+
+        DBResult UpdateAssignee(int custId, int assignee);
+
+        SuspiciousCustomerModel GetSuspiciousCustomerInfo(int custId);
 
         IEnumerable<SuspiciousCustomerFraudCaseModel> GetSuspiciousCustomerFraudCase(int custId);
 

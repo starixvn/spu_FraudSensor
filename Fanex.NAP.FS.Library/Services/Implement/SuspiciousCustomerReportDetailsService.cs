@@ -21,9 +21,33 @@
     public class SuspiciousCustomerReportDetailsService : ISuspiciousCustomerReportDetailsService
     {
         #region Customer Info
-        public string GetAssginee(int custId)
+        public string GetAssignee(int custId)
         {
             return DataService.GetSingle<string>(new SuspiciousCustomerAssigneeGetCriteria(custId));
+        }
+
+        public DBResult UpdateAssignee(int custId, int assignee)
+        {
+            var criteria = new SuspiciousCustomerAssigneeUpdateCriteria
+            {
+                CustId = custId,
+                AssigneeId = assignee
+            };
+
+            return DataService.UpdateData(criteria, "Update assignee");
+        }
+
+        public SuspiciousCustomerModel GetSuspiciousCustomerInfo(int custId)
+        {
+            var criteria = new SuspiciousCustomerGetCriteria
+            {
+                CustId = custId,
+                IsDelinquent = null,
+                IsDirty = null,
+                IsHedge = null
+            };
+
+            return DataService.GetData<SuspiciousCustomerModel>(criteria).First();
         }
 
         public IEnumerable<SuspiciousCustomerFraudCaseModel> GetSuspiciousCustomerFraudCase(int custId)
@@ -35,7 +59,7 @@
         {
             var criteria = new SuspiciousInfoUpdateCriteria
             {
-                Custid = custId,
+                CustId = custId,
                 UserId = userId,
                 FraudCaseId = fraudCaseId
             };
