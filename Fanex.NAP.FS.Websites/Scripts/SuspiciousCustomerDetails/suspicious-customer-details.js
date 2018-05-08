@@ -9,6 +9,8 @@
 
     var filter = {};
 
+    let stopRender = false;
+
     function getStatistics() {
         var url = common.modifyRelativeUrl("/SuspiciousCustomerDetails/GetStatistics");
 
@@ -21,6 +23,8 @@
     }
 
     function openCloseGroup(target, fraudCase) {
+        stopRender = true;
+
         var table = violatedTickets.DataTable();
 
         if (filter[fraudCase] != null) {
@@ -57,7 +61,7 @@
         info: false,
         paging: false,
         processing: true,
-        dom: "t",
+        dom: "tr",
         language: {
             lengthMenu: "Page size _MENU_",
             paginate: {
@@ -84,7 +88,7 @@
         info: false,
         paging: false,
         processing: true,
-        dom: "t",
+        dom: "tr",
         language: {
             lengthMenu: "Page size _MENU_",
             paginate: {
@@ -111,7 +115,7 @@
         info: false,
         paging: false,
         processing: true,
-        dom: "t",
+        dom: "tr",
         language: {
             lengthMenu: "Page size _MENU_",
             paginate: {
@@ -138,7 +142,7 @@
         info: false,
         paging: false,
         processing: true,
-        dom: "t",
+        dom: "tr",
         language: {
             lengthMenu: "Page size _MENU_",
             paginate: {
@@ -161,11 +165,10 @@
 
     violatedTickets.DataTable({
         ordering: false,
-        searching: false,
         info: false,
         paging: false,
         processing: true,
-        dom: "t",
+        dom: "tr",
         language: {
             lengthMenu: "Page size _MENU_",
             paginate: {
@@ -173,13 +176,12 @@
             },
             info: "Displaying _START_ to _END_ of _TOTAL_ item(s)",
             infoEmpty: "",
-            zeroRecords: "There's no data"
+            zeroRecords: "There's no data",
+            processing: "loading..."
         },
         scrollY: "30vh",
         scrollCollapse: true,
-        ajax: {
-            url: common.modifyRelativeUrl(`/SuspiciousCustomerDetails/GetViolatedTickets?custid=${generalParam2.custId}&from=${generalParam2.from}&to=${generalParam2.to}`)
-        },
+        ajax: common.modifyRelativeUrl(`/SuspiciousCustomerDetails/GetViolatedTickets?custid=${generalParam2.custId}&from=${generalParam2.from}&to=${generalParam2.to}`),
         columnDefs: [
             { targets: "_all", defaultContent: "-" },
             { targets: [-3, -4, 3], className: "text-right" },
@@ -206,10 +208,23 @@
             else {
                 $(row).attr("data-fraudcase", obj.key);
             }
+        },
+        drawCallback: function () {
+            var n = violatedTickets.DataTable().rows().data().length;
+
+            if (n > 0 && !stopRender) {
+                $(".group").click();
+            }
         }
     });
 
     getStatistics();
+
+    $(".area").accordion({
+        collapsible: true,
+        activate: () => violatedTickets.DataTable().columns.adjust(),
+        heightStyle: "content"
+    })
 }
 
 $(suspiciousCustomerDetails);

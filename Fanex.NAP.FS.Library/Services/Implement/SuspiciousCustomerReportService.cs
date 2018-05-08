@@ -19,7 +19,7 @@
 
         public IEnumerable<SuspiciousCustomerNoteModel> GetNotesData(int custId)
         {
-            var criteria = new SuspiciousCustomerNoteGetCriteria { CustId = custId };
+            var criteria = new SuspiciousCustomerNoteGetCriteria(custId);
 
             return DataService.GetData<SuspiciousCustomerNoteModel>(criteria);
         }
