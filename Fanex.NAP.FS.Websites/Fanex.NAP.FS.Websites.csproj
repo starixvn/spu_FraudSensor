@@ -302,6 +302,8 @@
   <ItemGroup>
     <Content Include="App_Data\NAPFrameworkSpNames.xml" />
     <Content Include="App_Data\NAPFSNames.xml" />
+    <Content Include="App_Data\UAT\NAPFrameworkSpNames.xml" />
+    <Content Include="App_Data\UAT\NAPFSNames.xml" />
     <Content Include="Areas\UserLogin\scripts\lib\jquery-1.9.0.min.js" />
     <Content Include="Areas\UserLogin\scripts\ReCheckIn.js" />
     <Content Include="Areas\UserLogin\Views\Common\Style\AccessDenied.css" />

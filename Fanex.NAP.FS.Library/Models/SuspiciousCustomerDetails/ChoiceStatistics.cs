@@ -2,6 +2,6 @@
 {
     public class ChoiceStatistics: WinLossStatistics
     {
-        public string Choice { get; set; }
+        public string EventChoice { get; set; }
     }
 }

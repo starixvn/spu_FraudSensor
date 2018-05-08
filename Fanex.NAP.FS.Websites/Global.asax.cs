@@ -3,6 +3,7 @@
     using Fanex.Data;
     using Fanex.Logging;
     using Fanex.NAP.FS.Library.Core.Helpers.Xml;
+    using Fanex.NAP.FS.Library.Core.Utilities;
     using System;
     using System.Data.SqlClient;
     using System.Web;
@@ -18,7 +19,7 @@
             DbSettingProviderManager
                 .StartNewSession()
                 .UseDefaultConnectionStringProvider()
-                .UseDefaultDbSettingProvider(resourcePath: "~/App_Data", enableWatching: true)
+                .UseDefaultDbSettingProvider(resourcePath: ConfigSettings.GetConfigStringByName("UAT") ?? "~/App_Data", enableWatching: true)
                 .Run();
 
             AreaRegistration.RegisterAllAreas();

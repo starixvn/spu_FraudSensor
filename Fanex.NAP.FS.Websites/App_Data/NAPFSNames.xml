@@ -135,4 +135,14 @@
              SpName="FS_SuspiciousCustomer_Update"
              DbName="DBFS.FraudSensor.bodbSPUNet" />
   </Function>
+  
+  <Function Name="SuspiciousCustomerDetails">
+	<Setting Key="FS_Rpt_SuspicousCustomerDetails_ViolatedTickets_Get"
+			  SpName="FS_Rpt_SuspicousCustomerDetails_ViolatedTickets_Get"
+			  DbName="DBFS.FraudSensor.bodbSPUNet"/>
+	
+	<Setting Key="FS_Rpt_SuspicousCustomerDetails_WinlossStatistic_Get"
+			  SpName="FS_Rpt_SuspicousCustomerDetails_WinlossStatistic_Get"
+			  DbName="DBFS.FraudSensor.bodbSPUNet"/>
+  </Function>
 </Functions>

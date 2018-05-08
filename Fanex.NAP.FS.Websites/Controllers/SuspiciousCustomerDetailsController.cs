@@ -1,8 +1,10 @@
-﻿namespace Fanex.NAP.FS.Websites.Controllers
+﻿#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
+
+namespace Fanex.NAP.FS.Websites.Controllers
 {
-    using Fanex.NAP.FS.Library.Models.SuspiciousCustomerDetails;
     using Fanex.NAP.FS.Library.Services;
     using System;
+    using System.Threading.Tasks;
     using System.Web.Mvc;
 
     public class SuspiciousCustomerDetailsController : ReportsController
@@ -14,43 +16,16 @@
             return View();
         }
 
-        public ActionResult GetSummary(int custid, DateTime from, DateTime to)
+        public async Task<ActionResult> GetStatistics(int custId, DateTime from, DateTime to)
         {
-            var json = new { data = _detailsService.GetSummaries(custid, from, to) };
-
-            return Json(json);
+            return Json(_detailsService.GetStatistics(custId, from, to));
         }
 
-        public ActionResult GetChoice(int custid, DateTime from, DateTime to)
+        public async Task<ActionResult> GetViolatedTickets(int custId, DateTime from, DateTime to)
         {
-            var json = new
-            {
-                data = _detailsService.GetChoices(custid, from, to)
-            };
-
-            return Json(json);
-        }
-
-        public ActionResult GetTop5Sports(int custid, DateTime from, DateTime to)
-        {
-            var json = new
-            {
-                data = _detailsService.GetTop5Sports(custid, from ,to)
-            };
-
-            return Json(json);
-        }
-
-        public ActionResult GetTop5Bettypes(int custid, DateTime from, DateTime to)
-        {
-            {
-                var json = new
-                {
-                    data = _detailsService.GetTop5Bettypes(custid, from ,to)
-                };
-
-                return Json(json);
-            }
+            return JData(_detailsService.GetViolatedTickets(custId, from, to));
         }
     }
 }
+
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously

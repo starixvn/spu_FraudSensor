@@ -8,13 +8,9 @@
     {
         #region statistics
 
-        IEnumerable<Summary> GetSummaries(int custid, DateTime from, DateTime to);
+        Statistics GetStatistics(int custId, DateTime from, DateTime to);
 
-        IEnumerable<ChoiceStatistics> GetChoices(int custid, DateTime from, DateTime to);
-
-        IEnumerable<SportStatistics> GetTop5Sports(int custid, DateTime from, DateTime to);
-
-        IEnumerable<BettypeStatistics> GetTop5Bettypes(int custid, DateTime from, DateTime to);
+        IEnumerable<object> GetViolatedTickets(int custId, DateTime from, DateTime to);
 
         #endregion statistics
     }

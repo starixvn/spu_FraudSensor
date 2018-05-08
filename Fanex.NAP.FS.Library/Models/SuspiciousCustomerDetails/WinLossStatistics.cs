@@ -2,10 +2,10 @@
 {
     public class WinLossStatistics
     {
-        public double Turnover { get; set; }
+        public double SumTO { get; set; }
 
-        public double WinLoss { get; set; }
+        public double SumWL { get; set; }
 
-        public double Margin => WinLoss / Turnover * 100;
+        public double Margin => SumWL / SumTO * 100;
     }
 }

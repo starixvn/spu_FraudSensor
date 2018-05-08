@@ -192,6 +192,8 @@
         $(document).ajaxStart(() => loading.show());
         $(document).ajaxComplete(() => loading.hide());
     }
+
+    this.formatGridNumber = (n = 0, format = "0,0.00") => n >= 0 ? numeral(n).format(format) : `<span class="text-red">${numeral(n).format(format)}</span>`;
 }
 
 var common = new UICommon();

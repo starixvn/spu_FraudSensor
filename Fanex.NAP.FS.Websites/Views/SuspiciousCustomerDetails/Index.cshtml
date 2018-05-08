@@ -3,6 +3,7 @@
 }
 
 @section styles{
+    @Styles.Render("~/Contents/CoreBetList")
     @Styles.Render("~/suspicious-customer-styles")
 }
 
@@ -103,7 +104,6 @@
                     <th>#</th>
                     <th>Trans Date</th>
                     <th>Bet ID</th>
-                    <th>Bet Type</th>
                     <th>Choice</th>
                     <th>Result</th>
                     <th>Odds</th>
@@ -113,8 +113,7 @@
                     <th>IP</th>
                 </tr>
             </thead>
-            <tbody>
-            </tbody>
+            <tbody></tbody>
         </table>
     </div>
 
@@ -135,8 +134,7 @@
                             <th>#Tickets</th>
                         </tr>
                     </thead>
-                    <tbody>
-                    </tbody>
+                    <tbody></tbody>
                 </table>
             </div>
             <div>
@@ -152,8 +150,7 @@
                             <th>Margin (%)</th>
                         </tr>
                     </thead>
-                    <tbody>
-                    </tbody>
+                    <tbody></tbody>
                 </table>
             </div>
         </div>
@@ -172,8 +169,7 @@
                             <th>Margin (%)</th>
                         </tr>
                     </thead>
-                    <tbody>
-                    </tbody>
+                    <tbody></tbody>
                 </table>
             </div>
 
@@ -190,8 +186,7 @@
                             <th>Margin (%)</th>
                         </tr>
                     </thead>
-                    <tbody>
-                    </tbody>
+                    <tbody></tbody>
                 </table>
             </div>
         </div>
@@ -200,11 +195,20 @@
 
 @section scripts{
     <script>
-        var custid = 1;
-        var username = "";
-        var from = "2010/8/12";
-        var to = "2010/8/12";
+        var generalParam =
+            {
+                custId: 28216314,
+                from: "2017-10-04",
+                to: "2018-05-02"
+            }
+
+        var generalParam2 =
+            {
+                custId: 1339383,
+                from: "2017-10-04",
+                to: "2018-05-02"
+            }
     </script>
 
-    @Scripts.Render("~/suspicious-customer-scripts")    
+    @Scripts.Render("~/suspicious-customer-scripts")
 }

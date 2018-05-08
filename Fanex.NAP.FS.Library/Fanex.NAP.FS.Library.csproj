@@ -214,15 +214,14 @@
     <Compile Include="Criteria\MatchMonitor\MatchGetAllCriteria.cs" />
     <Compile Include="Criteria\MatchMonitor\MatchNoteUpdateCriteria.cs" />
     <Compile Include="Criteria\MatchMonitor\VerifyMatchCriteria.cs" />
+    <Compile Include="Criteria\SuspiciousCustomerDetails\SuspiciousCustomerDetailsGeneralCriteria.cs" />
+    <Compile Include="Criteria\SuspiciousCustomerDetails\SuspiciousCustomerDetailsStatisticsGetCriteria.cs" />
+    <Compile Include="Criteria\SuspiciousCustomerDetails\SuspiciousCustomerDetailsViolatedTicketGetCriteria.cs" />
     <Compile Include="Criteria\SuspiciousInfo\SuspiciousInfoUpdateCriteria.cs" />
-    <Compile Include="Criteria\SuspiciousCustomerDetails\SuspiciousCustomerDetailsChoiceGetCriteria.cs" />
     <Compile Include="Criteria\SuspiciousInfo\SuspiciousInfoGetCriteria.cs" />
     <Compile Include="Criteria\SuspiciousCustomer\SuspiciousCustomerAssigneeInsertCriteria.cs" />
     <Compile Include="Criteria\SuspiciousCustomer\SuspiciousCustomerNoteDeleteCriteria.cs" />
     <Compile Include="Criteria\SuspiciousCustomer\SuspiciousCustomerNoteInsertCriteria.cs" />
-    <Compile Include="Criteria\SuspiciousCustomerDetails\SuspiciousCustomerDetailsSummaryGetCriteria.cs" />
-    <Compile Include="Criteria\SuspiciousCustomerDetails\SuspiciousCustomerDetailsTop5BettypesGetCriteria.cs" />
-    <Compile Include="Criteria\SuspiciousCustomerDetails\SuspiciousCustomerDetailsTop5SportsGetCriteria.cs" />
     <Compile Include="Criteria\SuspiciousCustomer\SuspiciousCustomerNoteGetCriteria.cs" />
     <Compile Include="Criteria\SuspiciousCustomer\SuspiciousCustomerUpdateCriteria.cs" />
     <Compile Include="Criteria\SuspiciousCustomer\SuspiciousCustomerReportGetCriteria.cs" />
@@ -274,6 +273,8 @@
     <Compile Include="Models\MatchMonitor\FraudCaseDetails\TicketInfo.cs" />
     <Compile Include="Models\MatchMonitor\League.cs" />
     <Compile Include="Models\MatchMonitor\Match.cs" />
+    <Compile Include="Models\SuspiciousCustomerDetails\FraudCaseViolated.cs" />
+    <Compile Include="Models\SuspiciousCustomerDetails\Statistics.cs" />
     <Compile Include="Models\SuspiciousCustomer\SuspiciousCustomerModel.cs" />
     <Compile Include="Models\SuspiciousInfo\SuspiciousCustomerFraudCaseModel.cs" />
     <Compile Include="Models\SuspiciousCustomerDetails\BettypeStatistics.cs" />
@@ -312,14 +313,13 @@
     <Compile Include="ViewModels\MatchMonitor\FraudCaseDetails\TicketDetails.cs" />
     <Compile Include="ViewModels\MatchMonitor\Match.cs" />
     <Compile Include="ViewModels\MatchMonitor\MatchList.cs" />
+    <Compile Include="ViewModels\SuspiciousCustomerDetails\TicketDetails.cs" />
     <Compile Include="ViewModels\SuspiciousCustomer\SuspiciousCustomerNoteView.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Core\Configurations\" />
     <Folder Include="Core\Extensions\" />
-    <Folder Include="Criteria\SuspiciousCustomerDetails\" />
     <Folder Include="DataAccess\" />
-    <Folder Include="ViewModels\SuspiciousCustomerDetails\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
