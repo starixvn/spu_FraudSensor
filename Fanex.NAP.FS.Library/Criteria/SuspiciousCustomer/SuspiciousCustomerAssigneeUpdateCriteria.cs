@@ -6,7 +6,7 @@
     {
         public int CustId { get; set; }
 
-        public int AssigneeId { get; set; }
+        public int? AssigneeId { get; set; }
 
         public int UserId { get; set; }
 

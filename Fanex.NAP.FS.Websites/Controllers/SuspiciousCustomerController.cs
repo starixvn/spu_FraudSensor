@@ -1,4 +1,6 @@
-﻿namespace Fanex.NAP.FS.Websites.Controllers
+﻿#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
+
+namespace Fanex.NAP.FS.Websites.Controllers
 {
     using Core.Business;
     using Core.Service.Impl;
@@ -10,6 +12,7 @@
     using System.Collections.Generic;
     using System.Configuration;
     using System.Linq;
+    using System.Threading.Tasks;
     using System.Web.Mvc;
 
     [NapAuth(FunctionKey = FSFunctionKeys.SuspiciousCustomer, Policy = Constant.Policy.Read)]
@@ -48,7 +51,7 @@
             return Json(fraudCases, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult GetUsers()
+        public async Task<ActionResult> GetUsers()
         {
             var siteId = int.Parse(ConfigurationManager.AppSettings["SiteId"]);
             var users = new UserService().GetUserPolicies(FSFunctionKeys.SuspiciousCustomer, siteId);
@@ -82,3 +85,5 @@
         }
     }
 }
+
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously

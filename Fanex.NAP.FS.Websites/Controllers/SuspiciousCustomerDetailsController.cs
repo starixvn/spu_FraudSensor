@@ -1,4 +1,6 @@
-﻿namespace Fanex.NAP.FS.Websites.Controllers
+﻿#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
+
+namespace Fanex.NAP.FS.Websites.Controllers
 {
     using Fanex.NAP.FS.Library.Services;
     using Library.ViewModels.SuspiciousCustomerDetails;
@@ -17,9 +19,9 @@
             return View(generalViewModel);
         }
 
-        public ActionResult UpdateAssignee(int custId, int assigneeId)
+        public ActionResult UpdateAssignee(int custId, int? assigneeId)
         {
-            var result = _detailsService.UpdateAssignee(custId, assigneeId);
+            var result = _detailsService.UpdateAssignee(custId, assigneeId, CurrentSession.UserId);
 
             return Json(result);
         }
@@ -54,7 +56,7 @@
 
         public async Task<ActionResult> GetCustomerLogNotes(int custId)
         {
-            return Json(_detailsService.GetCustomerLogNotes(custId));
+            return JData(_detailsService.GetCustomerLogNotes(custId));
         }
 
         public async Task<ActionResult> GetStatistics(int custId, DateTime from, DateTime to)
@@ -65,6 +67,11 @@
         public async Task<ActionResult> GetViolatedTickets(int custId, DateTime from, DateTime to)
         {
             return JData(_detailsService.GetViolatedTickets(custId, from, to));
+        }
+
+        public async Task<ActionResult> GetFraudCases(int custId)
+        {
+            return JData(_detailsService.GetSuspiciousCustomerFraudCase(custId));
         }
 
         #region Utilities
@@ -80,11 +87,12 @@
 
             generalViewModel.CustInfo = _detailsService.GetSuspiciousCustomerInfo(custId);
             generalViewModel.Assignee = _detailsService.GetAssignee(custId);
-            generalViewModel.ViolatedFraudCases = _detailsService.GetSuspiciousCustomerFraudCase(custId);
 
             return generalViewModel;
         }
 
-        #endregion
+        #endregion Utilities
     }
 }
+
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously

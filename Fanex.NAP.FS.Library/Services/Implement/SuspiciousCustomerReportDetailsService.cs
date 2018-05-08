@@ -26,12 +26,13 @@
             return DataService.GetSingle<string>(new SuspiciousCustomerAssigneeGetCriteria(custId));
         }
 
-        public DBResult UpdateAssignee(int custId, int assignee)
+        public DBResult UpdateAssignee(int custId, int? assignee, int userId)
         {
             var criteria = new SuspiciousCustomerAssigneeUpdateCriteria
             {
                 CustId = custId,
-                AssigneeId = assignee
+                AssigneeId = assignee,
+                UserId = userId
             };
 
             return DataService.UpdateData(criteria, "Update assignee");
@@ -61,7 +62,8 @@
             {
                 CustId = custId,
                 UserId = userId,
-                FraudCaseId = fraudCaseId
+                FraudCaseId = fraudCaseId,
+                IsVerified = true
             };
 
             return DataService.UpdateData(criteria, "Verify Suspicious Customer - Fraud Case");
@@ -73,7 +75,7 @@
             {
                 CustId = custId,
                 UserId = userId,
-                LogType = 2, //note
+                LogType = 1, //note
                 CaseId = null,
                 LogDesc = logDesc
             };
@@ -156,6 +158,7 @@
                     queries.Read<FraudCaseViolated>()
                     .GroupBy(f => f.FraudCaseName)
                     .Select(g => new FraudCaseViolated { FraudCaseName = g.Key, TransIDs = string.Join(",", g.Select(f => f.TransIDs)) })
+                    .Where(f => !string.IsNullOrEmpty(f.TransIDs))
                     .OrderBy(f => f.FraudCaseName);
 
                 var tickets =
@@ -164,32 +167,37 @@
 
                 foreach (var fc in fraudCases)
                 {
-                    yield return new { key = fc.FraudCaseName };
+                    var source = fc.Ids.Where(tickets.ContainsKey).Select(id => tickets[id]);
 
-                    foreach (var t in fc.Ids.Select(id => tickets[id]).OrderBy(t => t.TransDate))
+                    if (source.Any())
                     {
-                        var obj = new TicketDetails
-                        {
-                            BetID = t.TransId.ToString(),
-                            Bettype = RefData.GetBetTypeName(t.BetTypeId.ToString(), "en"),
-                            CurrencyName = t.CurrencyName,
-                            Choice = html_builder.BuildChoice(t, ticketHelper, null, false),
-                            IP = t.IP,
-                            Odds = html_builder.BuildOdds(t, null, CacheRef.GetOddsTypeName),
-                            Result = new ViewModels.MatchMonitor.FraudCaseDetails.Result
-                            {
-                                FinalAwayScore = t.FinalAwayScore,
-                                FinalHomeScore = t.FinalHomeScore,
-                                HTHomeScore = t.HTHomeScore,
-                                HTAwayScore = t.HTAwayScore
-                            },
-                            TransDate = t.TransDate.ToString("MMM dd, yyyy<br/>hh:mm:ss tt"),
-                            Stake = t.Stake,
-                            Status = t.Status,
-                            WinLoss = t.Winlost
-                        };
+                        yield return new { key = fc.FraudCaseName };
 
-                        yield return new { key = fc.FraudCaseName, value = obj };
+                        foreach (var t in source.OrderBy(t => t.TransDate))
+                        {
+                            var obj = new TicketDetails
+                            {
+                                BetID = t.TransId.ToString(),
+                                Bettype = RefData.GetBetTypeName(t.BetTypeId.ToString(), "en"),
+                                CurrencyName = t.CurrencyName,
+                                Choice = html_builder.BuildChoice(t, ticketHelper, null, false),
+                                IP = t.IP,
+                                Odds = html_builder.BuildOdds(t, null, CacheRef.GetOddsTypeName),
+                                Result = new ViewModels.MatchMonitor.FraudCaseDetails.Result
+                                {
+                                    FinalAwayScore = t.FinalAwayScore,
+                                    FinalHomeScore = t.FinalHomeScore,
+                                    HTHomeScore = t.HTHomeScore,
+                                    HTAwayScore = t.HTAwayScore
+                                },
+                                TransDate = t.TransDate.ToString("MMM dd, yyyy<br/>hh:mm:ss tt"),
+                                Stake = t.Stake,
+                                Status = t.Status,
+                                WinLoss = t.Winlost
+                            };
+
+                            yield return new { key = fc.FraudCaseName, value = obj };
+                        }
                     }
                 }
             }

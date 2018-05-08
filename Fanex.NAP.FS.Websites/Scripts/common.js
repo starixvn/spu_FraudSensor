@@ -42,6 +42,8 @@
         }
     }
 
+    var $this = this;
+
     $(document).ajaxError(() => this.showError());
 
     this.showLoading = function () {
@@ -194,6 +196,35 @@
     }
 
     this.formatGridNumber = (n = 0, format = "0,0.00") => n >= 0 ? numeral(n).format(format) : `<span class="text-red">${numeral(n).format(format)}</span>`;
+
+    this.handleUpdateAjax = function (successMsg, successFunc, failMsg, failFunc) {
+        return function (result) {
+            if (result.ErrorCode == 0) {
+                if (successMsg != null) {
+                    $this.showSuccess(successMsg);
+                }
+                else {
+                    $this.showSuccess();
+                }
+
+                if (successFunc != null) {
+                    successFunc(result);
+                }
+            }
+            else {
+                if (failMsg != null) {
+                    $this.showError(failMsg);
+                }
+                else {
+                    $this.showError(result.ErrorMsg);
+                }
+
+                if (failFunc != null) {
+                    failFunc(result);
+                }
+            }
+        }
+    }
 }
 
 var common = new UICommon();

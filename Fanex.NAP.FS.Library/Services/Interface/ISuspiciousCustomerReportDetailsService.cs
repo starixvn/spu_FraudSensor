@@ -12,7 +12,7 @@
         #region Customer Info
         string GetAssignee(int custId);
 
-        DBResult UpdateAssignee(int custId, int assignee);
+        DBResult UpdateAssignee(int custId, int? assignee, int userId);
 
         SuspiciousCustomerModel GetSuspiciousCustomerInfo(int custId);
 

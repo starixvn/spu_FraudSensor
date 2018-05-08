@@ -1,6 +1,11 @@
 ﻿@model Fanex.NAP.FS.Library.ViewModels.SuspiciousCustomerDetails.CustomerDetailsViewModel
+
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var delenquency = Model.CustInfo.IsDelinquent.HasValue && Model.CustInfo.IsDelinquent.Value;
+    var dirty = Model.CustInfo.IsDirty.HasValue && Model.CustInfo.IsDirty.Value;
+    var hedge = Model.CustInfo.IsHedge.HasValue && Model.CustInfo.IsHedge.Value;
 }
 
 @section styles{
@@ -11,7 +16,7 @@
 <h1 class="title">Suspicious Customer/Customer details</h1>
 <div class="customer-details">
     <div class="customer-info">
-        Customer: S312C02A6333(CNY)
+        Customer: @Model.Username
     </div>
 
     <div class="area">
@@ -22,17 +27,15 @@
                 <div class="group">
                     <label class="text text-assignees">Assignees</label>
                     <select class="control">
-                        <option value="0">None Selected</option>
                     </select>
                 </div>
 
-                <button class="button -primary">Save</button>
-                <button class="button -cancel">Cancel</button>
+                <button class="button -primary" @(!string.IsNullOrEmpty(Model.Assignee) ? "disabled" : "") id="save-btn">Save</button>
             </div>
 
             <div class="block">
                 <h2 class="sub-title">Fraud Cases</h2>
-                <table class="table table-striped -fraud-case">
+                <table class="table table-striped -fraud-case" id="fraudcase" style="width: 50%; margin: 0">
                     <thead>
                         <tr>
                             <th>Case</th>
@@ -45,22 +48,13 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>CS_test</td>
-                            <td class="text-center">4</td>
-                            <td class="text-center">0</td>
-                            <td class="text-center">0</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td class="text-center"><a href="#">Verify</a></td>
-                        </tr>
                     </tbody>
                 </table>
             </div>
 
             <div class="block">
                 <h2 class="sub-title">Logs/Notes</h2>
-                <table class="table table-striped -logs-notes">
+                <table class="table table-striped -logs-notes" id="log-note">
                     <thead>
                         <tr>
                             <th>Date</th>
@@ -71,28 +65,25 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td class="text-center" colspan="5">There is no data</td>
-                        </tr>
                     </tbody>
                 </table>
                 <div class="add-component">
-                    <input type="text" class="text" placeholder="Input your notes here..." />
-                    <button class="button -primary">Add</button>
+                    <input type="text" class="text" placeholder="Input your notes here..." id="note"/>
+                    <button class="button -primary" id="add-btn">Add</button>
                 </div>
             </div>
 
-            <div class="block suspicious-customers">
+            <div class="block suspicious-customers account-type">
                 <label class="checkbox">
-                    <input type="checkbox" checked />
+                    <input type="checkbox" @(hedge ? "checked":"") />
                     <span>Delinquency</span>
                 </label>
                 <label class="checkbox">
-                    <input type="checkbox" />
+                    <input type="checkbox" @(dirty ? "checked" : "") />
                     <span>Dirty Account</span>
                 </label>
                 <label class="checkbox">
-                    <input type="checkbox" />
+                    <input type="checkbox" @(hedge ? "checked" : "")/>
                     <span>Hedge Account</span>
                     <span class="icon-help-circle"></span>
                 </label>
@@ -101,7 +92,7 @@
     </div>
 
     <div class="area">
-        <h2>Win Loss Summary - Range data: @DateTime.Today.ToString("MMM dd, yyyy") - @DateTime.Today.ToString("MMM dd, yyyy")</h2>
+        <h2>Win Loss Summary - Range data: @Model.FromDate.ToString("MMM dd, yyyy") - @Model.ToDate.ToString("MMM dd, yyyy")</h2>
         <div>
             <div class="block">
                 <h2 class="sub-title">Daily Violated Tickets</h2>
@@ -206,17 +197,12 @@
     <script>
         var generalParam =
             {
-                custId: 28216314,
-                from: "2017-10-04",
-                to: "2018-05-02"
+                custId: @Model.CustInfo.CustId,
+                from: "@Model.FromDate.ToString()",
+                to: "@Model.ToDate.ToString()"
             }
 
-        var generalParam2 =
-            {
-                custId: 1339383,
-                from: "2017-10-04",
-                to: "2018-05-02"
-            }
+        var assignee = "@Model.Assignee";
     </script>
 
     @Scripts.Render("~/suspicious-customer-scripts")
