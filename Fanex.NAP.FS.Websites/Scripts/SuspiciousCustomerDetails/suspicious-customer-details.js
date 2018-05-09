@@ -271,13 +271,13 @@
         columnDefs: [
             { targets: "_all", defaultContent: "-" },
             { targets: [0, -2], className: "text-center" },
-            { targets: [0, 2], width: "200px" },
+            { targets: [0], width: "200px" },
             { targets: [-1, -2], width: "40px" }
         ],
         columns: [
             { data: obj => obj.LogDateString },
             { data: obj => obj.Description },
-            { data: obj => obj.Author },
+            { data: obj => obj.Author, width: "100px" },
             { data: obj => obj.Type },
             { data: obj => "<span class='icon-delete text-red' style='cursor: pointer'></span>", className: "text-center has-icon" }
         ],
@@ -315,8 +315,8 @@
             { data: obj => obj.Violations },
             { data: obj => obj.Verified },
             { data: obj => obj.Unverified },
-            { data: obj => obj.LastVerifiedDate == null ? null : moment(new Date(parseInt(obj.LastVerifiedDate.substr(6)))).format("MMM DD, YYYY hh:mm:ss A"), width: "100px" },
-            { data: obj => obj.LastVerifiedBy },
+            { data: obj => obj.LastVerifiedDate == null ? null : moment(new Date(parseInt(obj.LastVerifiedDate.substr(6)))).format("MMM DD, YYYY hh:mm:ss A"), width: "170px" },
+            { data: obj => obj.LastVerifiedBy, width: "100px" },
             { data: obj => `<a class='${obj.Unverified != 0 ? "link" : ""} verify' data-fraudcase-id="${obj.FraudCaseId}" style="${obj.Unverified != 0 ? "color: #2097fd; cursor: pointer" : "color: inherit"}">Verify</span>`, width: "70px" }
         ],
         drawCallback: function () {
@@ -376,7 +376,7 @@
                 btn.prop("disabled", true);
                 assignee = $("select").select2("data")[0].text;
                 common.showSuccess();
-                fraudCase.DataTable().ajax.reload();
+                logNote.DataTable().ajax.reload();
             }
             else {
                 common.showError(result.ErrorMsg);
