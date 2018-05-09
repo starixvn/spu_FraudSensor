@@ -315,9 +315,9 @@
             { data: obj => obj.Violations },
             { data: obj => obj.Verified },
             { data: obj => obj.Unverified },
-            { data: obj => obj.LastVerifiedDate == null ? null : moment(new Date(parseInt(obj.LastVerifiedDate.substr(6)))).format("MMM DD,YYYY"), width: "100px" },
+            { data: obj => obj.LastVerifiedDate == null ? null : moment(new Date(parseInt(obj.LastVerifiedDate.substr(6)))).format("MMM DD, YYYY hh:mm:ss A"), width: "100px" },
             { data: obj => obj.LastVerifiedBy },
-            { data: obj => `<a class='${obj.Unverified != 0 ? "link" : ""} verify' data-fraudcase-id="${obj.FraudCaseId}" style="${obj.Unverified != 0 ? "color: #2097fd; cursor: pointer" : ""}">Verify</span>`, width: "70px" }
+            { data: obj => `<a class='${obj.Unverified != 0 ? "link" : ""} verify' data-fraudcase-id="${obj.FraudCaseId}" style="${obj.Unverified != 0 ? "color: #2097fd; cursor: pointer" : "color: inherit"}">Verify</span>`, width: "70px" }
         ],
         drawCallback: function () {
             var table = logNote.DataTable();
@@ -353,7 +353,17 @@
 
     $(".area").accordion({
         collapsible: true,
-        heightStyle: "content"
+        heightStyle: "content",
+        activate: function (e, ui) {
+            var target = $(e.target);
+
+            if (target.hasClass(".-1")) {
+                fraudCase.DataTable().columns.adjust();
+            }
+            else {
+                violatedTickets.DataTable().columns.adjust();
+            }
+        }
     });
 
     saveBtn.click(function (e) {
@@ -366,6 +376,7 @@
                 btn.prop("disabled", true);
                 assignee = $("select").select2("data")[0].text;
                 common.showSuccess();
+                fraudCase.DataTable().ajax.reload();
             }
             else {
                 common.showError(result.ErrorMsg);

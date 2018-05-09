@@ -19,7 +19,7 @@
         Customer: @Model.Username
     </div>
 
-    <div class="area">
+    <div class="area -1">
         <h2 class="sub-title">Follow-Up Details</h2>
 
         <div class="area-content">
@@ -85,13 +85,13 @@
                     <input type="checkbox" @(hedge ? "checked" : "") id="hedge"/>
                         <span>Hedge Account</span>                        
                     </label>
-                    <span class="icon-help-circle"></span>
+                    <span class="icon-help-circle" title="lol"></span>
                 </li>                
             </ul>
         </div>
     </div>
 
-    <div class="area">
+    <div class="area -2">
         <h2>Win Loss Summary - Range data: @Model.FromDate.ToString("MMM dd, yyyy") - @Model.ToDate.ToString("MMM dd, yyyy")</h2>
         <div class="area-content">
             <h2 class="sub-title">Daily Violated Tickets</h2>
