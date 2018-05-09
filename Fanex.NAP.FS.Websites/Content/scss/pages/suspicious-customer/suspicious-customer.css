@@ -1,3 +1,41 @@
+.ui-accordion {
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  margin-bottom: 10px; }
+  .ui-accordion .ui-accordion-header {
+    padding: 8px 10px;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    border-radius: 2px; }
+  .ui-accordion .ui-widget-content {
+    border-color: #e6e6e6;
+    padding: 10px; }
+    .ui-accordion .ui-widget-content a {
+      color: #2097fd; }
+
+.ui-accordion-header {
+  border-color: #e6e6e6;
+  background: #f0f0f0;
+  color: #1e2d4e;
+  font-size: 15px;
+  font-weight: bold; }
+  .ui-accordion-header .ui-icon {
+    margin-right: 6px;
+    text-indent: 0;
+    background: none; }
+    .ui-accordion-header .ui-icon:after {
+      display: inline-block;
+      position: relative;
+      top: -5px;
+      margin-left: -4px;
+      font-family: "Fraud-Sensor";
+      content: '\e90c';
+      font-weight: normal;
+      font-size: 20px; }
+  .ui-accordion-header.ui-accordion-header-active .ui-icon:after {
+    content: '\e92c'; }
+
 .width-160 {
   width: 160px; }
 
@@ -60,41 +98,39 @@
   margin-right: 12px; }
 
 .sub-title {
-  margin-bottom: 12px;
-  font-size: 16px;
+  padding-top: 8px;
+  padding-bottom: 10px;
+  font-size: 14px;
   color: #545454; }
 
-.block {
-  -webkit-border-radius: 2px;
-  -moz-border-radius: 2px;
-  border-radius: 2px;
-  padding: 9px 12px 12px;
-  margin-bottom: 12px;
-  border: 1px solid #ededed;
-  background-color: #f7f7f7; }
-  .block.form-filter {
-    padding-bottom: 0; }
-  .block .group .text-assignees {
-    margin-bottom: 10px;
-    font-weight: bold;
-    font-size: 16px; }
-  .block .add-component {
-    grid-template-columns: 266px 48px;
-    margin-top: 8px; }
-  .block .top-header {
-    -webkit-box-pack: start;
-    -webkit-justify-content: flex-start;
-    -moz-box-pack: start;
-    -ms-flex-pack: start;
-    justify-content: flex-start;
-    min-height: 35px;
-    color: #545454; }
+.group .text-assignees {
+  padding-top: 5px;
+  padding-bottom: 4px;
+  font-weight: bold;
+  color: #545454; }
 
-.table.-fraud-case {
-  min-width: 1020px; }
+.add-component {
+  grid-template-columns: 266px 48px;
+  margin-top: 8px; }
 
-.table.-logs-notes {
-  min-width: 746px; }
+.top-header {
+  -webkit-box-pack: start;
+  -webkit-justify-content: flex-start;
+  -moz-box-pack: start;
+  -ms-flex-pack: start;
+  justify-content: flex-start;
+  min-height: 35px;
+  color: #616161; }
+
+.table {
+  margin-bottom: 10px; }
+  .table.-fraud-case {
+    min-width: 1020px; }
+  .table.-logs-notes {
+    min-width: 746px; }
+
+.dataTables_wrapper {
+  margin-bottom: 10px; }
 
 .suspicious-customers {
   display: -webkit-box;
@@ -119,12 +155,9 @@
   -moz-box-direction: normal;
   -ms-flex-direction: column;
   flex-direction: column;
-  padding-top: 15px;
-  padding-bottom: 15px; }
-  .suspicious-customers .checkbox {
-    margin-bottom: 22px; }
-    .suspicious-customers .checkbox:last-child {
-      margin-bottom: 0; }
+  padding-top: 15px; }
+  .suspicious-customers .customer-type {
+    line-height: 35px; }
   .suspicious-customers .icon-help-circle {
     position: relative;
     top: 5px;
@@ -173,4 +206,4 @@
   align-items: flex-start;
   grid-template-columns: repeat(2, 1fr);
   grid-gap: 14px;
-  margin-bottom: 14px; }
+  margin-bottom: 10px; }

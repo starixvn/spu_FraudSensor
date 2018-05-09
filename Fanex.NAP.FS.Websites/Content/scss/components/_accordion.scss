@@ -1,0 +1,46 @@
+.ui-accordion {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    margin-bottom: 10px;
+
+    .ui-accordion-header {
+        padding: 8px 10px;
+        border-radius: 2px;
+    }
+
+    .ui-widget-content {
+        border-color: #e6e6e6;
+        padding: 10px;
+
+        a {
+            color: $link-color;
+        }
+    }
+}
+
+.ui-accordion-header {
+    border-color: #e6e6e6;
+    background: #f0f0f0;
+    color: #1e2d4e;
+    font-size: 15px;
+    font-weight: bold;
+    .ui-icon {
+        margin-right: 6px;
+        text-indent: 0;
+        background: none;
+        
+        &:after {
+            display: inline-block;
+            position: relative;
+            top: -5px;
+            margin-left: -4px;
+            font-family: "Fraud-Sensor";
+            content: '\e90c';
+            font-weight: normal;
+            font-size: 20px;
+        } 
+    }
+
+    &.ui-accordion-header-active .ui-icon:after {
+        content: '\e92c';
+    }
+}

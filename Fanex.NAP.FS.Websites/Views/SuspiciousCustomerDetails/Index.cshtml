@@ -22,8 +22,8 @@
     <div class="area">
         <h2 class="sub-title">Follow-Up Details</h2>
 
-        <div>
-            <div class="block form-filter">
+        <div class="area-content">
+            <div class="form-filter">
                 <div class="group">
                     <label class="text text-assignees">Assignees</label>
                     <select class="control">
@@ -33,160 +33,156 @@
                 <button class="button -primary" @(!string.IsNullOrEmpty(Model.Assignee) ? "disabled" : "") id="save-btn">Save</button>
             </div>
 
-            <div class="block">
-                <h2 class="sub-title">Fraud Cases</h2>
-                <table class="table table-striped -fraud-case" id="fraudcase" style="width: 50%; margin: 0">
-                    <thead>
-                        <tr>
-                            <th>Case</th>
-                            <th>Violations</th>
-                            <th>Verified</th>
-                            <th>Unverified</th>
-                            <th>Last Verified Date</th>
-                            <th>Last Verified By</th>
-                            <th>Verify All</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                </table>
+            <h2 class="sub-title">Fraud Cases</h2>
+            <table class="table table-striped -fraud-case" id="fraudcase" style="width: 50%; margin: 0">
+                <thead>
+                    <tr>
+                        <th>Case</th>
+                        <th>Violations</th>
+                        <th>Verified</th>
+                        <th>Unverified</th>
+                        <th>Last Verified Date</th>
+                        <th>Last Verified By</th>
+                        <th>Verify All</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+
+            <h2 class="sub-title">Logs/Notes</h2>
+            <table class="table table-striped -logs-notes" id="log-note">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Description</th>
+                        <th>Author</th>
+                        <th>Type</th>
+                        <th>Remove</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <div class="add-component">
+                <input type="text" class="text" placeholder="Input your notes here..." id="note" />
+                <button class="button -primary" id="add-btn">Add</button>
             </div>
 
-            <div class="block">
-                <h2 class="sub-title">Logs/Notes</h2>
-                <table class="table table-striped -logs-notes" id="log-note">
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Description</th>
-                            <th>Author</th>
-                            <th>Type</th>
-                            <th>Remove</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                </table>
-                <div class="add-component">
-                    <input type="text" class="text" placeholder="Input your notes here..." id="note"/>
-                    <button class="button -primary" id="add-btn">Add</button>
-                </div>
-            </div>
-
-            <div class="block suspicious-customers account-type">
-                <label class="checkbox">
-                    <input type="checkbox" @(hedge ? "checked":"") />
-                    <span>Delinquency</span>
-                </label>
-                <label class="checkbox">
-                    <input type="checkbox" @(dirty ? "checked" : "") />
-                    <span>Dirty Account</span>
-                </label>
-                <label class="checkbox">
-                    <input type="checkbox" @(hedge ? "checked" : "")/>
-                    <span>Hedge Account</span>
+            <ul class="suspicious-customers account-type">
+                <li class="customer-type">
+                    <label class="checkbox">
+                        <input type="checkbox" @(hedge ? "checked" : "") />
+                        <span>Delinquency</span>
+                    </label>
+                </li>
+                <li class="customer-type">
+                    <label class="checkbox">
+                        <input type="checkbox" @(dirty ? "checked" : "") />
+                        <span>Dirty Account</span>
+                    </label>
+                </li>
+                <li class="customer-type">
+                    <label class="checkbox">
+                        <input type="checkbox" @(hedge ? "checked" : "") />
+                        <span>Hedge Account</span>                        
+                    </label>
                     <span class="icon-help-circle"></span>
-                </label>
-            </div>
+                </li>                
+            </ul>
         </div>
     </div>
 
     <div class="area">
         <h2>Win Loss Summary - Range data: @Model.FromDate.ToString("MMM dd, yyyy") - @Model.ToDate.ToString("MMM dd, yyyy")</h2>
-        <div>
-            <div class="block">
-                <h2 class="sub-title">Daily Violated Tickets</h2>
-                <table class="table table-striped width-100per" id="violated-tickets">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Trans Date</th>
-                            <th>Bet ID</th>
-                            <th>Choice</th>
-                            <th>Result</th>
-                            <th>Odds</th>
-                            <th>Stake</th>
-                            <th>Winloss</th>
-                            <th>Status</th>
-                            <th>IP</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
+        <div class="area-content">
+            <h2 class="sub-title">Daily Violated Tickets</h2>
+            <table class="table table-striped width-100per" id="violated-tickets">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Trans Date</th>
+                        <th>Bet ID</th>
+                        <th>Choice</th>
+                        <th>Result</th>
+                        <th>Odds</th>
+                        <th>Stake</th>
+                        <th>Winloss</th>
+                        <th>Status</th>
+                        <th>IP</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+
+            <h2 class="sub-title">Win Loss Statistic</h2>
+
+            <div class="win-loss">
+                <div class="col">
+                    <div class="top-header">
+                        <h2>Summary</h2>
+                    </div>
+                    <table class="table table-striped width-100per" id="summary">
+                        <thead>
+                            <tr>
+                                <th>Turnover</th>
+                                <th>Win Loss</th>
+                                <th>Margin (%)</th>
+                                <th>#Tickets</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+                <div class="col">
+                    <div class="top-header">
+                        <h2>Event Choice</h2>
+                    </div>
+                    <table class="table table-striped width-100per" id="choice">
+                        <thead>
+                            <tr>
+                                <th>Choice</th>
+                                <th>Turnover</th>
+                                <th>Win Loss</th>
+                                <th>Margin (%)</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
             </div>
 
-            <div class="block statistic">
-                <h2 class="sub-title">Win Loss Statistic</h2>
-
-                <div class="win-loss">
-                    <div>
-                        <div class="top-header">
-                            <h2>Summary</h2>
-                        </div>
-                        <table class="table table-striped width-100per" id="summary">
-                            <thead>
-                                <tr>
-                                    <th>Turnover</th>
-                                    <th>Win Loss</th>
-                                    <th>Margin (%)</th>
-                                    <th>#Tickets</th>
-                                </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
+            <div class="win-loss">
+                <div class="col">
+                    <div class="top-header">
+                        <h2>Top 5 sports by margin (%)</h2>
                     </div>
-                    <div>
-                        <div class="top-header">
-                            <h2>Event Choice</h2>
-                        </div>
-                        <table class="table table-striped width-100per" id="choice">
-                            <thead>
-                                <tr>
-                                    <th>Choice</th>
-                                    <th>Turnover</th>
-                                    <th>Win Loss</th>
-                                    <th>Margin (%)</th>
-                                </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
-                    </div>
+                    <table class="table table-striped width-100per" id="top-5-sport">
+                        <thead>
+                            <tr>
+                                <th>Sport</th>
+                                <th>Turnover</th>
+                                <th>Win Loss</th>
+                                <th>Margin (%)</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
                 </div>
 
-                <div class="win-loss">
-                    <div>
-                        <div class="top-header">
-                            <h2>Top 5 sports by margin (%)</h2>
-                        </div>
-                        <table class="table table-striped width-100per" id="top-5-sport">
-                            <thead>
-                                <tr>
-                                    <th>Sport</th>
-                                    <th>Turnover</th>
-                                    <th>Win Loss</th>
-                                    <th>Margin (%)</th>
-                                </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
+                <div class="col">
+                    <div class="top-header">
+                        <h2>Top 5 bet types by margin (%)</h2>
                     </div>
-
-                    <div>
-                        <div class="top-header">
-                            <h2>Top 5 bet types by margin (%)</h2>
-                        </div>
-                        <table class="table table-striped width-100per" id="top-5-bettype">
-                            <thead>
-                                <tr>
-                                    <th>Bet type</th>
-                                    <th>Turnover</th>
-                                    <th>Win Loss</th>
-                                    <th>Margin (%)</th>
-                                </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
-                    </div>
+                    <table class="table table-striped width-100per" id="top-5-bettype">
+                        <thead>
+                            <tr>
+                                <th>Bet type</th>
+                                <th>Turnover</th>
+                                <th>Win Loss</th>
+                                <th>Margin (%)</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
                 </div>
             </div>
         </div>

@@ -60,6 +60,11 @@ input, button {
   -ms-flex-pack: end !important;
   justify-content: flex-end !important; }
 
+.clearfix::after {
+  display: block;
+  content: "";
+  clear: both; }
+
 .button {
   display: inline-block;
   height: 28px;

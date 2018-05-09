@@ -102,15 +102,13 @@
 }
 
 .add-component {
-    @include align-items($display: grid);
+    @include align-items($display: grid, $justify-content: flex-start);
     grid-template-columns: 166px 48px;
     grid-template-rows: 28px;
     position: relative;
-    width: 214px;
     margin-right: 24px;
 
     .text {
-        border-right-color: #4f971f;
         border-top-right-radius: 0;
         border-bottom-right-radius: 0;
 

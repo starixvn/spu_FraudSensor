@@ -60,6 +60,11 @@ input, button {
   -ms-flex-pack: end !important;
   justify-content: flex-end !important; }
 
+.clearfix::after {
+  display: block;
+  content: "";
+  clear: both; }
+
 .button {
   display: inline-block;
   height: 28px;
@@ -734,11 +739,11 @@ select[disabled] {
 
 .add-component {
   display: grid;
-  -webkit-box-pack: justify;
-  -webkit-justify-content: space-between;
-  -moz-box-pack: justify;
-  -ms-flex-pack: justify;
-  justify-content: space-between;
+  -webkit-box-pack: start;
+  -webkit-justify-content: flex-start;
+  -moz-box-pack: start;
+  -ms-flex-pack: start;
+  justify-content: flex-start;
   -webkit-box-align: center;
   -webkit-align-items: center;
   -moz-box-align: center;
@@ -747,10 +752,8 @@ select[disabled] {
   grid-template-columns: 166px 48px;
   grid-template-rows: 28px;
   position: relative;
-  width: 214px;
   margin-right: 24px; }
   .add-component .text {
-    border-right-color: #4f971f;
     -webkit-border-top-right-radius: 0;
     -moz-border-radius-topright: 0;
     border-top-right-radius: 0;

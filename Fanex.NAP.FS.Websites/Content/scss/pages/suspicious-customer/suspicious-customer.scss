@@ -1,5 +1,6 @@
 @import "../../abstracts/variables";
 @import "../../abstracts/mixins";
+@import "../../components/accordion";
 
 .width-160 {
     width: 160px;
@@ -75,41 +76,34 @@
 }
 
 .sub-title {
-    margin-bottom: 12px;
-    font-size: 16px;
+    padding-top: 8px;
+    padding-bottom: 10px;
+    font-size: 14px;
     color: #545454;
 }
 
-.block {
-    border-radius: 2px;
-    padding: 9px 12px 12px;
-    margin-bottom: 12px;
-    border: 1px solid #ededed;
-    background-color: #f7f7f7;
-
-    &.form-filter {
-        padding-bottom: 0;
-    }
-
-    .group .text-assignees {
-        margin-bottom: 10px;
-        font-weight: bold;
-        font-size: 16px;
-    }
-
-    .add-component {
-        grid-template-columns: 266px 48px;
-        margin-top: 8px;
-    }
-
-    .top-header {
-        justify-content: flex-start;
-        min-height: 35px;
-        color: #545454;
-    }
+.group .text-assignees {
+    padding-top: 5px;
+    padding-bottom: 4px;
+    font-weight: bold;
+    color: #545454;
 }
 
+.add-component {
+    grid-template-columns: 266px 48px;
+    margin-top: 8px;
+}
+
+.top-header {
+    justify-content: flex-start;
+    min-height: 35px;
+    color: #616161;
+}
+
+
 .table {
+    margin-bottom: 10px;
+
     &.-fraud-case {
         min-width: 1020px;
     }
@@ -119,18 +113,17 @@
     }
 }
 
+.dataTables_wrapper {
+    margin-bottom: 10px;
+}
+
 .suspicious-customers {
     @include align-items($justify-content: flex-start, $align-items: flex-star);
     flex-direction: column;
     padding-top: 15px;
-    padding-bottom: 15px;
 
-    .checkbox {
-        margin-bottom: 22px;
-
-        &:last-child {
-            margin-bottom: 0;
-        }
+    .customer-type {
+        line-height: 35px;
     }
 
     .icon-help-circle {
@@ -138,7 +131,7 @@
         top: 5px;
         line-height: 0;
         margin-left: 12px;
-        font-size: 20px;
+        font-size: 20px;        
         color: #465262;
         cursor: pointer;
     }
@@ -154,5 +147,5 @@
     @include align-items($display: grid, $align-items: flex-start);
     grid-template-columns: repeat(2, 1fr);
     grid-gap: 14px;
-    margin-bottom: 14px;
+    margin-bottom: 10px;
 }

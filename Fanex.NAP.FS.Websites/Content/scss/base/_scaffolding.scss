@@ -72,3 +72,9 @@ input, button {
 .justify-content-end {
     justify-content: flex-end !important;
 }
+
+.clearfix::after {
+    display: block;
+    content: "";
+    clear: both;
+}
