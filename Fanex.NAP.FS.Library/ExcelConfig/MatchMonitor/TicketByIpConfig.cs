@@ -31,7 +31,7 @@ namespace Fanex.NAP.FS.Library.ExcelConfig.MatchMonitor
             this.buDate = buDate;
         }
 
-        protected override void ModifyHeader(IRow row)
+        protected override void ModifyReportName(IRow row)
         {
             var value = string.Format("Tickets of IP: {0} from {1}", ip, buDate.ToString("MMM dd, yyyy"));
 
