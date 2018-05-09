@@ -99,7 +99,7 @@
             return DataService.UpdateData(criteria, "Delete Customer Note");
         }
 
-        public DBResult UpdateSuspiciousCustomerInfo(int custId, int userId, bool isDelinquent, bool isDirty, bool isHedge)
+        public DBResult UpdateSuspiciousCustomerInfo(int custId, int userId, bool? isDelinquent, bool? isDirty, bool? isHedge)
         {
             var criteria = new SuspiciousCustomerUpdateCriteria
             {

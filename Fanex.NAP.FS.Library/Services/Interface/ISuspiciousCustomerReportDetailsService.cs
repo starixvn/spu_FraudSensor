@@ -26,7 +26,7 @@
 
         DBResult DeleteCustomerLogNotes(int userId, int customerLogId);
 
-        DBResult UpdateSuspiciousCustomerInfo(int custId, int userId, bool isDelinquent, bool isDirty, bool isHedge);
+        DBResult UpdateSuspiciousCustomerInfo(int custId, int userId, bool? isDelinquent, bool? isDirty, bool? isHedge);
 
         #endregion
 

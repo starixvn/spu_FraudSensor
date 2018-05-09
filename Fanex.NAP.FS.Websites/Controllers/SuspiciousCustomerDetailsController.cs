@@ -47,7 +47,7 @@ namespace Fanex.NAP.FS.Websites.Controllers
             return Json(result);
         }
 
-        public ActionResult UpdateCustomerInfo(int custId, bool isDelinquent, bool isDirty, bool isHedge)
+        public ActionResult UpdateCustomerInfo(int custId, bool? isDelinquent, bool? isDirty, bool? isHedge)
         {
             var result = _detailsService.UpdateSuspiciousCustomerInfo(custId, CurrentSession.UserId, isDelinquent, isDirty, isHedge);
 

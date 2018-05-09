@@ -15,7 +15,7 @@
 
         public int Unverified { get; set; }
 
-        public DateTime LastVerifiedDate { get; set; }
+        public DateTime? LastVerifiedDate { get; set; }
 
         public string LastVerifiedBy { get; set; }
     }

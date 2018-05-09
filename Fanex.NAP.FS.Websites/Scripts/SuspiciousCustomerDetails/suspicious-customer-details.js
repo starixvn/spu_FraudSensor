@@ -254,6 +254,7 @@
         info: false,
         paging: false,
         processing: true,
+        searching: false,
         dom: "tr",
         language: {
             lengthMenu: "Page size _MENU_",
@@ -314,7 +315,7 @@
             { data: obj => obj.Violations },
             { data: obj => obj.Verified },
             { data: obj => obj.Unverified },
-            { data: obj => moment(new Date(parseInt(obj.LastVerifiedDate.substr(6)))).format("MMM D,YYYY"), width: "100px" },
+            { data: obj => obj.LastVerifiedDate == null ? null : moment(new Date(parseInt(obj.LastVerifiedDate.substr(6)))).format("MMM DD,YYYY"), width: "100px" },
             { data: obj => obj.LastVerifiedBy },
             { data: obj => `<a class='${obj.Unverified != 0 ? "link" : ""} verify' data-fraudcase-id="${obj.FraudCaseId}" style="${obj.Unverified != 0 ? "color: #2097fd; cursor: pointer" : ""}">Verify</span>`, width: "70px" }
         ],
@@ -413,17 +414,17 @@
         }
     })
 
-    $(".account-type input").change(function () {
-        var [delinquency, dirty, hedge] = $(".account-type input").map((idx, input) => $(input).is(":checked"));
+    $(".account-type input").change(function (e) {
+        var target = $(e.target);
 
         var url = common.modifyRelativeUrl("/SuspiciousCustomerDetails/UpdateCustomerInfo");
 
         var p =
             {
                 custId: generalParam.custId,
-                isDelinquent: delinquency,
-                isDirty: dirty,
-                isHedge: hedge
+                isDelinquent: target.is("#delinquency") ? target.is(":checked") : null,
+                isDirty: target.is("#dirty") ? target.is(":checked") : null,
+                isHedge: target.is("#hedge") ? target.is(":checked") : null,
             }
 
         $.get(url, p, common.handleUpdateAjax(null, () => logNote.DataTable().ajax.reload()));

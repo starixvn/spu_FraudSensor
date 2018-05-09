@@ -3,7 +3,7 @@
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
 
-    var delenquency = Model.CustInfo.IsDelinquent.HasValue && Model.CustInfo.IsDelinquent.Value;
+    var delinquency = Model.CustInfo.IsDelinquent.HasValue && Model.CustInfo.IsDelinquent.Value;
     var dirty = Model.CustInfo.IsDirty.HasValue && Model.CustInfo.IsDirty.Value;
     var hedge = Model.CustInfo.IsHedge.HasValue && Model.CustInfo.IsHedge.Value;
 }
@@ -70,19 +70,19 @@
             <ul class="suspicious-customers account-type">
                 <li class="customer-type">
                     <label class="checkbox">
-                        <input type="checkbox" @(hedge ? "checked" : "") />
+                    <input type="checkbox" @(delinquency ? "checked":"") id="delinquency"/>
                         <span>Delinquency</span>
                     </label>
                 </li>
                 <li class="customer-type">
                     <label class="checkbox">
-                        <input type="checkbox" @(dirty ? "checked" : "") />
+                    <input type="checkbox" @(dirty ? "checked" : "") id="dirty"/>
                         <span>Dirty Account</span>
                     </label>
                 </li>
                 <li class="customer-type">
                     <label class="checkbox">
-                        <input type="checkbox" @(hedge ? "checked" : "") />
+                    <input type="checkbox" @(hedge ? "checked" : "") id="hedge"/>
                         <span>Hedge Account</span>                        
                     </label>
                     <span class="icon-help-circle"></span>
