@@ -396,6 +396,7 @@
         $.get(url, p, function (result) {
             if (result.ErrorCode == 0) {
                 common.showSuccess();
+                logNote.DataTable().ajax.reload();
             }
             else {
                 common.showError(result.ErrorMsg);
