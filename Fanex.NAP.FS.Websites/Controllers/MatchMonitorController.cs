@@ -126,7 +126,7 @@ namespace Fanex.NAP.FS.Websites.Controllers
         {
             var template = Server.MapPath("~/App_Data/Excel Template/MatchMonitor/FraudCaseDetail/ticket by ip.xlsx");
 
-            var fileName = string.Format("TicketOfIP_{0}_{1}", ip, DateTime.Today.ToString("yyyyMMdd"));
+            var fileName = string.Format("TicketsofIP_{0}_{1}", ip, DateTime.Today.ToString("yyyyMMdd"));
 
             return ExcelFile(_fraudCaseDetailService.ExportToExcelIpTickets(ip, template), fileName);
         }
