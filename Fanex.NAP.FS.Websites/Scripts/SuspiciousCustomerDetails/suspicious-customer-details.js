@@ -293,6 +293,7 @@
         info: false,
         paging: false,
         processing: true,
+        deferRender: true,
         dom: "tr",
         language: {
             lengthMenu: "Page size _MENU_",
@@ -358,11 +359,13 @@
         activate: function (e, ui) {
             var target = $(e.target);
 
-            if (target.hasClass(".-1")) {
+            if (target.hasClass("-1")) {
                 fraudCase.DataTable().columns.adjust();
+                logNote.DataTable().columns.adjust();
             }
             else {
                 violatedTickets.DataTable().columns.adjust();
+                logNote.DataTable().columns.adjust();
             }
         }
     });

@@ -83,7 +83,7 @@ namespace Fanex.NAP.FS.Library.ExcelConfig.MatchMonitor
         {
             new XSSFRichTextString()
                 .WriteFormat("HT: {0} - {1}\n", data.HTHomeScore, data.HTAwayScore)
-                .WriteBoldFormat("FT: {0} - {1}", data.HTHomeScore, data.FinalAwayScore)
+                .WriteBoldFormat("FT: {0} - {1}", data.FinalHomeScore, data.FinalAwayScore)
                 .SetValue(cell);
         }
 
