@@ -2,12 +2,14 @@
 
 namespace Fanex.NAP.FS.Websites.Controllers
 {
+    using Fanex.NAP.Core.Web.Attribute;
     using Fanex.NAP.FS.Library.Services;
     using Library.ViewModels.SuspiciousCustomerDetails;
     using System;
     using System.Threading.Tasks;
     using System.Web.Mvc;
 
+    [NapAuth(FunctionKey = FSFunctionKeys.SuspiciousCustomerDetails, Policy = Core.Business.Constant.Policy.Read)]
     public class SuspiciousCustomerDetailsController : ReportsController
     {
         private readonly ISuspiciousCustomerReportDetailsService _detailsService = new SuspiciousCustomerReportDetailsService();
@@ -19,6 +21,7 @@ namespace Fanex.NAP.FS.Websites.Controllers
             return View(generalViewModel);
         }
 
+        [NapAuth(FunctionKey = FSFunctionKeys.SuspiciousCustomerDetails, Policy = Core.Business.Constant.Policy.Host)]
         public ActionResult UpdateAssignee(int custId, int? assigneeId)
         {
             var result = _detailsService.UpdateAssignee(custId, assigneeId, CurrentSession.UserId);
@@ -26,6 +29,7 @@ namespace Fanex.NAP.FS.Websites.Controllers
             return Json(result);
         }
 
+        [NapAuth(FunctionKey = FSFunctionKeys.SuspiciousCustomerDetails, Policy = Core.Business.Constant.Policy.Host)]
         public ActionResult UpdateCustomerFraudCaseVerify(int custId, int fraudCaseId)
         {
             var result = _detailsService.VerifySuspiciousCustomerFraudCase(custId, CurrentSession.UserId, fraudCaseId);
@@ -33,6 +37,7 @@ namespace Fanex.NAP.FS.Websites.Controllers
             return Json(result);
         }
 
+        [NapAuth(FunctionKey = FSFunctionKeys.SuspiciousCustomerDetails, Policy = Core.Business.Constant.Policy.Host)]
         public ActionResult RemoveLogNote(int custId, int customerLogId)
         {
             var result = _detailsService.DeleteCustomerLogNotes(custId, customerLogId);
@@ -40,6 +45,7 @@ namespace Fanex.NAP.FS.Websites.Controllers
             return Json(result);
         }
 
+        [NapAuth(FunctionKey = FSFunctionKeys.SuspiciousCustomerDetails, Policy = Core.Business.Constant.Policy.Host)]
         public ActionResult InsertLogNote(int custId, string logDesc)
         {
             var result = _detailsService.InsertCustomerLogNotes(custId, CurrentSession.UserId, logDesc);
@@ -47,6 +53,7 @@ namespace Fanex.NAP.FS.Websites.Controllers
             return Json(result);
         }
 
+        [NapAuth(FunctionKey = FSFunctionKeys.SuspiciousCustomerDetails, Policy = Core.Business.Constant.Policy.Host)]
         public ActionResult UpdateCustomerInfo(int custId, bool? isDelinquent, bool? isDirty, bool? isHedge)
         {
             var result = _detailsService.UpdateSuspiciousCustomerInfo(custId, CurrentSession.UserId, isDelinquent, isDirty, isHedge);
