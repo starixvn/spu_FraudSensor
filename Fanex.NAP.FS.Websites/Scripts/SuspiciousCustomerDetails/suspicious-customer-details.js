@@ -335,6 +335,7 @@
                     $.get(url, p, function (result) {
                         if (result.ErrorCode == 0) {
                             common.showSuccess();
+                            logNote.DataTable().ajax.reload();
                             fraudCase.DataTable().ajax.reload();
                             $(e.target).removeClass("link").css("color", "inherit");
                         }
@@ -375,26 +376,6 @@
             if (result.ErrorCode == 0) {
                 btn.prop("disabled", true);
                 assignee = $("select").select2("data")[0].text;
-                common.showSuccess();
-                logNote.DataTable().ajax.reload();
-            }
-            else {
-                common.showError(result.ErrorMsg);
-            }
-        })
-    });
-
-    $(".verify").click(function (e) {
-        var p =
-            {
-                custId: generalParam.custId,
-                fraudCaseId: $(e.target).attr("data-fraudcase-id")
-            }
-
-        var url = common.modifyRelativeUrl("/SuspiciousCustomerDetails/UpdateCustomerFraudCaseVerify");
-
-        $.get(url, p, function (result) {
-            if (result.ErrorCode == 0) {
                 common.showSuccess();
                 logNote.DataTable().ajax.reload();
             }
