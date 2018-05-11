@@ -19,7 +19,7 @@
         lengthMenu: [10, 20, 50, 100, 500],
         pageLength: 50,
         scrollCollapse: true,
-        dom: "t<'pagination'<'page-size'lp>i>",
+        dom: "t",
         language: {
             lengthMenu: "Page size _MENU_",
             paginate: {
@@ -30,12 +30,12 @@
             zeroRecords: "There's no data"
         },
         columnDefs: [
-            { defaultContent: "-", targets: "_all", width: "120px" },
+            { defaultContent: "-", targets: "_all" }
         ],
         columns: [
             { data: (obj, typet, set, meta) => meta.row + 1, className: "text-center", width: "40px" },
-            { data: obj => obj.Date, className: "text-center" },
-            { data: obj => common.makeWrapString(obj.Description, 50), width: "500px" },
+            { data: obj => obj.Date, className: "text-center", width: "150px" },
+            { data: obj => `<span title="${obj.Description}">${common.makeWrapString(obj.Description, 50)}</span>`, width: "500px" },
             { data: obj => obj.Author }
         ]
     })
@@ -302,7 +302,7 @@
         $.get(url, { custId: data.CustId }, function (json) {
             $("table", note_popup).DataTable().clear().rows.add(json).draw();
 
-            $("table", note_popup).DataTable().draw();
+            $("table", note_popup).DataTable().columns.adjust();
 
             note_popup.css({ top: e.clientY, left: e.clientX, position: "absolute" });
 

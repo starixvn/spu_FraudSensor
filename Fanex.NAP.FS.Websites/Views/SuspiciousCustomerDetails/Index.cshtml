@@ -14,7 +14,7 @@
 
     <style>
         #fraudcase_processing{
-            width: 60.5%;
+            width: 40%;
             min-width: 1020px
         }
     </style>
@@ -37,7 +37,7 @@
                     </select>
                 </div>
 
-                <button class="button -primary" @(!string.IsNullOrEmpty(Model.Assignee) ? "disabled" : "") id="save-btn">Save</button>
+                <button class="button -primary" disabled id="save-btn">Save</button>
             </div>
 
             <h2 class="sub-title">Fraud Cases</h2>
@@ -204,7 +204,9 @@
                 to: "@Model.ToDate.ToString()"
             }
 
-        var assignee = "@Model.Assignee";
+        console.log("@Model.Assignee")
+
+        var assignee = "@(string.IsNullOrEmpty(Model.Assignee) ? "Unassign" : Model.Assignee)";
     </script>
 
     @Scripts.Render("~/suspicious-customer-scripts")

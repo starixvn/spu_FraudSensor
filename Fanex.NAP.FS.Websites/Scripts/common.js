@@ -103,7 +103,7 @@
                     confirmation.dialog("close");
 
                     if (noCallback != null) {
-                        noCallback(this)
+                        noCallback()
                     }
                 }
             }
@@ -111,8 +111,9 @@
         confirmation.dialog("option", {
             dialogClass: "dialog-confirmation",
             buttons: [yesBtn, noBtn],
-            width: 460
-        })
+            width: 460,
+            close: noCallback
+        });
     }
 
     this.showSuccess = function (str = "Success", timeout = 3000) {
