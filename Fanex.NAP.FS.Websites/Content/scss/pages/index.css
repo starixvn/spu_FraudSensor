@@ -914,6 +914,9 @@ table.dataTable {
   margin-top: 0;
   background: rgba(0, 0, 0, 0.4); }
 
+table.dataTable tbody tr.selected td {
+  background-color: #ffccc4; }
+
 .ui-widget-overlay {
   background: rgba(0, 0, 0, 0.4); }
 

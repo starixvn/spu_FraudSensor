@@ -301,3 +301,9 @@ table.dataTable {
     margin-top: 0;
     background: rgba(0,0,0,.4);
 }
+
+// selected rows
+
+table.dataTable tbody tr.selected td {
+    background-color: #ffccc4;
+}
