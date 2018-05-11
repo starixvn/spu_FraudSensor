@@ -79,12 +79,20 @@
         });
     }
 
-    function deleteNote(obj) {
-        common.showConfirmation("Do you want to delete this log", function () {
+    function deleteNote(e) {
+        var table = logNote.DataTable();
+
+        var tr = $(e.target).parents("tr");
+
+        var obj = table.row(tr).data();
+
+        tr.addClass("selected");
+
+        common.showConfirmation("Do you want to delete the highlighted log?", function () {
             var url = common.modifyRelativeUrl("/SuspiciousCustomerDetails/RemoveLogNote");
 
             $.get(url, { custId: generalParam.custId, customerLogId: obj.CustomerLogId }, common.handleUpdateAjax(null, () => logNote.DataTable().ajax.reload()));
-        })
+        }, () => tr.removeClass("selected"));
     }
 
     summary.DataTable({
@@ -265,7 +273,7 @@
             infoEmpty: "",
             zeroRecords: "There's no data"
         },
-        scrollY: "30vh",
+        scrollY: "32vh",
         scrollCollapse: true,
         ajax: common.modifyRelativeUrl(`/SuspiciousCustomerDetails/GetCustomerLogNotes?custid=${generalParam.custId}`),
         columnDefs: [
@@ -282,9 +290,7 @@
             { data: obj => "<span class='icon-delete text-red' style='cursor: pointer'></span>", className: "text-center has-icon" }
         ],
         drawCallback: function () {
-            var table = logNote.DataTable();
-
-            $(".icon-delete").click(e => deleteNote(table.row($(e.target).parents("tr")).data()));
+            $(".icon-delete").click(deleteNote);
         }
     });
 
@@ -302,7 +308,7 @@
             },
             info: "Displaying _START_ to _END_ of _TOTAL_ item(s)",
             infoEmpty: "",
-            zeroRecords: "There's no data"
+            zeroRecords: "There's no data",
         },
         scrollCollapse: true,
         ajax: common.modifyRelativeUrl(`/SuspiciousCustomerDetails/GetFraudCases?custid=${generalParam.custId}`),
@@ -318,33 +324,39 @@
             { data: obj => obj.Unverified },
             { data: obj => obj.LastVerifiedDate == null ? null : moment(new Date(parseInt(obj.LastVerifiedDate.substr(6)))).format("MMM DD, YYYY hh:mm:ss A"), width: "170px" },
             { data: obj => obj.LastVerifiedBy, width: "100px" },
-            { data: obj => `<a class='${obj.Unverified != 0 ? "link" : ""} verify' data-fraudcase-id="${obj.FraudCaseId}" style="${obj.Unverified != 0 ? "color: #2097fd; cursor: pointer" : "color: inherit"}">Verify</span>`, width: "70px" }
+            { data: obj => `<a class='${obj.Unverified != 0 ? "link" : ""} verify' data-fraudcase-id="${obj.FraudCaseId}" data-fraudcase-name=${obj.FraudCaseName} style="${obj.Unverified != 0 ? "color: #2097fd; cursor: pointer" : "color: inherit"}">Verify</span>`, width: "70px" }
         ],
         drawCallback: function () {
             var table = logNote.DataTable();
 
             $(".verify").click(function (e) {
-                if ($(e.target).hasClass("link")) {
-                    var p =
-                        {
-                            custId: generalParam.custId,
-                            fraudCaseId: $(e.target).attr("data-fraudcase-id")
-                        }
+                var target = $(e.target);
 
-                    var url = common.modifyRelativeUrl("/SuspiciousCustomerDetails/UpdateCustomerFraudCaseVerify");
+                var obj = target.attr("data-fraudcase-name");
 
-                    $.get(url, p, function (result) {
-                        if (result.ErrorCode == 0) {
-                            common.showSuccess();
-                            logNote.DataTable().ajax.reload();
-                            fraudCase.DataTable().ajax.reload();
-                            $(e.target).removeClass("link").css("color", "inherit");
-                        }
-                        else {
-                            common.showError(result.ErrorMsg);
-                        }
-                    })
-                }
+                common.showConfirmation(`Do you want to verify case ${obj}?`, function () {
+                    if (target.hasClass("link")) {
+                        var p =
+                            {
+                                custId: generalParam.custId,
+                                fraudCaseId: $(e.target).attr("data-fraudcase-id")
+                            }
+
+                        var url = common.modifyRelativeUrl("/SuspiciousCustomerDetails/UpdateCustomerFraudCaseVerify");
+
+                        $.get(url, p, function (result) {
+                            if (result.ErrorCode == 0) {
+                                common.showSuccess();
+                                logNote.DataTable().ajax.reload();
+                                fraudCase.DataTable().ajax.reload();
+                                $(e.target).removeClass("link").css("color", "inherit");
+                            }
+                            else {
+                                common.showError(result.ErrorMsg);
+                            }
+                        })
+                    }
+                })
             });
         }
     })

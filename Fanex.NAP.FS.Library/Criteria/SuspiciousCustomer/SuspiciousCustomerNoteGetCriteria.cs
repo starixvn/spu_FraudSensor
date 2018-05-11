@@ -13,7 +13,7 @@
 
         public override string GetSettingKey()
         {
-            return "FS_Tbl_CustomerLog_Get";
+            return "FS_Rpt_SuspiciousCustomer_GetNotes";
         }
 
         public override bool IsValid()

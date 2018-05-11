@@ -85,7 +85,7 @@
 
         public IEnumerable<SuspiciousCustomerNoteModel> GetCustomerLogNotes(int custId)
         {
-            return DataService.GetData<SuspiciousCustomerNoteModel>(new SuspiciousCustomerNoteGetCriteria(custId));
+            return DataService.GetData<SuspiciousCustomerNoteModel>(new SuspiciousCustomerLogNoteGetCriteria(custId));
         }
 
         public DBResult DeleteCustomerLogNotes(int userId, int customerLogId)

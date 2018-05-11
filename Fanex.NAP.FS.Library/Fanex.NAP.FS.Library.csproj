@@ -219,6 +219,7 @@
     <Compile Include="Criteria\SuspiciousCustomer\SuspiciousCustomerAssigneeGetCriteria.cs" />
     <Compile Include="Criteria\SuspiciousCustomer\SuspiciousCustomerGetCriteria.cs" />
     <Compile Include="Criteria\SuspiciousCustomerDetails\SuspiciousCustomerDetailsViolatedTicketGetCriteria.cs" />
+    <Compile Include="Criteria\SuspiciousCustomer\SuspiciousCustomerLogNoteGetCriteria.cs" />
     <Compile Include="Criteria\SuspiciousInfo\SuspiciousInfoUpdateCriteria.cs" />
     <Compile Include="Criteria\SuspiciousInfo\SuspiciousInfoGetCriteria.cs" />
     <Compile Include="Criteria\SuspiciousCustomer\SuspiciousCustomerAssigneeUpdateCriteria.cs" />

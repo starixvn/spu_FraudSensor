@@ -17,6 +17,7 @@ namespace Fanex.NAP.FS.Websites.Controllers
     public class MatchMonitorController : ReportsController
     {
         private readonly IFraudCaseDetailsService _fraudCaseDetailService;
+
         private readonly IMatchMonitorService _matchMonitorService;
 
         public MatchMonitorController()
