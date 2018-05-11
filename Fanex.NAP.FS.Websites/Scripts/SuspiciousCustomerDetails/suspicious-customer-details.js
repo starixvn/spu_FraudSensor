@@ -333,15 +333,15 @@
             $(".verify").click(function (e) {
                 var target = $(e.target);
 
-                var obj = target.attr("data-fraudcase-name");
+                if (target.hasClass("link")) {
+                    var obj = target.attr("data-fraudcase-name");
 
-                common.showConfirmation(`Do you want to verify case ${obj}?`, function () {
-                    if (target.hasClass("link")) {
+                    common.showConfirmation(`Do you want to verify case ${obj}?`, function () {
                         var p =
                             {
                                 custId: generalParam.custId,
                                 fraudCaseId: $(e.target).attr("data-fraudcase-id")
-                            }
+                            };
 
                         var url = common.modifyRelativeUrl("/SuspiciousCustomerDetails/UpdateCustomerFraudCaseVerify");
 
@@ -355,9 +355,9 @@
                             else {
                                 common.showError(result.ErrorMsg);
                             }
-                        })
-                    }
-                })
+                        });
+                    })
+                }
             });
         }
     })
