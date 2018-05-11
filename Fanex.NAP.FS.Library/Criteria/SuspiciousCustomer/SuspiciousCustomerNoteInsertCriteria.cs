@@ -10,7 +10,7 @@
 
         public int UserId { get; set; }
 
-        public int LogType { get; set; }
+        public int CustLogType { get; set; }
 
         public int? CaseId { get; set; }
 

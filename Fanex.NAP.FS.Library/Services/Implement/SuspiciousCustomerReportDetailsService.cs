@@ -75,7 +75,7 @@
             {
                 CustId = custId,
                 UserId = userId,
-                LogType = 1, //note
+                CustLogType = 1, //note
                 CaseId = null,
                 LogDesc = logDesc
             };
