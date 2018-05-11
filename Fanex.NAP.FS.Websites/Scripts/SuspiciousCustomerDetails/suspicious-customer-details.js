@@ -309,6 +309,7 @@
             info: "Displaying _START_ to _END_ of _TOTAL_ item(s)",
             infoEmpty: "",
             zeroRecords: "There's no data",
+            processing: "<div class='loader-in-table'></div>"
         },
         scrollCollapse: true,
         ajax: common.modifyRelativeUrl(`/SuspiciousCustomerDetails/GetFraudCases?custid=${generalParam.custId}`),

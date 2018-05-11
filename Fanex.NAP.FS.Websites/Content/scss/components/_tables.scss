@@ -290,3 +290,14 @@ table.dataTable {
         cursor: not-allowed;
     }
 }
+
+// Loading
+
+.dataTables_wrapper .dataTables_processing {
+    left: 0;
+    top: 0;
+    height: 100%;
+    margin-left: 0;
+    margin-top: 0;
+    background: rgba(0,0,0,.4);
+}
