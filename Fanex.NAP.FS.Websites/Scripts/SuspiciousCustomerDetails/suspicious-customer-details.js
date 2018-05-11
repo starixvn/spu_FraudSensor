@@ -216,7 +216,8 @@
             },
             info: "Displaying _START_ to _END_ of _TOTAL_ item(s)",
             infoEmpty: "",
-            zeroRecords: "There's no data"
+            zeroRecords: "There's no data",
+            processing: "<div class='loader-in-table'></div>"
         },
         scrollY: "30vh",
         scrollCollapse: true,
@@ -271,7 +272,8 @@
             },
             info: "Displaying _START_ to _END_ of _TOTAL_ item(s)",
             infoEmpty: "",
-            zeroRecords: "There's no data"
+            zeroRecords: "There's no data",
+            processing: "<div class='loader-in-table'></div>"
         },
         scrollY: "32vh",
         scrollCollapse: true,
