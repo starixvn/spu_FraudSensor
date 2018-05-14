@@ -112,7 +112,8 @@
             zeroRecords: "There's no data"
         },
         columnDefs: [
-            { targets: "_all", defaultContent: "-", className: "text-right" }
+            { targets: "_all", defaultContent: "-", className: "text-right" },
+            { targets: [1, 2, 3], width: "150px" }
         ],
         columns: [
             { data: obj => common.formatNumber(obj.SumTO) },
@@ -139,7 +140,8 @@
             zeroRecords: "There's no data"
         },
         columnDefs: [
-            { targets: [1, 2, 3], className: "text-right" }
+            { targets: [1, 2, 3], className: "text-right" },
+            { targets: [1, 2, 3], width: "150px" }
         ],
         columns: [
             { data: obj => obj.EventChoice },
@@ -166,7 +168,8 @@
             zeroRecords: "There's no data"
         },
         columnDefs: [
-            { targets: [1, 2, 3], className: "text-right" }
+            { targets: [1, 2, 3], className: "text-right" },
+            { targets: [1, 2, 3], width: "150px" }
         ],
         columns: [
             { data: obj => obj.SportName },
@@ -193,7 +196,8 @@
             zeroRecords: "There's no data"
         },
         columnDefs: [
-            { targets: [1, 2, 3], className: "text-right" }
+            { targets: [1, 2, 3], className: "text-right" },
+            { targets: [1, 2, 3], width: "150px" }
         ],
         columns: [
             { data: obj => obj.BetTypeName },
