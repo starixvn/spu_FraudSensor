@@ -828,10 +828,6 @@ table.dataTable {
 .dataTables_wrapper.no-footer .dataTables_scrollBody {
   border-bottom: none; }
 
-.dataTables_scrollHeadInner,
-.dataTables_wrapper .dataTables_scroll div.dataTables_scrollBody {
-  border-right: 1px solid #c1c1c1; }
-
 .pagination {
   display: -webkit-box;
   display: -webkit-flex;

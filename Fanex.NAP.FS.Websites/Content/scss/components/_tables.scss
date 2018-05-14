@@ -211,10 +211,6 @@ table.dataTable {
     border-bottom: none;
 }
 
-.dataTables_scrollHeadInner,
-.dataTables_wrapper .dataTables_scroll div.dataTables_scrollBody {
-    border-right: 1px solid $table-border;
-}
 
 .pagination {
     @include align-items;
