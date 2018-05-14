@@ -145,14 +145,15 @@
         scrollCollapse: true,
         columnDefs: [
             { targets: [1, 2, 3], className: "text-right" },
-            { targets: 0, width: "200px"}
+            { targets: 0, width: "300px"}
         ],
         columns: [
             { data: obj => obj.EventChoice },
             { data: obj => common.formatNumber(obj.SumTO) },
             { data: obj => obj.SumWL >= 0 ? common.formatNumber(obj.SumWL) : `<span class="text-red">${common.formatNumber(obj.SumWL)}</span>` },
             { data: obj => obj.Margin >= 0 ? common.formatNumber(obj.Margin) : `<span class="text-red">${common.formatNumber(obj.Margin)}</span>` }
-        ]
+        ],
+        drawCallback: () => $("#choice_wrapper table.dataTable:first").css("width", "840px")
     });
 
     topSport.DataTable({
@@ -205,14 +206,15 @@
         scrollCollapse: true,
         columnDefs: [
             { targets: [1, 2, 3], className: "text-right" },
-            { targets: 0, width: "200px" }
+            { targets: 0, width: "300px" }
         ],
         columns: [
             { data: obj => obj.BetTypeName },
             { data: obj => common.formatNumber(obj.SumTO) },
             { data: obj => obj.SumWL >= 0 ? common.formatNumber(obj.SumWL) : `<span class="text-red">${common.formatNumber(obj.SumWL)}</span>` },
             { data: obj => obj.Margin >= 0 ? common.formatNumber(obj.Margin) : `<span class="text-red">${common.formatNumber(obj.Margin)}</span>` }
-        ]
+        ],
+        drawCallback: () => $("#top-5-bettype_wrapper table.dataTable:first").css("width", "840px")
     });
 
     violatedTickets.DataTable({
