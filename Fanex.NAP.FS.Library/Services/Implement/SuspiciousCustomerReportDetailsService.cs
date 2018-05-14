@@ -162,8 +162,8 @@
                     .OrderBy(f => f.FraudCaseName);
 
                 var tickets =
-                    queries.Read<TicketInfo>().
-                    ToDictionary(t => t.TransId);
+                    queries.Read<TicketInfo>()
+                    .ToDictionary(t => t.TransId);
 
                 foreach (var fc in fraudCases)
                 {

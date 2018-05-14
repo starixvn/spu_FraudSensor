@@ -14,6 +14,8 @@
 
     let stopRender = false;
 
+    var isFirefox = typeof InstallTrigger != "undefined";
+
     function getStatistics() {
         var url = common.modifyRelativeUrl("/SuspiciousCustomerDetails/GetStatistics");
 
@@ -153,7 +155,7 @@
             { data: obj => obj.SumWL >= 0 ? common.formatNumber(obj.SumWL) : `<span class="text-red">${common.formatNumber(obj.SumWL)}</span>` },
             { data: obj => obj.Margin >= 0 ? common.formatNumber(obj.Margin) : `<span class="text-red">${common.formatNumber(obj.Margin)}</span>` }
         ],
-        drawCallback: () => $("#choice_wrapper table.dataTable:first").css("width", "840px")
+        drawCallback: () => $("#choice_wrapper table.dataTable:first").css("width", isFirefox ? "inherit" : "840px")
     });
 
     topSport.DataTable({
@@ -214,7 +216,7 @@
             { data: obj => obj.SumWL >= 0 ? common.formatNumber(obj.SumWL) : `<span class="text-red">${common.formatNumber(obj.SumWL)}</span>` },
             { data: obj => obj.Margin >= 0 ? common.formatNumber(obj.Margin) : `<span class="text-red">${common.formatNumber(obj.Margin)}</span>` }
         ],
-        drawCallback: () => $("#top-5-bettype_wrapper table.dataTable:first").css("width", "840px")
+        drawCallback: () => $("#top-5-bettype_wrapper table.dataTable:first").css("width", isFirefox ? "inherit" : "840px")
     });
 
     violatedTickets.DataTable({
