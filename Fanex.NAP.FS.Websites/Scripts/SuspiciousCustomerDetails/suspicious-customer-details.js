@@ -318,6 +318,7 @@
         paging: false,
         processing: true,
         deferRender: true,
+        searching: false,
         dom: "tr",
         language: {
             lengthMenu: "Page size _MENU_",
@@ -343,7 +344,7 @@
             { data: obj => obj.Unverified },
             { data: obj => obj.LastVerifiedDate == null ? null : moment(new Date(parseInt(obj.LastVerifiedDate.substr(6)))).format("MMM DD, YYYY hh:mm:ss A"), width: "170px" },
             { data: obj => obj.LastVerifiedBy, width: "100px" },
-            { data: obj => `<a class='${obj.Unverified != 0 ? "link" : ""} verify' data-fraudcase-id="${obj.FraudCaseId}" data-fraudcase-name=${obj.FraudCaseName} style="${obj.Unverified != 0 ? "color: #2097fd; cursor: pointer" : "color: inherit"}">Verify</span>`, width: "70px" }
+            { data: obj => `<a class='${obj.Unverified != 0 ? "link" : ""} verify' data-fraudcase-id="${obj.FraudCaseId}" data-fraudcase-name="${obj.FraudCaseName}" style="${obj.Unverified != 0 ? "color: #2097fd; cursor: pointer" : "color: inherit"}">Verify</span>`, width: "70px" }
         ],
         drawCallback: function () {
             var table = logNote.DataTable();
