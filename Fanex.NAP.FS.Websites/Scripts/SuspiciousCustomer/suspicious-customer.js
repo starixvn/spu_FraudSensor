@@ -177,7 +177,7 @@
         var url = common.modifyRelativeUrl("/suspiciouscustomer/GetUsers");
 
         $.get(url, {}, function (json) {
-            assignee.append("<option value='0'>All</option>");
+            assignee.append("<option>All</option>").append("<option value='-1'>None</option>");
 
             for (var i = 0; i < json.length; i++) {
                 assignee.append(`<option value='${json[i].Id}'>${json[i].Username}</option>`)

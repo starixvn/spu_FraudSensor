@@ -62,7 +62,7 @@
         var url = common.modifyRelativeUrl("/SuspiciousCustomer/GetUsers");
 
         $.get(url, {}, function (data) {
-            data.unshift({ Username: "Unassign", Id: "null" });
+            data.unshift({ Username: "None", Id: -1 });
 
             $("select").select2({
                 data: data.map(d => ({ id: d.Id, text: d.Username, selected: d.Username == assignee }))
@@ -113,7 +113,7 @@
         },
         columnDefs: [
             { targets: "_all", defaultContent: "-", className: "text-right" },
-            { targets: [1, 2, 3], width: "150px" }
+            { targets: [0, 1, 2, 3], width: "150px" }
         ],
         columns: [
             { data: obj => common.formatNumber(obj.SumTO) },
@@ -169,7 +169,7 @@
         },
         columnDefs: [
             { targets: [1, 2, 3], className: "text-right" },
-            { targets: [1, 2, 3], width: "150px" }
+            { targets: [0, 1, 2, 3], width: "150px" }
         ],
         columns: [
             { data: obj => obj.SportName },
