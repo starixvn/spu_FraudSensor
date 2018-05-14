@@ -104,13 +104,15 @@
 .table {
     margin-bottom: 10px;
 
-    &.-fraud-case {
-        min-width: 1020px;
-    }
-
+    &.-fraud-case,
     &.-logs-notes {
-        min-width: 746px;
+        width: 1020px;
     }
+}
+
+#fraudcase_wrapper,
+#log-note_wrapper{
+    width: 1020px;
 }
 
 .dataTables_wrapper {
@@ -144,8 +146,13 @@
 }
 
 .win-loss {
-    @include align-items($display: grid, $align-items: flex-start);
-    grid-template-columns: repeat(2, 1fr);
-    grid-gap: 14px;
+    @include align-items($align-items: stretch);
+    flex-direction: column;
     margin-bottom: 10px;
+
+    @media (min-width: 1280px) {
+        @include align-items($display: grid, $align-items: flex-start);
+        grid-template-columns: repeat(2, minmax(0,1fr));
+        grid-gap: 14px;
+    }
 }
