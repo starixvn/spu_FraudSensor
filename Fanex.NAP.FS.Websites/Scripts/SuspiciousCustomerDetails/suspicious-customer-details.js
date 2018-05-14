@@ -111,9 +111,11 @@
             infoEmpty: "",
             zeroRecords: "There's no data"
         },
+        scrollY: "500px",
+        scrollCollapse: true,
         columnDefs: [
             { targets: "_all", defaultContent: "-", className: "text-right" },
-            { targets: [0, 1, 2, 3], width: "150px" }
+            { targets: "_all", width: "150px" },
         ],
         columns: [
             { data: obj => common.formatNumber(obj.SumTO) },
@@ -139,9 +141,11 @@
             infoEmpty: "",
             zeroRecords: "There's no data"
         },
+        scrollY: "500px",
+        scrollCollapse: true,
         columnDefs: [
             { targets: [1, 2, 3], className: "text-right" },
-            { targets: [1, 2, 3], width: "150px" }
+            { targets: 0, width: "200px"}
         ],
         columns: [
             { data: obj => obj.EventChoice },
@@ -167,9 +171,11 @@
             infoEmpty: "",
             zeroRecords: "There's no data"
         },
+        scrollY: "500px",
+        scrollCollapse: true,
         columnDefs: [
             { targets: [1, 2, 3], className: "text-right" },
-            { targets: [0, 1, 2, 3], width: "150px" }
+            { targets: "_all", width: "150px" },
         ],
         columns: [
             { data: obj => obj.SportName },
@@ -195,9 +201,11 @@
             infoEmpty: "",
             zeroRecords: "There's no data"
         },
+        scrollY: "500px",
+        scrollCollapse: true,
         columnDefs: [
             { targets: [1, 2, 3], className: "text-right" },
-            { targets: [1, 2, 3], width: "150px" }
+            { targets: 0, width: "200px" }
         ],
         columns: [
             { data: obj => obj.BetTypeName },
@@ -291,7 +299,7 @@
         columns: [
             { data: obj => obj.LogDateString },
             { data: obj => obj.Description },
-            { data: obj => obj.Author, width: "100px" },
+            { data: obj => obj.Author, width: "115px" },
             { data: obj => obj.Type },
             { data: obj => "<span class='icon-delete text-red' style='cursor: pointer'></span>", className: "text-center has-icon" }
         ],
