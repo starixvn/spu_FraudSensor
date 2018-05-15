@@ -15,8 +15,14 @@ GO
 
 ALTER DATABASE bodb_FraudSensor ADD FILE (NAME='idx_file', FILENAME='d:\idx\idx_file') TO FILEGROUP IDX;  
 
+--=========== DROP TABLES
+DROP TABLE	[dbo].[CustomerLogType];
+DROP TABLE	[CustomerLog];
+DROP TABLE	[CustomerMonitorAssignment]
+GO
+
 --=========== CREATE TABLES
-CREATE TABLE [dbo].[TicketsByIP](
+CREATE TABLE	[dbo].[TicketsByIP](
 	[TransId]				BIGINT NOT NULL,
 	[IP]					NVARCHAR(15) NOT NULL
 CONSTRAINT [PK_TicketsByIP] PRIMARY KEY CLUSTERED 
@@ -31,7 +37,39 @@ CREATE NONCLUSTERED INDEX CIX_TicketsByIP_IP ON [dbo].[TicketsByIP] (
 ) ON IDX;
 GO
 
---=========== ALTER TABLES
-DROP  TABLE [dbo].[CustomerLogType];
+CREATE TABLE	[dbo].[CustomerLog](
+	[CustomerLogId] [int] IDENTITY(1,1) NOT NULL,
+	[CustId] [int] NOT NULL,
+	[CreatorId] [int] NOT NULL,
+	[CaseId] [int] NULL,
+	[LogDesc] [nvarchar](500) NULL,
+	[LogDate] [datetime] NULL,
+	[CustLogType] [nvarchar](20) NULL,
+ CONSTRAINT [PK_CustomerLog] PRIMARY KEY CLUSTERED 
+(
+	[CustomerLogId] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [DATA]
+) ON [DATA]
 GO
 
+CREATE NONCLUSTERED INDEX CIX_CustomerLog_CustId ON [dbo].[CustomerLog] (
+	[CustId]					ASC
+) ON IDX;
+GO
+CREATE NONCLUSTERED INDEX CIX_CustomerLog_CustLogType ON [dbo].[CustomerLog] (
+	[CustLogType]					ASC
+) ON IDX;
+GO
+
+CREATE TABLE [dbo].[CustomerMonitorAssignment](
+	[CustId] [int] NOT NULL,
+	[AssigneeId] [nvarchar](50) NULL,
+	[LastModifiedDate] [datetime] NOT NULL,
+	[CreatorId] [int] NOT NULL
+) ON [DATA]
+GO
+CREATE NONCLUSTERED INDEX CIX_CustomerMonitorAssignment_CustIdAssigneeId ON [dbo].[CustomerMonitorAssignment] (
+	[CustId]					ASC
+	,[AssigneeId]				ASC
+) ON IDX;
+GO
