@@ -7,6 +7,10 @@
             line-height: 25px;
             color: $input-color;
         }
+
+        &.invalid {
+            border-color: #ff0000;
+        }
     }
 
     .select2-results__option--highlighted[aria-selected] {
