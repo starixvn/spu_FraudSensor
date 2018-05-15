@@ -421,7 +421,10 @@
     $("#add-btn").click(function () {
         var val = $("#note").val();
 
-        if (val == null || val.length == 0 || common.hasSpecialCharacter(val)) {
+        if (val == null || val.length == 0) {
+            common.showError("Note is required!");
+        }
+        else if (common.hasSpecialCharacter(val)) {
             common.showError("Invalid input!");
         }
         else {

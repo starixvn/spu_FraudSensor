@@ -185,6 +185,7 @@
     <Compile Include="Core\Helpers\BetListHelper.cs" />
     <Compile Include="Core\Helpers\Xml\IXml.cs" />
     <Compile Include="Core\Helpers\Xml\XmlHelper.cs" />
+    <Compile Include="Core\Helpers\Xml\XNameAttribute.cs" />
     <Compile Include="Core\Utilities\ConfigSettings.cs" />
     <Compile Include="Core\Utilities\Extentions.cs" />
     <Compile Include="Criteria\Api\FlaggedAccountDeleteCriteria.cs" />

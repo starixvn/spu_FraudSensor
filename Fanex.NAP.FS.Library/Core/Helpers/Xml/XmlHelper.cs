@@ -51,7 +51,7 @@
                     typeLookup[t]
                     .Select(f => f(o));
 
-                var name = t.GetCustomAttribute<XmlElementAttribute>()?.ElementName ?? t.Name;
+                var name = t.GetCustomAttribute<XNameAttribute>()?.ElementName ?? t.Name;
 
                 return new XElement(name, children);
             }
@@ -119,7 +119,7 @@
 
             var prop_expr = Expression.Convert(Expression.Property(obj_expr, prop), typeof(object));
 
-            var attr_name = prop.GetCustomAttribute<XmlElementAttribute>()?.ElementName ?? prop.Name;
+            var attr_name = prop.GetCustomAttribute<XNameAttribute>()?.ElementName ?? prop.Name;
 
             var attribute_expr =
                 Expression.New(
