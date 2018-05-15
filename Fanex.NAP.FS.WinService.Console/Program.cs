@@ -16,6 +16,15 @@ namespace Fanex.NAP.FS.WinService.Console
             string FPS_WEBAPI_GET_CUSTOMER_EVIDENCE = ConfigurationManager.AppSettings["FPS_WEBAPI_GET_CUSTOMER_EVIDENCE"];
             IEnumerable<CustomerEvidence> customerAssociation = ApiHelper.Post<CustomerEvidenceList, IEnumerable<CustomerEvidence>>(FPS_WEBAPI_GET_CUSTOMER_EVIDENCE, new CustomerEvidenceList {  CustIdList = custIdList }, 1, 80).Result;
             var customerAssociationXML = customerAssociation.ToXmlString();
+            /*
+            var custIdList = "29590239";
+            string FPS_WEBAPI_GET_CUSTOMER_EVIDENCE = ConfigurationManager.AppSettings["FPS_WEBAPI_GET_CUSTOMER_EVIDENCE"];
+            IEnumerable<CustomerEvidence> customerAssociation = ApiHelper.Post<string, IEnumerable<CustomerEvidence>>(FPS_WEBAPI_GET_CUSTOMER_EVIDENCE, custIdList, 1, 80).Result;
+            var customerAssociationXML = customerAssociation.ToXmlString();
+            */
+            
+
+            var a = 1;
         }
     }
 }
