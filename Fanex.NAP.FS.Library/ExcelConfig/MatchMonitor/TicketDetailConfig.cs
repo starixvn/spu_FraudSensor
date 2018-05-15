@@ -1,6 +1,7 @@
 ﻿namespace Fanex.NAP.FS.Library.ExcelConfig.MatchMonitor
 {
     using Fanex.NAP.FS.Library.Core.ExportExcel;
+    using Fanex.NAP.FS.Library.Core.Helpers;
     using Fanex.NAP.FS.Library.ViewModels.MatchMonitor.FraudCaseDetails;
     using NPOI.SS.UserModel;
     using NPOI.XSSF.UserModel;
@@ -65,6 +66,8 @@
         {
             var bet_team = new StringBuilder(t.ChoiceExcel.betTeam);
 
+            var score = BetListHelper.ExtractStringFromHtml(t.ChoiceExcel.Score);
+
             bet_team
                 .Replace("&nbsp;", "")
                 .Replace("<span class=\"underdog\">", "")
@@ -78,7 +81,7 @@
                 .Replace("</span>", "")
                 .Replace("<span class=\"favorite\">", "");
 
-            cell.SetCellValue(string.Format("{0}{1}", bet_team, handicap));
+            cell.SetCellValue(string.Format("{0}{1}{2}", bet_team, handicap, score));
         }
 
         private static void GetOddsExcel(TicketDetails t, ICell cell)

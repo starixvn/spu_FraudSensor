@@ -65,6 +65,8 @@ namespace Fanex.NAP.FS.Library.ExcelConfig.MatchMonitor
 
             var choice = template.betTeam.Replace("&nbsp;", "") + BetListHelper.ExtractStringFromHtml(template.Handicap);
 
+            var score = BetListHelper.ExtractStringFromHtml(template.Score);
+
             var bettype = BetListHelper.ExtractStringFromHtml(template.BetType);
 
             var betteam = string.Format("{0} - vs - {1}", template.Match.homeTeam, template.Match.awayTeam);
@@ -72,7 +74,7 @@ namespace Fanex.NAP.FS.Library.ExcelConfig.MatchMonitor
             var league = BetListHelper.ExtractStringFromHtml(template.League.LeagueName);
 
             new XSSFRichTextString()
-                .Write(choice + "\n")
+                .WriteFormat("{0}{1}\n", choice, score)
                 .Write(bettype + "\n")
                 .Write(betteam + "\n")
                 .Write(league + "\n")
