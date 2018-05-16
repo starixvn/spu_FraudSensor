@@ -152,10 +152,15 @@
                     var info = query.ReadSingle<MatchInfo>();
                     var fraudCaseName = query.IsEmptyOrClosed ? "-" : query.ReadSingle<string>();
 
-                    Logger.Log.Debug($"query is null: {query == null}\ninfo is null: {info == null}");
+                    Logger.Log.Debug("finish reading db");
 
                     var home = RefData.GetTeamName(info.HomeId.ToString())[1];
+
+                    Logger.Log.Debug("read home from refdata");
+
                     var away = RefData.GetTeamName(info.AwayId.ToString())[1];
+
+                    Logger.Log.Debug("read away from refdata");
 
                     var eventName = string.Format("<span class='underdog'>{0}</span> - vs - <span class='underdog'>{1}</span>", home, away);
 
