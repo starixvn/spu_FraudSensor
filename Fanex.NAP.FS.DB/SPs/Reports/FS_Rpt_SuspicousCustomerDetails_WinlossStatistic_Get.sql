@@ -83,6 +83,7 @@ BEGIN
 			AND	COALESCE(m.sporttype, l.sporttype, -1) <= 99
 		GROUP BY b.bettype, ISNULL(m.leagueid, o.leagueid), liveindicator;
 		
+		-- Add TOP(99999999) to fix wrong join order
 		INSERT INTO #CustomerStatistic (Bettype, LeagueId, IsLive, Winloss100, Turnover100, BetCount)
 		SELECT 	[Bettype]		= _cbd.Bettype
 			,	[LeagueId]		= _cbd.LeagueId
@@ -92,7 +93,8 @@ BEGIN
 			,	[BetCount]		= _cbd.BetCount
 		FROM	#WinlostDate AS d WITH (NOLOCK)
 		CROSS APPLY	(
-			SELECT	[Bettype]		= cbd.Bettype
+			SELECT	TOP(99999999)
+					[Bettype]		= cbd.Bettype
 				,	[LeagueId]		= cbd.LeagueId
 				,	[IsLive]		= cbd.IsLive
 				,	[Winloss100]	= cbd.Winloss100
