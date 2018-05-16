@@ -149,7 +149,7 @@
                 using (var query = db.QueryMultiple(criteria))
                 {
                     var info = query.ReadSingle<MatchInfo>();
-                    var fraudCaseName = query.ReadSingle<string>();
+                    var fraudCaseName = query.ReadSingle<string>() ?? "-";
 
                     var home = RefData.GetTeamName(info.HomeId.ToString())[1];
                     var away = RefData.GetTeamName(info.AwayId.ToString())[1];
