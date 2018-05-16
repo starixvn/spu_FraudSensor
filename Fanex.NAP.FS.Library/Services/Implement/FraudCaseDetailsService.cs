@@ -152,13 +152,13 @@
                     var info = query.ReadSingle<MatchInfo>();
                     var fraudCaseName = query.IsEmptyOrClosed ? "-" : query.ReadSingle<string>();
 
-                    Logger.Log.Debug("finish reading db");
+                    Logger.Log.Debug($"finish reading db - homeid: ${info.HomeId} - awayid: ${info.AwayId}");
 
-                    var home = RefData.GetTeamName(info.HomeId.ToString())[1];
+                    var home = RefData.GetTeamName(info.HomeId.ToString(), "en");
 
                     Logger.Log.Debug("read home from refdata");
 
-                    var away = RefData.GetTeamName(info.AwayId.ToString())[1];
+                    var away = RefData.GetTeamName(info.AwayId.ToString(), "en");
 
                     Logger.Log.Debug("read away from refdata");
 
