@@ -54,5 +54,17 @@
                 return db.QueryEntity<T>(criteria);
             }
         }
+
+        public static void QueryMultiple(CriteriaBase criteria, params Action<IMultiResultReader>[] extractors)
+        {
+            using (var db = new ObjectDb(criteria.GetSettingKey()))
+            using (var query = db.QueryMultiple(criteria))
+            {
+                for (int i = 0; i < extractors.Length; i++)
+                {
+                    extractors[i](query);
+                }
+            }
+        }
     }
 }

@@ -14,7 +14,6 @@
 
         public int? CaseId { get; set; }
 
-
         public override string GetSettingKey()
         {
             return "FS_Tbl_CustomerLog_Insert";
