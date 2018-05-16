@@ -1,23 +1,24 @@
 ﻿namespace Fanex.NAP.FS.Library.Service
 {
+    using Core.BaseClasses;
     using Fanex.BetList.Core.Builder;
     using Fanex.BetList.Core.TicketHelper;
     using Fanex.Data;
+    using Fanex.Logging;
     using Fanex.NAP.FS.Library.Core.ExportExcel;
     using Fanex.NAP.FS.Library.Core.Helpers;
     using Fanex.NAP.FS.Library.Core.Helpers.Api;
-    using Fanex.NAP.FS.Library.DTO;
+    using Fanex.NAP.FS.Library.Criteria.MatchMonitor;
     using Fanex.NAP.FS.Library.Criteria.MatchMonitor.FraudCaseDetails;
+    using Fanex.NAP.FS.Library.DTO;
     using Fanex.NAP.FS.Library.ExcelConfig.MatchMonitor;
+    using Fanex.NAP.FS.Library.Models.MatchMonitor;
     using Fanex.NAP.FS.Library.Models.MatchMonitor.FraudCaseDetails;
     using Fanex.NAP.FS.Library.ViewModels.MatchMonitor.FraudCaseDetails;
     using RemotingRef;
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Core.BaseClasses;
-    using Fanex.NAP.FS.Library.Criteria.MatchMonitor;
-    using Fanex.NAP.FS.Library.Models.MatchMonitor;
 
     public class FraudCaseDetailsService : IFraudCaseDetailsService
     {
@@ -149,7 +150,9 @@
                 using (var query = db.QueryMultiple(criteria))
                 {
                     var info = query.ReadSingle<MatchInfo>();
-                    var fraudCaseName = query.ReadSingle<string>() ?? "-";
+                    var fraudCaseName = query.IsEmptyOrClosed ? "-" : query.ReadSingle<string>();
+
+                    Logger.Log.Debug($"query is null: {query == null}\ninfo is null: {info == null}");
 
                     var home = RefData.GetTeamName(info.HomeId.ToString())[1];
                     var away = RefData.GetTeamName(info.AwayId.ToString())[1];
@@ -332,7 +335,7 @@
 
         public byte[] ExportToExcelIpTickets(string ip, string template)
         {
-            var data = 
+            var data =
                 DataService.GetData<TicketInfo>(new GetTicketByIPCriteria { IP = ip })
                 .OrderBy(t => t.UserName)
                 .ThenBy(t => t.TransDate);
@@ -342,7 +345,7 @@
             var config = new TicketByIpConfig(ip, buDate.BalanceUpDay);
 
             var wb = ExcelUtilities.GetWorkbook(template);
-            
+
             config.RenderExcel(wb, null, data, null);
 
             return wb.ToBytes();
