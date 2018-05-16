@@ -17,8 +17,6 @@
     using System.Linq;
     using Core.BaseClasses;
     using Fanex.NAP.FS.Library.Criteria.MatchMonitor;
-    using Fanex.BetList.Core.Entities;
-    using Fanex.Data.Repository;
     using Fanex.NAP.FS.Library.Models.MatchMonitor;
 
     public class FraudCaseDetailsService : IFraudCaseDetailsService
