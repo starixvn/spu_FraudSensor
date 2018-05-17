@@ -201,7 +201,7 @@
 
         console.log("@Model.Assignee")
 
-        var assignee = "@(string.IsNullOrEmpty(Model.Assignee) ? "Unassign" : Model.Assignee)";
+        var assignee = "@(string.IsNullOrEmpty(Model.Assignee) ? "None" : Model.Assignee)";
     </script>
 
     @Scripts.Render("~/suspicious-customer-scripts")

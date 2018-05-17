@@ -97,6 +97,31 @@
         }, () => tr.removeClass("selected"));
     }
 
+    function addNote() {
+        var val = $("#note").val();
+
+        if (val == null || val.length == 0) {
+            common.showError("Note is required!");
+        }
+        else if (common.hasSpecialCharacter(val)) {
+            common.showError("Invalid input!");
+        }
+        else {
+            var url = common.modifyRelativeUrl("/SuspiciousCustomerDetails/InsertLogNote");
+
+            var p =
+                {
+                    custId: generalParam.custId,
+                    logDesc: val
+                };
+
+            $.get(url, p, common.handleUpdateAjax(null, function () {
+                logNote.DataTable().ajax.reload();
+                $("#note").val("");
+            }));
+        }
+    }
+
     summary.DataTable({
         ordering: false,
         searching: false,
@@ -147,7 +172,7 @@
         scrollCollapse: true,
         columnDefs: [
             { targets: [1, 2, 3], className: "text-right" },
-            { targets: 0, width: "300px"}
+            { targets: 0, width: "300px" }
         ],
         columns: [
             { data: obj => obj.EventChoice },
@@ -418,30 +443,13 @@
         })
     });
 
-    $("#add-btn").click(function () {
-        var val = $("#note").val();
-
-        if (val == null || val.length == 0) {
-            common.showError("Note is required!");
+    $("#note").keypress(function (e) {
+        if (e.keyCode == 13) {
+            addNote();
         }
-        else if (common.hasSpecialCharacter(val)) {
-            common.showError("Invalid input!");
-        }
-        else {
-            var url = common.modifyRelativeUrl("/SuspiciousCustomerDetails/InsertLogNote");
+    });
 
-            var p =
-                {
-                    custId: generalParam.custId,
-                    logDesc: val
-                };
-
-            $.get(url, p, common.handleUpdateAjax(null, function () {
-                logNote.DataTable().ajax.reload();
-                $("#note").val("");
-            }));
-        }
-    })
+    $("#add-btn").click(addNote)
 
     $(".account-type input").change(function (e) {
         var target = $(e.target);
