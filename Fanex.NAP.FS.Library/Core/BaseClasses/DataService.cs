@@ -66,5 +66,23 @@
                 }
             }
         }
+
+        public static Tuple<IEnumerable<T>, IEnumerable<R>> QueryMultiple<T, R>(CriteriaBase criteria)
+        {
+            using (var db = new ObjectDb(criteria.GetSettingKey()))
+            using (var query = db.QueryMultiple(criteria))
+            {
+                return Tuple.Create(query.Read<T>(), query.Read<R>());
+            }
+        }
+
+        public static Tuple<IEnumerable<T>, IEnumerable<R>, IEnumerable<U>> QueryMultiple<T, R, U>(CriteriaBase criteria)
+        {
+            using (var db = new ObjectDb(criteria.GetSettingKey()))
+            using (var query = db.QueryMultiple(criteria))
+            {
+                return Tuple.Create(query.Read<T>(), query.Read<R>(), query.Read<U>());
+            }
+        }
     }
 }
