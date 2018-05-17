@@ -49,7 +49,7 @@
                     "ui-selectmenu-button": "ui-button-icon-only demo-splitbutton-select"
                 },
                 position: { my: "left top", at: "left bottom", collision: "flip" },
-                change: function () {
+                select: function () {
                     var tr = $(this).parents("tr");
 
                     var obj = customer_grid.DataTable().row(tr).data();
