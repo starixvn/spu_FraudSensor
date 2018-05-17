@@ -274,7 +274,7 @@
             { data: obj => obj.value != null ? `<div class='row-ht'>HT: ${obj.value.Result.HTHomeScore} - ${obj.value.Result.HTAwayScore}</div><div class='row-ft' style="font-weight: bold">FT: ${obj.value.Result.FinalHomeScore} - ${obj.value.Result.FinalAwayScore}</div>` : null },
             { data: obj => obj.value != null ? obj.value.Odds : null },
             { data: obj => obj.value != null ? common.formatGridNumber(obj.value.Stake) : null },
-            { data: obj => obj.value != null ? common.formatGridNumber(obj.value.WinLoss) : null },
+            { data: obj => obj.value != null && obj.value.WinLoss != null ? common.formatGridNumber(obj.value.WinLoss) : null },
             { data: obj => obj.value != null ? obj.value.Status : null },
             { data: obj => obj.value != null ? obj.value.IP : null }
         ],

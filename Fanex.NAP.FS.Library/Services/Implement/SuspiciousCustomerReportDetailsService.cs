@@ -165,6 +165,12 @@
                     queries.Read<TicketInfo>()
                     .ToDictionary(t => t.TransId);
 
+                var null_winloss = new HashSet<string>
+                {
+                    "running",
+                    "reject"
+                };
+
                 foreach (var fc in fraudCases)
                 {
                     var source = fc.Ids.Where(tickets.ContainsKey).Select(id => tickets[id]);
@@ -193,7 +199,7 @@
                                 TransDate = t.TransDate.ToString("MMM dd, yyyy<br/>hh:mm:ss tt"),
                                 Stake = t.Stake,
                                 Status = t.Status,
-                                WinLoss = t.Winlost
+                                WinLoss = null_winloss.Contains(t.Status.ToLowerInvariant()) ? null : new decimal?(t.Winlost),
                             };
 
                             yield return new { key = fc.FraudCaseName, value = obj };
