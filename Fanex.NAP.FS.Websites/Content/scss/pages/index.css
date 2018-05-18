@@ -951,6 +951,7 @@ table.dataTable tbody tr.selected td {
   border: none; }
 
 .ui-dialog {
+  position: fixed;
   top: 120px !important;
   padding: 0;
   font-family: "Lato", Arial, Tahoma, sans-serif; }
