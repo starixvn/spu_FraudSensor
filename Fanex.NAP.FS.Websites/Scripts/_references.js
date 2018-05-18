@@ -50,7 +50,6 @@
 /// <reference path="FraudCase/fraud-case.js" />
 /// <reference path="jquery.validate.js" />
 /// <reference path="jquery.validate.unobtrusive.js" />
-/// <reference path="jquery-1.10.2.js" />
 /// <reference path="jquery-3.0.0.js" />
 /// <reference path="jquery-3.0.0.slim.js" />
 /// <reference path="jquery-ui-1.12.1.js" />

@@ -90,7 +90,7 @@
 
         tr.addClass("selected");
 
-        common.showConfirmation("Do you want to delete the highlighted log?", function () {
+        common.showConfirmation("Do you want to delete the highlighted row?", function () {
             var url = common.modifyRelativeUrl("/SuspiciousCustomerDetails/RemoveLogNote");
 
             $.get(url, { custId: generalParam.custId, customerLogId: obj.CustomerLogId }, common.handleUpdateAjax(null, () => logNote.DataTable().ajax.reload()));
@@ -140,6 +140,7 @@
         },
         scrollY: "500px",
         scrollCollapse: true,
+        responsive: true,
         columnDefs: [
             { targets: "_all", defaultContent: "-", className: "text-right" },
             { targets: "_all", width: "25%" },
@@ -172,7 +173,7 @@
         scrollCollapse: true,
         columnDefs: [
             { targets: [1, 2, 3], className: "text-right" },
-            { targets: 0, width: "300px" }
+            { targets: "_all", width: "25%" }
         ],
         columns: [
             { data: obj => obj.EventChoice },
@@ -232,7 +233,7 @@
         scrollCollapse: true,
         columnDefs: [
             { targets: [1, 2, 3], className: "text-right" },
-            { targets: 0, width: "300px" }
+            { targets: "_all", width: "25%" }
         ],
         columns: [
             { data: obj => obj.BetTypeName },
