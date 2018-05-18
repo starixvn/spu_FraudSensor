@@ -259,7 +259,7 @@
             zeroRecords: "There's no data",
             processing: "<div class='loader-in-table'></div>"
         },
-        scrollY: "30vh",
+        scrollY: "56vh",
         scrollCollapse: true,
         ajax: common.modifyRelativeUrl(`/SuspiciousCustomerDetails/GetViolatedTickets?custid=${generalParam.custId}&from=${generalParam.from}&to=${generalParam.to}`),
         columnDefs: [
