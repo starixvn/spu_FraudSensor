@@ -1,23 +1,23 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Functions>
   <Function Name="FraudCase">
-    <Setting Key="FS_FraudCase_GetAll" SpName="FS_FraudCase_GetAll" DbName="DBFS.FraudSensor.bodbSPUNet" />
-    <Setting Key="FS_FraudCase_GetById" SpName="FS_FraudCase_GetById" DbName="DBFS.FraudSensor.bodbSPUNet" />
+    <Setting Key="FS_FraudCase_GetAll" SpName="FS_FraudCase_GetAll_xtest" DbName="DBFS.FraudSensor.bodbSPUNet" />
+    <Setting Key="FS_FraudCase_GetById" SpName="FS_FraudCase_GetById_xtest" DbName="DBFS.FraudSensor.bodbSPUNet" />
   </Function>
 
   <Function Name="BigStakeNearGoal">
-    <Setting Key="FS_FraudCase_BSNG_PreCondition" SpName="FS_FraudCase_BSNG_PreCondition" DbName="DBFS.FraudSensor.bodbSPUNet" />
-    <Setting Key="FS_FraudCase_BSNG_Rule" SpName="FS_FraudCase_BSNG_Rule" DbName="DBFS.FraudSensor.bodbSPUNet" />
+    <Setting Key="FS_FraudCase_BSNG_PreCondition" SpName="FS_FraudCase_BSNG_PreCondition_xtest" DbName="DBFS.FraudSensor.bodbSPUNet" />
+    <Setting Key="FS_FraudCase_BSNG_Rule" SpName="FS_FraudCase_BSNG_Rule_xtest" DbName="DBFS.FraudSensor.bodbSPUNet" />
   </Function>
 
   <Function Name="FlaggedAccount">
-    <Setting Key="FS_FraudCase_FlaggedAccount_PreCondition" SpName="FS_FraudCase_FlaggedAccount_PreCondition" DbName="DBFS.FraudSensor.bodbSPUNet" />
-    <Setting Key="FS_FraudCase_FlaggedAccount_Rule" SpName="FS_FraudCase_FlaggedAccount_Rule" DbName="DBFS.FraudSensor.bodbSPUNet" />
+    <Setting Key="FS_FraudCase_FlaggedAccount_PreCondition" SpName="FS_FraudCase_FlaggedAccount_PreCondition_xtest" DbName="DBFS.FraudSensor.bodbSPUNet" />
+    <Setting Key="FS_FraudCase_FlaggedAccount_Rule" SpName="FS_FraudCase_FlaggedAccount_Rule_xtest" DbName="DBFS.FraudSensor.bodbSPUNet" />
   </Function>
 
   <Function Name="DelayGoal">
-    <Setting Key="FS_FraudCase_DelayGoal_PreCondition" SpName="FS_FraudCase_DelayGoal_PreCondition" DbName="DBFS.FraudSensor.bodbSPUNet" />
-    <Setting Key="FS_FraudCase_DelayGoal_Rule" SpName="FS_FraudCase_DelayGoal_Rule" DbName="DBFS.FraudSensor.bodbSPUNet" />
-    <Setting Key="FS_DelayGoalAccount_GetManualAccount" SpName="FS_DelayGoalAccount_GetManualAccount" DbName="DBFS.FraudSensor.bodbSPUNet" />
+    <Setting Key="FS_FraudCase_DelayGoal_PreCondition" SpName="FS_FraudCase_DelayGoal_PreCondition_xtest" DbName="DBFS.FraudSensor.bodbSPUNet" />
+    <Setting Key="FS_FraudCase_DelayGoal_Rule" SpName="FS_FraudCase_DelayGoal_Rule_xtest" DbName="DBFS.FraudSensor.bodbSPUNet" />
+    <Setting Key="FS_DelayGoalAccount_GetManualAccount" SpName="FS_DelayGoalAccount_GetManualAccount_xtest" DbName="DBFS.FraudSensor.bodbSPUNet" />
   </Function>
 </Functions>
