@@ -79,3 +79,10 @@ CREATE NONCLUSTERED INDEX NIX_CustomerMonitorAssignment_CustIdAssigneeId ON [dbo
 	,[AssigneeId]				ASC
 ) ON IDX;
 GO
+
+--=========== ALTER TABLES 
+ALTER TABLE [dbo].[SuspiciousInfo]
+ADD VerifiedBy INT NULL
+	, VerifiedDate DATETIME NULL
+GO
+
