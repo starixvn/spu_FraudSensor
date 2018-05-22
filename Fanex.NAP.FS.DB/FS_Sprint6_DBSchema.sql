@@ -66,8 +66,14 @@ CREATE TABLE [dbo].[CustomerMonitorAssignment](
 	[AssigneeId] [nvarchar](50) NULL,
 	[LastModifiedDate] [datetime] NOT NULL,
 	[CreatorId] [int] NOT NULL
+	
+	CONSTRAINT [PK_CustomerMonitorAssignment] PRIMARY KEY CLUSTERED 
+	(
+	[CustId] ASC
+	)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [DATA]
 ) ON [DATA]
 GO
+
 CREATE NONCLUSTERED INDEX NIX_CustomerMonitorAssignment_CustIdAssigneeId ON [dbo].[CustomerMonitorAssignment] (
 	[CustId]					ASC
 	,[AssigneeId]				ASC
