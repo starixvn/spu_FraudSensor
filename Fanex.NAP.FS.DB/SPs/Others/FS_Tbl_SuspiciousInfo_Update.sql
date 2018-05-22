@@ -71,7 +71,7 @@ BEGIN
 			
 		EXECUTE FS_Tbl_CustomerLog_Insert @CustId = @Custid, @UserId = @UserId, @CustLogType = 2 , @LogDate = @UpdateTime,  @CaseId = NULL, @LogDesc=@LogDesc
 		
-		IF NOT EXISTS (SELECT TOP(1) 1 FROM dbo.SuspiciousInfo si WHERE si.CustId = @CustId AND si.IsVerified = 0)
+		IF NOT EXISTS (SELECT TOP(1) 1 FROM dbo.SuspiciousInfo si WITH(NOLOCK) WHERE si.CustId = @CustId AND si.IsVerified = 0)
 		BEGIN
 			EXECUTE FS_Tbl_SuspiciousCustomer_Update @CustId = @Custid, @UserId = @UserId, @IsVerified = @IsVerified
 		END

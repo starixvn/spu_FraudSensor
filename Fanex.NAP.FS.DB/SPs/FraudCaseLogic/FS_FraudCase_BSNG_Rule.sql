@@ -7,6 +7,7 @@ SET QUOTED_IDENTIFIER ON
 GO
 
 ALTER PROCEDURE [dbo].[FS_FraudCase_BSNG_Rule] 
+ALTER PROCEDURE [dbo].[FS_FraudCase_BSNG_Rule] 
 	@MatchIds VARCHAR(MAX) = NULL
 AS
 /*
@@ -123,7 +124,7 @@ BEGIN
 			,	40 * 0.01 * COALESCE(dds.maxbet, 0) AS MaxBet
 		FROM bodb02.dbo.match AS tch WITH (NOLOCK)
 		INNER JOIN bodb02.dbo.bettrans AS ans WITH (NOLOCK) ON tch.matchid = ans.matchid
-		INNER JOIN #tmpLastTickets AS msc ON msc.matchid = ans.matchid
+		INNER JOIN #tmpLastTickets AS msc WITH(NOLOCK) ON msc.matchid = ans.matchid
 		CROSS APPLY (
 			SELECT TOP(1) l.Maxbet
 			FROM bodb_FraudSensor.dbo.OddsLog AS l WITH (NOLOCK)
@@ -207,7 +208,7 @@ BEGIN
 		FROM #tmpFraudTickets AS ft WITH (NOLOCK)
 		GROUP BY ft.CustId, ft.MatchId, ft.EventDate;
 	END;
-END;
+END
 GO 
  GRANT EXECUTE ON [dbo].[FS_FraudCase_BSNG_Rule] TO [bodbSPUNet]
 GO 
