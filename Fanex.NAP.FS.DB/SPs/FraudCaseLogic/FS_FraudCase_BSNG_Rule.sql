@@ -7,7 +7,6 @@ SET QUOTED_IDENTIFIER ON
 GO
 
 ALTER PROCEDURE [dbo].[FS_FraudCase_BSNG_Rule] 
-ALTER PROCEDURE [dbo].[FS_FraudCase_BSNG_Rule] 
 	@MatchIds VARCHAR(MAX) = NULL
 AS
 /*
