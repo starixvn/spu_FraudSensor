@@ -32,7 +32,7 @@ CONSTRAINT [PK_TicketsByIP] PRIMARY KEY CLUSTERED
 ) ON [DATA]
 GO
 
-CREATE NONCLUSTERED INDEX CIX_TicketsByIP_IP ON [dbo].[TicketsByIP] (
+CREATE NONCLUSTERED INDEX NIX_TicketsByIP_IP ON [dbo].[TicketsByIP] (
 	[IP]					ASC
 ) ON IDX;
 GO
@@ -52,11 +52,11 @@ CREATE TABLE	[dbo].[CustomerLog](
 ) ON [DATA]
 GO
 
-CREATE NONCLUSTERED INDEX CIX_CustomerLog_CustId ON [dbo].[CustomerLog] (
+CREATE NONCLUSTERED INDEX NIX_CustomerLog_CustId ON [dbo].[CustomerLog] (
 	[CustId]					ASC
 ) ON IDX;
 GO
-CREATE NONCLUSTERED INDEX CIX_CustomerLog_CustLogType ON [dbo].[CustomerLog] (
+CREATE NONCLUSTERED INDEX NIX_CustomerLog_CustLogType ON [dbo].[CustomerLog] (
 	[CustLogType]					ASC
 ) ON IDX;
 GO
@@ -68,7 +68,7 @@ CREATE TABLE [dbo].[CustomerMonitorAssignment](
 	[CreatorId] [int] NOT NULL
 ) ON [DATA]
 GO
-CREATE NONCLUSTERED INDEX CIX_CustomerMonitorAssignment_CustIdAssigneeId ON [dbo].[CustomerMonitorAssignment] (
+CREATE NONCLUSTERED INDEX NIX_CustomerMonitorAssignment_CustIdAssigneeId ON [dbo].[CustomerMonitorAssignment] (
 	[CustId]					ASC
 	,[AssigneeId]				ASC
 ) ON IDX;
