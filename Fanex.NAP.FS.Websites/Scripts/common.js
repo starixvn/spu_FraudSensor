@@ -196,7 +196,7 @@
         $(document).ajaxComplete(() => loading.hide());
     }
 
-    this.formatGridNumber = (n = 0, format = "0,0.00") => n >= 0 ? numeral(n).format(format) : `<span class="text-red">${numeral(n).format(format)}</span>`;
+    this.formatGridNumber = (n = 0, format = "0,0.00") => n == null ? null : n >= 0 ? numeral(n).format(format) : `<span class="text-red">${numeral(n).format(format)}</span>`;
 
     this.handleUpdateAjax = function (successMsg, successFunc, failMsg, failFunc) {
         return function (result) {

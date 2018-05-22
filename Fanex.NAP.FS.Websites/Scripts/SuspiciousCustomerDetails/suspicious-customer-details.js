@@ -140,7 +140,6 @@
         },
         scrollY: "500px",
         scrollCollapse: true,
-        responsive: true,
         columnDefs: [
             { targets: "_all", defaultContent: "-", className: "text-right" },
             { targets: "_all", width: "25%" },
