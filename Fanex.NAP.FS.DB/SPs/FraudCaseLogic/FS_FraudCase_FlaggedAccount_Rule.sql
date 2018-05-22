@@ -4,22 +4,20 @@ GO
 SET ANSI_NULLS ON 
 GO
 
-/****** Object:  Stored Procedure dbo.FS_FraudCase_FlaggedAccount_Rule    Script Date: 5/15/2018 4:21:24 PM ******/
-/****** Object:  Stored Procedure dbo.FS_FraudCase_FlaggedAccount_Rule    Script Date: 3/13/2018 1:37:39 PM ******/
-
-CREATE PROCEDURE [dbo].[FS_FraudCase_FlaggedAccount_Rule] 
+ALTER PROCEDURE [dbo].[FS_FraudCase_FlaggedAccount_Rule] 
 		@MatchIds				VARCHAR(MAX) = NULL
 	,	@FlaggedAccountsXML		VARCHAR(MAX)
 AS
 /*
-	Created: 20180308@Long
+	Created: 20180308@LONG
 	Task : Rule for Flagged Account fraud case
 	DB: bodb_FraudSensor
 	Original:
 
 	Revisions:
-		- 20180321@Long: Support ViolationCounter & TicketCounter [Redmine ID: 92293]
-		- 20180406@Long: Get flagged accounts list directly from FPS's api
+		- 20180321@LONG: Support ViolatiONCounter & TicketCounter [Redmine ID: 92293]
+		- 20180406@LONG: Get flagged accounts list directly from FPS's api
+		- 20180312@CaseyHuynh: Correct Code Syntax
 
 	Param's Explanation (filtered by):
 */
@@ -79,91 +77,82 @@ BEGIN
 	INSERT INTO #tmpFlaggedAccounts(CustId)
 	SELECT Data.CustId
 	FROM	OPENXML (@idoc, '/Root/CustomerEvidence', 1)
-			WITH (CustId  INT, EvidenceCode NVARCHAR(50), EvidenceName NVARCHAR(50)) AS Data;
+			WITH (CustId INT, EvidenceCode NVARCHAR(50), EvidenceName NVARCHAR(50)) AS Data;
 
 	INSERT INTO #tmpMatches(MatchId)
 	SELECT val FROM SPU_StrSplit(@MatchIds, ',');
 
 	INSERT INTO #tmpFraudTickets(CustId, MatchId, EventDate, TransId)
 	SELECT	DISTINCT [CustId]	= ans.custid,
-            [MatchId]			= ans.matchid,
+      [MatchId]			= ans.matchid,
 			[EventDate]			= tch.EventDate,
-            [TransId]			= ans.transid
-	FROM bodb02.dbo.match tch WITH(NOLOCK)
-	INNER JOIN bodb02.dbo.bettrans ans WITH(NOLOCK) ON tch.matchid = ans.matchid
-	INNER JOIN #tmpFlaggedAccounts fa WITH(NOLOCK) ON fa.custid = ans.custid
-	WHERE tch.matchid IN (SELECT MatchId FROM #tmpMatches)
+      [TransId]			= ans.transid
+	FROM bodb02.dbo.match tch WITH (NOLOCK)
+	INNER JOIN bodb02.dbo.bettrans ans WITH (NOLOCK) ON tch.matchid = ans.matchid
+	INNER JOIN #tmpFlaggedAccounts fa WITH (NOLOCK) ON fa.custid = ans.custid
+	WHERE tch.matchid IN (SELECT MatchId FROM #tmpMatches WITH (NOLOCK))
 		AND ans.bettype IN (
 			SELECT DISTINCT spb.BetType
-			FROM bodb02.dbo.SportBettypeMatrix spb WITH(NOLOCK)
+			FROM bodb02.dbo.SportBettypeMatrix spb WITH (NOLOCK)
 			WHERE spb.ProductID = 1
 		)
-		--AND unt.EvidenceCode = '1.5'
-		AND ans.custid NOT IN (SELECT CustId FROM dbo.DelayGoalAccount WITH(NOLOCK))
+		AND ans.custid NOT IN (SELECT CustId FROM dbo.DelayGoalAccount WITH (NOLOCK))
 		AND ans.currency <> 20;
 
-	-- Update match info for ScannedMatch table
-	DELETE FROM dbo.ScannedMatch
+	-- UPDATE match info for ScannedMatch table
+	DELETE FROM dbo.ScannedMatch WITH (ROWLOCK)
 	WHERE FraudCaseId = @CurrentFraudCaseId
-		AND MatchId IN (SELECT MatchId FROM #tmpMatches);
+		AND MatchId IN (SELECT MatchId FROM #tmpMatches WITH (NOLOCK));
 
 	INSERT INTO dbo.ScannedMatch(MatchId, FraudCaseId, ScannedDate, SuspiciousTicketsCount)
 	SELECT	[MatchId]					= m.MatchId
 		,	[FraudCaseId]				= @CurrentFraudCaseId
 		,	[ScannedDate]				= GETDATE()
 		,	[SuspiciousTicketsCount]	= COUNT(ft.TransId)
-	FROM #tmpMatches m
-	LEFT JOIN #tmpFraudTickets ft on m.MatchId = ft.MatchId
+	FROM #tmpMatches m WITH (NOLOCK)
+	LEFT JOIN #tmpFraudTickets ft WITH (NOLOCK) ON m.MatchId = ft.MatchId
 	GROUP BY m.MatchId, ft.MatchId;
 
 	-- Check the results and store/return data
-	IF(SELECT COUNT(1) FROM #tmpFraudTickets) > 0
+	IF(SELECT COUNT(1) FROM #tmpFraudTickets WITH (NOLOCK)) > 0
 	BEGIN
 	
-		UPDATE sc WITH(ROWLOCK)
+		UPDATE sc WITH (ROWLOCK)
 		SET sc.IsVerified = 0 
 		FROM dbo.SuspiciousCustomer sc 
 		WHERE Custid IN (SELECT DISTINCT(Custid)
-							FROM #tmpFraudTickets ft WITH(NOLOCK)
+							FROM #tmpFraudTickets ft WITH (NOLOCK)
 							WHERE sc.Custid = ft.CustId);
 	
 		INSERT INTO dbo.SuspiciousCustomer(Custid)
 		SELECT DISTINCT ft.CustId
-		FROM #tmpFraudTickets ft
+		FROM #tmpFraudTickets ft WITH (NOLOCK)
 		WHERE ft.CustId NOT IN (
 				SELECT sc.CustId 
-				FROM dbo.SuspiciousCustomer sc WITH(NOLOCK)
+				FROM dbo.SuspiciousCustomer sc WITH (NOLOCK)
 			);
 					
-		DELETE FROM dbo.SuspiciousInfo WITH(ROWLOCK)
+		DELETE FROM dbo.SuspiciousInfo WITH (ROWLOCK)
 		WHERE FraudCaseId = @CurrentFraudCaseId
-			AND MatchId IN (SELECT MatchId FROM #tmpMatches);
+			AND MatchId IN (SELECT MatchId FROM #tmpMatches WITH (NOLOCK));
 
-		INSERT INTO dbo.SuspiciousInfo(CustId, MatchId, EventDate, FraudCaseId, SuspiciousDate, TransIds, ViolationCounter, TicketCounter)
-		SELECT  [CustId]			= ft.CustId
+		INSERT INTO dbo.SuspiciousInfo(CustId, MatchId, EventDate, FraudCaseId, SuspiciousDate, TransIds, ViolatiONCounter, TicketCounter)
+		SELECT [CustId]			= ft.CustId
 			,	[MatchId]			= ft.MatchId
 			,	[EventDate]			= ft.EventDate
 			,	[FraudCaseId]		= @CurrentFraudCaseId
 			,	[SuspiciousDate]	= GETDATE()
 			,	[TransIds]			= STUFF((SELECT ',', CONVERT(VARCHAR(15), t1.TransId) 
-										 FROM #tmpFraudTickets AS t1
-										 WHERE t1.CustId = ft.CustId AND t1.MatchId = ft.MatchId  
+										 FROM #tmpFraudTickets AS t1 WITH (NOLOCK)
+										 WHERE t1.CustId = ft.CustId AND t1.MatchId = ft.MatchId 
 										 FOR XML PATH('')), 1, 1, '')
-			,	[ViolationCounter]	= 1
+			,	[ViolatiONCounter]	= 1
 			,	[TicketCounter]		= COUNT(ft.TransId)
-		FROM #tmpFraudTickets ft
+		FROM #tmpFraudTickets ft WITH (NOLOCK)
 		GROUP BY ft.CustId, ft.MatchId, ft.EventDate;		
 
 	END;
 END;
-
-GO
-
-SET QUOTED_IDENTIFIER OFF 
-GO
-SET ANSI_NULLS ON 
-GO
-
 
 GO 
  GRANT EXECUTE ON [dbo].[FS_FraudCase_FlaggedAccount_Rule] TO [bodbSPUNet]

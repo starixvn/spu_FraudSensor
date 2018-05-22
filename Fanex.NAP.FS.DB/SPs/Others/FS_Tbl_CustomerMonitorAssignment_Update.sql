@@ -42,10 +42,10 @@ BEGIN
 	END CATCH
 
 	------------ Write Log ------------ 
-		SELECT @LogData =	'CustId	=	'					+	DBO.SPU_ToString(@CustId) 
-							+ ', AssigneeId	=	'			+	DBO.SPU_ToString(@AssigneeId) 
-							+ ', LastModifiedDate	=	'	+	DBO.SPU_ToString(@LastModifiedDate) 
-							+ ', CreatorId	=	'			+	DBO.SPU_ToString(@UserId);
+		SELECT @LogData =	'CustId	= '					+	DBO.SPU_ToString(@CustId) 
+							+ ', AssigneeId	= '			+	DBO.SPU_ToString(@AssigneeId) 
+							+ ', LastModifiedDate =	'	+	DBO.SPU_ToString(@LastModifiedDate) 
+							+ ', CreatorId = '			+	DBO.SPU_ToString(@UserId);
 
 		SELECT @SPName	=	OBJECT_NAME(@@ProcID);
 

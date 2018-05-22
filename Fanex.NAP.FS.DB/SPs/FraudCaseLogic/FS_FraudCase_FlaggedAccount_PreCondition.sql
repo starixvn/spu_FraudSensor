@@ -4,18 +4,16 @@ GO
 SET ANSI_NULLS ON 
 GO
 
-/****** Object:  Stored Procedure dbo.FS_FraudCase_FlaggedAccount_PreCondition    Script Date: 5/15/2018 4:21:24 PM ******/
-/****** Object:  Stored Procedure dbo.FS_FraudCase_FlaggedAccount_PreCondition    Script Date: 3/13/2018 1:37:39 PM ******/
-
-CREATE PROCEDURE [dbo].[FS_FraudCase_FlaggedAccount_PreCondition] 
+ALTER PROCEDURE [dbo].[FS_FraudCase_FlaggedAccount_PreCondition] 
 AS
 /*
-	Created: 20180308@Long
-	Task : Pre-Condition for Flagged Account fraud case
+	Created: 20180308@LONG
+	Task : PreCondition for Flagged Account fraud case
 	DB: bodb_FraudSensor
 	Original:
 
 	Revisions:
+		- 20180312@CaseyHuynh: Correct Code Syntax
 
 	Param's Explanation (filtered by):
 */
@@ -30,15 +28,6 @@ BEGIN
 		AND rts.sporttype = 1
 		AND tch.kickofftime <= GETDATE();
 END;
-
-GO
-
-SET QUOTED_IDENTIFIER OFF 
-GO
-SET ANSI_NULLS ON 
-GO
-
-
 GO 
  GRANT EXECUTE ON [dbo].[FS_FraudCase_FlaggedAccount_PreCondition] TO [bodbSPUNet]
 GO 

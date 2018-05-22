@@ -1,13 +1,12 @@
-
-SET QUOTED_IDENTIFIER ON 
-GO
-SET ANSI_NULLS ON 
+USE [bodb_FraudSensor]
 GO
 
-/****** Object:  Stored Procedure dbo.FS_FraudCase_BSNG_Rule    Script Date: 5/15/2018 4:21:24 PM ******/
-/****** Object:  Stored Procedure dbo.FS_FraudCase_BSNG_Rule    Script Date: 3/13/2018 1:37:39 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
 
-CREATE PROCEDURE [dbo].[FS_FraudCase_BSNG_Rule] 
+ALTER PROCEDURE [dbo].[FS_FraudCase_BSNG_Rule] 
 	@MatchIds VARCHAR(MAX) = NULL
 AS
 /*
@@ -22,6 +21,7 @@ AS
 			+ Update get Oddslog from bodb_FraudSensor instead of "SPU_FraudDetection"
 			+ Update Calculate Violation BSNG Rule: count 1 per each score
 		- 20180406@Long: remove ticket status to scan for running matches
+		- 20180312@CaseyHuynh: Correct Code Syntax
 
 	Param's Explanation (filtered by):
 */
@@ -90,8 +90,8 @@ BEGIN
 		,	[DeleteTime]		= MAX(ans.transdate)
 		,	[LiveHomeScore]		= ans.livehomescore
 		,	[LiveAwayScore]		= ans.liveawayscore
-	FROM bodb02.dbo.bettrans ans WITH (NOLOCK)
-	WHERE ans.matchid IN (SELECT MatchId FROM #tmpMatches)
+	FROM bodb02.dbo.bettrans AS ans WITH (NOLOCK)
+	WHERE ans.matchid IN (SELECT MatchId FROM #tmpMatches WITH (NOLOCK))
 		AND ans.statusID = 101
 		AND ans.liveindicator = 1
 	GROUP BY ans.livehomescore
@@ -125,13 +125,13 @@ BEGIN
 		INNER JOIN bodb02.dbo.bettrans AS ans WITH (NOLOCK) ON tch.matchid = ans.matchid
 		INNER JOIN #tmpLastTickets AS msc ON msc.matchid = ans.matchid
 		CROSS APPLY (
-			SELECT TOP 1 *
-			FROM bodb_FraudSensor.dbo.OddsLog l WITH (NOLOCK)
+			SELECT TOP(1) l.Maxbet
+			FROM bodb_FraudSensor.dbo.OddsLog AS l WITH (NOLOCK)
 			WHERE l.oddsid = ans.oddsid
 				AND l.logdate < ans.transdate
 			ORDER BY l.logdate DESC
 		) dds
-		WHERE  tch.matchid IN (SELECT MatchId FROM #tmpMatches)
+		WHERE  tch.matchid IN (SELECT MatchId FROM #tmpMatches WITH (NOLOCK))
 			AND ans.liveindicator = 1
 			AND ans.transdate BETWEEN DATEADD(ss, -90, msc.deletetime) AND msc.deletetime
 			AND ans.livehomescore = msc.livehomescore
@@ -155,38 +155,38 @@ BEGIN
 	-- Update match info for ScannedMatch table
 	DELETE FROM dbo.ScannedMatch
 	WHERE FraudCaseId = @CurrentFraudCaseId
-		AND MatchId IN (SELECT MatchId FROM #tmpMatches);
+		AND MatchId IN (SELECT MatchId FROM #tmpMatches WITH (NOLOCK));
 
 	INSERT INTO dbo.ScannedMatch(MatchId, FraudCaseId, ScannedDate, SuspiciousTicketsCount)
 	SELECT  [MatchId]					= m.MatchId
 		,	[FraudCaseId]				= @CurrentFraudCaseId
 		,	[ScannedDate]				= GETDATE()
 		,	[SuspiciousTicketsCount]	= COUNT(ft.TransId)
-	FROM #tmpMatches AS m WITH(NOLOCK)
-	LEFT JOIN #tmpFraudTickets AS ft WITH(NOLOCK) ON m.MatchId = ft.MatchId
+	FROM #tmpMatches AS m WITH (NOLOCK)
+	LEFT JOIN #tmpFraudTickets AS ft WITH (NOLOCK) ON m.MatchId = ft.MatchId
 	GROUP BY m.MatchId, ft.MatchId;
 
 	-- Check the results and store/return data
-	IF EXISTS (SELECT TOP(1) 1 FROM #tmpFraudTickets)
+	IF EXISTS (SELECT TOP(1) 1 FROM #tmpFraudTickets WITH (NOLOCK))
 	BEGIN
-		UPDATE sc WITH(ROWLOCK)
+		UPDATE sc WITH (ROWLOCK)
 		SET sc.IsVerified = 0 
 		FROM dbo.SuspiciousCustomer AS sc 
 		WHERE Custid IN (SELECT DISTINCT(Custid)
-							FROM #tmpFraudTickets AS ft WITH(NOLOCK)
+							FROM #tmpFraudTickets AS ft WITH (NOLOCK)
 							WHERE sc.Custid = ft.CustId);
 	
 		INSERT INTO dbo.SuspiciousCustomer(Custid)
 		SELECT DISTINCT ft.CustId
-		FROM #tmpFraudTickets AS ft WITH(NOLOCK)
+		FROM #tmpFraudTickets AS ft WITH (NOLOCK)
 		WHERE ft.CustId NOT IN (
 				SELECT sc.CustId 
-				FROM dbo.SuspiciousCustomer AS sc WITH(NOLOCK)
+				FROM dbo.SuspiciousCustomer AS sc WITH (NOLOCK)
 			);
 
-		DELETE FROM dbo.SuspiciousInfo WITH(ROWLOCK)
+		DELETE FROM dbo.SuspiciousInfo WITH (ROWLOCK)
 		WHERE FraudCaseId = @CurrentFraudCaseId
-			AND MatchId IN (SELECT MatchId FROM #tmpMatches WITH(NOLOCK));
+			AND MatchId IN (SELECT MatchId FROM #tmpMatches WITH (NOLOCK));
 
 		INSERT INTO dbo.SuspiciousInfo(CustId, MatchId, EventDate, FraudCaseId, SuspiciousDate, TransIds, ViolationCounter, TicketCounter)
 		SELECT  [CustId]			= ft.CustId
@@ -195,28 +195,19 @@ BEGIN
 			,	[FraudCaseId]		= @CurrentFraudCaseId
 			,	[SuspiciousDate]	= GETDATE()
 			,	[TransIds]			= STUFF((SELECT ',', CONVERT(VARCHAR(15), t1.TransId) 
-										 FROM #tmpFraudTickets AS t1 WITH(NOLOCK)
+										 FROM #tmpFraudTickets AS t1 WITH (NOLOCK)
 										 WHERE t1.CustId = ft.CustId AND t1.MatchId = ft.MatchId  
 										 FOR XML PATH('')), 1, 1, '')
-			,	[ViolationCounter]	= (Select Count(1)
-										FROM (Select t2.LiveHomeScore,t2.LiveAwayScore
-										FROM #tmpFraudTickets AS t2 WITH(NOLOCK)
+			,	[ViolationCounter]	= (SELECT COUNT(1)
+										FROM (SELECT t2.LiveHomeScore,t2.LiveAwayScore
+										FROM #tmpFraudTickets AS t2 WITH (NOLOCK)
 										WHERE t2.CustId = ft.CustId AND t2.MatchId = ft.MatchId
-										Group by t2.LiveHomeScore,t2.LiveAwayScore) A)
+										GROUP BY t2.LiveHomeScore,t2.LiveAwayScore) AS A)
 			,	[TicketCounter]		= COUNT(ft.TransId)
-		FROM #tmpFraudTickets AS ft WITH(NOLOCK)
+		FROM #tmpFraudTickets AS ft WITH (NOLOCK)
 		GROUP BY ft.CustId, ft.MatchId, ft.EventDate;
 	END;
 END;
-
-GO
-
-SET QUOTED_IDENTIFIER OFF 
-GO
-SET ANSI_NULLS ON 
-GO
-
-
 GO 
  GRANT EXECUTE ON [dbo].[FS_FraudCase_BSNG_Rule] TO [bodbSPUNet]
 GO 

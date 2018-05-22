@@ -3,18 +3,16 @@ GO
 SET ANSI_NULLS ON 
 GO
 
-/****** Object:  Stored Procedure dbo.FS_FraudCase_BSNG_PreCondition    Script Date: 5/15/2018 4:21:24 PM ******/
-/****** Object:  Stored Procedure dbo.FS_FraudCase_BSNG_PreCondition    Script Date: 3/13/2018 1:37:39 PM ******/
-
-CREATE PROCEDURE [dbo].[FS_FraudCase_BSNG_PreCondition] 
+ALTER PROCEDURE [dbo].[FS_FraudCase_BSNG_PreCondition] 
 AS
 /*
-	Created: 20180306@Long
-	Task : Pre-Condition for Big Stake Near The Goal fraud case
+	Created: 20180306@LONG
+	Task : PreCondition for Big Stake Near The Goal fraud case
 	DB: bodb_FraudSensor
 	Original:
 
 	Revisions:
+		- 20180312@CaseyHuynh: Correct Code Syntax
 
 	Param's Explanation (filtered by):
 */
@@ -59,11 +57,11 @@ BEGIN
 
 	-- Get current score of running matches
 	INSERT INTO #tmpMatchCurrentScore(MatchId, LiveHomeScore, LiveAwayScore)
-    SELECT [MatchId] = tch.matchid
+  SELECT [MatchId] = tch.matchid
 		,	[LiveHomeScore] = MAX(tch.livehomescore)
 		,	[LiveAwayScore] = MAX(tch.liveawayscore)
-	FROM bodb02.dbo.match AS tch WITH(NOLOCK)
-	INNER JOIN bodb02.dbo.sports AS rts WITH(NOLOCK) ON tch.sporttype = rts.sporttype
+	FROM bodb02.dbo.match AS tch WITH (NOLOCK)
+	INNER JOIN bodb02.dbo.sports AS rts WITH (NOLOCK) ON tch.sporttype = rts.sporttype
 	WHERE tch.eventstatus = 'running'
 		AND tch.kickofftime <= GETDATE()
 		AND rts.sporttype = 1
@@ -74,9 +72,9 @@ BEGIN
 	SELECT r.MatchId
 	FROM
 		(
-			SELECT MatchId FROM #tmpMatchCurrentScore WITH(NOLOCK)
+			SELECT MatchId FROM #tmpMatchCurrentScore WITH (NOLOCK)
 			EXCEPT
-			SELECT MatchId FROM dbo.MatchLiveScore WITH(NOLOCK)
+			SELECT MatchId FROM dbo.MatchLiveScore WITH (NOLOCK)
 		) AS r;
 
 	INSERT INTO dbo.MatchLiveScore(MatchId, FraudCaseId, LiveHomeScore, LiveAwayScore)
@@ -84,43 +82,34 @@ BEGIN
 		,	[FraudCase]			= @CurrentFraudCaseId
 		,	[LiveHomeScore]		= t.LiveHomeScore
 		,	[LiveAwayScore]		= t.LiveAwayScore
-	FROM #tmpMatchCurrentScore AS t WITH(NOLOCK)
-	WHERE t.MatchId IN (SELECT MatchId FROM #tmpNewMatch WITH(NOLOCK));
+	FROM #tmpMatchCurrentScore AS t WITH (NOLOCK)
+	WHERE t.MatchId IN (SELECT MatchId FROM #tmpNewMatch WITH (NOLOCK));
 
 	-- Get matches that have scores changed
 	INSERT INTO #tmpMatchScoreChanged(MatchId)
 	SELECT DISTINCT mls.MatchId
-	FROM #tmpMatchCurrentScore AS t WITH(NOLOCK)
-		INNER JOIN dbo.MatchLiveScore AS mls WITH(NOLOCK) ON mls.MatchId = t.MatchId
+	FROM #tmpMatchCurrentScore AS t WITH (NOLOCK)
+		INNER JOIN dbo.MatchLiveScore AS mls WITH (NOLOCK) ON mls.MatchId = t.MatchId
 	WHERE mls.FraudCaseId = @CurrentFraudCaseId
 		AND (mls.LiveHomeScore <> t.LiveHomeScore
 		OR mls.LiveAwayScore <> t.LiveAwayScore);
 
-	-- Update live score back to MatchLiveScore table
-	DELETE FROM dbo.MatchLiveScore
+	-- UPDATE live score back to MatchLiveScore table
+	DELETE FROM dbo.MatchLiveScore WITH(ROWLOCK)
 	WHERE FraudCaseId = 1 
-		AND MatchId IN (SELECT MatchId FROM #tmpMatchScoreChanged WITH(NOLOCK));
+		AND MatchId IN (SELECT MatchId FROM #tmpMatchScoreChanged WITH (NOLOCK));
 
 	INSERT INTO dbo.MatchLiveScore(MatchId, FraudCaseId, LiveHomeScore, LiveAwayScore)
 	SELECT	[MatchId]			= t.MatchId
 		,	[FraudCase]			= @CurrentFraudCaseId
 		,	[LiveHomeScore]		= t.LiveHomeScore
 		,	[LiveAwayScore]		= t.LiveAwayScore
-	FROM #tmpMatchCurrentScore AS t WITH(NOLOCK)
-	WHERE t.MatchId IN (SELECT MatchId FROM #tmpMatchScoreChanged WITH(NOLOCK));
+	FROM #tmpMatchCurrentScore AS t WITH (NOLOCK)
+	WHERE t.MatchId IN (SELECT MatchId FROM #tmpMatchScoreChanged WITH (NOLOCK));
 
 	SELECT MatchId
-	FROM #tmpMatchScoreChanged WITH(NOLOCK);
+	FROM #tmpMatchScoreChanged WITH (NOLOCK);
 END;
-
-GO
-
-SET QUOTED_IDENTIFIER OFF 
-GO
-SET ANSI_NULLS ON 
-GO
-
-
 GO 
  GRANT EXECUTE ON [dbo].[FS_FraudCase_BSNG_PreCondition] TO [bodbSPUNet]
 GO 

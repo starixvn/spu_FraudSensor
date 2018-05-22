@@ -3,10 +3,7 @@ SET QUOTED_IDENTIFIER ON
 GO
 SET ANSI_NULLS ON 
 GO
-
-/****** Object:  Stored Procedure dbo.FS_FraudCase_DelayGoal_PreCondition    Script Date: 5/15/2018 4:21:24 PM ******/
-/****** Object:  Stored Procedure dbo.FS_FraudCase_DelayGoal_PreCondition    Script Date: 3/13/2018 1:37:39 PM ******/
-CREATE PROCEDURE [dbo].[FS_FraudCase_DelayGoal_PreCondition]
+ALTER PROCEDURE [dbo].[FS_FraudCase_DelayGoal_PreCondition]
 
 AS
 /*
@@ -16,6 +13,8 @@ AS
 	Original:
 
 	Revisions:
+		- 20180312@CaseyHuynh: Correct Code Syntax
+		
 
 	Param's Explanation:
 */
@@ -65,15 +64,6 @@ BEGIN
 	FROM #tmpMatchRunning AS mr WITH(NOLOCK);
 	
 END;
-
-GO
-
-SET QUOTED_IDENTIFIER OFF 
-GO
-SET ANSI_NULLS ON 
-GO
-
-
 GO 
  GRANT EXECUTE ON [dbo].[FS_FraudCase_DelayGoal_PreCondition] TO [bodbSPUNet]
 GO 
