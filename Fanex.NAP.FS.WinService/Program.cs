@@ -22,7 +22,7 @@ namespace Fanex.NAP.FS.WinService
 
                 ServicesToRun = new ServiceBase[]
                 {
-                new FraudSensorService()
+                    new FraudSensorService()
                 };
 
                 ServiceBase.Run(ServicesToRun);

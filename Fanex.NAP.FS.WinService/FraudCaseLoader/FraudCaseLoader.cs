@@ -23,6 +23,8 @@
 
             foreach (var fraudCase in fraudCases)
             {
+                Logging.Logger.Log.Info($"fraudcase: {fraudCase.FraudCaseName} - active: {fraudCase.IsActive}");
+
                 if (fraudCase.IsActive)
                 {
                     _sendingCase.Send(fraudCase.FraudCaseId);

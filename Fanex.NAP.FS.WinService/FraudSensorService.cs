@@ -5,6 +5,7 @@
     using MailDelivery.Client;
     using System.Configuration;
     using System.ServiceProcess;
+    using System.Threading;
     using System.Threading.Tasks;
 
     public partial class FraudSensorService : ServiceBase
@@ -12,6 +13,8 @@
         private IFraudCaseLoader _fraudCaseLoader;
 
         private IReceivingMessageHandler _receivingMessageHandler;
+
+        private Thread _thread;
 
         public FraudSensorService(IFraudCaseLoader fraudCaseLoader = null, IReceivingMessageHandler receivingMessageHandler = null)
         {
@@ -24,8 +27,8 @@
 
         protected override void OnStart(string[] args)
         {
-            //RunOnStart();
-            Logger.Log.Error("Start FS service");
+            _thread = new Thread(RunOnStart);
+            _thread.Start();
         }
 
         protected override void OnStop()
@@ -35,6 +38,8 @@
             _receivingMessageHandler.ClearCases();
 
             SendMailInform(false);
+
+            _thread.Abort();
         }
 
         protected override void OnShutdown()
@@ -56,6 +61,8 @@
 
             var queue = new MessageQueueReceiver();
             queue.Clear();
+
+            Logger.Log.Info("Loading fraudcase");
 
             _fraudCaseLoader.LoadFraudCases();
 
