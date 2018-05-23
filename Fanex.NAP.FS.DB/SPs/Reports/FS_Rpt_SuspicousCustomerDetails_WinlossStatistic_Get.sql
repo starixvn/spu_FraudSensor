@@ -16,6 +16,7 @@ AS
 	Server:		
 
 	Revisions:
+		- 20180523: Add rptmonth and rptyear [Redmine: #95528]
 
 	Param's Explanation: EXEC FS_Rpt_SuspicousCustomerDetails_WinlossStatistic_Get @FromDate='2017-10-04 00:00:00',@ToDate='2018-05-02 00:00:00',@CustId=28216314
 
@@ -32,7 +33,9 @@ BEGIN
 					,	IsLive			BIT
 					,	Winloss100		MONEY
 					,	Turnover100		MONEY
-					,	BetCount		INT );
+					,	BetCount		INT 
+					,	RptYear INT
+					,	RptMonth INT);
 					
 	CREATE TABLE	#WinlostDate (
 					winlostdate		DATETIME
@@ -59,13 +62,15 @@ BEGIN
 		SELECT	DATEADD(DAY, cte.num, @FromDate)
 		FROM	cte;
 		
-		INSERT INTO #CustomerStatistic (Bettype, LeagueId, IsLive, Winloss100, Turnover100, BetCount)
+		INSERT INTO #CustomerStatistic (Bettype, LeagueId, IsLive, Winloss100, Turnover100, BetCount, RptYear, RptMonth)
 		SELECT	[Bettype]		= b.bettype
 			,	[LeagueId]		= ISNULL(m.leagueid, o.leagueid)
 			,	[IsLive]		= b.liveindicator
 			,	[Winloss100]	= SUM(winlost - actual_stake)
 			,	[Turnover100]	= SUM(ABS(b.stake))
 			,	[BetCount]		= COUNT(b.transid)
+			,   [RptYear] = YEAR(b.winlostdate)
+			,	[RptMonth] = MONTH(b.winlostdate)
 		FROM		bodb02.dbo.bettrans AS b WITH (NOLOCK)
 		INNER JOIN	#WinlostDate AS d WITH (NOLOCK)
 				ON	b.winlostdate = d.winlostdate
@@ -81,25 +86,28 @@ BEGIN
 			AND	b.ruben = 1
 			AND	bettype < 19999
 			AND	COALESCE(m.sporttype, l.sporttype, -1) <= 99
-		GROUP BY b.bettype, ISNULL(m.leagueid, o.leagueid), liveindicator;
+		GROUP BY b.bettype, ISNULL(m.leagueid, o.leagueid), liveindicator, YEAR(b.winlostdate), MONTH(b.winlostdate);
 		
-		-- Add TOP(99999999) to fix wrong join order
-		INSERT INTO #CustomerStatistic (Bettype, LeagueId, IsLive, Winloss100, Turnover100, BetCount)
+		INSERT INTO #CustomerStatistic (Bettype, LeagueId, IsLive, Winloss100, Turnover100, BetCount, RptYear, RptMonth)
 		SELECT 	[Bettype]		= _cbd.Bettype
 			,	[LeagueId]		= _cbd.LeagueId
 			,	[IsLive]		= _cbd.IsLive
 			,	[Winloss100]	= _cbd.Winloss100
 			,	[Turnover100]	= _cbd.Turnover100
 			,	[BetCount]		= _cbd.BetCount
-		FROM	#WinlostDate AS d WITH (NOLOCK)
+			,	[RptYear]		= _cbd.RptYear
+			,	[RptMonth]		= _cbd.RptMonth
+		FROM	#WinlostDate AS d WITH (NOLOCK) 
 		CROSS APPLY	(
-			SELECT	TOP(99999999)
+			SELECT	TOP(99999999)   -- Add TOP() to fix wrong join order
 					[Bettype]		= cbd.Bettype
 				,	[LeagueId]		= cbd.LeagueId
 				,	[IsLive]		= cbd.IsLive
 				,	[Winloss100]	= cbd.Winloss100
 				,	[Turnover100]	= cbd.Turnover100
 				,	[BetCount]		= cbd.BetCount
+				,   [RptYear]		= YEAR(cbd.rptDate)
+				,	[RptMonth]		= MONTH(cbd.rptDate)
 			FROM	DBWH.bodb_Account.dbo.mcCustBettingDaily AS cbd WITH (NOLOCK)
 			INNER JOIN	bodb02.dbo.league l WITH(NOLOCK)
 					ON	cbd.leagueid = l.leagueid
@@ -116,7 +124,10 @@ BEGIN
 		,	[SumWL]			= SUM(cs.Winloss100)
 		,	[Margin]		= SUM(cs.Winloss100) / CASE WHEN SUM(cs.Turnover100) = 0 THEN 1 ELSE SUM(cs.Turnover100) END * 100
 		,	[BetCount]		= SUM(cs.BetCount)
-	FROM	#CustomerStatistic AS cs WITH (NOLOCK);
+		,	[RptMonth] = cs.RptMonth
+		,	[RptYear] = cs.RptYear
+	FROM	#CustomerStatistic AS cs WITH (NOLOCK)
+	GROUP BY cs.RptMonth, cs.RptYear;
 
 	SELECT	[EventChoice]	= CASE WHEN cs.islive = 1 THEN 'Live' ELSE 'Non-Live' END
 		,	[SumTO]			= SUM(cs.Turnover100) 

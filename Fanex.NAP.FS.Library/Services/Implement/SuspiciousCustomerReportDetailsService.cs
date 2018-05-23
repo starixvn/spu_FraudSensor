@@ -1,26 +1,27 @@
 ﻿namespace Fanex.NAP.FS.Library.Services
 {
     using BetList.Core.Builder;
+    using Core.BaseClasses;
+    using Criteria.SuspiciousCustomer;
+    using Criteria.SuspiciousInfo;
     using Fanex.BetList.Core.TicketHelper;
     using Fanex.Data;
     using Fanex.NAP.FS.Library.Criteria.SuspiciousCustomerDetails;
     using Fanex.NAP.FS.Library.Models.MatchMonitor.FraudCaseDetails;
     using Fanex.NAP.FS.Library.Models.SuspiciousCustomerDetails;
     using Fanex.NAP.FS.Library.ViewModels.SuspiciousCustomerDetails;
+    using Models;
+    using Models.SuspiciousCustomer;
+    using Models.SuspiciousInfo;
     using RemotingRef;
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Models;
-    using Models.SuspiciousInfo;
-    using Models.SuspiciousCustomer;
-    using Core.BaseClasses;
-    using Criteria.SuspiciousCustomer;
-    using Criteria.SuspiciousInfo;
 
     public class SuspiciousCustomerReportDetailsService : ISuspiciousCustomerReportDetailsService
     {
         #region Customer Info
+
         public string GetAssignee(int custId)
         {
             return DataService.GetSingle<string>(new SuspiciousCustomerAssigneeGetCriteria(custId));
@@ -113,7 +114,7 @@
             return DataService.UpdateData(criteria, "Update Suspicious Customer Info");
         }
 
-        #endregion
+        #endregion Customer Info
 
         #region Statistics
 
@@ -129,9 +130,13 @@
             using (var db = new ObjectDb(criteria.GetSettingKey()))
             using (var queries = db.QueryMultiple(criteria))
             {
+                var summaries = queries.Read<Summary>();
+
+                var total = summaries.Aggregate(new Summary { RptMonth = -1 }, (acc, a) => acc + a);
+
                 return new Statistics
                 {
-                    Summaries = queries.Read<Summary>(),
+                    Summaries = summaries.Concat(new[] { total }),
                     Choices = queries.Read<ChoiceStatistics>(),
                     Sports = queries.Read<SportStatistics>(),
                     Bettypes = queries.Read<BettypeStatistics>()
@@ -209,6 +214,6 @@
             }
         }
 
-        #endregion statistics
+        #endregion Statistics
     }
 }

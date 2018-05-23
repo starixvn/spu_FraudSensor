@@ -42,6 +42,17 @@
         }
     }
 
+    var language =
+        {
+            lengthMenu: "Page size _MENU_",
+            paginate: {
+                previous: "Back"
+            },
+            info: "Displaying _START_ to _END_ of _TOTAL_ item(s)",
+            infoEmpty: "",
+            zeroRecords: "There's no data"
+        }
+
     var $this = this;
 
     $(document).ajaxError(() => this.showError());
@@ -226,6 +237,8 @@
             }
         }
     }
+
+    this.language = () => Object.assign({}, language);
 }
 
 var common = new UICommon();

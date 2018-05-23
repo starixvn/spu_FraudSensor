@@ -41,7 +41,8 @@
                 previous: "Back"
             },
             info: "Displaying _START_ to _END_ of _TOTAL_ item(s)",
-            infoEmpty: ""
+            infoEmpty: "",
+            zeroRecords: "There's no data"
         }
     });
 

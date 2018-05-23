@@ -142,9 +142,9 @@
         scrollCollapse: true,
         columnDefs: [
             { targets: "_all", defaultContent: "-", className: "text-right" },
-            { targets: "_all", width: "25%" },
         ],
         columns: [
+            { data: obj => obj.RptMonth == -1 ? "Total" : moment(`${obj.RptYear}/${obj.RptMonth}/1`, "Y/M/D").format("MMM - Y"), className: "text-center" },
             { data: obj => common.formatNumber(obj.SumTO) },
             { data: obj => obj.SumWL >= 0 ? common.formatNumber(obj.SumWL) : `<span class="text-red">${common.formatNumber(obj.SumWL)}</span>` },
             { data: obj => obj.Margin >= 0 ? common.formatNumber(obj.Margin) : `<span class="text-red">${common.formatNumber(obj.Margin)}</span>` },
