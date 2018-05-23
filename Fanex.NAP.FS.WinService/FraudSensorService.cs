@@ -15,12 +15,6 @@
 
         public FraudSensorService(IFraudCaseLoader fraudCaseLoader = null, IReceivingMessageHandler receivingMessageHandler = null)
         {
-            DbSettingProviderManager
-               .StartNewSession()
-               .UseDefaultConnectionStringProvider()
-               .UseDefaultDbSettingProvider(resourcePath: "~/App_Data", enableWatching: true)
-               .Run();
-
             _fraudCaseLoader = fraudCaseLoader ?? new FraudCaseLoader();
 
             _receivingMessageHandler = receivingMessageHandler ?? new ReceivingMessageHandler();
@@ -30,7 +24,8 @@
 
         protected override void OnStart(string[] args)
         {
-            RunOnStart();
+            //RunOnStart();
+            Logger.Log.Error("Start FS service");
         }
 
         protected override void OnStop()
