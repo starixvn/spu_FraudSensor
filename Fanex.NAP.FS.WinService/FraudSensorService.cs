@@ -55,22 +55,31 @@
 
         public void RunOnStart()
         {
-            Logger.Log.Info("SPU FS Service Started");
+            try
+            {
+                Logger.Log.Info("SPU FS Service Started");
 
-            MailClientHandler.Start();
+                MailClientHandler.Start();
 
-            var queue = new MessageQueueReceiver();
-            queue.Clear();
+                var queue = new MessageQueueReceiver();
+                queue.Clear();
 
             Logger.Log.Info("Loading fraudcase");
 
-            _fraudCaseLoader.LoadFraudCases();
+                Logger.Log.Info("Loading fraudcase");
 
-            _receivingMessageHandler.TriggerReceivingMessage();
+                _fraudCaseLoader.LoadFraudCases();
 
-            SendMailInform(true);
+                _receivingMessageHandler.TriggerReceivingMessage();
 
-            Logger.Log.Info("Loading tasks has done.");
+                SendMailInform(true);
+
+                Logger.Log.Info("Loading tasks has done.");
+            }
+            catch (System.Exception ex)
+            {
+                Logger.Log.Error(ex.Message, ex);
+            }
         }
 
         private void SendMailInform(bool serviceStarting)
