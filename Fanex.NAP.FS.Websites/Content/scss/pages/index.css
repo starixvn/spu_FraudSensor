@@ -837,6 +837,9 @@ select[disabled] {
     position: relative;
     top: -1px;
     margin-right: 4px; }
+  .table tbody .total {
+    background-color: #ffe7cd !important;
+    font-weight: bold; }
   .table.table-striped tbody tr:nth-of-type(even) {
     background-color: #fafafa; }
   .table .has-icon {
