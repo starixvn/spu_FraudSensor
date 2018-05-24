@@ -136,15 +136,6 @@
     border-right: 1px solid #d6d6d6; }
     .info [class^="info"]:last-child {
       border-right: none; }
-  .info .info-name {
-    -webkit-flex-basis: 120px;
-    -ms-flex-preferred-size: 120px;
-    flex-basis: 120px;
-    padding: 10px;
-    background-color: #f0f0f0;
-    font-weight: bold; }
-  .info .info-value {
-    padding: 10px; }
   .info .detail {
     margin-bottom: 20px; }
     .info .detail:last-child {
@@ -152,10 +143,14 @@
   .info .view-list {
     color: #2196ff;
     text-decoration: underline; }
-  .info.fraud-case-details {
-    margin-bottom: 24px; }
-    .info.fraud-case-details .row {
-      grid-template-columns: 120px 200px 120px 290px; }
+
+.info-name {
+  padding: 10px;
+  background-color: #f0f0f0;
+  font-weight: bold; }
+
+.info-value {
+  padding: 10px; }
 
 .top-header-in-popup {
   padding-bottom: 12px; }
@@ -181,6 +176,16 @@
 
 .customer-list {
   display: none; }
+
+.fraud-case-details {
+  margin-bottom: 24px; }
+  .fraud-case-details td {
+    border: 1px solid #d6d6d6; }
+  .fraud-case-details .info-name {
+    white-space: nowrap;
+    min-width: 120px; }
+  .fraud-case-details .info-value {
+    padding-right: 50px; }
 
 .row-ft {
   font-weight: bold; }

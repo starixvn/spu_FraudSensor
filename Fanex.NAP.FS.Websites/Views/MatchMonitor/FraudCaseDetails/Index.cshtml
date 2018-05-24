@@ -39,20 +39,20 @@
 
 <h1 class="title">@ViewBag.Title</h1>
 
-<div class="info fraud-case-details">
-    <div class="row">
-        <div class="info-name">Event</div>
-        <div class="info-value">@Html.Raw(Model.Event)</div>
-        <div class="info-name">Fraud case</div>
-        <div class="info-value">@Model.FraudCase</div>
-    </div>
-    <div class="row">
-        <div class="info-name">Date</div>
-        <div class="info-value">@Model.EventDate.ToString("MMM dd, yyyy")</div>
-        <div class="info-name">HT/FT Score</div>
-        <div class="info-value">@Model.HTScore / @Model.FTScore</div>
-    </div>
-</div>
+<table class="fraud-case-details">
+    <tr>
+        <td class="info-name">Event</td>
+        <td class="info-value">@Html.Raw(Model.Event)</td>
+        <td class="info-name">Fraud case</td>
+        <td class="info-value">@Model.FraudCase</td>
+    </tr>
+    <tr>
+        <td class="info-name">Date</td>
+        <td class="info-value">@Model.EventDate.ToString("MMM dd, yyyy")</td>
+        <td class="info-name">HT/FT Score</td>
+        <td class="info-value">@Model.HTScore / @Model.FTScore</td>
+    </tr>
+</table>
 
 <div id="detailTabs">
     <ul>
