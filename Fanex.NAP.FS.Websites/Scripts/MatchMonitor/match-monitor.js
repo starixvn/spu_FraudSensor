@@ -16,9 +16,10 @@ function load_page_events() {
             dateFormat: "M dd, yy",
             minDate: balanceUpDay,
             changeMonth: true,
-            changeYear: true
+            changeYear: true,
         })
-        .change(getLeague);
+        .change(getLeague)
+        .datepicker("setDate", moment().toDate());
 
     $(".icon-calendar-text").click(() => $("#event_date").focus());
 
@@ -243,6 +244,8 @@ function updateVerification() {
         else {
             $target.parents("td").next().text(username);
         }
+
+        common.showSuccess();
     });
 }
 
@@ -285,7 +288,7 @@ function updateNote(popup, row) {
         Notes: notes
     }
 
-    var url = "/MatchMonitor/UpdateMatchNote";
+    var url = common.modifyRelativeUrl("/MatchMonitor/UpdateMatchNote");
 
     $.post(url, dto, function () {
         $(popup).dialog("close");

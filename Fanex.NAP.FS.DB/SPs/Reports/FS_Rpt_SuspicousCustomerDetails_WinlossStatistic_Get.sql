@@ -27,6 +27,11 @@ BEGIN
 	DECLARE	@SupportedDate		DATETIME
 		,	@NumDays			INT ;
 
+	IF OBJECT_ID('tempdb..#CustomerStatistic') IS NOT NULL
+	BEGIN
+		DROP TABLE	#CustomerStatistic;
+	END;
+
 	CREATE TABLE	#CustomerStatistic (
 						Bettype			SMALLINT
 					,	LeagueId		INT
@@ -37,6 +42,11 @@ BEGIN
 					,	RptYear INT
 					,	RptMonth INT);
 					
+	IF OBJECT_ID('tempdb..#WinlostDate') IS NOT NULL
+	BEGIN
+		DROP TABLE	#WinlostDate;
+	END;
+
 	CREATE TABLE	#WinlostDate (
 					winlostdate		DATETIME
 					PRIMARY KEY CLUSTERED (winlostdate) );
@@ -44,12 +54,12 @@ BEGIN
 	SELECT	TOP(1)
 			@SupportedDate = cbd.rptDate 
 	FROM	DBWH.bodb_Account.dbo.mcCustBettingDaily AS cbd WITH(NOLOCK)
-	ORDER BY cbd.rptDate DESC								
+	ORDER BY cbd.rptDate DESC;								
 	
 	SELECT	@NumDays = DATEDIFF(DAY, @FromDate, @ToDate) + 1;
 		
 	IF	@NumDays > 0
-	BEGIN;
+	BEGIN
 		WITH cte AS (
 			SELECT	TOP(@NumDays)
 					[num]	= ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) - 1
@@ -60,7 +70,7 @@ BEGIN
 		)
 		INSERT INTO	#WinlostDate (winlostdate)
 		SELECT	DATEADD(DAY, cte.num, @FromDate)
-		FROM	cte;
+		FROM	cte WITH(NOLOCK);
 		
 		INSERT INTO #CustomerStatistic (Bettype, LeagueId, IsLive, Winloss100, Turnover100, BetCount, RptYear, RptMonth)
 		SELECT	[Bettype]		= b.bettype
@@ -88,6 +98,7 @@ BEGIN
 			AND	COALESCE(m.sporttype, l.sporttype, -1) <= 99
 		GROUP BY b.bettype, ISNULL(m.leagueid, o.leagueid), liveindicator, YEAR(b.winlostdate), MONTH(b.winlostdate);
 		
+		 -- Add TOP() to fix wrong join order
 		INSERT INTO #CustomerStatistic (Bettype, LeagueId, IsLive, Winloss100, Turnover100, BetCount, RptYear, RptMonth)
 		SELECT 	[Bettype]		= _cbd.Bettype
 			,	[LeagueId]		= _cbd.LeagueId
@@ -99,13 +110,13 @@ BEGIN
 			,	[RptMonth]		= _cbd.RptMonth
 		FROM	#WinlostDate AS d WITH (NOLOCK) 
 		CROSS APPLY	(
-			SELECT	TOP(99999999)   -- Add TOP() to fix wrong join order
+			SELECT	TOP(99999999)
 					[Bettype]		= cbd.Bettype
 				,	[LeagueId]		= cbd.LeagueId
 				,	[IsLive]		= cbd.IsLive
-				,	[Winloss100]	= cbd.Winloss100
-				,	[Turnover100]	= cbd.Turnover100
-				,	[BetCount]		= cbd.BetCount
+				,	[Winloss100]	= SUM(cbd.Winloss100)
+				,	[Turnover100]	= SUM(cbd.Turnover100)
+				,	[BetCount]		= SUM(cbd.BetCount)
 				,   [RptYear]		= YEAR(cbd.rptDate)
 				,	[RptMonth]		= MONTH(cbd.rptDate)
 			FROM	DBWH.bodb_Account.dbo.mcCustBettingDaily AS cbd WITH (NOLOCK)
@@ -116,6 +127,7 @@ BEGIN
 				AND	cbd.status NOT IN (-1,18,9,10,14)
 				AND	cbd.leagueid > 0
 				AND l.sporttype <= 99
+			GROUP BY cbd.bettype, cbd.leagueid, cbd.islive, YEAR(cbd.rptDate), MONTH(cbd.rptDate)
 		) _cbd
 		WHERE	d.winlostdate <= @SupportedDate;
 	END;					
@@ -147,7 +159,7 @@ BEGIN
 	INNER JOIN	bodb02.dbo.sports AS sp WITH (NOLOCK)
 			ON	l.SportType = sp.SportType
 	GROUP BY sp.SportName	
-	ORDER BY Margin DESC
+	ORDER BY Margin DESC;
 
 	SELECT	TOP(5)
 			[BettypeName]	= bt.typenamee

@@ -10,6 +10,8 @@
     });
 
     $("select").select2({
-        minimumResultsForSearch: -1
+        minimumResultsForSearch: -1,
+        width: "300px",
+        dropdownAutoWidth: true
     });
 })

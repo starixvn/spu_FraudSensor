@@ -122,126 +122,6 @@
         }
     }
 
-    summary.DataTable({
-        ordering: false,
-        searching: false,
-        info: false,
-        paging: false,
-        processing: true,
-        dom: "tr",
-        language: {
-            lengthMenu: "Page size _MENU_",
-            paginate: {
-                previous: "Back"
-            },
-            info: "Displaying _START_ to _END_ of _TOTAL_ item(s)",
-            infoEmpty: "",
-            zeroRecords: "There's no data"
-        },
-        scrollY: "500px",
-        scrollCollapse: true,
-        columnDefs: [
-            { targets: "_all", defaultContent: "-", className: "text-right" },
-        ],
-        columns: [
-            { data: obj => obj.RptMonth == -1 ? "Total" : moment(`${obj.RptYear}/${obj.RptMonth}/1`, "Y/M/D").format("MMM - Y"), className: "text-center" },
-            { data: obj => common.formatNumber(obj.SumTO) },
-            { data: obj => obj.SumWL >= 0 ? common.formatNumber(obj.SumWL) : `<span class="text-red">${common.formatNumber(obj.SumWL)}</span>` },
-            { data: obj => obj.Margin >= 0 ? common.formatNumber(obj.Margin) : `<span class="text-red">${common.formatNumber(obj.Margin)}</span>` },
-            { data: obj => obj.BetCount }
-        ]
-    });
-
-    choice.DataTable({
-        ordering: false,
-        searching: false,
-        info: false,
-        paging: false,
-        processing: true,
-        dom: "tr",
-        language: {
-            lengthMenu: "Page size _MENU_",
-            paginate: {
-                previous: "Back"
-            },
-            info: "Displaying _START_ to _END_ of _TOTAL_ item(s)",
-            infoEmpty: "",
-            zeroRecords: "There's no data"
-        },
-        scrollY: "500px",
-        scrollCollapse: true,
-        columnDefs: [
-            { targets: [1, 2, 3], className: "text-right" },
-            { targets: "_all", width: "25%" }
-        ],
-        columns: [
-            { data: obj => obj.EventChoice },
-            { data: obj => common.formatNumber(obj.SumTO) },
-            { data: obj => obj.SumWL >= 0 ? common.formatNumber(obj.SumWL) : `<span class="text-red">${common.formatNumber(obj.SumWL)}</span>` },
-            { data: obj => obj.Margin >= 0 ? common.formatNumber(obj.Margin) : `<span class="text-red">${common.formatNumber(obj.Margin)}</span>` }
-        ]
-    });
-
-    topSport.DataTable({
-        ordering: false,
-        searching: false,
-        info: false,
-        paging: false,
-        processing: true,
-        dom: "tr",
-        language: {
-            lengthMenu: "Page size _MENU_",
-            paginate: {
-                previous: "Back"
-            },
-            info: "Displaying _START_ to _END_ of _TOTAL_ item(s)",
-            infoEmpty: "",
-            zeroRecords: "There's no data"
-        },
-        scrollY: "500px",
-        scrollCollapse: true,
-        columnDefs: [
-            { targets: [1, 2, 3], className: "text-right" },
-            { targets: "_all", width: "25%" },
-        ],
-        columns: [
-            { data: obj => obj.SportName },
-            { data: obj => common.formatNumber(obj.SumTO) },
-            { data: obj => obj.SumWL >= 0 ? common.formatNumber(obj.SumWL) : `<span class="text-red">${common.formatNumber(obj.SumWL)}</span>` },
-            { data: obj => obj.Margin >= 0 ? common.formatNumber(obj.Margin) : `<span class="text-red">${common.formatNumber(obj.Margin)}</span>` }
-        ]
-    });
-
-    topBettype.DataTable({
-        ordering: false,
-        searching: false,
-        info: false,
-        paging: false,
-        processing: true,
-        dom: "tr",
-        language: {
-            lengthMenu: "Page size _MENU_",
-            paginate: {
-                previous: "Back"
-            },
-            info: "Displaying _START_ to _END_ of _TOTAL_ item(s)",
-            infoEmpty: "",
-            zeroRecords: "There's no data"
-        },
-        scrollY: "500px",
-        scrollCollapse: true,
-        columnDefs: [
-            { targets: [1, 2, 3], className: "text-right" },
-            { targets: "_all", width: "25%" }
-        ],
-        columns: [
-            { data: obj => obj.BetTypeName },
-            { data: obj => common.formatNumber(obj.SumTO) },
-            { data: obj => obj.SumWL >= 0 ? common.formatNumber(obj.SumWL) : `<span class="text-red">${common.formatNumber(obj.SumWL)}</span>` },
-            { data: obj => obj.Margin >= 0 ? common.formatNumber(obj.Margin) : `<span class="text-red">${common.formatNumber(obj.Margin)}</span>` }
-        ]
-    });
-
     violatedTickets.DataTable({
         ordering: false,
         info: false,
@@ -403,6 +283,126 @@
             });
         }
     })
+
+    summary.DataTable({
+        ordering: false,
+        searching: false,
+        info: false,
+        paging: false,
+        processing: true,
+        dom: "tr",
+        language: {
+            lengthMenu: "Page size _MENU_",
+            paginate: {
+                previous: "Back"
+            },
+            info: "Displaying _START_ to _END_ of _TOTAL_ item(s)",
+            infoEmpty: "",
+            zeroRecords: "There's no data"
+        },
+        scrollY: "500px",
+        scrollCollapse: true,
+        columnDefs: [
+            { targets: "_all", defaultContent: "-", className: "text-right" },
+        ],
+        columns: [
+            { data: obj => obj.RptMonth == -1 ? "Total" : moment(`${obj.RptYear}/${obj.RptMonth}/1`, "Y/M/D").format("MMM - Y"), className: "text-center" },
+            { data: obj => common.formatNumber(obj.SumTO) },
+            { data: obj => obj.SumWL >= 0 ? common.formatNumber(obj.SumWL) : `<span class="text-red">${common.formatNumber(obj.SumWL)}</span>` },
+            { data: obj => obj.Margin >= 0 ? common.formatNumber(obj.Margin) : `<span class="text-red">${common.formatNumber(obj.Margin)}</span>` },
+            { data: obj => obj.BetCount }
+        ]
+    });
+
+    choice.DataTable({
+        ordering: false,
+        searching: false,
+        info: false,
+        paging: false,
+        processing: true,
+        dom: "tr",
+        language: {
+            lengthMenu: "Page size _MENU_",
+            paginate: {
+                previous: "Back"
+            },
+            info: "Displaying _START_ to _END_ of _TOTAL_ item(s)",
+            infoEmpty: "",
+            zeroRecords: "There's no data"
+        },
+        scrollY: "500px",
+        scrollCollapse: true,
+        columnDefs: [
+            { targets: [1, 2, 3], className: "text-right" },
+            { targets: "_all", width: "25%" }
+        ],
+        columns: [
+            { data: obj => obj.EventChoice },
+            { data: obj => common.formatNumber(obj.SumTO) },
+            { data: obj => obj.SumWL >= 0 ? common.formatNumber(obj.SumWL) : `<span class="text-red">${common.formatNumber(obj.SumWL)}</span>` },
+            { data: obj => obj.Margin >= 0 ? common.formatNumber(obj.Margin) : `<span class="text-red">${common.formatNumber(obj.Margin)}</span>` }
+        ]
+    });
+
+    topSport.DataTable({
+        ordering: false,
+        searching: false,
+        info: false,
+        paging: false,
+        processing: true,
+        dom: "tr",
+        language: {
+            lengthMenu: "Page size _MENU_",
+            paginate: {
+                previous: "Back"
+            },
+            info: "Displaying _START_ to _END_ of _TOTAL_ item(s)",
+            infoEmpty: "",
+            zeroRecords: "There's no data"
+        },
+        scrollY: "500px",
+        scrollCollapse: true,
+        columnDefs: [
+            { targets: [1, 2, 3], className: "text-right" },
+            { targets: "_all", width: "25%" },
+        ],
+        columns: [
+            { data: obj => obj.SportName },
+            { data: obj => common.formatNumber(obj.SumTO) },
+            { data: obj => obj.SumWL >= 0 ? common.formatNumber(obj.SumWL) : `<span class="text-red">${common.formatNumber(obj.SumWL)}</span>` },
+            { data: obj => obj.Margin >= 0 ? common.formatNumber(obj.Margin) : `<span class="text-red">${common.formatNumber(obj.Margin)}</span>` }
+        ]
+    });
+
+    topBettype.DataTable({
+        ordering: false,
+        searching: false,
+        info: false,
+        paging: false,
+        processing: true,
+        dom: "tr",
+        language: {
+            lengthMenu: "Page size _MENU_",
+            paginate: {
+                previous: "Back"
+            },
+            info: "Displaying _START_ to _END_ of _TOTAL_ item(s)",
+            infoEmpty: "",
+            zeroRecords: "There's no data"
+        },
+        scrollY: "500px",
+        scrollCollapse: true,
+        columnDefs: [
+            { targets: [1, 2, 3], className: "text-right" },
+            { targets: "_all", width: "25%" }
+        ],
+        columns: [
+            { data: obj => obj.BetTypeName },
+            { data: obj => common.formatNumber(obj.SumTO) },
+            { data: obj => obj.SumWL >= 0 ? common.formatNumber(obj.SumWL) : `<span class="text-red">${common.formatNumber(obj.SumWL)}</span>` },
+            { data: obj => obj.Margin >= 0 ? common.formatNumber(obj.Margin) : `<span class="text-red">${common.formatNumber(obj.Margin)}</span>` }
+        ]
+    });
 
     getStatistics();
 

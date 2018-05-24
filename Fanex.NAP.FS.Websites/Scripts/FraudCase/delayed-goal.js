@@ -120,7 +120,7 @@
     }
 
     function exportData() {
-        var url = "/FraudCase/ExportDelayedGoalCustomer";
+        var url = common.modifyRelativeUrl("/FraudCase/ExportDelayedGoalCustomer");
 
         common.downloadFile(url, { searchString: $("#username-search").val() })
     }
