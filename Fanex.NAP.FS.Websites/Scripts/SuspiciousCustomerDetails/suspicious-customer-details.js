@@ -311,7 +311,12 @@
             { data: obj => obj.SumWL >= 0 ? common.formatNumber(obj.SumWL) : `<span class="text-red">${common.formatNumber(obj.SumWL)}</span>` },
             { data: obj => obj.Margin >= 0 ? common.formatNumber(obj.Margin) : `<span class="text-red">${common.formatNumber(obj.Margin)}</span>` },
             { data: obj => obj.BetCount }
-        ]
+        ],
+        createdRow: function (row, obj) {
+            if (obj.RptMonth == -1) {
+                $(row).addClass("total");
+            }
+        }
     });
 
     choice.DataTable({
