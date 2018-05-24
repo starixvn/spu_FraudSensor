@@ -233,3 +233,5 @@
       align-items: flex-start;
       grid-template-columns: repeat(2, minmax(0, 1fr));
       grid-gap: 14px; } }
+  .win-loss .dataTables_wrapper {
+    margin-bottom: 20px; }

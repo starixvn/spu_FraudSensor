@@ -585,7 +585,7 @@ select[disabled] {
   .ui-selectmenu-button.ui-button .ui-icon {
     background: none; }
   .ui-selectmenu-button.ui-button .ui-icon:before {
-    content: "\e91e";
+    content: "\e92d";
     font-size: 20px;
     color: #737373; }
   .ui-selectmenu-button.ui-button.ui-selectmenu-button-open .ui-icon:before, .ui-selectmenu-button.ui-button:hover .ui-icon:before {
