@@ -1,9 +1,13 @@
-﻿namespace Fanex.NAP.FS.Websites.Controllers
-{
-#pragma warning disable S1694 // base class for classification
+﻿#pragma warning disable S1694 // base class for classification
 
+namespace Fanex.NAP.FS.Websites.Controllers
+{
+    using Fanex.NAP.Core.Web.Attribute;
+
+    [NapSuperAuth]
     public abstract class ReportsController : BaseController
-#pragma warning restore S1694 // base class for classification
     {
     }
 }
+
+#pragma warning restore S1694 // base class for classification

@@ -11,8 +11,7 @@
             return View();
         }
 
-        [ChildActionOnly]
-        public PartialViewResult Menu(string activeMenu)
+        public ActionResult Menu(string activeMenu)
         {
             ViewBag.ActiveMenu = activeMenu;
 

@@ -298,13 +298,18 @@
             },
             info: "Displaying _START_ to _END_ of _TOTAL_ item(s)",
             infoEmpty: "",
-            zeroRecords: "There's no data"
+            zeroRecords: "There's no data",
+            processing: "<div class='loader-in-table'></div>"
         },
         scrollY: "500px",
         scrollCollapse: true,
         columnDefs: [
-            { targets: "_all", defaultContent: "-", className: "text-right" },
+            { targets: "_all", defaultContent: "-", className: "text-right", width: "20%" },
         ],
+        ajax: {
+            url: `${common.modifyRelativeUrl("/SuspiciousCustomerDetails/GetStatistics")}?custid=${generalParam.custId}&from=${generalParam.from}&to=${generalParam.to}`,
+            dataSrc: obj => obj.Summaries
+        },
         columns: [
             { data: obj => obj.RptMonth == -1 ? "Total" : moment(`${obj.RptYear}/${obj.RptMonth}/1`, "Y/M/D").format("MMM - Y"), className: "text-center" },
             { data: obj => common.formatNumber(obj.SumTO) },
@@ -333,7 +338,8 @@
             },
             info: "Displaying _START_ to _END_ of _TOTAL_ item(s)",
             infoEmpty: "",
-            zeroRecords: "There's no data"
+            zeroRecords: "There's no data",
+            processing: "<div class='loader-in-table'></div>"
         },
         scrollY: "500px",
         scrollCollapse: true,
@@ -341,6 +347,10 @@
             { targets: [1, 2, 3], className: "text-right" },
             { targets: "_all", width: "25%" }
         ],
+        ajax: {
+            url: `${common.modifyRelativeUrl("/SuspiciousCustomerDetails/GetStatistics")}?custid=${generalParam.custId}&from=${generalParam.from}&to=${generalParam.to}`,
+            dataSrc: obj => obj.Choices
+        },
         columns: [
             { data: obj => obj.EventChoice },
             { data: obj => common.formatNumber(obj.SumTO) },
@@ -363,7 +373,8 @@
             },
             info: "Displaying _START_ to _END_ of _TOTAL_ item(s)",
             infoEmpty: "",
-            zeroRecords: "There's no data"
+            zeroRecords: "There's no data",
+            processing: "<div class='loader-in-table'></div>"
         },
         scrollY: "500px",
         scrollCollapse: true,
@@ -371,6 +382,10 @@
             { targets: [1, 2, 3], className: "text-right" },
             { targets: "_all", width: "25%" },
         ],
+        ajax: {
+            url: `${common.modifyRelativeUrl("/SuspiciousCustomerDetails/GetStatistics")}?custid=${generalParam.custId}&from=${generalParam.from}&to=${generalParam.to}`,
+            dataSrc: obj => obj.Sports
+        },
         columns: [
             { data: obj => obj.SportName },
             { data: obj => common.formatNumber(obj.SumTO) },
@@ -393,7 +408,8 @@
             },
             info: "Displaying _START_ to _END_ of _TOTAL_ item(s)",
             infoEmpty: "",
-            zeroRecords: "There's no data"
+            zeroRecords: "There's no data",
+            processing: "<div class='loader-in-table'></div>"
         },
         scrollY: "500px",
         scrollCollapse: true,
@@ -401,6 +417,10 @@
             { targets: [1, 2, 3], className: "text-right" },
             { targets: "_all", width: "25%" }
         ],
+        ajax: {
+            url: `${common.modifyRelativeUrl("/SuspiciousCustomerDetails/GetStatistics")}?custid=${generalParam.custId}&from=${generalParam.from}&to=${generalParam.to}`,
+            dataSrc: obj => obj.Bettypes
+        },
         columns: [
             { data: obj => obj.BetTypeName },
             { data: obj => common.formatNumber(obj.SumTO) },
@@ -409,7 +429,7 @@
         ]
     });
 
-    getStatistics();
+    //getStatistics();
 
     initSelect();
 

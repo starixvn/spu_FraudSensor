@@ -3,9 +3,11 @@
 namespace Fanex.NAP.FS.Websites.Controllers
 {
     using Fanex.NAP.Core.Web.Attribute;
+    using Fanex.NAP.FS.Library.Models.SuspiciousCustomerDetails;
     using Fanex.NAP.FS.Library.Services;
     using Library.ViewModels.SuspiciousCustomerDetails;
     using System;
+    using System.Threading;
     using System.Threading.Tasks;
     using System.Web.Mvc;
 
@@ -68,7 +70,31 @@ namespace Fanex.NAP.FS.Websites.Controllers
 
         public async Task<ActionResult> GetStatistics(int custId, DateTime from, DateTime to)
         {
-            return Json(_detailsService.GetStatistics(custId, from, to));
+            var key1 = $"{custId} - {from} - {to} - data";
+
+            var key2 = $"{custId} - {from} - {to} - counter";
+
+            if (Session[key1] == null)
+            {
+                Session[key1] = Task.Run(() => _detailsService.GetStatistics(custId, from, to));
+                Session[key2] = 0;
+            }
+
+            var tsk = Session[key1] as Task<Statistics>;
+
+            var result = await tsk.ConfigureAwait(false);
+
+            var counter = (int)Session[key2];
+
+            Session[key2] = counter + 1;
+
+            if ((int)Session[key2] >= 4)
+            {
+                Session.Remove(key1);
+                Session.Remove(key2);
+            }
+
+            return Json(result);
         }
 
         public async Task<ActionResult> GetViolatedTickets(int custId, DateTime from, DateTime to)
@@ -79,6 +105,13 @@ namespace Fanex.NAP.FS.Websites.Controllers
         public async Task<ActionResult> GetFraudCases(int custId)
         {
             return JData(_detailsService.GetSuspiciousCustomerFraudCase(custId));
+        }
+
+        public async Task<ActionResult> GetStatisticsPlaceHolder(int custId, DateTime from, DateTime to)
+        {
+            Thread.Sleep(10000);
+
+            return Json(new int[0]);
         }
 
         #region Utilities

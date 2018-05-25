@@ -4,6 +4,7 @@
     using Fanex.NAP.Core.Context;
     using Fanex.NAP.Core.Service.Impl;
     using Fanex.NAP.Core.Service.Interface;
+    using Fanex.NAP.Core.Web.Attribute;
     using Fanex.NAP.Core.Web.Context;
     using Fanex.NAP.Core.Web.Session;
     using System.Collections.Generic;
