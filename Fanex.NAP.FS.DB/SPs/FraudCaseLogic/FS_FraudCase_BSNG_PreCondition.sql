@@ -63,8 +63,8 @@ BEGIN
 		,	[LiveAwayScore] = MAX(tch.liveawayscore)
 	FROM bodb02.dbo.match AS tch WITH (NOLOCK)
 		INNER JOIN bodb02.dbo.league AS lea WITH (NOLOCK) ON tch.leagueid = lea.leagueid
-	WHERE tch.eventstatus = 'running'
-		AND tch.kickofftime <= GETDATE()
+	WHERE --tch.eventstatus = 'running'
+		tch.kickofftime <= GETDATE()
 		AND tch.sporttype = 1
 		AND lea.isTest = 0
 	GROUP BY tch.matchid;
