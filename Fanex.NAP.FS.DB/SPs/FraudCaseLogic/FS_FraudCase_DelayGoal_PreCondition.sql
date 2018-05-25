@@ -22,7 +22,7 @@ AS
 BEGIN
 	SET NOCOUNT ON;
 	
-	DECLARE @fraudCaseID int = 8
+	DECLARE @fraudCaseID INT = 8;
 	
 	IF OBJECT_ID('tempdb..#tmpMatchRunning') IS NOT NULL
 	BEGIN
@@ -36,7 +36,7 @@ BEGIN
 		,	MaxTransid		BIGINT
 	);
 
-	INSERT INTO #tmpMatchRunning
+	INSERT INTO #tmpMatchRunning(MatchId,EventDate,KickOffTime,MaxTransid)
 	SELECT	[MatchId]		= m.matchid
 		,	[EventDate]		= m.eventdate
 		,	[KickOffTime]	= m.kickofftime
