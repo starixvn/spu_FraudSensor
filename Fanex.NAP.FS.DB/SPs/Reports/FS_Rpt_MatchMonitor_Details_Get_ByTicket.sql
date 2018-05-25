@@ -21,8 +21,8 @@ AS
 	Param's Explanation:
 */
 BEGIN
-
 	SET NOCOUNT ON;
+	
 	--===	1.1 INITIAL TEMP TABLES #tmpBUMB: Include Balance Up and Move Bet Days	
 	IF OBJECT_ID('tempdb..#tmpBUMB') IS NOT NULL
 	BEGIN
@@ -58,14 +58,14 @@ BEGIN
 	--INSERT INTO #tmpFraudTickets(TransId)
 	INSERT INTO #tmpFraudTickets(TransID)
 	SELECT VAL
-	FROM SuspiciousInfo si WITH(NOLOCK)
-		 CROSS APPLY SPU_StrSplit(si.transids, ',')
+	FROM dbo.SuspiciousInfo si WITH(NOLOCK)
+		 CROSS APPLY dbo.SPU_StrSplit(si.transids, ',')
 	WHERE	si.MatchId = @MatchId
-			AND si.FraudCaseId = @FraudCaseId
+			AND si.FraudCaseId = @FraudCaseId;
 			
 	--===	2.2 GET: Homeid and AwayId
-	DECLARE @homeId INT
-	DECLARE @awayId INT
+	DECLARE @homeId INT;
+	DECLARE @awayId INT;
 			
 	--===	3.1 RETURN: Fraud Tickets Info				
 	If @IsAfterMoveBetDay = 1
@@ -73,7 +73,7 @@ BEGIN
 			SELECT @homeId = m.homeid
 					, @awayId = m.awayid
 			FROM bodb02.dbo.match m WITH(NOLOCK)
-			WHERE m.matchid = @MatchId
+			WHERE m.matchid = @MatchId;
 			
 			SELECT b.Username
 				,	b.bettype [bettypeId]
@@ -97,14 +97,14 @@ BEGIN
 				,	b.currencyname
 			FROM bodb02.dbo.bettrans b WITH(NOLOCK)
 					INNER JOIN #tmpFraudTickets f WITH(NOLOCK) 
-						ON b.transid = f.TransID
+						ON b.transid = f.TransID;
 		END;
 	ELSE
 		BEGIN		
 			SELECT @homeId = m.homeid
 					, @awayId = m.awayid
 			FROM bodb02.dbo.match14 m WITH(NOLOCK)
-			WHERE m.matchid = @MatchId
+			WHERE m.matchid = @MatchId;
 			
 			SELECT b.Username
 				,	b.bettype [bettypeId]
@@ -128,7 +128,7 @@ BEGIN
 				,	b.currencyname
 			FROM bodb02.dbo.bettrans14 b WITH(NOLOCK)
 					INNER JOIN #tmpFraudTickets f WITH(NOLOCK) 
-						ON b.transid = f.TransID
+						ON b.transid = f.TransID;
 		END;
 END;
 
