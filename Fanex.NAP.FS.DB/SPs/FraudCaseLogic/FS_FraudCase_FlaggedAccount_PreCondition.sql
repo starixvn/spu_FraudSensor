@@ -28,7 +28,7 @@ BEGIN
 		m.eventstatus = 'running'
 		AND m.sporttype = 1
 		AND m.kickofftime <= GETDATE()
-		AND l.leaguename NOT LIKE '%TEST%';
+		AND l.isTest = 0;
 END;
 GO 
  GRANT EXECUTE ON [dbo].[FS_FraudCase_FlaggedAccount_PreCondition] TO [bodbSPUNet]

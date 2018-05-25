@@ -48,7 +48,7 @@ BEGIN
 		AND	m.eventstatus = 'Running'
 		AND	m.kickofftime <= GETDATE()
 		AND l.IsMainMarket = 1
-		AND l.leaguename NOT LIKE '%TEST%'
+		AND l.isTest = 0
 	GROUP BY  m.matchid, m.eventdate, m.kickofftime;
  
 	---Insert New Match to DelayGoalMatchScanning: LastScannedTransId default = 0 

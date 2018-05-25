@@ -66,7 +66,7 @@ BEGIN
 	WHERE tch.eventstatus = 'running'
 		AND tch.kickofftime <= GETDATE()
 		AND tch.sporttype = 1
-		AND lea.leaguename NOT LIKE '%TEST%'
+		AND lea.isTest = 0
 	GROUP BY tch.matchid;
 
 	-- Insert new matches into MatchLiveScore table
