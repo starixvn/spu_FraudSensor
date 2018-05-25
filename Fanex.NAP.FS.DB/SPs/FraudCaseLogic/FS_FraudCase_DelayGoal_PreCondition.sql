@@ -14,6 +14,7 @@ AS
 
 	Revisions:
 		- 20180312@CaseyHuynh: Correct Code Syntax
+		- 20180525@Casey.Huynh: Exclude League Test
 		
 
 	Param's Explanation:
@@ -47,6 +48,7 @@ BEGIN
 		AND	m.eventstatus = 'Running'
 		AND	m.kickofftime <= GETDATE()
 		AND l.IsMainMarket = 1
+		AND l.leaguename NOT LIKE '%TEST%'
 	GROUP BY  m.matchid, m.eventdate, m.kickofftime;
  
 	---Insert New Match to DelayGoalMatchScanning: LastScannedTransId default = 0 

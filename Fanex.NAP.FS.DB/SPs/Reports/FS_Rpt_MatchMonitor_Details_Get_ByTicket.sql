@@ -4,8 +4,7 @@ GO
 SET ANSI_NULLS ON 
 GO
 
-/****** Object:  Stored Procedure dbo.FS_Rpt_MatchMonitor_Details_Get_ByTicket    Script Date: 5/15/2018 4:21:24 PM ******/
-CREATE PROCEDURE [dbo].[FS_Rpt_MatchMonitor_Details_Get_ByTicket]
+ALTER PROCEDURE [dbo].[FS_Rpt_MatchMonitor_Details_Get_ByTicket]
 	 @MatchId	INT
 	,@EventDate	DATETIME
 	,@FraudCaseId	INT	
@@ -17,6 +16,7 @@ AS
 	Original:
 
 	Revisions:
+		+ 20180523@CaseyHuynh: put alias for LiveHomeScore/LiveAwayScore column
 
 	Param's Explanation:
 */
@@ -83,8 +83,8 @@ BEGIN
 				,	b.betteam
 				,	b.hdp1	[handicap1]
 				,	b.hdp2	[handicap2]
-				,	ISNULL(b.livehomescore,0)
-				,	ISNULL(b.liveawayscore,0)
+				,	ISNULL(b.livehomescore,0) [livehomescore]
+				,	ISNULL(b.liveawayscore,0) [liveawayscore]
 				,	b.liveindicator [isLive]
 				,	b.odds
 				,	b.oddstype
@@ -114,8 +114,8 @@ BEGIN
 				,	b.betteam
 				,	b.hdp1	[handicap1]
 				,	b.hdp2	[handicap2]
-				,	ISNULL(b.livehomescore,0)
-				,	b.liveawayscore
+				,	ISNULL(b.livehomescore,0) [livehomescore]
+				,	ISNULL(b.liveawayscore,0) [liveawayscore]
 				,	b.liveindicator [isLive]
 				,	b.odds
 				,	b.oddstype
@@ -138,9 +138,6 @@ SET QUOTED_IDENTIFIER OFF
 GO
 SET ANSI_NULLS ON 
 GO
-
-
-GO 
  GRANT EXECUTE ON [dbo].[FS_Rpt_MatchMonitor_Details_Get_ByTicket] TO [bodbSPUNet]
 GO 
  GRANT VIEW DEFINITION ON [dbo].[FS_Rpt_MatchMonitor_Details_Get_ByTicket] TO [bodbSPUNet]

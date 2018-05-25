@@ -13,6 +13,7 @@ AS
 
 	Revisions:
 		- 20180312@CaseyHuynh: Correct Code Syntax
+		- 20180525@Casey.Huynh: Exclude League Test
 
 	Param's Explanation (filtered by):
 */
@@ -57,14 +58,15 @@ BEGIN
 
 	-- Get current score of running matches
 	INSERT INTO #tmpMatchCurrentScore(MatchId, LiveHomeScore, LiveAwayScore)
-  SELECT [MatchId] = tch.matchid
+	SELECT [MatchId] = tch.matchid
 		,	[LiveHomeScore] = MAX(tch.livehomescore)
 		,	[LiveAwayScore] = MAX(tch.liveawayscore)
 	FROM bodb02.dbo.match AS tch WITH (NOLOCK)
-	INNER JOIN bodb02.dbo.sports AS rts WITH (NOLOCK) ON tch.sporttype = rts.sporttype
+		INNER JOIN bodb02.dbo.league AS lea WITH (NOLOCK) ON tch.leagueid = lea.leagueid
 	WHERE tch.eventstatus = 'running'
 		AND tch.kickofftime <= GETDATE()
-		AND rts.sporttype = 1
+		AND tch.sporttype = 1
+		AND lea.leaguename NOT LIKE '%TEST%'
 	GROUP BY tch.matchid;
 
 	-- Insert new matches into MatchLiveScore table

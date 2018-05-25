@@ -14,19 +14,21 @@ AS
 
 	Revisions:
 		- 20180312@CaseyHuynh: Correct Code Syntax
-
+		- 20180525@Casey.Huynh: Exclude League Test
+		
 	Param's Explanation (filtered by):
 */
 BEGIN
 	SET NOCOUNT ON;	
 
-	SELECT DISTINCT tch.matchid AS MatchId
-	FROM bodb02.dbo.match AS tch WITH (NOLOCK)
-		INNER JOIN bodb02.dbo.sports AS rts WITH (NOLOCK) ON tch.sporttype = rts.sporttype
+	SELECT DISTINCT m.matchid AS MatchId
+	FROM bodb02.dbo.match AS m WITH (NOLOCK)
+		INNER JOIN bodb02.dbo.League AS l WITH(NOLOCK) ON m.leagueid = l.leagueid
 	WHERE 
-		tch.eventstatus = 'running'
-		AND rts.sporttype = 1
-		AND tch.kickofftime <= GETDATE();
+		m.eventstatus = 'running'
+		AND m.sporttype = 1
+		AND m.kickofftime <= GETDATE()
+		AND l.leaguename NOT LIKE '%TEST%';
 END;
 GO 
  GRANT EXECUTE ON [dbo].[FS_FraudCase_FlaggedAccount_PreCondition] TO [bodbSPUNet]
