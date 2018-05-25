@@ -7,7 +7,6 @@ namespace Fanex.NAP.FS.Websites.Controllers
     using Fanex.NAP.FS.Library.Services;
     using Library.ViewModels.SuspiciousCustomerDetails;
     using System;
-    using System.Threading;
     using System.Threading.Tasks;
     using System.Web.Mvc;
 
@@ -105,13 +104,6 @@ namespace Fanex.NAP.FS.Websites.Controllers
         public async Task<ActionResult> GetFraudCases(int custId)
         {
             return JData(_detailsService.GetSuspiciousCustomerFraudCase(custId));
-        }
-
-        public async Task<ActionResult> GetStatisticsPlaceHolder(int custId, DateTime from, DateTime to)
-        {
-            Thread.Sleep(10000);
-
-            return Json(new int[0]);
         }
 
         #region Utilities

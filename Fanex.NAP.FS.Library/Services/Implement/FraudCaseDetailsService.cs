@@ -83,7 +83,7 @@
                 })
                 .OrderBy(t => GetOrder(t.Bettype))
                 .ThenBy(t => t.Member)
-                .ThenBy(t => t.TransDate);
+                .ThenBy(t => DateTime.Parse(t.TransDate));
         }
 
         public IEnumerable<CustomerDetails> GetCustomerDetails(int matchId, int fraudCaseId, DateTime eventDate)
