@@ -130,7 +130,7 @@
             using (var db = new ObjectDb(criteria.GetSettingKey()))
             using (var queries = db.QueryMultiple(criteria))
             {
-                var summaries = queries.Read<Summary>();
+                var summaries = queries.Read<Summary>().OrderBy(s => new DateTime(s.RptYear, s.RptMonth, 1));
 
                 var total = summaries.Aggregate(new Summary { RptMonth = -1 }, (acc, a) => acc + a);
 

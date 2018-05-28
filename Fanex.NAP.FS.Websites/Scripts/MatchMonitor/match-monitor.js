@@ -27,17 +27,20 @@ function load_page_events() {
 
     $("#export").click(exportExcel);
 
-    $("table").DataTable({
+    $("#match_grid table").DataTable({
         ordering: false,
         searching: false,
         lengthMenu: [10, 20, 50, 100, 500],
         pageLength: 50,
         scrollY: "61vh",
         scrollCollapse: true,
+        columnDefs: [
+            {targets: "_all", defaultContent: "-" }
+        ],
         columns: [
             { data: (row, type, set, meta) => meta.row + 1, className: "text-center", width: "40px" },
             { data: renderVerifyCheckBox, className: "text-center", width: "40px" },
-            { data: (row) => row.VerifiedBy == null ? "-" : row.VerifiedBy, width: "100px" },
+            { data: row => row.VerifiedBy, width: "100px" },
             { data: renderEvent },
             { data: row => row.Score, className: "text-center", width: "50px" },
             { data: row => row.Status, className: "text-center", width: "70px" },
@@ -138,7 +141,7 @@ function load_grid() {
 }
 
 function attachGridEvent(json) {
-    $("table").DataTable().clear().rows.add(json.data).draw();
+    $("#match_grid table").DataTable().clear().rows.add(json.data).draw();
 
     $(".verified-checkbox").change(updateVerification);
     $(".icon-note").click(renderNotePopup);
