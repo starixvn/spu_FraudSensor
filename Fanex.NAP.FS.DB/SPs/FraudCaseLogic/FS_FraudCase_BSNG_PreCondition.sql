@@ -26,7 +26,7 @@ BEGIN
 	IF OBJECT_ID('tempdb..#tmpMatchCurrentScore') IS NOT NULL
 	BEGIN
 		DROP TABLE	#tmpMatchCurrentScore;
-	END
+	END;
 	
 	CREATE TABLE #tmpMatchCurrentScore(
 			MatchId			INT
@@ -41,7 +41,7 @@ BEGIN
 	IF OBJECT_ID('tempdb..#tmpNewMatch') IS NOT NULL
 	BEGIN
 		DROP TABLE	#tmpNewMatch;
-	END
+	END;
 	
 	CREATE TABLE #tmpNewMatch(
 			MatchId			INT PRIMARY KEY
@@ -50,7 +50,7 @@ BEGIN
 	IF OBJECT_ID('tempdb..#tmpMatchScoreChanged') IS NOT NULL
 	BEGIN
 		DROP TABLE	#tmpMatchScoreChanged;
-	END
+	END;
 	
 	CREATE TABLE #tmpMatchScoreChanged(
 			MatchId			INT PRIMARY KEY

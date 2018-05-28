@@ -27,7 +27,7 @@ BEGIN
 	IF OBJECT_ID('tempdb..#tmpBUMB') IS NOT NULL
 	BEGIN
 		DROP TABLE	#tmpBUMB;
-	END
+	END;
 	
 	CREATE TABLE #tmpBUMB (
 			BUDay		SMALLDATETIME
@@ -38,7 +38,7 @@ BEGIN
 	IF OBJECT_ID('tempdb..#tmpTransId') IS NOT NULL
 	BEGIN
 		DROP TABLE	#tmpFraudTickets;
-	END
+	END;
 	
 	CREATE TABLE #tmpFraudTickets (
 			TransID	BIGINT

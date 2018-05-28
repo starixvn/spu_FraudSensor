@@ -59,7 +59,7 @@ BEGIN
 		,	[fromTransid]	= 0
 	FROM #tmpMatchRunning AS mr WITH(NOLOCK)
 		LEFT JOIN dbo.DelayGoalMatchScanning AS ms WITH(NOLOCK)ON mr.matchid = ms.matchid
-	WHERE ms.Matchid is NULL;
+	WHERE ms.Matchid IS NULL;
 	
 	---Return Match List Need to Scanning
 	SELECT mr.Matchid
