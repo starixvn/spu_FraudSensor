@@ -115,7 +115,7 @@
              SpName="FS_FlaggedAccount_Delete"
              DbName="DBFS.FraudSensor.bodbSPUNet" />
     
-    <Setting Key="DelayGoalAccount_ImportFromFPS" 
+    <Setting Key="FS_DelayGoalAccount_ImportFromFPS" 
              SpName="FS_DelayGoalAccount_ImportFromFPS" 
              DbName="DBFS.FraudSensor.bodbSPUNet" />
   </Function>
