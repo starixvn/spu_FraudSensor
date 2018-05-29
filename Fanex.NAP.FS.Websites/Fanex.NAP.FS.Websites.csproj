@@ -276,6 +276,7 @@
     <Compile Include="Controllers\Api\ApiFPSController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\ConfigurationsController.cs" />
+    <Compile Include="Controllers\ErrorsController.cs" />
     <Compile Include="Controllers\FraudCaseController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\SuspiciousCustomerController.cs" />
@@ -843,9 +844,9 @@
     <Content Include="Scripts\umd\popper.js" />
     <Content Include="Scripts\umd\popper.min.js" />
     <Content Include="Scripts\_references.js" />
-    <Content Include="Views\Errors\403.html" />
-    <Content Include="Views\Errors\404.html" />
-    <Content Include="Views\Errors\error.html" />
+    <None Include="Views\Errors\403.cshtml" />
+    <None Include="Views\Errors\404.cshtml" />
+    <None Include="Views\Errors\500.cshtml" />
     <Content Include="Views\UM\UM.html" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>

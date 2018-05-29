@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@{ 
+    Layout = null;
+}
+<!DOCTYPE html>
 <html>
 <head>
     <title></title>
@@ -11,7 +14,7 @@
         <img src="../../Content/scss/images/404.svg" alt="Page Not Found" />
         <h1 class="title">Page Not Found</h1>
         <p class="desc">Sorry, we can't find the page you're looking for!</p>
-        <button class="button">Go back</button>
+        <button class="button">@Html.ActionLink("Go back", "Index", "Home", new { style = "text-decoration: none; color: white" })</button>
     </div>
 </body>
 </html>
