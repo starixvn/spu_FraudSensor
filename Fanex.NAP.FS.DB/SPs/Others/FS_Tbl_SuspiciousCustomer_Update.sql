@@ -5,7 +5,7 @@ SET ANSI_NULLS ON
 GO
 
 /****** Object:  Stored Procedure dbo.FS_Tbl_SuspiciousCustomer_Update    Script Date: 5/15/2018 4:21:24 PM ******/
-CREATE PROCEDURE [dbo].[FS_Tbl_SuspiciousCustomer_Update]
+ALTER PROCEDURE [dbo].[FS_Tbl_SuspiciousCustomer_Update]
 		@UserId				INT
 	,	@Custid				INT
 	,	@IsDelinquent		BIT = NULL
@@ -33,7 +33,7 @@ BEGIN
 	DECLARE @UpdateTime DATETIME = GETDATE();
 	
     BEGIN TRY
-		UPDATE [dbo].[SuspiciousCustomer] WITH(ROWLOCK)
+		UPDATE [dbo].[SuspiciousCustomer] WITH(ROWLOCK, UPDLOCK)
 		SET [IsDelinquent] = ISNULL(@IsDelinquent,IsDelinquent)
 		  ,[IsHedge] = ISNULL(@IsHedge,IsHedge)
 		  ,[IsDirty] = ISNULL(@IsDirty,IsDirty)
@@ -42,15 +42,15 @@ BEGIN
 	END TRY
 	BEGIN CATCH
 		SELECT @ErrCode = ERROR_NUMBER();
-	END CATCH
+	END CATCH;
 	
 	--================ Write Customer Log ================ 
 	If (COALESCE(@IsDelinquent,@IsHedge,@IsDirty) IS NOT NULL)
 	BEGIN
-		DECLARE @LogDes NVARCHAR(500)
+		DECLARE @LogDes NVARCHAR(500);
 				
 		
-		SELECT @LogDes='Update Classification: '
+		SELECT @LogDes='Update Classification: ';
 		SELECT @LogDes = CASE WHEN @IsDelinquent = 1 THEN @LogDes + 'Marked Delinquent' 
 								WHEN @IsDelinquent = 0 THEN @LogDes + 'Unmarked Delinquent'
 						 ELSE @LogDes END;
@@ -59,10 +59,10 @@ BEGIN
 						 ELSE @LogDes END;
 		SELECT @LogDes = CASE WHEN @IsDirty = 1 THEN @LogDes + 'Marked Dirty' 
 								WHEN @IsDirty = 0 THEN @LogDes + 'Unmarked Dirty'
-						 ELSE @LogDes END
+						 ELSE @LogDes END;
 						 
-		EXECUTE FS_Tbl_CustomerLog_Insert @CustId = @Custid, @UserId = @UserId, @CustLogType = 2 , @LogDate = @UpdateTime, @CaseId = NULL, @LogDesc=@LogDes 
-	END
+		EXECUTE dbo.FS_Tbl_CustomerLog_Insert @CustId = @Custid, @UserId = @UserId, @CustLogType = 2 , @LogDate = @UpdateTime, @CaseId = NULL, @LogDesc=@LogDes;
+	END;
 	
 	--================ Write Log ================ 
 	IF (@ErrCode = 0) 

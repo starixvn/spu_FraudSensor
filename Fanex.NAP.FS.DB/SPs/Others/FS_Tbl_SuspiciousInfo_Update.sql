@@ -6,7 +6,7 @@ GO
 
 /****** Object:  Stored Procedure dbo.FS_Tbl_SuspiciousInfo_Update    Script Date: 5/15/2018 4:21:24 PM ******/
 
-CREATE PROCEDURE [dbo].[FS_Tbl_SuspiciousInfo_Update]
+ALTER PROCEDURE [dbo].[FS_Tbl_SuspiciousInfo_Update]
 		@UserId				INT
 	,	@CustId				INT = NULL
 	,	@MatchId			INT = NULL
@@ -41,7 +41,7 @@ BEGIN
 		
 	BEGIN TRY
 		
-		UPDATE [dbo].[SuspiciousInfo] WITH(ROWLOCK)
+		UPDATE [dbo].[SuspiciousInfo] WITH(ROWLOCK, UPDLOCK)
 		SET 
 			Custid = ISNULL(@Custid, CustId)
 			, MatchId = ISNULL(@MatchId, MatchId)
@@ -60,22 +60,25 @@ BEGIN
 	END TRY
 	BEGIN CATCH
 		SELECT @ErrCode = ERROR_NUMBER();
-	END CATCH
+	END CATCH;
 	------------ Write Customer Log------------------CustomerLog(CustId, CreatorId, LogType, CaseId, LogDesc, LogDate)
 	
 	IF (@ErrCode = 0 AND @IsVerified = 1 AND @FraudCaseId IS NOT NULL)
 	BEGIN
 		
-		DECLARE @FraudCaseName NVARCHAR(100) = (SELECT TOP(1) FraudCaseName FROM dbo.FraudCase WITH(NOLOCK) WHERE FraudCaseId = @FraudCaseId)
+		DECLARE @FraudCaseName NVARCHAR(100); 
+
+		SELECT TOP(1) @FraudCaseName = FraudCaseName FROM dbo.FraudCase WITH(NOLOCK) WHERE FraudCaseId = @FraudCaseId;
+		
 		DECLARE @LogDesc NVARCHAR(50) = 'Verify Fraud Case: ' + @FraudCaseName;
 			
-		EXECUTE FS_Tbl_CustomerLog_Insert @CustId = @Custid, @UserId = @UserId, @CustLogType = 2 , @LogDate = @UpdateTime,  @CaseId = NULL, @LogDesc=@LogDesc
+		EXECUTE dbo.FS_Tbl_CustomerLog_Insert @CustId = @Custid, @UserId = @UserId, @CustLogType = 2 , @LogDate = @UpdateTime,  @CaseId = NULL, @LogDesc=@LogDesc;
 		
 		IF NOT EXISTS (SELECT TOP(1) 1 FROM dbo.SuspiciousInfo si WITH(NOLOCK) WHERE si.CustId = @CustId AND si.IsVerified = 0)
 		BEGIN
-			EXECUTE FS_Tbl_SuspiciousCustomer_Update @CustId = @Custid, @UserId = @UserId, @IsVerified = @IsVerified
-		END
-	END
+			EXECUTE dbo.FS_Tbl_SuspiciousCustomer_Update @CustId = @Custid, @UserId = @UserId, @IsVerified = @IsVerified;
+		END;
+	END;
 
 	------------ Write Log ------------
 	IF @ErrCode = 0
