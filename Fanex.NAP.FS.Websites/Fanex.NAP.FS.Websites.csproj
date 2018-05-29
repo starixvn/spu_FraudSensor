@@ -347,14 +347,20 @@
     <Content Include="Content\scss\fonts\Fraud-Sensor\style.min.css">
       <DependentUpon>style.css</DependentUpon>
     </Content>
+    <Content Include="Content\scss\images\403.svg" />
+    <Content Include="Content\scss\images\404.svg" />
+    <Content Include="Content\scss\images\Error.svg" />
     <Content Include="Content\scss\images\login.png" />
     <Content Include="Content\scss\images\login.svg" />
     <Content Include="Content\scss\images\logo.png" />
     <Content Include="Content\scss\images\logo.svg" />
+    <Content Include="Content\scss\images\UM.svg" />
     <Content Include="Content\scss\pages\configurations\fraud-case.css" />
+    <Content Include="Content\scss\pages\errors\errors.css" />
     <Content Include="Content\scss\pages\index.css" />
     <Content Include="Content\scss\pages\login\login.css" />
     <Content Include="Content\scss\pages\suspicious-customer\suspicious-customer.css" />
+    <Content Include="Content\scss\pages\um\um.css" />
     <Content Include="Content\scss\vendors\bootstrap-theme.css" />
     <Content Include="Content\scss\vendors\bootstrap-theme.min.css" />
     <Content Include="Content\scss\vendors\bootstrap.css" />
@@ -736,6 +742,8 @@
     <Content Include="Content\scss\components\_loading.scss" />
     <Content Include="Deployment.ignore" />
     <Content Include="Content\scss\components\_accordion.scss" />
+    <Content Include="Content\scss\pages\um\um.scss" />
+    <Content Include="Content\scss\pages\errors\errors.scss" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile2.pubxml" />
@@ -835,6 +843,10 @@
     <Content Include="Scripts\umd\popper.js" />
     <Content Include="Scripts\umd\popper.min.js" />
     <Content Include="Scripts\_references.js" />
+    <Content Include="Views\Errors\403.html" />
+    <Content Include="Views\Errors\404.html" />
+    <Content Include="Views\Errors\error.html" />
+    <Content Include="Views\UM\UM.html" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
