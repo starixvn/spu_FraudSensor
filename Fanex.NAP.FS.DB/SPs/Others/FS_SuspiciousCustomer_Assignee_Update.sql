@@ -21,10 +21,7 @@ AS
 */
 BEGIN
 	SET NOCOUNT ON;
-	
-	DECLARE @LogTypeId		INT = 10;
-	DECLARE @LogData		VARCHAR(500)
-			, @SPName		VARCHAR(100);
+
 	DECLARE @ErrCodeOutput	INT;
 			
 	IF EXISTS (SELECT TOP(1) CustId FROM dbo.CustomerMonitorAssignment	WITH(NOLOCK) WHERE CustId = @CustId)
