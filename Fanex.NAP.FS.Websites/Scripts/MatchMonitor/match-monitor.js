@@ -9,8 +9,6 @@ function load_page_events() {
         minimumResultsForSearch: -1
     })
 
-    getLeague();
-
     $("#event_date")
         .datepicker({
             dateFormat: "M dd, yy",
@@ -20,6 +18,8 @@ function load_page_events() {
         })
         .change(getLeague)
         .datepicker("setDate", moment().toDate());
+
+    getLeague();
 
     $(".icon-calendar-text").click(() => $("#event_date").focus());
 
