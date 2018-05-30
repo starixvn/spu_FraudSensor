@@ -1,4 +1,6 @@
-﻿namespace Fanex.NAP.FS.Library.Models.SuspiciousCustomer
+﻿#pragma warning disable S2376 // Write-only properties should not be used
+
+namespace Fanex.NAP.FS.Library.Models.SuspiciousCustomer
 {
     using System;
 
@@ -17,5 +19,15 @@
         public int CustomerLogId { get; set; }
 
         public string LogDateString => LogDate.ToString("MMM dd, yyyy hh:mm:ss tt");
+
+        public DateTime Date
+        {
+            set
+            {
+                LogDate = value;
+            }
+        }
     }
 }
+
+#pragma warning restore S2376 // Write-only properties should not be used
