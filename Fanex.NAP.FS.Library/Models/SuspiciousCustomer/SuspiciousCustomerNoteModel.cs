@@ -1,11 +1,10 @@
 ﻿namespace Fanex.NAP.FS.Library.Models.SuspiciousCustomer
 {
-    using Fanex.NAP.Core.Service.Impl;
     using System;
 
     public class SuspiciousCustomerNoteModel
     {
-        public DateTime Date { get; set; }
+        public DateTime LogDate { get; set; }
 
         public string Description { get; set; }
 
@@ -17,6 +16,6 @@
 
         public int CustomerLogId { get; set; }
 
-        public string LogDateString => Date.ToString("MMM dd, yyyy hh:mm:ss tt");
+        public string LogDateString => LogDate.ToString("MMM dd, yyyy hh:mm:ss tt");
     }
 }

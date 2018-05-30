@@ -31,7 +31,7 @@
             return GetNotesData(custId)
                 .Select(d => new SuspiciousCustomerNoteView
                 {
-                    Date = d.Date.ToString("MMM dd, yyyy hh:mm:ss tt"),
+                    Date = d.LogDate.ToString("MMM dd, yyyy hh:mm:ss tt"),
                     Description = d.Description,
                     Type = d.Type,
                     Author = user_service.Get(d.CreatorId).Username
