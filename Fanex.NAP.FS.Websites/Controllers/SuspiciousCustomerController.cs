@@ -40,7 +40,7 @@ namespace Fanex.NAP.FS.Websites.Controllers
         public ActionResult GetFraudCases()
         {
             var fraudCaseService = new FraudCaseService();
-            var fraudCases = fraudCaseService.Get(0, 1, int.Parse(ConfigurationManager.AppSettings["Environment"]));
+            var fraudCases = fraudCaseService.Get(0, null, int.Parse(ConfigurationManager.AppSettings["Environment"]));
 
             return Json(fraudCases, JsonRequestBehavior.AllowGet);
         }
