@@ -2,8 +2,8 @@
 "use strict";
 
 function ReCheckin() {
-    var urlRecheck = "/UserLogin/Login/ReCheckLogin";
-    var urlLogout = "/UserLogin/Login/LogOut";
+    var urlRecheck = common.modifyRelativeUrl("/UserLogin/Login/ReCheckLogin");
+    var urlLogout = common.modifyRelativeUrl("/UserLogin/Login/LogOut");
 
     $.ajax({
         url: urlRecheck,
