@@ -3,8 +3,8 @@ GO
 SET ANSI_NULLS ON;
 GO
 
-CREATE PROCEDURE [dbo].[FS_CustomerInfo_Get]
-		@Custid				INT
+ALTER PROCEDURE [dbo].[FS_CustomerInfo_Get]
+		@Custid	INT
 AS
 /*
 	Created: 20180531@CaseyHuynh
