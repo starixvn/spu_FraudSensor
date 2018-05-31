@@ -94,6 +94,11 @@ BEGIN
 	WHERE ans.matchid IN (SELECT MatchId FROM #tmpMatches WITH (NOLOCK))
 		AND ans.statusID = 101
 		AND ans.liveindicator = 1
+		AND ans.bettype IN (
+				SELECT DISTINCT spb.BetType
+				FROM bodb02.dbo.SportBettypeMatrix spb WITH (NOLOCK)
+				WHERE spb.ProductID = 1
+				)
 	GROUP BY ans.livehomescore
 		,	ans.liveawayscore
 		,	ans.matchid;
