@@ -49,7 +49,7 @@
         changeMonth: true,
         changeYear: true,
         firstDay: 1,
-        minDate: "-1y"
+        minDate: moment(`${moment().year() - 1}/${moment().subtract(10, "months").month()}/1`, "Y/M/D").toDate()
     });
 
     to.datepicker({

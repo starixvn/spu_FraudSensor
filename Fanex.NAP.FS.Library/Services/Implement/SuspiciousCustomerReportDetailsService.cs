@@ -49,7 +49,7 @@
                 IsHedge = null
             };
 
-            return DataService.GetData<SuspiciousCustomerModel>(criteria).First();
+            return DataService.GetSingle<SuspiciousCustomerModel>(criteria);
         }
 
         public IEnumerable<SuspiciousCustomerFraudCaseModel> GetSuspiciousCustomerFraudCase(int custId)
@@ -112,6 +112,11 @@
             };
 
             return DataService.UpdateData(criteria, "Update Suspicious Customer Info");
+        }
+
+        public string GetCustomerCurrency(int custId)
+        {
+            return DataService.GetSingle<SuspciousCustomerInfo>(new SuspicousCustomerCurrencyGetCriteria { CustId = custId }).Currency;
         }
 
         #endregion Customer Info

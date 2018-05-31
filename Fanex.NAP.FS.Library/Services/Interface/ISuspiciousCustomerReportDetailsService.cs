@@ -28,6 +28,8 @@
 
         DBResult UpdateSuspiciousCustomerInfo(int custId, int userId, bool? isDelinquent, bool? isDirty, bool? isHedge);
 
+        string GetCustomerCurrency(int custId);
+
         #endregion
 
         #region Statistics

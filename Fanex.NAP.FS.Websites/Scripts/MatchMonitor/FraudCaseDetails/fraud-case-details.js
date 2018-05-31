@@ -271,7 +271,8 @@
             } else {
                 $(row).attr("data-bettype-item", obj.Bettype);
             }
-        }
+        },
+        headerCallback: tr => $(":nth-child(11)", tr).removeClass("uppercase")
     });
 
     customer_grid.DataTable({
@@ -370,9 +371,10 @@
             { data: obj => obj.Odds != null ? obj.Odds.Html : null, width: "50px" },
             { data: obj => common.formatNumber(obj.Stake), width: "100px" },
             { data: obj => obj.WinLoss == null ? null : obj.WinLoss >= 0 ? common.formatNumber(obj.WinLoss) : `<span class='text-red'>${common.formatNumber(obj.WinLoss)}</span>`, width: "100px" },
-            { data: obj => obj.Status, width: "82px" },
+            { data: obj => obj.Status, width: "82px", className: "text-center uppercase" },
             { data: obj => obj.IP, width: "100px" }
-        ]
+        ],
+        headerCallback: tr => $("th", tr).removeClass("uppercase")
     });
 
     $("table", associated_accounts).DataTable({
@@ -425,7 +427,7 @@
             { targets: [0, 2, 3, -1, 6], className: "text-center" },
             { targets: [-2, -3, -4, 5], className: "text-right" },
             { targets: [3], width: "100px" },
-            { targets: [0, 2], width: "40px"}
+            { targets: [0, 2], width: "40px" }
         ],
         columns: [
             { data: (obj, typet, set, meta) => meta.row + 1, className: "text-center" },
@@ -435,12 +437,13 @@
             { data: obj => obj.BetID },
             { data: obj => obj.Choice },
             { data: obj => `<div class='row-ht'>HT: ${obj.Result.HTHomeScore} - ${obj.Result.HTAwayScore}</div><div class='row-ft'>FT: ${obj.Result.FinalHomeScore} - ${obj.Result.FinalAwayScore}</div>`, width: "60px" },
-            { data: obj => obj.Odds != null ? obj.Odds.Html : null},
+            { data: obj => obj.Odds != null ? obj.Odds.Html : null },
             { data: obj => obj.Stake == null ? null : numeral(obj.Stake).format("0,0.00") },
             { data: obj => obj.WinLoss == null ? null : obj.WinLoss >= 0 ? numeral(obj.WinLoss).format("0,0.00") : `<span class='text-red'>${numeral(obj.WinLoss).format('0,0.00')}</span>` },
-            { data: obj => obj.Status, width: "50px"}
-        ]
-    })
+            { data: obj => obj.Status, width: "50px", className: "text-center uppercase"  }
+        ],
+        headerCallback: tr => $("th", tr).removeClass("uppercase")
+    });
 }
 
 $(fraud_case_details);

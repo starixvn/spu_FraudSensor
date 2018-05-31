@@ -155,7 +155,7 @@
             { data: obj => obj.value != null ? obj.value.Odds : null },
             { data: obj => obj.value != null ? common.formatGridNumber(obj.value.Stake) : null },
             { data: obj => obj.value != null && obj.value.WinLoss != null ? common.formatGridNumber(obj.value.WinLoss) : null },
-            { data: obj => obj.value != null ? obj.value.Status : null },
+            { data: obj => obj.value != null ? obj.value.Status : null, className: "text-center uppercase"  },
             { data: obj => obj.value != null ? obj.value.IP : null }
         ],
         createdRow: function (row, obj) {
@@ -174,7 +174,8 @@
             if (n >= 0 && !stopRender) {
                 $(".group").click();
             }
-        }
+        },
+        headerCallback: tr => $("th", tr).removeClass("uppercase")
     });
 
     logNote.DataTable({

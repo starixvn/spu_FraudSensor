@@ -229,6 +229,7 @@
     <Compile Include="Criteria\SuspiciousCustomer\SuspiciousCustomerNoteGetCriteria.cs" />
     <Compile Include="Criteria\SuspiciousCustomer\SuspiciousCustomerUpdateCriteria.cs" />
     <Compile Include="Criteria\SuspiciousCustomer\SuspiciousCustomerReportGetCriteria.cs" />
+    <Compile Include="Criteria\SuspiciousInfo\SuspicousCustomerCurrencyGetCriteria.cs" />
     <Compile Include="DTO\CustomerEvidence.cs" />
     <Compile Include="DTO\CustomerEvidenceList.cs" />
     <Compile Include="DTO\CustomerTotalAssociation.cs" />
@@ -280,6 +281,7 @@
     <Compile Include="Models\SuspiciousCustomerDetails\FraudCaseViolated.cs" />
     <Compile Include="Models\SuspiciousCustomerDetails\Statistics.cs" />
     <Compile Include="Models\SuspiciousCustomer\SuspiciousCustomerModel.cs" />
+    <Compile Include="Models\SuspiciousInfo\SuspciousCustomerInfo.cs" />
     <Compile Include="Models\SuspiciousInfo\SuspiciousCustomerFraudCaseModel.cs" />
     <Compile Include="Models\SuspiciousCustomerDetails\BettypeStatistics.cs" />
     <Compile Include="Models\SuspiciousCustomerDetails\ChoiceStatistics.cs" />

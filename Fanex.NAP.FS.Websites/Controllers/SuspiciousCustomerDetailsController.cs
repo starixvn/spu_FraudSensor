@@ -119,6 +119,7 @@ namespace Fanex.NAP.FS.Websites.Controllers
 
             generalViewModel.CustInfo = _detailsService.GetSuspiciousCustomerInfo(custId);
             generalViewModel.Assignee = _detailsService.GetAssignee(custId);
+            generalViewModel.Currency = _detailsService.GetCustomerCurrency(custId);
 
             return generalViewModel;
         }
