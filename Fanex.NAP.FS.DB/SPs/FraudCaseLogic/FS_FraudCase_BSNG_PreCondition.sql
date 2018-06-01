@@ -14,7 +14,7 @@ AS
 	Revisions:
 		- 20180312@CaseyHuynh: Correct Code Syntax
 		- 20180525@Casey.Huynh: Exclude League Test
-
+		- 20180525@Casey.Huynh: Update set LiveScore = 0 for New Match when insert to MatchLiveScore
 	Param's Explanation (filtered by):
 */
 BEGIN
@@ -82,8 +82,8 @@ BEGIN
 	INSERT INTO dbo.MatchLiveScore(MatchId, FraudCaseId, LiveHomeScore, LiveAwayScore)
 	SELECT	[MatchId]			= t.MatchId
 		,	[FraudCase]			= @CurrentFraudCaseId
-		,	[LiveHomeScore]		= t.LiveHomeScore
-		,	[LiveAwayScore]		= t.LiveAwayScore
+		,	[LiveHomeScore]		= 0
+		,	[LiveAwayScore]		= 0
 	FROM #tmpMatchCurrentScore AS t WITH (NOLOCK)
 	WHERE t.MatchId IN (SELECT MatchId FROM #tmpNewMatch WITH (NOLOCK));
 
