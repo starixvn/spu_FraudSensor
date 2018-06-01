@@ -33,7 +33,7 @@
 
         protected override void OnStop()
         {
-            Logger.Log.Info("SPU FS Service Stopped");
+            Logger.Log.Info("SPU FS 2 Service Stopped");
 
             _receivingMessageHandler.ClearCases();
 
@@ -46,7 +46,7 @@
         {
             SendMailInform(false);
 
-            Logger.Log.Info("SPU FS Service Stopped");
+            Logger.Log.Info("SPU FS 2 Service Stopped");
 
             _receivingMessageHandler.ClearCases();
 
@@ -57,16 +57,14 @@
         {
             try
             {
-                Logger.Log.Info("SPU FS Service Started");
+                Logger.Log.Info("SPU FS 2 Service Started");
 
                 MailClientHandler.Start();
 
                 var queue = new MessageQueueReceiver();
                 queue.Clear();
 
-            Logger.Log.Info("Loading fraudcase");
-
-                Logger.Log.Info("Loading fraudcase");
+                Logger.Log.Info("SPU FS 2 Service - Loading fraudcases");
 
                 _fraudCaseLoader.LoadFraudCases();
 
@@ -74,7 +72,7 @@
 
                 SendMailInform(true);
 
-                Logger.Log.Info("Loading tasks has done.");
+                Logger.Log.Info("SPU FS 2 Service - Loading fraudcases have done.");
             }
             catch (System.Exception ex)
             {
