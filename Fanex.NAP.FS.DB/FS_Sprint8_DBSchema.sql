@@ -1,0 +1,11 @@
+/*
+Creator: 20180605@LongLuu
+Task:  Create tables for Fraud Sensor - Sprint#8
+Server:  bodb_FraudSensor
+
+Reviewer: Billy
+*/ 
+
+USE	bodb_FraudSensor;
+GO
+
