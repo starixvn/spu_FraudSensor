@@ -61,7 +61,6 @@ CREATE TABLE [dbo].[Message](
 	[MessageId] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [DATA]
 ) ON [DATA]
-GO
 
 CREATE NONCLUSTERED INDEX NCIX_Message_FraudCaseId ON [dbo].[Message] (
 	[FraudCaseId]		ASC
@@ -86,7 +85,6 @@ CREATE NONCLUSTERED INDEX NCIX_UserMessage_UserIdMessageId ON [dbo].[UserMessage
 	[IsViewed]			ASC
 ) ON IDX;
 GO
-
 
 ----===================C. ALTER TABLES=========================
 ----===========================================================
