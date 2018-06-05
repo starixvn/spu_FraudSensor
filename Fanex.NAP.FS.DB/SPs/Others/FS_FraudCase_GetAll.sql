@@ -1,15 +1,13 @@
-
-SET QUOTED_IDENTIFIER ON 
+USE [bodb_FraudSensor]
 GO
-SET ANSI_NULLS ON 
+SET ANSI_NULLS ON;
 GO
-
-/****** Object:  Stored Procedure dbo.FS_FraudCase_GetAll    Script Date: 5/15/2018 4:21:24 PM ******/
-/****** Object:  Stored Procedure dbo.FS_FraudCase_GetAll    Script Date: 3/13/2018 1:37:39 PM ******/
-CREATE PROCEDURE [dbo].[FS_FraudCase_GetAll]
-	@IsInternal BIT = 0
-	, @IsActive BIT = NULL
-	, @Environment INT = 3
+SET QUOTED_IDENTIFIER ON;
+GO
+ALTER PROCEDURE [dbo].[FS_FraudCase_GetAll]
+	@IsInternal BIT = NULL
+	, @IsActive BIT	= NULL	
+	, @Environment INT	= 3
 AS
 /*
 	Created: 20180306@Aaron
@@ -20,6 +18,7 @@ AS
 
 	Revisions: 
 	 + 20180414@Casey: Add parameters @IsInternal, @IsActive, @IsTest
+	 + 20180605@CaseyHuynh: Update @IsInternal Default Value is NULL
 
 	Param's Explanation (filtered by):
 	 + @IsInternal: NULL-All, 0-NotInternal, 1-Internal
@@ -28,26 +27,18 @@ AS
 */
 BEGIN
 	SET NOCOUNT ON;	
-    SELECT	FraudCaseId
-		,	FraudCaseName
-		,	FraudCaseDesc
-		,	FraudCaseInterval
-		,	IsActive
-		,	IsTest
-	FROM [dbo].[FraudCase] WITH (NOLOCK)
-	WHERE IsInternal = ISNULL(@IsInternal,IsInternal)
-			AND IsActive = ISNULL(@IsActive,IsActive)
-			AND IsTest = (Case when @Environment = 3 then 0 ELSE IsTest END)
-	ORDER BY FraudCaseId
+    SELECT	fc.FraudCaseId
+		,	fc.FraudCaseName
+		,	fc.FraudCaseDesc
+		,	fc.FraudCaseInterval
+		,	fc.IsActive
+		,	fc.IsTest
+	FROM	dbo.FraudCase fc WITH (NOLOCK)
+	WHERE	fc.IsInternal = ISNULL(@IsInternal,fc.IsInternal)
+			AND fc.IsActive = ISNULL(@IsActive,fc.IsActive)
+			AND fc.IsTest = (CASE WHEN @Environment = 3 THEN 0 ELSE fc.IsTest END)
+	ORDER BY FraudCaseId;
 END;
-GO
-
-SET QUOTED_IDENTIFIER OFF 
-GO
-SET ANSI_NULLS ON 
-GO
-
-
 GO 
  GRANT EXECUTE ON [dbo].[FS_FraudCase_GetAll] TO [bodbSPUNet]
 GO 
