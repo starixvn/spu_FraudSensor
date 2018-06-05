@@ -52,7 +52,7 @@
 
     ip_dialog.dialog({
         height: "auto",
-        width: 600,
+        width: 650,
         modal: true,
         autoOpen: false,
         resizable: false,

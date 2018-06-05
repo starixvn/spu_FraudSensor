@@ -1,18 +1,18 @@
 ﻿<div class="customer-list" id="ip-list" title="IP list">
-    <div class="top-header-in-popup">
-        <div class="form-filter">
-            <div class="group">
-                <input type="text" class="text" id="from-ip" placeholder="from">
-            </div>
-
-            <div class="group">
-                <input type="text" class="text" id="to-ip" placeholder="to" />
-            </div>
-
-            <button class="button -primary" id="add-ip-btn">Add</button>
-
-            <button class="button -export" id="export-excel"><span class="icon-export-excel"></span>Export</button>
+    <div class="form-filter">
+        <div class="group">
+            <label class="text">From</label>
+            <input type="text" class="control" id="from-ip">
         </div>
+
+        <div class="group">
+            <label class="text">To</label>
+            <input type="text" class="control" id="to-ip" />
+        </div>
+
+        <button class="button -primary" id="add-ip-btn">Add</button>
+
+        <button class="button -export" id="export-excel"><span class="icon-export-excel"></span>Export</button>
     </div>
 
     <table id="ip-table" class="table table-striped width-100per" style="width: 100%">
