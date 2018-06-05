@@ -215,6 +215,8 @@
     <Compile Include="Criteria\MatchMonitor\MatchGetAllCriteria.cs" />
     <Compile Include="Criteria\MatchMonitor\MatchNoteUpdateCriteria.cs" />
     <Compile Include="Criteria\MatchMonitor\VerifyMatchCriteria.cs" />
+    <Compile Include="Criteria\Notification\UserMessageGetCriteria.cs" />
+    <Compile Include="Criteria\Notification\UserMessageUnreadCounterGetCriteria.cs" />
     <Compile Include="Criteria\SuspiciousCustomerDetails\SuspiciousCustomerDetailsGeneralCriteria.cs" />
     <Compile Include="Criteria\SuspiciousCustomerDetails\SuspiciousCustomerDetailsStatisticsGetCriteria.cs" />
     <Compile Include="Criteria\SuspiciousCustomer\SuspiciousCustomerAssigneeGetCriteria.cs" />
@@ -235,6 +237,7 @@
     <Compile Include="DTO\CustomerTotalAssociation.cs" />
     <Compile Include="DTO\CustomerList.cs" />
     <Compile Include="DTO\CustomerAssociation.cs" />
+    <Compile Include="DTO\Message.cs" />
     <Compile Include="DTO\Match.cs" />
     <Compile Include="DTO\FraudCase.cs" />
     <Compile Include="Core\Resources\Error.Designer.cs">
@@ -295,6 +298,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\Implement\DelayGoalAccountService.cs" />
     <Compile Include="Services\Implement\FraudCaseDetailsService.cs" />
+    <Compile Include="Services\Implement\NotificationService.cs" />
     <Compile Include="Services\Implement\MatchMonitorService.cs" />
     <Compile Include="Services\Implement\OfficeIPService.cs" />
     <Compile Include="Services\Implement\SuspiciousCustomerReportDetailsService.cs" />
@@ -304,6 +308,7 @@
     <Compile Include="Services\Implement\FraudSensorTaskService.cs" />
     <Compile Include="Services\Interface\IFraudCaseDetailsService.cs" />
     <Compile Include="Services\Interface\IDelayGoalAccountService.cs" />
+    <Compile Include="Services\Interface\INotificationService.cs" />
     <Compile Include="Services\Interface\IOfficeIPService.cs" />
     <Compile Include="Services\Interface\ISuspiciousCustomerReportDetailsService.cs" />
     <Compile Include="Services\Interface\ISuspiciousCustomerReportService.cs" />

@@ -153,4 +153,14 @@
           SpName="FS_Rpt_SuspicousCustomerDetails_WinlossStatistic_Get_xtest"
           DbName="DBFS.FraudSensor.bodbSPUNet"/>
   </Function>
+
+  <Function Name="Notification">
+    <Setting Key="FS_Tbl_UserMessage_Get"
+             SpName="FS_Tbl_UserMessage_Get_xtest"
+             DbName="DBFS.FraudSensor.bodbSPUNet" />
+
+    <Setting Key="FS_Tbl_UserMessage_GetUnreadCount"
+             SpName="FS_Tbl_UserMessage_GetUnreadCount_xtest"
+             DbName="DBFS.FraudSensor.bodbSPUNet" />
+  </Function>
 </Functions>

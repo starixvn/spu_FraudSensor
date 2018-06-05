@@ -153,12 +153,22 @@
   </Function>
   
   <Function Name="SuspiciousCustomerDetails">
-	<Setting Key="FS_Rpt_SuspicousCustomerDetails_ViolatedTickets_Get"
-			  SpName="FS_Rpt_SuspicousCustomerDetails_ViolatedTickets_Get"
-			  DbName="DBFS.FraudSensor.bodbSPUNet"/>
+	  <Setting Key="FS_Rpt_SuspicousCustomerDetails_ViolatedTickets_Get"
+			    SpName="FS_Rpt_SuspicousCustomerDetails_ViolatedTickets_Get"
+			    DbName="DBFS.FraudSensor.bodbSPUNet"/>
 	
-	<Setting Key="FS_Rpt_SuspicousCustomerDetails_WinlossStatistic_Get"
-			  SpName="FS_Rpt_SuspicousCustomerDetails_WinlossStatistic_Get"
-			  DbName="DBFS.FraudSensor.bodbSPUNet"/>
+	  <Setting Key="FS_Rpt_SuspicousCustomerDetails_WinlossStatistic_Get"
+			    SpName="FS_Rpt_SuspicousCustomerDetails_WinlossStatistic_Get"
+			    DbName="DBFS.FraudSensor.bodbSPUNet"/>
+  </Function>
+
+  <Function Name="Notification">
+    <Setting Key="FS_Tbl_UserMessage_Get"
+             SpName="FS_Tbl_UserMessage_Get"
+             DbName="DBFS.FraudSensor.bodbSPUNet" />
+
+    <Setting Key="FS_Tbl_UserMessage_GetUnreadCount"
+             SpName="FS_Tbl_UserMessage_GetUnreadCount"
+             DbName="DBFS.FraudSensor.bodbSPUNet" />
   </Function>
 </Functions>
