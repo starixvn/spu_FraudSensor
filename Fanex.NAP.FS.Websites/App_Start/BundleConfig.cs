@@ -36,6 +36,7 @@
             RegisterFraudCaseBundles(bundles);
             RegisterSuspiciousCustomerBundles(bundles);
             RegisterSuspiciousCustomerDetailsBundles(bundles);
+            RegisterScannedOfficeIpBundles(bundles);
         }
 
         private static void RegisterFSCoreBundles(BundleCollection bundles)
@@ -82,6 +83,11 @@
         {
             bundles.Add(new ScriptBundle("~/suspicious-customer-scripts").Include(
                 "~/scripts/suspiciouscustomerdetails/*.js"));
+        }
+
+        private static void RegisterScannedOfficeIpBundles(BundleCollection bundles)
+        {
+            bundles.Add(new ScriptBundle("~/ScannedOfficeIp-scripts/main").Include("~/scripts/ScannedOfficeIp/scanned-office-ip.js"));
         }
     }
 }

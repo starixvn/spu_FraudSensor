@@ -8,7 +8,7 @@
 // </summary>
 //
 // <history>
-// Lasted generated date: 5/10/2018 13:07:32
+// Lasted generated date: 6/5/2018 13:08:42
 // </history>
 
 using System.Diagnostics.CodeAnalysis;
@@ -46,6 +46,8 @@ public static class FSFunctionKeys
         public const string Notification = "Notification";
 
         public const string Reports = "Reports";
+
+        public const string ScannedOfficeIP = "ScannedOfficeIP";
 
         public const string SuspiciousCustomer = "SuspiciousCustomer";
 

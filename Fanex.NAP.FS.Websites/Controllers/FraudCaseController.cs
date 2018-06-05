@@ -131,12 +131,12 @@
 
         public ActionResult DeleteIpRange(string fromIp, string toIp)
         {
-            return Json(_ipService.DeleteIpRange(fromIp, toIp));
+            return Json(_ipService.DeleteIpRange(fromIp, toIp, CurrentSession.UserId));
         }
 
         public ActionResult AddIpRange(string fromIp, string toIp)
         {
-            return Json(_ipService.AddIpRange(fromIp, toIp));
+            return Json(_ipService.AddIpRange(fromIp, toIp, CurrentSession.UserId));
         }
 
         public ActionResult ExportExcelIp()

@@ -104,6 +104,18 @@
     <Setting Key="FS_FraudCase_GetAll"
              SpName="FS_FraudCase_GetAll"
              DbName="DBFS.FraudSensor.bodbSPUNet" />
+
+    <Setting Key="FS_Tbl_OfficeIP_Delete"
+             SpName="FS_Tbl_OfficeIP_Delete"
+             DbName="DBFS.FraudSensor.bodbSPUNet" />
+
+    <Setting Key="FS_Tbl_OfficeIP_Insert"
+         SpName="FS_Tbl_OfficeIP_Insert"
+         DbName="DBFS.FraudSensor.bodbSPUNet" />
+
+    <Setting Key="FS_Tbl_OfficeIP_GetAll"
+     SpName="FS_Tbl_OfficeIP_GetAll"
+     DbName="DBFS.FraudSensor.bodbSPUNet" />
   </Function>
 
   <Function Name="FS_API">

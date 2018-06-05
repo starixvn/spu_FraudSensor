@@ -198,6 +198,9 @@
     <Compile Include="Criteria\FraudCase\FraudCaseGetByIdCriteria.cs" />
     <Compile Include="Criteria\FraudCase\FraudCaseGetCriteria.cs" />
     <Compile Include="Criteria\FraudCase\GetIsActiveCriteria.cs" />
+    <Compile Include="Criteria\FraudCase\ScannedOfficeIP\OfficeIPDeleteCriteria.cs" />
+    <Compile Include="Criteria\FraudCase\ScannedOfficeIP\OfficeIPGetCriteria.cs" />
+    <Compile Include="Criteria\FraudCase\ScannedOfficeIP\OfficeIPInsertCriteria.cs" />
     <Compile Include="Criteria\FraudCase\UpdateFraudCaseStatusCriteria.cs" />
     <Compile Include="Criteria\FraudSensorTask\DelayGoalPreconditionCriteria.cs" />
     <Compile Include="Criteria\FraudSensorTask\DelayGoalRuleCriteria.cs" />
@@ -216,6 +219,7 @@
     <Compile Include="Criteria\MatchMonitor\MatchNoteUpdateCriteria.cs" />
     <Compile Include="Criteria\MatchMonitor\VerifyMatchCriteria.cs" />
     <Compile Include="Criteria\Notification\UserMessageGetCriteria.cs" />
+    <Compile Include="Criteria\ScannedOfficeIP\TicketFromOfficeIpGetCriteria.cs" />
     <Compile Include="Criteria\Notification\UserMessageUnreadCounterGetCriteria.cs" />
     <Compile Include="Criteria\SuspiciousCustomerDetails\SuspiciousCustomerDetailsGeneralCriteria.cs" />
     <Compile Include="Criteria\SuspiciousCustomerDetails\SuspiciousCustomerDetailsStatisticsGetCriteria.cs" />
@@ -252,6 +256,7 @@
     <Compile Include="ExcelConfig\MatchMonitor\MatchMonitorExcelConfig.cs" />
     <Compile Include="ExcelConfig\MatchMonitor\TicketByIpConfig.cs" />
     <Compile Include="ExcelConfig\MatchMonitor\TicketDetailConfig.cs" />
+    <Compile Include="ExcelConfig\ScannedOfficeIP\OfficeTicketConfig.cs" />
     <Compile Include="ExcelConfig\SuspiciousCustomer\SuspiciousCustomerConfig.cs" />
     <Compile Include="ExcelConfig\Utilities.cs" />
     <Compile Include="FSMQ\MessageQueue\FSMessageQueue.cs" />
@@ -301,6 +306,7 @@
     <Compile Include="Services\Implement\NotificationService.cs" />
     <Compile Include="Services\Implement\MatchMonitorService.cs" />
     <Compile Include="Services\Implement\OfficeIPService.cs" />
+    <Compile Include="Services\Implement\ScannedOfficeIpReport.cs" />
     <Compile Include="Services\Implement\SuspiciousCustomerReportDetailsService.cs" />
     <Compile Include="Services\Implement\SuspiciousCustomerReportService.cs" />
     <Compile Include="Services\Implement\FlaggedAccountService.cs" />
@@ -310,6 +316,7 @@
     <Compile Include="Services\Interface\IDelayGoalAccountService.cs" />
     <Compile Include="Services\Interface\INotificationService.cs" />
     <Compile Include="Services\Interface\IOfficeIPService.cs" />
+    <Compile Include="Services\Interface\IScannedOfficeIpReportService.cs" />
     <Compile Include="Services\Interface\ISuspiciousCustomerReportDetailsService.cs" />
     <Compile Include="Services\Interface\ISuspiciousCustomerReportService.cs" />
     <Compile Include="Services\Interface\IFlaggedAccountService.cs" />

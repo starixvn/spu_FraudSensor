@@ -83,7 +83,7 @@
 
                     result.TicketRules = new[]
                     {
-                        "IP = <a href='#' id='ip-link'>IP List</a>",
+                        "IP = <a href='#' id='ip-link' class='view-list'>IP List</a>",
                         "Currency <> UUS"
                     };
 

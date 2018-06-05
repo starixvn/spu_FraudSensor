@@ -17,21 +17,24 @@
     function validate_ip(ip) {
         var arr = ip.split(".");
 
-        return arr.length == 4 && arr.every(x => !isNaN(parseInt(x)));
+        return arr.length == 4 && arr.every(x => !isNaN(parseInt(x)) && parseInt(x).toString() == x);
     }
 
     function validate_ip_range(fromIp, toIp) {
-        var from_arr = fromIp.split(".").slice(0, 3);
-        var to_arr = toIp.split(".").slice(0,3);
-        
-        return from_arr.every((v, idx) => v == to_arr[idx]); 
+        var from_arr = fromIp.split(".");
+        var to_arr = toIp.split(".");
+
+        var from_number = parseInt(from_arr[3]);
+        var to_numer = parseInt(to_arr[3]);
+
+        return from_arr.every((v, idx) => idx == 3 || v == to_arr[idx]) && from_number <= to_numer;
     }
 
     function add_ip_range() {
         var from = $("#from-ip").val();
         var to = $("#to-ip").val();
 
-        if (!validate_ip(from) && !validate_ip(to)) {
+        if (!validate_ip(from) || !validate_ip(to)) {
             common.showError("Invalid IP!");
         }
         else if (!validate_ip_range(from, to)) {
@@ -62,6 +65,7 @@
     $("#ip-link").click(function () {
         ip_dialog.dialog("open");
         ip_table.DataTable().columns.adjust();
+        ip_table.DataTable().ajax.reload();
     });
 
     ip_table.DataTable({
@@ -76,7 +80,7 @@
         language: common.language(),
         columnDefs: [
             { defaultContent: "-" },
-            { targets: [1, 2], width: "100px"}
+            { targets: [1, 2], width: "100px" }
         ],
         columns: [
             { data: (row, type, set, meta) => meta.row + 1, className: "text-center", width: "40px" },

@@ -8,8 +8,8 @@
     {
         IEnumerable<OfficeIp> GetIps();
 
-        DBResult AddIpRange(string fromIp, string toIp);
+        DBResult AddIpRange(string fromIp, string toIp, int userId);
 
-        DBResult DeleteIpRange(string fromIp, string toIp);
+        DBResult DeleteIpRange(string fromIp, string toIp, int userId);
     }
 }
