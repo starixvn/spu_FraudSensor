@@ -4,7 +4,7 @@ SET ANSI_NULLS ON;
 GO
 SET QUOTED_IDENTIFIER ON;
 GO
-CREATE PROCEDURE dbo.FS_Tbl_OfficeIP_Insert
+ALTER PROCEDURE dbo.FS_Tbl_OfficeIP_Insert
 	@UserId		INT
 	, @IPRange		VARCHAR(11)
 	, @FromNumber	SMALLINT
@@ -23,47 +23,46 @@ AS
 
 	Param's Explanation (filtered by):
 	 + @IPRange: a first three part of IP Address
-	 + @FromNumber: NULL-All, 0-Inactive, 1-Active
-	 + @ToNumber: 3-Production get Istest=0 ELSE All	
+	 + @FromNumber: from 0 to 255
+	 + @ToNumber: from 0 to 255	
 */
 BEGIN
 	SET NOCOUNT ON;
 	
-	DECLARE @LogTypeId		INT	=	12;
-	DECLARE @LogData		VARCHAR(500)
+	DECLARE @LogTypeId		INT	= 14
+			, @LogData		VARCHAR(500)
 			, @SPName		VARCHAR(100);
 	
 	DECLARE @InsertTime DATETIME;
 	
-	BEGIN TRY
-	
-		SELECT @InsertTime = GETDATE();
-					
-		INSERT INTO dbo.OfficeIP(IPRange, FromNumber, ToNumber)
-		VALUES(@IPRange, @FromNumber, @ToNumber);
-		
-	END TRY
-	BEGIN CATCH
-		SELECT @ErrCode	=	ERROR_NUMBER();
-	END CATCH;
-	
-	--================ Write Log ================ 
-	IF (@ErrCode	=	0) 
+	IF NOT EXISTS (SELECT TOP(1) 1 FROM dbo.OfficeIP WITH(NOLOCK) WHERE IPRange = @IPRange AND FromNumber = @FromNumber AND ToNumber = @ToNumber)
 	BEGIN
-		SELECT @LogData =	'@UserId=	'			+	DBO.SPU_ToString(@UserId)  
-							+ ', IPRange	=	' 	+	DBO.SPU_ToString(@IPRange) 
-							+ ', FromNumber	=	' 		+	DBO.SPU_ToString(@FromNumber)
-							+ ', ToNumber	=	' 	+	DBO.SPU_ToString(@ToNumber)
-							+ ', LogDate	=	' 	+	DBO.SPU_ToString(@InsertTime);
+		BEGIN TRY
+	
+			INSERT INTO dbo.OfficeIP(IPRange, FromNumber, ToNumber)
+			VALUES(@IPRange, @FromNumber, @ToNumber);			
+		END TRY
+		BEGIN CATCH
+			SELECT @ErrCode	= ERROR_NUMBER();
+		END CATCH;
+					
+		--================ Write Log ================ 
+		IF (@ErrCode = 0) 
+		BEGIN
+			SELECT @LogData =	'@UserId = '			+	DBO.SPU_ToString(@UserId)  
+								+ ', IPRange = ' 	+	DBO.SPU_ToString(@IPRange) 
+								+ ', FromNumber = ' 		+	DBO.SPU_ToString(@FromNumber)
+								+ ', ToNumber = ' 	+	DBO.SPU_ToString(@ToNumber)
 
-		SELECT @SPName	=	OBJECT_NAME(@@ProcID);
+			SELECT @SPName	=	OBJECT_NAME(@@ProcID);
 
-		EXEC [dbo].[FS_UserLog_Insert]  
-				@LogTypeId	=	@LogTypeId   
-			,	@UserId		=	@UserId  
-			,	@SPName		=	@SPName
-			,	@Details	=	@LogData;
-	END;
+			EXEC [dbo].[FS_UserLog_Insert]  
+					@LogTypeId	=	@LogTypeId   
+				,	@UserId		=	@UserId  
+				,	@SPName		=	@SPName
+				,	@Details	=	@LogData;
+		END;
+	END;	
 END;
 GO 
  GRANT EXECUTE ON dbo.FS_Tbl_OfficeIP_Insert TO bodbSPUNet
