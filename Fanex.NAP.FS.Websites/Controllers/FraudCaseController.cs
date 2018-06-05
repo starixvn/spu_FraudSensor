@@ -2,18 +2,21 @@
 {
     using Fanex.NAP.Core.Web.Attribute;
     using Fanex.NAP.FS.Library.Core.Helpers.Api;
+    using Fanex.NAP.FS.Library.ExcelConfig.FraudCase.ScannedOfficeIP;
     using Fanex.NAP.FS.Library.FSMQ;
     using Fanex.NAP.FS.Library.Models;
+    using Fanex.NAP.FS.Library.Services.Implement;
+    using Fanex.NAP.FS.Library.Services.Interface;
     using Library.Core.Helpers.Xml;
     using Library.Criteria.FraudCase.DelayedGoal;
     using Library.DTO;
     using Library.Services;
-    using ViewModels.FraudCase;
     using System;
     using System.Collections.Generic;
     using System.Configuration;
     using System.Linq;
     using System.Web.Mvc;
+    using ViewModels.FraudCase;
 
     [NapAuth(FunctionKey = FSFunctionKeys.FraudCase, Policy = Core.Business.Constant.Policy.Read)]
     public class FraudCaseController : ConfigurationsController
@@ -24,10 +27,13 @@
 
         private readonly IFraudCaseService _fraudCaseService;
 
+        private readonly IOfficeIPService _ipService;
+
         public FraudCaseController()
         {
             _delayGoalAccountService = new DelayGoalAccountService();
             _fraudCaseService = new FraudCaseService();
+            _ipService = new OfficeIPService();
         }
 
         public ActionResult Index()
@@ -63,6 +69,8 @@
             return Json(new object());
         }
 
+        #region delay goal customer
+
         public ActionResult GetDelayedGoalCustomerList()
         {
             var json = new
@@ -87,10 +95,10 @@
             if (dbresult.ErrorCode == 0)
             {
                 var manualAccount = dbresult.OutParam["addedcustid"].ToString();
-                IEnumerable<CustomerAssociation> customerAssociation = 
+                IEnumerable<CustomerAssociation> customerAssociation =
                     ApiHelper.Post<string, IEnumerable<CustomerAssociation>>(
                         FPS_WEBAPI_GET_ASSOCIATION_ACCOUNT, manualAccount,
-                        int.Parse(ConfigurationManager.AppSettings["Environment"]), 
+                        int.Parse(ConfigurationManager.AppSettings["Environment"]),
                         int.Parse(ConfigurationManager.AppSettings["MailingListId"])).Result;
 
                 if (customerAssociation.Any())
@@ -111,5 +119,38 @@
 
             return File(_fraudCaseService.ExportDelayedCustomersToExcel(templatePath, searchString), "application/vnd.ms-excel", fileName);
         }
+
+        #endregion delay goal customer
+
+        #region scanned office ip
+
+        public ActionResult GetIpList()
+        {
+            return JData(_ipService.GetIps());
+        }
+
+        public ActionResult DeleteIpRange(string fromIp, string toIp)
+        {
+            return Json(_ipService.DeleteIpRange(fromIp, toIp));
+        }
+
+        public ActionResult AddIpRange(string fromIp, string toIp)
+        {
+            return Json(_ipService.AddIpRange(fromIp, toIp));
+        }
+
+        public ActionResult ExportExcelIp()
+        {
+            var template = Server.MapPath("~/App_Data/Excel Template/FraudCase/ScannedOfficeIP/template.xlsx");
+
+            var file = RenderExcelFile(
+                    template,
+                    wb => new OfficeIPExcelConfig().RenderExcel(wb, null, _ipService.GetIps(), null)
+                );
+
+            return ExcelFile(file, $"IPList_{DateTime.Today.ToString("yyyyMMdd")}");
+        }
+
+        #endregion scanned office ip
     }
 }

@@ -4,9 +4,11 @@
     using Fanex.NAP.Core.Context;
     using Fanex.NAP.Core.Service.Impl;
     using Fanex.NAP.Core.Service.Interface;
-    using Fanex.NAP.Core.Web.Attribute;
     using Fanex.NAP.Core.Web.Context;
     using Fanex.NAP.Core.Web.Session;
+    using Fanex.NAP.FS.Library.Core.ExportExcel;
+    using NPOI.SS.UserModel;
+    using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Web.Mvc;
@@ -125,6 +127,15 @@
         protected ActionResult JData<T>(IEnumerable<T> data)
         {
             return Json(new { data });
+        }
+
+        protected static byte[] RenderExcelFile(string template, Action<IWorkbook> render)
+        {
+            var wb = ExcelUtilities.GetWorkbook(template);
+
+            render(wb);
+
+            return wb.ToBytes();
         }
     }
 }

@@ -70,6 +70,11 @@
     {
         @Html.Partial("DelayedGoal/Dialog")
     }
+
+    if(Model.FraudCaseInfo.FraudCaseId == (int)FraudCaseId.ScannedOfficeIP)
+    {
+        @Html.Partial("ScannedOfficeIP/Dialog")
+    }
 }
 
 @section scripts{
@@ -80,6 +85,11 @@
         if (Model.FraudCaseInfo.FraudCaseId == (int)FraudCaseId.DelayedGoal)
         {
             @Scripts.Render("~/fraud-case-scripts/delayed-goal")
+        }
+
+        if(Model.FraudCaseInfo.FraudCaseId == (int)FraudCaseId.ScannedOfficeIP)
+        {
+            @Scripts.Render("~/fraud-case-scripts/scanned-office-ip")
         }
     }
 }

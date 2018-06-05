@@ -73,6 +73,22 @@
 
                     break;
 
+                case Models.FraudCaseId.ScannedOfficeIP:
+                    result.MatchRules = new[]
+                    {
+                        "Match Status = Completed",
+                        "League Type = Main Markets",
+                        "Match State = Not Scanned"
+                    };
+
+                    result.TicketRules = new[]
+                    {
+                        "IP = <a id='ip-link'>IP List</a>",
+                        "Currency <> UUS"
+                    };
+
+                    break;
+
                 default:
                     throw new NotImplementedException("Fraud case id " + id + " hasn't been implemented");
             }

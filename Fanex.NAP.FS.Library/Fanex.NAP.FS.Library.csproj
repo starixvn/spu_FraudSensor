@@ -244,6 +244,7 @@
     </Compile>
     <Compile Include="Core\Resources\ErrorLookup.cs" />
     <Compile Include="ExcelConfig\FraudCase\DelayedGoal\DelayedGoalExcelConfig.cs" />
+    <Compile Include="ExcelConfig\FraudCase\ScannedOfficeIP\OfficeIPExcelConfig.cs" />
     <Compile Include="ExcelConfig\MatchMonitor\CustomerDetailConfig.cs" />
     <Compile Include="ExcelConfig\MatchMonitor\MatchMonitorExcelConfig.cs" />
     <Compile Include="ExcelConfig\MatchMonitor\TicketByIpConfig.cs" />
@@ -269,6 +270,7 @@
     <Compile Include="Models\FraudCase\DelayedGoal\Customer.cs" />
     <Compile Include="Models\FraudCase\FlaggedAccount\FlaggedCustomer.cs" />
     <Compile Include="Models\FraudCase\FraudCase.cs" />
+    <Compile Include="Models\FraudCase\ScannedOfficeIP\OfficeIp.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\MatchMonitor\BalanceUpDate.cs" />
     <Compile Include="Models\MatchMonitor\FraudCase.cs" />
@@ -294,6 +296,7 @@
     <Compile Include="Services\Implement\DelayGoalAccountService.cs" />
     <Compile Include="Services\Implement\FraudCaseDetailsService.cs" />
     <Compile Include="Services\Implement\MatchMonitorService.cs" />
+    <Compile Include="Services\Implement\OfficeIPService.cs" />
     <Compile Include="Services\Implement\SuspiciousCustomerReportDetailsService.cs" />
     <Compile Include="Services\Implement\SuspiciousCustomerReportService.cs" />
     <Compile Include="Services\Implement\FlaggedAccountService.cs" />
@@ -301,6 +304,7 @@
     <Compile Include="Services\Implement\FraudSensorTaskService.cs" />
     <Compile Include="Services\Interface\IFraudCaseDetailsService.cs" />
     <Compile Include="Services\Interface\IDelayGoalAccountService.cs" />
+    <Compile Include="Services\Interface\IOfficeIPService.cs" />
     <Compile Include="Services\Interface\ISuspiciousCustomerReportDetailsService.cs" />
     <Compile Include="Services\Interface\ISuspiciousCustomerReportService.cs" />
     <Compile Include="Services\Interface\IFlaggedAccountService.cs" />

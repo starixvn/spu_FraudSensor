@@ -159,6 +159,7 @@
     <Compile Include="FraudCaseExecutor\GhostExecutor.cs" />
     <Compile Include="FraudCaseExecutor\FlaggedAccountExecutor.cs" />
     <Compile Include="FraudCaseExecutor\BigStakeNearGoalExecutor.cs" />
+    <Compile Include="FraudCaseExecutor\ScannedOfficeIPExecutor.cs" />
     <Compile Include="FraudCaseFactory\FraudCaseFactory.cs" />
     <Compile Include="FraudCaseManager\FraudCaseManager.cs" />
     <Compile Include="FraudCaseManager\IFraudCaseManager.cs" />

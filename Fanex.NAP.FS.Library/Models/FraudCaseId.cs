@@ -4,6 +4,7 @@
     {
         BSNG = 1,
         FlaggedAccount = 6,
-        DelayedGoal = 8
+        DelayedGoal = 8,
+        ScannedOfficeIP = 2
     }
 }

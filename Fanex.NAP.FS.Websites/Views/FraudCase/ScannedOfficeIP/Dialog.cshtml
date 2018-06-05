@@ -1,0 +1,29 @@
+﻿<div class="customer-list" id="ip-list" title="IP list">
+    <div class="top-header-in-popup">
+        <div class="form-filter">
+            <div class="group">
+                <input type="text" class="text" id="from-ip" placeholder="from">
+            </div>
+
+            <div class="group">
+                <input type="text" class="text" id="to-ip" placeholder="to" />
+            </div>
+
+            <button class="button -primary" id="add-ip-btn">Add</button>
+
+            <button class="button -export" id="export-excel"><span class="icon-export-excel"></span>Export</button>
+        </div>
+    </div>
+
+    <table id="ip-table" class="table table-striped width-100per" style="width: 100%">
+        <thead>
+            <tr>
+                <th class="col-no">#</th>
+                <th>From IP</th>
+                <th>To IP</th>
+                <th class="col-delete ">Delete</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
