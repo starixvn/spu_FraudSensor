@@ -13,20 +13,22 @@
             _notificationService = new NotificationService();
         }
 
-        [HttpPost]
+        [HttpGet]
         public JsonResult GetAllMessages()
         {
             var userId = CurrentSession.UserId;
-            var messages = _notificationService.Get(userId).ToList();
+            var messages = new System.Collections.Generic.List<Library.DTO.Message>();//_notificationService.Get(userId).ToList();
+            messages.Add(new Library.DTO.Message { FraudCaseName = "New message", IsViewed = false, LogDate = System.DateTime.Now, MessageContent = "temp content" });
+            messages.Add(new Library.DTO.Message { FraudCaseName = "Old message", IsViewed = true, LogDate = System.DateTime.Now, MessageContent = "temp content is reviewed" });
 
             return Json(messages, JsonRequestBehavior.AllowGet);
         }
 
-        [HttpPost]
-        public JsonResult ReCheckNotification(bool updateStatus)
+        [HttpGet]
+        public JsonResult ReCheckNotification()
         {
             var userId = CurrentSession.UserId;
-            var unreadMessageCounter = _notificationService.GetUnreadMessageCounter(userId);
+            var unreadMessageCounter = 1;// _notificationService.GetUnreadMessageCounter(userId);
 
             return Json(new { UnreadMessageCounter = unreadMessageCounter }, JsonRequestBehavior.AllowGet);
         }

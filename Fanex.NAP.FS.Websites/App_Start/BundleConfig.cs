@@ -37,6 +37,7 @@
             RegisterSuspiciousCustomerBundles(bundles);
             RegisterSuspiciousCustomerDetailsBundles(bundles);
             RegisterScannedOfficeIpBundles(bundles);
+            RegisterNotificationBundles(bundles);
         }
 
         private static void RegisterFSCoreBundles(BundleCollection bundles)
@@ -90,6 +91,12 @@
         private static void RegisterScannedOfficeIpBundles(BundleCollection bundles)
         {
             bundles.Add(new ScriptBundle("~/ScannedOfficeIp-scripts/main").Include("~/scripts/ScannedOfficeIp/scanned-office-ip.js"));
+        }
+        
+        private static void RegisterNotificationBundles(BundleCollection bundles)
+        {
+            bundles.Add(new ScriptBundle("~/notification").Include(
+                "~/scripts/Notification/*.js"));
         }
     }
 }
