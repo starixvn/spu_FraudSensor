@@ -33,14 +33,12 @@ BEGIN
 			, @LogData		VARCHAR(500)
 			, @SPName		VARCHAR(100);
 	
-	DECLARE @InsertTime DATETIME;
-	
 	IF NOT EXISTS (SELECT TOP(1) 1 FROM dbo.OfficeIP WITH(NOLOCK) WHERE IPRange = @IPRange AND FromNumber = @FromNumber AND ToNumber = @ToNumber)
 	BEGIN
 		BEGIN TRY
-	
-			INSERT INTO dbo.OfficeIP(IPRange, FromNumber, ToNumber)
-			VALUES(@IPRange, @FromNumber, @ToNumber);			
+			
+			INSERT INTO dbo.OfficeIP(IPRange, FromNumber, ToNumber, Creator, CreatedDate)
+			VALUES(@IPRange, @FromNumber, @ToNumber, @UserId, GETDATE());			
 		END TRY
 		BEGIN CATCH
 			SELECT @ErrCode	= ERROR_NUMBER();
@@ -49,9 +47,9 @@ BEGIN
 		--================ Write Log ================ 
 		IF (@ErrCode = 0) 
 		BEGIN
-			SELECT @LogData =	'@UserId = '			+	DBO.SPU_ToString(@UserId)  
+			SELECT @LogData =	'@UserId = '		+	DBO.SPU_ToString(@UserId)  
 								+ ', IPRange = ' 	+	DBO.SPU_ToString(@IPRange) 
-								+ ', FromNumber = ' 		+	DBO.SPU_ToString(@FromNumber)
+								+ ', FromNumber = ' +	DBO.SPU_ToString(@FromNumber)
 								+ ', ToNumber = ' 	+	DBO.SPU_ToString(@ToNumber)
 
 			SELECT @SPName	=	OBJECT_NAME(@@ProcID);

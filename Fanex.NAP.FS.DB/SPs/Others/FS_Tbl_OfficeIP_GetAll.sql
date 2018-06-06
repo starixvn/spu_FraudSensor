@@ -5,11 +5,7 @@ GO
 SET QUOTED_IDENTIFIER ON;
 GO
 ALTER PROCEDURE dbo.FS_Tbl_OfficeIP_GetAll
-	@UserId		INT
-	, @IPRange		VARCHAR(11)
-	, @FromNumber	SMALLINT
-	, @ToNumber		SMALLINT
-	, @ErrCode		INT	= 0		OUTPUT
+
 AS
 /*
 	Created: 20180605@CaseyHuynh
