@@ -15,6 +15,8 @@
 
         public IEnumerable<string> TicketRules { get; set; }
 
+        public IEnumerable<string> Actions { get; set; }
+
         public static FraudCase GetFraudCase(FraudCaseId id)
         {
             var result = new FraudCase
@@ -86,6 +88,33 @@
                     {
                         "IP = <a href='#' id='ip-link' class='view-list'>IP List</a>",
                         "Currency <> UUS"
+                    };
+
+                    break;
+
+                case Models.FraudCaseId.DailyDataCapture:
+                    result.ScheduleTime = "Daily";
+
+                    result.MatchRules = new[]
+                    {
+                        "Match Status = Completed",
+                        "Re-scan = 3 times in 3 days"
+                    };
+
+                    result.TicketRules = new[]
+                    {
+                        "Total Company Turnover got changed",
+                        "OR Total Super Turnover got changed",
+                        "OR Total Master Turnover got changed",
+                        "OR Total Agent Turnover got changed",
+                        "OR Total tickets got changed",
+                        "OR Total Settled tickets got changed",
+                        "OR Total Cancelled tickets got changed"
+                    };
+
+                    result.Actions = new[]
+                    {
+                        "Send notification to <a id='user-link' class='view-list'>Related users</a>"
                     };
 
                     break;

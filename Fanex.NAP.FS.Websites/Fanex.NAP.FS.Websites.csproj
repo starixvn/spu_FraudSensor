@@ -276,6 +276,7 @@
     <Compile Include="Controllers\Api\ApiFPSController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\ConfigurationsController.cs" />
+    <Compile Include="Controllers\DailyDataCaptureController.cs" />
     <Compile Include="Controllers\ErrorsController.cs" />
     <Compile Include="Controllers\NotificationController.cs" />
     <Compile Include="Controllers\FraudCaseController.cs" />
@@ -616,6 +617,7 @@
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\common.js" />
+    <Content Include="Scripts\DailyDataCapture\daily-data-capture.js" />
     <Content Include="Scripts\DataTables\autoFill.bootstrap.js" />
     <Content Include="Scripts\DataTables\autoFill.bootstrap.min.js" />
     <Content Include="Scripts\DataTables\autoFill.bootstrap4.js" />
@@ -754,6 +756,7 @@
     <None Include="Properties\PublishProfiles\FolderProfile2.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <None Include="Scripts\jquery-3.0.0-vsdoc.js" />
+    <Content Include="Scripts\FraudCase\daily-data-capture.js" />
     <Content Include="Scripts\FraudCase\delayed-goal.js" />
     <Content Include="Scripts\FraudCase\fraud-case.js" />
     <Content Include="Scripts\FraudCase\scanned-office-ip.js" />
@@ -850,6 +853,7 @@
     <Content Include="Scripts\umd\popper.js" />
     <Content Include="Scripts\umd\popper.min.js" />
     <Content Include="Scripts\_references.js" />
+    <Content Include="Views\DailyDataCapture\Index.cshtml" />
     <None Include="Views\Errors\403.cshtml" />
     <None Include="Views\Errors\404.cshtml" />
     <None Include="Views\Errors\500.cshtml" />
@@ -933,6 +937,7 @@
     <Content Include="Views\MatchMonitor\FraudCaseDetails\TicketByIP.cshtml" />
     <Content Include="Views\FraudCase\ScannedOfficeIP\Dialog.cshtml" />
     <Content Include="Views\ScannedOfficeIpReport\Index.cshtml" />
+    <Content Include="Views\FraudCase\DailyDataCapture\Dialog.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
@@ -953,7 +958,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Areas\UserLogin\Models\" />
-    <Folder Include="Views\Reports\" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />

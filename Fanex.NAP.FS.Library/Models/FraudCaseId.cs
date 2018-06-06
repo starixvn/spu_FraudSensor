@@ -5,6 +5,7 @@
         BSNG = 1,
         FlaggedAccount = 6,
         DelayedGoal = 8,
-        ScannedOfficeIP = 2
+        ScannedOfficeIP = 2,
+        DailyDataCapture = 4
     }
 }

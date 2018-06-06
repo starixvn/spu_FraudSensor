@@ -8,7 +8,7 @@
 // </summary>
 //
 // <history>
-// Lasted generated date: 6/5/2018 13:08:42
+// Lasted generated date: 6/6/2018 10:14:03
 // </history>
 
 using System.Diagnostics.CodeAnalysis;
@@ -28,6 +28,8 @@ public static class FSFunctionKeys
         public const string AssignSiteToUser = "AssignSiteToUser";
 
         public const string Configurations = "Configurations";
+
+        public const string DailyDataCapture = "DailyDataCapture";
 
         public const string FraudCase = "FraudCase";
 

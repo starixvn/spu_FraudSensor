@@ -208,6 +208,7 @@
     <Compile Include="Criteria\FraudSensorTask\FlaggedAccountRuleCriteria.cs" />
     <Compile Include="Criteria\FraudSensorTask\BigStakeNearGoalRuleCriteria.cs" />
     <Compile Include="Criteria\FraudSensorTask\BigStakeNearGoalPreconditionCriteria.cs" />
+    <Compile Include="Criteria\FraudSensorTask\OfficeIPPreconditionCriteria.cs" />
     <Compile Include="Criteria\MatchMonitor\BalanceUpDateGetCriteria.cs" />
     <Compile Include="Criteria\MatchMonitor\FraudCaseDetails\GetCustomerCriteria.cs" />
     <Compile Include="Criteria\MatchMonitor\FraudCaseDetails\GetMatchInfoCriteria.cs" />
@@ -278,6 +279,7 @@
     <Compile Include="Models\FraudCase\DelayedGoal\Customer.cs" />
     <Compile Include="Models\FraudCase\FlaggedAccount\FlaggedCustomer.cs" />
     <Compile Include="Models\FraudCase\FraudCase.cs" />
+    <Compile Include="Models\FraudCase\NotificationRecipient.cs" />
     <Compile Include="Models\FraudCase\ScannedOfficeIP\OfficeIp.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\MatchMonitor\BalanceUpDate.cs" />
@@ -303,6 +305,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\Implement\DelayGoalAccountService.cs" />
     <Compile Include="Services\Implement\FraudCaseDetailsService.cs" />
+    <Compile Include="Services\Implement\NotificationRecipientService.cs" />
     <Compile Include="Services\Implement\NotificationService.cs" />
     <Compile Include="Services\Implement\MatchMonitorService.cs" />
     <Compile Include="Services\Implement\OfficeIPService.cs" />
@@ -314,6 +317,7 @@
     <Compile Include="Services\Implement\FraudSensorTaskService.cs" />
     <Compile Include="Services\Interface\IFraudCaseDetailsService.cs" />
     <Compile Include="Services\Interface\IDelayGoalAccountService.cs" />
+    <Compile Include="Services\Interface\INotificationRecipientService.cs" />
     <Compile Include="Services\Interface\INotificationService.cs" />
     <Compile Include="Services\Interface\IOfficeIPService.cs" />
     <Compile Include="Services\Interface\IScannedOfficeIpReportService.cs" />

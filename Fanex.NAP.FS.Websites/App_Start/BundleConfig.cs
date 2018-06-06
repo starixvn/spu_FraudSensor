@@ -70,6 +70,8 @@
             bundles.Add(new ScriptBundle("~/fraud-case-scripts/delayed-goal").Include("~/scripts/fraudcase/delayed-goal.js"));
 
             bundles.Add(new ScriptBundle("~/fraud-case-scripts/scanned-office-ip").Include("~/scripts/fraudcase/scanned-office-ip.js"));
+
+            bundles.Add(new ScriptBundle("~/fraud-case-scripts/daily-data-capture").Include("~/scripts/fraudcase/daily-data-capture.js"));
         }
 
         private static void RegisterSuspiciousCustomerBundles(BundleCollection bundles)

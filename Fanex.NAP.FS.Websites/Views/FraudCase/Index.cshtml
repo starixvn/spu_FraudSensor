@@ -14,15 +14,25 @@
         <div class="group">
             <label class="text">Fraud case</label>
             <select class="control" name="fraudCaseId">
-                @foreach (var item in Model.FraudCaseList)
+                @if (Model.FraudCaseList.Any())
                 {
-                    <option value="@((int) item.FraudCaseId)" @(Model != null && Model.FraudCaseInfo.FraudCaseId == (int)item.FraudCaseId ? "selected" : "")>
-                        @(item.FraudCaseName)
-                    </option>
+                    foreach (var item in Model.FraudCaseList)
+                    {
+                        <option value="@((int) item.FraudCaseId)" @(Model != null && Model.FraudCaseInfo.FraudCaseId == (int)item.FraudCaseId ? "selected" : "")>
+                            @(item.FraudCaseName)
+                        </option>
+                    }
+                }
+                else
+                {
+                    <option selected="selected">There's no data</option>
                 }
             </select>
         </div>
-        <button class="button -primary">Search</button>
+        @if (Model.FraudCaseList.Any())
+        {
+            <button class="button -primary">Search</button>
+        }
     </div>
 }
 
@@ -64,6 +74,20 @@
                 @*Ticket from customers which are in the list <a href="#" class="view-list">View List</a>*@
             </div>
         </div>
+
+        @if (Model.FraudCaseInfo.Actions != null && Model.FraudCaseInfo.Actions.Any())
+        {
+            <div class="row">
+                <div class="info-name">Actions</div>
+                <div class="info-value">
+                    @foreach (var action in Model.FraudCaseInfo.Actions)
+                    {
+                        <p class="detail">@Html.Raw(action)</p>
+                    }
+                    @*Ticket from customers which are in the list <a href="#" class="view-list">View List</a>*@
+                </div>
+            </div>
+        }
     </div>
 
     if (Model.FraudCaseInfo.FraudCaseId == (int)FraudCaseId.DelayedGoal)
@@ -71,9 +95,14 @@
         @Html.Partial("DelayedGoal/Dialog")
     }
 
-    if(Model.FraudCaseInfo.FraudCaseId == (int)FraudCaseId.ScannedOfficeIP)
+    if (Model.FraudCaseInfo.FraudCaseId == (int)FraudCaseId.ScannedOfficeIP)
     {
         @Html.Partial("ScannedOfficeIP/Dialog")
+    }
+
+    if(Model.FraudCaseInfo.FraudCaseId == (int)FraudCaseId.DailyDataCapture)
+    {
+        @Html.Partial("DailyDataCapture/Dialog")
     }
 }
 
@@ -87,9 +116,14 @@
             @Scripts.Render("~/fraud-case-scripts/delayed-goal")
         }
 
-        if(Model.FraudCaseInfo.FraudCaseId == (int)FraudCaseId.ScannedOfficeIP)
+        if (Model.FraudCaseInfo.FraudCaseId == (int)FraudCaseId.ScannedOfficeIP)
         {
             @Scripts.Render("~/fraud-case-scripts/scanned-office-ip")
+        }
+
+        if(Model.FraudCaseInfo.FraudCaseId == (int)FraudCaseId.DailyDataCapture)
+        {
+            @Scripts.Render("~/fraud-case-scripts/daily-data-capture")
         }
     }
 }

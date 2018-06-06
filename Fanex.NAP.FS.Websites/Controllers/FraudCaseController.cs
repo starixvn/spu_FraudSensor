@@ -29,6 +29,8 @@
 
         private readonly IOfficeIPService _ipService;
 
+        private readonly INotificationRecipientService _recipientService = new NotificationRecipientService();
+
         public FraudCaseController()
         {
             _delayGoalAccountService = new DelayGoalAccountService();
@@ -82,12 +84,14 @@
         }
 
         [HttpPost]
+        [NapAuth(FunctionKey = FSFunctionKeys.FraudCase, Policy = Core.Business.Constant.Policy.Host)]
         public ActionResult DeleteDelayedGoalCustomer(int custId)
         {
             return Json(_fraudCaseService.DeleteDelayedGoalCustomer(custId, CurrentSession.UserId));
         }
 
         [HttpPost]
+        [NapAuth(FunctionKey = FSFunctionKeys.FraudCase, Policy = Core.Business.Constant.Policy.Host)]
         public ActionResult AddDelayedGoalCustomer(string username)
         {
             var dbresult = _fraudCaseService.AddDelayedGoalCustomer(username, CurrentSession.UserId);
@@ -129,11 +133,13 @@
             return JData(_ipService.GetIps());
         }
 
+        [NapAuth(FunctionKey = FSFunctionKeys.FraudCase, Policy = Core.Business.Constant.Policy.Host)]
         public ActionResult DeleteIpRange(string fromIp, string toIp)
         {
             return Json(_ipService.DeleteIpRange(fromIp, toIp, CurrentSession.UserId));
         }
 
+        [NapAuth(FunctionKey = FSFunctionKeys.FraudCase, Policy = Core.Business.Constant.Policy.Host)]
         public ActionResult AddIpRange(string fromIp, string toIp)
         {
             return Json(_ipService.AddIpRange(fromIp, toIp, CurrentSession.UserId));
@@ -152,5 +158,24 @@
         }
 
         #endregion scanned office ip
+
+        #region notification recipient
+
+        public ActionResult GetRecipients()
+        {
+            return JData(_recipientService.GetRecipients());
+        }
+
+        public ActionResult AddRecipient(string recipient)
+        {
+            return Json(_recipientService.AddRecipient(recipient, CurrentSession.UserId));
+        }
+
+        public ActionResult RemoveRecipient(int id)
+        {
+            return Json(_recipientService.RemoveRecipient(id, CurrentSession.UserId));
+        }
+
+        #endregion notification recipient
     }
 }

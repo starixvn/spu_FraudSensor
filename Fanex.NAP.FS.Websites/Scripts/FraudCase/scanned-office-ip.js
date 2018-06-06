@@ -6,7 +6,7 @@
         $("span", target).click(function () {
             var obj = ip_table.DataTable().row(target).data();
 
-            common.showConfirmation(`Do you want you delete IP range ${obj.FromIp} - ${obj.ToIp}`, function () {
+            common.showConfirmation(`Do you want you delete IP range ${obj.FromIp} - ${obj.ToIp}?`, function () {
                 var url = common.modifyRelativeUrl("FraudCase/DeleteIpRange");
 
                 $.get(url, obj, common.handleUpdateAjax(null, () => ip_table.DataTable().ajax.reload()));
@@ -17,7 +17,7 @@
     function validate_ip(ip) {
         var arr = ip.split(".");
 
-        return arr.length == 4 && arr.every(x => !isNaN(parseInt(x)) && parseInt(x).toString() == x && parseInt(x) <= 255);
+        return arr.length == 4 && arr.every(x => !isNaN(parseInt(x)) && parseInt(x).toString() == x && parseInt(x) <= 255 && parseInt(x) >= 0);
     }
 
     function validate_ip_range(fromIp, toIp) {
@@ -88,7 +88,7 @@
             { data: obj => obj.ToIp },
             { defaultContent: "<span class='icon-delete'></span>", className: "has-icon text-center", createdCell: delete_ip_range, width: "40px" }
         ]
-    })
+    });
 
     $("#add-ip-btn").click(add_ip_range);
 
