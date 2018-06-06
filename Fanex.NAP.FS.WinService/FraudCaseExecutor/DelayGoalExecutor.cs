@@ -1,5 +1,6 @@
 ﻿namespace Fanex.NAP.FS.WinService
 {
+    using Fanex.NAP.FS.Library.Core.BaseClasses;
     using Library.Core.Utilities;
     using Library.DTO;
     using System;
@@ -7,6 +8,7 @@
     using System.Linq;
     using System.Threading.Tasks;
 
+    [FraudCase(Library.Models.FraudCaseId.DelayedGoal)]
     public class DelayGoalExecutor : FraudCaseExecutor
     {
         private IEnumerable<Match> _matches;

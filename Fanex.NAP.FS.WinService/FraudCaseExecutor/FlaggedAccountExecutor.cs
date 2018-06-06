@@ -1,5 +1,6 @@
 ﻿namespace Fanex.NAP.FS.WinService
 {
+    using Fanex.NAP.FS.Library.Core.BaseClasses;
     using Library.Core.Helpers.Api;
     using Library.Core.Helpers.Xml;
     using Library.Core.Utilities;
@@ -11,6 +12,7 @@
     using System.Linq;
     using System.Threading.Tasks;
 
+    [FraudCase(Library.Models.FraudCaseId.FlaggedAccount)]
     public class FlaggedAccountExecutor : FraudCaseExecutor
     {
         private IEnumerable<Match> _matches;

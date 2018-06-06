@@ -1,28 +1,42 @@
-﻿namespace Fanex.NAP.FS.WinService
+﻿#pragma warning disable S3963 // "static" fields should be initialized inline
+
+namespace Fanex.NAP.FS.WinService
 {
+    using Fanex.NAP.FS.Library.Core.BaseClasses;
+    using Fanex.NAP.FS.Library.Models;
     using Library.DTO;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Reflection;
 
     public static class FraudCaseFactory
     {
+        private static readonly IDictionary<FraudCaseId, Type> _lookup;
+
         public static FraudCaseExecutor GetExecutor(FraudCase fraudCase)
         {
-            switch (fraudCase.FraudCaseId)
+            var id = (FraudCaseId)fraudCase.FraudCaseId;
+
+            if (_lookup.ContainsKey(id))
             {
-                case 1:
-                    return new BigStakeNearGoalExecutor(fraudCase);
-
-                case 6:
-                    return new FlaggedAccountExecutor(fraudCase);
-
-                case 8:
-                    return new DelayGoalExecutor(fraudCase);
-
-                case 2:
-                    return new ScannedOfficeIPExecutor(fraudCase);
-
-                default:
-                    return new GhostExecutor(fraudCase);
+                return Activator.CreateInstance(_lookup[id], fraudCase) as FraudCaseExecutor;
             }
+
+            return new GhostExecutor(fraudCase);
+        }
+
+        static FraudCaseFactory()
+        {
+            var assembly = typeof(FraudCaseFactory).Assembly;
+
+            _lookup =
+                 assembly
+                 .GetTypes()
+                 .Where(t => typeof(FraudCaseExecutor).IsAssignableFrom(t) && !t.IsAbstract && t.GetCustomAttribute<FraudCaseAttribute>() != null)
+                 .ToDictionary(t => t.GetCustomAttribute<FraudCaseAttribute>().FraudCase);
         }
     }
 }
+
+#pragma warning restore S3963 // "static" fields should be initialized inline

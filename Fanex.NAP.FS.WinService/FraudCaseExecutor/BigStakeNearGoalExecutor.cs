@@ -1,11 +1,13 @@
 ﻿namespace Fanex.NAP.FS.WinService
 {
+    using Fanex.NAP.FS.Library.Core.BaseClasses;
     using Library.DTO;
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
 
+    [FraudCase(Library.Models.FraudCaseId.BSNG)]
     public class BigStakeNearGoalExecutor : FraudCaseExecutor
     {
         private IEnumerable<Match> _matches;

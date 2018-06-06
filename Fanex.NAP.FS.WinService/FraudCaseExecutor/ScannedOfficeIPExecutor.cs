@@ -8,7 +8,8 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-
+    
+    [FraudCase(Library.Models.FraudCaseId.ScannedOfficeIP)]
     public class ScannedOfficeIPExecutor : FraudCaseExecutor
     {
         private IEnumerable<Match> _matches;
