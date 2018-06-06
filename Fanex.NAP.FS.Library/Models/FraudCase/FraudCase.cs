@@ -7,7 +7,7 @@
     {
         public int FraudCaseId { get; set; }
 
-        public int ScheduleTime { get; set; }
+        public string ScheduleTime { get; set; }
 
         public bool IsActive { get; set; }
 
@@ -20,7 +20,7 @@
             var result = new FraudCase
             {
                 FraudCaseId = (int)id,
-                ScheduleTime = 60
+                ScheduleTime = "In every 60 seconds"
             };
 
             switch (id)
@@ -74,10 +74,11 @@
                     break;
 
                 case Models.FraudCaseId.ScannedOfficeIP:
+                    result.ScheduleTime = "In every 60 minutes";
+
                     result.MatchRules = new[]
                     {
                         "Match Status = Completed",
-                        "League Type = Main Markets",
                         "Match State = Not Scanned"
                     };
 
