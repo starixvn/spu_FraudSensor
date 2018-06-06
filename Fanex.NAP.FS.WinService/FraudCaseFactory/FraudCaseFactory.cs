@@ -17,6 +17,9 @@
                 case 8:
                     return new DelayGoalExecutor(fraudCase);
 
+                case 2:
+                    return new ScannedOfficeIPExecutor(fraudCase);
+
                 default:
                     return new GhostExecutor(fraudCase);
             }
