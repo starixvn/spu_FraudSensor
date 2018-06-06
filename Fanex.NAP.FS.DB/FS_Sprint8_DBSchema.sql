@@ -87,5 +87,29 @@ CREATE NONCLUSTERED INDEX NCIX_UserMessage_UserIdMessageId ON [dbo].[UserMessage
 ) ON IDX;
 GO
 
+CREATE TABLE [dbo].[CapturedDataType](
+	[DataTypeId]		INT NOT NULL,
+	[DataName]			NVARCHAR(100) NULL,
+ CONSTRAINT [PK_CapturedDataType] PRIMARY KEY CLUSTERED 
+(
+	[DataTypeId]		ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [DATA]
+) ON [DATA]
+GO
+
+CREATE TABLE [dbo].[CapturedData](
+	[MatchId]			INT NOT NULL,
+	[DataTypeId]		INT NOT NULL,
+	[NewValue]			MONEY NOT NULL,
+	[OldValue]			MONEY NOT NULL,
+	[CapturedDate]		DATETIME NOT NULL,
+ CONSTRAINT [PK_CapturedData] PRIMARY KEY CLUSTERED 
+(
+	[MatchId]			ASC,
+	[DataTypeId]		ASC,
+	[CapturedDate]		ASC
+) WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [DATA]
+) ON [DATA]
+GO
 ----===================C. ALTER TABLES=========================
 ----===========================================================
