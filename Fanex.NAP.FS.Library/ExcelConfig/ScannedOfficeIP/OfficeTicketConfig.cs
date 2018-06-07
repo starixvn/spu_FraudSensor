@@ -32,7 +32,6 @@ namespace Fanex.NAP.FS.Library.ExcelConfig.ScannedOfficeIP
             row.GetCell(cell_idx++).SetCellValue(data.TransDate.ToString("MMM dd, yyyy hh:mm:ss tt"));
             row.GetCell(cell_idx++).SetCellValue(data.TransId);
             RenderChoice(row.GetCell(cell_idx++), data);
-            RenderResult(row.GetCell(cell_idx++), data);
             RenderOdds(row.GetCell(cell_idx++), data);
             row.GetCell(cell_idx++).SetCellValue((double)data.Stake);
             row.GetCell(cell_idx++).SetCellValue((double)data.Winlost);

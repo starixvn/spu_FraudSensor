@@ -183,4 +183,10 @@
              SpName="FS_Tbl_UserMessage_GetUnreadCount"
              DbName="DBFS.FraudSensor.bodbSPUNet" />
   </Function>
+
+  <Function Name="OfficeIPReport">
+    <Setting Key="FS_Rpt_OfficeIP_Get"
+             SpName="FS_Rpt_OfficeIP_Get"
+             DbName="DBFS.FraudSensor.bodbSPUNet"/>
+  </Function>
 </Functions>

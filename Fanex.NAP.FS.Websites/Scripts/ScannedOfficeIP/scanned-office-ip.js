@@ -16,13 +16,19 @@
     }
 
     function generate_report() {
-        var url = common.modifyRelativeUrl("/ScannedOfficeIpReportController/GetTickets");
+        var url = common.modifyRelativeUrl("/ScannedOfficeIpReport/GetTickets");
 
-        $.get(url, { fromDate: from_date.val(), toDate: to_date.val() }, ticket_table.DataTable().clear().rows.add);
+        common.showLoading();
+
+        $.get(url, { fromDate: from_date.val(), toDate: to_date.val() }, function (json) {
+            ticket_table.DataTable().clear().rows.add(json).draw();
+
+            common.closeLoading();
+        });
     }
 
     function generate_excel() {
-        var url = common.modifyRelativeUrl("/ScannedOfficeIpReportController/ScannedOfficeIpReportController");
+        var url = common.modifyRelativeUrl("/ScannedOfficeIpReport/ExportExcel");
 
         common.downloadFile(url, { fromDate: from_date.val(), toDate: to_date.val() });
     }
@@ -64,7 +70,7 @@
             { data: obj => common.formatGridNumber(obj.Stake), className: "text-right", width: "100px" },
             { data: obj => common.formatGridNumber(obj.WinLoss), className: "text-right", width: "100px" },
             { data: obj => obj.Status, width: "82px", className: "text-center uppercase" },
-            { data: obj => `<span class='link ip-link'>${obj.IP}</span>`, width: "100px" }
+            { data: obj => obj.IP, width: "100px" }
         ],
         columnDefs: [{ targets: "_all", defaultContent: "-" }],
         headerCallback: tr => $(":nth-child(11)", tr).removeClass("uppercase")
@@ -73,6 +79,8 @@
     $("#generate").click(generate_report);
 
     $("#export").click(generate_excel);
+
+    generate_report();
 }
 
 $(scanned_office_ip);
