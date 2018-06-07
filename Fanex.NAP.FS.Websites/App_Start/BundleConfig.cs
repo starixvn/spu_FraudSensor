@@ -38,6 +38,7 @@
             RegisterSuspiciousCustomerDetailsBundles(bundles);
             RegisterScannedOfficeIpBundles(bundles);
             RegisterNotificationBundles(bundles);
+            RegisterDailyDataCaptureBundles(bundles);
         }
 
         private static void RegisterFSCoreBundles(BundleCollection bundles)
@@ -93,6 +94,11 @@
             bundles.Add(new ScriptBundle("~/ScannedOfficeIp-scripts/main").Include("~/scripts/ScannedOfficeIp/scanned-office-ip.js"));
         }
         
+        private static void RegisterDailyDataCaptureBundles(BundleCollection bundles)
+        {
+            bundles.Add(new ScriptBundle("~/daily-data-capture-scripts").Include("~/scripts/dailydatacapture/daily-data-capture.js"));
+        }
+
         private static void RegisterNotificationBundles(BundleCollection bundles)
         {
             bundles.Add(new ScriptBundle("~/notification").Include(

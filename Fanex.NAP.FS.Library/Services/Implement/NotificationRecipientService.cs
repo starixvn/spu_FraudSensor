@@ -22,16 +22,9 @@
             return DataService.UpdateData(criteria, "Notification");
         }
 
-        public IEnumerable<NotificationRecipient> GetRecipients()
+        public IEnumerable<NotificationRecipient> GetRecipients(FraudCaseId fraudCase)
         {
-            for (int i = 0; i < 10; i++)
-            {
-                yield return new NotificationRecipient
-                {
-                    RecipientId = i,
-                    Recipient = "Simon"
-                };
-            }
+            return DataService.GetData<NotificationRecipient>(new RecipientGetCriteria { FraudCaseId = (int) fraudCase});
         }
 
         public DBResult RemoveRecipient(int recipientId, int userId)

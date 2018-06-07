@@ -192,6 +192,7 @@
     <Compile Include="Core\Utilities\Extentions.cs" />
     <Compile Include="Criteria\Api\FlaggedAccountDeleteCriteria.cs" />
     <Compile Include="Criteria\Api\FlaggedAccountInsertCriteria.cs" />
+    <Compile Include="Criteria\DailyDataCapture\DailyDataGetCriteria.cs" />
     <Compile Include="Criteria\FraudCase\DelayedGoal\DelayGoalAssociationAccountInsertCriteria.cs" />
     <Compile Include="Criteria\FraudCase\DelayedGoal\DelayGoalManualAccountGetCriteria.cs" />
     <Compile Include="Criteria\FraudCase\DelayedGoal\DelayedGoalAccountInsertCriteria.cs" />
@@ -224,6 +225,7 @@
     <Compile Include="Criteria\MatchMonitor\MatchNoteUpdateCriteria.cs" />
     <Compile Include="Criteria\MatchMonitor\VerifyMatchCriteria.cs" />
     <Compile Include="Criteria\Notification\RecipientAddCriteria.cs" />
+    <Compile Include="Criteria\Notification\RecipientGetCriteria.cs" />
     <Compile Include="Criteria\Notification\RecipientRemoveCriteria.cs" />
     <Compile Include="Criteria\Notification\UserMessageGetCriteria.cs" />
     <Compile Include="Criteria\ScannedOfficeIP\TicketFromOfficeIpGetCriteria.cs" />
@@ -280,6 +282,7 @@
     <Compile Include="FSMQ\SendingType\SendingType.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\DailyDataCapture\CapturedMatch.cs" />
     <Compile Include="Models\DBResult.cs" />
     <Compile Include="Models\FraudCaseId.cs" />
     <Compile Include="Models\FraudCase\DelayedGoal\Customer.cs" />
@@ -309,6 +312,7 @@
     <Compile Include="Models\SuspiciousCustomer\SuspiciousCustomerReportModel.cs" />
     <Compile Include="Models\SuspiciousCustomer\SuspiciousCustomerNoteModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\Implement\DailyCaptureDataService.cs" />
     <Compile Include="Services\Implement\DelayGoalAccountService.cs" />
     <Compile Include="Services\Implement\FraudCaseDetailsService.cs" />
     <Compile Include="Services\Implement\NotificationRecipientService.cs" />
@@ -321,6 +325,7 @@
     <Compile Include="Services\Implement\FlaggedAccountService.cs" />
     <Compile Include="Services\Implement\FraudCaseService.cs" />
     <Compile Include="Services\Implement\FraudSensorTaskService.cs" />
+    <Compile Include="Services\Interface\IDailyDataCaptureService.cs" />
     <Compile Include="Services\Interface\IFraudCaseDetailsService.cs" />
     <Compile Include="Services\Interface\IDelayGoalAccountService.cs" />
     <Compile Include="Services\Interface\INotificationRecipientService.cs" />
@@ -333,7 +338,9 @@
     <Compile Include="Services\Interface\IFraudSensorTaskService.cs" />
     <Compile Include="Services\Interface\IFraudCaseService.cs" />
     <Compile Include="Services\Interface\IMatchMonitorService.cs" />
+    <Compile Include="ViewModels\DailyDataMonitor\CapturedMatch.cs" />
     <Compile Include="ViewModels\FraudCase\DelayedGoal\Customer.cs" />
+    <Compile Include="ViewModels\History.cs" />
     <Compile Include="ViewModels\MatchMonitor\Event.cs" />
     <Compile Include="ViewModels\MatchMonitor\FraudCase.cs" />
     <Compile Include="ViewModels\MatchMonitor\FraudCaseDetails\AssociatedCustomer.cs" />
@@ -353,6 +360,7 @@
     <Folder Include="Core\Configurations\" />
     <Folder Include="Core\Extensions\" />
     <Folder Include="DataAccess\" />
+    <Folder Include="ExcelConfig\DailyDataCapture\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

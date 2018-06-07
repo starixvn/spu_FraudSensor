@@ -8,7 +8,7 @@
 
         public int UserId { get; set; }
 
-        public override string GetSettingKey() => "";
+        public override string GetSettingKey() => "FS_Recipients_Add";
 
         public override bool IsValid() => true;
     }

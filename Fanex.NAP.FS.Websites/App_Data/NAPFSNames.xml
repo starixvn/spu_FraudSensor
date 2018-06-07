@@ -9,10 +9,10 @@
            SpName="FS_Tbl_SuspiciousCustomer_Get"
            DbName="DBFS.FraudSensor.bodbSPUNet" />
 
-     <Setting Key="FS_Tbl_CustomerLog_Get"
-              SpName="FS_Tbl_CustomerLog_Get"
-              DbName="DBFS.FraudSensor.bodbSPUNet" />
-    
+    <Setting Key="FS_Tbl_CustomerLog_Get"
+             SpName="FS_Tbl_CustomerLog_Get"
+             DbName="DBFS.FraudSensor.bodbSPUNet" />
+
     <Setting Key="FS_Tbl_CustomerLog_Insert"
               SpName="FS_Tbl_CustomerLog_Insert"
               DbName="DBFS.FraudSensor.bodbSPUNet" />
@@ -21,8 +21,8 @@
               SpName="FS_Tbl_CustomerLog_Delete"
               DbName="DBFS.FraudSensor.bodbSPUNet" />
   </Function>
-    
-  <Function Name="CustomerMonitor"> 
+
+  <Function Name="CustomerMonitor">
     <Setting Key="FS_Tbl_CustomerMonitorAssignment_Get"
          SpName="FS_Tbl_CustomerMonitorAssignment_Get"
          DbName="DBFS.FraudSensor.bodbSPUNet" />
@@ -126,9 +126,9 @@
     <Setting Key="FlaggedAccount_Delete"
              SpName="FS_FlaggedAccount_Delete"
              DbName="DBFS.FraudSensor.bodbSPUNet" />
-    
-    <Setting Key="FS_DelayGoalAccount_ImportFromFPS" 
-             SpName="FS_DelayGoalAccount_ImportFromFPS" 
+
+    <Setting Key="FS_DelayGoalAccount_ImportFromFPS"
+             SpName="FS_DelayGoalAccount_ImportFromFPS"
              DbName="DBFS.FraudSensor.bodbSPUNet" />
   </Function>
 
@@ -144,7 +144,7 @@
     <Setting Key="FS_Tbl_SuspiciousCustomer_Update"
              SpName="FS_Tbl_SuspiciousCustomer_Update"
              DbName="DBFS.FraudSensor.bodbSPUNet" />
-    
+
     <Setting Key="FS_CustomerInfo_Get"
              SpName="FS_CustomerInfo_Get"
              DbName="DBFS.FraudSensor.bodbSPUNet" />
@@ -161,17 +161,17 @@
 
     <Setting Key="FS_Rpt_SuspiciousCustomer_GetNotes"
              SpName="FS_Rpt_SuspiciousCustomer_GetNotes"
-             DbName="DBFS.FraudSensor.bodbSPUNet"/>
+             DbName="DBFS.FraudSensor.bodbSPUNet" />
   </Function>
-  
+
   <Function Name="SuspiciousCustomerDetails">
-	  <Setting Key="FS_Rpt_SuspicousCustomerDetails_ViolatedTickets_Get"
+    <Setting Key="FS_Rpt_SuspicousCustomerDetails_ViolatedTickets_Get"
 			    SpName="FS_Rpt_SuspicousCustomerDetails_ViolatedTickets_Get"
-			    DbName="DBFS.FraudSensor.bodbSPUNet"/>
-	
-	  <Setting Key="FS_Rpt_SuspicousCustomerDetails_WinlossStatistic_Get"
+			    DbName="DBFS.FraudSensor.bodbSPUNet" />
+
+    <Setting Key="FS_Rpt_SuspicousCustomerDetails_WinlossStatistic_Get"
 			    SpName="FS_Rpt_SuspicousCustomerDetails_WinlossStatistic_Get"
-			    DbName="DBFS.FraudSensor.bodbSPUNet"/>
+			    DbName="DBFS.FraudSensor.bodbSPUNet" />
   </Function>
 
   <Function Name="Notification">
@@ -182,11 +182,29 @@
     <Setting Key="FS_Tbl_UserMessage_GetUnreadCount"
              SpName="FS_Tbl_UserMessage_GetUnreadCount"
              DbName="DBFS.FraudSensor.bodbSPUNet" />
+
+    <Setting Key="FS_Recipients_Add"
+         SpName="FS_Recipients_Add"
+         DbName="DBFS.FraudSensor.bodbSPUNet" />
+
+    <Setting Key="FS_Recipients_Get"
+     SpName="FS_Recipients_Get"
+     DbName="DBFS.FraudSensor.bodbSPUNet" />
+
+    <Setting Key="FS_Recipients_Delete"
+     SpName="FS_Recipients_Delete"
+     DbName="DBFS.FraudSensor.bodbSPUNet" />
   </Function>
 
   <Function Name="OfficeIPReport">
     <Setting Key="FS_Rpt_OfficeIP_Get"
              SpName="FS_Rpt_OfficeIP_Get"
-             DbName="DBFS.FraudSensor.bodbSPUNet"/>
+             DbName="DBFS.FraudSensor.bodbSPUNet" />
+  </Function>
+
+  <Function Name="DailyDataCapture">
+    <Setting Key="FS_Rpt_DailyDataMonitoring_Get"
+             SpName="FS_Rpt_DailyDataMonitoring_Get"
+             DbName="DBFS.FraudSensor.bodbSPUNet" />
   </Function>
 </Functions>

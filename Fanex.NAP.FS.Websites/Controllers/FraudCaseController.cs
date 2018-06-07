@@ -161,17 +161,19 @@
 
         #region notification recipient
 
-        public ActionResult GetRecipients()
+        public ActionResult GetRecipients(FraudCaseId fraudCase)
         {
-            return JData(_recipientService.GetRecipients());
+            return JData(_recipientService.GetRecipients(fraudCase));
         }
 
         [HttpPost]
+        [NapAuth(FunctionKey = FSFunctionKeys.FraudCase, Policy = Core.Business.Constant.Policy.Host)]
         public ActionResult AddRecipients(string recipients)
         {
             return Json(_recipientService.AddRecipient(recipients, CurrentSession.UserId));
         }
 
+        [NapAuth(FunctionKey = FSFunctionKeys.FraudCase, Policy = Core.Business.Constant.Policy.Host)]
         public ActionResult RemoveRecipient(int id)
         {
             return Json(_recipientService.RemoveRecipient(id, CurrentSession.UserId));

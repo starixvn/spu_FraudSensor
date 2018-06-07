@@ -6,7 +6,7 @@ namespace Fanex.NAP.FS.Library.Services.Interface
 {
     public interface INotificationRecipientService
     {
-        IEnumerable<NotificationRecipient> GetRecipients();
+        IEnumerable<NotificationRecipient> GetRecipients(FraudCaseId fraudCase);
 
         DBResult AddRecipient(string recipients, int userId);
 

@@ -27,6 +27,13 @@
         common.downloadFile(url, { fromDate: from_date.val(), toDate: to_date.val() });
     }
 
+    function render_history(history) {
+        var old_value = history.old;
+        var new_value = history.new;
+
+        return `${common.formatGridNumber(old_value)}<br/>${common.formatGridNumber(new_value)}`
+    }
+
     from_date.datepicker({
         dateFormat: "M dd, yy",
         changeMonth: true,
@@ -47,28 +54,27 @@
         .datepicker("setDate", new Date())
         .change(restrict_from_date);
 
-    //match_table.DataTable({
-    //    ordering: false,
-    //    dom: "t<'pagination'<'page-size'lp>i>",
-    //    language: common.language(),
-    //    scrollY: '57vh',
-    //    scrollCollapse: true,
-    //    columns: [
-    //        { data: (row, type, set, meta) => meta.row + 1, className: "text-center", width: "40px" },
-    //        { data: obj => obj.Member, width: "100px" },
-    //        { data: obj => obj.CurrencyName, className: "text-center", width: "10px" },
-    //        { data: obj => moment(obj.TransDate, "MMM D, YYYY hh:mm:ss A").format("MMM D, YYYY<br/>hh:mm:ss A"), className: "text-center", width: "100px" },
-    //        { data: obj => obj.BetID, width: "100px" },
-    //        { data: obj => obj.Choice, className: "text-right" },
-    //        { data: obj => obj.Odds != null ? obj.Odds.Html : null, width: "50px", className: "text-right" },
-    //        { data: obj => common.formatGridNumber(obj.Stake), className: "text-right", width: "100px" },
-    //        { data: obj => common.formatGridNumber(obj.WinLoss), className: "text-right", width: "100px" },
-    //        { data: obj => obj.Status, width: "82px", className: "text-center uppercase" },
-    //        { data: obj => `<span class='link ip-link'>${obj.IP}</span>`, width: "100px" }
-    //    ],
-    //    columnDefs: [{ targets: "_all", defaultContent: "-" }],
-    //    headerCallback: tr => $(":nth-child(11)", tr).removeClass("uppercase")
-    //});
+    match_table.DataTable({
+        ordering: false,
+        dom: "t<'pagination'<'page-size'lp>i>",
+        language: common.language(),
+        scrollY: '57vh',
+        scrollCollapse: true,
+        columns: [
+            { data: obj => obj.match, width: "100px" },
+            { data: obj => obj.eventDate, className: "text-center", width: "10px" },
+            { data: obj => obj.scannedDate, className: "text-center", width: "100px" },
+            { data: obj => render_history(obj.companyTO), width: "100px" },
+            { data: obj => render_history(obj.superTO), className: "text-right" },
+            { data: obj => render_history(obj.masterTO), className: "text-right" },
+            { data: obj => render_history(obj.agentTO), width: "50px", className: "text-right" },
+            { data: obj => render_history(obj.tickets), className: "text-right", width: "100px" },
+            { data: obj => render_history(obj.settledTickets), className: "text-right", width: "100px" },
+            { data: obj => render_history(obj.cancelledTickets), width: "82px", className: "text-center uppercase" },
+        ],
+        columnDefs: [{ targets: "_all", defaultContent: "-" }],
+        headerCallback: tr => $(":nth-child(11)", tr).removeClass("uppercase")
+    });
 
     $("#generate").click(generate_report);
 

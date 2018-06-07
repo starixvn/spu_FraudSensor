@@ -107,8 +107,12 @@
 }
 
 @section scripts{
-    @Scripts.Render("~/fraud-case-scripts")
+    <script>
+        var fraudCaseId = @(Model.FraudCaseInfo.FraudCaseId);
+    </script>
 
+    @Scripts.Render("~/fraud-case-scripts")
+    
     @if (Model.FraudCaseInfo != null)
     {
         if (Model.FraudCaseInfo.FraudCaseId == (int)FraudCaseId.DelayedGoal)

@@ -49,7 +49,7 @@
         lengthMenu: [10, 20, 50, 100, 500],
         pageLength: 50,
         processing: true,
-        ajax: common.modifyRelativeUrl("/FraudCase/GetRecipients"),
+        ajax: `${common.modifyRelativeUrl("/FraudCase/GetRecipients")}?fraudCase=${fraudCaseId}`,
         scrollY: '40vh',
         scrollCollapse: true,
         dom: "t<'pagination'<'page-size'lp>i>",
