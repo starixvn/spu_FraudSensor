@@ -22,15 +22,16 @@ AS
 BEGIN
 	SET NOCOUNT ON;
 
-	SELECT	TOP(10000) m.matchid ,m.eventdate
+	SELECT	m.matchid ,m.eventdate
 	FROM	bodb02.dbo.match m WITH (NOLOCK)
 			INNER JOIN bodb02.dbo.league l WITH (NOLOCK) ON m.leagueid = l.leagueid
 			LEFT JOIN dbo.ScannedMatch sm WITH (NOLOCK) ON m.matchid = sm.matchid AND sm.FraudCaseId = 2	
-	WHERE	m.sporttype = 1
+	WHERE	m.sporttype BETWEEN 1 AND 99
 			AND m.eventstatus = 'completed'
 			AND l.isTest = 0
+			AND sm.MatchId IS NULL;
 END;
 GO 
- GRANT EXECUTE ON dbo.FS_FraudCase_OfficeIP_PreCondition TO bodbSPUNet
+ GRANT EXECUTE ON dbo.FS_FraudCase_OfficeIP_PreCondition TO bodbSPUNet;
 GO 
- GRANT VIEW DEFINITION ON dbo.FS_FraudCase_OfficeIP_PreCondition TO bodbSPUNet
+ GRANT VIEW DEFINITION ON dbo.FS_FraudCase_OfficeIP_PreCondition TO bodbSPUNet;

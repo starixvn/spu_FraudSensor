@@ -83,7 +83,7 @@ BEGIN
 	FROM	bodb02.dbo.bettrans b WITH (NOLOCK)
 			INNER JOIN #tmpMatchInput mi WITH (NOLOCK) ON mi.matchid = b.MatchId
 			INNER JOIN #tmpBettype bt WITH (NOLOCK) ON b.bettype = bt.Bettype
-			INNER JOIN OfficeIP oi WITH (NOLOCK) ON b.ip LIKE ''+oi.IPRange+'.%' AND (CAST(PARSENAME(b.ip, 1) AS TINYINT) BETWEEN oi.FromNumber AND oi.ToNumber)
+			INNER JOIN OfficeIP oi WITH (NOLOCK) ON b.ip LIKE ''+ oi.IPRange +'.%' AND (CAST(PARSENAME(b.ip, 1) AS TINYINT) BETWEEN oi.FromNumber AND oi.ToNumber)
 	WHERE	b.currency <> 20
 	
 	--===5. INSERT SCANNED MATCH: TABLE "ScannedMatch" (ScannedDate, SuspiciousTicketsCount)===========		
