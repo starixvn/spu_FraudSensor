@@ -184,6 +184,7 @@
     <Compile Include="Core\Helpers\Api\ApiHelper.cs" />
     <Compile Include="Core\Helpers\AppSettings.cs" />
     <Compile Include="Core\Helpers\BetListHelper.cs" />
+    <Compile Include="Core\Helpers\Sequence.cs" />
     <Compile Include="Core\Helpers\Xml\IXml.cs" />
     <Compile Include="Core\Helpers\Xml\XmlHelper.cs" />
     <Compile Include="Core\Helpers\Xml\XNameAttribute.cs" />
@@ -203,6 +204,7 @@
     <Compile Include="Criteria\FraudCase\ScannedOfficeIP\OfficeIPGetCriteria.cs" />
     <Compile Include="Criteria\FraudCase\ScannedOfficeIP\OfficeIPInsertCriteria.cs" />
     <Compile Include="Criteria\FraudCase\UpdateFraudCaseStatusCriteria.cs" />
+    <Compile Include="Criteria\FraudSensorTask\DailyDataCaptureRuleCriteria.cs" />
     <Compile Include="Criteria\FraudSensorTask\DelayGoalPreconditionCriteria.cs" />
     <Compile Include="Criteria\FraudSensorTask\DelayGoalRuleCriteria.cs" />
     <Compile Include="Criteria\FraudSensorTask\FlaggedAccountPreconditionCriteria.cs" />
@@ -221,6 +223,8 @@
     <Compile Include="Criteria\MatchMonitor\MatchGetAllCriteria.cs" />
     <Compile Include="Criteria\MatchMonitor\MatchNoteUpdateCriteria.cs" />
     <Compile Include="Criteria\MatchMonitor\VerifyMatchCriteria.cs" />
+    <Compile Include="Criteria\Notification\RecipientAddCriteria.cs" />
+    <Compile Include="Criteria\Notification\RecipientRemoveCriteria.cs" />
     <Compile Include="Criteria\Notification\UserMessageGetCriteria.cs" />
     <Compile Include="Criteria\ScannedOfficeIP\TicketFromOfficeIpGetCriteria.cs" />
     <Compile Include="Criteria\Notification\UserMessageUnreadCounterGetCriteria.cs" />

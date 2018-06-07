@@ -306,7 +306,12 @@
     <Content Include="App_Data\NAPFrameworkSpNames.xml" />
     <Content Include="App_Data\NAPFSNames.xml" />
     <Content Include="App_Data\UAT\NAPFrameworkSpNames.xml" />
-    <Content Include="App_Data\UAT\NAPFSNames.xml" />
+    <Content Include="App_Data\UAT\NAPFSNames.xml">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>NAPFSNames.tt</DependentUpon>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Areas\UserLogin\scripts\lib\jquery-1.9.0.min.js" />
     <Content Include="Areas\UserLogin\scripts\ReCheckIn.js" />
     <Content Include="Areas\UserLogin\Views\Common\Style\AccessDenied.css" />
@@ -604,6 +609,10 @@
     <Content Include="images\ui-icons_cc0000_256x240.png" />
     <Content Include="images\ui-icons_cd0a0a_256x240.png" />
     <Content Include="images\ui-icons_ffffff_256x240.png" />
+    <Content Include="App_Data\UAT\NAPFSNames.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>NAPFSNames.xml</LastGenOutput>
+    </Content>
     <Content Include="Scripts\auto-grid.js" />
     <Content Include="Fanex.NAP.FS.Websites.ruleset" />
     <Content Include="Areas\UserLogin\Views\Common\AccessDenied.cshtml" />

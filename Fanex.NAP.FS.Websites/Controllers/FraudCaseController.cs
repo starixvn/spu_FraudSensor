@@ -166,9 +166,10 @@
             return JData(_recipientService.GetRecipients());
         }
 
-        public ActionResult AddRecipient(string recipient)
+        [HttpPost]
+        public ActionResult AddRecipients(string recipients)
         {
-            return Json(_recipientService.AddRecipient(recipient, CurrentSession.UserId));
+            return Json(_recipientService.AddRecipient(recipients, CurrentSession.UserId));
         }
 
         public ActionResult RemoveRecipient(int id)

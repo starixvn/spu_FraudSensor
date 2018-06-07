@@ -1,166 +1,72 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+﻿  
+  
+ 
+<?xml version="1.0" encoding="utf-8" ?>
 <Functions>
+  <Function Name="Test">
+    <Setting Key="FS_Rpt_Test" SpName="FS_Rpt_Test_xtest" DbName="DBFS.FraudSensor.bodbSPUNet" />
+  </Function>
   <Function Name="SuspiciousCustomerReport">
-    <Setting Key="FS_Tbl_SuspiciousCustomer_Get"
-           SpName="FS_Tbl_SuspiciousCustomer_Get_xtest"
-           DbName="DBFS.FraudSensor.bodbSPUNet" />
-
-    <Setting Key="FS_Tbl_CustomerLog_Get"
-             SpName="FS_Tbl_CustomerLog_Get_xtest"
-             DbName="DBFS.FraudSensor.bodbSPUNet" />
-
-    <Setting Key="FS_Tbl_CustomerLog_Insert"
-              SpName="FS_Tbl_CustomerLog_Insert_xtest"
-              DbName="DBFS.FraudSensor.bodbSPUNet" />
-
-    <Setting Key="FS_Tbl_CustomerLog_Delete"
-              SpName="FS_Tbl_CustomerLog_Delete_xtest"
-              DbName="DBFS.FraudSensor.bodbSPUNet" />
+    <Setting Key="FS_Tbl_SuspiciousCustomer_Get" SpName="FS_Tbl_SuspiciousCustomer_Get_xtest" DbName="DBFS.FraudSensor.bodbSPUNet" />
+    <Setting Key="FS_Tbl_CustomerLog_Get" SpName="FS_Tbl_CustomerLog_Get_xtest" DbName="DBFS.FraudSensor.bodbSPUNet" />
+    <Setting Key="FS_Tbl_CustomerLog_Insert" SpName="FS_Tbl_CustomerLog_Insert_xtest" DbName="DBFS.FraudSensor.bodbSPUNet" />
+    <Setting Key="FS_Tbl_CustomerLog_Delete" SpName="FS_Tbl_CustomerLog_Delete_xtest" DbName="DBFS.FraudSensor.bodbSPUNet" />
   </Function>
-
   <Function Name="CustomerMonitor">
-    <Setting Key="FS_Tbl_CustomerMonitorAssignment_Get"
-         SpName="FS_Tbl_CustomerMonitorAssignment_Get_xtest"
-         DbName="DBFS.FraudSensor.bodbSPUNet" />
-
-    <Setting Key="FS_SuspiciousCustomer_Assignee_Update"
-         SpName="FS_SuspiciousCustomer_Assignee_Update_xtest"
-         DbName="DBFS.FraudSensor.bodbSPUNet" />
-
-    <Setting Key="FS_Tbl_CustomerMonitorAssignment_Update"
-         SpName="FS_Tbl_CustomerMonitorAssignment_Update_xtest"
-         DbName="DBFS.FraudSensor.bodbSPUNet" />
+    <Setting Key="FS_Tbl_CustomerMonitorAssignment_Get" SpName="FS_Tbl_CustomerMonitorAssignment_Get_xtest" DbName="DBFS.FraudSensor.bodbSPUNet" />
+    <Setting Key="FS_SuspiciousCustomer_Assignee_Update" SpName="FS_SuspiciousCustomer_Assignee_Update_xtest" DbName="DBFS.FraudSensor.bodbSPUNet" />
+    <Setting Key="FS_Tbl_CustomerMonitorAssignment_Update" SpName="FS_Tbl_CustomerMonitorAssignment_Update_xtest" DbName="DBFS.FraudSensor.bodbSPUNet" />
   </Function>
-
   <Function Name="MatchMonitor">
-    <Setting Key="FS_Rpt_MatchMonitor_Get"
-             SpName="FS_Rpt_MatchMonitor_Get_xtest"
-             DbName="DBFS.FraudSensor.bodbSPUNet" />
-
-    <Setting Key="FS_League_Get"
-             SpName="FS_League_Get_xtest"
-             DbName="DBFS.FraudSensor.bodbSPUNet" />
-
-    <Setting Key="FS_Rpt_MatchMonitorVerification_Update"
-             SpName="FS_Rpt_MatchMonitorVerification_Update_xtest"
-             DbName="DBFS.FraudSensor.bodbSPUNet" />
-
-    <Setting Key="Age_SelBalanceUpDay"
-             SpName="Age_SelBalanceUpDay"
-             DbName="DB.bodb02.bodbAdminNet" />
-
-    <Setting Key="FS_Rpt_MatchMonitorNotes_Update"
-             SpName="FS_Rpt_MatchMonitorNotes_Update_xtest"
-             DbName="DBFS.FraudSensor.bodbSPUNet" />
+    <Setting Key="FS_Rpt_MatchMonitor_Get" SpName="FS_Rpt_MatchMonitor_Get_xtest" DbName="DBFS.FraudSensor.bodbSPUNet" />
+    <Setting Key="FS_League_Get" SpName="FS_League_Get_xtest" DbName="DBFS.FraudSensor.bodbSPUNet" />
+    <Setting Key="FS_Rpt_MatchMonitorVerification_Update" SpName="FS_Rpt_MatchMonitorVerification_Update_xtest" DbName="DBFS.FraudSensor.bodbSPUNet" />
+    <Setting Key="Age_SelBalanceUpDay" SpName="Age_SelBalanceUpDay_xtest" DbName="DB.bodb02.bodbAdminNet" />
+    <Setting Key="FS_Rpt_MatchMonitorNotes_Update" SpName="FS_Rpt_MatchMonitorNotes_Update_xtest" DbName="DBFS.FraudSensor.bodbSPUNet" />
   </Function>
-
   <Function Name="FraudCaseDetails">
-    <Setting Key="FS_Rpt_MatchMonitor_Details_Get_MatchInfo"
-             SpName="FS_Rpt_MatchMonitor_Details_Get_MatchInfo_xtest"
-             DbName="DBFS.FraudSensor.bodbSPUNet" />
-
-    <Setting Key="FS_Rpt_MatchMonitor_Details_Get_ByCustomer"
-             SpName="FS_Rpt_MatchMonitor_Details_Get_ByCustomer_xtest"
-             DbName="DBFS.FraudSensor.bodbSPUNet" />
-
-    <Setting Key="FS_Rpt_MatchMonitor_Details_Get_ByTicket"
-             SpName="FS_Rpt_MatchMonitor_Details_Get_ByTicket_xtest"
-             DbName="DBFS.FraudSensor.bodbSPUNet" />
-
-    <Setting Key="FS_Rpt_Ticket_Get"
-             SpName="FS_Rpt_Ticket_Get_xtest"
-             DbName="DBFS.FraudSensor.bodbSPUNet" />
-
-    <Setting Key="FS_Rpt_Tickets_GetByIP"
-             SpName="FS_Rpt_Tickets_GetByIP_xtest"
-             DbName="DBFS.FraudSensor.bodbSPUNet" />
+    <Setting Key="FS_Rpt_MatchMonitor_Details_Get_MatchInfo" SpName="FS_Rpt_MatchMonitor_Details_Get_MatchInfo_xtest" DbName="DBFS.FraudSensor.bodbSPUNet" />
+    <Setting Key="FS_Rpt_MatchMonitor_Details_Get_ByCustomer" SpName="FS_Rpt_MatchMonitor_Details_Get_ByCustomer_xtest" DbName="DBFS.FraudSensor.bodbSPUNet" />
+    <Setting Key="FS_Rpt_MatchMonitor_Details_Get_ByTicket" SpName="FS_Rpt_MatchMonitor_Details_Get_ByTicket_xtest" DbName="DBFS.FraudSensor.bodbSPUNet" />
+    <Setting Key="FS_Rpt_Ticket_Get" SpName="FS_Rpt_Ticket_Get_xtest" DbName="DBFS.FraudSensor.bodbSPUNet" />
+    <Setting Key="FS_Rpt_Tickets_GetByIP" SpName="FS_Rpt_Tickets_GetByIP_xtest" DbName="DBFS.FraudSensor.bodbSPUNet" />
   </Function>
-
   <Function Name="FraudCase">
-    <Setting Key="FS_FraudCase_GetById"
-             SpName="FS_FraudCase_GetById_xtest"
-             DbName="DBFS.FraudSensor.bodbSPUNet" />
-
-    <Setting Key="FS_FraudCase_CaseStatus_Update"
-             SpName="FS_FraudCase_CaseStatus_Update_xtest"
-             DbName="DBFS.FraudSensor.bodbSPUNet" />
-
-    <Setting Key="FS_DelayGoalAccount_GetAll"
-             SpName="FS_DelayGoalAccount_GetAll_xtest"
-             DbName="DBFS.FraudSensor.bodbSPUNet" />
-
-    <Setting Key="FS_DelayGoalAccount_Insert"
-             SpName="FS_DelayGoalAccount_Insert_xtest"
-             DbName="DBFS.FraudSensor.bodbSPUNet" />
-
-    <Setting Key="FS_DelayGoalAccount_Delete"
-             SpName="FS_DelayGoalAccount_Delete_xtest"
-             DbName="DBFS.FraudSensor.bodbSPUNet" />
-
-    <Setting Key="FS_FraudCase_GetAll"
-             SpName="FS_FraudCase_GetAll_xtest"
-             DbName="DBFS.FraudSensor.bodbSPUNet" />
+    <Setting Key="FS_FraudCase_GetById" SpName="FS_FraudCase_GetById_xtest" DbName="DBFS.FraudSensor.bodbSPUNet" />
+    <Setting Key="FS_FraudCase_CaseStatus_Update" SpName="FS_FraudCase_CaseStatus_Update_xtest" DbName="DBFS.FraudSensor.bodbSPUNet" />
+    <Setting Key="FS_DelayGoalAccount_GetAll" SpName="FS_DelayGoalAccount_GetAll_xtest" DbName="DBFS.FraudSensor.bodbSPUNet" />
+    <Setting Key="FS_DelayGoalAccount_Insert" SpName="FS_DelayGoalAccount_Insert_xtest" DbName="DBFS.FraudSensor.bodbSPUNet" />
+    <Setting Key="FS_DelayGoalAccount_Delete" SpName="FS_DelayGoalAccount_Delete_xtest" DbName="DBFS.FraudSensor.bodbSPUNet" />
+    <Setting Key="FS_FraudCase_GetAll" SpName="FS_FraudCase_GetAll_xtest" DbName="DBFS.FraudSensor.bodbSPUNet" />
+    <Setting Key="FS_Tbl_OfficeIP_Delete" SpName="FS_Tbl_OfficeIP_Delete_xtest" DbName="DBFS.FraudSensor.bodbSPUNet" />
+    <Setting Key="FS_Tbl_OfficeIP_Insert" SpName="FS_Tbl_OfficeIP_Insert_xtest" DbName="DBFS.FraudSensor.bodbSPUNet" />
+    <Setting Key="FS_Tbl_OfficeIP_GetAll" SpName="FS_Tbl_OfficeIP_GetAll_xtest" DbName="DBFS.FraudSensor.bodbSPUNet" />
   </Function>
-
   <Function Name="FS_API">
-    <Setting Key="FS_FlaggedAccount_Insert"
-             SpName="FS_FlaggedAccount_Insert_xtest"
-             DbName="DBFS.FraudSensor.bodbSPUNet" />
-
-    <Setting Key="FlaggedAccount_Delete"
-             SpName="FS_FlaggedAccount_Delete_xtest"
-             DbName="DBFS.FraudSensor.bodbSPUNet" />
-
-    <Setting Key="FS_DelayGoalAccount_ImportFromFPS"
-             SpName="FS_DelayGoalAccount_ImportFromFPS_xtest"
-             DbName="DBFS.FraudSensor.bodbSPUNet" />
+    <Setting Key="FS_FlaggedAccount_Insert" SpName="FS_FlaggedAccount_Insert_xtest" DbName="DBFS.FraudSensor.bodbSPUNet" />
+    <Setting Key="FlaggedAccount_Delete" SpName="FS_FlaggedAccount_Delete_xtest" DbName="DBFS.FraudSensor.bodbSPUNet" />
+    <Setting Key="FS_DelayGoalAccount_ImportFromFPS" SpName="FS_DelayGoalAccount_ImportFromFPS_xtest" DbName="DBFS.FraudSensor.bodbSPUNet" />
   </Function>
-
   <Function Name="SuspiciousInfo">
-    <Setting Key="FS_SuspiciousCustomer_FraudCases_Get"
-             SpName="FS_SuspiciousCustomer_FraudCases_Get_xtest"
-             DbName="DBFS.FraudSensor.bodbSPUNet" />
-
-    <Setting Key="FS_Tbl_SuspiciousInfo_Update"
-             SpName="FS_Tbl_SuspiciousInfo_Update_xtest"
-             DbName="DBFS.FraudSensor.bodbSPUNet" />
-
-    <Setting Key="FS_Tbl_SuspiciousCustomer_Update"
-             SpName="FS_Tbl_SuspiciousCustomer_Update_xtest"
-             DbName="DBFS.FraudSensor.bodbSPUNet" />
+    <Setting Key="FS_SuspiciousCustomer_FraudCases_Get" SpName="FS_SuspiciousCustomer_FraudCases_Get_xtest" DbName="DBFS.FraudSensor.bodbSPUNet" />
+    <Setting Key="FS_Tbl_SuspiciousInfo_Update" SpName="FS_Tbl_SuspiciousInfo_Update_xtest" DbName="DBFS.FraudSensor.bodbSPUNet" />
+    <Setting Key="FS_Tbl_SuspiciousCustomer_Update" SpName="FS_Tbl_SuspiciousCustomer_Update_xtest" DbName="DBFS.FraudSensor.bodbSPUNet" />
+    <Setting Key="FS_CustomerInfo_Get" SpName="FS_CustomerInfo_Get_xtest" DbName="DBFS.FraudSensor.bodbSPUNet" />
   </Function>
-
   <Function Name="SuspiciousCustomer">
-    <Setting Key="FS_SuspiciousCustomer_Update"
-             SpName="FS_SuspiciousCustomer_Update_xtest"
-             DbName="DBFS.FraudSensor.bodbSPUNet" />
-
-    <Setting Key="FS_Rpt_SuspiciousCustomer_Get"
-             SpName="FS_Rpt_SuspiciousCustomer_Get_xtest"
-             DbName="DBFS.FraudSensor.bodbSPUNet" />
-
-    <Setting Key="FS_Rpt_SuspiciousCustomer_GetNotes"
-             SpName="FS_Rpt_SuspiciousCustomer_GetNotes_xtest"
-             DbName="DBFS.FraudSensor.bodbSPUNet"/>
+    <Setting Key="FS_SuspiciousCustomer_Update" SpName="FS_SuspiciousCustomer_Update_xtest" DbName="DBFS.FraudSensor.bodbSPUNet" />
+    <Setting Key="FS_Rpt_SuspiciousCustomer_Get" SpName="FS_Rpt_SuspiciousCustomer_Get_xtest" DbName="DBFS.FraudSensor.bodbSPUNet" />
+    <Setting Key="FS_Rpt_SuspiciousCustomer_GetNotes" SpName="FS_Rpt_SuspiciousCustomer_GetNotes_xtest" DbName="DBFS.FraudSensor.bodbSPUNet" />
   </Function>
-
   <Function Name="SuspiciousCustomerDetails">
-    <Setting Key="FS_Rpt_SuspicousCustomerDetails_ViolatedTickets_Get"
-          SpName="FS_Rpt_SuspicousCustomerDetails_ViolatedTickets_Get_xtest"
-          DbName="DBFS.FraudSensor.bodbSPUNet"/>
-
-    <Setting Key="FS_Rpt_SuspicousCustomerDetails_WinlossStatistic_Get"
-          SpName="FS_Rpt_SuspicousCustomerDetails_WinlossStatistic_Get_xtest"
-          DbName="DBFS.FraudSensor.bodbSPUNet"/>
+    <Setting Key="FS_Rpt_SuspicousCustomerDetails_ViolatedTickets_Get" SpName="FS_Rpt_SuspicousCustomerDetails_ViolatedTickets_Get_xtest" DbName="DBFS.FraudSensor.bodbSPUNet" />
+    <Setting Key="FS_Rpt_SuspicousCustomerDetails_WinlossStatistic_Get" SpName="FS_Rpt_SuspicousCustomerDetails_WinlossStatistic_Get_xtest" DbName="DBFS.FraudSensor.bodbSPUNet" />
   </Function>
-
   <Function Name="Notification">
-    <Setting Key="FS_Tbl_UserMessage_Get"
-             SpName="FS_Tbl_UserMessage_Get_xtest"
-             DbName="DBFS.FraudSensor.bodbSPUNet" />
-
-    <Setting Key="FS_Tbl_UserMessage_GetUnreadCount"
-             SpName="FS_Tbl_UserMessage_GetUnreadCount_xtest"
-             DbName="DBFS.FraudSensor.bodbSPUNet" />
+    <Setting Key="FS_Tbl_UserMessage_Get" SpName="FS_Tbl_UserMessage_Get_xtest" DbName="DBFS.FraudSensor.bodbSPUNet" />
+    <Setting Key="FS_Tbl_UserMessage_GetUnreadCount" SpName="FS_Tbl_UserMessage_GetUnreadCount_xtest" DbName="DBFS.FraudSensor.bodbSPUNet" />
+  </Function>
+  <Function Name="OfficeIPReport">
+    <Setting Key="FS_Rpt_OfficeIP_Get" SpName="FS_Rpt_OfficeIP_Get_xtest" DbName="DBFS.FraudSensor.bodbSPUNet" />
   </Function>
 </Functions>

@@ -1,12 +1,13 @@
 ﻿namespace Fanex.NAP.FS.WinService.Console
 {
     using Fanex.NAP.FS.Library.DTO;
+    using Fanex.NAP.FS.Library.Models;
 
     internal static class Program
     {
         private static void Main(string[] args)
         {
-            var a = FraudCaseFactory.GetExecutor(new FraudCase { FraudCaseId = 95 });
+            var a = FraudCaseFactory.GetExecutor(new FraudCase { FraudCaseId = (int) FraudCaseId.DailyDataCapture });
 
             Write(a);
 

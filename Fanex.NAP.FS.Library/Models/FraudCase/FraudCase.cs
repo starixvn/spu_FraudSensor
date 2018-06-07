@@ -114,7 +114,7 @@
 
                     result.Actions = new[]
                     {
-                        "Send notification to <a id='user-link' class='view-list'>Related users</a>"
+                        "Send notification to <a id='user-link' class='view-list' href='#'>Related users</a>"
                     };
 
                     break;

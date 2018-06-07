@@ -4,16 +4,16 @@
         user_table = $("#user-table", dialog);
 
     function add_recipient() {
-        var r = $("#user").val();
+        var data = $("#user").select2("data");
 
-        if (r == null || r.length == 0 || common.hasSpecialCharacter(r)) {
-            common.showError("Invalid recipient name");
+        if (data == null || data.length == 0) {
+            common.showError("Recipient list can't be empty!");
+            return;
         }
-        else {
-            var url = common.modifyRelativeUrl("/Fraudcase/AddRecipient");
 
-            $.get(url, { recipient: r }, common.handleUpdateAjax());
-        }
+        var url = common.modifyRelativeUrl("/Fraudcase/AddRecipients");
+
+        $.post(url, JSON.stringify({ recipients: data.map(obj => obj.id).join(",") }), common.handleUpdateAjax(), "json");
     }
 
     function remove_recipient_event(target) {
@@ -41,6 +41,7 @@
         dialog.dialog("open");
         user_table.DataTable().ajax.reload();
         user_table.DataTable().columns.adjust();
+        $("#user").val(null).change();
     });
 
     user_table.DataTable({
@@ -65,6 +66,17 @@
     });
 
     $("#add-recipient-btn").click(add_recipient);
+
+    $("select", dialog).select2({
+        ajax: {
+            url: common.modifyRelativeUrl("/SuspiciousCustomer/GetUsers"),
+            processResults: function (json) {
+                return {
+                    results: json.map(d => ({ id: d.Id, text: d.Username }))
+                };
+            },
+        }
+    })
 }
 
 $(daily_data_capture);
