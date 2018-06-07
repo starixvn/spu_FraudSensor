@@ -71,14 +71,6 @@ namespace Fanex.NAP.FS.Library.ExcelConfig.ScannedOfficeIP
                 .SetValue(cell);
         }
 
-        private static void RenderResult(ICell cell, TicketInfo data)
-        {
-            new XSSFRichTextString()
-                .WriteFormat("HT: {0} - {1}\n", data.HTHomeScore, data.HTAwayScore)
-                .WriteBoldFormat("FT: {0} - {1}", data.FinalHomeScore, data.FinalAwayScore)
-                .SetValue(cell);
-        }
-
         private void RenderOdds(ICell cell, TicketInfo data)
         {
             var template = excelBuilder.CreateOddsBuilder(data.BetTypeId).Render(data, null, CacheRef.GetOddsTypeName);

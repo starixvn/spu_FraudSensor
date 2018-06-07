@@ -73,7 +73,7 @@
             { data: obj => obj.IP, width: "100px" }
         ],
         columnDefs: [{ targets: "_all", defaultContent: "-" }],
-        headerCallback: tr => $(":nth-child(11)", tr).removeClass("uppercase")
+        headerCallback: tr => $(":nth-child(10)", tr).removeClass("uppercase")
     });
 
     $("#generate").click(generate_report);
@@ -81,6 +81,8 @@
     $("#export").click(generate_excel);
 
     generate_report();
+
+    $(".icon-calendar-text").click(e => $(e.target).prev().focus());
 }
 
 $(scanned_office_ip);
