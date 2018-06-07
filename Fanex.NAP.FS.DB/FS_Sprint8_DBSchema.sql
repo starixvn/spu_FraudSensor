@@ -43,11 +43,11 @@ GO
 
 CREATE TABLE [dbo].[FraudNotificationRecipient](
 	[FraudCaseId]		TINYINT NOT NULL,
-	[UserId]			INT NOT NULL
+	[RecipientId]		INT NOT NULL
  CONSTRAINT [PK_FraudCaseRecipient] PRIMARY KEY CLUSTERED 
 (
 	[FraudCaseId]		ASC,
-	[UserId]			ASC
+	[RecipientId]		ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [DATA]
 ) ON [DATA]
 GO
@@ -98,16 +98,44 @@ CREATE TABLE [dbo].[CapturedDataType](
 GO
 
 CREATE TABLE [dbo].[CapturedData](
-	[MatchId]			INT NOT NULL,
-	[DataTypeId]		INT NOT NULL,
-	[NewValue]			MONEY NOT NULL,
-	[OldValue]			MONEY NOT NULL,
-	[CapturedDate]		DATETIME NOT NULL,
+	[MatchId]					INT NOT NULL,
+	[TotalCompanyTO]			MONEY NULL,
+	[TotalSuperTO]				MONEY NULL,
+	[TotalMasterTO]				MONEY NULL,
+	[TotalAgentTO]				MONEY NULL,
+	[TotalTickets]				INT NULL,
+	[TotalSettledTickets]		INT NULL,
+	[TotalCancelledTickets]		INT NULL,
+	[CapturedDate]				DATETIME NOT NULL,
  CONSTRAINT [PK_CapturedData] PRIMARY KEY CLUSTERED 
 (
-	[MatchId]			ASC,
-	[DataTypeId]		ASC,
-	[CapturedDate]		ASC
+	[MatchId]					ASC,
+	[CapturedDate]				ASC
+) WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [DATA]
+) ON [DATA]
+GO
+
+CREATE TABLE [dbo].[ChangedMatch](
+	[MatchId]						INT NOT NULL,
+	[OldTotalCompanyTO]				MONEY NULL,
+	[NewTotalCompanyTO]				MONEY NULL,
+	[OldTotalSuperTO]				MONEY NULL,
+	[NewTotalSuperTO]				MONEY NULL,
+	[OldTotalMasterTO]				MONEY NULL,
+	[NewTotalMasterTO]				MONEY NULL,
+	[OldTotalAgentTO]				MONEY NULL,
+	[NewTotalAgentTO]				MONEY NULL,
+	[OldTotalTickets]				INT NULL,
+	[NewTotalTickets]				INT NULL,
+	[OldTotalSettledTickets]		INT NULL,
+	[NewTotalSettledTickets]		INT NULL,
+	[OldTotalCancelledTickets]		INT NULL,
+	[NewTotalCancelledTickets]		INT NULL,
+	[CapturedDate]					DATETIME NOT NULL
+ CONSTRAINT [PK_ChangedMatch] PRIMARY KEY CLUSTERED 
+(
+	[MatchId]						ASC,
+	[CapturedDate]					ASC
 ) WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [DATA]
 ) ON [DATA]
 GO
