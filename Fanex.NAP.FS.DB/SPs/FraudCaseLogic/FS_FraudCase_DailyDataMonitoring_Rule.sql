@@ -20,11 +20,14 @@ AS
 BEGIN
 	SET NOCOUNT ON;	
 
-	DECLARE @NewCapturedDate	DATETIME
-		,	@OldCapturedDate	DATETIME;
+	DECLARE @NewCapturedDate		DATETIME
+		,	@OldCapturedDate		DATETIME
+		,	@CaptureDate			DATETIME
+		,	@TotalChangedMatches	INT
+		,	@CurrentFraudCaseId		INT;
 
-	DECLARE @CaptureDate		DATETIME;
-	SELECT @CaptureDate = GETDATE();
+	SELECT	@CaptureDate = GETDATE()
+		,	@CurrentFraudCaseId = 4;
 			
 	IF	OBJECT_ID('tempdb..#tmpMatchesData') IS NOT NULL
 	BEGIN;
@@ -167,6 +170,26 @@ BEGIN
 		OR old.TotalTickets <> new.TotalTickets
 		OR old.TotalSettledTickets <> new.TotalSettledTickets
 		OR old.TotalCancelledTickets <> new.TotalCancelledTickets;
+
+	-------- LOG MESSAGE --------
+	SELECT @TotalChangedMatches = COUNT(DISTINCT cm.MatchId)
+	FROM dbo.ChangedMatch AS cm WITH(NOLOCK) 
+	WHERE cm.CapturedDate = @CaptureDate;
+
+	IF (@TotalChangedMatches > 0)
+	BEGIN
+		INSERT INTO dbo.[Message](FraudCaseId, MessageContent, LogDate)
+		VALUES(@CurrentFraudCaseId, 'There are ' +  CAST(@TotalChangedMatches AS VARCHAR(5)) + ' matches which having data changes on ' + CAST(@CaptureDate AS VARCHAR(20)), @CaptureDate);
+
+		DECLARE @NewlyMessageId		INT;
+		SELECT @NewlyMessageId = SCOPE_IDENTITY();
+
+		INSERT INTO dbo.UserMessage(UserId, MessageId)
+		SELECT	[UserId] = r.RecipientId
+			,	[MessageId] = @NewlyMessageId
+		FROM dbo.FraudNotificationRecipient AS r WITH(NOLOCK)
+		WHERE r.FraudCaseId = @CurrentFraudCaseId;
+	END;
 END;
 
 GO

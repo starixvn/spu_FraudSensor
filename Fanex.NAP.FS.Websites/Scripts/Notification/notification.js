@@ -1,9 +1,8 @@
 ﻿var showNotification = false;
-var updateStatus = false;
 var unreadMsgCounter = 0;
+var top20Messages = null;
 
 function notification() {
-    var top20Messages = null;
     
     String.prototype.format = function () {
         var a = this;
@@ -22,19 +21,18 @@ function notification() {
         });
 
         $('#noti-unread-msg').hide();
-        $('#notificationContainer').show();
 
         var messagesHtmlString = "";
         var messagesCount = top20Messages.length;
         var htmlTemplateRead = "<div class='notification'><div class='notification-header'><div class='notification-title'>{0}</div> <div class='notification-date'>{1}</div></div><div class='notification-content'>{2}</div></div>";
         var htmlTemplateUnRead = "<div class='notification -unread'><div class='notification-header'><div class='notification-title'>{0}</div> <div class='notification-date'>{1}</div></div><div class='notification-content'>{2}</div></div>";
-        for (var i = 0; i < messagesCount; i++) {
-            var message = top20Messages[i];
+        for (var i = 0; i < 12; i++) {
+            var message = i % 2 == 0 ? top20Messages[0] : top20Messages[1];
             if (message.IsViewed == true) {
-                messagesHtmlString += htmlTemplateRead.format(message.FraudCaseName, message.LogDate, message.MessageContent);
+                messagesHtmlString += htmlTemplateRead.format(message.FraudCaseName, message.LogDateString, message.MessageContent);
             }
             else {
-                messagesHtmlString += htmlTemplateUnRead.format(message.FraudCaseName, message.LogDate, message.MessageContent);
+                messagesHtmlString += htmlTemplateUnRead.format(message.FraudCaseName, message.LogDateString, message.MessageContent);
             }
         }
 
@@ -58,12 +56,13 @@ function notification() {
         }
     }
 
-    $('#notification-icon').off("click");
+    $('#notificationContainer').hide();
+    $('#notification-icon').off("click");    
     $('#notification-icon').on("click", function (event) {
         $('#noti-unread-msg').hide();
         if (!$('#notificationContainer').is(':visible')) {
-            updateStatus = true;
             getMessage();
+            $('#notificationContainer').show();
         }
         else {
             $('#notificationContainer').hide();
@@ -75,6 +74,10 @@ function notification() {
             e.target.id != $("#notification-icon").attr('id') && !$("#notification-icon").has(e.target).length) {
             $("#notificationContainer").hide();
         }
+    });
+
+    $(document).ready(function () {
+        getMessage();
     });
 
     getUnreadMessageCount();
