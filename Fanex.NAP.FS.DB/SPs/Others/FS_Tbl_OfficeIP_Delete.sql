@@ -31,10 +31,8 @@ BEGIN
 	
 	DECLARE @LogTypeId		INT	= 16
 			, @LogData		VARCHAR(500)
-			, @SPName		VARCHAR(100);
-	
-	DECLARE @InsertTime DATETIME;
-	
+			, @SPName		VARCHAR(100);	
+
 	IF EXISTS (SELECT TOP(1) 1 FROM dbo.OfficeIP WITH(NOLOCK) WHERE IPRange = @IPRange AND FromNumber = @FromNumber AND ToNumber = @ToNumber)
 	BEGIN
 		BEGIN TRY	
