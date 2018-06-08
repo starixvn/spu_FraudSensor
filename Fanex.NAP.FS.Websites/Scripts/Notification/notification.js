@@ -26,19 +26,19 @@ function notification() {
 
         var messagesHtmlString = "";
         var messagesCount = top20Messages.length;
-        var htmlTemplateRead = "<div class='notify-text-wrap notify-text-wrap-link' style='width: 100%; cursor: pointer;'>{0}</div><div class='notify-text-wrap notify-text-wrap-link' style='width: 100%; cursor: pointer;'>{1}</div><div class='notify-text-wrap notify-text-time' style='width: 100%'>{2}</div><hr class='style-two'>";
-        var htmlTemplateUnRead = "<div class='notify-text-wrap notify-text-bold notify-text-wrap-link' style='width: 100%; cursor: pointer;'>{0}</div><div class='notify-text-wrap notify-text-bold notify-text-wrap-link' style='width: 100%; cursor: pointer;'>{1}</div><div class='notify-text-wrap notify-text-time' style='width: 100%'>{2}</div><hr class='style-two'>";
+        var htmlTemplateRead = "<div class='notification'><div class='notification-header'><div class='notification-title'>{0}</div> <div class='notification-date'>{1}</div></div><div class='notification-content'>{2}</div></div>";
+        var htmlTemplateUnRead = "<div class='notification -unread'><div class='notification-header'><div class='notification-title'>{0}</div> <div class='notification-date'>{1}</div></div><div class='notification-content'>{2}</div></div>";
         for (var i = 0; i < messagesCount; i++) {
             var message = top20Messages[i];
             if (message.IsViewed == true) {
-                messagesHtmlString += htmlTemplateRead.format(message.FraudCaseName, message.MessageContent, message.LogDate);
+                messagesHtmlString += htmlTemplateRead.format(message.FraudCaseName, message.LogDate, message.MessageContent);
             }
             else {
-                messagesHtmlString += htmlTemplateUnRead.format(message.FraudCaseName, message.MessageContent, message.LogDate);
+                messagesHtmlString += htmlTemplateUnRead.format(message.FraudCaseName, message.LogDate, message.MessageContent);
             }
         }
 
-        $('#notificationsBody').html(messagesCount > 0 ? messagesHtmlString : "<div class='notify-text-wrap notify-text-nomsg' style='width: 100%'>There is no message.</div>");
+        $('#notificationContainer').html(messagesCount > 0 ? messagesHtmlString : "<div class='notification'>There is no message.</div>");
     }
 
     function getUnreadMessageCount()

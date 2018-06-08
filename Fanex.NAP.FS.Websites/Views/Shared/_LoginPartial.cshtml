@@ -1,5 +1,12 @@
 ﻿@using Microsoft.AspNet.Identity
-<div class="login-info">
+<div class="header-info">
+    <div id="notification-icon" class="notification-container">
+        <div class="notification-icon">
+            <div class="icon-bell"></div>
+            <span id="noti-unread-msg" class="circle"></span>
+        </div>
+        <div id="notificationContainer" class="notification-list"></div>
+    </div>
     <div class="username">
         @User.Identity.GetUserName()
         <ul class="sub-menu -small">

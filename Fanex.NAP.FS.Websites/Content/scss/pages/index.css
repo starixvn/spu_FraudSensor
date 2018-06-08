@@ -1332,9 +1332,9 @@ table.dataTable tbody tr.selected td {
     -ms-flex-align: center;
     align-items: center; }
 
-.main-menu .menu-item, .login-info .username {
+.main-menu .menu-item, .header-info .username {
   position: relative; }
-  .main-menu .menu-item:hover .sub-menu, .login-info .username:hover .sub-menu {
+  .main-menu .menu-item:hover .sub-menu, .header-info .username:hover .sub-menu {
     z-index: 111;
     opacity: 1;
     -webkit-transform: scaleY(1);
@@ -1342,11 +1342,11 @@ table.dataTable tbody tr.selected td {
     -ms-transform: scaleY(1);
     -o-transform: scaleY(1);
     transform: scaleY(1); }
-  .main-menu .menu-item .icon, .login-info .username .icon {
+  .main-menu .menu-item .icon, .header-info .username .icon {
     margin-right: 6px;
     position: relative;
     top: 1px; }
-  .main-menu .menu-item .sub-menu, .login-info .username .sub-menu {
+  .main-menu .menu-item .sub-menu, .header-info .username .sub-menu {
     position: absolute;
     top: 100%;
     left: 0;
@@ -1391,15 +1391,15 @@ table.dataTable tbody tr.selected td {
     transform-origin: 0 0;
     opacity: 0;
     z-index: -1; }
-    .main-menu .menu-item .sub-menu .sub-menu-item > .link, .login-info .username .sub-menu .sub-menu-item > .link {
+    .main-menu .menu-item .sub-menu .sub-menu-item > .link, .header-info .username .sub-menu .sub-menu-item > .link {
       display: block;
       padding: 10px 20px;
       color: #545454;
       font-size: 14px; }
-    .main-menu .menu-item .sub-menu .sub-menu-item > .link:hover, .login-info .username .sub-menu .sub-menu-item > .link:hover {
+    .main-menu .menu-item .sub-menu .sub-menu-item > .link:hover, .header-info .username .sub-menu .sub-menu-item > .link:hover {
       background-color: #1d2e4f;
       color: #fff; }
-    .main-menu .menu-item .sub-menu.-small, .login-info .username .sub-menu.-small {
+    .main-menu .menu-item .sub-menu.-small, .header-info .username .sub-menu.-small {
       min-width: 120px; }
 
 .main-menu {
@@ -1436,7 +1436,7 @@ table.dataTable tbody tr.selected td {
     .main-menu .menu-item > .link.active {
       color: #fff; }
 
-.login-info {
+.header-info {
   display: -webkit-box;
   display: -webkit-flex;
   display: -moz-box;
@@ -1453,40 +1453,124 @@ table.dataTable tbody tr.selected td {
   -ms-flex-align: center;
   align-items: center;
   margin-right: 25px; }
-  .login-info .icon-announcement {
-    position: relative;
-    color: #fff;
-    font-size: 22px;
-    cursor: pointer; }
-    .login-info .icon-announcement:after {
-      position: absolute;
-      right: 1px;
-      top: 2px;
-      width: 8px;
-      height: 8px;
-      -webkit-border-radius: 50%;
-      -moz-border-radius: 50%;
-      border-radius: 50%;
-      background-color: #ff4242;
-      content: ""; }
-  .login-info .username {
-    margin-left: 20px;
+  .header-info .username {
+    margin-left: 30px;
     line-height: 70px;
     color: #fff;
     cursor: pointer; }
-    .login-info .username:after {
+    .header-info .username:after {
       display: inline-block;
       margin-left: 6px;
       font-family: 'Fraud-Sensor';
       content: "\e90c";
       font-size: 14px; }
-    .login-info .username .sub-menu {
+    .header-info .username .sub-menu {
       left: auto;
       right: 0;
       line-height: 1; }
 
-body {
-  min-height: 100vh; }
+.notification-container {
+  position: relative; }
+  .notification-container .notification-icon {
+    position: relative; }
+  .notification-container .icon-bell {
+    position: relative;
+    color: #fff;
+    font-size: 22px;
+    cursor: pointer; }
+  .notification-container .circle {
+    position: absolute;
+    top: 0;
+    min-width: 8px;
+    min-height: 8px;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    border-radius: 50%;
+    background-color: #ff4242;
+    color: #fff;
+    font-size: 10px;
+    padding: 2px 4px;
+    left: 12px; }
+  .notification-container .notification-list {
+    position: absolute;
+    top: 46px;
+    right: -9px;
+    z-index: 1000;
+    width: 320px;
+    max-height: 352px;
+    overflow: auto;
+    border: 1px solid #ddd;
+    background-color: #fff;
+    -webkit-box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
+    -moz-box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.2); }
+
+.notification {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+  -moz-box-pack: justify;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  -webkit-box-align: stretch;
+  -webkit-align-items: stretch;
+  -moz-box-align: stretch;
+  -ms-flex-align: stretch;
+  align-items: stretch;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: column;
+  -moz-box-orient: vertical;
+  -moz-box-direction: normal;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  padding: 10px 20px 8px;
+  border-bottom: 1px solid #ddd;
+  font-size: 13px; }
+  .notification.-unread {
+    background-color: #f2f6ff; }
+    .notification.-unread .notification-header:before {
+      position: absolute;
+      left: -12px;
+      top: 3px;
+      width: 6px;
+      height: 6px;
+      background-color: #ff4342;
+      -webkit-border-radius: 50%;
+      -moz-border-radius: 50%;
+      border-radius: 50%;
+      content: ''; }
+  .notification .notification-header {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: justify;
+    -webkit-justify-content: space-between;
+    -moz-box-pack: justify;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    -moz-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    position: relative;
+    padding-bottom: 2px; }
+  .notification .notification-title {
+    color: #2b4475;
+    font-weight: bold; }
+  .notification .notification-content {
+    line-height: 18px;
+    color: #545454; }
+  .notification .notification-date {
+    font-size: 10px;
+    color: #8a8a8a; }
 
 .content {
   padding: 16px 10px; }

@@ -115,31 +115,13 @@
     }
 }
 
-.login-info {
+.header-info {
     @include align-items;
     margin-right: 25px;
 
-    .icon-announcement {
-        position: relative;
-        color: #fff;
-        font-size: 22px;
-        cursor: pointer;
-
-        &:after {
-            position: absolute;
-            right: 1px;
-            top: 2px;
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background-color: #ff4242;
-            content: "";
-        }
-    }
-
     .username {
         @extend %has-sub-menu;
-        margin-left: 20px;
+        margin-left: 30px;
         line-height: 70px;
         color: #fff;
         cursor: pointer;
@@ -160,9 +142,92 @@
     }
 }
 
-body {
-    min-height: 100vh;
+.notification-container {
+    position: relative;
+
+    .notification-icon {
+        position: relative;
+    }
+
+    .icon-bell {
+        position: relative;
+        color: #fff;
+        font-size: 22px;
+        cursor: pointer;
+    }
+
+    .circle {
+        position: absolute;
+        top: 0;
+        min-width: 8px;
+        min-height: 8px;
+        border-radius: 50%;
+        background-color: #ff4242;
+        color: #fff;
+        font-size: 10px;
+        padding: 2px 4px;
+        left: 12px;
+    }
+
+    .notification-list {
+        position: absolute;
+        top: 46px;
+        right: -9px;
+        z-index: 1000;
+        width: 320px;
+        max-height: 352px;
+        overflow: auto;
+        border: 1px solid #ddd;
+        background-color: #fff;
+        box-shadow: 0 0 6px rgba(0,0,0,.2);
+    }    
 }
+
+.notification {
+    @include align-items($align-items: stretch);
+    flex-direction: column;
+    padding: 10px 20px 8px;
+    border-bottom: 1px solid #ddd;
+    font-size: 13px;
+
+    &.-unread {
+        background-color: #f2f6ff;
+
+        .notification-header:before {
+            position: absolute;
+            left: -12px;
+            top: 3px;
+            width: 6px;
+            height: 6px;
+            background-color: #ff4342;
+            border-radius: 50%;
+            content: '';
+        }
+    }
+
+    .notification-header {
+        @include align-items;
+        position: relative;        
+        padding-bottom: 2px;
+    }
+
+    .notification-title {
+        color: #2b4475;
+        font-weight: bold;
+    }
+
+    .notification-content {
+        line-height: 18px;
+        color: #545454;
+        
+    }
+
+    .notification-date {
+        font-size: 10px;
+        color: #8a8a8a;
+    }
+}
+
 
 // Content
 
