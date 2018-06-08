@@ -139,5 +139,55 @@ CREATE TABLE [dbo].[ChangedMatch](
 ) WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [DATA]
 ) ON [DATA]
 GO
+--================================================
+CREATE TABLE dbo.BSNGMatchScanning
+(
+	[MatchId]					INT	NOT NULL
+	, [LiveHomeScore]			TINYINT NOT NULL
+	, [LiveAwayScore]			TINYINT NOT NULL
+	, [EventDate]				DATETIME NOT NULL
+	, [EventStatus]				NVARCHAR(50) NOT NULL
+	, [LastRejectedTicket]		BIGINT NULL
+	, [LastRejectedTime]		DATETIME NULL
+	, [ScannedTime]			DATETIME NULL
+	, [CreatedTime]			DATETIME NULL
+ CONSTRAINT [PK_BSNGMatchScanning_MatchIdLiveHomeScoreLiveAwayScore] PRIMARY KEY CLUSTERED 
+(
+	 MatchId			ASC
+	, LiveHomeScore		ASC
+	, LiveAwayScore		ASC
+) WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [DATA]
+) ON [DATA];
+
+GO
+CREATE NONCLUSTERED INDEX NCIX_BSNGScanInfo_EventDate ON [dbo].[BSNGMatchScanning] (
+	[EventDate]			ASC
+) ON IDX;
+GO
+--================================================ DROP TABLE BSNGMatchScanningArchive
+CREATE TABLE dbo.BSNGMatchScanningArchive
+(
+	[MatchId]					INT	NOT NULL
+	, [LiveHomeScore]			TINYINT NOT NULL
+	, [LiveAwayScore]			TINYINT NOT NULL
+	, [EventDate]				DATETIME NOT NULL
+	, [EventStatus]				NVARCHAR(50) NOT NULL
+	, [LastRejectedTicket]		BIGINT NULL
+	, [LastRejectedTime]		DATETIME NULL
+	, [ScannedTime]			DATETIME NULL
+	, [CreatedTime]			DATETIME NULL
+ CONSTRAINT [PK_BSNGMatchScanningArchive_MatchIdLiveHomeScoreLiveAwayScore] PRIMARY KEY CLUSTERED 
+(
+	 MatchId			ASC
+	, LiveHomeScore		ASC
+	, LiveAwayScore		ASC
+) WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [DATA]
+) ON [DATA];
+GO
+CREATE NONCLUSTERED INDEX NCIX_BSNGScanInfo_EventDate ON [dbo].[BSNGMatchScanningArchive] (
+	[EventDate]			ASC
+) ON IDX;
+GO
+
 ----===================C. ALTER TABLES=========================
 ----===========================================================

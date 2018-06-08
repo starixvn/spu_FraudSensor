@@ -30,6 +30,10 @@ BEGIN
 
 	DECLARE @CurrentFraudCaseId TINYINT;
 	SET @CurrentFraudCaseId = 1; -- BSNG
+	
+	DECLARE @ScannedDate DATETIME;
+	SET	@ScannedDate = GETDATE();
+	
 
 	-- Arrange tables and initialize
 	IF OBJECT_ID('tempdb..#tmpLastTickets') IS NOT NULL
@@ -78,11 +82,19 @@ BEGIN
 	CREATE TABLE #tmpMatches
 	(
 		MatchId INT PRIMARY KEY
+		,CurrentScore TINYINT
 	);
-
+	
+	
 	INSERT INTO #tmpMatches(MatchId)
 	SELECT val FROM SPU_StrSplit(@MatchIds, ',');
-		
+	
+	---Get Current Score of Match -- Only Scan for Score less than currentScore
+	UPDATE ms
+	SET		ms.CurrentScore = m.livehomescore + liveawayscore
+	FROM	#tmpMatches ms WITH(NOLOCK)
+			INNER JOIN bodb02.dbo.Match m WITH (NOLOCK) ON ms.MatchId = m.MatchId 
+	
 	-- Run the Rule
 	INSERT INTO #tmpLastTickets (MatchId, TransId, DeleteTime, LiveHomeScore, LiveAwayScore)
 	SELECT	[MatchId]			= ans.matchid
@@ -91,7 +103,8 @@ BEGIN
 		,	[LiveHomeScore]		= ans.livehomescore
 		,	[LiveAwayScore]		= ans.liveawayscore
 	FROM bodb02.dbo.bettrans AS ans WITH (NOLOCK)
-	WHERE ans.matchid IN (SELECT MatchId FROM #tmpMatches WITH (NOLOCK))
+			INNER JOIN #tmpMatches ms WITH (NOLOCK) ON ans.matchid = ms.MatchId
+	WHERE (ans.livehomescore + ans.liveawayscore) < ms.CurrentScore
 		AND ans.statusID = 101
 		AND ans.liveindicator = 1
 		AND ans.bettype IN (
@@ -165,12 +178,19 @@ BEGIN
 	INSERT INTO dbo.ScannedMatch(MatchId, FraudCaseId, ScannedDate, SuspiciousTicketsCount)
 	SELECT  [MatchId]					= m.MatchId
 		,	[FraudCaseId]				= @CurrentFraudCaseId
-		,	[ScannedDate]				= GETDATE()
+		,	[ScannedDate]				= @ScannedDate
 		,	[SuspiciousTicketsCount]	= COUNT(ft.TransId)
 	FROM #tmpMatches AS m WITH (NOLOCK)
 	LEFT JOIN #tmpFraudTickets AS ft WITH (NOLOCK) ON m.MatchId = ft.MatchId
 	GROUP BY m.MatchId, ft.MatchId;
 
+	/*-- Update BSNGMatchScanning Info -------
+	UPDATE	bms
+	SET		bms.LastRejectedTime = 'd', bms.LastRejectedTicket = 1, ScannedTime = @ScannedDate
+	FROM	BSNGMatchScanning bms WITH(ROWLOCK)
+			INNER JOIN 
+	
+	*/
 	-- Check the results and store/return data
 	IF EXISTS (SELECT TOP(1) 1 FROM #tmpFraudTickets WITH (NOLOCK))
 	BEGIN
