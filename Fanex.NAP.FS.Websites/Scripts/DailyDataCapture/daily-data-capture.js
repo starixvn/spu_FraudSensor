@@ -94,6 +94,8 @@
 
     $("#export").click(generate_excel);
 
+    $(".icon-calendar-text").click(e => $(e.target).prev().focus());
+
     generate_report();
 }
 
