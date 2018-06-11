@@ -101,6 +101,7 @@ GO
 
 CREATE TABLE [dbo].[CapturedData](
 	[MatchId]					INT NOT NULL,
+	[CapturedDate]				DATETIME NOT NULL,
 	[TotalCompanyTO]			MONEY NULL,
 	[TotalSuperTO]				MONEY NULL,
 	[TotalMasterTO]				MONEY NULL,
@@ -108,7 +109,6 @@ CREATE TABLE [dbo].[CapturedData](
 	[TotalTickets]				INT NULL,
 	[TotalSettledTickets]		INT NULL,
 	[TotalCancelledTickets]		INT NULL,
-	[CapturedDate]				DATETIME NOT NULL,
  CONSTRAINT [PK_CapturedData] PRIMARY KEY CLUSTERED 
 (
 	[MatchId]					ASC,
@@ -119,6 +119,7 @@ GO
 
 CREATE TABLE [dbo].[ChangedMatch](
 	[MatchId]						INT NOT NULL,
+	[CapturedDate]					DATETIME NOT NULL,
 	[OldTotalCompanyTO]				MONEY NULL,
 	[NewTotalCompanyTO]				MONEY NULL,
 	[OldTotalSuperTO]				MONEY NULL,
@@ -133,7 +134,6 @@ CREATE TABLE [dbo].[ChangedMatch](
 	[NewTotalSettledTickets]		INT NULL,
 	[OldTotalCancelledTickets]		INT NULL,
 	[NewTotalCancelledTickets]		INT NULL,
-	[CapturedDate]					DATETIME NOT NULL
  CONSTRAINT [PK_ChangedMatch] PRIMARY KEY CLUSTERED 
 (
 	[MatchId]						ASC,
@@ -151,8 +151,8 @@ CREATE TABLE dbo.BSNGMatchScanning
 	, [EventStatus]				NVARCHAR(50) NOT NULL
 	, [LastRejectedTicket]		BIGINT NULL
 	, [LastRejectedTime]		DATETIME NULL
-	, [ScannedTime]			DATETIME NULL
-	, [CreatedTime]			DATETIME NULL
+	, [ScannedTime]				DATETIME NULL
+	, [CreatedTime]				DATETIME NULL
  CONSTRAINT [PK_BSNGMatchScanning_MatchIdLiveHomeScoreLiveAwayScore] PRIMARY KEY CLUSTERED 
 (
 	 MatchId			ASC
