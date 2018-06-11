@@ -24,7 +24,8 @@ BEGIN
 	
 	SELECT	FromIP = oi.IPRange + '.' + dbo.SPU_ToString(oi.FromNumber)
 			,ToIP = oi.IPRange + '.' + dbo.SPU_ToString(oi.ToNumber)			
-	FROM	dbo.OfficeIP oi WITH(NOLOCK);
+	FROM	dbo.OfficeIP oi WITH(NOLOCK)
+	ORDER BY oi.IPRange, oi.FromNumber;
 END;
 GO 
  GRANT EXECUTE ON dbo.FS_Tbl_OfficeIP_GetAll TO bodbSPUNet
