@@ -23,10 +23,13 @@ BEGIN
 	DECLARE @NewCapturedDate		DATETIME
 		,	@OldCapturedDate		DATETIME
 		,	@CaptureDate			DATETIME
+		,	@Today					DATE
 		,	@TotalChangedMatches	INT
+		,	@StoredMessageId		INT
 		,	@CurrentFraudCaseId		INT;
 
 	SELECT	@CaptureDate = GETDATE()
+		,	@Today = GETDATE()
 		,	@CurrentFraudCaseId = 4;
 			
 	IF	OBJECT_ID('tempdb..#tmpMatchesData') IS NOT NULL
@@ -90,6 +93,22 @@ BEGIN
 		[MatchId]					ASC
 	);
 		
+
+	-------- REMOVE TODAY's DATA IN CASE ACCIDENTIALLY RUN MORE THAN 1 TIME PER DAY --------
+	DELETE FROM dbo.ChangedMatch
+	WHERE CAST(CapturedDate AS DATE) = @Today;
+
+	SELECT @StoredMessageId = m.MessageId
+	FROM dbo.Message AS m WITH(NOLOCK)
+	WHERE CAST(m.LogDate AS DATE) = @Today
+		AND m.FraudCaseId = @CurrentFraudCaseId;
+
+	DELETE FROM dbo.Message
+	WHERE MessageId = @StoredMessageId;
+
+	DELETE FROM dbo.UserMessage
+	WHERE MessageId = @StoredMessageId;
+	
 	-------- START --------
 	SELECT @NewCapturedDate = MAX(cd.CapturedDate)
 	FROM dbo.CapturedData AS cd WITH(NOLOCK);
