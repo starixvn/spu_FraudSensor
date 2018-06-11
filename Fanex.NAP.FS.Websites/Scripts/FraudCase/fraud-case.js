@@ -14,4 +14,9 @@
         width: "300px",
         dropdownAutoWidth: true
     });
+
+    if (!isHost) {
+        $(".-primary:not(#search-btn)").prop("disabled", true);
+        $(document).ajaxSuccess(() => $(".icon-delete").unbind("click").css("color", "gray"));
+    }
 })

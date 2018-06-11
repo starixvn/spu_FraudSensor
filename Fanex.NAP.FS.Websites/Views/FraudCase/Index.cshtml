@@ -31,7 +31,7 @@
         </div>
         @if (Model.FraudCaseList.Any())
         {
-            <button class="button -primary">Search</button>
+            <button class="button -primary" id="search-btn">Search</button>
         }
     </div>
 }
@@ -109,6 +109,7 @@
 @section scripts{
     <script>
         var fraudCaseId = @(Model.FraudCaseInfo.FraudCaseId);
+        var isHost = @(ViewBag.IsHost.ToString().ToLower());
     </script>
 
     @Scripts.Render("~/fraud-case-scripts")

@@ -1,6 +1,7 @@
 ﻿namespace Fanex.NAP.FS.Websites.Controllers
 {
     using Fanex.NAP.Core.Web.Attribute;
+    using Fanex.NAP.FS.Library.Core.Helpers;
     using Fanex.NAP.FS.Library.Core.Helpers.Api;
     using Fanex.NAP.FS.Library.ExcelConfig.FraudCase.ScannedOfficeIP;
     using Fanex.NAP.FS.Library.FSMQ;
@@ -36,6 +37,8 @@
             _delayGoalAccountService = new DelayGoalAccountService();
             _fraudCaseService = new FraudCaseService();
             _ipService = new OfficeIPService();
+
+            ViewBag.IsHost = UserService.IsHavingPermission(CurrentSession.UserId, int.Parse(AppSettings.Get("SiteId")), FSFunctionKeys.FraudCase, Core.Business.Constant.Policy.Host);
         }
 
         public ActionResult Index()
