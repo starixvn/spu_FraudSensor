@@ -6,7 +6,7 @@ GO
 
 /****** Object:  Stored Procedure dbo.FS_Rpt_SuspiciousCustomer_Get    Script Date: 5/15/2018 4:21:24 PM ******/
 
-CREATE PROCEDURE [dbo].[FS_Rpt_SuspiciousCustomer_Get] 
+ALTER PROCEDURE [dbo].[FS_Rpt_SuspiciousCustomer_Get] 
 		@FromDate			DATETIME
 	,	@ToDate				DATETIME
 	,	@Username			NVARCHAR(50) = NULL	
@@ -16,6 +16,7 @@ CREATE PROCEDURE [dbo].[FS_Rpt_SuspiciousCustomer_Get]
 	,	@IsDirty			BIT = NULL
 	,	@IsHedge			BIT = NULL
 	,	@AssigneeId			INT = NULL
+	,	@Environment		INT = 3
 AS
 /*
 	Created: 20180320@Long
@@ -34,6 +35,31 @@ AS
 */
 BEGIN
 	SET NOCOUNT ON;
+
+	IF OBJECT_ID('tempdb..#tmpFraudCases') IS NOT NULL
+	BEGIN
+		DROP TABLE	#tmpFraudCases;
+	END
+
+	CREATE TABLE #tmpFraudCases (
+			FraudCaseId			INT
+		PRIMARY KEY CLUSTERED (FraudCaseId)
+	);
+
+	IF @FraudCaseId = 0
+		BEGIN
+			INSERT INTO #tmpFraudCases(FraudCaseId)
+			SELECT fc.FraudCaseId
+			FROM dbo.FraudCase AS fc WITH(NOLOCK)
+			WHERE fc.IsTest = (CASE WHEN @Environment = 3 THEN 0 ELSE fc.IsTest END)
+		END;
+	ELSE
+		BEGIN
+			INSERT INTO #tmpFraudCases(FraudCaseId)
+			SELECT fc.FraudCaseId
+			FROM dbo.FraudCase AS fc WITH(NOLOCK)
+			WHERE fc.FraudCaseId = @FraudCaseId AND fc.IsTest = (CASE WHEN @Environment = 3 THEN 0 ELSE fc.IsTest END)
+		END;
 
 	SELECT	[CustId]			= si.custid
 		,	[Username]			= c.username
@@ -56,9 +82,9 @@ BEGIN
 	FROM dbo.SuspiciousInfo si WITH(NOLOCK)
 		INNER JOIN dbo.SuspiciousCustomer sc WITH(NOLOCK) ON si.CustId = sc.Custid
 		INNER JOIN bodb02.dbo.Customer c WITH(NOLOCK) ON si.CustId = c.CustId
+		INNER JOIN #tmpFraudCases fc WITH(NOLOCK) ON fc.FraudCaseId = si.FraudCaseId
 		LEFT JOIN dbo.CustomerMonitorAssignment AS cma WITH (NOLOCK) ON cma.CustId = si.CustId
-	WHERE (@FraudCaseId = 0 OR si.FraudCaseId = @FraudCaseId)
-		AND (si.EventDate BETWEEN @FromDate AND @ToDate)
+	WHERE (si.EventDate BETWEEN @FromDate AND @ToDate)
 		AND (@IsDelinquent IS NULL OR sc.IsDelinquent = @IsDelinquent)
 		AND (@IsHedge IS NULL OR sc.IsHedge = @IsHedge)
 		AND (@IsDirty IS NULL OR sc.IsDirty = @IsDirty)

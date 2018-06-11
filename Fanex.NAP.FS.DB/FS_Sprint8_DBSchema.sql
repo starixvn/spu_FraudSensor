@@ -43,7 +43,9 @@ GO
 
 CREATE TABLE [dbo].[FraudNotificationRecipient](
 	[FraudCaseId]		TINYINT NOT NULL,
-	[RecipientId]		INT NOT NULL
+	[RecipientId]		INT NOT NULL,
+	[CreatorId]			INT NOT NULL,
+	[CreatedDate]		DATETIME NOT NULL,
  CONSTRAINT [PK_FraudCaseRecipient] PRIMARY KEY CLUSTERED 
 (
 	[FraudCaseId]		ASC,
