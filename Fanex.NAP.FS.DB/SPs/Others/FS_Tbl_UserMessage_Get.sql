@@ -27,7 +27,7 @@ BEGIN
 		INNER JOIN dbo.[Message] AS m WITH(NOLOCK) ON um.MessageId = m.MessageId
 		INNER JOIN dbo.FraudCase AS fc WITH(NOLOCK) ON fc.FraudCaseId = m.FraudCaseId
 	WHERE um.UserId = @CustId
-	ORDER BY m.LogDate;
+	ORDER BY m.LogDate DESC;
 
 	UPDATE	dbo.UserMessage WITH(ROWLOCK, UPDLOCK)
 	SET		IsViewed = 1
