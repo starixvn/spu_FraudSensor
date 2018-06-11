@@ -18,26 +18,26 @@ function notification() {
 
         $.get(url, function (json) {
             top20Messages = json;
+
+            $('#noti-unread-msg').hide();
+
+            var messagesHtmlString = "";
+            var messagesCount = top20Messages.length;
+            var htmlTemplateRead = "<div class='notification'><div class='notification-header'><div class='notification-title'>{0}</div> <div class='notification-date'>{1}</div></div><div class='notification-content'>{2}</div></div>";
+            var htmlTemplateUnRead = "<div class='notification -unread'><div class='notification-header'><div class='notification-title'>{0}</div> <div class='notification-date'>{1}</div></div><div class='notification-content'>{2}</div></div>";
+            for (var i = 0; i < messagesCount; i++) {
+                var message = top20Messages[i];
+                if (message.IsViewed == true) {
+                    messagesHtmlString += htmlTemplateRead.format(message.FraudCaseName, message.LogDateString, message.MessageContent);
+                }
+                else {
+                    messagesHtmlString += htmlTemplateUnRead.format(message.FraudCaseName, message.LogDateString, message.MessageContent);
+                }
+            }
+
+            $('#notificationContainer').html(messagesCount > 0 ? messagesHtmlString : "<div class='notification'>There is no message.</div>");
+            $('#notificationContainer').show();
         });
-
-        $('#noti-unread-msg').hide();
-
-        var messagesHtmlString = "";
-        var messagesCount = top20Messages.length;
-        var htmlTemplateRead = "<div class='notification'><div class='notification-header'><div class='notification-title'>{0}</div> <div class='notification-date'>{1}</div></div><div class='notification-content'>{2}</div></div>";
-        var htmlTemplateUnRead = "<div class='notification -unread'><div class='notification-header'><div class='notification-title'>{0}</div> <div class='notification-date'>{1}</div></div><div class='notification-content'>{2}</div></div>";
-        for (var i = 0; i < messagesCount; i++) {
-            var message = top20Messages[i];
-            if (message.IsViewed == true) {
-                messagesHtmlString += htmlTemplateRead.format(message.FraudCaseName, message.LogDateString, message.MessageContent);
-            }
-            else {
-                messagesHtmlString += htmlTemplateUnRead.format(message.FraudCaseName, message.LogDateString, message.MessageContent);
-            }
-        }
-
-        $('#notificationContainer').html(messagesCount > 0 ? messagesHtmlString : "<div class='notification'>There is no message.</div>");
-        $('#notificationContainer').show();
     }
 
     function getUnreadMessageCount()
@@ -46,15 +46,15 @@ function notification() {
 
         $.get(url, function (json) {
             unreadMsgCounter = json.UnreadMessageCounter;
-        });
 
-        if (unreadMsgCounter <= 0) {
-            $('#noti-unread-msg').hide();
-        }
-        else {
-            $('#noti-unread-msg').show();
-            $('#noti-unread-msg').html(unreadMsgCounter);
-        }
+            if (unreadMsgCounter <= 0) {
+                $('#noti-unread-msg').hide();
+            }
+            else {
+                $('#noti-unread-msg').show();
+                $('#noti-unread-msg').html(unreadMsgCounter);
+            }
+        });
     }
 
     $('#notificationContainer').hide();
