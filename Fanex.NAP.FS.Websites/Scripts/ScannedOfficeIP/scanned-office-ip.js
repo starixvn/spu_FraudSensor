@@ -59,6 +59,8 @@
         language: common.language(),
         scrollY: '57vh',
         scrollCollapse: true,
+        lengthMenu: [10, 20, 50, 100, 500],
+        pageLength: 50,
         columns: [
             { data: (row, type, set, meta) => meta.row + 1, className: "text-center", width: "40px" },
             { data: obj => obj.Member, width: "100px" },

@@ -259,6 +259,7 @@
       <DependentUpon>Error.resx</DependentUpon>
     </Compile>
     <Compile Include="Core\Resources\ErrorLookup.cs" />
+    <Compile Include="ExcelConfig\DailyDataCapture\DailyDataCaptureExcelConfig.cs" />
     <Compile Include="ExcelConfig\FraudCase\DelayedGoal\DelayedGoalExcelConfig.cs" />
     <Compile Include="ExcelConfig\FraudCase\ScannedOfficeIP\OfficeIPExcelConfig.cs" />
     <Compile Include="ExcelConfig\MatchMonitor\CustomerDetailConfig.cs" />
@@ -360,7 +361,6 @@
     <Folder Include="Core\Configurations\" />
     <Folder Include="Core\Extensions\" />
     <Folder Include="DataAccess\" />
-    <Folder Include="ExcelConfig\DailyDataCapture\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

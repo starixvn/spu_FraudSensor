@@ -18,7 +18,12 @@
     function generate_report() {
         var url = common.modifyRelativeUrl("/DailyDataCapture/GetMatches");
 
-        $.get(url, { fromDate: from_date.val(), toDate: to_date.val() }, match_table.DataTable().clear().rows.add);
+        common.showLoading();
+
+        $.get(url, { fromDate: from_date.val(), toDate: to_date.val() }, function (json) {
+            match_table.DataTable().clear().rows.add(json).draw();                                
+            common.closeLoading();
+        });
     }
 
     function generate_excel() {
@@ -27,11 +32,15 @@
         common.downloadFile(url, { fromDate: from_date.val(), toDate: to_date.val() });
     }
 
-    function render_history(history) {
-        var old_value = history.old;
-        var new_value = history.new;
+    function render_history(history, isInt) {
+        var old_value = history.Old;
+        var new_value = history.New;
 
-        return `${common.formatGridNumber(old_value)}<br/>${common.formatGridNumber(new_value)}`
+        if (isInt) {
+            return `${common.formatGridNumber(old_value, "0,0")}<br/><span class='new-value'>${common.formatGridNumber(new_value, "0,0")}</span>`;
+        }
+
+        return `${common.formatGridNumber(old_value)}<br/><span class='new-value'>${common.formatGridNumber(new_value)}</span>`
     }
 
     from_date.datepicker({
@@ -58,22 +67,27 @@
         ordering: false,
         dom: "t<'pagination'<'page-size'lp>i>",
         language: common.language(),
-        scrollY: '57vh',
+        lengthMenu: [10, 20, 50, 100, 500],
+        pageLength: 50,
+        scrollY: '60vh',
         scrollCollapse: true,
-        columns: [
-            { data: obj => obj.match, width: "100px" },
-            { data: obj => obj.eventDate, className: "text-center", width: "10px" },
-            { data: obj => obj.scannedDate, className: "text-center", width: "100px" },
-            { data: obj => render_history(obj.companyTO), width: "100px" },
-            { data: obj => render_history(obj.superTO), className: "text-right" },
-            { data: obj => render_history(obj.masterTO), className: "text-right" },
-            { data: obj => render_history(obj.agentTO), width: "50px", className: "text-right" },
-            { data: obj => render_history(obj.tickets), className: "text-right", width: "100px" },
-            { data: obj => render_history(obj.settledTickets), className: "text-right", width: "100px" },
-            { data: obj => render_history(obj.cancelledTickets), width: "82px", className: "text-center uppercase" },
+        columnDefs: [
+            { targets: "_all", defaultContent: "-" },
+            { targets: [1, 2], className: "text-center" },
+            { targets: [3, 4, 5, 6, 7, 8, 9], className: "text-right", width: "10%"}
         ],
-        columnDefs: [{ targets: "_all", defaultContent: "-" }],
-        headerCallback: tr => $(":nth-child(11)", tr).removeClass("uppercase")
+        columns: [
+            { data: obj => `<span class='team-home'>${obj.Home}</span> - vs - <span class='team-away'>${obj.Away}</span>` },
+            { data: obj => moment(obj.EventDate, "MMM D, YYYY hh:mm:ss A").format("MMM D, YYYY<br/>hh:mm:ss A") },
+            { data: obj => moment(obj.ScannedDate, "MMM D, YYYY hh:mm:ss A").format("MMM D, YYYY<br/>hh:mm:ss A") },
+            { data: obj => render_history(obj.CompanyTO) },
+            { data: obj => render_history(obj.SuperTO) },
+            { data: obj => render_history(obj.MasterTO) },
+            { data: obj => render_history(obj.AgentTO) },
+            { data: obj => render_history(obj.Tickets, true) },
+            { data: obj => render_history(obj.SettledTickets, true) },
+            { data: obj => render_history(obj.CancelledTickets, true) },
+        ],
     });
 
     $("#generate").click(generate_report);

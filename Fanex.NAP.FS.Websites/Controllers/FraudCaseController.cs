@@ -168,15 +168,15 @@
 
         [HttpPost]
         [NapAuth(FunctionKey = FSFunctionKeys.FraudCase, Policy = Core.Business.Constant.Policy.Host)]
-        public ActionResult AddRecipients(string recipients)
+        public ActionResult AddRecipients(string recipients, FraudCaseId fraudCase)
         {
-            return Json(_recipientService.AddRecipient(recipients, CurrentSession.UserId));
+            return Json(_recipientService.AddRecipient(recipients, CurrentSession.UserId, fraudCase));
         }
 
         [NapAuth(FunctionKey = FSFunctionKeys.FraudCase, Policy = Core.Business.Constant.Policy.Host)]
-        public ActionResult RemoveRecipient(int id)
+        public ActionResult RemoveRecipient(int id, FraudCaseId fraudCase)
         {
-            return Json(_recipientService.RemoveRecipient(id, CurrentSession.UserId));
+            return Json(_recipientService.RemoveRecipient(id, CurrentSession.UserId, fraudCase));
         }
 
         #endregion notification recipient

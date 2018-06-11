@@ -57,6 +57,14 @@
             return target;
         }
 
+        public static XSSFRichTextString WriteWithFont(this XSSFRichTextString target, string value, XSSFFont font)
+        {
+            target.Append(value, font);
+            return target;
+        }
+
+        public static XSSFRichTextString GetXSSF() => new XSSFRichTextString();
+
         public static void SetValue(this XSSFRichTextString value, ICell target)
         {
             target.SetCellValue(value);

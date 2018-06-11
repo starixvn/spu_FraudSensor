@@ -13,7 +13,10 @@
 
         var url = common.modifyRelativeUrl("/Fraudcase/AddRecipients");
 
-        $.post(url, JSON.stringify({ recipients: data.map(obj => obj.id).join(",") }), common.handleUpdateAjax(), "json");
+        $.post(url, { recipients: data.map(obj => obj.id).join(","), fraudCase: fraudCaseId }, common.handleUpdateAjax(null, function () {
+            user_table.DataTable().ajax.reload();
+            $("#user", dialog).val(null).change();
+        }));
     }
 
     function remove_recipient_event(target) {
@@ -23,7 +26,7 @@
             common.showConfirmation(`Do you want to remove ${obj.Recipient}?`, function () {
                 var url = common.modifyRelativeUrl("/Fraudcase/RemoveRecipient");
 
-                $.get(url, { id: obj.RecipientId }, common.handleUpdateAjax());
+                $.get(url, { id: obj.RecipientId, fraudCase: fraudCaseId }, common.handleUpdateAjax(null, () => user_table.DataTable().ajax.reload()));
             });
         })
     }
@@ -67,7 +70,7 @@
 
     $("#add-recipient-btn").click(add_recipient);
 
-    $("select", dialog).select2({
+    $("#user", dialog).select2({
         ajax: {
             url: common.modifyRelativeUrl("/SuspiciousCustomer/GetUsers"),
             processResults: function (json) {

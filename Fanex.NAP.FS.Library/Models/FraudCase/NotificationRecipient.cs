@@ -8,6 +8,6 @@
 
         public int RecipientId { get; set; }
 
-        public string Recipient => _user.Get(RecipientId).Name;
+        public string Recipient => _user.Get(RecipientId).Username;
     }
 }

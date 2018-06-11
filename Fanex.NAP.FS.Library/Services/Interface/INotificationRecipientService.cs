@@ -8,8 +8,8 @@ namespace Fanex.NAP.FS.Library.Services.Interface
     {
         IEnumerable<NotificationRecipient> GetRecipients(FraudCaseId fraudCase);
 
-        DBResult AddRecipient(string recipients, int userId);
+        DBResult AddRecipient(string recipients, int userId, FraudCaseId fraudCase);
 
-        DBResult RemoveRecipient(int recipientId, int userId);
+        DBResult RemoveRecipient(int recipientId, int userId, FraudCaseId fraudCase);
     }
 }

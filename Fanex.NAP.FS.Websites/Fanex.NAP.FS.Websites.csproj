@@ -747,6 +747,7 @@
     <Content Include="App_Data\Excel Template\MatchMonitor\FraudCaseDetail\ticket by ip.xlsx" />
     <Content Include="App_Data\Excel Template\FraudCase\ScannedOfficeIP\template.xlsx" />
     <Content Include="App_Data\Excel Template\Scanned Office IP\template.xlsx" />
+    <Content Include="App_Data\Excel Template\DailyDataCapture\template.xlsx" />
     <None Include="bundleconfig.json" />
     <Content Include="fonts\Fraud-Sensor.eot" />
     <Content Include="fonts\Fraud-Sensor.ttf" />
