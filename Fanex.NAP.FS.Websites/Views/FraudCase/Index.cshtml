@@ -43,7 +43,7 @@
             <div class="info-name">Active</div>
             <div class="info-value">
                 <div class="switch">
-                    <input class="switch-input button-activate {$modifiers}" id="fraud-case-activator" data-active="1" data-id="@(Model.FraudCaseInfo.FraudCaseId)" type="checkbox" @(Model.FraudCaseInfo.IsActive ? "checked='checked'" : "")>
+                    <input @(ViewBag.IsHost ? "" : "disabled") class="switch-input button-activate {$modifiers}" id="fraud-case-activator" data-active="1" data-id="@(Model.FraudCaseInfo.FraudCaseId)" type="checkbox" @(Model.FraudCaseInfo.IsActive ? "checked='checked'" : "")>
                     <label class="switch-paddle" for="fraud-case-activator"></label>
                 </div>
             </div>

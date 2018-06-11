@@ -93,6 +93,8 @@
     $("#generate").click(generate_report);
 
     $("#export").click(generate_excel);
+
+    generate_report();
 }
 
 $(daily_data_capture);
