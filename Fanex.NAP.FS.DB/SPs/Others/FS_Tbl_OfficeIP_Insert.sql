@@ -50,7 +50,7 @@ BEGIN
 			SELECT @LogData =	'@UserId = '		+	DBO.SPU_ToString(@UserId)  
 								+ ', IPRange = ' 	+	DBO.SPU_ToString(@IPRange) 
 								+ ', FromNumber = ' +	DBO.SPU_ToString(@FromNumber)
-								+ ', ToNumber = ' 	+	DBO.SPU_ToString(@ToNumber)
+								+ ', ToNumber = ' 	+	DBO.SPU_ToString(@ToNumber);
 
 			SELECT @SPName	=	OBJECT_NAME(@@ProcID);
 

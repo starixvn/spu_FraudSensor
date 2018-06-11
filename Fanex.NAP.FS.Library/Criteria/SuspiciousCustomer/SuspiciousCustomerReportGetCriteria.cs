@@ -1,7 +1,10 @@
-﻿namespace Fanex.NAP.FS.Library.Criteria.SuspiciousCustomer
+﻿#pragma warning disable S2325 // Methods and properties that don't access instance data should be static
+
+namespace Fanex.NAP.FS.Library.Criteria.SuspiciousCustomer
 {
     using Data;
     using Data.Repository;
+    using Fanex.NAP.FS.Library.Core.Helpers;
     using System;
 
     public class SuspiciousCustomerReportGetCriteria : CriteriaBase
@@ -60,6 +63,8 @@
 
         public int? AssigneeId { get; set; }
 
+        public int Environment => int.Parse(AppSettings.Get("Environment"));
+
         public override string GetSettingKey()
         {
             return "FS_Rpt_SuspiciousCustomer_Get";
@@ -71,3 +76,5 @@
         }
     }
 }
+
+#pragma warning restore S2325 // Methods and properties that don't access instance data should be static

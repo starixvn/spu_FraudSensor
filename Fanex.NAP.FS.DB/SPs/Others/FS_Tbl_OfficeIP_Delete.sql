@@ -37,7 +37,7 @@ BEGIN
 	BEGIN
 		BEGIN TRY	
 			DELETE dbo.OfficeIP WITH(ROWLOCK)
-			WHERE IPRange = @IPRange AND FromNumber = @FromNumber AND ToNumber = @ToNumber			
+			WHERE IPRange = @IPRange AND FromNumber = @FromNumber AND ToNumber = @ToNumber;			
 		END TRY
 		BEGIN CATCH
 			SELECT @ErrCode	= ERROR_NUMBER();
@@ -50,7 +50,7 @@ BEGIN
 			SELECT @LogData =	'@UserId = '			+	DBO.SPU_ToString(@UserId)  
 								+ ', IPRange = ' 	+	DBO.SPU_ToString(@IPRange) 
 								+ ', FromNumber = ' 		+	DBO.SPU_ToString(@FromNumber)
-								+ ', ToNumber = ' 	+	DBO.SPU_ToString(@ToNumber)
+								+ ', ToNumber = ' 	+	DBO.SPU_ToString(@ToNumber);
 
 			SELECT @SPName	=	OBJECT_NAME(@@ProcID);
 

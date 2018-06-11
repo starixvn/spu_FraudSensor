@@ -27,7 +27,7 @@ BEGIN
 	
 	SET @CurrentTime = GETDATE();
 	
-	INSERT INTO BSNGMatchScanning(MatchId, LiveHomeScore, LiveAwayScore, EventDate, EventStatus, CreatedTime, LastRejectedTicket
+	INSERT INTO dbo.BSNGMatchScanning(MatchId, LiveHomeScore, LiveAwayScore, EventDate, EventStatus, CreatedTime, LastRejectedTicket
 					, LastRejectedTime, ScannedTime)
 	SELECT	m.MatchId
 			, m.LiveHomeScore
@@ -51,7 +51,7 @@ BEGIN
 	
 	---Return Match to Scanned
 	SELECT  DISTINCT bms.MatchId
-	FROM	BSNGMatchScanning bms WITH (NOLOCK)
+	FROM	dbo.BSNGMatchScanning bms WITH (NOLOCK)
 	WHERE	bms.CreatedTime = @CurrentTime;
 	
 END;
