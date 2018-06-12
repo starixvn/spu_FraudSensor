@@ -6,6 +6,7 @@
     using Fanex.NAP.FS.Library.ViewModels.DailyDataMonitor;
     using NPOI.SS.UserModel;
     using NPOI.XSSF.UserModel;
+    using System;
 
     public class DailyDataCaptureExcelConfig : FSExcelConfig<DailyDataGetCriteria, CapturedMatch, object>
     {
@@ -18,8 +19,8 @@
             var idx = 0;
 
             row.GetCell(idx++).SetCellValue($"{data.Home} - vs - {data.Away}");
-            row.GetCell(idx++).SetCellValue(data.EventDate);
-            row.GetCell(idx++).SetCellValue(data.ScannedDate);
+            row.GetCell(idx++).SetCellValue(DateTime.Parse(data.EventDate).ToString("MMM dd,yyyy hh:mm:ss tt"));
+            row.GetCell(idx++).SetCellValue(DateTime.Parse(data.ScannedDate).ToString("MMM dd, yyyy hh:mm:ss tt"));
             row.GetCell(idx++).SetCellValue(RenderDouble(data.CompanyTO));
             row.GetCell(idx++).SetCellValue(RenderDouble(data.SuperTO));
             row.GetCell(idx++).SetCellValue(RenderDouble(data.MasterTO));
