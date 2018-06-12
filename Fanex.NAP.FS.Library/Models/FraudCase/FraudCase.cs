@@ -120,7 +120,11 @@
                     break;
 
                 default:
-                    throw new NotImplementedException("Fraud case id " + id + " hasn't been implemented");
+                    result.ScheduleTime = "There's no data";
+                    result.TicketRules = new[] { "There's no data" };
+                    result.MatchRules = new[] { "There's no data" };
+
+                    break;
             }
 
             return result;

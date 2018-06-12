@@ -81,10 +81,10 @@
         scrollCollapse: true,
         columnDefs: [
             { targets: "_all", defaultContent: "-" },
-            { targets: [1, 2], className: "text-center", width: "7%" },
+            { targets: [1, 2], className: "text-center", width: "10%" },
             { targets: [3, 4, 5, 6, 7, 8, 9], className: "text-right" },
             { targets: [3, 4, 5, 6], width: "9%" },
-            { targets: [7, 8, 9], width: "8%" }
+            { targets: [7, 8, 9], width: "7%" }
         ],
         columns: [
             { data: obj => `<span class='team-home'>${obj.Home}</span> - vs - <span class='team-away'>${obj.Away}</span>` },
