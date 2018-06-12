@@ -2,8 +2,8 @@
     $("select").select2({
         minimumResultsForSearch: -1,
         width: "300px",
-        dropdownAutoWidth: true
-    });
+        dropdownAutoWidth: true,
+    }).on("select2:select", () => $("#search-btn").click());
 
     if (!isHost) {
         $(".-primary:not(#search-btn)").prop("disabled", true);

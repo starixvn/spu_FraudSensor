@@ -57,7 +57,7 @@
         ordering: false,
         dom: "t<'pagination'<'page-size'lp>i>",
         language: common.language(),
-        scrollY: '57vh',
+        scrollY: '70vh',
         scrollCollapse: true,
         lengthMenu: [10, 20, 50, 100, 500],
         pageLength: 50,

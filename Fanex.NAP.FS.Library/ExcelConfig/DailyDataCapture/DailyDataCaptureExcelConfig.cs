@@ -1,4 +1,6 @@
-﻿namespace Fanex.NAP.FS.Library.ExcelConfig.DailyDataCapture
+﻿#pragma warning disable S1244 // Floating point numbers should not be tested for equality
+
+namespace Fanex.NAP.FS.Library.ExcelConfig.DailyDataCapture
 {
     using Fanex.NAP.FS.Library.Core.ExportExcel;
     using Fanex.NAP.FS.Library.Criteria.DailyDataCapture;
@@ -42,6 +44,11 @@
 
         private XSSFRichTextString RenderDouble(History<double> history)
         {
+            if (history.Old == history.New)
+            {
+                return ExcelUtilities.GetXSSF().Write(history.New.ToString("N2"));
+            }
+
             return ExcelUtilities.GetXSSF()
                 .Write($"{history.Old.ToString("N2")}\n")
                 .WriteWithFont(history.New.ToString("N2"), new XSSFFont { Color = IndexedColors.Coral.Index });
@@ -49,9 +56,16 @@
 
         private XSSFRichTextString RenderInt(History<int> history)
         {
+            if (history.Old == history.New)
+            {
+                return ExcelUtilities.GetXSSF().Write(history.New.ToString("N0"));
+            }
+
             return ExcelUtilities.GetXSSF()
                 .Write($"{history.Old.ToString("N0")}\n")
                 .WriteWithFont(history.New.ToString("N0"), new XSSFFont { Color = IndexedColors.Coral.Index });
         }
     }
 }
+
+#pragma warning restore S1244 // Floating point numbers should not be tested for equality

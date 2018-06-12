@@ -36,6 +36,14 @@
         var old_value = history.Old;
         var new_value = history.New;
 
+        if (old_value == new_value) {
+            if (isInt) {
+                return common.formatGridNumber(old_value, "0,0");
+            }
+
+            return common.formatGridNumber(old_value);
+        }
+
         if (isInt) {
             return `${common.formatGridNumber(old_value, "0,0")}<br/><span class='new-value'>${common.formatGridNumber(new_value, "0,0")}</span>`;
         }
@@ -69,7 +77,7 @@
         language: common.language(),
         lengthMenu: [10, 20, 50, 100, 500],
         pageLength: 50,
-        scrollY: '60vh',
+        scrollY: '70vh',
         scrollCollapse: true,
         columnDefs: [
             { targets: "_all", defaultContent: "-" },

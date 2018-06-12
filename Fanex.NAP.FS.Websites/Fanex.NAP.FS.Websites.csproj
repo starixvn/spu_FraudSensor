@@ -909,7 +909,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Views\Shared\_Menu.cshtml" />
-    <Content Include="Views\FraudCase\Index.cshtml" />
     <Content Include="Views\FraudCase\DelayedGoal\Dialog.cshtml" />
     <Content Include="Views\MatchMonitor\MatchNote.cshtml" />
     <Content Include="WebConfigs\Web.AppSettings.PRO.config">
@@ -949,6 +948,7 @@
     <Content Include="Views\FraudCase\ScannedOfficeIP\Dialog.cshtml" />
     <Content Include="Views\ScannedOfficeIpReport\Index.cshtml" />
     <Content Include="Views\FraudCase\DailyDataCapture\Dialog.cshtml" />
+    <Content Include="Views\FraudCase\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />

@@ -2,13 +2,27 @@
 @using Fanex.NAP.FS.Library.DTO
 @model Fanex.NAP.FS.Websites.ViewModels.FraudCase.FraudCaseViewModel
 
+@{ 
+    var ajax = new AjaxOptions
+    {
+        OnBegin = "common.showLoading",
+        OnComplete = "common.closeLoading"
+    };
+}
+
 @section styles{
     @Styles.Render("~/fraud-case-styles")
+
+    <style>
+        #search-btn{
+            display: none;
+        }
+    </style>
 }
 
 <h1 class="title">Fraud case rules</h1>
 
-@using (Html.BeginForm())
+@using (Ajax.BeginForm(ajax))
 {
     <div class="form-filter">
         <div class="group">
