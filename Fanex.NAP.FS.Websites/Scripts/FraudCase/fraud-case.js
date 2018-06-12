@@ -1,5 +1,5 @@
 ﻿$(function () {
-    $("select").select2({
+    $("#fraud-case-selector").select2({
         minimumResultsForSearch: -1,
         width: "300px",
         dropdownAutoWidth: true,
