@@ -178,7 +178,7 @@ BEGIN
 		,	[OldTotalSettledTickets]	= old.TotalSettledTickets
 		,	[NewTotalSettledTickets]	= new.TotalSettledTickets
 		,	[OldTotalCancelledTickets]	= old.TotalCancelledTickets
-		,	[NewTotalCancelledTickets]	= old.TotalCancelledTickets
+		,	[NewTotalCancelledTickets]	= new.TotalCancelledTickets
 		,	[CapturedDate]				= @CaptureDate
 	FROM #tmpMatchesOldData AS old WITH(NOLOCK)
 		INNER JOIN #tmpMatchesNewData AS new WITH(NOLOCK) ON old.MatchId = new.MatchId
