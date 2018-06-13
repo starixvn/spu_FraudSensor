@@ -28,7 +28,7 @@ BEGIN
 	ORDER BY oi.IPRange, oi.FromNumber;
 END;
 GO 
- GRANT EXECUTE ON dbo.FS_Tbl_OfficeIP_GetAll TO bodbSPUNet
+ GRANT EXECUTE ON dbo.FS_Tbl_OfficeIP_GetAll TO bodbSPUNet;
 GO 
- GRANT VIEW DEFINITION ON dbo.FS_Tbl_OfficeIP_GetAll TO bodbSPUNet
+ GRANT VIEW DEFINITION ON dbo.FS_Tbl_OfficeIP_GetAll TO bodbSPUNet;
 GO 

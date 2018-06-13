@@ -20,7 +20,6 @@ AS
 
 	Revisions: 
 
-
 	Param's Explanation (filtered by):
 	 + @IPRange: a first three part of IP Address
 	 + @FromNumber: from 0 to 255
@@ -63,7 +62,7 @@ BEGIN
 	END;	
 END;
 GO 
- GRANT EXECUTE ON dbo.FS_Tbl_OfficeIP_Delete TO bodbSPUNet
+ GRANT EXECUTE ON dbo.FS_Tbl_OfficeIP_Delete TO bodbSPUNet;
 GO 
- GRANT VIEW DEFINITION ON dbo.FS_Tbl_OfficeIP_Delete TO bodbSPUNet
+ GRANT VIEW DEFINITION ON dbo.FS_Tbl_OfficeIP_Delete TO bodbSPUNet;
 GO 
