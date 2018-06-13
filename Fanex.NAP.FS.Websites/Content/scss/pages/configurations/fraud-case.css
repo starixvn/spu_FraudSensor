@@ -239,7 +239,14 @@
   -webkit-border-radius: 2px;
   -moz-border-radius: 2px;
   border-radius: 2px;
-  border-color: #696969; }
+  border-color: #696969;
+  top: 2px;
+  height: 14px;
+  width: 14px; }
 
 .form-filter.-add-recipient input[type="checkbox"]:checked + span:after {
-  border-color: #222; }
+  border-color: #545454;
+  top: 6px;
+  left: 4px;
+  height: 4px;
+  width: 7px; }
