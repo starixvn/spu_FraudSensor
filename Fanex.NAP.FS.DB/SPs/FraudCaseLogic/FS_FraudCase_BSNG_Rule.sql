@@ -34,25 +34,21 @@ BEGIN
 	DECLARE @ScannedDate DATETIME;
 	SET	@ScannedDate = GETDATE();
 	
+	-- Arrange tables and initialize
+	IF OBJECT_ID('tempdb..#tmpBettype') IS NOT NULL
+	BEGIN
+		DROP TABLE	#tmpBettype;
+	END
+	
+	CREATE TABLE #tmpBettype(
+		Bettype	INT
+	);
 
 	-- Arrange tables and initialize
 	IF OBJECT_ID('tempdb..#tmpLastTickets') IS NOT NULL
 	BEGIN
 		DROP TABLE	#tmpLastTickets;
 	END
-	
-	CREATE TABLE #tmpLastTickets(
-			MatchId				INT
-		,	TransId				BIGINT
-		,	DeleteTime			DATETIME
-		,	LiveHomeScore		SMALLINT
-		,	LiveAwayScore		SMALLINT
-	);
-
-	CREATE CLUSTERED INDEX	#CIX_tmpLastTicketsIdx ON #tmpLastTickets (
-			MatchId				ASC
-		,	TransId				ASC
-	);
 
 	IF OBJECT_ID('tempdb..#tmpFraudTickets') IS NOT NULL
 	BEGIN
@@ -73,6 +69,7 @@ BEGIN
 		,	MatchId				ASC
 		,	TransId				ASC
 	);
+	-------------------------------------
 
 	IF OBJECT_ID('tempdb..#tmpMatches') IS NOT NULL
 	BEGIN
@@ -81,48 +78,62 @@ BEGIN
 
 	CREATE TABLE #tmpMatches
 	(
-		MatchId INT PRIMARY KEY
-		,CurrentScore TINYINT
+		MatchId			INT PRIMARY KEY
+		, EventDate		DATETIME
+		, EventStatus	NVARCHAR(50)
+		, CurrentScore	TINYINT
 	);
+	-------GET BETTYPE--------------------------------
+	INSERT INTO #tmpBettype (Bettype)
+	SELECT DISTINCT bettype
+	FROM	bodb02.dbo.SportBettypeMatrix
+	WHERE	SportType = 1 
 	
-	
+	-------GET MATCH-----
+	--------------------------------------------------
 	INSERT INTO #tmpMatches(MatchId)
 	SELECT val FROM SPU_StrSplit(@MatchIds, ',');
 	
-	---Get Current Score of Match -- Only Scan for Score less than currentScore
-	UPDATE ms
-	SET		ms.CurrentScore = m.livehomescore + liveawayscore
-	FROM	#tmpMatches ms WITH(NOLOCK)
+	
+	--- Get Current Score of Match -- Only Scan for Score less than currentScore
+	UPDATE	ms
+	SET		ms.CurrentScore = m.livehomescore + liveawayscore, ms.EventDate = m.eventdate, ms.EventStatus = m.eventstatus
+	FROM	#tmpMatches ms WITH(ROWLOCK)
 			INNER JOIN bodb02.dbo.Match m WITH (NOLOCK) ON ms.MatchId = m.MatchId 
 	
-	-- Run the Rule
-	INSERT INTO #tmpLastTickets (MatchId, TransId, DeleteTime, LiveHomeScore, LiveAwayScore)
-	SELECT	[MatchId]			= ans.matchid
-		,	[TransId]			= MAX(ans.transid)
-		,	[DeleteTime]		= MAX(ans.transdate)
-		,	[LiveHomeScore]		= ans.livehomescore
-		,	[LiveAwayScore]		= ans.liveawayscore
-	FROM bodb02.dbo.bettrans AS ans WITH (NOLOCK)
-			INNER JOIN #tmpMatches ms WITH (NOLOCK) ON ans.matchid = ms.MatchId
-	WHERE (ans.livehomescore + ans.liveawayscore) < ms.CurrentScore
-		AND ans.statusID = 101
-		AND ans.liveindicator = 1
-		AND ans.bettype IN (
-				SELECT DISTINCT spb.BetType
-				FROM bodb02.dbo.SportBettypeMatrix spb WITH (NOLOCK)
-				WHERE spb.ProductID = 1
-				)
-	GROUP BY ans.livehomescore
-		,	ans.liveawayscore
-		,	ans.matchid;
-
+	
+	--- GET THE LAST REJECT TIME OF PREVIOUS SCORE	
+	
+	INSERT INTO BSNGScanInfo (MatchId, EventDate, EventStatus, LiveHomeScore, LiveAwayScore, LastRejectedTicket, LastRejectedTime, HasScanned)
+	SELECT ms.MatchId
+			, ms.EventDate
+			, ms.EventStatus
+			, b.livehomescore
+			, b.liveawayscore
+			, MAX(transid) AS [TransId]
+			, MAX(TransDate) AS [DeleteTime]	
+			, 0	
+	FROM	bodb02.dbo.bettrans b WITH(NOLOCK)
+			INNER JOIN #tmpBettype bt WITH(NOLOCK) ON b.bettype = bt.Bettype
+			INNER JOIN #tmpMatches ms WITH(NOLOCK) ON b.matchid = ms.MatchId
+			LEFT JOIN BSNGScanInfo si WITH(NOLOCK) ON si.MatchId = ms.MatchId AND si.livehomescore = b.livehomescore AND si.LiveAwayScore = b.liveawayscore
+	WHERE	b.liveindicator = 1
+			AND b.statusID = 101
+			AND (b.livehomescore + b.liveawayscore) < ms.CurrentScore
+			AND si.MatchId IS NULL
+	GROUP BY	b.livehomescore
+				, b.liveawayscore
+				, b.matchid;
+	
+	
+	--- GET FRAUD TICKET
 	INSERT INTO #tmpFraudTickets (CustId, MatchId, EventDate, TransId, LiveHomeScore, LiveAwayScore)
-	SELECT  [CustId]	= ans.custid
-		,	[MatchId]			= ans.matchid
-		,	[EventDate]			= ans.eventdate
-		,	[TransId]			= ans.transid
-		,	[LiveHomeScore]		= ans.liveawayscore
-		,	[LiveAwayScore]		= ans.livehomescore
+	SELECT  [CustId]	= bt.custid
+		,	[MatchId]			= bt.matchid
+		,	[EventDate]			= bt.eventdate
+		,	[TransId]			= bt.transid
+		,	[LiveHomeScore]		= bt.liveawayscore
+		,	[LiveAwayScore]		= bt.livehomescore
 	FROM (
 		SELECT  ans.custid
 			,	ans.username
@@ -141,7 +152,8 @@ BEGIN
 			,	40 * 0.01 * COALESCE(dds.maxbet, 0) AS MaxBet
 		FROM bodb02.dbo.match AS tch WITH (NOLOCK)
 		INNER JOIN bodb02.dbo.bettrans AS ans WITH (NOLOCK) ON tch.matchid = ans.matchid
-		INNER JOIN #tmpLastTickets AS msc WITH(NOLOCK) ON msc.matchid = ans.matchid
+		INNER JOIN BSNGScanInfo AS si WITH(NOLOCK) ON si.matchid = ans.matchid
+		INNER JOIN #tmpMatches AS tm WITH(NOLOCK) ON tm.MatchId = si.MatchId
 		CROSS APPLY (
 			SELECT TOP(1) l.Maxbet
 			FROM bodb_FraudSensor.dbo.OddsLog AS l WITH (NOLOCK)
@@ -151,11 +163,12 @@ BEGIN
 		) dds
 		WHERE  tch.matchid IN (SELECT MatchId FROM #tmpMatches WITH (NOLOCK))
 			AND ans.liveindicator = 1
-			AND ans.transdate BETWEEN DATEADD(ss, -90, msc.deletetime) AND msc.deletetime
-			AND ans.livehomescore = msc.livehomescore
-			AND ans.liveawayscore = msc.liveawayscore
+			AND ans.transdate BETWEEN DATEADD(ss, -90, si.LastRejectedTime) AND si.LastRejectedTime
+			AND ans.livehomescore = si.livehomescore
+			AND ans.liveawayscore = si.liveawayscore
 			AND ans.bettype IN (1, 3, 5, 7, 8, 15)
-			AND ans.currency <> 20
+			AND ans.currency NOT IN (20, 27, 28)
+			AND si.HasScanned = 0
 		GROUP BY ans.custid
 			,	ans.username
 			,	ans.matchid
@@ -167,8 +180,14 @@ BEGIN
 			,	ans.bettype
 			,	ans.stake
 			,	ans.actualrate
-		) ans
-	WHERE ans.TotalStake >= ans.Maxbet;
+		) bt
+	WHERE bt.TotalStake >= bt.Maxbet;
+	
+	UPDATE si
+	SET		si.HasScanned = 0, si.ScannedDate = @ScannedDate
+	FROM	BSNGScanInfo si WITH(NOLOCK)
+			INNER JOIN #tmpMatches tm WITH(NOLOCK) ON si.MatchId = tm.matchid
+	WHERE	si.HasScanned = 0;
 
 	-- Update match info for ScannedMatch table
 	DELETE FROM dbo.ScannedMatch
@@ -184,13 +203,7 @@ BEGIN
 	LEFT JOIN #tmpFraudTickets AS ft WITH (NOLOCK) ON m.MatchId = ft.MatchId
 	GROUP BY m.MatchId, ft.MatchId;
 
-	/*-- Update BSNGMatchScanning Info -------
-	UPDATE	bms
-	SET		bms.LastRejectedTime = 'd', bms.LastRejectedTicket = 1, ScannedTime = @ScannedDate
-	FROM	BSNGMatchScanning bms WITH(ROWLOCK)
-			INNER JOIN 
-	
-	*/
+
 	-- Check the results and store/return data
 	IF EXISTS (SELECT TOP(1) 1 FROM #tmpFraudTickets WITH (NOLOCK))
 	BEGIN
@@ -231,6 +244,7 @@ BEGIN
 			,	[TicketCounter]		= COUNT(ft.TransId)
 		FROM #tmpFraudTickets AS ft WITH (NOLOCK)
 		GROUP BY ft.CustId, ft.MatchId, ft.EventDate;
+		
 	END;
 END
 GO 

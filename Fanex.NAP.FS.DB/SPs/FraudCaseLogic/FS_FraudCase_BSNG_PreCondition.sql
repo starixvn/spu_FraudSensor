@@ -26,33 +26,34 @@ BEGIN
 	DECLARE @CurrentTime DATETIME;
 	
 	SET @CurrentTime = GETDATE();
-	
-	INSERT INTO dbo.BSNGMatchScanning(MatchId, LiveHomeScore, LiveAwayScore, EventDate, EventStatus, CreatedTime, LastRejectedTicket
-					, LastRejectedTime, ScannedTime)
-	SELECT	m.MatchId
-			, m.LiveHomeScore
-			, m.LiveAwayScore
-			, m.EventDate
-			, m.EventStatus
-			, @CurrentTime AS [CreatedTime]
-			, NULL AS [LastRejectedTicket]
-			, NULL AS [LastRejectedTime]
-			, NULL AS [ScannedTime]			
-	FROM	bodb02.dbo.Match m WITH (NOLOCK)
-			INNER JOIN bodb02.dbo.League l WITH (NOLOCK)
-				ON m.leagueid = l.leagueid
-			LEFT JOIN dbo.BSNGMatchScanning bms WITH (NOLOCK) 
-				ON m.matchid = bms.MatchId AND m.livehomescore = bms.LiveHomeScore AND m.liveAwayscore = bms.LiveAwayScore
-	WHERE	m.kickofftime <= GETDATE()
+		
+	--- INSERT NEW MATCH
+	INSERT INTO MatchScore(MatchId, EventDate, TotalScores, HasScanned)
+	SELECT	m.matchid
+			, m.eventdate
+			, 0
+			, 0		
+	FROM	bodb02.dbo.Match m WITH(NOLOCK)
+			INNER JOIN bodb02.dbo.league AS l WITH (NOLOCK) ON m.leagueid = l.leagueid
+			LEFT JOIN MatchScore ms WITH(NOLOCK) ON m.matchid = ms.MatchId
+	WHERE	ms.MatchId IS NULL
 			AND m.sporttype = 1
-			AND l.IsMainMarket = 1
 			AND l.isTest = 0
-			AND bms.MatchId IS NULL;
+			AND m.kickofftime <= @CurrentTime
 	
-	---Return Match to Scanned
-	SELECT  DISTINCT bms.MatchId
-	FROM	dbo.BSNGMatchScanning bms WITH (NOLOCK)
-	WHERE	bms.CreatedTime = @CurrentTime;
+	--- UPDATE NEW SCORE
+	UPDATE	ms
+	SET		ms.TotalScores = m.livehomescore + m.liveawayscore
+			, ms.UpdatedDate = @CurrentTime
+	FROM	MatchScore ms WITH(ROWLOCK)
+			INNER JOIN bodb02.dbo.Match m WITH(NOLOCK) ON m.MatchId = ms.MatchId
+	WHERE	(ms.TotalScores) > (m.LiveHomeScore + m.LiveAwayScore)
+			AND ms.HasScanned = 0;
+	
+	--- RETURN MATCH HAS NEW SCORE
+	SELECT  DISTINCT ms.MatchId
+	FROM	dbo.MatchScore ms WITH (NOLOCK)
+	WHERE	ms.UpdatedDate = @CurrentTime;
 	
 END;
 GO 

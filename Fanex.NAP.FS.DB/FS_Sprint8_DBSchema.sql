@@ -141,8 +141,34 @@ CREATE TABLE [dbo].[ChangedMatch](
 ) WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [DATA]
 ) ON [DATA]
 GO
+--================================================ DROP TABLE BSNGScanInfoArchive
+CREATE TABLE dbo.BSNGScanInfo
+(
+	[MatchId]					INT	NOT NULL
+	, [LiveHomeScore]			TINYINT NOT NULL
+	, [LiveAwayScore]			TINYINT NOT NULL
+	, [EventDate]				DATETIME NOT NULL
+	, [EventStatus]				NVARCHAR(50) NOT NULL
+	, [LastRejectedTicket]		BIGINT NULL
+	, [LastRejectedTime]		DATETIME NULL
+	, [ScannedDate]				DATETIME NULL
+	, [ScannedStatus]			BIT NULL			-- 0:Not Scanned Yet; 1: Scanned
+	, [HasScanned]				BIT NULL
+ CONSTRAINT [PK_BSNGScanInfo_MatchIdLiveHomeScoreLiveAwayScore] PRIMARY KEY CLUSTERED 
+(
+	 [MatchId]			ASC
+	, [LiveHomeScore]		ASC
+	, [LiveAwayScore]		ASC
+) WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [DATA]
+) ON [DATA];
+
+GO
+CREATE NONCLUSTERED INDEX NCIX_BSNGScanInfo_EventDate ON [dbo].[BSNGScanInfo] (
+	[EventDate]			ASC
+) ON IDX;
+GO
 --================================================
-CREATE TABLE dbo.BSNGMatchScanning
+CREATE TABLE dbo.BSNGScanInfoArchive
 (
 	[MatchId]					INT	NOT NULL
 	, [LiveHomeScore]			TINYINT NOT NULL
@@ -151,45 +177,36 @@ CREATE TABLE dbo.BSNGMatchScanning
 	, [EventStatus]				NVARCHAR(50) NOT NULL
 	, [LastRejectedTicket]		BIGINT NULL
 	, [LastRejectedTime]		DATETIME NULL
-	, [ScannedTime]				DATETIME NULL
-	, [CreatedTime]				DATETIME NULL
- CONSTRAINT [PK_BSNGMatchScanning_MatchIdLiveHomeScoreLiveAwayScore] PRIMARY KEY CLUSTERED 
+	, [ScannedDate]				DATETIME NULL
+	, [ScannedStatus]			BIT NULL
+	, [HasScanned]				BIT NULL
+ CONSTRAINT [PK_BSNGScanInfoArchive_MatchIdLiveHomeScoreLiveAwayScore] PRIMARY KEY CLUSTERED 
 (
-	 MatchId			ASC
-	, LiveHomeScore		ASC
-	, LiveAwayScore		ASC
-) WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [DATA]
-) ON [DATA];
-
-GO
-CREATE NONCLUSTERED INDEX NCIX_BSNGScanInfo_EventDate ON [dbo].[BSNGMatchScanning] (
-	[EventDate]			ASC
-) ON IDX;
-GO
---================================================ DROP TABLE BSNGMatchScanningArchive
-CREATE TABLE dbo.BSNGMatchScanningArchive
-(
-	[MatchId]					INT	NOT NULL
-	, [LiveHomeScore]			TINYINT NOT NULL
-	, [LiveAwayScore]			TINYINT NOT NULL
-	, [EventDate]				DATETIME NOT NULL
-	, [EventStatus]				NVARCHAR(50) NOT NULL
-	, [LastRejectedTicket]		BIGINT NULL
-	, [LastRejectedTime]		DATETIME NULL
-	, [ScannedTime]			DATETIME NULL
-	, [CreatedTime]			DATETIME NULL
- CONSTRAINT [PK_BSNGMatchScanningArchive_MatchIdLiveHomeScoreLiveAwayScore] PRIMARY KEY CLUSTERED 
-(
-	 MatchId			ASC
-	, LiveHomeScore		ASC
-	, LiveAwayScore		ASC
+	 [MatchId]			ASC
+	, [LiveHomeScore]		ASC
+	, [LiveAwayScore]		ASC
 ) WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [DATA]
 ) ON [DATA];
 GO
-CREATE NONCLUSTERED INDEX NCIX_BSNGScanInfo_EventDate ON [dbo].[BSNGMatchScanningArchive] (
+CREATE NONCLUSTERED INDEX NCIX_BSNGScanInfoArchive_EventDate ON [dbo].[BSNGScanInfoArchive] (
 	[EventDate]			ASC
 ) ON IDX;
 GO
 
+-- ======================================
+CREATE TABLE dbo.MatchScore
+(
+	[MatchId]			INT	NOT NULL
+	, [EventDate]		DATETIME NOT NULL
+	, [EventStatus]		NVARCHAR(100) NOT NULL
+	, [TotalScores]		TINYINT NOT NULL
+	, [UpdatedDate]		DATETIME NULL
+	, [HasScanned]		BIT	NULL
+ CONSTRAINT [PK_MatchScore_MatchId] PRIMARY KEY CLUSTERED 
+(
+	 MatchId			ASC
+) WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [DATA]
+) ON [DATA];
 ----===================C. ALTER TABLES=========================
 ----===========================================================
+Drop table MatchScore
