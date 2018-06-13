@@ -17,7 +17,7 @@
     function validate_ip(ip) {
         var arr = ip.split(".");
 
-        return arr.length == 4 && arr.every(x => !isNaN(parseInt(x)) && parseInt(x).toString() == x && parseInt(x) <= 255 && parseInt(x) >= 0);
+        return arr.length == 4 && arr.every(x => !isNaN(parseInt(x)) && parseInt(x).toString() == x.trim() && parseInt(x) <= 255 && parseInt(x) >= 0);
     }
 
     function validate_ip_range(fromIp, toIp) {
