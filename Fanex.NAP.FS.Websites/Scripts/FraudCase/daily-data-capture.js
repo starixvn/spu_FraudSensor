@@ -4,7 +4,7 @@
         user_table = $("#user-table", dialog);
 
     function add_recipient() {
-        var data = $("#user").select2("data");
+        var data = $("#user").multipleSelect("getSelects");
 
         if (data == null || data.length == 0) {
             common.showError("Recipient list can't be empty!");
@@ -13,10 +13,12 @@
 
         var url = common.modifyRelativeUrl("/Fraudcase/AddRecipients");
 
-        $.post(url, { recipients: data.map(obj => obj.id).join(","), fraudCase: fraudCaseId }, common.handleUpdateAjax(null, function () {
-            user_table.DataTable().ajax.reload();
-            $("#user", dialog).val(null).change();
-        }));
+        common.showConfirmation(`Do you want to add these recipients: ${$("#user").multipleSelect("getSelects", "text").join(", ")}`, function () {
+            $.post(url, { recipients: data.join(","), fraudCase: fraudCaseId }, common.handleUpdateAjax(null, function () {
+                user_table.DataTable().ajax.reload();
+                $("#user").multipleSelect("uncheckAll");
+            }));
+        });
     }
 
     function remove_recipient_event(target) {
@@ -27,6 +29,19 @@
                 var url = common.modifyRelativeUrl("/Fraudcase/RemoveRecipient");
 
                 $.get(url, { id: obj.RecipientId, fraudCase: fraudCaseId }, common.handleUpdateAjax(null, () => user_table.DataTable().ajax.reload()));
+            });
+        })
+    }
+
+    function init_select() {
+        var url = common.modifyRelativeUrl("/SuspiciousCustomer/GetUsers");
+
+        $.get(url, {}, function (json) {
+            var data = json.map(d => $(`<option value='${d.Id}'>${d.Username}</option>`));
+
+            $("#user", dialog).append(data).multipleSelect({
+                width: 300,
+                selectAll: false
             });
         })
     }
@@ -44,7 +59,7 @@
         dialog.dialog("open");
         user_table.DataTable().ajax.reload();
         user_table.DataTable().columns.adjust();
-        $("#user").val(null).change();
+        $("#user").multipleSelect("uncheckAll");
     });
 
     user_table.DataTable({
@@ -70,16 +85,7 @@
 
     $("#add-recipient-btn").click(add_recipient);
 
-    $("#user", dialog).select2({
-        ajax: {
-            url: common.modifyRelativeUrl("/SuspiciousCustomer/GetUsers"),
-            processResults: function (json) {
-                return {
-                    results: json.map(d => ({ id: d.Id, text: d.Username }))
-                };
-            },
-        }
-    })
+    init_select();
 }
 
 $(daily_data_capture);

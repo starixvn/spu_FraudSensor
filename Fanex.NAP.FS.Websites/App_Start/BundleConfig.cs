@@ -28,6 +28,7 @@
                       "~/Content/scss/vendors/jquery-ui/base/jquery-ui.min.css",
                       "~/Content/scss/vendors/DataTables/css/jquery.dataTables.min.css",
                       "~/Content/scss/vendors/toast/jquery.toast.css",
+                      "~/Content/scss/vendors/multiple-select.css",
                       "~/Content/scss/base/reset.css",
                       "~/Content/scss/pages/index.css"));
 
@@ -51,7 +52,8 @@
                 "~/Scripts/Fanex.Grid/Fanex.Pagination.js",
                 "~/Scripts/DataTables/jquery.datatables.min.js",
                 "~/Scripts/toast/jquery.toast.js",
-                "~/Scripts/numeral/numeral.min.js"));
+                "~/Scripts/numeral/numeral.min.js",
+                "~/scripts/multiple-select.js"));
         }
 
         private static void RegisterMatchMonitorBundles(BundleCollection bundles)

@@ -65,8 +65,14 @@
   <Function Name="Notification">
     <Setting Key="FS_Tbl_UserMessage_Get" SpName="FS_Tbl_UserMessage_Get_xtest" DbName="DBFS.FraudSensor.bodbSPUNet" />
     <Setting Key="FS_Tbl_UserMessage_GetUnreadCount" SpName="FS_Tbl_UserMessage_GetUnreadCount_xtest" DbName="DBFS.FraudSensor.bodbSPUNet" />
+    <Setting Key="FS_Recipients_Add" SpName="FS_Recipients_Add_xtest" DbName="DBFS.FraudSensor.bodbSPUNet" />
+    <Setting Key="FS_Recipients_Get" SpName="FS_Recipients_Get_xtest" DbName="DBFS.FraudSensor.bodbSPUNet" />
+    <Setting Key="FS_Recipients_Delete" SpName="FS_Recipients_Delete_xtest" DbName="DBFS.FraudSensor.bodbSPUNet" />
   </Function>
   <Function Name="OfficeIPReport">
     <Setting Key="FS_Rpt_OfficeIP_Get" SpName="FS_Rpt_OfficeIP_Get_xtest" DbName="DBFS.FraudSensor.bodbSPUNet" />
+  </Function>
+  <Function Name="DailyDataCapture">
+    <Setting Key="FS_Rpt_DailyDataMonitoring_Get" SpName="FS_Rpt_DailyDataMonitoring_Get_xtest" DbName="DBFS.FraudSensor.bodbSPUNet" />
   </Function>
 </Functions>

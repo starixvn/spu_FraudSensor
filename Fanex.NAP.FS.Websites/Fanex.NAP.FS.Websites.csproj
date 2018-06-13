@@ -322,6 +322,7 @@
     <Content Include="Content\gulpfile.js" />
     <Content Include="Content\images\details_close.png" />
     <Content Include="Content\images\details_open.png" />
+    <Content Include="Content\images\multiple-select.png" />
     <Content Include="Content\images\sort_asc.png" />
     <Content Include="Content\images\sort_asc_disabled.png" />
     <Content Include="Content\images\sort_both.png" />
@@ -346,6 +347,7 @@
     <Content Include="Content\images\ui-icons_cc0000_256x240.png" />
     <Content Include="Content\images\ui-icons_cd0a0a_256x240.png" />
     <Content Include="Content\images\ui-icons_ffffff_256x240.png" />
+    <Content Include="Content\multiple-select.png" />
     <Content Include="Content\scss\base\reset.css" />
     <Content Include="Content\scss\fonts\Fraud-Sensor\demo-files\demo.css" />
     <Content Include="Content\scss\fonts\Fraud-Sensor\demo-files\demo.js" />
@@ -572,6 +574,8 @@
     <Content Include="Content\scss\vendors\jquery-ui\base\tabs.css" />
     <Content Include="Content\scss\vendors\jquery-ui\base\theme.css" />
     <Content Include="Content\scss\vendors\jquery-ui\base\tooltip.css" />
+    <Content Include="Content\scss\vendors\multiple-select.css" />
+    <Content Include="Content\scss\vendors\multiple-select.png" />
     <Content Include="Content\scss\vendors\select2.css" />
     <Content Include="Content\scss\vendors\select2.min.css" />
     <Content Include="Content\scss\vendors\toast\jquery.toast.css" />
@@ -585,6 +589,7 @@
     <Content Include="Global.asax" />
     <Content Include="images\details_close.png" />
     <Content Include="images\details_open.png" />
+    <Content Include="images\multiple-select.png" />
     <Content Include="images\sort_asc.png" />
     <Content Include="images\sort_asc_disabled.png" />
     <Content Include="images\sort_both.png" />
@@ -844,6 +849,7 @@
     <Content Include="Scripts\moment-with-locales.min.js" />
     <Content Include="Scripts\moment.js" />
     <Content Include="Scripts\moment.min.js" />
+    <Content Include="Scripts\multiple-select.js" />
     <Content Include="Scripts\Notification\notification.js" />
     <Content Include="Scripts\numeral\numeral.js" />
     <Content Include="Scripts\numeral\numeral.min.js" />
