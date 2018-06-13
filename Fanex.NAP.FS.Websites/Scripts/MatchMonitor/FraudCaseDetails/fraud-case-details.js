@@ -178,7 +178,7 @@
             var from = moment().add(-6, "d");
 
             ticket_last_7_days
-                .dialog("option", "title", `Tickets of customer ${obj.Member} from ${from.format("MMM d, YYYY")}`)
+                .dialog("option", "title", `Tickets of customer ${obj.Member} from ${from.format("MMM D, YYYY")}`)
                 .dialog("open");
 
             $("table", ticket_last_7_days).DataTable().clear().rows.add(json).draw().columns.adjust();
