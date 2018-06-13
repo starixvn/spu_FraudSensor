@@ -28,24 +28,24 @@ BEGIN
 	SET @CurrentTime = GETDATE();
 		
 	--- INSERT NEW MATCH
-	INSERT INTO MatchScore(MatchId, EventDate, TotalScores, HasScanned)
+	INSERT INTO dbo.MatchScore(MatchId, EventDate, TotalScores, HasScanned)
 	SELECT	m.matchid
 			, m.eventdate
 			, 0
 			, 0		
 	FROM	bodb02.dbo.Match m WITH(NOLOCK)
 			INNER JOIN bodb02.dbo.league AS l WITH (NOLOCK) ON m.leagueid = l.leagueid
-			LEFT JOIN MatchScore ms WITH(NOLOCK) ON m.matchid = ms.MatchId
+			LEFT JOIN dbo.MatchScore ms WITH(NOLOCK) ON m.matchid = ms.MatchId
 	WHERE	ms.MatchId IS NULL
 			AND m.sporttype = 1
 			AND l.isTest = 0
-			AND m.kickofftime <= @CurrentTime
+			AND m.kickofftime <= @CurrentTime;
 	
 	--- UPDATE NEW SCORE
-	UPDATE	ms
+	UPDATE	ms WITH(ROWLOCK, UPDLOCK)
 	SET		ms.TotalScores = m.livehomescore + m.liveawayscore
 			, ms.UpdatedDate = @CurrentTime
-	FROM	MatchScore ms WITH(ROWLOCK)
+	FROM	dbo.MatchScore ms WITH(ROWLOCK)
 			INNER JOIN bodb02.dbo.Match m WITH(NOLOCK) ON m.MatchId = ms.MatchId
 	WHERE	(ms.TotalScores) > (m.LiveHomeScore + m.LiveAwayScore)
 			AND ms.HasScanned = 0;

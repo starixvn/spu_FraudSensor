@@ -20,7 +20,9 @@ AS
 
 */
 BEGIN
-		DECLARE @fraudCaseID INT = 2;
+	SET NOCOUNT ON;
+
+	DECLARE @fraudCaseID INT = 2;
 
 	--===1. INITIAL TEMP #TABLEs===========
 	--#tmpMatchInput: Store Scanned Matches with Max(transid) will be scanned
@@ -65,14 +67,14 @@ BEGIN
 	INSERT INTO #tmpMatchInput(MatchId)
 	SELECT val FROM dbo.SPU_StrSplit(@MatchIds, ', ');
 	
-	UPDATE mi
+	UPDATE mi WITH(ROWLOCK, UPDLOCK)
 	SET		mi.EventDate = m.eventdate
 	FROM	#tmpMatchInput mi WITH(NOLOCK)
 			INNER JOIN bodb02.dbo.Match m WITH (NOLOCK) ON mi.MatchId = m.matchid;
 	
 	--===3. INSERT DATA TO #tmpBettype===========
 	INSERT INTO #tmpBettype(Bettype)
-	SELECT DISTINCT Bettype FROM bodb02.dbo.SportBettypeMatrix sm WHERE sm.ProductID = 1;	
+	SELECT DISTINCT Bettype FROM bodb02.dbo.SportBettypeMatrix sm WITH(NOLOCK) WHERE sm.ProductID = 1;	
 
 	--===4. INSERT DATE TO #tmpFraudTickets
 	INSERT INTO #tmpFraudTickets(CustId, MatchId, TransId, EventDate)
@@ -83,8 +85,8 @@ BEGIN
 	FROM	bodb02.dbo.bettrans b WITH (NOLOCK)
 			INNER JOIN #tmpMatchInput mi WITH (NOLOCK) ON mi.matchid = b.MatchId
 			INNER JOIN #tmpBettype bt WITH (NOLOCK) ON b.bettype = bt.Bettype
-			INNER JOIN OfficeIP oi WITH (NOLOCK) ON b.ip LIKE ''+ oi.IPRange +'.%' AND (CAST(PARSENAME(b.ip, 1) AS TINYINT) BETWEEN oi.FromNumber AND oi.ToNumber)
-	WHERE	b.currency <> 20
+			INNER JOIN dbo.OfficeIP oi WITH (NOLOCK) ON b.ip LIKE ''+ oi.IPRange +'.%' AND (CAST(PARSENAME(b.ip, 1) AS TINYINT) BETWEEN oi.FromNumber AND oi.ToNumber)
+	WHERE	b.currency <> 20;
 	
 	--===5. INSERT SCANNED MATCH: TABLE "ScannedMatch" (ScannedDate, SuspiciousTicketsCount)===========		
 	INSERT INTO dbo.ScannedMatch (Matchid, FraudCaseId, ScannedDate, SuspiciousTicketsCount) 
