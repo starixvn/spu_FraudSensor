@@ -6,6 +6,7 @@
     using Fanex.NAP.FS.Library.Models.FraudCase;
     using Fanex.NAP.FS.Library.Services.Interface;
     using System.Collections.Generic;
+    using System.Linq;
 
     public class NotificationRecipientService : INotificationRecipientService
     {
@@ -23,7 +24,7 @@
 
         public IEnumerable<NotificationRecipient> GetRecipients(FraudCaseId fraudCase)
         {
-            return DataService.GetData<NotificationRecipient>(new RecipientGetCriteria { FraudCaseId = (int)fraudCase });
+            return DataService.GetData<NotificationRecipient>(new RecipientGetCriteria { FraudCaseId = (int)fraudCase }).OrderBy(nr => nr.Recipient);
         }
 
         public DBResult RemoveRecipient(int recipientId, int userId, FraudCaseId fraudCase)

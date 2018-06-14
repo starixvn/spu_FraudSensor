@@ -16,7 +16,8 @@
         common.showConfirmation(`Do you want to add these recipients: ${$("#user").multipleSelect("getSelects", "text").join(", ")}`, function () {
             $.post(url, { recipients: data.join(","), fraudCase: fraudCaseId }, common.handleUpdateAjax(null, function () {
                 user_table.DataTable().ajax.reload();
-                $("#user").multipleSelect("uncheckAll");
+
+                refresh_select();
             }));
         });
     }
@@ -28,26 +29,36 @@
             common.showConfirmation(`Do you want to remove ${obj.Recipient}?`, function () {
                 var url = common.modifyRelativeUrl("/Fraudcase/RemoveRecipient");
 
-                $.get(url, { id: obj.RecipientId, fraudCase: fraudCaseId }, common.handleUpdateAjax(null, () => user_table.DataTable().ajax.reload()));
+                $.get(url, { id: obj.RecipientId, fraudCase: fraudCaseId }, common.handleUpdateAjax(null, function () {
+                    user_table.DataTable().ajax.reload();
+                    refresh_select();
+                }));
             });
         })
     }
 
-    function init_select() {
+    function refresh_select(callback) {
         var url = common.modifyRelativeUrl("/SuspiciousCustomer/GetUsers");
 
         $.get(url, {}, function (json) {
-            var data = json.map(d => $(`<option value='${d.Id}'>${d.Username}</option>`));
+            var filter = new Set(user_table.DataTable().data().map(obj => obj.RecipientId).toArray());
+                                                                                
+            var data = json.filter(obj => !filter.has(obj.Id)).map(d => $(`<option value='${d.Id}'>${d.Username}</option>`));
 
-            $("#user", dialog).append(data).multipleSelect({
+            $("#user", dialog).empty().append(data).multipleSelect({
                 width: 300,
                 selectAll: false
             });
-        })
+
+            if (callback != null) {
+                callback();
+            }
+        });
     }
 
     dialog.dialog({
         height: "auto",
+        minHeight: 250,
         width: 650,
         modal: true,
         autoOpen: false,
@@ -56,10 +67,15 @@
     });
 
     $("#user-link").click(function () {
-        dialog.dialog("open");
+        common.showLoading();
+
         user_table.DataTable().ajax.reload();
-        user_table.DataTable().columns.adjust();
-        $("#user").multipleSelect("uncheckAll");
+
+        refresh_select(function () {
+            dialog.dialog("open");
+            user_table.DataTable().columns.adjust();
+            common.closeLoading();
+        });
     });
 
     user_table.DataTable({
@@ -84,8 +100,6 @@
     });
 
     $("#add-recipient-btn").click(add_recipient);
-
-    init_select();
 }
 
 $(daily_data_capture);
