@@ -63,7 +63,6 @@ function notification() {
         $('#noti-unread-msg').hide();
         if (!$('#notificationContainer').is(':visible')) {
             getMessage();
-            //$('#notificationContainer').show();
         }
         else {
             $('#notificationContainer').hide();
@@ -75,10 +74,6 @@ function notification() {
             e.target.id != $("#notification-icon").attr('id') && !$("#notification-icon").has(e.target).length) {
             $("#notificationContainer").hide();
         }
-    });
-
-    $(document).ready(function () {
-        //getMessage();
     });
 
     getUnreadMessageCount();

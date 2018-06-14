@@ -198,7 +198,7 @@ BEGIN
 	IF (@TotalChangedMatches > 0)
 	BEGIN
 		INSERT INTO dbo.[Message](FraudCaseId, MessageContent, LogDate)
-		VALUES(@CurrentFraudCaseId, 'There are ' +  CAST(@TotalChangedMatches AS VARCHAR(5)) + ' matches which having data changes on ' + CAST(@CaptureDate AS VARCHAR(20)), @CaptureDate);
+		VALUES(@CurrentFraudCaseId, 'There are ' +  CAST(@TotalChangedMatches AS VARCHAR(5)) + ' matches which having data changes on ' + CONVERT(VARCHAR, @CaptureDate, 107) + ' ' + CONVERT(VARCHAR, @CaptureDate, 108), @CaptureDate);
 
 		DECLARE @NewlyMessageId		INT;
 		SELECT @NewlyMessageId = SCOPE_IDENTITY();
