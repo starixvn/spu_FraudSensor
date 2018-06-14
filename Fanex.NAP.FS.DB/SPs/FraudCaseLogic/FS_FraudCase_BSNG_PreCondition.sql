@@ -77,7 +77,7 @@ BEGIN
 														FROM dbo.BSNGScanInfo AS si WITH(NOLOCK)
 														WHERE si.MatchId = ms.MatchId
 																AND si.EventDate = ms.EventDate
-																AND si.HasScanned = 1 )	
+																AND si.HasScanned = 1 );	
 	--- RETURN MATCH HAS NEW SCORE
 	SELECT  DISTINCT ms.MatchId
 	FROM	dbo.MatchScore AS ms WITH (NOLOCK)

@@ -95,7 +95,7 @@ BEGIN
 		
 
 	-------- REMOVE TODAY's DATA IN CASE ACCIDENTIALLY RUN MORE THAN 1 TIME PER DAY --------
-	DELETE FROM dbo.ChangedMatch
+	DELETE FROM dbo.ChangedMatch WITH(ROWLOCK)
 	WHERE CAST(CapturedDate AS DATE) = @Today;
 
 	SELECT @StoredMessageId = m.MessageId
@@ -103,10 +103,10 @@ BEGIN
 	WHERE CAST(m.LogDate AS DATE) = @Today
 		AND m.FraudCaseId = @CurrentFraudCaseId;
 
-	DELETE FROM dbo.Message
+	DELETE FROM dbo.Message WITH(ROWLOCK)
 	WHERE MessageId = @StoredMessageId;
 
-	DELETE FROM dbo.UserMessage
+	DELETE FROM dbo.UserMessage WITH(ROWLOCK)
 	WHERE MessageId = @StoredMessageId;
 	
 	-------- START --------
@@ -130,7 +130,7 @@ BEGIN
 	FROM dbo.CapturedData AS cd WITH(NOLOCK)
 	WHERE cd.CapturedDate = @OldCapturedDate OR cd.CapturedDate = @NewCapturedDate;
 
-	DELETE FROM #tmpMatchesData
+	DELETE FROM #tmpMatchesData WITH(ROWLOCK)
 	WHERE MatchId IN
         (
             SELECT MatchId

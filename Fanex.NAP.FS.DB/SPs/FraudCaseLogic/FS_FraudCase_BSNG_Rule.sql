@@ -86,25 +86,25 @@ BEGIN
 	-------GET BETTYPE--------------------------------
 	INSERT INTO #tmpBettype (Bettype)
 	SELECT DISTINCT bettype
-	FROM	bodb02.dbo.SportBettypeMatrix
-	WHERE	SportType = 1 
+	FROM	bodb02.dbo.SportBettypeMatrix WITH(NOLOCK)
+	WHERE	SportType = 1 ;
 	
 	-------GET MATCH-----
 	--------------------------------------------------
 	INSERT INTO #tmpMatches(MatchId)
-	SELECT val FROM SPU_StrSplit(@MatchIds, ',');
+	SELECT val FROM dbo.SPU_StrSplit(@MatchIds, ',');
 	
 	
 	--- Get Current Score of Match -- Only Scan for Score less than currentScore
 	UPDATE	ms
 	SET		ms.CurrentScore = m.livehomescore + liveawayscore, ms.EventDate = m.eventdate, ms.EventStatus = m.eventstatus
 	FROM	#tmpMatches ms WITH(ROWLOCK)
-			INNER JOIN bodb02.dbo.Match m WITH (NOLOCK) ON ms.MatchId = m.MatchId 
+			INNER JOIN bodb02.dbo.Match m WITH (NOLOCK) ON ms.MatchId = m.MatchId; 
 	
 	
 	--- GET THE LAST REJECT TIME OF PREVIOUS SCORE	
 	
-	INSERT INTO BSNGScanInfo (MatchId, EventDate, EventStatus, LiveHomeScore, LiveAwayScore, LastRejectedTicket, LastRejectedTime, HasScanned)
+	INSERT INTO dbo.BSNGScanInfo (MatchId, EventDate, EventStatus, LiveHomeScore, LiveAwayScore, LastRejectedTicket, LastRejectedTime, HasScanned)
 	SELECT ms.MatchId
 			, ms.EventDate
 			, ms.EventStatus
@@ -116,7 +116,7 @@ BEGIN
 	FROM	bodb02.dbo.bettrans b WITH(NOLOCK)
 			INNER JOIN #tmpBettype bt WITH(NOLOCK) ON b.bettype = bt.Bettype
 			INNER JOIN #tmpMatches ms WITH(NOLOCK) ON b.matchid = ms.MatchId
-			LEFT JOIN BSNGScanInfo si WITH(NOLOCK) ON si.MatchId = ms.MatchId AND si.livehomescore = b.livehomescore AND si.LiveAwayScore = b.liveawayscore
+			LEFT JOIN dbo.BSNGScanInfo si WITH(NOLOCK) ON si.MatchId = ms.MatchId AND si.livehomescore = b.livehomescore AND si.LiveAwayScore = b.liveawayscore
 	WHERE	b.liveindicator = 1
 			AND b.statusID = 101
 			AND (b.livehomescore + b.liveawayscore) < ms.CurrentScore
@@ -154,7 +154,7 @@ BEGIN
 			,	40 * 0.01 * COALESCE(dds.maxbet, 0) AS MaxBet
 		FROM bodb02.dbo.match AS tch WITH (NOLOCK)
 		INNER JOIN bodb02.dbo.bettrans AS ans WITH (NOLOCK) ON tch.matchid = ans.matchid
-		INNER JOIN BSNGScanInfo AS si WITH(NOLOCK) ON si.matchid = ans.matchid
+		INNER JOIN dbo.BSNGScanInfo AS si WITH(NOLOCK) ON si.matchid = ans.matchid
 		INNER JOIN #tmpMatches AS tm WITH(NOLOCK) ON tm.MatchId = si.MatchId
 		CROSS APPLY (
 			SELECT TOP(1) l.Maxbet
@@ -276,7 +276,7 @@ BEGIN
 	
 	UPDATE si
 	SET		si.HasScanned = 1, si.ScannedDate = @ScannedDate
-	FROM	BSNGScanInfo si WITH(ROWLOCK)
+	FROM	dbo.BSNGScanInfo si WITH(ROWLOCK)
 			INNER JOIN #tmpMatches tm WITH(NOLOCK) ON si.MatchId = tm.matchid
 	WHERE	si.HasScanned = 0;
 	
