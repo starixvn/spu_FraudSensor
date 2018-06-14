@@ -232,6 +232,9 @@
   -moz-border-radius: 0 0 4px 4px;
   border-radius: 0 0 4px 4px; }
 
+.form-filter.-add-recipient .ms-drop ul {
+  max-height: 140px !important; }
+
 .form-filter.-add-recipient .ms-drop ul > li {
   line-height: 26px; }
 

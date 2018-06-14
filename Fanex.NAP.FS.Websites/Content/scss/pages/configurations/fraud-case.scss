@@ -173,6 +173,10 @@
         border-radius: 0 0 4px 4px;
     }
 
+    .ms-drop ul {
+        max-height: 140px !important;
+    }
+
     .ms-drop ul > li {
         line-height: 26px;
     }
