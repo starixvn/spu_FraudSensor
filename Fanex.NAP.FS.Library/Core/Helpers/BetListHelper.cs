@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace Fanex.NAP.FS.Library.Core.Helpers
 {
@@ -19,11 +16,10 @@ namespace Fanex.NAP.FS.Library.Core.Helpers
             {
                 try
                 {
-                    var str = match.Captures.Cast<Capture>().First(c => !string.IsNullOrEmpty(c.Value)).Value;
-
-                    var builder = new StringBuilder(str);
-
-                    return builder.Remove(0, 1).Remove(builder.Length - 1, 1).Replace("&nbsp;", "").ToString();
+                    return match.Captures.Cast<Capture>()
+                        .Select(c => c.Value.Remove(c.Length - 1, 1).Remove(0, 1))
+                        .Join(" ")
+                        .Replace("&nbsp;", "");
                 }
                 catch (Exception ex)
                 {
@@ -31,7 +27,7 @@ namespace Fanex.NAP.FS.Library.Core.Helpers
                 }
             }
 
-            return null;
+            return htmlProp.Replace("&nbsp;", "");
         }
     }
 }

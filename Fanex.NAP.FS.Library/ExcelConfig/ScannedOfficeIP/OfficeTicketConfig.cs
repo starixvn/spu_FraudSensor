@@ -53,7 +53,7 @@ namespace Fanex.NAP.FS.Library.ExcelConfig.ScannedOfficeIP
         {
             var template = excelBuilder.CreateChoiceBuilder(data.BetTypeId).Render(data, ticketHelper, null, false);
 
-            var choice = template.betTeam.Replace("&nbsp;", "") + BetListHelper.ExtractStringFromHtml(template.Handicap);
+            var choice = BetListHelper.ExtractStringFromHtml(template.betTeam) + BetListHelper.ExtractStringFromHtml(template.Handicap);
 
             var score = BetListHelper.ExtractStringFromHtml(template.Score);
 
