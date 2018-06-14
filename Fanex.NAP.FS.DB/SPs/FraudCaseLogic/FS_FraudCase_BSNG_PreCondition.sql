@@ -4,7 +4,6 @@ SET QUOTED_IDENTIFIER ON ;
 GO
 SET ANSI_NULLS ON ;
 GO
-
 ALTER PROCEDURE [dbo].[FS_FraudCase_BSNG_PreCondition] 
 AS
 /*
@@ -41,20 +40,32 @@ BEGIN
 	);
 	
 	--- ============1. INSERT NEW MATCH=============================
-	INSERT INTO dbo.MatchScore(MatchId, EventDate, EventStatus, TotalScores, HasScanned)
+	INSERT INTO dbo.MatchScore(MatchId, EventDate, EventStatus, TotalScores, HasScanned, UpdatedDate)
 	SELECT	m.matchid
 			, m.eventdate
 			, m.eventstatus
-			, 0
-			, 0		
+			, m.livehomescore + liveawayscore
+			, 0	
+			, @CurrentTime	
 	FROM	bodb02.dbo.Match AS m WITH(NOLOCK)
 			INNER JOIN bodb02.dbo.league AS l WITH (NOLOCK) ON m.leagueid = l.leagueid
 			LEFT JOIN dbo.MatchScore AS ms WITH(NOLOCK) ON m.matchid = ms.MatchId
 	WHERE	ms.MatchId IS NULL
+			AND m.eventstatus = 'Running'
 			AND m.sporttype = 1
 			AND l.isTest = 0
-			AND m.kickofftime <= @CurrentTime;	
-
+			AND m.kickofftime <= @CurrentTime	
+			AND	m.livehomescore + liveawayscore > 0;
+	
+	--- UPDATE HASSCANNED = 1 FOR COMPLETED MATCH IF SCANNED ALL SCORED (EXCEPT THE LAST SCORE)
+	UPDATE	ms 
+	SET		ms.HasScanned = 1
+			, ms.EventStatus = 'Completed'
+	FROM	dbo.MatchScore AS ms WITH (ROWLOCK, UPDLOCK)
+			INNER JOIN bodb02.dbo.Match m WITH(NOLOCK) ON m.matchid = ms.MatchId
+	WHERE	ms.HasScanned = 0
+			AND m.EventStatus = 'Completed'
+			AND m.livehomescore + m.liveawayscore = ms.TotalScores;
 	
 	--- UPDATE NEW SCORE
 	UPDATE	ms WITH (ROWLOCK, UPDLOCK)
@@ -63,28 +74,15 @@ BEGIN
 	FROM	dbo.MatchScore AS ms
 			INNER JOIN bodb02.dbo.Match AS m WITH(NOLOCK) ON m.MatchId = ms.MatchId
 	WHERE	(ms.TotalScores) < (m.LiveHomeScore + m.LiveAwayScore)
-			AND ms.HasScanned = 0;	 
-			
-	--- UPDATE HASSCANNED = 1 FOR COMPLETED MATCH IF SCANNED ALL SCORED (EXCEPT THE LAST SCORE)
-	UPDATE	ms 
-	SET		ms.HasScanned = 1
-	FROM	dbo.MatchScore AS ms WITH (ROWLOCK, UPDLOCK)
-			INNER JOIN bodb02.dbo.Match AS m WITH(NOLOCK) ON m.MatchId = ms.MatchId
-	WHERE	(ms.TotalScores) = (m.LiveHomeScore + m.LiveAwayScore)
-			AND ms.HasScanned = 0
-			AND ms.EventStatus = 'Completed'
-			AND (ms.TotalScores) - 1 = (SELECT MAX(si.LiveHomeScore + si.LiveAwayScore)
-														FROM dbo.BSNGScanInfo AS si WITH(NOLOCK)
-														WHERE si.MatchId = ms.MatchId
-																AND si.EventDate = ms.EventDate
-																AND si.HasScanned = 1 );	
-	--- RETURN MATCH HAS NEW SCORE
-	SELECT  DISTINCT ms.MatchId
-	FROM	dbo.MatchScore AS ms WITH (NOLOCK)
-	WHERE	ms.UpdatedDate = @CurrentTime
 			AND ms.HasScanned = 0;
 	
+	--- RETURN MATCH HAS NEW SCORE
+	SELECT  ms.MatchId, *
+	FROM	dbo.MatchScore AS ms WITH (NOLOCK)
+	WHERE	ms.UpdatedDate = @CurrentTime
+			AND ms.HasScanned = 0;			
 END;
+
 GO 
  GRANT EXECUTE ON [dbo].[FS_FraudCase_BSNG_PreCondition] TO [bodbSPUNet];
 GO 
