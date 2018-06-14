@@ -32,7 +32,7 @@
 
             var file = RenderExcelFile(template, wb => new DailyDataCaptureExcelConfig().RenderExcel(wb, criteria, _service.GetMatches(criteria), null));
 
-            return ExcelFile(file, GetExcelReportName("DataCaptureMonitor"));
+            return ExcelFile(file, GetExcelReportName("DailyDataMonitor"));
         }
     }
 }

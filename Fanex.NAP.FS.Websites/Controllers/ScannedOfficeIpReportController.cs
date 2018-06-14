@@ -33,7 +33,7 @@
                     wb,
                     new TicketFromOfficeIpGetCriteria { FromDate = fromDate, ToDate = toDate }, _service.GetRawTickets(fromDate, toDate), null));
 
-            return ExcelFile(file, $"OfficeIPReport_{DateTime.Today.ToString("yyyyMMdd")}");
+            return ExcelFile(file, $"OfficeIPResult_{DateTime.Today.ToString("yyyyMMdd")}");
         }
     }
 }

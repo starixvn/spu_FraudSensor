@@ -45,10 +45,21 @@
                                                                                 
             var data = json.filter(obj => !filter.has(obj.Id)).map(d => $(`<option value='${d.Id}'>${d.Username}</option>`));
 
-            $("#user", dialog).empty().append(data).multipleSelect({
+            $("option", "#user").remove();
+
+            $("#user", dialog).append(data).multipleSelect({
                 width: 300,
                 selectAll: false
             });
+
+            if (data.length == 0) {
+                $("#user").multipleSelect("disable");
+                $("#add-recipient-btn").prop("disabled", true);
+            }
+            else {
+                $("#user").multipleSelect("enable");
+                $("#add-recipient-btn").prop("disabled", false);
+            }
 
             if (callback != null) {
                 callback();

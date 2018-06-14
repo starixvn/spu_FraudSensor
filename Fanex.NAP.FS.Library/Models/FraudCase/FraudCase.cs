@@ -40,7 +40,7 @@
                         "Bet type = HDP, O/U, FT. 1X2, 1H HDP, 1H O/U, 1H 1X2",
                         "Transaction Date = Danger Period (90s before goal)",
                         "Total stake in danger period ≥ 40% Max Bet",
-                        "Currency <> Test Currency"
+                        "Currency <> UUS, H, C"
                     };
 
                     break;
@@ -70,7 +70,7 @@
                     result.TicketRules = new[]
                     {
                         "Customer has evidence on FPS",
-                        "Currency <> Test Currency"
+                        "Currency <> UUS, H, C"
                     };
 
                     break;
@@ -87,7 +87,7 @@
                     result.TicketRules = new[]
                     {
                         "IP = <a href='#' id='ip-link' class='view-list'>IP List</a>",
-                        "Currency <> UUS"
+                        "Currency <> UUS, H, C"
                     };
 
                     break;
