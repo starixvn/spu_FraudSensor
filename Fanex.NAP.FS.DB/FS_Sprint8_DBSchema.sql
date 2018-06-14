@@ -151,9 +151,8 @@ CREATE TABLE dbo.BSNGScanInfo
 	, [EventStatus]				NVARCHAR(50) NOT NULL
 	, [LastRejectedTicket]		BIGINT NULL
 	, [LastRejectedTime]		DATETIME NULL
-	, [ScannedDate]				DATETIME NULL
-	, [ScannedStatus]			BIT NULL			-- 0:Not Scanned Yet; 1: Scanned
-	, [HasScanned]				BIT NULL
+	, [ScannedDate]				DATETIME NULL	
+	, [HasScanned]				BIT NULL	-- 0:Not Scanned Yet; 1: Scanned
  CONSTRAINT [PK_BSNGScanInfo_MatchIdLiveHomeScoreLiveAwayScore] PRIMARY KEY CLUSTERED 
 (
 	 [MatchId]			ASC
@@ -178,7 +177,6 @@ CREATE TABLE dbo.BSNGScanInfoArchive
 	, [LastRejectedTicket]		BIGINT NULL
 	, [LastRejectedTime]		DATETIME NULL
 	, [ScannedDate]				DATETIME NULL
-	, [ScannedStatus]			BIT NULL
 	, [HasScanned]				BIT NULL
  CONSTRAINT [PK_BSNGScanInfoArchive_MatchIdLiveHomeScoreLiveAwayScore] PRIMARY KEY CLUSTERED 
 (
@@ -209,4 +207,3 @@ CREATE TABLE dbo.MatchScore
 ) ON [DATA];
 ----===================C. ALTER TABLES=========================
 ----===========================================================
-Drop table MatchScore
