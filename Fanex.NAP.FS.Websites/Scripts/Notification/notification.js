@@ -37,6 +37,7 @@ function notification() {
 
             $('#notificationContainer').html(messagesCount > 0 ? messagesHtmlString : "<div class='notification'>There is no message.</div>");
             $('#notificationContainer').show();
+            $('.notification-icon').addClass('has-arrow-down');
         });
     }
 
@@ -66,6 +67,7 @@ function notification() {
         }
         else {
             $('#notificationContainer').hide();
+            $('.notification-icon').removeClass('has-arrow-down');
         }
     });
 
@@ -73,6 +75,7 @@ function notification() {
         if (e.target.id != $("#notificationContainer").attr('id') && !$("#notificationContainer").has(e.target).length &&
             e.target.id != $("#notification-icon").attr('id') && !$("#notification-icon").has(e.target).length) {
             $("#notificationContainer").hide();
+            $('.notification-icon').removeClass('has-arrow-down');
         }
     });
 
