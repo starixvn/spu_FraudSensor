@@ -36,7 +36,7 @@ BEGIN
 	INSERT INTO #tmpSporttype (Sporttype)
 	SELECT	DISTINCT(Sporttype)
 	FROM	bodb02.dbo.SportBettypeMatrix sbm WITH (NOLOCK)
-	WHERE	sbm.ProductID =1
+	WHERE	sbm.ProductID = 1;
 	
 	SELECT	m.matchid ,m.eventdate
 	FROM	bodb02.dbo.match m WITH (NOLOCK)
@@ -52,8 +52,3 @@ GO
  GRANT EXECUTE ON dbo.FS_FraudCase_OfficeIP_PreCondition TO bodbSPUNet;
 GO 
  GRANT VIEW DEFINITION ON dbo.FS_FraudCase_OfficeIP_PreCondition TO bodbSPUNet;
-
-select distinct s.sporttype, s.SportName from bodb02.dbo.SportBettypeMatrix m
-		Inner join bodb02.dbo.Sports s on m.SportType = s.SportType
-		
- where ProductID = 1

@@ -134,7 +134,7 @@ BEGIN
 	WHERE MatchId IN
         (
             SELECT MatchId
-            FROM #tmpMatchesData WITH(NOLOCK)
+            FROM #tmpMatchesData
             GROUP BY MatchId
             HAVING COUNT(1) < 2
         );
