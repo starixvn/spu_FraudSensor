@@ -18,17 +18,19 @@ GO
 ----===================B. CREATE TABLES========================
 ----===========================================================
 --*** @CaseyHuynh: Create Table OfficeIP
-CREATE TABLE	dbo.OfficeIP(
+CREATE TABLE dbo.OfficeIP(
 	IPRange	NVARCHAR(11) NOT NULL
-	,FromNumber		SMALLINT NOT NULL
-	,ToNumber		SMALLINT NOT NULL		
+	, FromNumber		SMALLINT NOT NULL
+	, ToNumber		SMALLINT NOT NULL	
+	, Creator		INT
+	, CreatedDate	DATETIME	
 CONSTRAINT PK_OfficeIP_IPRangeFromNumberToNumber PRIMARY KEY CLUSTERED 
 (
 	IPRange			ASC
 	,FromNumber		ASC
 	,ToNumber		ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON DATA
-) ON DATA
+) ON DATA;
 GO
 
 CREATE NONCLUSTERED INDEX NIX_OfficeIP_IPRange ON dbo.OfficeIP (
