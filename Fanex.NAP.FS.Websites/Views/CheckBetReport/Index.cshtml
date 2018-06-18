@@ -1,0 +1,57 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section styles{
+    <style>
+        .new-value {
+            color: coral;
+        }
+
+        .odd-group {
+            background-color: aqua;
+        }
+    </style>
+}
+
+<h1 class="title">CHECK BET REPORT</h1>
+
+<div class="form-filter">
+    <div class="group calendar">
+        <label class="text">Scanned Date</label>
+        <input type="text" id="from-date" class="control">
+        <span class="icon-calendar-text"></span>
+    </div>
+
+    <div class="group calendar">
+        <input type="text" id="to-date" class="control">
+        <span class="icon-calendar-text"></span>
+    </div>
+
+    <button class="button -primary" id="generate">Generate</button>
+    <button class="button -export" id="export"><span class="icon-export-excel"></span>Export</button>
+</div>
+
+<table id="ticket-table" class="table table-striped width-100per" style="width: 100%">
+    <thead>
+        <tr>
+            <th>Bet ID</th>
+            <th>Trans Date</th>
+            <th>Currency</th>
+            <th>Bet Type</th>
+            <th>Username</th>
+            <th>Stake <br /> Old/<span class="new-value">New</span></th>
+            <th>Odds <br /> Old/<span class="new-value">New</span></th>
+            <th>Choice <br /> Old/<span class="new-value">New</span></th>
+            <th>Total Position Taking <br /> Old/<span class="new-value">New</span></th>
+            <th>Status</th>
+            <th>Creator</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+@section scripts{
+    @Scripts.Render("~/check-bet-report-scripts")
+}

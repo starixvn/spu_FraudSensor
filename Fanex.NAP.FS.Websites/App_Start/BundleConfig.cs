@@ -40,6 +40,7 @@
             RegisterScannedOfficeIpBundles(bundles);
             RegisterNotificationBundles(bundles);
             RegisterDailyDataCaptureBundles(bundles);
+            RegisterCheckBetReportBundles(bundles);
         }
 
         private static void RegisterFSCoreBundles(BundleCollection bundles)
@@ -105,6 +106,11 @@
         {
             bundles.Add(new ScriptBundle("~/notification").Include(
                 "~/scripts/Notification/*.js"));
+        }
+
+        private static void RegisterCheckBetReportBundles(BundleCollection bundles)
+        {
+            bundles.Add(new ScriptBundle("~/check-bet-report-scripts").Include("~/scripts/CheckBetReport/check-bet-report.js"));
         }
     }
 }

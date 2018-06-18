@@ -119,6 +119,31 @@
 
                     break;
 
+                case Models.FraudCaseId.CheckBet:
+                    result.MatchRules = new[]
+                    {
+                        "Sport = Sportsbook",
+                        "Match Status = Completed",
+                        "Once a day in 3 days"
+                    };
+
+                    result.TicketRules = new[]
+                    {
+                        "Bet type = Normal Sportsbook Bets",
+                        "Currency <> UUS, H, C",
+                        "(Stake got changed",
+                        "OR Odds got changed",
+                        "OR Choice got changed",
+                        "OR SMA PT got changed",
+                        "OR Rejected ticket status got changed)"
+                    };
+
+                    result.Actions = new[]
+                    {
+                        "Send notification to <a id='user-link' class='view-list' href='#'>Recipient List</a>"
+                    };
+
+                    break;
                 default:
                     result.ScheduleTime = "There's no data";
                     result.TicketRules = new[] { "There's no data" };

@@ -1,5 +1,6 @@
 ﻿namespace Fanex.NAP.FS.Library.Models
 {
+    using Newtonsoft.Json;
     using System.Collections;
 
     public class DBResult
@@ -8,6 +9,7 @@
 
         public string ErrorMsg { get; set; }
 
+        [JsonIgnore]
         public Hashtable OutParam { get; set; }
     }
 }

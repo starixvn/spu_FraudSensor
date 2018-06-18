@@ -6,6 +6,7 @@
         FlaggedAccount = 6,
         DelayedGoal = 8,
         ScannedOfficeIP = 2,
-        DailyDataCapture = 4
+        DailyDataCapture = 4,
+        CheckBet =  3
     }
 }

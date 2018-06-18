@@ -2,7 +2,7 @@
 @using Fanex.NAP.FS.Library.DTO
 @model Fanex.NAP.FS.Websites.ViewModels.FraudCase.FraudCaseViewModel
 
-@{ 
+@{
     var ajax = new AjaxOptions
     {
         OnBegin = "common.showLoading",
@@ -14,7 +14,7 @@
     @Styles.Render("~/fraud-case-styles")
 
     <style>
-        #search-btn{
+        #search-btn {
             display: none;
         }
     </style>
@@ -104,19 +104,20 @@
         }
     </div>
 
-    if (Model.FraudCaseInfo.FraudCaseId == (int)FraudCaseId.DelayedGoal)
+    switch ((FraudCaseId)Model.FraudCaseInfo.FraudCaseId)
     {
-        @Html.Partial("DelayedGoal/Dialog")
-    }
-
-    if (Model.FraudCaseInfo.FraudCaseId == (int)FraudCaseId.ScannedOfficeIP)
-    {
-        @Html.Partial("ScannedOfficeIP/Dialog")
-    }
-
-    if(Model.FraudCaseInfo.FraudCaseId == (int)FraudCaseId.DailyDataCapture)
-    {
-        @Html.Partial("DailyDataCapture/Dialog")
+        case FraudCaseId.DelayedGoal:
+            @Html.Partial("DelayedGoal/Dialog")
+            break;
+        case FraudCaseId.ScannedOfficeIP:
+            @Html.Partial("ScannedOfficeIP/Dialog")
+            break;
+        case FraudCaseId.DailyDataCapture:
+        case FraudCaseId.CheckBet:
+            @Html.Partial("DailyDataCapture/Dialog")
+            break;
+        default:
+            break;
     }
 }
 
@@ -127,22 +128,23 @@
     </script>
 
     @Scripts.Render("~/fraud-case-scripts")
-    
+
     @if (Model.FraudCaseInfo != null)
     {
-        if (Model.FraudCaseInfo.FraudCaseId == (int)FraudCaseId.DelayedGoal)
+        switch ((FraudCaseId)Model.FraudCaseInfo.FraudCaseId)
         {
-            @Scripts.Render("~/fraud-case-scripts/delayed-goal")
-        }
-
-        if (Model.FraudCaseInfo.FraudCaseId == (int)FraudCaseId.ScannedOfficeIP)
-        {
-            @Scripts.Render("~/fraud-case-scripts/scanned-office-ip")
-        }
-
-        if(Model.FraudCaseInfo.FraudCaseId == (int)FraudCaseId.DailyDataCapture)
-        {
-            @Scripts.Render("~/fraud-case-scripts/daily-data-capture")
+            case FraudCaseId.DelayedGoal:
+                @Scripts.Render("~/fraud-case-scripts/delayed-goal")
+                break;
+            case FraudCaseId.ScannedOfficeIP:
+                @Scripts.Render("~/fraud-case-scripts/scanned-office-ip")
+                break;
+            case FraudCaseId.DailyDataCapture:
+            case FraudCaseId.CheckBet:
+                @Scripts.Render("~/fraud-case-scripts/daily-data-capture")
+                break;
+            default:
+                break;
         }
     }
 }

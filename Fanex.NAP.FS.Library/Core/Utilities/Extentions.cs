@@ -1,4 +1,6 @@
-﻿namespace Fanex.NAP.FS.Library.Core.Utilities
+﻿#pragma warning disable S1226 //// Method parameters and caught exceptions should not be reassigned
+
+namespace Fanex.NAP.FS.Library.Core.Utilities
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -11,10 +13,10 @@
             {
                 yield return source.Take(chunksize);
 
-#pragma warning disable S1226 //// Method parameters and caught exceptions should not be reassigned
                 source = source.Skip(chunksize);
-#pragma warning restore S1226 //// Method parameters and caught exceptions should not be reassigned
             }
         }
     }
 }
+
+#pragma warning restore S1226 //// Method parameters and caught exceptions should not be reassigned

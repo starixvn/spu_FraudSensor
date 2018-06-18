@@ -275,6 +275,7 @@
     <Compile Include="Areas\UserLogin\UserLoginAreaRegistration.cs" />
     <Compile Include="Controllers\Api\ApiFPSController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Controllers\CheckBetReportController.cs" />
     <Compile Include="Controllers\ConfigurationsController.cs" />
     <Compile Include="Controllers\DailyDataCaptureController.cs" />
     <Compile Include="Controllers\ErrorsController.cs" />
@@ -630,6 +631,7 @@
     <Content Include="Areas\UserLogin\Views\Web.config" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Scripts\CheckBetReport\check-bet-report.js" />
     <Content Include="Scripts\common.js" />
     <Content Include="Scripts\DailyDataCapture\daily-data-capture.js" />
     <Content Include="Scripts\DataTables\autoFill.bootstrap.js" />
@@ -871,6 +873,7 @@
     <Content Include="Scripts\umd\popper.min.js" />
     <Content Include="Scripts\_references.js" />
     <Content Include="Views\DailyDataCapture\Index.cshtml" />
+    <Content Include="Views\CheckBetReport\Index.cshtml" />
     <None Include="Views\Errors\403.cshtml" />
     <None Include="Views\Errors\404.cshtml" />
     <None Include="Views\Errors\500.cshtml" />
