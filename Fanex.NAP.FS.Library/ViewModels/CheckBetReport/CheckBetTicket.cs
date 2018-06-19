@@ -12,15 +12,15 @@
 
         public string Username { get; set; }
 
-        public History<double> Stake { get; set; }
+        public History<double?> Stake { get; set; }
 
         public History<string> Odds { get; set; }
 
         public History<string> Choice { get; set; }
 
-        public History<double> PoistionTaking { get; set; }
+        public History<double?> PoistionTaking { get; set; }
 
-        public string Status { get; set; }
+        public History<string> Status { get; set; }
 
         public string Creator { get; set; }
 

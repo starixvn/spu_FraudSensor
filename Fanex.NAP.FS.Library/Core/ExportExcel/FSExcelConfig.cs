@@ -1,6 +1,7 @@
 ﻿namespace Fanex.NAP.FS.Library.Core.ExportExcel
 {
     using NPOI.SS.UserModel;
+    using NPOI.SS.Util;
     using System.Collections.Generic;
     using System.Linq;
 
@@ -11,6 +12,8 @@
         protected abstract string SheetName { get; }
 
         protected virtual bool HasSummary { get; }
+
+        protected virtual IRow GetTemplateRow(ISheet sheet, TData data) => sheet.GetRow(sheet.LastRowNum);
 
         protected virtual void ModifyReportName(IRow row)
         {
@@ -48,29 +51,19 @@
 
             ModifyHeader(sheet.GetRow(2));
 
-            IRow data_template;
-            IRow summary_template;
-
-            if (HasSummary)
-            {
-                data_template = sheet.GetRow(sheet.LastRowNum - 1);
-                summary_template = sheet.GetRow(sheet.LastRowNum);
-            }
-            else
-            {
-                data_template = sheet.GetRow(sheet.LastRowNum);
-                summary_template = null;
-            }
+            var summary_template = HasSummary ? sheet.GetRow(sheet.LastRowNum) : null;
 
             if (data.Any())
             {
                 foreach (var item in data)
                 {
+                    var data_template = GetTemplateRow(sheet, item);
                     WriteBodyRow(data_template, item);
                 }
             }
             else
             {
+                var data_template = GetTemplateRow(sheet, default(TData));
                 WriteEmpty(data_template);
             }
 
@@ -80,16 +73,16 @@
                 sheet.RemoveRow(summary_template);
             }
 
-            sheet.RemoveRow(data_template);
+            CleanupTemplate(sheet);
         }
 
         protected virtual void WriteBodyRow(IRow template, TData data)
         {
             var sheet = template.Sheet;
 
-            sheet.ShiftRows(template.RowNum, sheet.LastRowNum, 1, true, false);
+            var newRow = ShiftTemplate(sheet);
 
-            var row = sheet.CreateRow(template.RowNum - 1);
+            var row = sheet.CreateRow(newRow);
 
             ExcelUtilities.CopyRow(template, row);
 
@@ -107,15 +100,28 @@
         {
             var sheet = template.Sheet;
 
-            sheet.ShiftRows(template.RowNum, sheet.LastRowNum, 1, true, false);
+            var newRow = ShiftTemplate(sheet);
 
-            var row = sheet.CreateRow(template.RowNum - 1);
+            var row = sheet.CreateRow(newRow);
 
             ExcelUtilities.CopyRow(template, row);
 
-            row.Sheet.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(row.RowNum, row.RowNum, row.FirstCellNum, row.LastCellNum - 1));
+            row.Sheet.AddMergedRegion(new CellRangeAddress(row.RowNum, row.RowNum, row.FirstCellNum, row.LastCellNum - 1));
 
             row.GetCell(0).SetCellValue("There's no data");
+        }
+
+        protected virtual void CleanupTemplate(ISheet sheet)
+        {
+            var template = GetTemplateRow(sheet, default(TData));
+            sheet.RemoveRow(template);
+        }
+
+        protected virtual int ShiftTemplate(ISheet sheet)
+        {
+            sheet.ShiftRows(sheet.LastRowNum, sheet.LastRowNum, 1, true, false);
+
+            return sheet.LastRowNum - 1;
         }
     }
 }

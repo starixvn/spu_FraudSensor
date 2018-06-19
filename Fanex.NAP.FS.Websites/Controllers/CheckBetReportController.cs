@@ -1,6 +1,7 @@
 ﻿namespace Fanex.NAP.FS.Websites.Controllers
 {
     using Fanex.NAP.FS.Library.Criteria.CheckBetReport;
+    using Fanex.NAP.FS.Library.ExcelConfig.CheckBetReport;
     using Fanex.NAP.FS.Library.Services.Implement;
     using Fanex.NAP.FS.Library.Services.Interface;
     using System.Web.Mvc;
@@ -9,7 +10,6 @@
     {
         private readonly ICheckBetReportService _service = new CheckBetReportService();
 
-        // GET: CheckBetReport
         public ActionResult Index()
         {
             return View();
@@ -26,7 +26,9 @@
 
             var fileName = GetExcelReportName("CheckBetReport");
 
-            var content = RenderExcelFile(template, wb => { });
+            var data = _service.Generate(criteria);
+
+            var content = RenderExcelFile(template, wb => new CheckBetReportExcelConfig().RenderExcel(wb, criteria, data, null));
 
             return ExcelFile(content, fileName);
         }

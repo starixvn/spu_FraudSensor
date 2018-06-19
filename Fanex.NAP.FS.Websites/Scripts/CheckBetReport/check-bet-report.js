@@ -51,14 +51,14 @@
         }
 
         if (isInt) {
-            return `${common.formatGridNumber(old_value, "0,0")}<br/><span class='new-value'>${common.formatGridNumber(new_value, "0,0")}</span>`;
+            return `${old_value != null ? common.formatGridNumber(old_value, "0,0") : "-"}<br/><span class='new-value'>${new_value != null ? common.formatGridNumber(new_value, "0,0") : "-"}</span>`;
         }
 
         if (isString) {
-            return `${old_value}<br/><span class='new-value'>${new_value}</span>`;
+            return `${old_value != null ? old_value : "-"}<br/><span class='new-value'>${new_value != null ? new_value : "-"}</span>`;
         }
 
-        return `${common.formatGridNumber(old_value)}<br/><span class='new-value'>${common.formatGridNumber(new_value)}</span>`
+        return `${old_value != null ? common.formatGridNumber(old_value) : "-"}<br/><span class='new-value'>${new_value != null ? common.formatGridNumber(new_value) : "-"}</span>`
     }
 
     from_date.datepicker({
@@ -107,7 +107,7 @@
             { data: obj => render_history(obj.Odds, false, true) },
             { data: obj => render_history(obj.Choice, false, true) },
             { data: obj => render_history(obj.PoistionTaking) },
-            { data: obj => obj.Status },
+            { data: obj => render_history(obj.Status, false, true) },
             { data: obj => obj.Creator },
         ],
         createdRow: function (row, obj) {

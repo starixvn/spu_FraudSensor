@@ -21,7 +21,7 @@
                         Currency = "HKK",
                         Bettype = "Gravity Theory",
                         Username = "Simon",
-                        Stake = new ViewModels.History<double>
+                        Stake = new ViewModels.History<double?>
                         {
                             New = 10.5,
                             Old = 10.8
@@ -36,12 +36,16 @@
                             New = "0.8 (MY)",
                             Old = "0.9 (MY)"
                         },
-                        PoistionTaking = new ViewModels.History<double>
+                        PoistionTaking = new ViewModels.History<double?>
                         {
                             New = 5,
                             Old = 8
                         },
-                        Status = "DRAW",
+                        Status = new ViewModels.History<string>
+                        {
+                            New = "WIN",
+                            Old = "DRAW"
+                        },
                         Creator = "Leonard Susskind",
                         Group = i
                     };

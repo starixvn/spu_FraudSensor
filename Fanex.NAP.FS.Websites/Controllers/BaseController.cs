@@ -15,10 +15,6 @@
 
     public class BaseController : Controller
     {
-        private readonly string _environment = NapSettings.Settings == null ? string.Empty : NapSettings.Settings.Environment;
-        private readonly int _siteId = NapSettings.Settings == null ? 0 : NapSettings.Settings.SiteId;
-        private readonly bool _isSiteLogin = (NapSettings.Settings != null) && NapSettings.Settings.EnableDirectLogin;
-
         public BaseController()
         {
             CurrentContext = new CurrentContext();
@@ -31,20 +27,11 @@
             }
         }
 
-        public int SiteId
-        {
-            get { return _siteId; }
-        }
+        public int SiteId { get; } = NapSettings.Settings == null ? 0 : NapSettings.Settings.SiteId;
 
-        public bool IsSiteLogin
-        {
-            get { return _isSiteLogin; }
-        }
+        public bool IsSiteLogin { get; } = (NapSettings.Settings != null) && NapSettings.Settings.EnableDirectLogin;
 
-        public string Environment
-        {
-            get { return _environment; }
-        }
+        public string Environment { get; } = NapSettings.Settings == null ? string.Empty : NapSettings.Settings.Environment;
 
         public ICurrentContext CurrentContext
         {

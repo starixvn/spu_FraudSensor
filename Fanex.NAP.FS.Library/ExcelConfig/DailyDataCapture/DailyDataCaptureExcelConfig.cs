@@ -42,28 +42,33 @@ namespace Fanex.NAP.FS.Library.ExcelConfig.DailyDataCapture
                 .SetValue(row.GetCell(0));
         }
 
-        private XSSFRichTextString RenderDouble(History<double> history)
+        private XSSFRichTextString RenderDouble(History<double?> history)
         {
             if (history.Old == history.New)
             {
-                return ExcelUtilities.GetXSSF().Write(history.New.ToString("N2"));
+                if (!history.Old.HasValue)
+                {
+                    return ExcelUtilities.GetXSSF().Write("-");
+                }
+
+                return ExcelUtilities.GetXSSF().Write(history.New.Value.ToString("N2"));
             }
 
             return ExcelUtilities.GetXSSF()
-                .Write($"{history.Old.ToString("N2")}\n")
-                .WriteWithFont(history.New.ToString("N2"), new XSSFFont { Color = IndexedColors.Coral.Index });
+                .Write($"{(history.Old.HasValue ? history.Old.Value.ToString("N2") : "-")}\n")
+                .WriteWithFont(history.New.HasValue ? history.New.Value.ToString("N2") : "-", new XSSFFont { Color = IndexedColors.Coral.Index });
         }
 
-        private XSSFRichTextString RenderInt(History<int> history)
+        private XSSFRichTextString RenderInt(History<int?> history)
         {
             if (history.Old == history.New)
             {
-                return ExcelUtilities.GetXSSF().Write(history.New.ToString("N0"));
+                return ExcelUtilities.GetXSSF().Write(history.New.HasValue ? history.New.Value.ToString("N0") : "-");
             }
 
             return ExcelUtilities.GetXSSF()
-                .Write($"{history.Old.ToString("N0")}\n")
-                .WriteWithFont(history.New.ToString("N0"), new XSSFFont { Color = IndexedColors.Coral.Index });
+                .Write($"{(history.Old.HasValue ? history.Old.Value.ToString("N0") : "-")}\n")
+                .WriteWithFont(history.New.HasValue ? history.New.Value.ToString("N0") : "-", new XSSFFont { Color = IndexedColors.Coral.Index });
         }
     }
 }

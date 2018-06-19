@@ -156,6 +156,7 @@
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Messaging" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Net.Http.Formatting, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
@@ -184,6 +185,7 @@
     <Compile Include="Core\Helpers\Api\ApiHelper.cs" />
     <Compile Include="Core\Helpers\AppSettings.cs" />
     <Compile Include="Core\Helpers\BetListHelper.cs" />
+    <Compile Include="Core\Helpers\ObjectHelper.cs" />
     <Compile Include="Core\Helpers\Sequence.cs" />
     <Compile Include="Core\Helpers\Xml\IXml.cs" />
     <Compile Include="Core\Helpers\Xml\XmlHelper.cs" />
@@ -261,6 +263,7 @@
       <DependentUpon>Error.resx</DependentUpon>
     </Compile>
     <Compile Include="Core\Resources\ErrorLookup.cs" />
+    <Compile Include="ExcelConfig\CheckBetReport\CheckBetReportExcelConfig.cs" />
     <Compile Include="ExcelConfig\DailyDataCapture\DailyDataCaptureExcelConfig.cs" />
     <Compile Include="ExcelConfig\FraudCase\DelayedGoal\DelayedGoalExcelConfig.cs" />
     <Compile Include="ExcelConfig\FraudCase\ScannedOfficeIP\OfficeIPExcelConfig.cs" />

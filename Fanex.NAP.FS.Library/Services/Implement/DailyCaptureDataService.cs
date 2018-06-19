@@ -18,39 +18,39 @@
                 {
                     Home = RefData.GetTeamName(m.HomeId.ToString(), "en"),
                     Away = RefData.GetTeamName(m.AwayId.ToString(), "en"),
-                    AgentTO = new ViewModels.History<double>
+                    AgentTO = new ViewModels.History<double?>
                     {
                         New = m.NewTotalAgentTO,
                         Old = m.OldTotalAgentTO
                     },
-                    CancelledTickets = new ViewModels.History<int>
+                    CancelledTickets = new ViewModels.History<int?>
                     {
                         New = m.NewTotalCancelledTickets,
                         Old = m.OldTotalCancelledTickets
                     },
-                    CompanyTO = new ViewModels.History<double>
+                    CompanyTO = new ViewModels.History<double?>
                     {
                         New = m.NewTotalCompanyTO,
                         Old = m.OldTotalCompanyTO
                     },
                     EventDate = m.EventDate.ToString("MMM dd, yyyy HH:mm:ss"),
-                    MasterTO = new ViewModels.History<double>
+                    MasterTO = new ViewModels.History<double?>
                     {
                         New = m.NewTotalMasterTO,
                         Old = m.OldTotalMasterTO
                     },
                     ScannedDate = m.CapturedDate.ToString("MMM dd, yyyy HH:mm:ss"),
-                    SettledTickets = new ViewModels.History<int>
+                    SettledTickets = new ViewModels.History<int?>
                     {
                         New = m.NewTotalSettledTickets,
                         Old = m.OldTotalSettledTickets
                     },
-                    SuperTO = new ViewModels.History<double>
+                    SuperTO = new ViewModels.History<double?>
                     {
                         New = m.NewTotalSuperTO,
                         Old = m.OldTotalSuperTO
                     },
-                    Tickets = new ViewModels.History<int>
+                    Tickets = new ViewModels.History<int?>
                     {
                         New = m.NewTotalTickets,
                         Old = m.OldTotalTickets
