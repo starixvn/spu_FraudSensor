@@ -821,6 +821,8 @@ select[disabled] {
     font-weight: normal; }
     .table thead th.sub-header {
       background-color: #465262; }
+    .table thead th .new-value {
+      color: #ff8b58; }
   .table tbody tr:first-child td {
     border-top: none; }
   .table tbody tr:hover {
@@ -840,6 +842,11 @@ select[disabled] {
   .table tbody .total {
     background-color: #ffe7cd !important;
     font-weight: bold; }
+  .table tbody .odd-group-db,
+  .table tbody .odd-group-db:hover {
+    background-color: #eaf1fa !important; }
+  .table tbody .new-value {
+    color: #f76617; }
   .table.table-striped tbody tr:nth-of-type(even) {
     background-color: #fafafa; }
   .table .has-icon {

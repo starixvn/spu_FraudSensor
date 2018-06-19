@@ -94,7 +94,7 @@
             { targets: [5, 6, 8], className: "text-right" },
             { targets: [0], width: "5%" },
             { targets: [-2, 2], width: "4%" },
-            { targets: [1, 5, 6, 8], width: "7%" },
+            { targets: [1, 5, 6, 8], width: "8%" },
             { targets: [-1, 3, 4], width: "10%" }
         ],
         columns: [
@@ -112,7 +112,7 @@
         ],
         createdRow: function (row, obj) {
             if (obj.Group % 2 != 0) {
-                $(row).addClass("odd-group");
+                $(row).addClass("odd-group-db");
             }
         }
     });

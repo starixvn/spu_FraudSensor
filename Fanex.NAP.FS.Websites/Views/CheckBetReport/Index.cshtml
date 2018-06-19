@@ -3,18 +3,6 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-@section styles{
-    <style>
-        .new-value {
-            color: coral;
-        }
-
-        .odd-group {
-            background-color: aqua;
-        }
-    </style>
-}
-
 <h1 class="title">CHECK BET REPORT</h1>
 
 <div class="form-filter">
@@ -33,7 +21,7 @@
     <button class="button -export" id="export"><span class="icon-export-excel"></span>Export</button>
 </div>
 
-<table id="ticket-table" class="table table-striped width-100per" style="width: 100%">
+<table id="ticket-table" class="table width-100per">
     <thead>
         <tr>
             <th>Bet ID</th>

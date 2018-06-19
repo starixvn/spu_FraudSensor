@@ -126,71 +126,84 @@
 }
 
 .table {
-  border-collapse: collapse;
-  border-spacing: 0;
+    border-collapse: collapse;
+    border-spacing: 0;
 
-  &.dataTable {
-      border-collapse: collapse !important;
-  }
-
-  thead tr th, tbody tr td {
-    border: 1px solid $table-border;
-    line-height: 20px;
-    padding: 8px 6px;
-    vertical-align: middle;
-  }
-
-  thead th {
-    border-bottom-width: 1px;
-    background-color: $table-header-bg;
-    color: $table-header-color;
-    text-align: center;
-    font-weight: normal;
-
-    &.sub-header {
-      background-color: $table-sub-header-bg;
-    }
-  }
-
-  tbody {
-    tr:first-child td {
-      border-top: none;
+    &.dataTable {
+        border-collapse: collapse !important;
     }
 
-    tr:hover {
-      background-color: $table-td-bg-hover !important;
+    thead tr th, tbody tr td {
+        border: 1px solid $table-border;
+        line-height: 20px;
+        padding: 8px 6px;
+        vertical-align: middle;
     }
 
-    td {
-      color: #545454;
+    thead th {
+        border-bottom-width: 1px;
+        background-color: $table-header-bg;
+        color: $table-header-color;
+        text-align: center;
+        font-weight: normal;
+
+        &.sub-header {
+            background-color: $table-sub-header-bg;
+        }
+
+        .new-value {
+            color: #ff8b58;
+        }
     }
 
-    td.group {
-      background-color: #ccd3dd;
-      font-weight: bold;
-      color: #465262;
-      cursor: pointer;
+    tbody {
+        tr:first-child td {
+            border-top: none;
+        }
+
+        tr:hover {
+            background-color: $table-td-bg-hover !important;
+        }
+
+        td {
+            color: #545454;
+        }
+
+        td.group {
+            background-color: #ccd3dd;
+            font-weight: bold;
+            color: #465262;
+            cursor: pointer;
+        }
+
+        .group [class^="icon"] {
+            float: left;
+            position: relative;
+            top: -1px;
+            margin-right: 4px;
+        }
+
+        .total {
+            background-color: #ffe7cd !important;
+            font-weight: bold;
+        }
+
+        .odd-group-db,
+        .odd-group-db:hover {
+            background-color: #eaf1fa !important;
+        }
+
+        .new-value {
+            color: #f76617;
+        }
     }
 
-    .group [class^="icon"] {
-        float: left;
-        position: relative;
-        top: -1px;
-        margin-right: 4px;
+    &.table-striped {
+        tbody tr:nth-of-type(even) {
+            background-color: $table-col-even-bg;
+        }
     }
-
-    .total {
-        background-color: #ffe7cd !important;
-        font-weight: bold;
-    }
-  }
-
-  &.table-striped {
-    tbody tr:nth-of-type(even) {
-      background-color: $table-col-even-bg;
-    }
-  }
-  //  Icons in table
+    //  Icons in table
     .has-icon {
         line-height: 0;
     }
