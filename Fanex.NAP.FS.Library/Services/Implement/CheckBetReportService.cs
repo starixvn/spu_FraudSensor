@@ -32,8 +32,9 @@ namespace Fanex.NAP.FS.Library.Services.Implement
 
             return data
                 .Select(d => GetTicket(d, groups))
-                .OrderBy(t => t.Group)
-                .ThenBy(t => t.Username);
+                .GroupBy(t => t.Group)
+                .OrderByDescending(g => g.Count())
+                .SelectMany(g => g.OrderBy(t => t.Username).ThenBy(t => t.BetId));
         }
 
         private CheckBetTicket GetTicket(CheckBetHistory history, List<HashSet<int>> groups)
@@ -81,8 +82,8 @@ namespace Fanex.NAP.FS.Library.Services.Implement
                 Bettype = RefData.GetBetTypeName(history.Bettype.ToString(), "en"),
                 Choice = new ViewModels.History<string>
                 {
-                    New = BetListHelper.ExtractStringFromHtml(newChoice.betTeam).Pick(),
-                    Old = BetListHelper.ExtractStringFromHtml(oldChoice.betTeam).Pick()
+                    New = BetListHelper.ExtractStringFromHtml(newChoice.betTeam).Pick() + BetListHelper.ExtractStringFromHtml(newChoice.Handicap) + BetListHelper.ExtractStringFromHtml(newChoice.Score),
+                    Old = BetListHelper.ExtractStringFromHtml(oldChoice.betTeam).Pick() + BetListHelper.ExtractStringFromHtml(oldChoice.Handicap) + BetListHelper.ExtractStringFromHtml(oldChoice.Score)
                 },
                 Creator = history.Creator,
                 Currency = history.Currency,
@@ -135,7 +136,7 @@ namespace Fanex.NAP.FS.Library.Services.Implement
                 }
             }
 
-            return groups.OrderByDescending(g => g.Count);
+            return groups;
         }
 
         private IEnumerable<IEnumerable<int>> GetFPSData(IEnumerable<int> data)

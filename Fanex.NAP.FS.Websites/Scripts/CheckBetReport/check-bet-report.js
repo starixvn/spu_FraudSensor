@@ -61,6 +61,10 @@
         return `${old_value != null ? common.formatGridNumber(old_value) : "-"}<br/><span class='new-value'>${new_value != null ? common.formatGridNumber(new_value) : "-"}</span>`
     }
 
+    var group = null;
+
+    var highlight = false;
+
     from_date.datepicker({
         dateFormat: "M dd, yy",
         changeMonth: true,
@@ -109,9 +113,15 @@
             { data: obj => obj.Creator },
         ],
         createdRow: function (row, obj) {
-            if (obj.Group % 2 != 0) {
+            if (group != null && obj.Group != group) {
+                highlight = !highlight;
+            }
+
+            if (highlight) {
                 $(row).addClass("odd-group-db");
             }
+
+            group = obj.Group;
         }
     });
 

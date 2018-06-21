@@ -16,6 +16,10 @@ namespace Fanex.NAP.FS.Library.ExcelConfig.CheckBetReport
 
         protected override string SheetName => null;
 
+        private bool highLight;
+
+        private int? group = null;
+
         protected override void FillData(IRow row, CheckBetTicket data)
         {
             var idx = 0;
@@ -69,12 +73,16 @@ namespace Fanex.NAP.FS.Library.ExcelConfig.CheckBetReport
 
         protected override IRow GetTemplateRow(ISheet sheet, CheckBetTicket data)
         {
-            if (data == null || data.Group % 2 == 0)
+            if (group != null && group != data.Group)
             {
-                return sheet.GetRow(sheet.LastRowNum - 1);
+                highLight = !highLight;
             }
 
-            return sheet.GetRow(sheet.LastRowNum);
+            var result = highLight ? sheet.GetRow(sheet.LastRowNum) : sheet.GetRow(sheet.LastRowNum - 1);
+
+            group = data.Group;
+
+            return result;
         }
 
         protected override void CleanupTemplate(ISheet sheet)
