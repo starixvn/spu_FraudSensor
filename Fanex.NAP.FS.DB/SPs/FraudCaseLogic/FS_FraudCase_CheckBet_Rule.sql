@@ -86,19 +86,6 @@ BEGIN
 	);
 	CREATE UNIQUE CLUSTERED INDEX IX_tmpCheckBet_TransID_Bettype ON #tmpCheckBet(transid,bettype);
 	
-	IF	OBJECT_ID('tempdb..#tmpMatch') IS NOT NULL
-	BEGIN;
-		DROP TABLE	#tmpMatch
-	END;
-	CREATE TABLE #tmpMatch (
-		matchid				INT, 
-		homeid				INT, 
-		awayid				INT, 
-		matchcode			NVARCHAR(50), 
-		EventType			TINYINT
-	);
-	CREATE UNIQUE CLUSTERED INDEX IX_tmpMatch_matchid_type ON #tmpMatch(matchid, EventType);
-	
 	IF	OBJECT_ID('tempdb..#tmpChangedInfo') IS NOT NULL
 	BEGIN;
 		DROP TABLE	#tmpChangedInfo
@@ -162,6 +149,7 @@ BEGIN
 	BEGIN  
 		SELECT TOP(1) @WinlossDate = WinlossDate FROM #tmpDatesInBettrans WITH(NOLOCK);
 
+		-- Normal Tickets
 		INSERT INTO #tmpChangedTickets (transid, bettype, original_stake)
 		SELECT b.transid, b.bettype,b.stake
 		FROM bodb02.dbo.bettrans bt WITH(NOLOCK) 
@@ -170,7 +158,6 @@ BEGIN
 		WHERE bt.winlostdate = @WinlossDate
 			AND bt.currency NOT IN (20, 27, 28)
 			AND (bt.stake <> b.stake
-				OR (b.status LIKE '%reject%' AND bt.status <> b.status)
 				OR bt.livehomescore <> b.livehomescore
 				OR bt.liveawayscore <> b.liveawayscore
 				OR bt.tpositiontaking <> b.tpositiontaking
@@ -179,7 +166,18 @@ BEGIN
 				OR ((bt.matchid <> b.matchid) AND s.EventType = 2)
 				OR bt.hdp1 <> b.hdp1 
 				OR bt.hdp2 <> b.hdp2
-			);
+				);
+
+		-- Reject Tickets
+		INSERT INTO #tmpChangedTickets (transid, bettype, original_stake)
+		SELECT bt.transid, bt.bettype, bt.stake
+		FROM bodb02.dbo.bettrans bt WITH(NOLOCK) 
+		   INNER JOIN bk.dbo.betsReject b WITH(NOLOCK) ON bt.transid = b.transid        
+		   INNER JOIN #tmpSportbooksBettype s WITH(NOLOCK) ON s.bettype = b.bettype
+		WHERE bt.winlostdate = @WinlossDate
+			AND bt.currency NOT IN (20, 27, 28)
+			AND bt.custid <> 98632
+			AND bt.status <> b.status;
 	
 		-- Cash Out tickets can make stake is reduced (mean bettrans.stake <> bet.stake), must exclude Cash Out ticket is correct	
 		INSERT INTO #tmpCheckBet (transid, bettype, isCashOut, isVoid, custid, matchid, bettrans_stake, bets_stake, isOriginal, isValidTP, isValidOdds, isValidBetteam)
@@ -210,16 +208,16 @@ BEGIN
 			BEGIN
 				INSERT INTO #tmpCheckBet (transid, bettype, isCashOut, bettrans_stake, bets_stake, isOriginal)
 				SELECT b.refno, 
-					-1 AS bettype, 
-					1 AS isCashOut, 
-					bs.stake, 
-					0 as bets_stake, 
-					0 AS isOriginal
+					-1			AS bettype, 
+					1			AS isCashOut, 
+					bs.stake	AS bettrans_stake, 
+					0			AS bets_stake, 
+					0			AS isOriginal
 				FROM bodb02.dbo.bettrans b WITH(NOLOCK)
 					INNER JOIN bk.dbo.bets bs WITH(NOLOCK) ON b.transid = bs.transid
 				WHERE EXISTS (SELECT 1 FROM #tmpCheckBet c WITH(NOLOCK) WHERE b.custid = c.custid AND b.matchid = c.matchid AND b.refno = c.transid AND c.isVoid = 0)
 					AND b.bettype = 911
-					AND b.statusID NOT IN (102)
+					AND b.statusID NOT IN (102);
 			END;
 
 			-- Cash Out tickets are invalid: get stake from bettype 911 which is maked invalid when original ticket is invalid
@@ -244,11 +242,11 @@ BEGIN
 
 				INSERT INTO #tmpCheckBet (transid, bettype, isCashOut, bettrans_stake, bets_stake, isOriginal)
 				SELECT b.refno, 
-					-1 AS bettype,
-					1 AS isCashOut, 
-					bs.stake, 
-					0 as bets_stake, 
-					0 AS isOriginal
+					-1			AS bettype,
+					1			AS isCashOut, 
+					bs.stake	AS bettrans_stake, 
+					0			AS bets_stake, 
+					0			AS isOriginal
 				FROM bodb02.dbo.bettrans b WITH(NOLOCK)
 					INNER JOIN bk.dbo.bets bs WITH(NOLOCK) ON b.transid = bs.transid
 				WHERE EXISTS (SELECT 1 FROM transid t WHERE b.transid = t.transid)
@@ -271,37 +269,6 @@ BEGIN
 				OR MIN(isValidOdds) = 0
 				OR MIN(isValidBetteam) = 0;
 		END;
-
-
-		-- Check data in bets_Translog/betsReject_Translog
-		INSERT INTO #tmpMatch
-		SELECT	matchid,
-				homeid,
-				awayid,
-				matchcode,
-				1 AS EventType
-		FROM bodb02.dbo.match with (NOLOCK) where eventdate = @WinlossDate
-		UNION ALL	
-		SELECT	orid AS matchid,
-				0 AS homeid,
-				teamid AS awayid,
-				matchcode,
-				2 AS EventType
-		FROM bodb02.dbo.outright with (NOLOCK) where eventdate = @WinlossDate
-
-		-- Support Mix Parlay, System Parlay
-		UNION ALL
-		SELECT	9 AS matchid,
-				0 AS homeid,
-				0 AS awayid,
-				'' AS matchcode,
-				0 AS EventType
-		UNION ALL
-		SELECT	29 AS matchid,
-				0 AS homeid,
-				0 AS awayid,
-				'' AS matchcode,
-				0 AS EventType;
 		
 		--Check ticket of sport book, racing, numbergame, virtual sports but Casino, P2P, Live CS, Bingo	
 		INSERT INTO #tmpChangedInfo
@@ -326,21 +293,19 @@ BEGIN
 			'NewPT'				= bt.tpositiontaking,
 			'OldPT'				= b.tpositiontaking,
 			'NewStatus'			= bt.status,
-			'OldStatus'			= b.status
+			'OldStatus'			= ISNULL(r.status, bt.status)
 		FROM bodb02.dbo.bettrans bt WITH(NOLOCK)
 			INNER JOIN bk.dbo.bets b WITH(NOLOCK) ON bt.transid = b.transid
+			INNER JOIN bk.dbo.betsreject r with (nolock) on bt.transid = r.transid
 			INNER JOIN #tmpChangedTickets t WITH(NOLOCK) ON bt.transid = t.transid AND bt.bettype=t.bettype
 			INNER JOIN bodb02.dbo.custinfo c WITH(NOLOCK) ON bt.creator = c.custid		
 			INNER JOIN #tmpSportbooksBettype s WITH(NOLOCK) ON s.bettype = b.bettype;
-			--INNER JOIN #tmpMatch m1 WITH(NOLOCK) ON bt.matchid = m1.matchid AND s.EventType = m1.EventType
-			--INNER JOIN #tmpMatch m2 WITH(NOLOCK) ON b.matchid = m2.matchid AND s.EventType = m1.EventType;
 
 		DELETE FROM #tmpDatesInBettrans WITH(UPDLOCK)
 		WHERE WinlossDate = @WinlossDate;
 
 		TRUNCATE TABLE #tmpChangedTickets;
 		TRUNCATE TABLE #tmpCheckBet;
-		TRUNCATE TABLE #tmpMatch;
 	END;
 
 	----------- STORE -----------
