@@ -157,6 +157,7 @@ BEGIN
 		   INNER JOIN #tmpSportbooksBettype s WITH(NOLOCK) ON s.bettype = b.bettype
 		WHERE bt.winlostdate = @WinlossDate
 			AND bt.currency NOT IN (20, 27, 28)
+			AND bt.transid NOT IN (SELECT DISTINCT TransId FROM dbo.[ChangedTicket] WITH(NOLOCK))
 			AND (bt.stake <> b.stake
 				OR bt.livehomescore <> b.livehomescore
 				OR bt.liveawayscore <> b.liveawayscore
@@ -176,7 +177,8 @@ BEGIN
 		   INNER JOIN #tmpSportbooksBettype s WITH(NOLOCK) ON s.bettype = b.bettype
 		WHERE bt.winlostdate = @WinlossDate
 			AND bt.currency NOT IN (20, 27, 28)
-			AND bt.custid <> 98632
+			AND bt.custid <> 98632			
+			AND bt.transid NOT IN (SELECT DISTINCT TransId FROM dbo.[ChangedTicket] WITH(NOLOCK))
 			AND bt.status <> b.status;
 	
 		-- Cash Out tickets can make stake is reduced (mean bettrans.stake <> bet.stake), must exclude Cash Out ticket is correct	
@@ -296,7 +298,7 @@ BEGIN
 			'OldStatus'			= ISNULL(r.status, bt.status)
 		FROM bodb02.dbo.bettrans bt WITH(NOLOCK)
 			INNER JOIN bk.dbo.bets b WITH(NOLOCK) ON bt.transid = b.transid
-			INNER JOIN bk.dbo.betsreject r with (nolock) on bt.transid = r.transid
+			INNER JOIN bk.dbo.betsreject r with (nolock) ON bt.transid = r.transid
 			INNER JOIN #tmpChangedTickets t WITH(NOLOCK) ON bt.transid = t.transid AND bt.bettype=t.bettype
 			INNER JOIN bodb02.dbo.custinfo c WITH(NOLOCK) ON bt.creator = c.custid		
 			INNER JOIN #tmpSportbooksBettype s WITH(NOLOCK) ON s.bettype = b.bettype;
@@ -309,9 +311,6 @@ BEGIN
 	END;
 
 	----------- STORE -----------
-	DELETE FROM dbo.[ChangedTicket] WITH(ROWLOCK)
-	WHERE TransId IN (SELECT DISTINCT TransId FROM #tmpChangedInfo WITH(NOLOCK));
-
 	INSERT INTO dbo.[ChangedTicket](CategoryId, TransId, CapturedDate, NewValue, OldValue, OldCaptureDate)
 	SELECT 'CategoryId'		= @CategoryStake,
 		'TransId'			= c.TransId,
