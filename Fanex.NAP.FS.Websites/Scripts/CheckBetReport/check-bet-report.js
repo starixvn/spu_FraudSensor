@@ -55,7 +55,7 @@
         }
 
         if (isString) {
-            return `${old_value != null ? old_value : "-"}<br/><span class='new-value'>${new_value != null ? new_value : "-"}</span>`;
+            return `${old_value != null && old_value.length != 0 ? old_value : "-"}<br/><span class='new-value'>${new_value != null && new_value.length != 0 ? new_value : "-"}</span>`;
         }
 
         return `${old_value != null ? common.formatGridNumber(old_value) : "-"}<br/><span class='new-value'>${new_value != null ? common.formatGridNumber(new_value) : "-"}</span>`

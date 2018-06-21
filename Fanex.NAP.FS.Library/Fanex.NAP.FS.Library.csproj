@@ -288,6 +288,7 @@
     <Compile Include="FSMQ\SendingType\SendingType.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\CheckBetReport\CheckBetHistory.cs" />
     <Compile Include="Models\DailyDataCapture\CapturedMatch.cs" />
     <Compile Include="Models\DBResult.cs" />
     <Compile Include="Models\FraudCaseId.cs" />

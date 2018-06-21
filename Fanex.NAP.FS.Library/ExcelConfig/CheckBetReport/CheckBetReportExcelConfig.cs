@@ -43,7 +43,7 @@ namespace Fanex.NAP.FS.Library.ExcelConfig.CheckBetReport
                 .SetValue(row.GetCell(0));
         }
 
-        private XSSFRichTextString RenderDouble(History<double?> history)
+        private XSSFRichTextString RenderDouble(History<decimal?> history)
         {
             if (history.Old == history.New)
             {
