@@ -67,6 +67,8 @@ namespace Fanex.NAP.FS.Library.Services.Implement
                 BetTeam = history.NewBetteam,
                 Handicap1 = history.NewHdp1.GetValueOrDefault(0),
                 Handicap2 = history.NewHdp2.GetValueOrDefault(0),
+                HomeId = history.HomeId,
+                AwayId = history.AwayId,
                 BetTypeId = history.Bettype
             };
 
