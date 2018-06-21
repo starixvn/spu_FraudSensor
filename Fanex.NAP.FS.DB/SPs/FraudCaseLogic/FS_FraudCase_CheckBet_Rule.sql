@@ -125,7 +125,7 @@ BEGIN
 		NewPT				SMALLMONEY, 
 		OldPT				SMALLMONEY,
 		NewStatus			NVARCHAR(10), 
-		OldStatus			NVARCHAR(10),
+		OldStatus			NVARCHAR(10)
 	);
 	CREATE UNIQUE CLUSTERED INDEX IX_tmpChangedInfo_TransId ON #tmpChangedInfo(TransId);
 
@@ -345,7 +345,7 @@ BEGIN
 
 	----------- STORE -----------
 	DELETE FROM dbo.[ChangedTicket] WITH(ROWLOCK)
-	WHERE TransId IN (SELECT DISTINCT TrandId FROM #tmpChangedInfo WITH(NOLOCK));
+	WHERE TransId IN (SELECT DISTINCT TransId FROM #tmpChangedInfo WITH(NOLOCK));
 
 	INSERT INTO dbo.[ChangedTicket](CategoryId, TransId, CapturedDate, NewValue, OldValue, OldCaptureDate)
 	SELECT 'CategoryId'		= @CategoryStake,
