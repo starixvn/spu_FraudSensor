@@ -66,7 +66,6 @@
         changeMonth: true,
         changeYear: true,
         firstDay: 1,
-        minDate: moment(`${moment().year() - 1}/${moment().subtract(10, "months").month()}/1`, "Y/M/D").toDate()
     })
         .datepicker("setDate", new Date())
         .change(restrict_to_date);
@@ -76,7 +75,6 @@
         changeMonth: true,
         changeYear: true,
         firstDay: 1,
-        minDate: moment(`${moment().year() - 1}/${moment().subtract(10, "months").month()}/1`, "Y/M/D").toDate()
     })
         .datepicker("setDate", new Date())
         .change(restrict_from_date);
@@ -91,7 +89,7 @@
         columnDefs: [
             { targets: "_all", defaultContent: "-" },
             { targets: [-2, 1, 2], className: "text-center"},
-            { targets: [5, 6, 8], className: "text-right" },
+            { targets: [5, 8], className: "text-right" },
             { targets: [0], width: "5%" },
             { targets: [-2, 2], width: "4%" },
             { targets: [1, 5, 6, 8], width: "8%" },

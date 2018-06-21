@@ -7,7 +7,7 @@
     [FraudCase(Library.Models.FraudCaseId.CheckBet)]
     public class CheckBetExecutor : FraudCaseExecutor
     {
-        protected CheckBetExecutor(FraudCase fraudCase) : base(fraudCase)
+        public CheckBetExecutor(FraudCase fraudCase) : base(fraudCase)
         {
         }
 

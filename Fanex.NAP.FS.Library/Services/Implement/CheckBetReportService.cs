@@ -79,16 +79,16 @@ namespace Fanex.NAP.FS.Library.Services.Implement
                 Bettype = RefData.GetBetTypeName(history.Bettype.ToString(), "en"),
                 Choice = new ViewModels.History<string>
                 {
-                    New = BetListHelper.ExtractStringFromHtml(newChoice.betTeam),
-                    Old = BetListHelper.ExtractStringFromHtml(oldChoice.betTeam)
+                    New = BetListHelper.ExtractStringFromHtml(newChoice.betTeam).Pick(),
+                    Old = BetListHelper.ExtractStringFromHtml(oldChoice.betTeam).Pick()
                 },
                 Creator = history.Creator,
                 Currency = history.Currency,
                 Group = groups.FindIndex(g => g.Contains(history.CustId)),
                 Odds = new ViewModels.History<string>
                 {
-                    New = $"{history.NewOdds} ({RefData.GetOddsTypeName(history.OddsType.ToString(), "en")})",
-                    Old = $"{history.OldOdds} ({RefData.GetOddsTypeName(history.OddsType.ToString(), "en")})"
+                    New = $"{history.NewOdds.Pick(0).ToString("N2")} ({RefData.GetOddsTypeName(history.OddsType.ToString(), "en")})",
+                    Old = $"{history.OldOdds.Pick(0).ToString("N2")} ({RefData.GetOddsTypeName(history.OddsType.ToString(), "en")})"
                 },
                 PoistionTaking = new ViewModels.History<decimal?>
                 {
