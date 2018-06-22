@@ -124,5 +124,12 @@
 
             return wb.ToBytes();
         }
+
+        protected static byte[] RenderExcelFile<TLegend, TData, TSummary>(string template, FSExcelConfig<TLegend, TData, TSummary> config, TLegend legend, IEnumerable<TData> data, TSummary summary)
+        {
+            return ExcelUtilities.GetWorkbook(template)
+                .RenderSheet(config, legend, data, summary)
+                .ToBytes();
+        }
     }
 }

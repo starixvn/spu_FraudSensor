@@ -54,7 +54,7 @@ namespace Fanex.NAP.FS.Library.Services.Implement
                 HomeId = history.HomeId,
                 AwayId = history.AwayId,
                 BetTypeId = history.Bettype,
-                IsLive = history.LiveIndicator
+                IsLive = true
             };
 
             var newTIcket = new Ticket
@@ -72,7 +72,7 @@ namespace Fanex.NAP.FS.Library.Services.Implement
                 HomeId = history.HomeId,
                 AwayId = history.AwayId,
                 BetTypeId = history.Bettype,
-                IsLive = history.LiveIndicator
+                IsLive = true
             };
 
             var oldChoice = htmlBuilder.BuildChoiceBlock(oldTicket, ticketHelper, null, false);

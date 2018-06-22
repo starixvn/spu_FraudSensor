@@ -1,11 +1,13 @@
 ﻿namespace Fanex.NAP.FS.Websites.Controllers
 {
+    using Fanex.NAP.Core.Web.Attribute;
     using Fanex.NAP.FS.Library.Criteria.CheckBetReport;
     using Fanex.NAP.FS.Library.ExcelConfig.CheckBetReport;
     using Fanex.NAP.FS.Library.Services.Implement;
     using Fanex.NAP.FS.Library.Services.Interface;
     using System.Web.Mvc;
 
+    [NapAuth(FunctionKey = FSFunctionKeys.CheckBetReport, Policy = Core.Business.Constant.Policy.Read)]
     public class CheckBetReportController : ReportsController
     {
         private readonly ICheckBetReportService _service = new CheckBetReportService();

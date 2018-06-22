@@ -18,6 +18,9 @@
     }
 
     function generate_report() {
+        group = null;
+        highlight = false;
+
         var url = common.modifyRelativeUrl("/CheckBetReport/GenerateReport");
 
         common.showLoading();
