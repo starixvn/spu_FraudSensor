@@ -16,6 +16,7 @@ function ReCheckin() {
             }
         },
         error: function () {
+            location.reload();
         }
     });
 }

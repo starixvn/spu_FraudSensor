@@ -143,9 +143,9 @@ namespace Fanex.NAP.FS.Library.Services.Implement
 
         private IEnumerable<IEnumerable<int>> GetFPSData(IEnumerable<int> data)
         {
-            var fpsData = ApiHelper.Post<CustomerList, IEnumerable<CustomerAssociation>>(
+            var fpsData = ApiHelper.Post<string, IEnumerable<CustomerAssociation>>(
                     AppSettings.Get("FPS_WEBAPI_GET_ASSOCIATION_ACCOUNT"),
-                    new CustomerList { CustIdList = data.Join() },
+                    data.Join(), //new CustomerList { CustIdList = data.Join() },
                     int.Parse(ConfigurationManager.AppSettings["Environment"]),
                     int.Parse(ConfigurationManager.AppSettings["MailingListId"])
                 ).Result;
