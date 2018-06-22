@@ -35,14 +35,15 @@ BEGIN
 		@CategoryHdp1				TINYINT,
 		@CategoryHdp2				TINYINT;
 
-	IF	OBJECT_ID('tempdb..#tmpDatesInBettrans') IS NOT NULL
+	IF	OBJECT_ID('tempdb..#tmpMatches') IS NOT NULL
 	BEGIN;
-		DROP TABLE	#tmpDatesInBettrans
+		DROP TABLE	#tmpMatches
 	END;
-	CREATE TABLE #tmpDatesInBettrans(
-		WinlossDate					DATETIME
+	CREATE TABLE #tmpMatches(
+		WinlossDate					DATETIME,
+		MatchId						INT
     );
-	CREATE UNIQUE CLUSTERED INDEX IX_tmpDatesInBettrans_Bettype ON #tmpDatesInBettrans(WinlossDate);
+	CREATE UNIQUE CLUSTERED INDEX IX_tmpMatches_Bettype_MatchId ON #tmpMatches(WinlossDate, MatchId);
 
 	IF	OBJECT_ID('tempdb..#tmpSportbooksBettype') IS NOT NULL
 	BEGIN;
@@ -54,7 +55,7 @@ BEGIN
 		SubProduct			VARCHAR(500)
     );
 	CREATE UNIQUE CLUSTERED INDEX IX_tmpSportbooksBettype_Bettype ON #tmpSportbooksBettype(Bettype);
-
+	
 	IF	OBJECT_ID('tempdb..#tmpChangedTickets') IS NOT NULL
 	BEGIN;
 		DROP TABLE	#tmpChangedTickets
@@ -91,8 +92,20 @@ BEGIN
 		DROP TABLE	#tmpChangedInfo
 	END;
 	CREATE TABLE #tmpChangedInfo (
+		-- General info
 		TransId				BIGINT, 
 		TransDate			DATETIME,
+		CustId				INT,
+		Username			NVARCHAR(50),
+		MatchId				INT,
+		HomeId				INT,
+		AwayId				INT,
+		Bettype				SMALLINT,
+		Oddstype			TINYINT,
+		Currency			NVARCHAR(10),
+		Creator				INT,
+		LiveIndicator		BIT,
+		-- Changed info
 		NewMatchId			INT,
 		OldMatchId			INT, 
 		NewStake			MONEY, 
@@ -129,10 +142,14 @@ BEGIN
 		@CategoryHdp2				= 10,
 		@CapturedDate				= GETDATE();
 
-	INSERT INTO #tmpDatesInBettrans(WinlossDate)
-	SELECT DISTINCT b.winlostdate
-	FROM bodb02.dbo.bettrans b WITH(NOLOCK)
-	ORDER BY b.winlostdate DESC;
+	INSERT INTO #tmpMatches(WinlossDate, MatchId)
+	SELECT DISTINCT m.eventdate, m.matchid
+	FROM bodb02.dbo.match m WITH(NOLOCK)
+	WHERE m.eventstatus = 'completed'
+	UNION
+	SELECT DISTINCT m.eventdate, m.orid
+	FROM bodb02.dbo.outright m WITH(NOLOCK)
+	WHERE m.status IS NOT NULL;
 
 	INSERT INTO #tmpSportbooksBettype(Bettype, EventType, SubProduct)
     SELECT Bettype,
@@ -145,17 +162,18 @@ BEGIN
     WHERE SubProduct IN ( 'BT-Sold','BT-Bought','BT-Comm', 'BT-Winloss', 'MG-SuperLive');
 
 	----------- START -----------
-	WHILE EXISTS(SELECT TOP 1 1 FROM #tmpDatesInBettrans WITH(NOLOCK))
+	WHILE EXISTS(SELECT TOP(1) 1 FROM #tmpMatches WITH(NOLOCK))
 	BEGIN  
-		SELECT TOP(1) @WinlossDate = WinlossDate FROM #tmpDatesInBettrans WITH(NOLOCK);
+		SELECT TOP(1) @WinlossDate = WinlossDate FROM #tmpMatches WITH(NOLOCK);
 
 		-- Normal Tickets
 		INSERT INTO #tmpChangedTickets (transid, bettype, original_stake)
-		SELECT b.transid, b.bettype,b.stake
+		SELECT b.transid, b.bettype, b.stake
 		FROM bodb02.dbo.bettrans bt WITH(NOLOCK) 
 		   INNER JOIN bk.dbo.bets b WITH(NOLOCK) ON bt.transid = b.transid        
 		   INNER JOIN #tmpSportbooksBettype s WITH(NOLOCK) ON s.bettype = b.bettype
-		WHERE bt.winlostdate = @WinlossDate
+		   INNER JOIN #tmpMatches m  WITH(NOLOCK) ON bt.matchid = m.matchid
+		WHERE m.WinlossDate = @WinlossDate
 			AND bt.currency NOT IN (20, 27, 28)
 			AND bt.transid NOT IN (SELECT DISTINCT TransId FROM dbo.[ChangedTicket] WITH(NOLOCK))
 			AND (bt.stake <> b.stake
@@ -175,7 +193,8 @@ BEGIN
 		FROM bodb02.dbo.bettrans bt WITH(NOLOCK) 
 		   INNER JOIN bk.dbo.betsReject b WITH(NOLOCK) ON bt.transid = b.transid        
 		   INNER JOIN #tmpSportbooksBettype s WITH(NOLOCK) ON s.bettype = b.bettype
-		WHERE bt.winlostdate = @WinlossDate
+		   INNER JOIN #tmpMatches m  WITH(NOLOCK) ON bt.matchid = m.matchid
+		WHERE m.WinlossDate = @WinlossDate
 			AND bt.currency NOT IN (20, 27, 28)
 			AND bt.custid <> 98632			
 			AND bt.transid NOT IN (SELECT DISTINCT TransId FROM dbo.[ChangedTicket] WITH(NOLOCK))
@@ -198,15 +217,16 @@ BEGIN
 		FROM bodb02.dbo.bettrans bt WITH(NOLOCK) 
 			INNER JOIN bk.dbo.bets b WITH(NOLOCK) ON bt.transid = b.transid        
 			INNER JOIN #tmpSportbooksBettype s WITH(NOLOCK) ON s.bettype = b.bettype
-		WHERE bt.winlostdate = @WinlossDate
+			INNER JOIN #tmpMatches m  WITH(NOLOCK) ON bt.matchid = m.matchid
+		WHERE m.WinlossDate = @WinlossDate
 			AND bt.currency NOT IN (20, 27, 28)
 			AND CAST(ExtraInfo AS XML).exist('/p25/@s') = 1
 			AND bt.betdaqid = 0;
                 
-		IF EXISTS (SELECT TOP 1 1 FROM #tmpCheckBet WITH(NOLOCK))
+		IF EXISTS (SELECT TOP(1) 1 FROM #tmpCheckBet WITH(NOLOCK))
 		BEGIN
 			-- Cash Out tickets are valid: get stake from valid bettype 911 -- Valid ticket: exclude void
-			IF EXISTS (SELECT TOP 1 1 FROM #tmpCheckBet WITH(NOLOCK) WHERE isVoid = 0)
+			IF EXISTS (SELECT TOP(1) 1 FROM #tmpCheckBet WITH(NOLOCK) WHERE isVoid = 0)
 			BEGIN
 				INSERT INTO #tmpCheckBet (transid, bettype, isCashOut, bettrans_stake, bets_stake, isOriginal)
 				SELECT b.refno, 
@@ -223,7 +243,7 @@ BEGIN
 			END;
 
 			-- Cash Out tickets are invalid: get stake from bettype 911 which is maked invalid when original ticket is invalid
-			IF EXISTS (SELECT TOP 1 1 FROM #tmpCheckBet WITH(NOLOCK) WHERE isVoid = 1)
+			IF EXISTS (SELECT TOP(1) 1 FROM #tmpCheckBet WITH(NOLOCK) WHERE isVoid = 1)
 			BEGIN
 				;WITH betcheck AS (
 					SELECT zb.transid, 
@@ -273,9 +293,52 @@ BEGIN
 		END;
 		
 		--Check ticket of sport book, racing, numbergame, virtual sports but Casino, P2P, Live CS, Bingo	
-		INSERT INTO #tmpChangedInfo
+		INSERT INTO #tmpChangedInfo(
+				TransId
+			,	TransDate
+			,	CustId
+			,	Username
+			,	MatchId
+			,	HomeId
+			,	AwayId
+			,	Bettype
+			,	Oddstype
+			,	Creator
+			,	LiveIndicator
+			,	Currency
+			,	NewMatchId
+			,	OldMatchId
+			,	NewStake
+			,	OldStake
+			,	NewLiveHomeScore
+			,	OldLiveHomeScore
+			,	NewLiveAwayScore
+			,	OldLiveAwayScore
+			,	NewOdds
+			,	OldOdds
+			,	NewBetteam
+			,	OldBetteam
+			,	NewHdp1
+			,	OldHdp1
+			,	NewHdp2
+			,	OldHdp2
+			,	NewPT
+			,	OldPT
+			,	NewStatus
+			,	OldStatus
+		)
 		SELECT  'TransId'		= bt.transid,
 			'TransDate'			= b.transdate,
+			'CustId'			= bt.custid,
+			'Username'			= bt.username,
+			'MatchId'			= bt.matchid,
+			'HomeId'			= 0,
+			'AwayId'			= 0,
+			'Bettype'			= bt.bettype,
+			'Oddstype'			= bt.oddstype,
+			'Creator'			= bt.creator,
+			'LiveIndicator'		= bt.liveindicator,
+			'Currency'			= bt.CurrencyName,
 			'NewMatchId'		= bt.matchid,
 			'OldMatchId'		= b.matchid,
 			'NewStake'			= bt.stake, 
@@ -303,14 +366,22 @@ BEGIN
 			INNER JOIN bodb02.dbo.custinfo c WITH(NOLOCK) ON bt.creator = c.custid		
 			INNER JOIN #tmpSportbooksBettype s WITH(NOLOCK) ON s.bettype = b.bettype;
 
-		DELETE FROM #tmpDatesInBettrans WITH(UPDLOCK)
+		DELETE FROM #tmpMatches WITH(UPDLOCK)
 		WHERE WinlossDate = @WinlossDate;
 
 		TRUNCATE TABLE #tmpChangedTickets;
 		TRUNCATE TABLE #tmpCheckBet;
+		TRUNCATE TABLE #tmpMatch;
 	END;
 
-	----------- STORE -----------
+	----------- STORE GENERAL INFO -----------
+	INSERT INTO dbo.[ChangedTicketGeneralInfo](TransId, TransDate, Currency, Username, Creator, MatchId, HomeId, AwayId, Oddstype, CustId, Bettype, LiveIndicator)
+	SELECT DISTINCT ct.TransId, ct.TransDate, ct.Currency, ct.Username, c.username, ct.MatchId, m.homeid, m.awayid, ct.Oddstype, ct.CustId, ct.Bettype, ct.LiveIndicator
+	FROM #tmpChangedInfo AS ct WITH(NOLOCK)
+		LEFT JOIN bodb02.dbo.match AS m WITH (NOLOCK) ON ct.MatchId = m.matchid		
+		LEFT JOIN bodb02.dbo.Customer c WITH(NOLOCK) ON c.custid = ct.Creator;
+
+	----------- STORE CHANGED INFO -----------
 	INSERT INTO dbo.[ChangedTicket](CategoryId, TransId, CapturedDate, NewValue, OldValue, OldCaptureDate)
 	SELECT 'CategoryId'		= @CategoryStake,
 		'TransId'			= c.TransId,

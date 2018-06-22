@@ -44,5 +44,26 @@ CONSTRAINT [PK_ChangedTicket] PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [DATA]
 ) ON [DATA]
 GO
+
+CREATE TABLE [dbo].[ChangedTicketGeneralInfo](
+	[TransId]				BIGINT NOT NULL,
+	[TransDate]				DATETIME NULL,
+	[CustId]				INT NULL,
+	[Username]				NVARCHAR(50) NULL,
+	[MatchId]				INT NULL,
+	[HomeId]				INT NULL,
+	[AwayId]				INT NULL,
+	[Bettype]				SMALLINT NULL,
+	[Oddstype]				TINYINT NULL,
+	[Currency]				NVARCHAR(50) NULL,
+	[Creator]				NVARCHAR(50) NULL,
+	[LiveIndicator]			BIT NULL,
+CONSTRAINT [PK_ChangedTicketGeneralInfo] PRIMARY KEY CLUSTERED 
+(
+	[TransId]				ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [DATA]
+) ON [DATA]
+GO
+
 ----===================C. ALTER TABLES=========================
 ----===========================================================
