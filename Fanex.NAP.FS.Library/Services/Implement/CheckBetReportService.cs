@@ -53,7 +53,8 @@ namespace Fanex.NAP.FS.Library.Services.Implement
                 Handicap2 = history.OldHdp2.GetValueOrDefault(0),
                 HomeId = history.HomeId,
                 AwayId = history.AwayId,
-                BetTypeId = history.Bettype
+                BetTypeId = history.Bettype,
+                IsLive = history.LiveIndicator
             };
 
             var newTIcket = new Ticket
@@ -70,7 +71,8 @@ namespace Fanex.NAP.FS.Library.Services.Implement
                 Handicap2 = history.NewHdp2.GetValueOrDefault(0),
                 HomeId = history.HomeId,
                 AwayId = history.AwayId,
-                BetTypeId = history.Bettype
+                BetTypeId = history.Bettype,
+                IsLive = history.LiveIndicator
             };
 
             var oldChoice = htmlBuilder.BuildChoiceBlock(oldTicket, ticketHelper, null, false);

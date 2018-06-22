@@ -24,6 +24,8 @@
 
         public int Bettype { get; set; }
 
+        public bool LiveIndicator { get; set; }
+
         public decimal? NewStake { get; set; }
 
         public decimal? OldStake { get; set; }
