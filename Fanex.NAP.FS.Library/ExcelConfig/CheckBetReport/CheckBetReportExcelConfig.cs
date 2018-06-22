@@ -80,7 +80,7 @@ namespace Fanex.NAP.FS.Library.ExcelConfig.CheckBetReport
 
             var result = highLight ? sheet.GetRow(sheet.LastRowNum) : sheet.GetRow(sheet.LastRowNum - 1);
 
-            group = data.Group;
+            group = data?.Group;
 
             return result;
         }
