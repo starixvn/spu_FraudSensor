@@ -22,7 +22,8 @@ BEGIN
 	
 	----------- DECLARE -----------
 	DECLARE @WinlossDate			DATETIME,		
-		@CapturedDate				DATETIME;
+		@CapturedDate				DATETIME,		
+		@FraudCaseID				INT = 3;
 
 	DECLARE @CategoryStake			TINYINT,
 		@CategoryOdds				TINYINT,
@@ -142,6 +143,7 @@ BEGIN
 		@CategoryHdp2				= 10,
 		@CapturedDate				= GETDATE();
 
+	-- Get completed matches to scan
 	INSERT INTO #tmpMatches(WinlossDate, MatchId)
 	SELECT DISTINCT m.eventdate, m.matchid
 	FROM bodb02.dbo.match m WITH(NOLOCK)
@@ -150,6 +152,14 @@ BEGIN
 	SELECT DISTINCT m.eventdate, m.orid
 	FROM bodb02.dbo.outright m WITH(NOLOCK)
 	WHERE m.status IS NOT NULL;
+
+	-- Remove scanned matched
+	DELETE FROM #tmpMatches WITH(ROWLOCK)
+	WHERE MatchId IN (	
+						SELECT DISTINCT sm.MatchId 
+						FROM dbo.CheckBetScannedMatch sm WITH(NOLOCK) 
+						WHERE CAST(sm.ScannedDate AS DATE) = CAST(GETDATE() AS DATE)
+					);
 
 	INSERT INTO #tmpSportbooksBettype(Bettype, EventType, SubProduct)
     SELECT Bettype,
@@ -366,12 +376,12 @@ BEGIN
 			INNER JOIN bodb02.dbo.custinfo c WITH(NOLOCK) ON bt.creator = c.custid		
 			INNER JOIN #tmpSportbooksBettype s WITH(NOLOCK) ON s.bettype = b.bettype;
 
-		DELETE FROM #tmpMatches WITH(UPDLOCK)
+		DELETE FROM #tmpMatches WITH(ROWLOCK)
 		WHERE WinlossDate = @WinlossDate;
 
 		TRUNCATE TABLE #tmpChangedTickets;
 		TRUNCATE TABLE #tmpCheckBet;
-		TRUNCATE TABLE #tmpMatch;
+		TRUNCATE TABLE #tmpMatches;
 	END;
 
 	----------- STORE GENERAL INFO -----------
@@ -380,6 +390,12 @@ BEGIN
 	FROM #tmpChangedInfo AS ct WITH(NOLOCK)
 		LEFT JOIN bodb02.dbo.match AS m WITH (NOLOCK) ON ct.MatchId = m.matchid		
 		LEFT JOIN bodb02.dbo.Customer c WITH(NOLOCK) ON c.custid = ct.Creator;
+
+	INSERT INTO dbo.CheckBetScannedMatch(MatchId, ScannedDate)
+	SELECT DISTINCT
+		'MatchId'					= c.MatchId,
+		'ScannedDate'				= GETDATE()
+	FROM #tmpChangedInfo c WITH(NOLOCK);
 
 	----------- STORE CHANGED INFO -----------
 	INSERT INTO dbo.[ChangedTicket](CategoryId, TransId, CapturedDate, NewValue, OldValue, OldCaptureDate)

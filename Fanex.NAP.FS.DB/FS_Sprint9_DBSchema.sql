@@ -65,5 +65,15 @@ CONSTRAINT [PK_ChangedTicketGeneralInfo] PRIMARY KEY CLUSTERED
 ) ON [DATA]
 GO
 
+CREATE TABLE [dbo].[CheckBetScannedMatch](
+	[MatchId]				INT NOT NULL,
+	[ScannedDate]			DATE NOT NULL,
+ CONSTRAINT [PK_CheckBetScannedMatch] PRIMARY KEY CLUSTERED 
+(
+	[MatchId]				ASC,
+	[ScannedDate]			ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [DATA]
+) ON [DATA]
+GO
 ----===================C. ALTER TABLES=========================
 ----===========================================================
