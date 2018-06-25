@@ -22,8 +22,7 @@ BEGIN
 	
 	----------- DECLARE -----------
 	DECLARE @WinlossDate			DATETIME,		
-		@CapturedDate				DATETIME,		
-		@FraudCaseID				INT = 3;
+		@CapturedDate				DATETIME;
 
 	DECLARE @CategoryStake			TINYINT,
 		@CategoryOdds				TINYINT,
@@ -38,7 +37,7 @@ BEGIN
 
 	IF	OBJECT_ID('tempdb..#tmpMatches') IS NOT NULL
 	BEGIN;
-		DROP TABLE	#tmpMatches
+		DROP TABLE	#tmpMatches;
 	END;
 	CREATE TABLE #tmpMatches(
 		WinlossDate					DATETIME,
@@ -48,7 +47,7 @@ BEGIN
 
 	IF	OBJECT_ID('tempdb..#tmpSportbooksBettype') IS NOT NULL
 	BEGIN;
-		DROP TABLE	#tmpSportbooksBettype
+		DROP TABLE	#tmpSportbooksBettype;
 	END;
 	CREATE TABLE #tmpSportbooksBettype(
 		Bettype				INT,
@@ -59,7 +58,7 @@ BEGIN
 	
 	IF	OBJECT_ID('tempdb..#tmpChangedTickets') IS NOT NULL
 	BEGIN;
-		DROP TABLE	#tmpChangedTickets
+		DROP TABLE	#tmpChangedTickets;
 	END;
     CREATE TABLE #tmpChangedTickets(
 		transid				BIGINT, 
@@ -70,7 +69,7 @@ BEGIN
 
 	IF	OBJECT_ID('tempdb..#tmpCheckBet') IS NOT NULL
 	BEGIN;
-		DROP TABLE	#tmpCheckBet
+		DROP TABLE	#tmpCheckBet;
 	END;
 	CREATE TABLE #tmpCheckBet (
 		transid				BIGINT, 
@@ -90,7 +89,7 @@ BEGIN
 	
 	IF	OBJECT_ID('tempdb..#tmpChangedInfo') IS NOT NULL
 	BEGIN;
-		DROP TABLE	#tmpChangedInfo
+		DROP TABLE	#tmpChangedInfo;
 	END;
 	CREATE TABLE #tmpChangedInfo (
 		-- General info
@@ -267,7 +266,7 @@ BEGIN
 				, transid AS (
 					SELECT transid
 					FROM bodb02.dbo.zzzbettrans zb WITH(NOLOCK)
-					WHERE EXISTS (SELECT 1 FROM betcheck b WHERE zb.custid = b.custid AND zb.matchid = b.matchid AND zb.refno = b.transid AND zb.betcheck = b.betcheck)
+					WHERE EXISTS (SELECT 1 FROM betcheck b WITH(NOLOCK) WHERE zb.custid = b.custid AND zb.matchid = b.matchid AND zb.refno = b.transid AND zb.betcheck = b.betcheck)
 						AND zb.bettype = 911
 					UNION SELECT NULL
 				)
@@ -281,7 +280,7 @@ BEGIN
 					0			AS isOriginal
 				FROM bodb02.dbo.bettrans b WITH(NOLOCK)
 					INNER JOIN bk.dbo.bets bs WITH(NOLOCK) ON b.transid = bs.transid
-				WHERE EXISTS (SELECT 1 FROM transid t WHERE b.transid = t.transid)
+				WHERE EXISTS (SELECT 1 FROM transid t WITH(NOLOCK) WHERE b.transid = t.transid);
 			END;
 	
 			-- Remove all Cash Out tickets from table total

@@ -77,7 +77,7 @@ BEGIN
 			AND ms.HasScanned = 0;
 	
 	--- RETURN MATCH HAS NEW SCORE
-	SELECT  ms.MatchId, *
+	SELECT  ms.MatchId
 	FROM	dbo.MatchScore AS ms WITH (NOLOCK)
 	WHERE	ms.UpdatedDate = @CurrentTime
 			AND ms.HasScanned = 0;			
