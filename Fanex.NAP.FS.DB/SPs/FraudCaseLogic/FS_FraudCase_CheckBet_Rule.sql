@@ -157,7 +157,7 @@ BEGIN
 	WHERE MatchId IN (	
 						SELECT DISTINCT sm.MatchId 
 						FROM dbo.CheckBetScannedMatch sm WITH(NOLOCK) 
-						WHERE CAST(sm.ScannedDate AS DATE) = CAST(GETDATE() AS DATE)
+						WHERE CAST(sm.ScannedDate AS DATE) = CAST(@CapturedDate AS DATE)
 					);
 
 	INSERT INTO #tmpSportbooksBettype(Bettype, EventType, SubProduct)
@@ -393,7 +393,7 @@ BEGIN
 	INSERT INTO dbo.CheckBetScannedMatch(MatchId, ScannedDate)
 	SELECT DISTINCT
 		'MatchId'					= c.MatchId,
-		'ScannedDate'				= GETDATE()
+		'ScannedDate'				= @CapturedDate
 	FROM #tmpChangedInfo c WITH(NOLOCK);
 
 	----------- STORE CHANGED INFO -----------
