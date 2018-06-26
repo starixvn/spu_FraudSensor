@@ -24,7 +24,7 @@ namespace Fanex.NAP.FS.Library.ExcelConfig.CheckBetReport
         {
             var idx = 0;
 
-            row.GetCell(idx++).SetCellValue(data.BetId);
+            row.GetCell(idx++).SetCellValue(data.BetId.ToString());
             row.GetCell(idx++).SetCellValue(DateTime.Parse(data.TransDate));
             row.GetCell(idx++).SetCellValue(data.Currency);
             row.GetCell(idx++).SetCellValue(data.Bettype);
