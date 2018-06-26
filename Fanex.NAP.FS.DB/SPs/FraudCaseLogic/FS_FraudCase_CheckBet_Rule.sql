@@ -389,8 +389,8 @@ BEGIN
 	INSERT INTO dbo.[ChangedTicketGeneralInfo](TransId, TransDate, Currency, Username, Creator, MatchId, HomeId, AwayId, Oddstype, CustId, Bettype, LiveIndicator)
 	SELECT DISTINCT ct.TransId, ct.TransDate, ct.Currency, ct.Username, c.username, ct.MatchId, m.homeid, m.awayid, ct.Oddstype, ct.CustId, ct.Bettype, ct.LiveIndicator
 	FROM #tmpChangedInfo AS ct WITH(NOLOCK)
-		LEFT JOIN bodb02.dbo.match AS m WITH (NOLOCK) ON ct.MatchId = m.matchid		
-		LEFT JOIN bodb02.dbo.Customer c WITH(NOLOCK) ON c.custid = ct.Creator;
+		INNER JOIN bodb02.dbo.match AS m WITH (NOLOCK) ON ct.MatchId = m.matchid		
+		INNER JOIN bodb02.dbo.Customer c WITH(NOLOCK) ON c.custid = ct.Creator;
 
 	INSERT INTO dbo.CheckBetScannedMatch(MatchId, ScannedDate)
 	SELECT DISTINCT
