@@ -150,7 +150,9 @@ BEGIN
 	UNION
 	SELECT DISTINCT m.eventdate, m.orid
 	FROM bodb02.dbo.outright m WITH(NOLOCK)
-	WHERE m.status IS NOT NULL;
+		INNER JOIN bodb02.dbo.League AS l WITH(NOLOCK) ON m.leagueid = l.leagueid
+	WHERE m.status IS NOT NULL
+		AND l.sporttype IN (SELECT DISTINCT sbm.sporttype FROM bodb02.dbo.SportBettypeMatrix AS sbm WITH(NOLOCK));
 
 	-- Remove scanned matched
 	DELETE FROM #tmpMatches WITH(ROWLOCK)
@@ -284,7 +286,7 @@ BEGIN
 			END;
 	
 			-- Remove all Cash Out tickets from table total
-			DELETE #tmpChangedTickets WITH(ROWLOCK)
+			DELETE ct WITH(ROWLOCK)
 			FROM #tmpChangedTickets ct
 				INNER JOIN #tmpCheckBet c WITH(NOLOCK) ON ct.transid = c.transid AND ct.bettype = c.bettype;
 		
