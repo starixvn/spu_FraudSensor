@@ -10,24 +10,29 @@ namespace Fanex.NAP.FS.Library.Core.Helpers
 
         public static string ExtractStringFromHtml(string htmlProp)
         {
-            var match = regex.Match(htmlProp);
-
-            if (match.Success)
+            if (!string.IsNullOrEmpty(htmlProp))
             {
-                try
+                var match = regex.Match(htmlProp);
+
+                if (match.Success)
                 {
-                    return match.Captures.Cast<Capture>()
-                        .Select(c => c.Value.Remove(c.Length - 1, 1).Remove(0, 1))
-                        .Join(" ")
-                        .Replace("&nbsp;", "");
+                    try
+                    {
+                        return match.Captures.Cast<Capture>()
+                            .Select(c => c.Value.Remove(c.Length - 1, 1).Remove(0, 1))
+                            .Join(" ")
+                            .Replace("&nbsp;", "");
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new ArgumentException(htmlProp, ex);
+                    }
                 }
-                catch (Exception ex)
-                {
-                    throw new ArgumentException(htmlProp, ex);
-                }
+
+                return htmlProp.Replace("&nbsp;", ""); 
             }
 
-            return htmlProp.Replace("&nbsp;", "");
+            return htmlProp;
         }
     }
 }
