@@ -172,6 +172,12 @@ BEGIN
     DELETE #tmpSportbooksBettype WITH(ROWLOCK)
     WHERE SubProduct IN ( 'BT-Sold','BT-Bought','BT-Comm', 'BT-Winloss', 'MG-SuperLive');
 
+	INSERT INTO dbo.CheckBetScannedMatch(MatchId, ScannedDate)
+	SELECT DISTINCT
+		'MatchId'					= c.MatchId,
+		'ScannedDate'				= @CapturedDate
+	FROM #tmpMatches c WITH(NOLOCK);
+	
 	----------- START -----------
 	WHILE EXISTS(SELECT TOP(1) 1 FROM #tmpMatches WITH(NOLOCK))
 	BEGIN  
@@ -292,15 +298,16 @@ BEGIN
 		
 			-- Insert Cash Out tickets are incorrect
 			INSERT INTO #tmpChangedTickets (transid, bettype, original_stake)
-			SELECT transid, 
-				MAX(bettype) AS bettype, 
-				SUM(CASE WHEN isOriginal = 1 THEN bets_stake ELSE -bettrans_stake END)  AS original_stake
-			FROM #tmpCheckBet WITH(NOLOCK)
-			GROUP BY transid
-			HAVING SUM(bettrans_stake - bets_stake) <> 0
-				OR MIN(isValidTP) = 0
-				OR MIN(isValidOdds) = 0
-				OR MIN(isValidBetteam) = 0;
+			SELECT cb.transid, 
+				MAX(cb.bettype) AS bettype, 
+				SUM(CASE WHEN cb.isOriginal = 1 THEN cb.bets_stake ELSE -cb.bettrans_stake END)  AS original_stake
+			FROM #tmpCheckBet cb WITH(NOLOCK)
+			WHERE cb.transid NOT IN (SELECT DISTINCT ct.TransId FROM dbo.[ChangedTicket] ct WITH(NOLOCK))
+			GROUP BY cb.transid
+			HAVING SUM(cb.bettrans_stake - cb.bets_stake) <> 0
+				OR MIN(cb.isValidTP) = 0
+				OR MIN(cb.isValidOdds) = 0
+				OR MIN(cb.isValidBetteam) = 0;
 		END;
 		
 		--Check ticket of sport book, racing, numbergame, virtual sports but Casino, P2P, Live CS, Bingo	
@@ -382,7 +389,7 @@ BEGIN
 
 		TRUNCATE TABLE #tmpChangedTickets;
 		TRUNCATE TABLE #tmpCheckBet;
-		TRUNCATE TABLE #tmpMatches;
+
 	END;
 
 	----------- STORE GENERAL INFO -----------
