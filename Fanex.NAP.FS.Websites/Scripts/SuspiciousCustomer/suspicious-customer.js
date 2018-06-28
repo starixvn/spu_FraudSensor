@@ -49,15 +49,14 @@
         changeMonth: true,
         changeYear: true,
         firstDay: 1,
-        minDate: moment(`${moment().year() - 1}/${moment().subtract(10, "months").month()}/1`, "Y/M/D").toDate()
+        minDate: "-1y +1d"
     });
 
     to.datepicker({
         dateFormat: "M dd, yy",
         changeMonth: true,
         changeYear: true,
-        firstDay: 1,
-        minDate: "-1y"
+        firstDay: 1
     });
 
     get_fraud_case();
@@ -258,6 +257,8 @@
         var to_val = to.datepicker("getDate");
 
         from.datepicker("option", "maxDate", to_val);
+
+        from.datepicker("option", "minDate", moment(to_val).add(-1, "y").toDate());
 
         date_type.val(7).change();
     }
