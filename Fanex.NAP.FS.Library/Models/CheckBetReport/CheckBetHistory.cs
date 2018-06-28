@@ -65,5 +65,13 @@
         public decimal? NewHdp2 { get; set; }
 
         public decimal? OldHdp2 { get; set; }
+        public string BetCheck { get; set; }
+        public bool IsNeutral { get; set; }
+        public string TransDesc { get; set; }
+        public decimal OddsSpread { get; set; }
+        public long BetdaqId { get; set; }
+        public string ExtraInfo { get; set; }
+        public object WalletType { get; set; }
+        public string Race { get; set; }
     }
 }

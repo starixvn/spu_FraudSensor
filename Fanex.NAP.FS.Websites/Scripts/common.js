@@ -108,7 +108,7 @@
 
         var noBtn =
             {
-                'class': 'button -primary',
+                'class': 'button -export',
                 text: "No",
                 click: function () {
                     confirmation.dialog("close");

@@ -99,7 +99,7 @@
             { targets: [5, 8], className: "text-right" },
             { targets: [0], width: "5%" },
             { targets: [-2, 2], width: "4%" },
-            { targets: [1, 5, 6, 8], width: "8%" },
+            { targets: [1, 5, 6, 8], width: "6%" },
             { targets: [-1, 3, 4], width: "10%" }
         ],
         columns: [

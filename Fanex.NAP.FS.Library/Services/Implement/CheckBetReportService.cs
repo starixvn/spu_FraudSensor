@@ -1,4 +1,5 @@
 ﻿#pragma warning disable S2325 // Methods and properties that don't access instance data should be static
+#pragma warning disable S3881 // "IDisposable" should be implemented correctly
 
 namespace Fanex.NAP.FS.Library.Services.Implement
 {
@@ -14,15 +15,17 @@ namespace Fanex.NAP.FS.Library.Services.Implement
     using Fanex.NAP.FS.Library.Services.Interface;
     using Fanex.NAP.FS.Library.ViewModels.CheckBetReport;
     using RemotingRef;
+    using System;
     using System.Collections.Generic;
     using System.Configuration;
     using System.Linq;
 
-    public class CheckBetReportService : ICheckBetReportService
+    public class CheckBetReportService : ICheckBetReportService, IDisposable
+
     {
         private readonly TicketHelper ticketHelper = new TicketHelper();
 
-        private readonly BetListHTMLBuilder htmlBuilder = new BetListHTMLBuilder();
+        private readonly BetListExcelBuilder excelBuilder = new BetListExcelBuilder();
 
         public IEnumerable<CheckBetTicket> Generate(CheckBetReportGetCriteria criteria)
         {
@@ -54,6 +57,14 @@ namespace Fanex.NAP.FS.Library.Services.Implement
                 HomeId = history.HomeId,
                 AwayId = history.AwayId,
                 BetTypeId = history.Bettype,
+                BetCheck = history.BetCheck,
+                IsNeutral = history.IsNeutral,
+                TransDate = history.TransDate,
+                TransDesc = history.TransDesc,
+                OddsSpread = history.OddsSpread,
+                BetdaqId = history.BetdaqId,
+                ExtraInfo = history.ExtraInfo,
+                Race = history.Race,
                 IsLive = true
             };
 
@@ -72,11 +83,19 @@ namespace Fanex.NAP.FS.Library.Services.Implement
                 HomeId = history.HomeId,
                 AwayId = history.AwayId,
                 BetTypeId = history.Bettype,
+                BetCheck = history.BetCheck,
+                IsNeutral = history.IsNeutral,
+                TransDate = history.TransDate,
+                TransDesc = history.TransDesc,
+                OddsSpread = history.OddsSpread,
+                BetdaqId = history.BetdaqId,
+                ExtraInfo = history.ExtraInfo,
+                Race = history.Race,
                 IsLive = true
             };
 
-            var oldChoice = htmlBuilder.BuildChoiceBlock(oldTicket, ticketHelper, null, false);
-            var newChoice = htmlBuilder.BuildChoiceBlock(newTIcket, ticketHelper, null, false);
+            var oldChoice = excelBuilder.CreateChoiceBuilder(history.Bettype).Render(oldTicket, ticketHelper, null, false);
+            var newChoice = excelBuilder.CreateChoiceBuilder(history.Bettype).Render(newTIcket, ticketHelper, null, false);
 
             return new CheckBetTicket
             {
@@ -152,7 +171,13 @@ namespace Fanex.NAP.FS.Library.Services.Implement
 
             return data.GroupJoin(fpsData, d => d, d => d.FromCustId, (key, g) => g.Select(d => d.ToCustId).Concat(new[] { key }));
         }
+
+        public void Dispose()
+        {
+            excelBuilder.Dispose();
+        }
     }
 }
 
 #pragma warning restore S2325 // Methods and properties that don't access instance data should be static
+#pragma warning restore S3881 // "IDisposable" should be implemented correctly
