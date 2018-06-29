@@ -842,8 +842,7 @@ select[disabled] {
   .table tbody .total {
     background-color: #ffe7cd !important;
     font-weight: bold; }
-  .table tbody .odd-group-db,
-  .table tbody .odd-group-db:hover {
+  .table tbody .odd-group-db {
     background-color: #eaf1fa !important; }
   .table tbody .new-value {
     color: #f76617; }
