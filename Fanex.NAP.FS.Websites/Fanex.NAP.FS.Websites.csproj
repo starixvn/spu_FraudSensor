@@ -878,7 +878,7 @@
     <None Include="Views\Errors\403.cshtml" />
     <None Include="Views\Errors\404.cshtml" />
     <None Include="Views\Errors\500.cshtml" />
-    <Content Include="Views\UM\UM.html" />
+    <None Include="Views\Errors\UM.cshtml" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -979,6 +979,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Areas\UserLogin\Models\" />
+    <Folder Include="Views\UM\" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
