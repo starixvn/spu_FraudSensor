@@ -182,7 +182,7 @@ BEGIN
 	WHILE EXISTS(SELECT TOP(1) 1 FROM #tmpMatches WITH(NOLOCK))
 	BEGIN  
 		SELECT TOP(1) @WinlossDate = WinlossDate FROM #tmpMatches WITH(NOLOCK);
-
+		
 		-- Normal Tickets
 		INSERT INTO #tmpChangedTickets (transid, bettype, original_stake)
 		SELECT b.transid, b.bettype, b.stake
@@ -304,10 +304,10 @@ BEGIN
 			FROM #tmpCheckBet cb WITH(NOLOCK)
 			WHERE cb.transid NOT IN (SELECT DISTINCT ct.TransId FROM dbo.[ChangedTicket] ct WITH(NOLOCK))
 			GROUP BY cb.transid
-			HAVING SUM(cb.bettrans_stake - cb.bets_stake) <> 0
-				OR MIN(cb.isValidTP) = 0
-				OR MIN(cb.isValidOdds) = 0
-				OR MIN(cb.isValidBetteam) = 0;
+			HAVING SUM(ISNULL(cb.bettrans_stake,0) - ISNULL(cb.bets_stake,0)) <> 0
+				OR MIN(ISNULL(cb.isValidTP,0)) = 0
+				OR MIN(ISNULL(cb.isValidOdds,0)) = 0
+				OR MIN(ISNULL(cb.isValidBetteam,0)) = 0;
 		END;
 		
 		--Check ticket of sport book, racing, numbergame, virtual sports but Casino, P2P, Live CS, Bingo	
@@ -398,12 +398,6 @@ BEGIN
 	FROM #tmpChangedInfo AS ct WITH(NOLOCK)
 		INNER JOIN bodb02.dbo.match AS m WITH (NOLOCK) ON ct.MatchId = m.matchid		
 		INNER JOIN bodb02.dbo.Customer c WITH(NOLOCK) ON c.custid = ct.Creator;
-
-	INSERT INTO dbo.CheckBetScannedMatch(MatchId, ScannedDate)
-	SELECT DISTINCT
-		'MatchId'					= c.MatchId,
-		'ScannedDate'				= @CapturedDate
-	FROM #tmpChangedInfo c WITH(NOLOCK);
 
 	----------- STORE CHANGED INFO -----------
 	INSERT INTO dbo.[ChangedTicket](CategoryId, TransId, CapturedDate, NewValue, OldValue, OldCaptureDate)
