@@ -96,11 +96,13 @@ BEGIN
 
 	-------- REMOVE TODAY's DATA IN CASE ACCIDENTIALLY RUN MORE THAN 1 TIME PER DAY --------
 	DELETE FROM dbo.ChangedMatch WITH(ROWLOCK)
-	WHERE CAST(CapturedDate AS DATE) = @Today;
+	WHERE CapturedDate >= @Today
+		AND CapturedDate < DATEADD(DAY, 1, @Today);
 
 	SELECT @StoredMessageId = m.MessageId
 	FROM dbo.Message AS m WITH(NOLOCK)
-	WHERE CAST(m.LogDate AS DATE) = @Today
+	WHERE m.LogDate >= @Today		
+		AND m.LogDate < DATEADD(DAY, 1, @Today)
 		AND m.FraudCaseId = @CurrentFraudCaseId;
 
 	DELETE FROM dbo.Message WITH(ROWLOCK)

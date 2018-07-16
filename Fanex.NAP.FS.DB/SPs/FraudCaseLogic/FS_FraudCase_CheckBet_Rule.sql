@@ -144,11 +144,11 @@ BEGIN
 
 	-- Get completed matches to scan
 	INSERT INTO #tmpMatches(WinlossDate, MatchId)
-	SELECT DISTINCT m.eventdate, m.matchid
+	SELECT m.eventdate, m.matchid
 	FROM bodb02.dbo.match m WITH(NOLOCK)
 	WHERE m.eventstatus = 'completed'
 	UNION
-	SELECT DISTINCT m.eventdate, m.orid
+	SELECT m.eventdate, m.orid
 	FROM bodb02.dbo.outright m WITH(NOLOCK)
 		INNER JOIN bodb02.dbo.League AS l WITH(NOLOCK) ON m.leagueid = l.leagueid
 	WHERE m.status IS NOT NULL
@@ -192,7 +192,7 @@ BEGIN
 		   INNER JOIN #tmpMatches m  WITH(NOLOCK) ON bt.matchid = m.matchid
 		WHERE m.WinlossDate = @WinlossDate
 			AND bt.currency NOT IN (20, 27, 28)
-			AND bt.transid NOT IN (SELECT DISTINCT TransId FROM dbo.[ChangedTicket] WITH(NOLOCK))
+			AND bt.transid NOT IN (SELECT TransId FROM dbo.[ChangedTicket] WITH(NOLOCK))
 			AND (bt.stake <> b.stake
 				OR bt.livehomescore <> b.livehomescore
 				OR bt.liveawayscore <> b.liveawayscore
@@ -214,7 +214,7 @@ BEGIN
 		WHERE m.WinlossDate = @WinlossDate
 			AND bt.currency NOT IN (20, 27, 28)
 			AND bt.custid <> 98632			
-			AND bt.transid NOT IN (SELECT DISTINCT TransId FROM dbo.[ChangedTicket] WITH(NOLOCK))
+			AND bt.transid NOT IN (SELECT TransId FROM dbo.[ChangedTicket] WITH(NOLOCK))
 			AND bt.status <> b.status;
 	
 		-- Cash Out tickets can make stake is reduced (mean bettrans.stake <> bet.stake), must exclude Cash Out ticket is correct	
@@ -302,7 +302,7 @@ BEGIN
 				MAX(cb.bettype) AS bettype, 
 				SUM(CASE WHEN cb.isOriginal = 1 THEN cb.bets_stake ELSE -cb.bettrans_stake END)  AS original_stake
 			FROM #tmpCheckBet cb WITH(NOLOCK)
-			WHERE cb.transid NOT IN (SELECT DISTINCT ct.TransId FROM dbo.[ChangedTicket] ct WITH(NOLOCK))
+			WHERE cb.transid NOT IN (SELECT ct.TransId FROM dbo.[ChangedTicket] ct WITH(NOLOCK))
 			GROUP BY cb.transid
 			HAVING SUM(ISNULL(cb.bettrans_stake,0) - ISNULL(cb.bets_stake,0)) <> 0
 				OR MIN(ISNULL(cb.isValidTP,0)) = 0
