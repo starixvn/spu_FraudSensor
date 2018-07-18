@@ -23,23 +23,23 @@
 
   <Function Name="OfficeIP">
     <Setting Key="FS_FraudCase_OfficeIP_PreCondition"
-             SpName="FS_FraudCase_OfficeIP_PreCondition"
+             SpName="FS_FraudCase_OfficeIP_PreCondition_xtest"
              DbName="DBFS.FraudSensor.bodbSPUNet"/>
 
     <Setting Key="FS_FraudCase_OfficeIP_Rule"
-         SpName="FS_FraudCase_OfficeIP_Rule"
+         SpName="FS_FraudCase_OfficeIP_Rule_xtest"
          DbName="DBFS.FraudSensor.bodbSPUNet"/>
   </Function>
 
   <Function Name="DailyDataCapture">
     <Setting Key="FS_FraudCase_DailyDataMonitoring_Rule"
-             SpName="FS_FraudCase_DailyDataMonitoring_Rule"
+             SpName="FS_FraudCase_DailyDataMonitoring_Rule_xtest"
              DbName="DBFS.FraudSensor.bodbSPUNet" />
   </Function>
 
   <Function Name="CheckBetReport">
     <Setting Key="FS_FraudCase_CheckBet_Rule"
-             SpName="FS_FraudCase_CheckBet_Rule"
+             SpName="FS_FraudCase_CheckBet_Rule_xtest"
              DbName="DBFS.FraudSensor.bodbSPUNet"/>
   </Function>
 </Functions>
