@@ -1,7 +1,7 @@
-﻿  
+﻿<?xml version="1.0" encoding="utf-8" ?>
+  
   
  
-<?xml version="1.0" encoding="utf-8" ?>
 <Functions>
   <Function Name="Test">
     <Setting Key="FS_Rpt_Test" SpName="FS_Rpt_Test_xtest" DbName="DBFS.FraudSensor.bodbSPUNet" />
@@ -74,5 +74,8 @@
   </Function>
   <Function Name="DailyDataCapture">
     <Setting Key="FS_Rpt_DailyDataMonitoring_Get" SpName="FS_Rpt_DailyDataMonitoring_Get_xtest" DbName="DBFS.FraudSensor.bodbSPUNet" />
+  </Function>
+  <Function Name="CheckBetReport">
+    <Setting Key="FS_Rpt_CheckBet_Get" SpName="FS_Rpt_CheckBet_Get_xtest" DbName="DBFS.FraudSensor.bodbSPUNet" />
   </Function>
 </Functions>

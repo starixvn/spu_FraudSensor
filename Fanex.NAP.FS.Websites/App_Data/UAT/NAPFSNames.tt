@@ -1,4 +1,5 @@
-﻿<#@ template hostspecific="true" language="C#" #>
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<#@ template hostspecific="true" language="C#" #>
 <#@ output extension=".xml" #>
 <#@ assembly name="System.Core" #>
 <#@ assembly name="EnvDTE" #>  
@@ -10,7 +11,6 @@
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Collections.Generic" #>
 <#@ import namespace="System.Xml.Linq" #>
-<?xml version="1.0" encoding="utf-8" ?>
 <#
 	var file = this.Host.TemplateFile;
 	var info = new FileInfo(file);
