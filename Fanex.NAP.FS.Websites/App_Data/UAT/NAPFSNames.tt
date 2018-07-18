@@ -21,7 +21,11 @@
 	foreach(var setting in xml.Descendants("Setting"))
 	{
 		var spName = setting.Attribute("SpName");
-		setting.SetAttributeValue("SpName",spName.Value + "_xtest");
+
+        if(spName.Value != "Age_SelBalanceUpDay")
+        {
+            setting.SetAttributeValue("SpName",spName.Value + "_xtest");
+        }
 	}
 #>
 <#= xml.ToString() #>
