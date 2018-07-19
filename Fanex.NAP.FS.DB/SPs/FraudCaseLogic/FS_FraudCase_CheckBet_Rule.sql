@@ -187,7 +187,7 @@ BEGIN
 		INSERT INTO #tmpChangedTickets (transid, bettype, original_stake)
 		SELECT b.transid, b.bettype, b.stake
 		FROM bodb02.dbo.bettrans bt WITH(NOLOCK) 
-		   INNER JOIN bk.dbo.bets b WITH(NOLOCK) ON bt.transid = b.transid        
+		   INNER JOIN bk.dbo.bets b WITH(NOLOCK) ON bt.transid = b.transid AND bt.MatchID = b.matchid     
 		   INNER JOIN #tmpSportbooksBettype s WITH(NOLOCK) ON s.bettype = b.bettype
 		   INNER JOIN #tmpMatches m  WITH(NOLOCK) ON bt.matchid = m.matchid
 		WHERE m.WinlossDate = @WinlossDate
