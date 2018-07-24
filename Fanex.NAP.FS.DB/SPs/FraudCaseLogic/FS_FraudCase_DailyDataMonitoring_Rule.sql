@@ -184,10 +184,10 @@ BEGIN
 		,	[CapturedDate]				= @CaptureDate
 	FROM #tmpMatchesOldData AS old WITH(NOLOCK)
 		INNER JOIN #tmpMatchesNewData AS new WITH(NOLOCK) ON old.MatchId = new.MatchId
-	WHERE old.TotalCompanyTO <> new.TotalCompanyTO
-		OR old.TotalMasterTO <> new.TotalMasterTO
-		OR old.TotalSuperTO <> new.TotalSuperTO
-		OR old.TotalAgentTO <> new.TotalAgentTO
+	WHERE ABS(old.TotalCompanyTO - new.TotalCompanyTO) > 0.1
+		OR ABS(old.TotalMasterTO - new.TotalMasterTO) > 0.1
+		OR ABS(old.TotalSuperTO - new.TotalSuperTO) > 0.1
+		OR ABS(old.TotalAgentTO - new.TotalAgentTO) > 0.1
 		OR old.TotalTickets <> new.TotalTickets
 		OR old.TotalSettledTickets <> new.TotalSettledTickets
 		OR old.TotalCancelledTickets <> new.TotalCancelledTickets;

@@ -76,7 +76,7 @@ CREATE TABLE [dbo].[UserMessage](
 	[UserMessageId]		INT IDENTITY(1,1) NOT NULL,
 	[UserId]			INT NOT NULL,
 	[MessageId]			INT NOT NULL,
-	[IsViewed]			BIT NOT NULL
+	[IsViewed]			BIT NOT NULL DEFAULT(0)
  CONSTRAINT [PK_UserMessage] PRIMARY KEY CLUSTERED 
 (
 	[UserMessageId] ASC
