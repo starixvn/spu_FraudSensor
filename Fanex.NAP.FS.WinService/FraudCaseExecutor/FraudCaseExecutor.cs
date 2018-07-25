@@ -111,7 +111,7 @@
             var message = "\r\nError: " + exception.Message +
                           "\r\nStackTrace: " + exception.StackTrace;
 
-            Logger.Log.Error(message);
+            Logger.Log.Error(message, exception);
         }
 
         protected virtual void Dispose(bool disposing)
