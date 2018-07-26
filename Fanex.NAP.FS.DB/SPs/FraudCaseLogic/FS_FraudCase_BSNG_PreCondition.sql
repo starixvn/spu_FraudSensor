@@ -40,7 +40,7 @@ BEGIN
 		, TotalScores	TINYINT
 		, HasScanned	BIT
 	);
-	select * from ScannedMatch where FraudCaseId=1
+
 	--- ============1. INSERT NEW MATCH=============================
 	INSERT INTO dbo.MatchScore(MatchId, EventDate, EventStatus, TotalScores, HasScanned, UpdatedDate)
 	SELECT	m.matchid
