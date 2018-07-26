@@ -15,6 +15,7 @@ AS
 	Original:
 
 	Revisions: 
+		- 20180726@Casey.Huynh: Change IP Part Number data type from TinyINT to SMALLINT. Due to IP in Bettrans has Invalid Range '345'
 
 	Param's Explanation (filtered by):
 
@@ -85,7 +86,7 @@ BEGIN
 	FROM	bodb02.dbo.bettrans AS b WITH (NOLOCK)
 			INNER JOIN #tmpMatchInput AS mi WITH (NOLOCK) ON mi.matchid = b.MatchId
 			INNER JOIN #tmpBettype AS bt WITH (NOLOCK) ON b.bettype = bt.Bettype
-			INNER JOIN dbo.OfficeIP AS oi WITH (NOLOCK) ON b.ip LIKE ''+ oi.IPRange +'.%' AND (CAST(PARSENAME(b.ip, 1) AS TINYINT) BETWEEN oi.FromNumber AND oi.ToNumber)
+			INNER JOIN dbo.OfficeIP AS oi WITH (NOLOCK) ON b.ip LIKE ''+ oi.IPRange +'.%' AND (CAST(PARSENAME(b.ip, 1) AS SMALLINT) BETWEEN oi.FromNumber AND oi.ToNumber)
 	WHERE	b.currency NOT IN (20, 27, 28);
 	
 	--===5. INSERT SCANNED MATCH: TABLE "ScannedMatch" (ScannedDate, SuspiciousTicketsCount)===========		
