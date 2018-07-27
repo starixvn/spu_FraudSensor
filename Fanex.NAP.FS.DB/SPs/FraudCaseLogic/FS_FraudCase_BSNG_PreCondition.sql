@@ -19,6 +19,8 @@ AS
 		- 20180605@Casey.Huynh: Enhance SP
 		- 20180726@Casey.Huynh: Enhance SP: GET NEW MATCH for both Completed Match and Running Match if MatchID is not existing in MatchScore table 
 								(remove condition m.EventStatus='Running')
+		- 20180727@John.Ngo: Get new match for both Completed Match and Running Match if MatchId is not existing in MatchScore table
+
 	Param's Explanation (filtered by):  
 */
 BEGIN
@@ -52,7 +54,8 @@ BEGIN
 	FROM	bodb02.dbo.Match AS m WITH(NOLOCK)
 			INNER JOIN bodb02.dbo.league AS l WITH (NOLOCK) ON m.leagueid = l.leagueid
 			LEFT JOIN dbo.MatchScore AS ms WITH(NOLOCK) ON m.matchid = ms.MatchId
-	WHERE	ms.MatchId IS NULL			
+	WHERE	ms.MatchId IS NULL
+			AND (m.eventstatus = 'Running' OR m.eventstatus = 'Completed')			
 			AND m.sporttype = 1
 			AND l.isTest = 0
 			AND m.kickofftime <= @CurrentTime	
