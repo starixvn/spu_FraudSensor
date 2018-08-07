@@ -21,8 +21,9 @@ namespace Fanex.NAP.FS.Library.Services.Implement
     using System.Linq;
 
     public class CheckBetReportService : ICheckBetReportService, IDisposable
-
     {
+        private readonly RemotingRefService refService = new RemotingRefService();
+
         private readonly TicketHelper ticketHelper = new TicketHelper();
 
         private readonly BetListExcelBuilder excelBuilder = new BetListExcelBuilder();
@@ -100,7 +101,7 @@ namespace Fanex.NAP.FS.Library.Services.Implement
             return new CheckBetTicket
             {
                 BetId = history.TransId,
-                Bettype = RefData.GetBetTypeName(history.Bettype.ToString(), "en"),
+                Bettype = refService.GetBetTypeName(history.Bettype.ToString(), "en"),
                 Choice = new ViewModels.History<string>
                 {
                     New = BetListHelper.ExtractStringFromHtml(newChoice.betTeam).Pick() + BetListHelper.ExtractStringFromHtml(newChoice.Handicap) + BetListHelper.ExtractStringFromHtml(newChoice.Score),
@@ -111,8 +112,8 @@ namespace Fanex.NAP.FS.Library.Services.Implement
                 Group = groups.FindIndex(g => g.Contains(history.CustId)),
                 Odds = new ViewModels.History<string>
                 {
-                    New = $"{history.NewOdds.Pick(0).ToString("N2")} ({RefData.GetOddsTypeName(history.OddsType.ToString(), "en")})",
-                    Old = $"{history.OldOdds.Pick(0).ToString("N2")} ({RefData.GetOddsTypeName(history.OddsType.ToString(), "en")})"
+                    New = $"{history.NewOdds.Pick(0).ToString("N2")} ({refService.GetOddsTypeName(history.OddsType.ToString(), "en")})",
+                    Old = $"{history.OldOdds.Pick(0).ToString("N2")} ({refService.GetOddsTypeName(history.OddsType.ToString(), "en")})"
                 },
                 PoistionTaking = new ViewModels.History<decimal?>
                 {

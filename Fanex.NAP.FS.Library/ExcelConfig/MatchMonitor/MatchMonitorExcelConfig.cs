@@ -3,13 +3,15 @@
     using Fanex.NAP.FS.Library.Core.ExportExcel;
     using Fanex.NAP.FS.Library.Criteria.MatchMonitor;
     using Fanex.NAP.FS.Library.ViewModels.MatchMonitor;
+    using Fanex.RemotingRef;
     using NPOI.SS.UserModel;
     using NPOI.XSSF.UserModel;
-    using RemotingRef;
     using System.Collections.Generic;
 
     public class MatchMonitorExcelConfig : FSExcelConfig<MatchGetAllCriteria, Match, object>
     {
+        readonly RemotingRefService refService = new RemotingRefService();
+
         protected override int SheetIndex => 0;
 
         protected override string SheetName => null;
@@ -109,7 +111,7 @@
             WriteLegend(legend0, "Event Date", legend.EventDate.ToString("MMM dd, yyyy"));
             WriteLegend(legend0, "Sport", "Soccer");
             WriteLegend(legend0, "Match Status", legend.MatchStatus);
-            WriteLegend(legend1, "League", legend.LeagueIds.Contains(",") ? "All Leagues" : RefData.GetLeagueName(legend.LeagueIds)[1].ToString());
+            WriteLegend(legend1, "League", legend.LeagueIds.Contains(",") ? "All Leagues" : refService.GetLeagueName(legend.LeagueIds, "en"));
             WriteLegend(legend1, "Verified", legend.IsVerified == null ? "All" : legend.IsVerified.Value ? "Yes" : "No");
             WriteLegend(legend1, "Main Markets Only", legend.IsMainMarket ? "Yes" : "No");
 

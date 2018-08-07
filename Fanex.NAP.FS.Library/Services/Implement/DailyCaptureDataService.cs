@@ -5,19 +5,20 @@
     using Fanex.NAP.FS.Library.Services.Interface;
     using Fanex.NAP.FS.Library.ViewModels.DailyDataMonitor;
     using RemotingRef;
-    using System;
     using System.Collections.Generic;
     using System.Linq;
 
     public class DailyCaptureDataService : IDailyDataCaptureService
     {
+        private readonly RemotingRefService refService = new RemotingRefService();
+
         public IEnumerable<CapturedMatch> GetMatches(DailyDataGetCriteria criteria)
         {
             return DataService.GetData<Models.DailyDataCapture.CapturedMatch>(criteria)
                 .Select(m => new CapturedMatch
                 {
-                    Home = RefData.GetTeamName(m.HomeId.ToString(), "en"),
-                    Away = RefData.GetTeamName(m.AwayId.ToString(), "en"),
+                    Home = refService.GetTeamName(m.HomeId.ToString(), "en"),
+                    Away = refService.GetTeamName(m.AwayId.ToString(), "en"),
                     AgentTO = new ViewModels.History<double?>
                     {
                         New = m.NewTotalAgentTO,

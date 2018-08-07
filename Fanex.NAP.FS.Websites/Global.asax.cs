@@ -4,7 +4,9 @@
     using Fanex.Logging;
     using Fanex.NAP.FS.Library.Core.Helpers.Xml;
     using Fanex.NAP.FS.Library.Core.Utilities;
+    using Fanex.RemotingRef;
     using System;
+    using System.Configuration;
     using System.Data.SqlClient;
     using System.Web;
     using System.Web.Http;
@@ -21,6 +23,10 @@
                 .UseDefaultConnectionStringProvider()
                 .UseDefaultDbSettingProvider(resourcePath: ConfigSettings.GetConfigStringByName("UAT") ?? "~/App_Data", enableWatching: true)
                 .Run();
+
+            RefDataTypeContainer
+                .ConnectTo(new Uri(ConfigurationManager.AppSettings["Fanex.RemotingRef.Service.Url"]))
+                .FromApplication("SPU - Fraud Sensor");
 
             AreaRegistration.RegisterAllAreas();
             WebApiConfig.Register(GlobalConfiguration.Configuration);
