@@ -53,6 +53,8 @@
             zeroRecords: "There's no data"
         }
 
+    $.fn.dataTable.ext.errMode = "none";
+
     var $this = this;
 
     $(document).ajaxError(() => this.showError());
