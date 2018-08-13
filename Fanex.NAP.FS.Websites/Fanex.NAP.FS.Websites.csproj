@@ -800,6 +800,7 @@
     <None Include="Properties\PublishProfiles\FolderProfile2.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <None Include="Scripts\jquery-3.0.0-vsdoc.js" />
+    <Content Include="Scripts\finalize.js" />
     <Content Include="Scripts\FraudCase\daily-data-capture.js" />
     <Content Include="Scripts\FraudCase\delayed-goal.js" />
     <Content Include="Scripts\FraudCase\fraud-case.js" />

@@ -55,6 +55,8 @@
                 "~/Scripts/toast/jquery.toast.js",
                 "~/Scripts/numeral/numeral.min.js",
                 "~/scripts/multiple-select.js"));
+
+            bundles.Add(new ScriptBundle("~/finalize").Include("~/scripts/finalize.js"));
         }
 
         private static void RegisterMatchMonitorBundles(BundleCollection bundles)
