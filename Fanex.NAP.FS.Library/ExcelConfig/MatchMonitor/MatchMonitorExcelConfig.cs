@@ -1,5 +1,6 @@
 ﻿namespace Fanex.NAP.FS.Library.ExcelConfig.MatchMonitor
 {
+    using Fanex.NAP.FS.Library.Core.BaseClasses;
     using Fanex.NAP.FS.Library.Core.ExportExcel;
     using Fanex.NAP.FS.Library.Criteria.MatchMonitor;
     using Fanex.NAP.FS.Library.ViewModels.MatchMonitor;
@@ -10,8 +11,6 @@
 
     public class MatchMonitorExcelConfig : FSExcelConfig<MatchGetAllCriteria, Match, object>
     {
-        readonly RemotingRefService refService = new RemotingRefService();
-
         protected override int SheetIndex => 0;
 
         protected override string SheetName => null;
@@ -111,7 +110,7 @@
             WriteLegend(legend0, "Event Date", legend.EventDate.ToString("MMM dd, yyyy"));
             WriteLegend(legend0, "Sport", "Soccer");
             WriteLegend(legend0, "Match Status", legend.MatchStatus);
-            WriteLegend(legend1, "League", legend.LeagueIds.Contains(",") ? "All Leagues" : refService.GetLeagueName(legend.LeagueIds, "en"));
+            WriteLegend(legend1, "League", legend.LeagueIds.Contains(",") ? "All Leagues" : CachedRef.GetLeagueName(int.Parse(legend.LeagueIds)));
             WriteLegend(legend1, "Verified", legend.IsVerified == null ? "All" : legend.IsVerified.Value ? "Yes" : "No");
             WriteLegend(legend1, "Main Markets Only", legend.IsMainMarket ? "Yes" : "No");
 

@@ -14,8 +14,6 @@
 
     public class ScannedOfficeIpReport : IScannedOfficeIpReportService
     {
-        readonly RemotingRefService refService = new RemotingRefService();
-
         public IEnumerable<TicketDetails> GetTickets(DateTime fromDate, DateTime toDate)
         {
             var html_builder = new BetListHTMLBuilder();
@@ -30,7 +28,7 @@
             return GetRawTickets(fromDate, toDate)
                 .Select(a =>
                 {
-                    var bettype = refService.GetBetTypeName(a.BetTypeId.ToString(), "en");
+                    var bettype = CachedRef.GetBettypeName(a.BetTypeId);
 
                     return new TicketDetails
                     {
@@ -38,7 +36,7 @@
                         TransDate = a.TransDate.ToString("MMM dd, yyyy hh:mm:ss tt"),
                         BetID = a.TransId.ToString(),
                         IP = a.IP,
-                        Odds = new OddsDetails { Value = (double)a.Odds, Type = refService.GetOddsTypeName(a.OddsType, "en"), Html = html_builder.BuildOdds(a, null, CacheRef.GetOddsTypeName) },
+                        Odds = new OddsDetails { Value = (double)a.Odds, Type = CachedRef.GetOddsTypeName(a.OddsType), Html = html_builder.BuildOdds(a, null, CacheRef.GetOddsTypeName) },
                         Score = string.Format("{0}-{1}", a.LiveHomeScore, a.LiveAwayScore),
                         Stake = a.Stake,
                         Status = a.Status,

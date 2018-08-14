@@ -10,15 +10,13 @@
 
     public class DailyCaptureDataService : IDailyDataCaptureService
     {
-        private readonly RemotingRefService refService = new RemotingRefService();
-
         public IEnumerable<CapturedMatch> GetMatches(DailyDataGetCriteria criteria)
         {
             return DataService.GetData<Models.DailyDataCapture.CapturedMatch>(criteria)
                 .Select(m => new CapturedMatch
                 {
-                    Home = refService.GetTeamName(m.HomeId.ToString(), "en"),
-                    Away = refService.GetTeamName(m.AwayId.ToString(), "en"),
+                    Home = CachedRef.GetTeamName(m.HomeId),
+                    Away = CachedRef.GetTeamName(m.AwayId),
                     AgentTO = new ViewModels.History<double?>
                     {
                         New = m.NewTotalAgentTO,

@@ -22,8 +22,6 @@
 
     public class FraudCaseDetailsService : IFraudCaseDetailsService
     {
-        readonly RemotingRefService refService = new RemotingRefService();
-
         public int environment { get; set; }
 
         public int mailingListId { get; set; }
@@ -60,7 +58,7 @@
                     a.HomeId = legend.HomeId;
                     a.AwayId = legend.AwayId;
 
-                    var bettype = refService.GetBetTypeName(a.BetTypeId.ToString(), "en");
+                    var bettype = CachedRef.GetBettypeName(a.BetTypeId, "en");
 
                     var grouped_bettype = GetOrder(bettype) != BettypeOrder.Other ? bettype : "Others";
 
@@ -71,7 +69,7 @@
                         TransDate = a.TransDate.ToString("MMM dd, yyyy hh:mm:ss tt"),
                         BetID = a.TransId.ToString(),
                         IP = a.IP,
-                        Odds = new OddsDetails { Value = (double)a.Odds, Type = refService.GetOddsTypeName(a.OddsType, "en"), Html = html_builder.BuildOdds(a, null, CacheRef.GetOddsTypeName) },
+                        Odds = new OddsDetails { Value = (double)a.Odds, Type = CachedRef.GetOddsTypeName(int.Parse(a.OddsType)), Html = html_builder.BuildOdds(a, null, CacheRef.GetOddsTypeName) },
                         Score = string.Format("{0}-{1}", a.LiveHomeScore, a.LiveAwayScore),
                         Stake = a.Stake,
                         Status = a.Status,
@@ -156,11 +154,11 @@
 
                     Logger.Log.Debug($"finish reading db - homeid: {info.HomeId} - awayid: {info.AwayId}");
 
-                    var home = refService.GetTeamName(info.HomeId.ToString(), "en");
+                    var home = CachedRef.GetTeamName(info.HomeId);
 
                     Logger.Log.Debug("read home from refdata");
 
-                    var away = refService.GetTeamName(info.AwayId.ToString(), "en");
+                    var away = CachedRef.GetTeamName(info.AwayId);
 
                     Logger.Log.Debug("read away from refdata");
 
@@ -202,7 +200,7 @@
                 .OrderBy(a => a.TransId)
                 .Select(a =>
                 {
-                    var bettype = refService.GetBetTypeName(a.BetTypeId.ToString(), "en");
+                    var bettype = CachedRef.GetBettypeName(a.BetTypeId);
 
                     var grouped_bettype = GetOrder(bettype) != BettypeOrder.Other ? bettype : "Others";
 
@@ -213,7 +211,7 @@
                         TransDate = a.TransDate.ToString("MMM dd, yyyy hh:mm:ss tt"),
                         BetID = a.TransId.ToString(),
                         IP = a.IP,
-                        Odds = new OddsDetails { Value = (double)a.Odds, Type = refService.GetOddsTypeName(a.OddsType, "en"), Html = html_builder.BuildOdds(a, null, CacheRef.GetOddsTypeName) },
+                        Odds = new OddsDetails { Value = (double)a.Odds, Type = CachedRef.GetOddsTypeName(int.Parse(a.OddsType)), Html = html_builder.BuildOdds(a, null, CacheRef.GetOddsTypeName) },
                         Score = string.Format("{0}-{1}", a.LiveHomeScore, a.LiveAwayScore),
                         Stake = a.Stake,
                         Status = a.Status,
@@ -308,7 +306,7 @@
                 .ThenBy(t => t.TransDate)
                 .Select(a =>
                 {
-                    var bettype = refService.GetBetTypeName(a.BetTypeId.ToString(), "en");
+                    var bettype = CachedRef.GetBettypeName(a.BetTypeId);
 
                     var grouped_bettype = GetOrder(bettype) != BettypeOrder.Other ? bettype : "Others";
 
@@ -319,7 +317,7 @@
                         TransDate = a.TransDate.ToString("MMM dd, yyyy hh:mm:ss tt"),
                         BetID = a.TransId.ToString(),
                         IP = a.IP,
-                        Odds = new OddsDetails { Value = (double)a.Odds, Type = refService.GetOddsTypeName(a.OddsType, "en"), Html = html_builder.BuildOdds(a, null, CacheRef.GetOddsTypeName) },
+                        Odds = new OddsDetails { Value = (double)a.Odds, Type = CachedRef.GetOddsTypeName(int.Parse(a.OddsType)), Html = html_builder.BuildOdds(a, null, CacheRef.GetOddsTypeName) },
                         Score = string.Format("{0}-{1}", a.LiveHomeScore, a.LiveAwayScore),
                         Stake = a.Stake,
                         Status = a.Status,

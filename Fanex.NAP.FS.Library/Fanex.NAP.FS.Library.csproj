@@ -201,6 +201,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\BaseClasses\CachedRef.cs" />
     <Compile Include="Core\BaseClasses\DataService.cs" />
     <Compile Include="Core\BaseClasses\FraudCaseAttribute.cs" />
     <Compile Include="Core\ExportExcel\ExcelUtilities.cs" />

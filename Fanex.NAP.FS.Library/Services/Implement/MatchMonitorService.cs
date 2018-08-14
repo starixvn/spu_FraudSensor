@@ -15,8 +15,6 @@
 
     public class MatchMonitorService : IMatchMonitorService
     {
-        readonly RemotingRefService refService = new RemotingRefService();
-
         public MatchList GetMatches(MatchGetAllCriteria criteria)
         {
             using (var db = new ObjectDb(criteria.GetSettingKey()))
@@ -74,8 +72,8 @@
         public Match GetMatch(Library.Models.MatchMonitor.Match match, IEnumerable<Library.Models.MatchMonitor.FraudCase> fraudCases)
         {
             var userService = new Core.Service.Impl.UserService();
-            var homeName = refService.GetTeamName(match.HomeId.ToString(), "en");
-            var awayName = refService.GetTeamName(match.AwayId.ToString(), "en");
+            var homeName = CachedRef.GetTeamName(match.HomeId);
+            var awayName = CachedRef.GetTeamName(match.AwayId);
 
             return new Match
             {

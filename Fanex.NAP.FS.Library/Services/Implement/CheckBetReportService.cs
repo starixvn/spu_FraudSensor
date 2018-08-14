@@ -22,7 +22,6 @@ namespace Fanex.NAP.FS.Library.Services.Implement
 
     public class CheckBetReportService : ICheckBetReportService, IDisposable
     {
-        private readonly RemotingRefService refService = new RemotingRefService();
 
         private readonly TicketHelper ticketHelper = new TicketHelper();
 
@@ -101,7 +100,7 @@ namespace Fanex.NAP.FS.Library.Services.Implement
             return new CheckBetTicket
             {
                 BetId = history.TransId,
-                Bettype = refService.GetBetTypeName(history.Bettype.ToString(), "en"),
+                Bettype = CachedRef.GetBettypeName(history.Bettype),
                 Choice = new ViewModels.History<string>
                 {
                     New = BetListHelper.ExtractStringFromHtml(newChoice.betTeam).Pick() + BetListHelper.ExtractStringFromHtml(newChoice.Handicap) + BetListHelper.ExtractStringFromHtml(newChoice.Score),
@@ -112,8 +111,8 @@ namespace Fanex.NAP.FS.Library.Services.Implement
                 Group = groups.FindIndex(g => g.Contains(history.CustId)),
                 Odds = new ViewModels.History<string>
                 {
-                    New = $"{history.NewOdds.Pick(0).ToString("N2")} ({refService.GetOddsTypeName(history.OddsType.ToString(), "en")})",
-                    Old = $"{history.OldOdds.Pick(0).ToString("N2")} ({refService.GetOddsTypeName(history.OddsType.ToString(), "en")})"
+                    New = $"{history.NewOdds.Pick(0).ToString("N2")} ({CachedRef.GetOddsTypeName(history.OddsType)})",
+                    Old = $"{history.OldOdds.Pick(0).ToString("N2")} ({CachedRef.GetOddsTypeName(history.OddsType)})"
                 },
                 PoistionTaking = new ViewModels.History<decimal?>
                 {

@@ -20,8 +20,6 @@
 
     public class SuspiciousCustomerReportDetailsService : ISuspiciousCustomerReportDetailsService
     {
-        readonly RemotingRefService refService = new RemotingRefService();
-
         #region Customer Info
 
         public string GetAssignee(int custId)
@@ -196,7 +194,7 @@
                             var obj = new TicketDetails
                             {
                                 BetID = t.TransId.ToString(),
-                                Bettype = refService.GetBetTypeName(t.BetTypeId.ToString(), "en"),
+                                Bettype = CachedRef.GetBettypeName(t.BetTypeId),
                                 CurrencyName = t.CurrencyName,
                                 Choice = html_builder.BuildChoice(t, ticketHelper, null, false),
                                 IP = t.IP,
