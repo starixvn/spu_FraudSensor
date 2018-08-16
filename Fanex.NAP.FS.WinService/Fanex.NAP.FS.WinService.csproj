@@ -192,11 +192,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="Fanex.NAP.FS.WinService.exe.LOCAL.config" />
+    <None Include="Fanex.NAP.FS.WinService.exe.LOCAL.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Fanex.NAP.FS.WinService.exe.PRO.config">
       <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Fanex.NAP.FS.WinService.exe.UAT.config" />
+    <None Include="Fanex.NAP.FS.WinService.exe.UAT.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Fanex.NAP.FS.WinService.ruleset" />
     <None Include="job_scheduling_data_2_0.xsd">
       <SubType>Designer</SubType>
@@ -221,11 +226,25 @@
     <Content Include="App_Data\NAPFSNames.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="App_Data\UAT\NAPFSNames.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>NAPFSNames.xml</LastGenOutput>
+    </Content>
+    <Content Include="App_Data\UAT\NAPFSNames.xml">
+      <DependentUpon>NAPFSNames.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <DesignTime>True</DesignTime>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="ProjectInstaller.resx">
       <DependentUpon>ProjectInstaller.cs</DependentUpon>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
