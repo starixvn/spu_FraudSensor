@@ -155,16 +155,19 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Executor\BetsNearGoalExecutor.cs" />
-    <Compile Include="Executor\BigStakeNearGoalExecutor.cs" />
-    <Compile Include="Executor\CheckBetExecutor.cs" />
-    <Compile Include="Executor\DailyDataCaptureExecutor.cs" />
-    <Compile Include="Executor\DelayGoalExecutor.cs" />
-    <Compile Include="Executor\FlaggedAccountExecutor.cs" />
-    <Compile Include="Executor\FraudCaseExecutor.cs" />
-    <Compile Include="Executor\GhostExecutor.cs" />
-    <Compile Include="Executor\ScannedOfficeIPExecutor.cs" />
-    <Compile Include="FraudCaseManager.cs" />
+    <Compile Include="FraudCaseExecutor\ArbitrageExecutor.cs" />
+    <Compile Include="FraudCaseExecutor\BetsNearGoalExecutor.cs" />
+    <Compile Include="FraudCaseExecutor\CheckBetExecutor.cs" />
+    <Compile Include="FraudCaseExecutor\DailyDataCaptureExecutor.cs" />
+    <Compile Include="FraudCaseExecutor\FPSGetAssociationAccountExecutor.cs" />
+    <Compile Include="FraudCaseExecutor\DelayGoalExecutor.cs" />
+    <Compile Include="FraudCaseExecutor\GhostExecutor.cs" />
+    <Compile Include="FraudCaseExecutor\FlaggedAccountExecutor.cs" />
+    <Compile Include="FraudCaseExecutor\BigStakeNearGoalExecutor.cs" />
+    <Compile Include="FraudCaseExecutor\ScannedOfficeIPExecutor.cs" />
+    <Compile Include="FraudCaseFactory\FraudCaseFactory.cs" />
+    <Compile Include="FraudCaseManager\FraudCaseManager.cs" />
+    <Compile Include="FraudCaseManager\IFraudCaseManager.cs" />
     <Compile Include="FraudSensorService.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -172,13 +175,10 @@
       <DependentUpon>FraudSensorService.cs</DependentUpon>
     </Compile>
     <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="IFraudCaseExecutor.cs" />
-    <Compile Include="IFraudCaseManager.cs" />
-    <Compile Include="IMessager.cs" />
     <Compile Include="MessageQueue\IMessageQueueReceiver.cs" />
+    <Compile Include="MessageQueue\IReceivingMessageHandler.cs" />
     <Compile Include="MessageQueue\MessageQueueReceiver.cs" />
-    <Compile Include="Messager.cs" />
-    <Compile Include="MessageType.cs" />
+    <Compile Include="MessageQueue\ReceivedMessageHandler.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="ProjectInstaller.cs">
       <SubType>Component</SubType>
@@ -187,6 +187,10 @@
       <DependentUpon>ProjectInstaller.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="FraudCaseExecutor\IFraudCaseExecutor.cs" />
+    <Compile Include="FraudCaseExecutor\FraudCaseExecutor.cs" />
+    <Compile Include="FraudCaseLoader\IFraudCaseLoader.cs" />
+    <Compile Include="FraudCaseLoader\FraudCaseLoader.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

@@ -47,4 +47,18 @@
              SpName="FS_FraudCase_CheckBet_Rule"
              DbName="DBFS.FraudSensor.bodbSPUNet"/>
   </Function>
+
+  <Function Name="Arbitrage">
+    <Setting Key="FS_FraudCase_Arbitrage_PreCondition"
+             SpName="FS_FraudCase_Arbitrage_PreCondition_xtest"
+             DbName="DBFS.FraudSensor.bodbSPUNet"/>
+
+    <Setting Key="FS_FraudCase_Arbitrage_PreRule"
+         SpName="FS_FraudCase_Arbitrage_PreRule_xtest"
+         DbName="DBFS.FraudSensor.bodbSPUNet"/>
+
+    <Setting Key="FS_FraudCase_Arbitrage_Rule"
+         SpName="FS_FraudCase_Arbitrage_Rule_xtest"
+         DbName="DBFS.FraudSensor.bodbSPUNet"/>
+  </Function>
 </Functions>

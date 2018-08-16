@@ -1,4 +1,5 @@
-﻿@model Fanex.NAP.FS.Library.ViewModels.MatchMonitor.FraudCaseDetails.MatchFraudCaseInfo
+﻿@using Fanex.NAP.FS.Library.Models;
+@model Fanex.NAP.FS.Library.ViewModels.MatchMonitor.FraudCaseDetails.MatchFraudCaseInfo
 
 @{
     ViewBag.Title = "FRAUD CASE DETAILS";
@@ -35,7 +36,7 @@
 
     <button class="button -export export-in-tabs"><span class="icon-export-excel"></span>Export</button>
 
-    @Html.Partial("FraudCaseDetails/TicketDetails")
+    @Html.Partial("FraudCaseDetails/TicketDetails", Model)
 
     @Html.Partial("FraudCaseDetails/CustomerDetails")
 </div>
@@ -50,6 +51,8 @@
             };
 
         var bu_date = "@ViewBag.BUDate.ToString("MMM dd, yyyy")";
+
+        var isArbitrage = @(Convert.ToInt32((FraudCaseId)Model.FraudCaseId == FraudCaseId.Arbitrage))
     </script>
 
     @Scripts.Render("~/scripts/match-monitor/fraud-case-details")

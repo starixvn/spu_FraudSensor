@@ -144,7 +144,24 @@
 
                     break;
 
-                case Models.FraudCaseId.BetsNearGoal:
+                case Models.FraudCaseId.Arbitrage:
+                    result.MatchRules = new[]
+                    {
+                        "Sport = Soccer",
+                        "Match = In-Play"
+                    };
+
+                    result.TicketRules = new[]
+                    {
+                        "Bet type = HDP, OU, 1H HDP, 1H OU",
+                        "Customer/Group bet on both sides",
+                        "Total stake of each side >= 500RM",
+                        "Currency <> UUS, H, C"
+                    };
+
+                    break;
+
+		case Models.FraudCaseId.BetsNearGoal:
                     result.MatchRules = new[]
                     {
                         "Sport = Soccer",
@@ -161,7 +178,7 @@
                         "Ticket Status =  WON",
                         "Violation time + 1 for one match/score"
                     };
-
+	
                     break;
 
                 default:

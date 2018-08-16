@@ -8,6 +8,7 @@
         ScannedOfficeIP = 2,
         DailyDataCapture = 4,
         CheckBet =  3,
+        Arbitrage = 10,
         BetsNearGoal = 11
     }
 }

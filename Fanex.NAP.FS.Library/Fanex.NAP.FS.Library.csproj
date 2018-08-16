@@ -239,6 +239,7 @@
     <Compile Include="Criteria\FraudCase\UpdateFraudCaseStatusCriteria.cs" />
     <Compile Include="Criteria\FraudSensorTask\BetsNearGoalPreconditionCriteria.cs" />
     <Compile Include="Criteria\FraudSensorTask\BetsNearGoalRuleCriteria.cs" />
+    <Compile Include="Criteria\FraudSensorTask\ArbitragePreRuleCriteria.cs" />
     <Compile Include="Criteria\FraudSensorTask\CheckBetRuleCriteria.cs" />
     <Compile Include="Criteria\FraudSensorTask\DailyDataCaptureRuleCriteria.cs" />
     <Compile Include="Criteria\FraudSensorTask\DelayGoalPreconditionCriteria.cs" />
@@ -326,6 +327,7 @@
     <Compile Include="Models\DailyDataCapture\CapturedMatch.cs" />
     <Compile Include="Models\DBResult.cs" />
     <Compile Include="Models\FraudCaseId.cs" />
+    <Compile Include="Models\FraudCaseTask\ArbitrageMatch.cs" />
     <Compile Include="Models\FraudCase\DelayedGoal\Customer.cs" />
     <Compile Include="Models\FraudCase\FlaggedAccount\FlaggedCustomer.cs" />
     <Compile Include="Models\FraudCase\FraudCase.cs" />
@@ -391,6 +393,8 @@
     <Compile Include="ViewModels\History.cs" />
     <Compile Include="ViewModels\MatchMonitor\Event.cs" />
     <Compile Include="ViewModels\MatchMonitor\FraudCase.cs" />
+    <Compile Include="ViewModels\MatchMonitor\FraudCaseDetails\ArbitrageStake.cs" />
+    <Compile Include="ViewModels\MatchMonitor\FraudCaseDetails\ArbitrageTicket.cs" />
     <Compile Include="ViewModels\MatchMonitor\FraudCaseDetails\AssociatedCustomer.cs" />
     <Compile Include="ViewModels\MatchMonitor\FraudCaseDetails\BettypeOrder.cs" />
     <Compile Include="ViewModels\MatchMonitor\FraudCaseDetails\CustomerDetails.cs" />
@@ -406,6 +410,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Core\Configurations\" />
+    <Folder Include="Core\Extensions\" />
     <Folder Include="DataAccess\" />
   </ItemGroup>
   <ItemGroup>
