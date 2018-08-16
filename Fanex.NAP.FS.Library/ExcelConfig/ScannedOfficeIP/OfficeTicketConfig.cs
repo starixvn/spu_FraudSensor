@@ -73,7 +73,7 @@ namespace Fanex.NAP.FS.Library.ExcelConfig.ScannedOfficeIP
 
         private void RenderOdds(ICell cell, TicketInfo data)
         {
-            var template = excelBuilder.CreateOddsBuilder(data.BetTypeId).Render(data, null, CacheRef.GetOddsTypeName);
+            var template = excelBuilder.CreateOddsBuilder(data.BetTypeId).Render(data, null, ticketHelper.GetOddsTypeNameById);
 
             var odds = template.odds.Contains(">") ? BetListHelper.ExtractStringFromHtml(template.odds) : template.odds;
 

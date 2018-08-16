@@ -36,7 +36,7 @@
                         TransDate = a.TransDate.ToString("MMM dd, yyyy hh:mm:ss tt"),
                         BetID = a.TransId.ToString(),
                         IP = a.IP,
-                        Odds = new OddsDetails { Value = (double)a.Odds, Type = CachedRef.GetOddsTypeName(a.OddsType), Html = html_builder.BuildOdds(a, null, CacheRef.GetOddsTypeName) },
+                        Odds = new OddsDetails { Value = (double)a.Odds, Type = CachedRef.GetOddsTypeName(a.OddsType), Html = html_builder.BuildOdds(a, null, ticketHelper.GetOddsTypeNameById) },
                         Score = string.Format("{0}-{1}", a.LiveHomeScore, a.LiveAwayScore),
                         Stake = a.Stake,
                         Status = a.Status,

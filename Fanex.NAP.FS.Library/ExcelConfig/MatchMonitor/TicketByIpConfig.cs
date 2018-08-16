@@ -10,6 +10,7 @@ namespace Fanex.NAP.FS.Library.ExcelConfig.MatchMonitor
     using NPOI.SS.UserModel;
     using NPOI.XSSF.UserModel;
     using System;
+    using BetList.Core.Entities;
 
     public sealed class TicketByIpConfig : FSExcelConfig<object, TicketInfo, object>, IDisposable
     {
@@ -91,7 +92,7 @@ namespace Fanex.NAP.FS.Library.ExcelConfig.MatchMonitor
 
         private void RenderOdds(ICell cell, TicketInfo data)
         {
-            var template = excelBuilder.CreateOddsBuilder(data.BetTypeId).Render(data, null, CacheRef.GetOddsTypeName);
+            var template = excelBuilder.CreateOddsBuilder(data.BetTypeId).Render(data, null, ticketHelper.GetOddsTypeNameById);
 
             var odds = template.odds.Contains(">") ? BetListHelper.ExtractStringFromHtml(template.odds) : template.odds;
 

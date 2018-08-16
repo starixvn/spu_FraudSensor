@@ -13,7 +13,6 @@
     using Models;
     using Models.SuspiciousCustomer;
     using Models.SuspiciousInfo;
-    using RemotingRef;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -198,7 +197,7 @@
                                 CurrencyName = t.CurrencyName,
                                 Choice = html_builder.BuildChoice(t, ticketHelper, null, false),
                                 IP = t.IP,
-                                Odds = html_builder.BuildOdds(t, null, CacheRef.GetOddsTypeName),
+                                Odds = html_builder.BuildOdds(t, null, ticketHelper.GetOddsTypeNameById),
                                 Result = new ViewModels.MatchMonitor.FraudCaseDetails.Result
                                 {
                                     FinalAwayScore = t.FinalAwayScore,

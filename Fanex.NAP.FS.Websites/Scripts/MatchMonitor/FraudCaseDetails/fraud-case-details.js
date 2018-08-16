@@ -12,6 +12,10 @@
 
     var totalTicket = 0;
 
+    var ticketLoad = false;
+
+    var customerLoad = false; 
+
     function load_ticket_grid() {
         common.showLoading();
 
@@ -36,7 +40,12 @@
 
             $(".ip-link").click(renderTicketByIp);
 
-            common.closeLoading();
+
+            ticketLoad = true;
+
+            if (ticketLoad && customerLoad) {
+                common.closeLoading();
+            }
         });
     }
 
@@ -76,7 +85,11 @@
 
             $(".group-action button").click(e => $(e.target).next().selectmenu("open"));
 
-            common.closeLoading();
+            customerLoad = true;
+
+            if (ticketLoad && customerLoad) {
+                common.closeLoading();
+            }
         });
     }
 
