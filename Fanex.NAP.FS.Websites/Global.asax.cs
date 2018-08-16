@@ -1,5 +1,7 @@
 ﻿namespace Fanex.NAP.FS.Websites
 {
+    using Fanex.BetList.Core;
+    using Fanex.BetList.Core.RemotingRef;
     using Fanex.Data;
     using Fanex.Logging;
     using Fanex.NAP.FS.Library.Core.Helpers.Xml;
@@ -28,6 +30,8 @@
                 .ConnectTo(new Uri(ConfigurationManager.AppSettings["Fanex.RemotingRef.Service.Url"]))
                 .FromApplication("SPU - Fraud Sensor");
 
+            BetListManager.RegisterRemotingRef(new CacheRef());
+            
             AreaRegistration.RegisterAllAreas();
             WebApiConfig.Register(GlobalConfiguration.Configuration);
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);

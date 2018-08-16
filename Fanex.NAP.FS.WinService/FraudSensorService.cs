@@ -70,7 +70,7 @@
 
                 _receivingMessageHandler.TriggerReceivingMessage();
 
-                SendMailInform(true);
+               SendMailInform(true);
 
                 Logger.Log.Info("SPU FS 2 Service - Loading fraudcases have done.");
             }
