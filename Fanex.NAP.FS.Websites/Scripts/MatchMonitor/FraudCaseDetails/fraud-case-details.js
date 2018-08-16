@@ -21,7 +21,8 @@
     var customerLoad = false; 
 
     function load_ticket_grid() {
-        if (isArbitrage) {
+    	common.showLoading();
+        if (isArbitrage) {        
             var url = common.modifyRelativeUrl("/MatchMonitor/GetArbitrageTicketDetails");
 
             $.get(url, parameters, renderArbitrageGrid);
