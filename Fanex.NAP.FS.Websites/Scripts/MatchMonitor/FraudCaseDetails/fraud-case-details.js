@@ -13,6 +13,8 @@
     var totalTicket = 0;
 
     function load_ticket_grid() {
+        common.showLoading();
+
         global_idx = 0;
 
         var url = common.modifyRelativeUrl("/MatchMonitor/GetFraudCaseTicketDetails");
@@ -33,10 +35,14 @@
             totalTicket = n;
 
             $(".ip-link").click(renderTicketByIp);
+
+            common.closeLoading();
         });
     }
 
     function load_customer_grid() {
+        common.showLoading();
+
         var url = common.modifyRelativeUrl("/MatchMonitor/GetFraudCaseCustomerDetails");
 
         $.get(url, parameters, function (json) {
@@ -69,6 +75,8 @@
             $(".group-action").controlgroup();
 
             $(".group-action button").click(e => $(e.target).next().selectmenu("open"));
+
+            common.closeLoading();
         });
     }
 
@@ -440,7 +448,7 @@
             { data: obj => obj.Odds != null ? obj.Odds.Html : null },
             { data: obj => obj.Stake == null ? null : numeral(obj.Stake).format("0,0.00") },
             { data: obj => obj.WinLoss == null ? null : obj.WinLoss >= 0 ? numeral(obj.WinLoss).format("0,0.00") : `<span class='text-red'>${numeral(obj.WinLoss).format('0,0.00')}</span>` },
-            { data: obj => obj.Status, width: "50px", className: "text-center uppercase"  }
+            { data: obj => obj.Status, width: "50px", className: "text-center uppercase" }
         ],
         headerCallback: tr => $("th", tr).removeClass("uppercase")
     });
