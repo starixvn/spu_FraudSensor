@@ -98,6 +98,13 @@ namespace Fanex.NAP.FS.Websites.Controllers
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
+        public async Task<ActionResult> GetArbitrageTicketDetails(int matchId, DateTime eventDate)
+        {
+            var (hdp, ou) = await Task.Factory.StartNew(() => _fraudCaseDetailService.GetArbitrageTickets(matchId, eventDate)).ConfigureAwait(false);
+
+            return Json(new { Hdp = hdp, OU = ou });
+        }
+
         public ActionResult ExportExcelForDetail(int fraudCaseId, int matchId, DateTime eventDate)
         {
             var template = Server.MapPath("~/App_Data/Excel Template/MatchMonitor/FraudCaseDetail/template.xlsx");

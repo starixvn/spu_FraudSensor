@@ -377,5 +377,29 @@
 
             return tsk.Result ?? Enumerable.Empty<CustomerEvidence>();
         }
+
+        public (ArbitrageTicketList hdp, ArbitrageTicketList ou) GetArbitrageTickets(int matchId, DateTime eventDate)
+        {
+            var data = Enumerable.Range(0, 50).Select(_ => new ArbitrageTicket
+            {
+                BetId = 1000,
+                Currency = "Energy",
+                DangerousLevel = 5,
+                Evidences = new[] { "electron", "positron" },
+                Odds = 0.855866,
+                Stake = new ArbitrageStake
+                {
+                    ComPT = 9999,
+                    Full = 7594,
+                    Virtual = 8434
+                },
+                TransDate = eventDate.ToString("MMM/dd/yyyy <br/> hh:mm:ss tt"),
+                Username = "physics"
+            });
+
+            var a = new ArbitrageTicketList { Home = data, Away = data };
+
+            return (a, a);
+        }
     }
 }

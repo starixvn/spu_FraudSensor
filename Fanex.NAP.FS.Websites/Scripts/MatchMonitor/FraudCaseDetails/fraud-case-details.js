@@ -5,10 +5,10 @@
         associated_accounts = $("#associated-accounts"),
         ticket_last_7_days = $("#tickets-last-7-days"),
         ticket_by_ip = $("#ticket-by-ip"),
-        hdp_home_ticket = $("#hdp-ticket #home-ticket"),
-        hdp_away_ticket = $("#hdp-ticket #away-ticket"),
-        ou_home_ticket = $("#ou-ticket #home-ticket"),
-        ou_away_ticket = $("#ou-ticket #away-ticket");
+        hdp_home_ticket = $("#hdp-ticket .home-ticket"),
+        hdp_away_ticket = $("#hdp-ticket .away-ticket"),
+        ou_home_ticket = $("#ou-ticket .home-ticket"),
+        ou_away_ticket = $("#ou-ticket .away-ticket");
 
     var global_idx = 0;
 
@@ -18,11 +18,12 @@
 
     var ticketLoad = false;
 
-    var customerLoad = false; 
+    var customerLoad = false;
 
     function load_ticket_grid() {
-    	common.showLoading();
-        if (isArbitrage) {        
+        common.showLoading();
+
+        if (isArbitrage) {
             var url = common.modifyRelativeUrl("/MatchMonitor/GetArbitrageTicketDetails");
 
             $.get(url, parameters, renderArbitrageGrid);
@@ -49,12 +50,11 @@
 
                 $(".ip-link").click(renderTicketByIp);
 
+                ticketLoad = true;
 
-            ticketLoad = true;
-
-            if (ticketLoad && customerLoad) {
-                common.closeLoading();
-            }
+                if (ticketLoad && customerLoad) {
+                    common.closeLoading();
+                }
             });
         }
     }
@@ -263,11 +263,17 @@
     }
 
     function renderArbitrageGrid(json) {
-        hdp_home_ticket.DataTable().rows.add(json.Hdp.Home);
-        hdp_away_ticket.DataTable().rows.add(json.Hdp.Away);
+        hdp_home_ticket.DataTable().rows.add(json.Hdp.Home).draw();
+        hdp_away_ticket.DataTable().rows.add(json.Hdp.Away).draw();
 
-        ou_home_ticket.DataTable().rows.add(json.OU.Home);
-        ou_away_ticket.DataTable().rows.add(json.OU.Away);
+        ou_home_ticket.DataTable().rows.add(json.OU.Home).draw();
+        ou_away_ticket.DataTable().rows.add(json.OU.Away).draw();
+
+        ticketLoad = true;
+
+        if (ticketLoad && customerLoad) {
+            common.closeLoading();
+        }
     }
 
     if (isArbitrage) {
@@ -346,7 +352,7 @@
             ],
         });
 
-        ou_home_ticket.DataTable({
+        ou_away_ticket.DataTable({
             ordering: false,
             paging: false,
             dom: "t<'pagination'<'page-size'lp>i>",

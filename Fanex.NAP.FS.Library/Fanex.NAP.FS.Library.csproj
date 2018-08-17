@@ -395,6 +395,7 @@
     <Compile Include="ViewModels\MatchMonitor\FraudCase.cs" />
     <Compile Include="ViewModels\MatchMonitor\FraudCaseDetails\ArbitrageStake.cs" />
     <Compile Include="ViewModels\MatchMonitor\FraudCaseDetails\ArbitrageTicket.cs" />
+    <Compile Include="ViewModels\MatchMonitor\FraudCaseDetails\ArbitrageTicketList.cs" />
     <Compile Include="ViewModels\MatchMonitor\FraudCaseDetails\AssociatedCustomer.cs" />
     <Compile Include="ViewModels\MatchMonitor\FraudCaseDetails\BettypeOrder.cs" />
     <Compile Include="ViewModels\MatchMonitor\FraudCaseDetails\CustomerDetails.cs" />

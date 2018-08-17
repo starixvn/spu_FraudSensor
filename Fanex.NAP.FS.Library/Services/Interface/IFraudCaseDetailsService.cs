@@ -31,5 +31,8 @@
         IEnumerable<TicketDetails> GetTicketFromIP(string ip, bool isShowSpecialCurrencies);
 
         byte[] ExportToExcelIpTickets(string ip, string template, bool isShowSpecialCurrencies);
+        
+        (ArbitrageTicketList hdp, ArbitrageTicketList ou) GetArbitrageTickets(int matchId, DateTime eventDate);
+
     }
 }
