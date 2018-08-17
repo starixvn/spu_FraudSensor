@@ -39,7 +39,8 @@ BEGIN
 		,	[CustId]	= b.custid
 	FROM bodb02.dbo.bettrans AS b WITH (NOLOCK)
 		INNER JOIN #tmpMatches AS m WITH(NOLOCK) ON b.matchid = m.MatchId
-	WHERE b.bettype IN (1,3,7,8);	
+	WHERE b.bettype IN (1, 3, 7, 8)
+		AND b.Currency NOT IN (20, 27, 28);
 END;
 
 GO 
