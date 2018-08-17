@@ -19,12 +19,17 @@ AS
 BEGIN
 	SET NOCOUNT ON;	
 
+	DECLARE @CurrentTime DATETIME;
+	
+	SET @CurrentTime = GETDATE();
+
 	SELECT	[MatchId] = m.matchid
 	FROM	bodb02.dbo.Match AS m WITH(NOLOCK)
 			INNER JOIN bodb02.dbo.league AS l WITH (NOLOCK) ON m.leagueid = l.leagueid
 	WHERE	m.sporttype = 1
 			AND m.eventstatus = 'Running'
 			AND	m.MatchCode NOT LIKE '%hedge%'
+			AND m.kickofftime <= @CurrentTime
 			AND l.isTest = 0;
 END;
 
