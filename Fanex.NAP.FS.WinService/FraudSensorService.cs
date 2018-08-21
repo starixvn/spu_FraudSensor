@@ -61,10 +61,10 @@
                 if (AppSettings.Environment != "1")
                 {
                     MailClientHandler.Start();
-                }
 
-                var queue = new MessageQueueReceiver();
-                queue.Clear();
+                    var queue = new MessageQueueReceiver();
+                    queue.Clear();
+                }
 
                 Logger.Log.Info("SPU FS 2 Service - Loading fraudcases");
 
