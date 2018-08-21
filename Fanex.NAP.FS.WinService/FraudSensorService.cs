@@ -1,33 +1,27 @@
-﻿#pragma warning disable S2325 // Methods and properties that don't access instance data should be static
-
-namespace Fanex.NAP.FS.WinService
+﻿namespace Fanex.NAP.FS.WinService
 {
-    using Fanex.NAP.FS.Library.DTO;
-    using Fanex.NAP.FS.Library.Models;
     using Logging;
     using MailDelivery.Client;
-    using System;
-    using System.Collections.Generic;
     using System.Configuration;
-    using System.Linq;
     using System.ServiceProcess;
     using System.Threading;
     using System.Threading.Tasks;
 
     public partial class FraudSensorService : ServiceBase
     {
-        private readonly IFraudCaseManager manager;
-        private readonly IMessager messager;
+        private IFraudCaseLoader _fraudCaseLoader;
+
+        private IReceivingMessageHandler _receivingMessageHandler;
+
         private Thread _thread;
 
-        private IDictionary<FraudCaseId, Timer> timers;
-
-        private IDictionary<FraudCaseId, bool> executionCheckers;
-
-        public FraudSensorService(IFraudCaseManager manager, IMessager messager)
+        public FraudSensorService(IFraudCaseLoader fraudCaseLoader = null, IReceivingMessageHandler receivingMessageHandler = null)
         {
-            this.manager = manager;
-            this.messager = messager;
+            _fraudCaseLoader = fraudCaseLoader ?? new FraudCaseLoader();
+
+            _receivingMessageHandler = receivingMessageHandler ?? new ReceivingMessageHandler();
+
+            InitializeComponent();
         }
 
         protected override void OnStart(string[] args)
@@ -40,6 +34,10 @@ namespace Fanex.NAP.FS.WinService
         {
             Logger.Log.Info("SPU FS 2 Service Stopped");
 
+            _receivingMessageHandler.ClearCases();
+
+            SendMailInform(false);
+
             _thread.Abort();
         }
 
@@ -48,6 +46,8 @@ namespace Fanex.NAP.FS.WinService
             SendMailInform(false);
 
             Logger.Log.Info("SPU FS 2 Service Stopped");
+
+            _receivingMessageHandler.ClearCases();
 
             MailClientHandler.Stop();
         }
@@ -58,23 +58,28 @@ namespace Fanex.NAP.FS.WinService
             {
                 Logger.Log.Info("SPU FS 2 Service Started");
 
-                MailClientHandler.Start();
+                if (AppSettings.Environment != "1")
+                {
+                    MailClientHandler.Start();
+                }
+
+                var queue = new MessageQueueReceiver();
+                queue.Clear();
 
                 Logger.Log.Info("SPU FS 2 Service - Loading fraudcases");
 
-                var fraudCases = manager.GetCases();
+                _fraudCaseLoader.LoadFraudCases();
 
-                executionCheckers = fraudCases.ToDictionary(f => (FraudCaseId)f.FraudCaseId, f => false);
+                if (AppSettings.Environment != "1")
+                {
+                    _receivingMessageHandler.TriggerReceivingMessage();
 
-                timers = fraudCases.ToDictionary(f => (FraudCaseId)f.FraudCaseId, f => GetTimer(f));
+                    SendMailInform(true);
+                }
 
                 Logger.Log.Info("SPU FS 2 Service - Loading fraudcases have done.");
-
-                messager.ListenToMessage(HandleMsg);
-
-                SendMailInform(true);
             }
-            catch (Exception ex)
+            catch (System.Exception ex)
             {
                 Logger.Log.Error(ex.Message, ex);
             }
@@ -108,82 +113,5 @@ namespace Fanex.NAP.FS.WinService
                 }
             });
         }
-
-        private Timer GetTimer(FraudCase fraudCase)
-        {
-            var executor = manager.GetExecutor(fraudCase);
-
-            var timer = new Timer(o => ExecuteFraudCase(executor), null, 0, fraudCase.FraudCaseInterval * 1000);
-            
-            return timer;
-        }
-
-        private void ExecuteFraudCase(IFraudCaseExecutor executor)
-        {
-            try
-            {
-                if (executionCheckers[executor.FraudCaseId])
-                {
-                    return;
-                }
-                executionCheckers[executor.FraudCaseId] = true;
-
-                executor.Execute();
-            }
-            catch (Exception ex)
-            {
-                LogService.Error(ex.Message, ex);
-            }
-            finally
-            {
-                executionCheckers[executor.FraudCaseId] = false;
-            }
-        }
-
-        private void HandleMsg(MessageType message, FraudCaseId id)
-        {
-            switch (message)
-            {
-                case MessageType.Adding:
-                    if (!timers.ContainsKey(id))
-                    {
-                        var fc = manager.GetCase(id);
-                        timers.Add(id, GetTimer(fc));
-                    }
-
-                    break;
-
-                case MessageType.Removing:
-                    if (timers.ContainsKey(id))
-                    {
-                        timers.Remove(id);
-                    }
-
-                    break;
-
-                case MessageType.Deactivating:
-                    if (timers.ContainsKey(id))
-                    {
-                        timers[id].Change(Timeout.Infinite, Timeout.Infinite);
-                    }
-
-                    break;
-
-                case MessageType.Activating:
-                    if (timers.ContainsKey(id))
-                    {
-                        var fc = manager.GetCase(id);
-                        timers[id].Change(0, fc.FraudCaseInterval * 1000);
-                    }
-
-                    break;
-
-                default:
-                    LogService.Info("Invalid message");
-                    break;
-            }
-        }
     }
 }
-
-#pragma warning restore S2325 // Methods and properties that don't access instance data should be static
