@@ -1,0 +1,39 @@
+﻿<#@ template hostspecific="true" language="C#" #>
+<#@ output extension=".cs" #>
+<#@ assembly name="System.Core" #>
+<#@ assembly name="EnvDTE" #>  
+<#@ assembly name="System.XML" #>
+<#@ assembly name="System.xml.linq" #>
+<#@ import namespace="EnvDTE" #>  
+<#@ import namespace="System.IO" #> 
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.Xml.Linq" #>
+
+<#
+    var file = this.Host.TemplateFile;
+	var info = new FileInfo(file);
+	var folder = info.DirectoryName;
+	var app_data = Directory.CreateDirectory(folder).Parent;
+	var xml = GetSettings(info.Directory, "App.config").Element("appSettings");
+#>
+
+namespace Fanex.NAP.FS.WinService
+{
+    using System.Configuration;
+
+    public static class AppSettings
+    {
+        <# foreach(var item in xml.Elements("add")){ #>
+        public static string <#= item.Attribute("key").Value.Replace(".", "_") #> => ConfigurationManager.AppSettings["<#= item.Attribute("key").Value #>"];
+        <#} #>
+    }
+}
+
+<#+
+	public XElement GetSettings(DirectoryInfo app_data, string fileName)
+	{
+		return XElement.Load(app_data.FullName + "/" + fileName);
+	}
+#>

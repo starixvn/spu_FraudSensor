@@ -12,6 +12,7 @@ namespace Fanex.NAP.FS.Library.Core.Helpers.Api
 
     public static class ApiHelper
     {
+        [Obsolete("Too many generic and parameter")]
         public static async Task<TResult> Post<TParam, TResult>(string url, TParam param, int environment, int mailingListId)
         {
             try
@@ -50,6 +51,29 @@ namespace Fanex.NAP.FS.Library.Core.Helpers.Api
                 LogService.Error(exception.Message, exception);
 
                 return default(TResult);
+            }
+        }
+
+        public static async Task<TResult> Post<TResult>(string url, object param)
+        {
+            using (var web = new HttpClient())
+            {
+                var response = await web.PostAsJsonAsync(url, param).ConfigureAwait(false);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    return default(TResult);
+                }
+
+                return await response.Content.ReadAsAsync<TResult>().ConfigureAwait(false);
+            }
+        }
+
+        public static async Task Post(string url, object param)
+        {
+            using (var web = new HttpClient())
+            {
+                await web.PostAsJsonAsync(url, param).ConfigureAwait(false);
             }
         }
     }

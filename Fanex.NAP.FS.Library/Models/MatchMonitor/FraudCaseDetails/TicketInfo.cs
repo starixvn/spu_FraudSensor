@@ -13,5 +13,13 @@
         public int FinalHomeScore { get; set; }
 
         public int FinalAwayScore { get; set; }
+
+        public double FullStake { get; set; }
+
+        public double ComPTStake { get; set; }
+
+        public double VirtualStake { get; set; }
+
+        public int DangerLevel { get; set; }
     }
 }

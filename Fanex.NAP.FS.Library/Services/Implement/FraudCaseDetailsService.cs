@@ -378,15 +378,51 @@
             return tsk.Result ?? Enumerable.Empty<CustomerEvidence>();
         }
 
-        public (ArbitrageTicketList hdp, ArbitrageTicketList ou) GetArbitrageTickets(int matchId, DateTime eventDate)
+        public async Task<(ArbitrageGroupTicketList hdp, ArbitrageGroupTicketList ou)> GetArbitrageTickets(int matchId, DateTime eventDate)
         {
-            var data = Enumerable.Range(0, 50).Select(_ => new ArbitrageTicket
+            var rawData = DataService.GetData<TicketInfo>(new GetArbitrageTicketCriteria { MatchId = matchId, EventDate = eventDate });
+
+            var url = AppSettings.Get("FPS_WEBAPI_GET_CUSTOMER_EVIDENCE");
+
+            var evidences = await ApiHelper.Post<IEnumerable<CustomerEvidence>>(url, new CustomerEvidenceList { CustIdList = string.Join(",", rawData.Select(t => t.CustId).Distinct()) }).ConfigureAwait(false);
+
+            var evidenceDict = evidences.ToLookup(c => c.CustId, c => c.EvidenceName);
+
+            var data =
+                rawData.AsParallel()
+                .GroupBy(t => Tuple.Create(t.BetTypeId, t.Handicap1 - t.Handicap2, t.LiveHomeScore, t.LiveAwayScore), t => new ArbitrageTicket
+                {
+                    BetId = t.TransId,
+                    Currency = t.CurrencyName,
+                    DangerousLevel = t.DangerLevel,
+                    Evidences = evidenceDict[(int)t.CustId],
+                    Odds = t.Odds,
+                    TransDate = t.TransDate.ToString("MMM/dd/yyyy <br/> hh:mm:ss tt"),
+                    Username = t.UserName,
+                    BetTeam = t.BetTeam,
+                    Stake = new ArbitrageStake
+                    {
+                        ComPT = t.ComPTStake,
+                        Virtual = t.VirtualStake,
+                        Full = t.FullStake
+                    }
+                })
+                .Select(g => new ArbitrageGroupTicketList
+                {
+                    BettypeName = CachedRef.GetBettypeName(g.Key.Item1),
+                    Away = g.Where(t => t.BetTeam == "a"),
+                    Home = g.Where(t => t.BetTeam == "b"),
+                    Handicap = g.Key.Item2,
+                    Score = $"{g.Key.Item3} - {g.Key.Item4}"
+                });
+
+            var d = Enumerable.Range(0, 50).Select(_ => new ArbitrageTicket
             {
                 BetId = 1000,
                 Currency = "Energy",
                 DangerousLevel = 5,
                 Evidences = new[] { "electron", "positron" },
-                Odds = 0.855866,
+                Odds = 0.855866M,
                 Stake = new ArbitrageStake
                 {
                     ComPT = 9999,
@@ -397,7 +433,7 @@
                 Username = "physics"
             });
 
-            var a = new ArbitrageTicketList { Home = data, Away = data };
+            var a = new ArbitrageGroupTicketList { Home = d, Away = d };
 
             return (a, a);
         }

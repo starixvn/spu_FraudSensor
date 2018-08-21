@@ -239,7 +239,9 @@
     <Compile Include="Criteria\FraudCase\UpdateFraudCaseStatusCriteria.cs" />
     <Compile Include="Criteria\FraudSensorTask\BetsNearGoalPreconditionCriteria.cs" />
     <Compile Include="Criteria\FraudSensorTask\BetsNearGoalRuleCriteria.cs" />
+    <Compile Include="Criteria\FraudSensorTask\ArbitragePreconditionCriteria.cs" />
     <Compile Include="Criteria\FraudSensorTask\ArbitragePreRuleCriteria.cs" />
+    <Compile Include="Criteria\FraudSensorTask\ArbitrageRuleCriteria.cs" />
     <Compile Include="Criteria\FraudSensorTask\CheckBetRuleCriteria.cs" />
     <Compile Include="Criteria\FraudSensorTask\DailyDataCaptureRuleCriteria.cs" />
     <Compile Include="Criteria\FraudSensorTask\DelayGoalPreconditionCriteria.cs" />
@@ -251,6 +253,7 @@
     <Compile Include="Criteria\FraudSensorTask\OfficeIPPreconditionCriteria.cs" />
     <Compile Include="Criteria\FraudSensorTask\OfficeIPRuleCriteria.cs" />
     <Compile Include="Criteria\MatchMonitor\BalanceUpDateGetCriteria.cs" />
+    <Compile Include="Criteria\MatchMonitor\FraudCaseDetails\GetArbitrageTicketCriteria.cs" />
     <Compile Include="Criteria\MatchMonitor\FraudCaseDetails\GetCustomerCriteria.cs" />
     <Compile Include="Criteria\MatchMonitor\FraudCaseDetails\GetMatchInfoCriteria.cs" />
     <Compile Include="Criteria\MatchMonitor\FraudCaseDetails\GetTicketCriteria.cs" />
@@ -327,6 +330,7 @@
     <Compile Include="Models\DailyDataCapture\CapturedMatch.cs" />
     <Compile Include="Models\DBResult.cs" />
     <Compile Include="Models\FraudCaseId.cs" />
+    <Compile Include="Models\FraudCaseTask\ArbitrageGroup.cs" />
     <Compile Include="Models\FraudCaseTask\ArbitrageMatch.cs" />
     <Compile Include="Models\FraudCase\DelayedGoal\Customer.cs" />
     <Compile Include="Models\FraudCase\FlaggedAccount\FlaggedCustomer.cs" />
@@ -393,6 +397,7 @@
     <Compile Include="ViewModels\History.cs" />
     <Compile Include="ViewModels\MatchMonitor\Event.cs" />
     <Compile Include="ViewModels\MatchMonitor\FraudCase.cs" />
+    <Compile Include="ViewModels\MatchMonitor\FraudCaseDetails\ArbitrageGroupTicketList.cs" />
     <Compile Include="ViewModels\MatchMonitor\FraudCaseDetails\ArbitrageStake.cs" />
     <Compile Include="ViewModels\MatchMonitor\FraudCaseDetails\ArbitrageTicket.cs" />
     <Compile Include="ViewModels\MatchMonitor\FraudCaseDetails\ArbitrageTicketList.cs" />

@@ -5,6 +5,7 @@
     using Fanex.NAP.FS.Library.ViewModels.MatchMonitor.FraudCaseDetails;
     using System;
     using System.Collections.Generic;
+    using System.Threading.Tasks;
 
     public interface IFraudCaseDetailsService
     {
@@ -32,7 +33,7 @@
 
         byte[] ExportToExcelIpTickets(string ip, string template, bool isShowSpecialCurrencies);
         
-        (ArbitrageTicketList hdp, ArbitrageTicketList ou) GetArbitrageTickets(int matchId, DateTime eventDate);
+        Task<(ArbitrageGroupTicketList hdp, ArbitrageGroupTicketList ou)> GetArbitrageTickets(int matchId, DateTime eventDate);
 
     }
 }

@@ -14,10 +14,12 @@
 
         public long BetId { get; set; }
 
-        public double Odds { get; set; }
+        public decimal Odds { get; set; }
 
         public ArbitrageStake Stake { get; set; }
 
         public string TransDate { get; set; }
+
+        public string BetTeam { get; set; }
     }
 }

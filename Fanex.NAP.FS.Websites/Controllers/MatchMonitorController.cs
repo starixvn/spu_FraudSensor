@@ -100,8 +100,8 @@ namespace Fanex.NAP.FS.Websites.Controllers
 
         public async Task<ActionResult> GetArbitrageTicketDetails(int matchId, DateTime eventDate)
         {
-            var (hdp, ou) = await Task.Factory.StartNew(() => _fraudCaseDetailService.GetArbitrageTickets(matchId, eventDate)).ConfigureAwait(false);
-
+            var (hdp, ou) = await _fraudCaseDetailService.GetArbitrageTickets(matchId, eventDate).ConfigureAwait(false);
+        
             return Json(new { Hdp = hdp, OU = ou });
         }
 

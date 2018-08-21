@@ -1,5 +1,6 @@
 ﻿namespace Fanex.NAP.FS.WinService.Console
 {
+    using Fanex.Data;
     using Fanex.NAP.FS.Library.DTO;
     using Fanex.NAP.FS.Library.Models;
 
@@ -7,7 +8,14 @@
     {
         private static void Main(string[] args)
         {
-            var a = new FraudCaseManager(null).GetExecutor(new FraudCase { FraudCaseId = (int) FraudCaseId.CheckBet });
+            DbSettingProviderManager
+               .StartNewSession()
+               .UseDefaultConnectionStringProvider()
+               .UseDefaultDbSettingProvider(resourcePath:  "~/App_Data", enableWatching: true)
+               .Run();
+
+
+            var a = FraudCaseFactory.GetExecutor(new FraudCase { FraudCaseId = (int) FraudCaseId.Arbitrage });
 
             a.Execute();
 
