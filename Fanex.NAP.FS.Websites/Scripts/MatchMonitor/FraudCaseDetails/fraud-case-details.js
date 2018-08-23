@@ -300,31 +300,31 @@
                 { targets: "_all", defaultContent: "-" },
             ],
             columns: [
-                { data: obj => obj.Home.Username },
-                { data: obj => (obj.Home.Evidences || []).join(", ") },
-                { data: obj => obj.Home.DangerousLevel },
-                { data: obj => obj.Home.Currency },
-                { data: obj => obj.Home.BetId },
-                { data: obj => common.formatGridNumber(obj.Home.Odds) },
-                { data: obj => common.formatGridNumber((obj.Home.Stake || {}).Virtual) },
-                { data: obj => common.formatGridNumber((obj.Home.Stake || {}).ComPT) },
-                { data: obj => common.formatGridNumber((obj.Home.Stake || {}).Full) },
-                { data: obj => obj.Home.TransDate },
-                { data: obj => "" },
-                { data: obj => obj.Away.Username },
-                { data: obj => (obj.Away.Evidences || []).join(", ") },
-                { data: obj => obj.Away.DangerousLevel },
-                { data: obj => obj.Away.Currency },
-                { data: obj => obj.Away.BetId },
-                { data: obj => common.formatGridNumber(obj.Away.Odds) },
-                { data: obj => common.formatGridNumber((obj.Away.Stake || {}).Virtual) },
-                { data: obj => common.formatGridNumber((obj.Away.Stake || {}).ComPT) },
-                { data: obj => common.formatGridNumber((obj.Away.Stake || {}).Full) },
-                { data: obj => obj.Away.TransDate }
+                { data: obj => obj.Home.Username, width: "120px" },
+                { data: obj => (obj.Home.Evidences || []).join(", "), width: "128px" },
+                { data: obj => obj.Home.DangerousLevel, width: "80px", className: "text-center" },
+                { data: obj => obj.Home.Currency, width: "70px", className: "text-center" },
+                { data: obj => obj.Home.BetId, width: "100px", className: "text-center" },
+                { data: obj => common.formatGridNumber(obj.Home.Odds), width: "42px", className: "text-center" },
+                { data: obj => common.formatGridNumber((obj.Home.Stake || {}).Virtual), width: "86px", className: "text-right" },
+                { data: obj => common.formatGridNumber((obj.Home.Stake || {}).ComPT), width: "86px", className: "text-right" },
+                { data: obj => common.formatGridNumber((obj.Home.Stake || {}).Full), width: "86px", className: "text-right" },
+                { data: obj => obj.Home.TransDate, width: "82px", className: "text-center" },
+                { data: obj => "", className: "plit-table", width: "5px" },
+                { data: obj => obj.Away.Username, width: "120px" },
+                { data: obj => (obj.Away.Evidences || []).join(", "), width: "128px" },
+                { data: obj => obj.Away.DangerousLevel, width: "80px", className: "text-center" },
+                { data: obj => obj.Away.Currency, width: "70px", className: "text-center" },
+                { data: obj => obj.Away.BetId, width: "100px", className: "text-center" },
+                { data: obj => common.formatGridNumber(obj.Away.Odds), width: "42px", className: "text-center" },
+                { data: obj => common.formatGridNumber((obj.Away.Stake || {}).Virtual), width: "86px", className: "text-right" },
+                { data: obj => common.formatGridNumber((obj.Away.Stake || {}).ComPT), width: "86px", className: "text-right" },
+                { data: obj => common.formatGridNumber((obj.Away.Stake || {}).Full), width: "86px", className: "text-right" },
+                { data: obj => obj.Away.TransDate, width: "82px", className: "text-center" }
             ],
             createdRow: function (row, obj) {
                 if (obj.key) {
-                    var td = $(`<td colspan='21' class='group'>${obj.BettypeName} ${obj.Handicap} ${obj.Score}</td>`);
+                    var td = $(`<td colspan='21' class='group'><span class="bage">${obj.BettypeName} ${obj.Handicap}</span> <span class="bage">${obj.Score}</span> <button class="button -export"><span class="icon-export-excel"></span></button></td>`);
 
                     $(row).empty().html(td);
                 }

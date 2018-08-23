@@ -195,6 +195,48 @@
         .new-value {
             color: #f76617;
         }
+
+        // Arbitrage
+
+        .group {
+            position: relative;
+
+            .bage {
+                padding: 4px 10px;
+                border-radius: 2px;
+                background-color: #168cd6;
+                color: #fff;
+                font-weight: normal;
+            }
+
+            .button.-export {
+                position: absolute;
+                right: 6px;
+                width: 24px;
+                height: 24px;
+                margin-top: -2px;
+                padding-left: 4px;
+                border-color: $btn-primary-bg-hover;
+                background-color: $btn-primary-bg-hover;
+                color: #fff;
+                                
+            }
+
+            .button.-export:hover {
+                background-color: darken($btn-primary-bg-hover, 5%);
+            }
+
+            .button.-export .icon-export-excel {
+                top: 0px;
+                margin-right: 0;
+                font-size: 14px;
+            }
+
+        }
+        
+        .plit-table {
+            background-color: #eee;
+        }
     }
 
     &.table-striped {
