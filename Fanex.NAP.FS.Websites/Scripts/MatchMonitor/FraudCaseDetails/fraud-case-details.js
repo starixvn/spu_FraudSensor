@@ -4,11 +4,7 @@
         customer_grid = $("#customer-tab table"),
         associated_accounts = $("#associated-accounts"),
         ticket_last_7_days = $("#tickets-last-7-days"),
-        ticket_by_ip = $("#ticket-by-ip"),
-        hdp_home_ticket = $("#hdp-ticket .home-ticket"),
-        hdp_away_ticket = $("#hdp-ticket .away-ticket"),
-        ou_home_ticket = $("#ou-ticket .home-ticket"),
-        ou_away_ticket = $("#ou-ticket .away-ticket");
+        ticket_by_ip = $("#ticket-by-ip");
 
     var global_idx = 0;
 
@@ -263,11 +259,27 @@
     }
 
     function renderArbitrageGrid(json) {
-        hdp_home_ticket.DataTable().rows.add(json.Hdp.Home).draw();
-        hdp_away_ticket.DataTable().rows.add(json.Hdp.Away).draw();
+        var data = (json || []).reduce(function (arr, obj) {
+            obj.key = true;
 
-        ou_home_ticket.DataTable().rows.add(json.OU.Home).draw();
-        ou_away_ticket.DataTable().rows.add(json.OU.Away).draw();
+            arr.push(obj);
+
+            var n = Math.max(obj.Home.length, obj.Away.length);
+
+            for (var i = 0; i < n; i++) {
+                var a = {};
+
+                a.Home = obj.Home[i] || {};
+
+                a.Away = obj.Away[i] || {};
+
+                arr.push(a);
+            }
+
+            return arr;
+        }, []);
+
+        ticket_grid.DataTable().rows.add(data).draw();
 
         ticketLoad = true;
 
@@ -277,104 +289,60 @@
     }
 
     if (isArbitrage) {
-        hdp_home_ticket.DataTable({
+        ticket_grid.DataTable({
             ordering: false,
             paging: false,
             dom: "t<'pagination'<'page-size'lp>i>",
             language: common.language,
-            scrollY: '20vh',
+            scrollY: '57vh',
             scrollCollapse: true,
             columnDefs: [
                 { targets: "_all", defaultContent: "-" },
-                { targets: [-2, -3, -4, -5], className: "text-right" }
             ],
             columns: [
-                { data: obj => obj.Username },
-                { data: obj => (obj.Evidences || []).join(", ") },
-                { data: obj => obj.DangerousLevel },
-                { data: obj => obj.Currency },
-                { data: obj => obj.BetId },
-                { data: obj => common.formatGridNumber(obj.Odds) },
-                { data: obj => common.formatGridNumber(obj.Stake.Virtual) },
-                { data: obj => common.formatGridNumber(obj.Stake.ComPT) },
-                { data: obj => common.formatGridNumber(obj.Stake.Full) },
-                { data: obj => obj.TransDate },
+                { data: obj => obj.Home.Username },
+                { data: obj => (obj.Home.Evidences || []).join(", ") },
+                { data: obj => obj.Home.DangerousLevel },
+                { data: obj => obj.Home.Currency },
+                { data: obj => obj.Home.BetId },
+                { data: obj => common.formatGridNumber(obj.Home.Odds) },
+                { data: obj => common.formatGridNumber((obj.Home.Stake || {}).Virtual) },
+                { data: obj => common.formatGridNumber((obj.Home.Stake || {}).ComPT) },
+                { data: obj => common.formatGridNumber((obj.Home.Stake || {}).Full) },
+                { data: obj => obj.Home.TransDate },
+                { data: obj => "" },
+                { data: obj => obj.Away.Username },
+                { data: obj => (obj.Away.Evidences || []).join(", ") },
+                { data: obj => obj.Away.DangerousLevel },
+                { data: obj => obj.Away.Currency },
+                { data: obj => obj.Away.BetId },
+                { data: obj => common.formatGridNumber(obj.Away.Odds) },
+                { data: obj => common.formatGridNumber((obj.Away.Stake || {}).Virtual) },
+                { data: obj => common.formatGridNumber((obj.Away.Stake || {}).ComPT) },
+                { data: obj => common.formatGridNumber((obj.Away.Stake || {}).Full) },
+                { data: obj => obj.Away.TransDate }
             ],
-        });
+            createdRow: function (row, obj) {
+                if (obj.key) {
+                    var td = $(`<td colspan='21' class='group'>${obj.BettypeName} ${obj.Handicap} ${obj.Score}</td>`);
 
-        hdp_away_ticket.DataTable({
-            ordering: false,
-            paging: false,
-            dom: "t<'pagination'<'page-size'lp>i>",
-            language: common.language,
-            scrollY: '20vh',
-            scrollCollapse: true,
-            columnDefs: [
-                { targets: "_all", defaultContent: "-" },
-                { targets: [-2, -3, -4, -5], className: "text-right" }
-            ],
-            columns: [
-                { data: obj => obj.Username },
-                { data: obj => (obj.Evidences || []).join(", ") },
-                { data: obj => obj.DangerousLevel },
-                { data: obj => obj.Currency },
-                { data: obj => obj.BetId },
-                { data: obj => common.formatGridNumber(obj.Odds) },
-                { data: obj => common.formatGridNumber(obj.Stake.Virtual) },
-                { data: obj => common.formatGridNumber(obj.Stake.ComPT) },
-                { data: obj => common.formatGridNumber(obj.Stake.Full) },
-                { data: obj => obj.TransDate },
-            ],
-        });
+                    $(row).empty().html(td);
+                }
+                else if (obj.Home.Username == null) {
+                    var td = $("<td colspan='10'></td>");
 
-        ou_home_ticket.DataTable({
-            ordering: false,
-            paging: false,
-            dom: "t<'pagination'<'page-size'lp>i>",
-            language: common.language,
-            scrollY: '20vh',
-            scrollCollapse: true,
-            columnDefs: [
-                { targets: "_all", defaultContent: "-" },
-                { targets: [-2, -3, -4, -5], className: "text-right" }
-            ],
-            columns: [
-                { data: obj => obj.Username },
-                { data: obj => (obj.Evidences || []).join(", ") },
-                { data: obj => obj.DangerousLevel },
-                { data: obj => obj.Currency },
-                { data: obj => obj.BetId },
-                { data: obj => common.formatGridNumber(obj.Odds) },
-                { data: obj => common.formatGridNumber(obj.Stake.Virtual) },
-                { data: obj => common.formatGridNumber(obj.Stake.ComPT) },
-                { data: obj => common.formatGridNumber(obj.Stake.Full) },
-                { data: obj => obj.TransDate },
-            ],
-        });
+                    $("td:lt(10)", row).remove();
 
-        ou_away_ticket.DataTable({
-            ordering: false,
-            paging: false,
-            dom: "t<'pagination'<'page-size'lp>i>",
-            language: common.language,
-            scrollY: '20vh',
-            scrollCollapse: true,
-            columnDefs: [
-                { targets: "_all", defaultContent: "-" },
-                { targets: [-2, -3, -4, -5], className: "text-right" }
-            ],
-            columns: [
-                { data: obj => obj.Username },
-                { data: obj => (obj.Evidences || []).join(", ") },
-                { data: obj => obj.DangerousLevel },
-                { data: obj => obj.Currency },
-                { data: obj => obj.BetId },
-                { data: obj => common.formatGridNumber(obj.Odds) },
-                { data: obj => common.formatGridNumber(obj.Stake.Virtual) },
-                { data: obj => common.formatGridNumber(obj.Stake.ComPT) },
-                { data: obj => common.formatGridNumber(obj.Stake.Full) },
-                { data: obj => obj.TransDate },
-            ],
+                    $(row).prepend(td);
+                }
+                else if (obj.Away.Username == null) {
+                    var td = $("<td colspan='10'></td>");
+
+                    $("td:gt(10)", row).remove();
+
+                    $(row).append(td);
+                }
+            },
         });
     }
     else {

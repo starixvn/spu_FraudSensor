@@ -1,3 +1,3 @@
 ﻿$(function () {
-    $.fn.dataTable.ext.errMode = "none";
+    $.fn.dataTable.ext.errMode = "alert";
 });

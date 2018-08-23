@@ -18,7 +18,6 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Threading.Tasks;
 
     public class FraudCaseDetailsService : IFraudCaseDetailsService
     {
@@ -378,13 +377,13 @@
             return tsk.Result ?? Enumerable.Empty<CustomerEvidence>();
         }
 
-        public async Task<(ArbitrageGroupTicketList hdp, ArbitrageGroupTicketList ou)> GetArbitrageTickets(int matchId, DateTime eventDate)
+        public IEnumerable<ArbitrageGroupTicketList> GetArbitrageTickets(int matchId, DateTime eventDate)
         {
             var rawData = DataService.GetData<TicketInfo>(new GetArbitrageTicketCriteria { MatchId = matchId, EventDate = eventDate });
 
             var url = AppSettings.Get("FPS_WEBAPI_GET_CUSTOMER_EVIDENCE");
 
-            var evidences = await ApiHelper.Post<IEnumerable<CustomerEvidence>>(url, new CustomerEvidenceList { CustIdList = string.Join(",", rawData.Select(t => t.CustId).Distinct()) }).ConfigureAwait(false);
+            var evidences = ApiHelper.Post<IEnumerable<CustomerEvidence>>(url, new CustomerEvidenceList { CustIdList = string.Join(",", rawData.Select(t => t.CustId).Distinct()) }).Result;
 
             var evidenceDict = evidences.ToLookup(c => c.CustId, c => c.EvidenceName);
 
@@ -433,9 +432,11 @@
                 Username = "physics"
             });
 
-            var a = new ArbitrageGroupTicketList { Home = d, Away = d };
-
-            return (a, a);
+            return new[]
+            {
+                new ArbitrageGroupTicketList{BettypeName = "HDP", Score = "1-0", Handicap = 0.25M, Home = d, Away = d.Take(45) },
+                new ArbitrageGroupTicketList{BettypeName = "O/U", Score = "1-0", Handicap = 0.25M, Home = d.Take(45), Away = d },
+            };
         }
     }
 }

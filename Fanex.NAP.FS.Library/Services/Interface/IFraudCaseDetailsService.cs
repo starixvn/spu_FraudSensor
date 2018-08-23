@@ -33,7 +33,8 @@
 
         byte[] ExportToExcelIpTickets(string ip, string template, bool isShowSpecialCurrencies);
         
-        Task<(ArbitrageGroupTicketList hdp, ArbitrageGroupTicketList ou)> GetArbitrageTickets(int matchId, DateTime eventDate);
+        IEnumerable<ArbitrageGroupTicketList> GetArbitrageTickets(int matchId, DateTime eventDate);
 
+        byte[] ExportToExcelIpTickets(string ip, string template);
     }
 }

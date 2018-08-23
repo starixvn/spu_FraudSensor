@@ -81,7 +81,7 @@ namespace Fanex.NAP.FS.Websites.Controllers
             return View("FraudCaseDetails/Index", model);
         }
 
-        public async Task<ActionResult> GetFraudCaseTicketDetails(int fraudCaseId, int matchId, DateTime eventDate)
+        public ActionResult GetFraudCaseTicketDetails(int fraudCaseId, int matchId, DateTime eventDate)
         {
             var data =
                 _fraudCaseDetailService.GetTicketDetails(matchId, fraudCaseId, eventDate, IsShowSpecialCurrencies)
@@ -91,18 +91,18 @@ namespace Fanex.NAP.FS.Websites.Controllers
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
-        public async Task<ActionResult> GetFraudCaseCustomerDetails(int fraudCaseId, int matchId, DateTime eventDate)
+        public ActionResult GetFraudCaseCustomerDetails(int fraudCaseId, int matchId, DateTime eventDate)
         {
             var data = _fraudCaseDetailService.GetCustomerDetails(matchId, fraudCaseId, eventDate, IsShowSpecialCurrencies);
 
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
-        public async Task<ActionResult> GetArbitrageTicketDetails(int matchId, DateTime eventDate)
+        public  ActionResult GetArbitrageTicketDetails(int matchId, DateTime eventDate)
         {
-            var (hdp, ou) = await _fraudCaseDetailService.GetArbitrageTickets(matchId, eventDate).ConfigureAwait(false);
+            var data = _fraudCaseDetailService.GetArbitrageTickets(matchId, eventDate);
         
-            return Json(new { Hdp = hdp, OU = ou });
+            return Json(data);
         }
 
         public ActionResult ExportExcelForDetail(int fraudCaseId, int matchId, DateTime eventDate)
