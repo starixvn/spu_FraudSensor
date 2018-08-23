@@ -12,6 +12,7 @@
     using Fanex.NAP.FS.Library.Criteria.MatchMonitor.FraudCaseDetails;
     using Fanex.NAP.FS.Library.DTO;
     using Fanex.NAP.FS.Library.ExcelConfig.MatchMonitor;
+    using Fanex.NAP.FS.Library.Models;
     using Fanex.NAP.FS.Library.Models.MatchMonitor;
     using Fanex.NAP.FS.Library.Models.MatchMonitor.FraudCaseDetails;
     using Fanex.NAP.FS.Library.ViewModels.MatchMonitor.FraudCaseDetails;
@@ -404,7 +405,10 @@
                         ComPT = t.ComPTStake,
                         Virtual = t.VirtualStake,
                         Full = t.FullStake
-                    }
+                    },
+                    BettypeName = CachedRef.GetBettypeName(t.BetTypeId),
+                    Handicap = (double)(t.Handicap1 - t.Handicap2),
+                    Score = $"{t.LiveHomeScore} - {t.LiveAwayScore}"
                 })
                 .Select(g => new ArbitrageGroupTicketList
                 {
@@ -415,28 +419,37 @@
                     Score = $"{g.Key.Item3} - {g.Key.Item4}"
                 });
 
-            var d = Enumerable.Range(0, 50).Select(_ => new ArbitrageTicket
-            {
-                BetId = 1000,
-                Currency = "Energy",
-                DangerousLevel = 5,
-                Evidences = new[] { "electron", "positron" },
-                Odds = 0.855866M,
-                Stake = new ArbitrageStake
-                {
-                    ComPT = 9999,
-                    Full = 7594,
-                    Virtual = 8434
-                },
-                TransDate = eventDate.ToString("MMM/dd/yyyy <br/> hh:mm:ss tt"),
-                Username = "physics"
-            });
+            return data;
+        }
 
-            return new[]
-            {
-                new ArbitrageGroupTicketList{BettypeName = "HDP", Score = "1-0", Handicap = 0.25M, Home = d, Away = d.Take(45) },
-                new ArbitrageGroupTicketList{BettypeName = "O/U", Score = "1-0", Handicap = 0.25M, Home = d.Take(45), Away = d },
-            };
+        public byte[] ExportArbitrageExcel(int matchId, DateTime eventDate, string templatePath)
+        {
+            var fraudCaseId = (int)FraudCaseId.Arbitrage;
+
+            var legend = GetInfo(matchId, (int)FraudCaseId.Arbitrage, eventDate);
+
+            var tickets = GetArbitrageTickets(matchId, eventDate).SelectMany(obj => obj.Home.Concat(obj.Away));
+            var customers = GetCustomerDetails(matchId, fraudCaseId, eventDate);
+
+            var wb =
+                ExcelUtilities.GetWorkbook(templatePath)
+                    .RenderSheet(new ArbitrageConfig(tickets.Count()), legend, tickets, null)
+                    .RenderSheet(new CustomerDetailConfig(customers.Count()), legend, customers, null);
+
+            return wb.ToBytes();
+        }
+
+        public byte[] ExportArbitrageExcel(int matchId, DateTime eventDate, string templatePath, Func<ArbitrageGroupTicketList, bool> filter)
+        {
+            var legend = GetInfo(matchId, (int)FraudCaseId.Arbitrage, eventDate);
+
+            var tickets = GetArbitrageTickets(matchId, eventDate).Where(filter).SelectMany(obj => obj.Home.Concat(obj.Away));
+
+            var wb =
+                ExcelUtilities.GetWorkbook(templatePath)
+                    .RenderSheet(new ArbitrageConfig(tickets.Count(), true), legend, tickets, null);
+
+            return wb.ToBytes();
         }
     }
 }

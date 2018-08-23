@@ -281,11 +281,27 @@
 
         ticket_grid.DataTable().rows.add(data).draw();
 
+        var n = (json || []).reduce((total, obj) => total + obj.Home.length + obj.Away.length, 0);
+
+        $("#tickets").text(`By Tickets (${n})`);
+
         ticketLoad = true;
 
         if (ticketLoad && customerLoad) {
             common.closeLoading();
         }
+    }
+
+    function renderArbitrageExcel(e) {
+        var url = common.modifyRelativeUrl("/MatchMonitor/ExportArbitrageWithFilterExcel");
+
+        var obj = e.data;
+
+        parameters.bettype = obj.BettypeName;
+        parameters.score = obj.Score;
+        parameters.handicap = obj.Handicap;
+
+        common.downloadFile(url, parameters);
     }
 
     if (isArbitrage) {
@@ -298,10 +314,12 @@
             scrollCollapse: true,
             columnDefs: [
                 { targets: "_all", defaultContent: "-" },
+                { targets: [-5, -4, -3, -2, 5, 6, 7, 8, 9], className: "text-right" },
+                { targets: [-1, 1, 2, 3, 4, 9, 12, 13, 14, 15], className: "text-center"},
             ],
             columns: [
                 { data: obj => obj.Home.Username, width: "120px" },
-                { data: obj => (obj.Home.Evidences || []).join(", "), width: "128px" },
+                { data: obj => common.makeWrapString((obj.Home.Evidences || []).join(", "), 18), width: "128px" },
                 { data: obj => obj.Home.DangerousLevel, width: "80px", className: "text-center" },
                 { data: obj => obj.Home.Currency, width: "70px", className: "text-center" },
                 { data: obj => obj.Home.BetId, width: "100px", className: "text-center" },
@@ -312,7 +330,7 @@
                 { data: obj => obj.Home.TransDate, width: "82px", className: "text-center" },
                 { data: obj => "", className: "plit-table", width: "5px" },
                 { data: obj => obj.Away.Username, width: "120px" },
-                { data: obj => (obj.Away.Evidences || []).join(", "), width: "128px" },
+                { data: obj => common.makeWrapString((obj.Away.Evidences || []).join(", "), 18), width: "128px" },
                 { data: obj => obj.Away.DangerousLevel, width: "80px", className: "text-center" },
                 { data: obj => obj.Away.Currency, width: "70px", className: "text-center" },
                 { data: obj => obj.Away.BetId, width: "100px", className: "text-center" },
@@ -325,6 +343,8 @@
             createdRow: function (row, obj) {
                 if (obj.key) {
                     var td = $(`<td colspan='21' class='group'><span class="bage">${obj.BettypeName} ${obj.Handicap}</span> <span class="bage">${obj.Score}</span> <button class="button -export"><span class="icon-export-excel"></span></button></td>`);
+
+                    $(".icon-export-excel", td).click(obj, renderArbitrageExcel);
 
                     $(row).empty().html(td);
                 }

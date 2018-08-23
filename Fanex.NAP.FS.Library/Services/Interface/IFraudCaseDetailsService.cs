@@ -36,5 +36,9 @@
         IEnumerable<ArbitrageGroupTicketList> GetArbitrageTickets(int matchId, DateTime eventDate);
 
         byte[] ExportToExcelIpTickets(string ip, string template);
+
+        byte[] ExportArbitrageExcel(int matchId, DateTime eventDate, string templatePath);
+
+        byte[] ExportArbitrageExcel(int matchId, DateTime eventDate, string templatePath, Func<ArbitrageGroupTicketList, bool> filter);
     }
 }

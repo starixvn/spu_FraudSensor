@@ -5,13 +5,13 @@ namespace Fanex.NAP.FS.Websites.Controllers
     using Core.Service.Impl;
     using Fanex.NAP.Core.Web.Attribute;
     using Fanex.NAP.FS.Library.Criteria.MatchMonitor;
+    using Fanex.NAP.FS.Library.Models;
     using Library.Service;
     using Service;
     using Service.MatchMonitor;
     using System;
     using System.Configuration;
     using System.Linq;
-    using System.Threading.Tasks;
     using System.Web.Mvc;
 
     [NapAuth(FunctionKey = FSFunctionKeys.MatchMonitoring, Policy = Core.Business.Constant.Policy.Read)]
@@ -98,19 +98,29 @@ namespace Fanex.NAP.FS.Websites.Controllers
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
-        public  ActionResult GetArbitrageTicketDetails(int matchId, DateTime eventDate)
+        public ActionResult GetArbitrageTicketDetails(int matchId, DateTime eventDate)
         {
             var data = _fraudCaseDetailService.GetArbitrageTickets(matchId, eventDate);
-        
+
             return Json(data);
         }
 
         public ActionResult ExportExcelForDetail(int fraudCaseId, int matchId, DateTime eventDate)
         {
-            var template = Server.MapPath("~/App_Data/Excel Template/MatchMonitor/FraudCaseDetail/template.xlsx");
+            if (fraudCaseId == (int)FraudCaseId.Arbitrage)
+            {
+                var template = Server.MapPath("~/App_Data/Excel Template/MatchMonitor/FraudCaseDetail/arbitrage.xlsx");
 
-            var fileName = string.Format("FraudCaseDetails_{0}.xlsx", DateTime.Today.ToString("yyyyMMdd"));
+                var fileName = string.Format("FraudCaseDetails_{0}.xlsx", DateTime.Today.ToString("yyyyMMdd"));
+                return File(_fraudCaseDetailService.ExportArbitrageExcel(matchId, eventDate, template), "application/vnd.ms-excel", fileName);
+            }
+            else
+            {
+                var template = Server.MapPath("~/App_Data/Excel Template/MatchMonitor/FraudCaseDetail/template.xlsx");
+
+                var fileName = string.Format("FraudCaseDetails_{0}.xlsx", DateTime.Today.ToString("yyyyMMdd"));
             return File(_fraudCaseDetailService.ExportExcel(matchId, fraudCaseId, eventDate, template, IsShowSpecialCurrencies), "application/vnd.ms-excel", fileName);
+            }
         }
 
         [HttpPost]
@@ -144,6 +154,17 @@ namespace Fanex.NAP.FS.Websites.Controllers
             var fileName = string.Format("TicketsofIP_{0}_{1}", ip, DateTime.Today.ToString("yyyyMMdd"));
 
             return ExcelFile(_fraudCaseDetailService.ExportToExcelIpTickets(ip, template, IsShowSpecialCurrencies), fileName);
+        }
+
+        public ActionResult ExportArbitrageWithFilterExcel(int matchId, DateTime eventDate, string bettype, string score, double handicap)
+        {
+            var template = Server.MapPath("~/App_Data/Excel Template/MatchMonitor/FraudCaseDetail/arbitrage.xlsx");
+
+            var fileName = string.Format("FraudCaseDetails_{0}.xlsx", DateTime.Today.ToString("yyyyMMdd"));
+
+            var content = _fraudCaseDetailService.ExportArbitrageExcel(matchId, eventDate, template, obj => obj.BettypeName == bettype && obj.Score == score && (double)obj.Handicap == handicap);
+
+            return ExcelFile(content, fileName);
         }
     }
 }

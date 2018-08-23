@@ -21,5 +21,11 @@
         public string TransDate { get; set; }
 
         public string BetTeam { get; set; }
+
+        public string BettypeName { get; set; }
+
+        public double Handicap { get; set; }
+
+        public string Score { get; set; }
     }
 }

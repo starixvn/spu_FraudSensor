@@ -794,6 +794,7 @@
     <Content Include="App_Data\Excel Template\DailyDataCapture\template.xlsx" />
     <Content Include="App_Data\Excel Template\Check Bet Report\template.xlsx" />
     <Content Include="App_Data\Excel Template\CustomerMonitor\template.xlsx" />
+    <Content Include="App_Data\Excel Template\MatchMonitor\FraudCaseDetail\arbitrage.xlsx" />
     <Content Include="App_Data\Excel Template\CustomerMonitor\CustomerDetails\template.xlsx" />
     <None Include="bundleconfig.json" />
     <Content Include="fonts\Fraud-Sensor.eot" />
