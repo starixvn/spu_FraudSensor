@@ -48,8 +48,8 @@
              SpName="FS_FraudCase_Arbitrage_PreCondition"
              DbName="DBFS.FraudSensor.bodbSPUNet"/>
 
-    <Setting Key="FS_FraudCase_Arbitrage_PreRule"
-         SpName="FS_FraudCase_Arbitrage_PreRule"
+    <Setting Key="FS_FraudCase_Arbitrage_CleanUp"
+         SpName="FS_FraudCase_Arbitrage_CleanUp"
          DbName="DBFS.FraudSensor.bodbSPUNet"/>
 
     <Setting Key="FS_FraudCase_Arbitrage_Rule"

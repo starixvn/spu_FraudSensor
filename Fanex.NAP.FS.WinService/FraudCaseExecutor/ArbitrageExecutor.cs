@@ -3,7 +3,6 @@
     using Fanex.NAP.FS.Library.Core.BaseClasses;
     using Fanex.NAP.FS.Library.Core.Helpers.Api;
     using Fanex.NAP.FS.Library.Core.Helpers.Xml;
-    using Fanex.NAP.FS.Library.Core.Utilities;
     using Fanex.NAP.FS.Library.Criteria.FraudSensorTask;
     using Fanex.NAP.FS.Library.DTO;
     using Fanex.NAP.FS.Library.Models.FraudCaseTask;
@@ -13,53 +12,143 @@
     [FraudCase(Library.Models.FraudCaseId.Arbitrage)]
     public class ArbitrageExecutor : FraudCaseExecutor
     {
-        private IEnumerable<int> matches;
-        private readonly int batch = 100;
+        private static IDictionary<ArbitrageGroup, IList<int>> cache = new Dictionary<ArbitrageGroup, IList<int>>();
+
+        private IEnumerable<ArbitrageTicket> tickets;
 
         public ArbitrageExecutor(FraudCase fraudCase) : base(fraudCase)
         {
         }
 
-        protected override void ClearOldResult()
-        {
-            matches = null;
-        }
-
         protected override void ExecutePrecondition()
         {
-            matches = DataService.GetData<int>(new ArbitragePreconditionCriteria());
+            tickets = DataService.GetData<ArbitrageTicket>(new ArbitragePreconditionCriteria());
         }
 
         protected override void ExecuteRule()
         {
-            if (matches != null && matches.Any())
-            {
-                matches
-                .Chunk(batch)
-                .AsParallel()
-                .SelectMany(ids => DataService.GetData<ArbitrageMatch>(new ArbitragePreRuleCriteria { MatchIds = string.Join(",", ids) }))
-                .GroupBy(m => m.MatchId, m => m.CustId)
-                .ForAll(ClusterData);
-            }
+#if DEBUG
+            tickets
+               .GroupBy(t => new ArbitrageGroup
+               {
+                   Bettype = t.Bettype,
+                   Handicap = t.Handicap,
+                   MatchId = t.MatchId,
+                   TotalScore = t.LiveAwayScore + t.LiveHomeScore
+               })
+               .All(g =>
+               {
+                   GroupData(g.Key, g);
+                   return true;
+               });
+#else
+         tickets
+           .AsParallel()
+           .GroupBy(t => new ArbitrageGroup
+           {
+               Bettype = t.Bettype,
+               Handicap = t.Handicap,
+               MatchId = t.MatchId,
+               TotalScore = t.LiveAwayScore + t.LiveHomeScore
+           })
+           .ForAll(g => GroupData(g.Key, g));
+#endif
         }
 
         protected override void TakeNextAction()
         {
         }
 
-        private void ClusterData(IGrouping<int, int> custids)
+        protected override void ClearOldResult()
         {
-            var matchId = custids.Key;
-            var data = ApiHelper.Post<IEnumerable<int[]>>(AppSettings.MS_WEBAPI_GROUP_CUSTOMER, custids).Result
-                .SelectMany((arr, i) => arr.Select(id => new ArbitrageGroup { CustId = id, GroupId = i })).ToXmlString();
+            var criteria = new ArbitrageCleanUpCriteria
+            {
+                Matches = cache.Keys.ToXmlString()
+            };
+
+            var finishedGroups = DataService.GetData<ArbitrageGroup>(criteria);
+
+            foreach (var item in finishedGroups)
+            {
+                cache.Remove(item);
+            }
+        }
+
+        private static void GroupData(ArbitrageGroup group, IEnumerable<ArbitrageTicket> tickets)
+        {
+            var previous = GetCachedGroup(group);
+
+            var newCustids = tickets.Select(t => t.CustId).Distinct();
+
+            var groups = GroupCustomer(newCustids.Concat(previous).Distinct())
+                .ToDictionary(h => GetGroupId(h, previous));
+
+            var customers = IndexCustomer(newCustids, groups);
 
             var criteria = new ArbitrageRuleCriteria
             {
-                MatchIds = matchId.ToString(),
-                Associations = data
+                Matches = tickets.ToXmlString(),
+                Associations = customers.ToXmlString()
             };
 
             DataService.Execute(criteria);
+        }
+
+        private static IList<int> GetCachedGroup(ArbitrageGroup group)
+        {
+            if (!cache.ContainsKey(group))
+            {
+                cache.Add(group, new List<int>());
+            }
+
+            return cache[group];
+        }
+
+        private static IEnumerable<HashSet<int>> GroupCustomer(IEnumerable<int> custids)
+        {
+            return ApiHelper.Post<IEnumerable<HashSet<int>>>(AppSettings.MS_WEBAPI_GROUP_CUSTOMER, custids).Result;
+        }
+
+        private static int GetGroupId(HashSet<int> group, IList<int> cachedGroups)
+        {
+            foreach (var item in cachedGroups)
+            {
+                if (group.Contains(item))
+                {
+                    return item;
+                }
+            }
+
+            var id = group.First();
+
+            cachedGroups.Add(id);
+
+            return id;
+        }
+
+        private static IEnumerable<ArbitrageCustomer> IndexCustomer(IEnumerable<int> custids, IDictionary<int, HashSet<int>> groups)
+        {
+            foreach (var item in custids)
+            {
+                var groupId = groups.FirstOrDefault(kv => kv.Value.Contains(item)).Key;
+
+                if (groupId == 0)
+                {
+                    yield return new ArbitrageCustomer
+                    {
+                        CustId = item,
+                        GroupId = item
+                    };
+                }
+                else
+                {
+                    yield return new ArbitrageCustomer
+                    {
+                        CustId = item,
+                        GroupId = groupId
+                    };
+                }
+            }
         }
     }
 }

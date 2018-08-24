@@ -4,7 +4,7 @@
 
     public class ArbitrageRuleCriteria : CriteriaBase
     {
-        public string MatchIds { get; set; }
+        public string Matches { get; set; }
 
         public string Associations { get; set; }
 

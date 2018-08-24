@@ -240,7 +240,7 @@
     <Compile Include="Criteria\FraudSensorTask\BetsNearGoalPreconditionCriteria.cs" />
     <Compile Include="Criteria\FraudSensorTask\BetsNearGoalRuleCriteria.cs" />
     <Compile Include="Criteria\FraudSensorTask\ArbitragePreconditionCriteria.cs" />
-    <Compile Include="Criteria\FraudSensorTask\ArbitragePreRuleCriteria.cs" />
+    <Compile Include="Criteria\FraudSensorTask\ArbitrageCleanUpCriteria.cs" />
     <Compile Include="Criteria\FraudSensorTask\ArbitrageRuleCriteria.cs" />
     <Compile Include="Criteria\FraudSensorTask\CheckBetRuleCriteria.cs" />
     <Compile Include="Criteria\FraudSensorTask\DailyDataCaptureRuleCriteria.cs" />
@@ -331,8 +331,9 @@
     <Compile Include="Models\DailyDataCapture\CapturedMatch.cs" />
     <Compile Include="Models\DBResult.cs" />
     <Compile Include="Models\FraudCaseId.cs" />
+    <Compile Include="Models\FraudCaseTask\ArbitrageCustomer.cs" />
     <Compile Include="Models\FraudCaseTask\ArbitrageGroup.cs" />
-    <Compile Include="Models\FraudCaseTask\ArbitrageMatch.cs" />
+    <Compile Include="Models\FraudCaseTask\ArbitrageTicket.cs" />
     <Compile Include="Models\FraudCase\DelayedGoal\Customer.cs" />
     <Compile Include="Models\FraudCase\FlaggedAccount\FlaggedCustomer.cs" />
     <Compile Include="Models\FraudCase\FraudCase.cs" />
