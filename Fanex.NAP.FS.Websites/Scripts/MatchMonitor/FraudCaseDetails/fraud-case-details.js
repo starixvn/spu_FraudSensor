@@ -281,9 +281,13 @@
 
         ticket_grid.DataTable().rows.add(data).draw();
 
-        var n = (json || []).reduce((total, obj) => total + obj.Home.length + obj.Away.length, 0);
+        var n = (json || []).reduce((total, obj) => total + Math.max(obj.Home.length, obj.Away.length), 0);
 
         $("#tickets").text(`By Tickets (${n})`);
+
+        if (n != 0) {
+            $("#DataTables_Table_0_info").text(`Displaying 1 to ${n} of ${n} item(s)`);
+        }
 
         ticketLoad = true;
 

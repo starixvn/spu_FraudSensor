@@ -413,8 +413,8 @@
                 .Select(g => new ArbitrageGroupTicketList
                 {
                     BettypeName = CachedRef.GetBettypeName(g.Key.Item1),
-                    Away = g.Where(t => t.BetTeam == "a"),
-                    Home = g.Where(t => t.BetTeam == "b"),
+                    Away = g.Where(t => t.BetTeam == "h"),
+                    Home = g.Where(t => t.BetTeam == "a"),
                     Handicap = g.Key.Item2,
                     Score = $"{g.Key.Item3} - {g.Key.Item4}"
                 });
