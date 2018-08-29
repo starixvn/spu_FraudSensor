@@ -21,8 +21,6 @@ BEGIN
 	SET NOCOUNT ON;	
 
 	-- INIT
-	
-	-- INIT
 	DECLARE @CurrentTime DATETIME;
 	
 	SET @CurrentTime = GETDATE();
@@ -45,6 +43,7 @@ BEGIN
 	CREATE TABLE #tmpMatchScoreHDP
 	(
 			MatchId			INT
+		,	BetType			INT
 		,	Handicap		MONEY
 		,	TotalScores		INT
 		,	MaxTransId		BIGINT
@@ -52,6 +51,7 @@ BEGIN
 
 	CREATE CLUSTERED INDEX	#CIX_tmpMatchScoreHDPIdx ON #tmpMatchScoreHDP (
 			MatchId			ASC
+		,	BetType			ASC
 		,	Handicap		ASC
 		,	TotalScores		ASC
 	);
@@ -67,8 +67,9 @@ BEGIN
 			AND m.kickofftime <= @CurrentTime
 			AND l.isTest = 0;
 				
-	INSERT INTO #tmpMatchScoreHDP(MatchId, Handicap, TotalScores, MaxTransId)
+	INSERT INTO #tmpMatchScoreHDP(MatchId, BetType, Handicap, TotalScores, MaxTransId)
 	SELECT	DISTINCT b.MatchId
+		,	b.bettype
 		,	(b.hdp1 - b.hdp2)
 		,	(b.livehomescore + b.liveawayscore)
 		,	MAX(b.transid)
@@ -76,10 +77,11 @@ BEGIN
 		INNER JOIN #tmpMatches AS m WITH(NOLOCK) ON b.matchid = m.MatchId
 	WHERE b.bettype IN (1, 3, 7, 8)
 		AND b.Currency NOT IN (20, 27, 28)
-	GROUP BY b.MatchId, (b.hdp1 - b.hdp2), (b.livehomescore + b.liveawayscore);
+	GROUP BY b.MatchId, b.bettype, (b.hdp1 - b.hdp2), (b.livehomescore + b.liveawayscore);
 
-	INSERT INTO [dbo].[ArbitrageMatchScoreHDP](MatchId, Handicap, TotalScores, MaxTransId, HasScanned, UpdatedDate)
+	INSERT INTO [dbo].[ArbitrageMatchScoreHDP](MatchId, BetType, Handicap, TotalScores, MaxTransId, HasScanned, UpdatedDate)
 	SELECT	b.MatchId
+		,	b.BetType
 		,	b.Handicap
 		,	b.TotalScores
 		,	b.MaxTransId
@@ -89,7 +91,7 @@ BEGIN
 		LEFT JOIN [dbo].[ArbitrageMatchScoreHDP] AS ms WITH(NOLOCK) ON b.matchid = ms.MatchId 
 			AND b.Handicap = ms.Handicap AND b.TotalScores = ms.TotalScores
 	WHERE ms.MatchId IS NULL
-	GROUP BY b.matchid, b.Handicap, b.TotalScores, b.MaxTransId;
+	GROUP BY b.matchid, b.BetType, b.Handicap, b.TotalScores, b.MaxTransId;
 
 	-- RETURN DATA
 	SELECT DISTINCT [MatchId] = ms.MatchId
