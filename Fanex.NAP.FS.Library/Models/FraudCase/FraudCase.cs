@@ -153,9 +153,9 @@
 
                     result.TicketRules = new[]
                     {
-                        "Bet type = HDP, OU, 1H HDP, 1H OU",
-                        "Customer/Group bet on both sides",
-                        "Total stake of each side >= 500RM",
+                        "Bet type = HDP, O/U, 1H HDP, 1H O/U",
+                        "Customer/Group bet on both sides in a same HDP & Score",
+                        "Total stake of each side >= 500RM (Company TO after extra PT)",
                         "Currency <> UUS, H, C"
                     };
 
