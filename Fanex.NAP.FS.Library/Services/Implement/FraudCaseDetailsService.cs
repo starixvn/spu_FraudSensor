@@ -397,7 +397,7 @@
                     DangerousLevel = t.DangerLevel,
                     Evidences = evidenceDict[(int)t.CustId],
                     Odds = t.Odds,
-                    TransDate = t.TransDate.ToString("MMM/dd/yyyy <br/> hh:mm:ss tt"),
+                    TransDate = t.TransDate.ToString("MMM dd, yyyy <br/> hh:mm:ss tt"),
                     Username = t.UserName,
                     BetTeam = t.BetTeam,
                     Stake = new ArbitrageStake

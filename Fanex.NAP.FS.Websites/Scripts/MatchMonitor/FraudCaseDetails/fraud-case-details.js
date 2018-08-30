@@ -326,8 +326,8 @@
                 { targets: [3, 14], width: "70px" },
                 { targets: [4, 15], width: "100px" },
                 { targets: [5, 16], width: "42px" },
-                { targets: [6, 7, 8, 17, 18, 19], width: "86px" },
-                { targets: [9, 20], width: "82px" }
+                { targets: [6, 7, 8, 17, 18, 19], width: "82px" },
+                { targets: [9, 20], width: "100px" }
             ],
             columns: [
                 { data: obj => obj.Home.Username },
@@ -441,15 +441,15 @@
         scrollCollapse: true,
         columns: [
             { data: (obj, type, set, meta) => meta.row + 1, className: "text-center", width: "40px" },
-            { data: obj => obj.Member },
+            { data: obj => obj.Member, width: "200px" },
             { data: obj => obj.CurrencyName, className: "text-center", width: "20px" },
             { data: obj => obj.Tickets, className: "text-right", width: "40px" },
-            { data: obj => numeral(obj.TotalStake).format("0,0.00"), className: "text-right" },
-            { data: obj => obj.TotalWinLoss >= 0 ? numeral(obj.TotalWinLoss).format("0,0.00") : `<span class='text-red'>${numeral(obj.TotalWinLoss).format("0,0.00")}</span>`, className: "text-right" },
+            { data: obj => numeral(obj.TotalStake).format("0,0.00"), className: "text-right", width: "100px" },
+            { data: obj => obj.TotalWinLoss >= 0 ? numeral(obj.TotalWinLoss).format("0,0.00") : `<span class='text-red'>${numeral(obj.TotalWinLoss).format("0,0.00")}</span>`, className: "text-right", width: "100px" },
             { data: obj => obj.Evidence != null && obj.Evidence.length > 78 ? `<span title='${obj.Evidence}'>${obj.Evidence.substring(0, 75)}...</span>` : obj.Evidence, width: "500px" },
             { data: obj => obj.AssociatedAccounts, className: "text-right", width: "50px" },
             { defaultContent: renderCustomerAction(), className: "has-icon text-center", width: "70px" }
-        ],
+        ]
     });
 
     load_ticket_grid();
