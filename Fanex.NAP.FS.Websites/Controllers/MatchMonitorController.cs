@@ -160,7 +160,7 @@ namespace Fanex.NAP.FS.Websites.Controllers
         {
             var template = Server.MapPath("~/App_Data/Excel Template/MatchMonitor/FraudCaseDetail/arbitrage.xlsx");
 
-            var fileName = string.Format("FraudCaseDetails_{0}.xlsx", DateTime.Today.ToString("yyyyMMdd"));
+            var fileName = string.Format("FraudCaseDetails_{0}", DateTime.Today.ToString("yyyyMMdd"));
 
             var content = _fraudCaseDetailService.ExportArbitrageExcel(matchId, eventDate, template, obj => obj.BettypeName == bettype && obj.Score == score && (double)obj.Handicap == handicap);
 

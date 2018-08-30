@@ -219,7 +219,7 @@
 
         var obj = ticket_grid.DataTable().row(parent).data();
 
-        var url = common.modifyRelativeUrl("/MatchMonitor/GetTicketFromIP")
+        var url = common.modifyRelativeUrl("/MatchMonitor/GetTicketFromIP");
 
         var p = {};
 
