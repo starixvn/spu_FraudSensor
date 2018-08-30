@@ -10,6 +10,7 @@ namespace Fanex.NAP.FS.Library.Models.FraudCaseTask
     {
         public int MatchId { get; set; }
 
+        [XName("BetType")]
         public int Bettype { get; set; }
 
         public int TotalScore { get; set; }

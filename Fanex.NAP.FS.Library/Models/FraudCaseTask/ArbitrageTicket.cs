@@ -9,6 +9,7 @@
 
         public int CustId { get; set; }
 
+        [XName("BetType")]
         public int Bettype { get; set; }
 
         public int LiveHomeScore { get; set; }
