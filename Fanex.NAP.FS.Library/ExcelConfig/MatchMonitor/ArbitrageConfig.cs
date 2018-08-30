@@ -15,7 +15,7 @@
             SheetName = string.Format("By Tickets ({0})", ticketNo);
         }
 
-        public ArbitrageConfig(int ticketNo, bool delete2nd):this(ticketNo)
+        public ArbitrageConfig(int ticketNo, bool delete2nd) : this(ticketNo)
         {
             delete2Nd = delete2nd;
         }
@@ -31,7 +31,9 @@
             row.GetCell(idx++).SetCellValue(data.Username);
             row.GetCell(idx++).SetCellValue(string.Join(",", data.Evidences));
             row.GetCell(idx++).SetCellValue(data.DangerousLevel);
+            row.GetCell(idx++).SetCellValue(data.Currency);
             row.GetCell(idx++).SetCellValue(data.BetId.ToString());
+            row.GetCell(idx++).SetCellValue(data.BetTeam == "h" ? "Home" : "Away");
             row.GetCell(idx++).SetCellValue(data.BettypeName);
             row.GetCell(idx++).SetCellValue(data.Handicap);
             row.GetCell(idx++).SetCellValue(data.Score);

@@ -356,7 +356,7 @@
                 if (obj.key) {
                     var td = $(`<td colspan='21' class='group'><span class="bage">${obj.BettypeName} ${obj.Handicap}</span> <span class="bage">${obj.Score}</span> <button class="button -export"><span class="icon-export-excel"></span></button></td>`);
 
-                    $(".icon-export-excel", td).click(obj, renderArbitrageExcel);
+                    $(".button.-export", td).click(obj, renderArbitrageExcel);
 
                     $(row).empty().html(td);
                 }

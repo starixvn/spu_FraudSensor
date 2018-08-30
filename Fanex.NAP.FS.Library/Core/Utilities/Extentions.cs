@@ -9,12 +9,24 @@ namespace Fanex.NAP.FS.Library.Core.Utilities
     {
         public static IEnumerable<IEnumerable<T>> Chunk<T>(this IEnumerable<T> source, int chunksize)
         {
-            while (source.Any())
-            {
-                yield return source.Take(chunksize);
+            var q = new Queue<T>();
 
-                source = source.Skip(chunksize);
+            foreach (var item in source)
+            {
+                // check if q is full
+                if(q.Count == chunksize)
+                {
+                    var ret = q;
+                    q = new Queue<T>();
+                    
+                    yield return ret;
+                }
+
+                // enqueue item
+                q.Enqueue(item);
             }
+
+            yield return q;
         }
     }
 }
