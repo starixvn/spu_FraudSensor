@@ -323,11 +323,11 @@
                 { targets: [0, 11], width: "120px" },
                 { targets: [1, 12], width: "128px" },
                 { targets: [2, 13], width: "80px" },
-                { targets: [3, 14], width: "70px" },
+                { targets: [3, 14], width: "65px" },
                 { targets: [4, 15], width: "100px" },
                 { targets: [5, 16], width: "42px" },
                 { targets: [6, 7, 8, 17, 18, 19], width: "82px" },
-                { targets: [9, 20], width: "100px" }
+                { targets: [9, 20], width: "102px" }
             ],
             columns: [
                 { data: obj => obj.Home.Username },
