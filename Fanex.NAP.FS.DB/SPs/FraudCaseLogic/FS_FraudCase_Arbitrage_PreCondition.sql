@@ -108,7 +108,7 @@ BEGIN
 						WHERE ms.HasScanned = 0
 						GROUP BY ms.MatchId
 					) AS t ON b.matchid = t.MatchId
-	WHERE b.transid > t.TransId
+	WHERE b.transid >= t.TransId
 		AND b.bettype IN (1, 3, 7, 8)
 		AND b.Currency NOT IN (20, 27, 28);
 
