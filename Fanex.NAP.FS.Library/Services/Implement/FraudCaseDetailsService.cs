@@ -389,7 +389,7 @@
             var evidenceDict = evidences.ToLookup(c => c.CustId, c => c.EvidenceName);
 
             var data =
-                rawData.AsParallel()
+                rawData
                 .GroupBy(t => Tuple.Create(t.BetTypeId, t.Handicap1 - t.Handicap2, t.LiveHomeScore, t.LiveAwayScore), t => new ArbitrageTicket
                 {
                     BetId = t.TransId,
@@ -410,6 +410,7 @@
                     Handicap = (double)(t.Handicap1 - t.Handicap2),
                     Score = $"{t.LiveHomeScore} - {t.LiveAwayScore}"
                 })
+                .OrderBy(g => GetOrder(CachedRef.GetBettypeName(g.Key.Item1)))
                 .Select(g => new ArbitrageGroupTicketList
                 {
                     BettypeName = CachedRef.GetBettypeName(g.Key.Item1),

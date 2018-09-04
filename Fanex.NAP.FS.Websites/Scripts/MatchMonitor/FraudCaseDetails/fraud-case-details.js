@@ -283,7 +283,9 @@
 
         var n = (json || []).reduce((total, obj) => total + Math.max(obj.Home.length, obj.Away.length), 0);
 
-        $("#tickets").text(`By Tickets (${n})`);
+        var t = (json || []).reduce((total, obj) => total + obj.Home.length + obj.Away.length, 0);
+
+        $("#tickets").text(`By Tickets (${t})`);
 
         if (n != 0) {
             $("#DataTables_Table_0_info").text(`Displaying 1 to ${n} of ${n} item(s)`);
@@ -315,6 +317,7 @@
             dom: "t<'pagination'<'page-size'lp>i>",
             language: common.language,
             scrollY: '57vh',
+            scrollX: "1870px",
             scrollCollapse: true,
             columnDefs: [
                 { targets: "_all", defaultContent: "-" },
