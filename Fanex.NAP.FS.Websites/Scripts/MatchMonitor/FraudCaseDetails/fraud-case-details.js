@@ -322,7 +322,7 @@
             columnDefs: [
                 { targets: "_all", defaultContent: "-" },
                 { targets: [-5, -4, -3, -2, 5, 6, 7, 8], className: "text-right" },
-                { targets: [-1, 1, 2, 3, 4, 9, 12, 13, 14, 15], className: "text-center" },
+                { targets: [-1, 2, 3, 4, 9, 13, 14, 15], className: "text-center" },
                 { targets: [0, 11], width: "110px" },
                 { targets: [1, 12], width: "120px" },
                 { targets: [2, 13], width: "80px" },
@@ -357,7 +357,7 @@
             ],
             createdRow: function (row, obj) {
                 if (obj.key) {
-                    var td = $(`<td colspan='21' class='group'><span class="bage">${obj.BettypeName} ${obj.Handicap}</span> <span class="bage">${obj.Score}</span> <button class="button -export"><span class="icon-export-excel"></span></button></td>`);
+                    var td = $(`<td colspan='21' class='group' style='cursor: initial'><span class="bage">${obj.BettypeName} ${obj.Handicap}</span> <span class="bage">${obj.Score}</span> <button class="button -export"><span class="icon-export-excel"></span></button></td>`);
 
                     $(".button.-export", td).click(obj, renderArbitrageExcel);
 
