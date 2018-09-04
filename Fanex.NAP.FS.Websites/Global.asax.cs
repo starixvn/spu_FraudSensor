@@ -37,7 +37,6 @@
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
-            XmlHelper.RegisterXmlTypes();
         }
 
         protected void Application_AuthenticateRequest(object sender, EventArgs e)

@@ -13,18 +13,6 @@
     {
         private static IDictionary<Type, IEnumerable<Func<object, object>>> typeLookup = new Dictionary<Type, IEnumerable<Func<object, object>>>();
 
-        public static void RegisterXmlTypes()
-        {
-            var assemblies = GetAssemblies();
-
-            var types = assemblies.SelectMany(a => a.GetExportedTypes()).Where(typeof(IXml).IsAssignableFrom);
-
-            foreach (var type in types)
-            {
-                RegisterType(type);
-            }
-        }
-
         public static XElement ToXmlObj<T>(this T o) => ToXObject(o, typeof(T));
 
         public static string ToXmlString<T>(this T o) => o.ToXmlObj().ToString();
@@ -58,24 +46,6 @@
         }
 
         public static void RegisterType<T>() => RegisterType(typeof(T));
-
-        private static IEnumerable<Assembly> GetAssemblies()
-        {
-            var main_assembly = Assembly.GetExecutingAssembly();
-
-            var satellite_assemlies =
-                main_assembly
-                .GetReferencedAssemblies()
-                .Where(a => a.Name.Contains("Fanex.NAP.FS"))
-                .Select(Assembly.Load);
-
-            yield return main_assembly;
-
-            foreach (var item in satellite_assemlies)
-            {
-                yield return item;
-            }
-        }
 
         private static void RegisterType(Type t)
         {
