@@ -326,7 +326,7 @@
                 { targets: [3, 14], width: "65px" },
                 { targets: [4, 15], width: "100px" },
                 { targets: [5, 16], width: "42px" },
-                { targets: [6, 7, 8, 17, 18, 19], width: "78px" },
+                { targets: [6, 7, 8, 17, 18, 19], width: "70px" },
                 { targets: [9, 20], width: "100px" }
             ],
             columns: [
