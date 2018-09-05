@@ -62,14 +62,22 @@
                 {
                     ClearOldResult();
 
+                    Logger.Log.Info($"{FraudCase.FraudCaseName} - finished clearing");
+
 #if DEBUG
                     Console.WriteLine("{0} - {1} is running", FraudCase.FraudCaseId, FraudCase.FraudCaseName);
 #endif
                     ExecutePrecondition();
 
+                    Logger.Log.Info($"{FraudCase.FraudCaseName} - finished precondition");
+
                     ExecuteRule();
 
+                    Logger.Log.Info($"{FraudCase.FraudCaseName} - finished rules");
+
                     TakeNextAction();
+
+                    Logger.Log.Info($"{FraudCase.FraudCaseName} - finished next action");
                 }
             }
             catch (Exception exception)
