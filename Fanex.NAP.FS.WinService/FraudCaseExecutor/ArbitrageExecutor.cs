@@ -16,13 +16,18 @@
 
         private IEnumerable<ArbitrageTicket> tickets;
 
+        private IEnumerable<ArbitrageGroup> finishedGroups;
+
         public ArbitrageExecutor(FraudCase fraudCase) : base(fraudCase)
         {
         }
 
         protected override void ExecutePrecondition()
         {
-            tickets = DataService.GetData<ArbitrageTicket>(new ArbitragePreconditionCriteria());
+            var tuples = DataService.QueryMultiple<ArbitrageTicket, ArbitrageGroup>(new ArbitragePreconditionCriteria());
+
+            tickets = tuples.Item1;
+            finishedGroups = tuples.Item2;
         }
 
         protected override void ExecuteRule()
@@ -61,17 +66,15 @@
 
         protected override void ClearOldResult()
         {
-            var criteria = new ArbitrageCleanUpCriteria
+            if (finishedGroups != null)
             {
-                Matches = cache.Keys.ToXmlString()
-            };
-
-            var finishedGroups = DataService.GetData<ArbitrageGroup>(criteria);
-
-            foreach (var item in finishedGroups)
-            {
-                cache.Remove(item);
+                foreach (var item in finishedGroups)
+                {
+                    cache.Remove(item);
+                }
             }
+
+            finishedGroups = null;
         }
 
         private static void GroupData(ArbitrageGroup group, IEnumerable<ArbitrageTicket> tickets)
