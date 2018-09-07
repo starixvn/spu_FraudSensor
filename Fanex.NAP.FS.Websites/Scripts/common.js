@@ -204,7 +204,7 @@
     this.makeWrapString = function (str = "", maxLength = 0) {
         if (str == null) return str;
 
-        if (str.length > maxLength) return str.substring(0, maxLength - 3) + "...";
+        if (str.length > maxLength) return `<span title="${str}">${str.substring(0, maxLength - 3)}...</span>`;
 
         return str;
     }
