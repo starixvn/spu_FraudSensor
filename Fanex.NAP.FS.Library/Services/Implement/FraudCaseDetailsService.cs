@@ -390,7 +390,7 @@
 
             var data =
                 rawData
-                .GroupBy(t => Tuple.Create(t.BetTypeId, t.Handicap1 - t.Handicap2, t.LiveHomeScore, t.LiveAwayScore), t => new ArbitrageTicket
+                .GroupBy(t => Tuple.Create(t.BetTypeId, t.Handicap1 - t.Handicap2, t.LiveHomeScore, t.LiveAwayScore, t.GroupId), t => new ArbitrageTicket
                 {
                     BetId = t.TransId,
                     Currency = t.CurrencyName,
@@ -417,7 +417,8 @@
                     Away = g.Where(t => t.BetTeam == "a"),
                     Home = g.Where(t => t.BetTeam == "h"),
                     Handicap = g.Key.Item2,
-                    Score = $"{g.Key.Item3} - {g.Key.Item4}"
+                    Score = $"{g.Key.Item3} - {g.Key.Item4}",
+                    GroupId = g.Key.Item5
                 });
 
             return data;

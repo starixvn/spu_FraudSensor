@@ -306,6 +306,7 @@
         parameters.bettype = obj.BettypeName;
         parameters.score = obj.Score;
         parameters.handicap = obj.Handicap;
+        parameters.groupId = obj.GroupId;
 
         common.downloadFile(url, parameters);
     }

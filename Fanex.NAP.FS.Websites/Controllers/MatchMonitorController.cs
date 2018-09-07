@@ -156,13 +156,14 @@ namespace Fanex.NAP.FS.Websites.Controllers
             return ExcelFile(_fraudCaseDetailService.ExportToExcelIpTickets(ip, template, IsShowSpecialCurrencies), fileName);
         }
 
-        public ActionResult ExportArbitrageWithFilterExcel(int matchId, DateTime eventDate, string bettype, string score, double handicap)
+        public ActionResult ExportArbitrageWithFilterExcel(int matchId, DateTime eventDate, string bettype, string score, double handicap, int groupId)
         {
             var template = Server.MapPath("~/App_Data/Excel Template/MatchMonitor/FraudCaseDetail/arbitrage.xlsx");
 
             var fileName = string.Format("FraudCaseDetails_{0}", DateTime.Today.ToString("yyyyMMdd"));
 
-            var content = _fraudCaseDetailService.ExportArbitrageExcel(matchId, eventDate, template, obj => obj.BettypeName == bettype && obj.Score == score && (double)obj.Handicap == handicap);
+            var content = _fraudCaseDetailService
+                .ExportArbitrageExcel(matchId, eventDate, template, obj => obj.BettypeName == bettype && obj.Score == score && (double)obj.Handicap == handicap && obj.GroupId == groupId);
 
             return ExcelFile(content, fileName);
         }

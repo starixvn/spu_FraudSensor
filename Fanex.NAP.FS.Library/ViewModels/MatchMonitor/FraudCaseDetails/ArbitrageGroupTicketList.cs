@@ -13,5 +13,7 @@
         public string Score { get; set; }
 
         public decimal Handicap { get; set; }
+
+        public int GroupId { get; set; }
     }
 }
