@@ -62,7 +62,7 @@ BEGIN
 	FROM dbo.ArbitrageTicketDetails si WITH(NOLOCK)
 		INNER JOIN bodb02.dbo.Customer c WITH(NOLOCK) ON si.CustId = c.custid
 		CROSS APPLY dbo.SPU_StrSplit(si.transids, ',')
-	WHERE	si.MatchId = @MatchId
+	WHERE	si.MatchId = @MatchId;
 		AND (@IsShowSpecialCurrencies = 1 OR c.currency NOT IN (SELECT CurrencyId FROM dbo.SpecialCurrency WITH(NOLOCK)));
 			
 	--===	2.2 GET: Homeid and AwayId
