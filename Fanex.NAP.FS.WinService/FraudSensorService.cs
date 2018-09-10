@@ -70,10 +70,10 @@
 
                 _fraudCaseLoader.LoadFraudCases();
 
+                _receivingMessageHandler.TriggerReceivingMessage();
+
                 if (AppSettings.Environment != "1")
                 {
-                    _receivingMessageHandler.TriggerReceivingMessage();
-
                     SendMailInform(true);
                 }
 
