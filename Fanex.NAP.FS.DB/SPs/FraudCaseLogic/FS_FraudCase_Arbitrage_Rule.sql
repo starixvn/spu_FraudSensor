@@ -309,6 +309,7 @@ BEGIN
 	FROM #tmpMatchBettypeBetteamSumStake as b WITH(NOLOCK)
 	WHERE b.TotalStake > @MaxStakeToBeChecked
 	GROUP BY b.GroupId, b.MatchId, b.Bettype, b.TotalLiveScore, b.Handicap
+				INNER JOIN #tmpAssociation AS aa WITH(NOLOCK) ON bb.CustId = aa.CustId
 	HAVING COUNT(DISTINCT b.Betteam) > 1;
 
 	-- Get fraud tickets
