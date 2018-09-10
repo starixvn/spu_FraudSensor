@@ -21,7 +21,7 @@ namespace Fanex.NAP.FS.Library.Models.FraudCaseTask
         {
             var other = obj as ArbitrageGroup;
 
-            if(other is null)
+            if(other == null)
             {
                 return false;
             }
