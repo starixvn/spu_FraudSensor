@@ -1,5 +1,7 @@
 ﻿using Fanex.Data;
 using Fanex.NAP.FS.Library.Services;
+using Fanex.Logging;
+using System;
 using System.Configuration;
 using System.ServiceProcess;
 
@@ -14,6 +16,8 @@ namespace Fanex.NAP.FS.WinService
         {
             try
             {
+                AppDomain.CurrentDomain.UnhandledException += LogException;
+
                 var environment = ConfigurationManager.AppSettings["Environment"];
 
                 DbSettingProviderManager
@@ -37,6 +41,13 @@ namespace Fanex.NAP.FS.WinService
             {
                 Logging.Logger.Log.Error(ex.Message, ex);
             }
+        }
+
+        private static void LogException(object sender, UnhandledExceptionEventArgs e)
+        {
+            var exception = (Exception)e.ExceptionObject;
+
+            Logger.Log.Error($"{sender.GetType().FullName}", exception);
         }
     }
 }
