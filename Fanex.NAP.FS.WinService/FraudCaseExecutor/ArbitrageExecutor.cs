@@ -32,6 +32,11 @@
                 .GroupBy(t => t.MatchId)
                 .AsParallel()
                 .ForAll(GroupData);
+
+            //foreach (var item in tickets.GroupBy(t => t.MatchId))
+            //{
+            //    GroupData(item);
+            //}
         }
 
         protected override void TakeNextAction()
@@ -44,7 +49,7 @@
 
         private static void GroupData(IEnumerable<ArbitrageTicket> tickets)
         {
-            var newCustids = tickets.Select(t => t.CustId).Distinct();
+            var newCustids = new HashSet<int>(tickets.Select(t => t.CustId));
 
             var customers = GroupCustomer(newCustids);
 

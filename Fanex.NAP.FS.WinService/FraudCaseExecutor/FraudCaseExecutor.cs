@@ -83,6 +83,10 @@
             catch (Exception exception)
             {
                 WriteLog(exception);
+
+#if DEBUG
+                throw;
+#endif
             }
         }
 
