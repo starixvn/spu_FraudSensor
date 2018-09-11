@@ -15,7 +15,6 @@
     using Fanex.NAP.FS.Library.Models.MatchMonitor;
     using Fanex.NAP.FS.Library.Models.MatchMonitor.FraudCaseDetails;
     using Fanex.NAP.FS.Library.ViewModels.MatchMonitor.FraudCaseDetails;
-    using Fanex.RemotingRef;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -81,9 +80,9 @@
                         RawData = saveChoice ? a : null
                     };
                 })
-                .OrderBy(t => GetOrder(t.Bettype))
-                .ThenBy(t => t.Member)
-                .ThenBy(t => DateTime.Parse(t.TransDate));
+                .OrderBy(t => DateTime.Parse(t.TransDate))
+                .ThenBy(t => GetOrder(t.Bettype))
+                .ThenBy(t => t.Member);
         }
 
         public IEnumerable<CustomerDetails> GetCustomerDetails(int matchId, int fraudCaseId, DateTime eventDate)

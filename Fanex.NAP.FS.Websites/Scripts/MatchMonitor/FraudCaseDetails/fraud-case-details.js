@@ -245,9 +245,9 @@
     function openSuspiciousHistoryLink(obj) {
         var today = moment();
 
-        var from = moment({ year: today.year(), month: today.month(), day: 1 });
+        var from = moment().add(-2, "months").date(1);
 
-        var url = `/SuspiciousCustomerDetails?custid=${obj.CustId}&from=${from.format("MMM D, YYYY")}&to=${today.format("MMM D, YYYY")}&custName=${obj.Member}`
+        var url = `/SuspiciousCustomerDetails?custid=${obj.CustId}&from=${from.format("MMM D, YYYY")}&to=${today.format("MMM D, YYYY")}&custName=${obj.Member}`;
 
         window.open(common.modifyRelativeUrl(url));
     }
@@ -323,7 +323,7 @@
             { data: obj => obj.AssociatedAccounts, className: "text-right", width: "50px" },
             { defaultContent: renderCustomerAction(), className: "has-icon text-center", width: "70px" }
         ],
-    })
+    });
 
     load_ticket_grid();
 

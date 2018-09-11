@@ -27,42 +27,93 @@ function load_page_events() {
 
     $("#export").click(exportExcel);
 
-    $("#match_grid table").DataTable({
-        ordering: false,
-        searching: false,
-        lengthMenu: [10, 20, 50, 100, 500],
-        pageLength: 50,
-        scrollY: "61vh",
-        scrollCollapse: true,
-        columnDefs: [
-            {targets: "_all", defaultContent: "-" }
-        ],
-        columns: [
-            { data: (row, type, set, meta) => meta.row + 1, className: "text-center", width: "40px" },
-            { data: renderVerifyCheckBox, className: "text-center", width: "40px" },
-            { data: row => row.VerifiedBy, width: "100px" },
-            { data: renderEvent },
-            { data: row => row.Score, className: "text-center", width: "50px" },
-            { data: row => row.Status, className: "text-center", width: "70px" },
-            { data: row => renderFraudCase(row, 1), className: "has-icon text-center", width: "50px" },
-            { data: row => renderFraudCase(row, 6), className: "has-icon text-center", width: "50px" },
-            { data: row => renderFraudCase(row, 8), className: "has-icon text-center", width: "50px" },
-            { data: renderNote, className: "col-note", width: "270px" }
-        ],
-        dom: "t<'pagination'<'page-size'lp>i>",
-        language: {
-            lengthMenu: "Page size _MENU_",
-            paginate: {
-                previous: "Back"
+    var t = $("#match_grid table")
+        .DataTable({
+            searching: false,
+            lengthMenu: [10, 20, 50, 100, 500],
+            pageLength: 50,
+            scrollY: "61vh",
+            scrollX: true,
+            scrollCollapse: true,
+            columnDefs: [
+                { targets: "_all", defaultContent: "-" },
+                { targets: [-2, -3, -4], type: "fraud-case" },
+                { targets: 1, type: "check-box" },
+                { targets: 4, type: "score" },
+                { targets: [0, -1, 1, 2], orderable: false }
+            ],
+            columns: [
+                { data: (row, type, set, meta) => meta.row + 1, className: "text-center", width: "40px" },
+                { data: renderVerifyCheckBox, className: "text-center", width: "40px" },
+                { data: row => row.VerifiedBy, width: "100px" },
+                { data: renderEvent },
+                { data: row => row.Score, className: "text-center", width: "50px" },
+                { data: row => row.Status, className: "text-center", width: "70px" },
+                { data: row => renderFraudCase(row, 1), className: "has-icon text-center", width: "70px" },
+                { data: row => renderFraudCase(row, 6), className: "has-icon text-center", width: "70px" },
+                { data: row => renderFraudCase(row, 8), className: "has-icon text-center", width: "70px" },
+                { data: renderNote, className: "col-note", width: "270px" }
+            ],
+            dom: "t<'pagination'<'page-size'lp>i>",
+            language: {
+                lengthMenu: "Page size _MENU_",
+                paginate: {
+                    previous: "Back"
+                },
+                info: "Displaying _START_ to _END_ of _TOTAL_ item(s)",
+                infoEmpty: "",
+                zeroRecords: "There's no data"
             },
-            info: "Displaying _START_ to _END_ of _TOTAL_ item(s)",
-            infoEmpty: "",
-            zeroRecords: "There's no data"
-        },
-        headerCallback: th => $("th", th).removeClass("has-icon")
+            headerCallback: th => $("th", th).removeClass("has-icon"),
+            order: [[3, "asc"]]
+        });
+
+    t.on('order.dt search.dt', function () {
+        t.column(0, { search: 'applied', order: 'applied' }).nodes().each(function (cell, i) {
+            cell.innerHTML = i + 1;
+        });
     });
 
     $.fn.dataTable.ext.errMode = "none";
+
+    $.fn.dataTable.ext.type.order["fraud-case-pre"] = function (data) {
+        var num = $(".number", data).html();
+
+        if (num == null || num.length == 0) {
+            return 0;
+        }
+        else if (num.includes("K")) {
+            return parseFloat(num) * 1e3;
+        }
+        else if (num.includes("M")) {
+            return parseFloat(num) * 1e6;
+        }
+        else {
+            return parseFloat(num);
+        }
+    }
+
+    $.fn.dataTable.ext.type.order["check-box-pre"] = function (data) {
+        var isChecked = $("input", data).is(":checked");
+
+        return isChecked ? 1 : 0;
+    };
+
+    $.fn.dataTable.ext.type.order["score-pre"] = function (data) {
+        var arr = data.split("-");
+
+        var home = parseInt(arr[0]);
+
+        var away = parseInt(arr[1]);
+
+        return home + away;
+    };
+
+    t.on('order.dt search.dt', function () {
+        t.column(0, { search: 'applied', order: 'applied' }).nodes().each(function (cell, i) {
+            cell.innerHTML = i + 1;
+        });
+    }).draw();
 }
 
 function buildGridParam() {
@@ -92,6 +143,10 @@ function renderEvent(obj) {
 
 function renderFraudCase(obj, selector) {
     var fraudCase = obj.FraudCases[selector];
+
+    if (selector == 1 && obj.Score == "0 - 0" && fraudCase == null && obj.Status.toLowerCase() == "completed") {
+        return '<span class="icon-approval"></span>';
+    }
 
     if (fraudCase == null) {
         return "<span class='icon-neutral'></span>";
@@ -168,10 +223,10 @@ function renderViolations(violation = 1) {
 function getLeague() {
     var url = "matchmonitor/getleagues";
     var dto =
-        {
-            EventDate: $("#event_date").val(),
-            SportId: $("#sport").val()
-        };
+    {
+        EventDate: $("#event_date").val(),
+        SportId: $("#sport").val()
+    };
 
     $.post(url, dto, renderLeagueDropdown);
 }
@@ -235,10 +290,10 @@ function updateVerification() {
     var $target = $(this);
 
     var dto =
-        {
-            MatchId: $target.attr("data-match-id"),
-            IsVerified: $target.is(":checked")
-        };
+    {
+        MatchId: $target.attr("data-match-id"),
+        IsVerified: $target.is(":checked")
+    };
 
     $.post("matchmonitor/VerifyMatch", dto, function () {
         if (!dto.IsVerified) {
