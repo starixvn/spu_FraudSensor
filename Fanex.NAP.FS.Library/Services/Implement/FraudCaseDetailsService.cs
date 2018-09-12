@@ -80,8 +80,8 @@
                         RawData = saveChoice ? a : null
                     };
                 })
-                .OrderBy(t => DateTime.Parse(t.TransDate))
-                .ThenBy(t => GetOrder(t.Bettype))
+                .OrderBy(t => GetOrder(t.Bettype))
+                .ThenBy(t => DateTime.Parse(t.TransDate))
                 .ThenBy(t => t.Member);
         }
 
