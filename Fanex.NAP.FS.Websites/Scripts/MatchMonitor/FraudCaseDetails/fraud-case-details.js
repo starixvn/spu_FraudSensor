@@ -245,7 +245,7 @@
     function openSuspiciousHistoryLink(obj) {
         var today = moment();
 
-        var from = moment().add(-2, "months").date(1);
+        var from = moment().add(-1, "months").date(1);
 
         var url = `/SuspiciousCustomerDetails?custid=${obj.CustId}&from=${from.format("MMM D, YYYY")}&to=${today.format("MMM D, YYYY")}&custName=${obj.Member}`;
 
