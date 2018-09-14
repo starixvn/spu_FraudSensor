@@ -18,4 +18,6 @@
             $.post(url, { fraudCaseId: $this.attr("data-id"), isActive: $this.prop("checked") }, () => common.showSuccess());
         });
     }
+
+    document.getElementById("select2-fraud-case-selector-container").removeAttribute("title");
 })
