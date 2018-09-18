@@ -27,7 +27,7 @@
         #region members
 
         private readonly ICurrentSession _currentSession;
-        private readonly int _timeExipration = 30;
+        private readonly int _timeExipration = 20;
         private readonly IUserService _userService;
         private readonly ISecurityService _securityService;
 
@@ -69,6 +69,8 @@
             var currentTime = _securityService.GetTime();
 
             var expiration = Convert.ToDateTime(currentTime) - Convert.ToDateTime(time);
+
+            Logger.Log.Info($"{time} - {currentTime}");
 
             if (expiration.TotalSeconds <= _timeExipration)
             {
