@@ -161,7 +161,18 @@
 
     this.getTableDefaultOptions = () => Object.assign({}, defaultTableOptions);
 
-    this.modifyRelativeUrl = url => window.location.host.includes("starific") ? "/V2" + url : url;
+    this.modifyRelativeUrl = function (url) {
+        var host = window.location.host;
+
+        if (host.includes("starific")) {
+            return "/V2" + url;
+        }
+        else if (host.includes("oneops")) {
+            return "/NAPFS" + url;
+        }             
+
+        return url;
+    }
 
     this.makeNonSearchSelect = select => $(select).select2({ minimumResultsForSearch: -1 })
 
