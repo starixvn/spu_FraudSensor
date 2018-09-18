@@ -31,7 +31,7 @@
                 .FromApplication("SPU - Fraud Sensor");
 
             BetListManager.RegisterRemotingRef(new CacheRef());
-            
+
             AreaRegistration.RegisterAllAreas();
             WebApiConfig.Register(GlobalConfiguration.Configuration);
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
@@ -85,7 +85,7 @@
                                           sqlEx.Server);
                 }
 
-                LogService.Error(message);
+                Logger.Log.Error(ex.Message, ex);
             }
         }
     }
