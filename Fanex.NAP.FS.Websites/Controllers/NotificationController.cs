@@ -1,5 +1,6 @@
 ﻿namespace Fanex.NAP.FS.Websites.Controllers
 {
+    using Fanex.Logging;
     using Library.Services;
     using System.Linq;
     using System.Web.Mvc;
@@ -25,10 +26,18 @@
         [HttpGet]
         public JsonResult ReCheckNotification()
         {
-            var userId = CurrentSession.UserId;
-            var unreadMessageCounter = _notificationService.GetUnreadMessageCounter(userId);
+            try
+            {
+                var userId = CurrentSession.UserId;
+                var unreadMessageCounter = _notificationService.GetUnreadMessageCounter(userId);
 
-            return Json(new { UnreadMessageCounter = unreadMessageCounter }, JsonRequestBehavior.AllowGet);
+                return Json(new { UnreadMessageCounter = unreadMessageCounter }, JsonRequestBehavior.AllowGet);
+            }
+            catch (System.Exception e)
+            {
+                LogService.Error(e.Message, e);
+                throw;
+            }
         }
     }
 }
