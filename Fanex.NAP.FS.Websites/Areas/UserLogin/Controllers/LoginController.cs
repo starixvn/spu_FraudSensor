@@ -223,8 +223,6 @@
                 {
                     var maintenanceInfo = _maintenanceService.GetUnderMaintenanceTime();
 
-                    Logger.Log.Info("in");
-
                     if (maintenanceInfo.IsUnderMaintenanceTime)
                     {
                         Logger.Log.Info("UM");
@@ -239,8 +237,6 @@
 
                     if (!siteStatus)
                     {
-                        Logger.Log.Info("status");
-
                         return Json(new
                         {
                             IsKickedOut = "2"
@@ -248,9 +244,6 @@
                     }
 
                     var isKickedOut = _securityService.ReCheckIn(_currentSession.OnUserId, SiteId);
-
-
-                    Logger.Log.Info($"kicked: {isKickedOut}");
 
                     return Json(new
                     {

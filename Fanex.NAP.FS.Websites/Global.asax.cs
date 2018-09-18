@@ -85,7 +85,7 @@
                                           sqlEx.Server);
                 }
 
-                Logger.Log.Error(ex.Message, ex);
+                LogService.Error(ex.Message, ex);
             }
         }
     }
