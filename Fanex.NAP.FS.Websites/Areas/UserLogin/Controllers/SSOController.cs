@@ -79,9 +79,9 @@
                 LogService.Info("in");
 
                 var criteria = SetUserCriteria(Convert.ToInt32(userId), Convert.ToInt32(onuserId));
-                _securityService.SSOLogin(criteria);
+                var onUserId = _securityService.SSOLogin(criteria);
 
-                if (criteria.OnUserId != 0)
+                if (onUserId != 0)
                 {
                     LogService.Info("On User Id != 0");
 
