@@ -18,7 +18,7 @@ namespace Fanex.NAP.FS.WinService
                 DbSettingProviderManager
                    .StartNewSession()
                    .UseDefaultConnectionStringProvider()
-                   .UseDefaultDbSettingProvider(resourcePath: environment == "1" ? "~/App_Data": "~/App_Data/UAT", enableWatching: true)
+                   .UseDefaultDbSettingProvider(resourcePath: environment != "2" ? "~/App_Data": "~/App_Data/UAT", enableWatching: true)
                    .Run();
 
                 ServiceBase[] ServicesToRun;
