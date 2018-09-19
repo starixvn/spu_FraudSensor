@@ -114,6 +114,8 @@ function load_page_events() {
             cell.innerHTML = i + 1;
         });
     }).draw();
+
+    load_grid();
 }
 
 function buildGridParam() {
@@ -247,8 +249,6 @@ function renderLeagueDropdown(data) {
 
         generate_btn.prop("disabled", false);
         export_btn.prop("disabled", false);
-
-        load_grid();
     }
     else {
         league_selector.append("<option value=''>No available league</option>");
