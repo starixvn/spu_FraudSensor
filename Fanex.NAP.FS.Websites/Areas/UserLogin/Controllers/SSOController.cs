@@ -72,13 +72,19 @@
 
             Logger.Log.Info($"{time} - {currentTime}");
 
+            LogService.Info(redirectUrl.ToString());
+
             if (expiration.TotalSeconds <= _timeExipration)
             {
+                LogService.Info("in");
+
                 var criteria = SetUserCriteria(Convert.ToInt32(userId), Convert.ToInt32(onuserId));
                 _securityService.SSOLogin(criteria);
 
                 if (criteria.OnUserId != 0)
                 {
+                    LogService.Info("On User Id != 0");
+
                     var user = _userService.Get(criteria.UserId);
 
                     _currentSession.UserId = user.Id;
