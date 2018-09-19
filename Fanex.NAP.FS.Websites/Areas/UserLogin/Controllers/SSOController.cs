@@ -63,55 +63,55 @@
         [HttpGet]
         public ActionResult Index(string userId, string onuserId, string time, Uri redirectUrl = null)
         {
-            userId = Cryptography.CfsDeCrypt(userId.Replace(" ", "+"));
-            onuserId = Cryptography.CfsDeCrypt(onuserId.Replace(" ", "+"));
-            time = Cryptography.CfsDeCrypt(time.Replace(" ", "+"));
-            var currentTime = _securityService.GetTime();
-
-            var expiration = Convert.ToDateTime(currentTime) - Convert.ToDateTime(time);
-
-            Logger.Log.Info($"{time} - {currentTime}");
-
-            LogService.Info(redirectUrl.ToString());
-
-            if (expiration.TotalSeconds <= _timeExipration)
+            try
             {
-                LogService.Info("in");
+                userId = Cryptography.CfsDeCrypt(userId.Replace(" ", "+"));
+                onuserId = Cryptography.CfsDeCrypt(onuserId.Replace(" ", "+"));
+                time = Cryptography.CfsDeCrypt(time.Replace(" ", "+"));
+                var currentTime = _securityService.GetTime();
 
-                var criteria = SetUserCriteria(Convert.ToInt32(userId), Convert.ToInt32(onuserId));
-                var onUserId = _securityService.SSOLogin(criteria);
+                var expiration = Convert.ToDateTime(currentTime) - Convert.ToDateTime(time);
 
-                if (onUserId != 0)
+                if (expiration.TotalSeconds <= _timeExipration)
                 {
-                    LogService.Info("On User Id != 0");
+                    var criteria = SetUserCriteria(Convert.ToInt32(userId), Convert.ToInt32(onuserId));
+                    var onUserId = _securityService.SSOLogin(criteria);
 
-                    var user = _userService.Get(criteria.UserId);
-
-                    _currentSession.UserId = user.Id;
-                    _currentSession.Username = user.Username;
-                    _currentSession.OnUserId = criteria.OnUserId;
-                    _currentSession.SessionId = Session.SessionID;
-                    _currentSession.Level = _userService.GetUserLevel(user.Id, SiteId);
-
-                    var currentFunction = _userService.GetPermissions(user.Id, NapSettings.Settings.SiteId, null, NapSettings.Settings.Environment);
-                    AppSession.CurrentUser = user;
-                    AppSession.RoleAccess = PermissionService.GetRoleAccess(currentFunction);
-
-                    if (SiteId != 0)
+                    if (onUserId != 0)
                     {
-                        _currentSession.MenuItemList = _userService.GetMenuItem(user.Id, SiteId, Environment, true).ToList();
-                        AppSession.CurrentUserMenu = _currentSession.MenuItemList;
+                        var user = _userService.Get(criteria.UserId);
+
+                        _currentSession.UserId = user.Id;
+                        _currentSession.Username = user.Username;
+                        _currentSession.OnUserId = criteria.OnUserId;
+                        _currentSession.SessionId = Session.SessionID;
+                        _currentSession.Level = _userService.GetUserLevel(user.Id, SiteId);
+
+                        var currentFunction = _userService.GetPermissions(user.Id, NapSettings.Settings.SiteId, null, NapSettings.Settings.Environment);
+                        AppSession.CurrentUser = user;
+                        AppSession.RoleAccess = PermissionService.GetRoleAccess(currentFunction);
+
+                        if (SiteId != 0)
+                        {
+                            _currentSession.MenuItemList = _userService.GetMenuItem(user.Id, SiteId, Environment, true).ToList();
+                            AppSession.CurrentUserMenu = _currentSession.MenuItemList;
+                        }
+
+                        CreateAuthInfo(user);
+
+                        string forwardLink = redirectUrl == null ? FormsAuthentication.DefaultUrl : redirectUrl.ToString();
+
+                        return Redirect(forwardLink);
                     }
-
-                    CreateAuthInfo(user);
-
-                    string forwardLink = redirectUrl == null ? FormsAuthentication.DefaultUrl : redirectUrl.ToString();
-
-                    return Redirect(forwardLink);
                 }
-            }
 
-            return Redirect(FormsAuthentication.LoginUrl);
+                return Redirect(FormsAuthentication.LoginUrl);
+            }
+            catch (Exception e)
+            {
+                LogService.Error(e.Message, e);
+                throw;
+            }
         }
 
         /// <summary>
