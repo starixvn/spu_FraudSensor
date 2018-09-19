@@ -62,46 +62,22 @@ namespace Fanex.NAP.FS.Websites.Controllers
             return Json(result);
         }
 
-        public async Task<ActionResult> GetCustomerLogNotes(int custId)
+        public ActionResult GetCustomerLogNotes(int custId)
         {
             return JData(_detailsService.GetCustomerLogNotes(custId));
         }
 
-        public async Task<ActionResult> GetStatistics(int custId, DateTime from, DateTime to)
+        public ActionResult GetStatistics(int custId, DateTime from, DateTime to)
         {
-            var key1 = $"{custId} - {from} - {to} - data";
-
-            var key2 = $"{custId} - {from} - {to} - counter";
-
-            if (Session[key1] == null)
-            {
-                Session[key1] = Task.Run(() => _detailsService.GetStatistics(custId, from, to));
-                Session[key2] = 0;
-            }
-
-            var tsk = Session[key1] as Task<Statistics>;
-
-            var result = await tsk.ConfigureAwait(false);
-
-            var counter = (int)Session[key2];
-
-            Session[key2] = counter + 1;
-
-            if ((int)Session[key2] >= 4)
-            {
-                Session.Remove(key1);
-                Session.Remove(key2);
-            }
-
-            return Json(result);
+            return Json(_detailsService.GetStatistics(custId, from, to));
         }
 
-        public async Task<ActionResult> GetViolatedTickets(int custId, DateTime from, DateTime to)
+        public ActionResult GetViolatedTickets(int custId, DateTime from, DateTime to)
         {
             return JData(_detailsService.GetViolatedTickets(custId, from, to));
         }
 
-        public async Task<ActionResult> GetFraudCases(int custId)
+        public ActionResult GetFraudCases(int custId)
         {
             return JData(_detailsService.GetSuspiciousCustomerFraudCase(custId));
         }
