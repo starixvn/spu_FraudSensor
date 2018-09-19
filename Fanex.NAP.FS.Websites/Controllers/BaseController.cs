@@ -1,5 +1,6 @@
 ﻿namespace Fanex.NAP.FS.Websites.Controllers
 {
+    using Fanex.Logging;
     using Fanex.NAP.Core.Configuration;
     using Fanex.NAP.Core.Context;
     using Fanex.NAP.Core.Service.Impl;
@@ -87,6 +88,13 @@
             }
 
             return htmlStringFromView;
+        }
+
+        protected override void OnException(ExceptionContext filterContext)
+        {
+            LogService.Error(filterContext.Exception.Message, filterContext.Exception);
+
+            base.OnException(filterContext);
         }
 
         protected override JsonResult Json(object data, string contentType, System.Text.Encoding contentEncoding, JsonRequestBehavior behavior)
