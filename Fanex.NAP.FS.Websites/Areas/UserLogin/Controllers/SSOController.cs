@@ -83,7 +83,7 @@
 
                         _currentSession.UserId = user.Id;
                         _currentSession.Username = user.Username;
-                        _currentSession.OnUserId = criteria.OnUserId;
+                        _currentSession.OnUserId = onUserId;
                         _currentSession.SessionId = Session.SessionID;
                         _currentSession.Level = _userService.GetUserLevel(user.Id, SiteId);
 
