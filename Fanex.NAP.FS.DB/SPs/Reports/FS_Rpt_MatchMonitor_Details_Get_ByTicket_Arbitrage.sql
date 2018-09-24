@@ -18,7 +18,6 @@ AS
 	Revisions:
 		- 20180815@Long: Implement Get Tickets by Match & Fraud Case for Arbitrage
 		- 20181114@Long: Adding View Permission on Special Currencies [Redmine ID: #104707]
-
 	Param's Explanation:
 */
 BEGIN

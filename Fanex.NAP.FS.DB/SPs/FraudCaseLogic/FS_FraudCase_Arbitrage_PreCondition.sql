@@ -14,6 +14,7 @@ AS
 	Original:
 
 	Revisions: 
+		- 20180815@LONG: Implement PreCondition for Arbitrage fraud case
 
 	Param's Explanation (filtered by):  
 	
