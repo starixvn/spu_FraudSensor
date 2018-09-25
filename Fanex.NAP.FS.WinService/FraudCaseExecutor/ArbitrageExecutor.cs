@@ -18,11 +18,6 @@
 
         public ArbitrageExecutor(FraudCase fraudCase) : base(fraudCase)
         {
-            var a = Assembly.GetExecutingAssembly().GetReferencedAssemblies().FirstOrDefault(b => b.Name.Contains("Http.Formatting"));
-
-            var ass = Assembly.Load(a);
-
-            LogService.Info($"{a.Name}: {ass.Location}");
         }
 
         protected override void ExecutePrecondition()
