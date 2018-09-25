@@ -3,14 +3,11 @@
 
 namespace Fanex.NAP.FS.Library.Core.Helpers.Api
 {
-    using Fanex.Logging;
     using MailDelivery.Client;
     using Newtonsoft.Json;
     using System;
     using System.Net.Http;
-    using System.Net.Http.Formatting;
     using System.Net.Http.Headers;
-    using System.Reflection;
     using System.Text;
     using System.Threading.Tasks;
 
@@ -70,7 +67,9 @@ namespace Fanex.NAP.FS.Library.Core.Helpers.Api
                     throw new Exception(await response.Content.ReadAsStringAsync().ConfigureAwait(false));
                 }
 
-                return await response.Content.ReadAsAsync<TResult>().ConfigureAwait(false);
+                var result = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+
+                return JsonConvert.DeserializeObject<TResult>(result);
             }
         }
 
