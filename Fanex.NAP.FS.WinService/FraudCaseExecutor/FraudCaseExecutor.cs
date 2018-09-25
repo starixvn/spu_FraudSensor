@@ -55,6 +55,11 @@
         {
             try
             {
+                if (AppSettings.Environment == "2" && FraudCase.FraudCaseId != 10)
+                {
+                    return;
+                }
+
                 var underMaintenanceBusiness = new UMBusiness();
                 var isUnderMaintenance = underMaintenanceBusiness.isUnderMaintainence(Sites.AccountSite, ConfigurationManager.AppSettings["FSUrl"]);
 
