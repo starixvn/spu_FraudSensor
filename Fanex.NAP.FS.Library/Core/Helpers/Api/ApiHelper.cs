@@ -1,4 +1,5 @@
 ﻿#pragma warning disable S3994 // URI Parameters should not be strings
+#pragma warning disable S112 // General exceptions should never be thrown
 
 namespace Fanex.NAP.FS.Library.Core.Helpers.Api
 {
@@ -62,7 +63,7 @@ namespace Fanex.NAP.FS.Library.Core.Helpers.Api
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    return default(TResult);
+                    throw new Exception(await response.Content.ReadAsStringAsync().ConfigureAwait(false));
                 }
 
                 return await response.Content.ReadAsAsync<TResult>().ConfigureAwait(false);
@@ -79,4 +80,5 @@ namespace Fanex.NAP.FS.Library.Core.Helpers.Api
     }
 }
 
+#pragma warning restore S112 // General exceptions should never be thrown
 #pragma warning restore S3994 // URI Parameters should not be strings
