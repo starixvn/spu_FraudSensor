@@ -8,6 +8,7 @@ namespace Fanex.NAP.FS.Library.Core.Helpers.Api
     using Newtonsoft.Json;
     using System;
     using System.Net.Http;
+    using System.Net.Http.Formatting;
     using System.Net.Http.Headers;
     using System.Reflection;
     using System.Text;
@@ -52,7 +53,17 @@ namespace Fanex.NAP.FS.Library.Core.Helpers.Api
         {
             using (var web = new HttpClient())
             {
-                var response = await HttpClientExtensions.PostAsJsonAsync(web, url, param).ConfigureAwait(false);
+                var content = JsonConvert.SerializeObject(param);
+
+                var buffer = Encoding.UTF8.GetBytes(content);
+
+                var byteContent = new ByteArrayContent(buffer);
+
+                byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
+#pragma warning disable S4005 // "System.Uri" arguments should be used instead of strings
+                var response = await web.PostAsync(url, byteContent).ConfigureAwait(false);
+#pragma warning restore S4005 // "System.Uri" arguments should be used instead of strings
 
                 if (!response.IsSuccessStatusCode)
                 {
