@@ -16,8 +16,6 @@ namespace Fanex.NAP.FS.WinService
         {
             try
             {
-                AppDomain.CurrentDomain.UnhandledException += LogException;
-
                 var environment = ConfigurationManager.AppSettings["Environment"];
 
                 DbSettingProviderManager

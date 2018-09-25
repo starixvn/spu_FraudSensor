@@ -52,23 +52,6 @@ namespace Fanex.NAP.FS.Library.Core.Helpers.Api
         {
             using (var web = new HttpClient())
             {
-                var m = typeof(HttpClientExtensions).GetMethods(BindingFlags.Static | BindingFlags.Public);
-
-                foreach (var item in m)
-                {
-                    var str = new StringBuilder(item.Name);
-                    str.Append("\n");
-
-                    var p = item.GetParameters();
-
-                    foreach (var item1 in p)
-                    {
-                        str.AppendLine($"\t {item1.Name} - {item1.ParameterType} - {item1.ParameterType.Assembly.FullName}");
-                    }
-
-                    LogService.Info(str.ToString());
-                }
-
                 var response = await HttpClientExtensions.PostAsJsonAsync(web, url, param).ConfigureAwait(false);
 
                 if (!response.IsSuccessStatusCode)

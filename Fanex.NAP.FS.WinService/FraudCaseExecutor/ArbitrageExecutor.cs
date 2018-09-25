@@ -31,15 +31,10 @@
             XmlHelper.RegisterType<ArbitrageTicket>();
             XmlHelper.RegisterType<ArbitrageCustomer>();
 
-            tickets
-                .GroupBy(t => t.MatchId)
-                .AsParallel()
-                .ForAll(GroupData);
-
-            //foreach (var item in tickets.GroupBy(t => t.MatchId))
-            //{
-            //    GroupData(item);
-            //}
+            foreach (var g in tickets.GroupBy(t => t.MatchId))
+            {
+                GroupData(g);
+            }
         }
 
         protected override void TakeNextAction()
@@ -61,6 +56,8 @@
                 Matches = tickets.ToXmlString(),
                 Associations = customers.ToXmlString()
             };
+
+            LogService.Info(criteria.Associations);
 
             DataService.Execute(criteria);
         }
