@@ -1,5 +1,6 @@
 ﻿namespace Fanex.NAP.FS.WinService
 {
+    using Fanex.Logging;
     using Fanex.NAP.FS.Library.Core.BaseClasses;
     using Fanex.NAP.FS.Library.Core.Helpers.Api;
     using Fanex.NAP.FS.Library.Core.Helpers.Xml;
@@ -8,6 +9,7 @@
     using Fanex.NAP.FS.Library.Models.FraudCaseTask;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Reflection;
 
     [FraudCase(Library.Models.FraudCaseId.Arbitrage)]
     public class ArbitrageExecutor : FraudCaseExecutor
@@ -16,6 +18,11 @@
 
         public ArbitrageExecutor(FraudCase fraudCase) : base(fraudCase)
         {
+            var a = Assembly.GetExecutingAssembly().GetReferencedAssemblies().FirstOrDefault(b => b.Name.Contains("Http.Formatting"));
+
+            var ass = Assembly.Load(a);
+
+            LogService.Info($"{a.Name}: {ass.Location}");
         }
 
         protected override void ExecutePrecondition()
