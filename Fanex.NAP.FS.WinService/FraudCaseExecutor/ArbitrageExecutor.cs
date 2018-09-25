@@ -19,9 +19,6 @@
 
         public ArbitrageExecutor(FraudCase fraudCase) : base(fraudCase)
         {
-            var a = Assembly.GetAssembly(typeof(HttpClient));
-
-            LogService.Info($"{a.FullName}: {a.Location}");
         }
 
         protected override void ExecutePrecondition()

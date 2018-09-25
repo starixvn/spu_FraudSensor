@@ -9,6 +9,8 @@ namespace Fanex.NAP.FS.Library.Core.Helpers.Api
     using System;
     using System.Net.Http;
     using System.Net.Http.Headers;
+    using System.Reflection;
+    using System.Text;
     using System.Threading.Tasks;
 
     public static class ApiHelper
@@ -20,22 +22,14 @@ namespace Fanex.NAP.FS.Library.Core.Helpers.Api
             {
                 using (var web = new HttpClient())
                 {
-                    var myContent = JsonConvert.SerializeObject(param);
-
-                    var buffer = System.Text.Encoding.UTF8.GetBytes(myContent);
-                    var byteContent = new ByteArrayContent(buffer);
-
-                    byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-
-                    var response = await web.PostAsync(url, byteContent).ConfigureAwait(false);
+                    var response = await web.PostAsJsonAsync(url, param).ConfigureAwait(false);
 
                     if (!response.IsSuccessStatusCode)
                     {
-                        Logging.LogService.Error(await response.Content.ReadAsStringAsync().ConfigureAwait(false));
                         return default(TResult);
                     }
 
-                    return JsonConvert.DeserializeObject<TResult>(await response.Content.ReadAsStringAsync().ConfigureAwait(false));
+                    return await response.Content.ReadAsAsync<TResult>().ConfigureAwait(false);
                 }
             }
             catch (Exception exception)
@@ -49,7 +43,6 @@ namespace Fanex.NAP.FS.Library.Core.Helpers.Api
                 };
 
                 MailClientHandler.SendFunctionMail(newMail);
-                LogService.Error(exception.Message, exception);
 
                 return default(TResult);
             }
@@ -59,7 +52,24 @@ namespace Fanex.NAP.FS.Library.Core.Helpers.Api
         {
             using (var web = new HttpClient())
             {
-                var response = await web.PostAsJsonAsync(url, param).ConfigureAwait(false);
+                var m = typeof(HttpClientExtensions).GetMethods(BindingFlags.Static | BindingFlags.Public);
+
+                foreach (var item in m)
+                {
+                    var str = new StringBuilder(item.Name);
+                    str.Append("\n");
+
+                    var p = item.GetParameters();
+
+                    foreach (var item1 in p)
+                    {
+                        str.AppendLine($"\t {item1.Name} - {item1.ParameterType} - {item1.ParameterType.Assembly.FullName}");
+                    }
+
+                    LogService.Info(str.ToString());
+                }
+
+                var response = await HttpClientExtensions.PostAsJsonAsync(web, url, param).ConfigureAwait(false);
 
                 if (!response.IsSuccessStatusCode)
                 {
