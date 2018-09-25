@@ -9,8 +9,6 @@
     using Fanex.NAP.FS.Library.Models.FraudCaseTask;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Net.Http;
-    using System.Reflection;
 
     [FraudCase(Library.Models.FraudCaseId.Arbitrage)]
     public class ArbitrageExecutor : FraudCaseExecutor
@@ -56,8 +54,6 @@
                 Matches = tickets.ToXmlString(),
                 Associations = customers.ToXmlString()
             };
-
-            LogService.Info(criteria.Associations);
 
             DataService.Execute(criteria);
         }
