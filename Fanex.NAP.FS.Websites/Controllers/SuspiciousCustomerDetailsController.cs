@@ -73,7 +73,7 @@ namespace Fanex.NAP.FS.Websites.Controllers
 
         public ActionResult GetCustomerLogNotes(int custId)
         {
-            return JData(await Task.Factory.StartNew(() => _detailsService.GetCustomerLogNotes(custId)).ConfigureAwait(false));
+            return JData(_detailsService.GetCustomerLogNotes(custId));
         }
 
         public ActionResult GetStatistics(int custId, DateTime from, DateTime to)
