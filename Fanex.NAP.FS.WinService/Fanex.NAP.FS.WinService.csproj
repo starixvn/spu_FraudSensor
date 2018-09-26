@@ -156,8 +156,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Executor\BigStakeNearGoalExecutor.cs" />
+    <Compile Include="Executor\DelayGoalExecutor.cs" />
+    <Compile Include="Executor\FlaggedAccountExecutor.cs" />
     <Compile Include="Executor\FraudCaseExecutor.cs" />
     <Compile Include="Executor\GhostExecutor.cs" />
+    <Compile Include="Executor\ScannedOfficeIPExecutor.cs" />
     <Compile Include="FraudCaseManager.cs" />
     <Compile Include="FraudSensorService.cs">
       <SubType>Component</SubType>
