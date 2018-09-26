@@ -390,6 +390,7 @@
 
             var data =
                 rawData
+                .AsParallel()
                 .GroupBy(t => Tuple.Create(t.BetTypeId, t.Handicap1 - t.Handicap2, t.LiveHomeScore, t.LiveAwayScore, t.GroupId), t => new ArbitrageTicket
                 {
                     BetId = t.TransId,
@@ -397,7 +398,7 @@
                     DangerousLevel = t.DangerLevel,
                     Evidences = evidenceDict[(int)t.CustId],
                     Odds = t.Odds,
-                    TransDate = t.TransDate.ToString("MMM dd, yyyy <br/> hh:mm:ss tt"),
+                    RawTransDate = t.TransDate,
                     Username = t.UserName,
                     BetTeam = t.BetTeam,
                     Stake = new ArbitrageStake
@@ -411,15 +412,20 @@
                     Score = $"{t.LiveHomeScore} - {t.LiveAwayScore}"
                 })
                 .OrderBy(g => GetOrder(CachedRef.GetBettypeName(g.Key.Item1)))
-                .Select(g => new ArbitrageGroupTicketList
+                .Select(g =>
                 {
-                    BettypeName = CachedRef.GetBettypeName(g.Key.Item1),
-                    Away = g.Where(t => t.BetTeam == "a").OrderBy(t => DateTime.Parse(t.TransDate.Replace("<br/>", ""))).ThenBy(t => t.Username),
-                    Home = g.Where(t => t.BetTeam == "h").OrderBy(t => DateTime.Parse(t.TransDate.Replace("<br/>", ""))).ThenBy(t => t.Username),
-                    Handicap = g.Key.Item2,
-                    Score = $"{g.Key.Item3} - {g.Key.Item4}",
-                    GroupId = g.Key.Item5
-                });
+                    var tmp = g.OrderBy(t => t.RawTransDate).ThenBy(t => t.Username).ToList();
+
+                    return new ArbitrageGroupTicketList
+                    {
+                        BettypeName = CachedRef.GetBettypeName(g.Key.Item1),
+                        Away = tmp.Where(t => t.BetTeam == "a"),
+                        Home = tmp.Where(t => t.BetTeam == "h"),
+                        Handicap = g.Key.Item2,
+                        Score = $"{g.Key.Item3} - {g.Key.Item4}",
+                        GroupId = g.Key.Item5
+                    };
+                }).ToList();
 
             return data;
         }

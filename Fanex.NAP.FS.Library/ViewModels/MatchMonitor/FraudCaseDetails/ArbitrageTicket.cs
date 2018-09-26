@@ -1,5 +1,6 @@
 ﻿namespace Fanex.NAP.FS.Library.ViewModels.MatchMonitor.FraudCaseDetails
 {
+    using System;
     using System.Collections.Generic;
 
     public class ArbitrageTicket
@@ -18,7 +19,9 @@
 
         public ArbitrageStake Stake { get; set; }
 
-        public string TransDate { get; set; }
+        public DateTime RawTransDate { get; set; }
+
+        public string TransDate => RawTransDate.ToString("MMM dd, yyyy <br/> hh:mm:ss tt");
 
         public string BetTeam { get; set; }
 

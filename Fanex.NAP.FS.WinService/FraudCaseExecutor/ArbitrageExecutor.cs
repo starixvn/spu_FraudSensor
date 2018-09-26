@@ -55,9 +55,6 @@
                 Associations = customers.ToXmlString()
             };
 
-            LogService.Info(criteria.Associations);
-            LogService.Info(criteria.Matches);
-
             DataService.Execute(criteria);
         }
 
