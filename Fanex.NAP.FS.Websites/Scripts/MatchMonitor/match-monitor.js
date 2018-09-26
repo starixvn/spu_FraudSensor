@@ -147,7 +147,7 @@ function renderEvent(obj) {
 function renderFraudCase(obj, selector) {
     var fraudCase = obj.FraudCases[selector];
 
-    if (fraudCase == null && obj.Status.toLowerCase() == "completed") {
+    if (selector == 1 && obj.Score == "0 - 0" && fraudCase == null && obj.Status.toLowerCase() == "completed") {
         return '<span class="icon-approval"></span>';
     }
 
@@ -257,7 +257,6 @@ function renderLeagueDropdown(data) {
         generate_btn.prop("disabled", true);
         export_btn.prop("disabled", true);
         $("#refresh_interval").val("--").change();
-        $("table").DataTable().clear().draw();
     }
 }
 
