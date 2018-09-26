@@ -1,4 +1,4 @@
-﻿namespace Fanex.NAP.FS.WinService
+﻿namespace Fanex.NAP.FS.WinService.Executor
 {
     using Library.DTO;
 
@@ -10,7 +10,6 @@
 
         protected override void ClearOldResult()
         {
-            Stop();
         }
 
         protected override void ExecutePrecondition()

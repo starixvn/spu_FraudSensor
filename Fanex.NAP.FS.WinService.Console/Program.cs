@@ -7,7 +7,7 @@
     {
         private static void Main(string[] args)
         {
-            var a = FraudCaseFactory.GetExecutor(new FraudCase { FraudCaseId = (int) FraudCaseId.CheckBet });
+            var a = new FraudCaseManager(null).GetExecutor(new FraudCase { FraudCaseId = (int) FraudCaseId.CheckBet });
 
             a.Execute();
 

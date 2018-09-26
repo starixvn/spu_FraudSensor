@@ -1,6 +1,7 @@
-﻿namespace Fanex.NAP.FS.WinService
+﻿namespace Fanex.NAP.FS.WinService.Executor
 {
     using Fanex.NAP.FS.Library.Core.BaseClasses;
+    using Fanex.NAP.FS.Library.Criteria.FraudSensorTask;
     using Library.DTO;
     using System;
     using System.Collections.Generic;
@@ -13,6 +14,8 @@
         private IEnumerable<Match> _matches;
 
         private readonly List<Task> _threads;
+
+        int _errorTimes;
 
         public BigStakeNearGoalExecutor(FraudCase fraudCase) : base(fraudCase)
         {
@@ -31,7 +34,7 @@
 
         protected override void ExecutePrecondition()
         {
-            _matches = _fraudSensorTaskService.BigStakeNearGoalExecutePrecondition();
+            _matches = DataService.GetData<Match>(new BigStakeNearGoalPreconditionCriteria());
         }
 
         protected override void ExecuteRule()
@@ -66,7 +69,7 @@
             {
                 try
                 {
-                    _fraudSensorTaskService.BigStakeNearGoalExecuteRule(((Match)m).MatchId.ToString());
+                    DataService.Execute(new BigStakeNearGoalRuleCriteria { MatchIds = ((Match)m).MatchId.ToString() });
 
                     _errorTimes = 0;
                 }

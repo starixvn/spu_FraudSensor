@@ -1,4 +1,5 @@
 ﻿using Fanex.Data;
+using Fanex.NAP.FS.Library.Services;
 using System.Configuration;
 using System.ServiceProcess;
 
@@ -18,22 +19,23 @@ namespace Fanex.NAP.FS.WinService
                 DbSettingProviderManager
                    .StartNewSession()
                    .UseDefaultConnectionStringProvider()
-                   .UseDefaultDbSettingProvider(resourcePath: environment != "2" ? "~/App_Data": "~/App_Data/UAT", enableWatching: true)
+                   .UseDefaultDbSettingProvider(resourcePath: environment != "2" ? "~/App_Data" : "~/App_Data/UAT", enableWatching: true)
                    .Run();
 
                 ServiceBase[] ServicesToRun;
 
                 ServicesToRun = new ServiceBase[]
                 {
-                    new FraudSensorService()
-                };
+                    new FraudSensorService(new FraudCaseManager(new FraudCaseService()), null)
+            };
 
-                ServiceBase.Run(ServicesToRun);
-            }
+            ServiceBase.Run(ServicesToRun);
+        }
+
             catch (System.Exception ex)
             {
                 Logging.Logger.Log.Error(ex.Message, ex);
             }
-        }
+}
     }
 }
