@@ -2,9 +2,10 @@
 {
     public enum MessageType
     {
-        Add = 0,
-        Remove = 1,
-        Deactivate = 2,
-        Activate = 3
+        None = -1,
+        Adding = 0,
+        Removing = 1,
+        Deactivating = 2,
+        Activating = 3
     }
 }

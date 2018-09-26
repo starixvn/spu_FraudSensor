@@ -3,27 +3,35 @@
 namespace Fanex.NAP.FS.Library.Core.Helpers.Api
 {
     using MailDelivery.Client;
+    using Newtonsoft.Json;
     using System;
     using System.Net.Http;
+    using System.Net.Http.Headers;
     using System.Threading.Tasks;
 
     public static class ApiHelper
     {
         public static async Task<TResult> Post<TParam, TResult>(string url, TParam param, int environment, int mailingListId)
-
         {
             try
             {
                 using (var web = new HttpClient())
                 {
-                    var response = await web.PostAsJsonAsync(url, param).ConfigureAwait(false);
+                    var myContent = JsonConvert.SerializeObject(param);
+
+                    var buffer = System.Text.Encoding.UTF8.GetBytes(myContent);
+                    var byteContent = new ByteArrayContent(buffer);
+
+                    byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
+                    var response = await web.PostAsync(url, byteContent).ConfigureAwait(false);
 
                     if (!response.IsSuccessStatusCode)
                     {
                         return default(TResult);
                     }
 
-                    return await response.Content.ReadAsAsync<TResult>().ConfigureAwait(false);
+                    return JsonConvert.DeserializeObject<TResult>(await response.Content.ReadAsStringAsync().ConfigureAwait(false));
                 }
             }
             catch (Exception exception)

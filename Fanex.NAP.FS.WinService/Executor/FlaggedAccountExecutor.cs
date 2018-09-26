@@ -1,6 +1,7 @@
 ﻿namespace Fanex.NAP.FS.WinService.Executor
 {
     using Fanex.NAP.FS.Library.Core.BaseClasses;
+    using Fanex.NAP.FS.Library.Core.Extensions;
     using Library.Core.Helpers.Api;
     using Library.Core.Helpers.Xml;
     using Library.Core.Utilities;
@@ -87,12 +88,14 @@
 
         private Task ExecuteMultiple(List<Match> matches)
         {
+            XmlHelper.RegisterType<FlaggedCustomer>();
+
             var thread = Task.Factory.StartNew(m =>
             {
                 try
                 {
                     var flaggedAccountsXml = XmlHelper.ToXmlString(_flaggedCustomers);
-                    DataService.Execute(new FlaggedAccountRuleCriteria { MatchIds = ((Match)m).MatchId.ToString() , FlaggedAccountsXML = flaggedAccountsXml });
+                    DataService.Execute(new FlaggedAccountRuleCriteria { MatchIds = ((List<Match>)m).Join(a => a.MatchId), FlaggedAccountsXML = flaggedAccountsXml });
 
                     _errorTimes = 0;
                 }

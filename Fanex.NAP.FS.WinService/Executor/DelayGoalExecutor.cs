@@ -1,6 +1,7 @@
 ﻿namespace Fanex.NAP.FS.WinService.Executor
 {
     using Fanex.NAP.FS.Library.Core.BaseClasses;
+    using Fanex.NAP.FS.Library.Core.Extensions;
     using Library.Core.Utilities;
     using Library.Criteria.FraudSensorTask;
     using Library.DTO;
@@ -74,7 +75,7 @@
             {
                 try
                 {
-                    DataService.Execute(new DelayGoalRuleCriteria { MatchIds = ((Match)m).MatchId.ToString() });
+                    DataService.Execute(new DelayGoalRuleCriteria { MatchIds = ((List<Match>)m).Join(a => a.MatchId) });
 
                     _errorTimes = 0;
                 }

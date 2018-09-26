@@ -156,6 +156,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Executor\BigStakeNearGoalExecutor.cs" />
+    <Compile Include="Executor\CheckBetExecutor.cs" />
+    <Compile Include="Executor\DailyDataCaptureExecutor.cs" />
     <Compile Include="Executor\DelayGoalExecutor.cs" />
     <Compile Include="Executor\FlaggedAccountExecutor.cs" />
     <Compile Include="Executor\FraudCaseExecutor.cs" />
@@ -172,6 +174,9 @@
     <Compile Include="IFraudCaseExecutor.cs" />
     <Compile Include="IFraudCaseManager.cs" />
     <Compile Include="IMessager.cs" />
+    <Compile Include="MessageQueue\IMessageQueueReceiver.cs" />
+    <Compile Include="MessageQueue\MessageQueueReceiver.cs" />
+    <Compile Include="Messager.cs" />
     <Compile Include="MessageType.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="ProjectInstaller.cs">

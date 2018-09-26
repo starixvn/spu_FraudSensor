@@ -22,6 +22,8 @@ namespace Fanex.NAP.FS.WinService
 
         private IDictionary<FraudCaseId, Timer> timers;
 
+        private IDictionary<FraudCaseId, bool> executionCheckers;
+
         public FraudSensorService(IFraudCaseManager manager, IMessager messager)
         {
             this.manager = manager;
@@ -60,7 +62,11 @@ namespace Fanex.NAP.FS.WinService
 
                 Logger.Log.Info("SPU FS 2 Service - Loading fraudcases");
 
-                timers = manager.GetCases().ToDictionary(f => (FraudCaseId)f.FraudCaseId, f => GetTimer(f));
+                var fraudCases = manager.GetCases();
+
+                executionCheckers = fraudCases.ToDictionary(f => (FraudCaseId)f.FraudCaseId, f => false);
+
+                timers = fraudCases.ToDictionary(f => (FraudCaseId)f.FraudCaseId, f => GetTimer(f));
 
                 Logger.Log.Info("SPU FS 2 Service - Loading fraudcases have done.");
 
@@ -107,16 +113,24 @@ namespace Fanex.NAP.FS.WinService
         {
             var executor = manager.GetExecutor(fraudCase);
 
-            var timer = new Timer(ExecuteFraudCase, executor, 0, fraudCase.FraudCaseInterval * 1000);
-
+            var timer = new Timer(o => ExecuteFraudCase(executor), null, 0, fraudCase.FraudCaseInterval * 1000);
+            
             return timer;
         }
 
-        private void ExecuteFraudCase(object executor)
+        private void ExecuteFraudCase(IFraudCaseExecutor executor)
         {
             try
             {
-                (executor as IFraudCaseExecutor).Execute();
+                if (executionCheckers[executor.FraudCaseId])
+                {
+                    return;
+                }
+                executionCheckers[executor.FraudCaseId] = true;
+
+                executor.Execute();
+
+                executionCheckers[executor.FraudCaseId] = false;
             }
             catch (Exception ex)
             {
@@ -128,7 +142,7 @@ namespace Fanex.NAP.FS.WinService
         {
             switch (message)
             {
-                case MessageType.Add:
+                case MessageType.Adding:
                     if (!timers.ContainsKey(id))
                     {
                         var fc = manager.GetCase(id);
@@ -137,7 +151,7 @@ namespace Fanex.NAP.FS.WinService
 
                     break;
 
-                case MessageType.Remove:
+                case MessageType.Removing:
                     if (timers.ContainsKey(id))
                     {
                         timers.Remove(id);
@@ -145,7 +159,7 @@ namespace Fanex.NAP.FS.WinService
 
                     break;
 
-                case MessageType.Deactivate:
+                case MessageType.Deactivating:
                     if (timers.ContainsKey(id))
                     {
                         timers[id].Change(Timeout.Infinite, Timeout.Infinite);
@@ -153,7 +167,7 @@ namespace Fanex.NAP.FS.WinService
 
                     break;
 
-                case MessageType.Activate:
+                case MessageType.Activating:
                     if (timers.ContainsKey(id))
                     {
                         var fc = manager.GetCase(id);

@@ -9,7 +9,7 @@
     {
         protected readonly MessageQueue _messageQueue;
 
-        protected FSMessageQueue()
+        public FSMessageQueue()
         {
             var queuePath = ConfigSettings.GetConfigStringByName("queuePath");
 

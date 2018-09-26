@@ -21,7 +21,7 @@
         {
             this.service = service;
 
-            _lookup = 
+            _lookup =
                 typeof(FraudCaseManager).Assembly.GetTypes()
                  .Where(t => typeof(FraudCaseExecutor).IsAssignableFrom(t) && !t.IsAbstract && t.GetCustomAttribute<FraudCaseAttribute>() != null)
                 .ToDictionary(t => t.GetCustomAttribute<FraudCaseAttribute>().FraudCase);
@@ -34,7 +34,7 @@
 
         public IEnumerable<FraudCase> GetCases()
         {
-            return service.Get(null, 1, int.Parse(ConfigurationManager.AppSettings["Environment"]));
+            return service.Get(null, 1, int.Parse(ConfigurationManager.AppSettings["Environment"])).Where(f => f.IsActive);
         }
 
         public IFraudCaseExecutor GetExecutor(FraudCase fraudCase)

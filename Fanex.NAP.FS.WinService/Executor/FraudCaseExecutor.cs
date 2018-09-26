@@ -3,6 +3,7 @@
     using Fanex.Logging;
     using Fanex.MailDelivery.Client;
     using Fanex.NAP.FS.Library.DTO;
+    using Fanex.NAP.FS.Library.Models;
     using System;
     using System.Configuration;
     using System.Threading.Tasks;
@@ -12,9 +13,13 @@
         protected FraudCaseExecutor(FraudCase fc)
         {
             FraudCase = fc;
+
+            SendMailInform($"{fc.FraudCaseName} (ID: {fc.FraudCaseId}) STARTED", $"{fc.FraudCaseName} (ID: {fc.FraudCaseId}) STARTED");
         }
 
         protected FraudCase FraudCase { get; }
+
+        public FraudCaseId FraudCaseId => (FraudCaseId)FraudCase.FraudCaseId;
 
         protected abstract void ExecutePrecondition();
 
@@ -26,9 +31,15 @@
 
         public void Execute()
         {
+            //LogService.Info($"{FraudCase.FraudCaseName} started");
+
             ExecutePrecondition();
 
+            //LogService.Info($"{FraudCase.FraudCaseName}'s precondition is executed");
+
             ExecuteRule();
+
+            //LogService.Info($"{FraudCase.FraudCaseName}'s rule is executed");
 
             ClearOldResult();
 
