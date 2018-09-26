@@ -327,11 +327,12 @@ BEGIN
 		INNER JOIN #tmpAssociation AS a WITH(NOLOCK) ON r.GroupId = a.GroupId
 		INNER JOIN #tmpBettrans AS bb WITH(NOLOCK) ON a.CustId = bb.CustId AND r.MatchId = bb.MatchId
 			AND r.Bettype = bb.Bettype AND r.Handicap = bb.Handicap AND r.TotalLiveScore = bb.TotalLiveScore;
+	WHERE r.TotalStakeH > @MaxStakeToBeChecked AND r.TotalStakeA > @MaxStakeToBeChecked
+		AND bb.TransId > am.MaxTransId;
 
 	INSERT INTO #tmpMatchesInfo(MatchId, EventDate)
 	SELECT DISTINCT t.MatchId, t.EventDate
 	FROM #tmpFraudTickets AS t WITH(NOLOCK);
-
 	-- Check the results and store/return data
 	IF EXISTS (SELECT TOP(1) 1 FROM #tmpFraudTickets WITH (NOLOCK))
 	BEGIN		
