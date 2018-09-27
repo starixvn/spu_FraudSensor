@@ -190,13 +190,16 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="Fanex.NAP.FS.WinService.exe.LOCAL.config">
+      <DependentUpon>App.config</DependentUpon>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Fanex.NAP.FS.WinService.exe.PRO.config">
+      <DependentUpon>App.config</DependentUpon>
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Fanex.NAP.FS.WinService.exe.UAT.config">
+      <DependentUpon>App.config</DependentUpon>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Fanex.NAP.FS.WinService.ruleset" />

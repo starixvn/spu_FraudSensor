@@ -129,12 +129,14 @@ namespace Fanex.NAP.FS.WinService
                 executionCheckers[executor.FraudCaseId] = true;
 
                 executor.Execute();
-
-                executionCheckers[executor.FraudCaseId] = false;
             }
             catch (Exception ex)
             {
                 LogService.Error(ex.Message, ex);
+            }
+            finally
+            {
+                executionCheckers[executor.FraudCaseId] = false;
             }
         }
 
