@@ -66,10 +66,7 @@ BEGIN
 	);
 
 	IF OBJECT_ID('tempdb..#tmpMatchesInfo') IS NOT NULL
-	BEGIN
 		DROP TABLE	#tmpMatchesInfo;
-	END
-
 	CREATE TABLE #tmpMatchesInfo
 	(
 			MatchId				INT
@@ -86,20 +83,13 @@ BEGIN
 	END
 
 	CREATE TABLE #tmpMaxTransId
-	(
-			MatchId				INT
 		,	BetType				INT
 		,	Handicap			MONEY
 		,	TotalScores			INT
-		,	MaxTransId			BIGINT
-	);
-
 	CREATE NONCLUSTERED INDEX	#NCIX_tmpMaxTransId ON #tmpMaxTransId (
-			MatchId				ASC
 		,	BetType				ASC
 		,	Handicap			ASC
 		,	TotalScores			ASC
-	);
 
 	IF	OBJECT_ID('tempdb..#tmpAssociation') IS NOT NULL
 	BEGIN;
@@ -286,8 +276,7 @@ BEGIN
 			AND b.custid = m.CustId AND (b.hdp1 - b.hdp2) = m.Handicap AND b.livehomescore = m.LiveHomeScore AND b.liveawayscore = m.LiveAwayScore
 	WHERE b.matchId > 0
 		AND b.bettype IN (1, 3, 7, 8)
-		AND b.Currency NOT IN (20, 27, 28)
-		AND b.transid > am.MaxTransId;
+		AND b.Currency NOT IN (20, 27, 28);
 
 	INSERT INTO #tmpMatchBettypeBetteamSumStake(GroupId, MatchId, Bettype, Handicap, TotalLiveScore, BetTeam, TotalStake)
 	SELECT DISTINCT a.GroupId
@@ -433,22 +422,6 @@ BEGIN
 			);
 	END;	
 
-	------UPDATE MaxTransId for Matches
-	INSERT INTO #tmpMatchesMaxTransAndScore(MatchId, MaxTransId, MaxLiveHomeScore, MaxLiveAwayScore)
-	SELECT	b.MatchId
-		,	MAX(b.TransId)
-		,	MAX(m.LiveHomeScore)
-		,	MAX(m.LiveAwayScore)
-	FROM #tmpBettrans AS b WITH(NOLOCK)
-		INNER JOIN #tmpMatches AS m WITH(NOLOCK) ON b.MatchId = m.MatchId
-	GROUP BY b.MatchId;
-
-	UPDATE	am
-	SET		am.maxTransId = b.MaxTransId
-			, am.LiveHomeScore = b.MaxLiveHomeScore
-			, am.LiveAwayScore = b.MaxLiveAwayScore
-	FROM	dbo.ArbitrageMatchScanning AS am WITH (ROWLOCK)
-			INNER JOIN #tmpMatchesMaxTransAndScore  AS b WITH (NOLOCK) ON am.matchid = b.matchid;		
 	
 	-- Update table ScannedMatch if existed
 	UPDATE	sm WITH (ROWLOCK, UPDLOCK)

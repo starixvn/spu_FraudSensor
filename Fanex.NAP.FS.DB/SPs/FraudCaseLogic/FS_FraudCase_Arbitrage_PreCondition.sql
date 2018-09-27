@@ -15,6 +15,7 @@ AS
 
 	Revisions: 
 		- 20180815@LONG: Implement PreCondition for Arbitrage fraud case
+		- 20180926@LONG: Remove redundant fraud tickets
 
 	Param's Explanation (filtered by):  
 	
@@ -194,8 +195,11 @@ BEGIN
 	
 	------UPDATE MaxTransId for Matches
 	UPDATE	am
-	SET		IsScanCompleted = mm.IsMatchCompleted
-			, IsMatchCompleted = mm.IsMatchCompleted
+	SET		am.maxTransId = mm.MaxTransId
+			, am.LiveHomeScore = mm.MaxLiveHomeScore
+			, am.LiveAwayScore = mm.MaxLiveAwayScore
+			, am.IsScanCompleted = mm.IsMatchCompleted
+			, am.IsMatchCompleted = mm.IsMatchCompleted
 	FROM	dbo.ArbitrageMatchScanning AS am WITH (ROWLOCK)
 				INNER JOIN #tmpMatchMaxTransId  AS mm WITH (NOLOCK) ON am.matchid = mm.matchid;		
 
