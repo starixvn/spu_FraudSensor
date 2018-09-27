@@ -315,7 +315,7 @@
         ticket_grid.DataTable({
             ordering: false,
             paging: false,
-            dom: "t<'pagination'<'page-size'lp>i>",
+            dom: "t<'pagination'<'page-size'lp>>",
             language: common.language,
             scrollY: '57vh',
             scrollX: "1870px",
