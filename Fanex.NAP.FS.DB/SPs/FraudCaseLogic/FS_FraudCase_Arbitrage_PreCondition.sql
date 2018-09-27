@@ -177,28 +177,6 @@ BEGIN
 	WHERE		ams.MatchId IS NULL
 	GROUP BY	cl.MatchId, cl.Bettype, cl.Handicap, cl.LiveHomeScore, cl.LiveAwayScore;
 	
-	---- RETURN CLEAN UP MATCH SCORE
-	SELECT DISTINCT  mt.MatchId, mt.BetType, mt.Handicap, mt.TotalScores
-	FROM
-			(SELECT   ams.Matchid
-					, ams.BetType
-					, ams.Handicap
-					, ams.TotalScores
-			FROM	dbo.ArbitrageMatchScoreHDP AS ams WITH (NOLOCK)
-					INNER JOIN #tmpCustomerList AS cl WITH (NOLOCK)
-						ON cl.MatchId = ams.MatchId AND (cl.LiveAwayScore+cl.LiveHomeScore) > ams.TotalScores
-			WHERE	ams.HasScanned = 0
-			UNION
-			SELECT   ams.Matchid
-					, ams.BetType
-					, ams.Handicap
-					, ams.TotalScores
-			FROM	dbo.ArbitrageMatchScoreHDP AS ams WITH (NOLOCK)
-					INNER JOIN #tmpMatchMaxTransId AS cl WITH (NOLOCK) ON cl.MatchId = ams.MatchId
-			WHERE	ams.HasScanned = 0
-					AND cl.IsMatchCompleted = 1
-		) AS mt
-
 	------UPDATE ArbitrageMatchScoreHDP
 	UPDATE	ams
 	SET		ams.HasScanned = 1
@@ -216,10 +194,7 @@ BEGIN
 	
 	------UPDATE MaxTransId for Matches
 	UPDATE	am
-	SET		am.maxTransId = mm.MaxTransId
-			, LiveHomeScore = mm.MaxLiveHomeScore
-			, LiveAwayScore = mm.MaxLiveAwayScore
-			, IsScanCompleted = mm.IsMatchCompleted
+	SET		IsScanCompleted = mm.IsMatchCompleted
 			, IsMatchCompleted = mm.IsMatchCompleted
 	FROM	dbo.ArbitrageMatchScanning AS am WITH (ROWLOCK)
 				INNER JOIN #tmpMatchMaxTransId  AS mm WITH (NOLOCK) ON am.matchid = mm.matchid;		

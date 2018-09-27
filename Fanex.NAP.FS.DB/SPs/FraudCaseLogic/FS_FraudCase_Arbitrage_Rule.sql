@@ -286,7 +286,8 @@ BEGIN
 			AND b.custid = m.CustId AND (b.hdp1 - b.hdp2) = m.Handicap AND b.livehomescore = m.LiveHomeScore AND b.liveawayscore = m.LiveAwayScore
 	WHERE b.matchId > 0
 		AND b.bettype IN (1, 3, 7, 8)
-		AND b.Currency NOT IN (20, 27, 28);
+		AND b.Currency NOT IN (20, 27, 28)
+		AND b.transid > am.MaxTransId;
 
 	INSERT INTO #tmpMatchBettypeBetteamSumStake(GroupId, MatchId, Bettype, Handicap, TotalLiveScore, BetTeam, TotalStake)
 	SELECT DISTINCT a.GroupId
@@ -327,8 +328,6 @@ BEGIN
 		INNER JOIN #tmpAssociation AS a WITH(NOLOCK) ON r.GroupId = a.GroupId
 		INNER JOIN #tmpBettrans AS bb WITH(NOLOCK) ON a.CustId = bb.CustId AND r.MatchId = bb.MatchId
 			AND r.Bettype = bb.Bettype AND r.Handicap = bb.Handicap AND r.TotalLiveScore = bb.TotalLiveScore;
-	WHERE r.TotalStakeH > @MaxStakeToBeChecked AND r.TotalStakeA > @MaxStakeToBeChecked
-		AND bb.TransId > am.MaxTransId;
 
 	INSERT INTO #tmpMatchesInfo(MatchId, EventDate)
 	SELECT DISTINCT t.MatchId, t.EventDate
@@ -433,6 +432,23 @@ BEGIN
 				FROM dbo.SuspiciousCustomer sc WITH (NOLOCK)
 			);
 	END;	
+
+	------UPDATE MaxTransId for Matches
+	INSERT INTO #tmpMatchesMaxTransAndScore(MatchId, MaxTransId, MaxLiveHomeScore, MaxLiveAwayScore)
+	SELECT	b.MatchId
+		,	MAX(b.TransId)
+		,	MAX(m.LiveHomeScore)
+		,	MAX(m.LiveAwayScore)
+	FROM #tmpBettrans AS b WITH(NOLOCK)
+		INNER JOIN #tmpMatches AS m WITH(NOLOCK) ON b.MatchId = m.MatchId
+	GROUP BY b.MatchId;
+
+	UPDATE	am
+	SET		am.maxTransId = b.MaxTransId
+			, am.LiveHomeScore = b.MaxLiveHomeScore
+			, am.LiveAwayScore = b.MaxLiveAwayScore
+	FROM	dbo.ArbitrageMatchScanning AS am WITH (ROWLOCK)
+			INNER JOIN #tmpMatchesMaxTransAndScore  AS b WITH (NOLOCK) ON am.matchid = b.matchid;		
 	
 	-- Update table ScannedMatch if existed
 	UPDATE	sm WITH (ROWLOCK, UPDLOCK)
