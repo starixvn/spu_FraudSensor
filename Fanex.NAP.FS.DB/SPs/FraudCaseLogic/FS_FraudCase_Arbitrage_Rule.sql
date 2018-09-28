@@ -317,7 +317,6 @@ BEGIN
 		INNER JOIN #tmpAssociation AS a WITH(NOLOCK) ON r.GroupId = a.GroupId
 		INNER JOIN #tmpBettrans AS bb WITH(NOLOCK) ON a.CustId = bb.CustId AND r.MatchId = bb.MatchId
 			AND r.Bettype = bb.Bettype AND r.Handicap = bb.Handicap AND r.TotalLiveScore = bb.TotalLiveScore;
-
 	INSERT INTO #tmpMatchesInfo(MatchId, EventDate)
 	SELECT DISTINCT t.MatchId, t.EventDate
 	FROM #tmpFraudTickets AS t WITH(NOLOCK);
@@ -399,6 +398,8 @@ BEGIN
 			,	[TicketCounter]		= ft.TicketCounter
 			,	[CurrencyId]		= ft.Currency
 		FROM #tmpArbitrageDetails ft WITH (NOLOCK)
+										FROM dbo.ArbitrageTicketDetails t2 WITH (NOLOCK)
+										WHERE t2.MatchId = ft.MatchId AND t2.CustId = ft.CustId)
 				LEFT JOIN dbo.SuspiciousInfo si WITH (NOLOCK) 
 					ON si.MatchId = ft.MatchId AND si.CustId = ft.CustId  AND si.FraudCaseId = @CurrentFraudCaseId AND si.CurrencyId = ft.Currency
 				INNER JOIN #tmpMatchesInfo AS m WITH(NOLOCK) ON ft.MatchId = m.MatchId
@@ -421,6 +422,30 @@ BEGIN
 				FROM dbo.SuspiciousCustomer sc WITH (NOLOCK)
 			);
 	END;	
+
+	-- Update table ScannedMatch if existed
+	UPDATE	sm WITH (ROWLOCK, UPDLOCK)
+	SET		sm.ScannedDate				= GETDATE()
+		,	sm.SuspiciousTicketsCount	= ISNULL((SELECT SUM(t1.TicketCounter)
+											FROM dbo.ArbitrageTicketDetails t1 WITH (NOLOCK)
+											WHERE t1.MatchId = m.MatchId 
+											GROUP BY t1.MatchId ),0)
+	FROM dbo.ScannedMatch sm
+		INNER JOIN #tmpMatches m WITH (NOLOCK) ON sm.MatchId = m.MatchId AND sm.FraudCaseId = @CurrentFraudCaseId;
+	
+	-- Insert new records for table ScannedMatch
+	INSERT INTO dbo.ScannedMatch (Matchid, FraudCaseId, ScannedDate, SuspiciousTicketsCount)  
+	SELECT	DISTINCT [MatchId]			= m.matchid 
+		,	[FraudCaseId]				= @CurrentFraudCaseId
+		,	[ScannedDate]				= GETDATE() 
+		,	[SuspiciousTicketsCount]	= ISNULL((SELECT SUM(t1.TicketCounter)
+											FROM dbo.ArbitrageTicketDetails t1 WITH (NOLOCK)
+											WHERE t1.MatchId = m.MatchId 
+											GROUP BY t1.MatchId ),0)
+	FROM #tmpMatches m
+		LEFT JOIN dbo.ScannedMatch sm WITH (NOLOCK)ON m.matchid = sm.matchid AND sm.FraudCaseId = @CurrentFraudCaseId
+	WHERE sm.Matchid IS NULL 
+		AND sm.FraudCaseId IS NULL; 
 
 	
 	-- Update table ScannedMatch if existed
