@@ -92,7 +92,7 @@ function load_page_events() {
         else {
             return parseFloat(num);
         }
-    }
+    };
 
     $.fn.dataTable.ext.type.order["check-box-pre"] = function (data) {
         var isChecked = $("input", data).is(":checked");

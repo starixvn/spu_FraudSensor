@@ -4,7 +4,6 @@
     using Fanex.NAP.FS.Library.Core.ExportExcel;
     using Fanex.NAP.FS.Library.Criteria.MatchMonitor;
     using Fanex.NAP.FS.Library.ViewModels.MatchMonitor;
-    using Fanex.RemotingRef;
     using NPOI.SS.UserModel;
     using NPOI.XSSF.UserModel;
     using System.Collections.Generic;
@@ -28,7 +27,8 @@
             row.GetCell(6).SetCellValue(WriteFraudCase(data.FraudCases.ContainsKey("1") ? data.FraudCases["1"] : null));
             row.GetCell(7).SetCellValue(WriteFraudCase(data.FraudCases.ContainsKey("6") ? data.FraudCases["6"] : null));
             row.GetCell(8).SetCellValue(WriteFraudCase(data.FraudCases.ContainsKey("8") ? data.FraudCases["8"] : null));
-            row.GetCell(9).SetCellValue(data.Notes ?? "-");
+            row.GetCell(9).SetCellValue(WriteFraudCase(data.FraudCases.ContainsKey("10") ? data.FraudCases["10"] : null));
+            row.GetCell(10).SetCellValue(data.Notes ?? "-");
         }
 
         private static IRichTextString WriteEvent(Event e)
