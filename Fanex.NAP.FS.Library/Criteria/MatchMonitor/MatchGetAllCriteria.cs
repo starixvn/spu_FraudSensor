@@ -1,7 +1,10 @@
-﻿namespace Fanex.NAP.FS.Library.Criteria.MatchMonitor
+﻿#pragma warning disable S2325 // Methods and properties that don't access instance data should be static
+
+namespace Fanex.NAP.FS.Library.Criteria.MatchMonitor
 {
     using Fanex.Data.Repository;
     using System;
+    using System.Configuration;
 
     public class MatchGetAllCriteria : CriteriaBase
     {
@@ -16,6 +19,8 @@
         public bool IsMainMarket { get; set; }
 
         public bool IsShowSpecialCurrencies { get; set; }
+        
+        public int Environment => int.Parse(ConfigurationManager.AppSettings["Environment"]);
 
         public override string GetSettingKey()
         {
@@ -28,3 +33,5 @@
         }
     }
 }
+
+#pragma warning restore S2325 // Methods and properties that don't access instance data should be static

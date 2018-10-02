@@ -1,12 +1,13 @@
 ﻿namespace Fanex.NAP.FS.WinService
 {
-    using Fanex.Logging;
     using Fanex.NAP.FS.Library.Core.BaseClasses;
+    using Fanex.NAP.FS.Library.Core.Helpers;
     using Fanex.NAP.FS.Library.Core.Helpers.Api;
     using Fanex.NAP.FS.Library.Core.Helpers.Xml;
     using Fanex.NAP.FS.Library.Criteria.FraudSensorTask;
     using Fanex.NAP.FS.Library.DTO;
     using Fanex.NAP.FS.Library.Models.FraudCaseTask;
+    using System;
     using System.Collections.Generic;
     using System.Linq;
 
@@ -31,7 +32,7 @@
 
             foreach (var g in tickets.GroupBy(t => t.MatchId))
             {
-                GroupData(g);
+                GroupData(g.Key, g);
             }
         }
 
@@ -43,7 +44,7 @@
         {
         }
 
-        private static void GroupData(IEnumerable<ArbitrageTicket> tickets)
+        private static void GroupData(int matchId, IEnumerable<ArbitrageTicket> tickets)
         {
             var newCustids = new HashSet<int>(tickets.Select(t => t.CustId));
 
@@ -61,13 +62,21 @@
             }
             catch (System.Exception ex)
             {
-                LogService.Error($"{ex.Message}\ntickets: {criteria.Matches}\nassociations: {criteria.Associations}", ex);
+                Console.WriteLine($"{ex.Message}\nmatch: {matchId}\ntickets: {criteria.Matches}\nassociations: {criteria.Associations}");
             }
         }
 
         private static IEnumerable<ArbitrageCustomer> GroupCustomer(IEnumerable<int> custids)
         {
-            return ApiHelper.Post<IEnumerable<ArbitrageCustomer>>(AppSettings.MS_WEBAPI_GROUP_CUSTOMER, custids).Result;
+            try
+            {
+                return ApiHelper.Post<IEnumerable<ArbitrageCustomer>>(AppSettings.MS_WEBAPI_GROUP_CUSTOMER, custids).Result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"{ex.GetType()}: {ex.Message}\n\tids: ${custids.Join()}");
+                throw;
+            }
         }
     }
 }
