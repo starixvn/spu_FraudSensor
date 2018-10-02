@@ -55,7 +55,14 @@
                 Associations = customers.ToXmlString()
             };
 
-            DataService.Execute(criteria);
+            try
+            {
+                DataService.Execute(criteria);
+            }
+            catch (System.Exception ex)
+            {
+                LogService.Error($"{ex.Message}\ntickets: {criteria.Matches}\nassociations: {criteria.Associations}", ex);
+            }
         }
 
         private static IEnumerable<ArbitrageCustomer> GroupCustomer(IEnumerable<int> custids)
