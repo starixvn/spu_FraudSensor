@@ -1,12 +1,11 @@
-
 SET QUOTED_IDENTIFIER ON 
 GO
 SET ANSI_NULLS ON 
 GO
 
-/****** Object:  Stored Procedure dbo.FS_SuspiciousCustomer_FraudCases_Get    Script Date: 5/15/2018 4:21:24 PM ******/
 CREATE PROCEDURE [dbo].[FS_SuspiciousCustomer_FraudCases_Get]
-	@CustId	INT
+		@CustId	INT
+	,	@Environment		INT = 3
 AS
 /*
 	Created: 20180504@CaseyHuynh
@@ -15,8 +14,12 @@ AS
 	Original:
 
 	Revisions:
+			20181002@JohnNgo: Check @Environment for Fraudcase
+	
 	Param's Explanation:    
+			+ @Environment: 3-Production get Istest=0 ELSE All (Clone from [FS_FraudCase_GetAll])  
 */
+
 BEGIN
 	SET NOCOUNT ON;
 
@@ -40,20 +43,23 @@ BEGIN
 			FROM dbo.SuspiciousInfo AS si WITH(NOLOCK)
 			WHERE CustId = @CustId
 			GROUP BY si.FraudCaseId) AS fs
+	INNER JOIN dbo.FraudCase c WITH (NOLOCK) ON c.FraudCaseId = fs.FraudCaseId
+	WHERE c.IsTest = (CASE WHEN @Environment = 3 THEN 0 ELSE c.IsTest END)
 	ORDER BY fs.FraudCaseName Asc;
 
 END;
 
 GO
-
 SET QUOTED_IDENTIFIER OFF 
 GO
 SET ANSI_NULLS ON 
 GO
-
 
 GO 
  GRANT EXECUTE ON [dbo].[FS_SuspiciousCustomer_FraudCases_Get] TO [bodbSPUNet]
 GO 
  GRANT VIEW DEFINITION ON [dbo].[FS_SuspiciousCustomer_FraudCases_Get] TO [bodbSPUNet]
 GO 
+
+GO
+/*<info serverAlias="DBSPU-bodb_FraudSensor" executers="bodbSPUNet" isFunction="0" isNested="0"></info>*/

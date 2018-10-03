@@ -1,5 +1,3 @@
-USE [bodb_FraudSensor]
-GO
 /****** Object:  StoredProcedure [dbo].[FS_FraudCase_Arbitrage_Rule_LongEnhance]    Script Date: 11/15/2018 9:21:57 AM ******/
 SET ANSI_NULLS ON
 GO

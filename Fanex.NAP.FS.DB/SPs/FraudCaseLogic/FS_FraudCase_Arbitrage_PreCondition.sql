@@ -1,6 +1,3 @@
-USE [bodb_FraudSensor]
-GO
-/****** Object:  StoredProcedure [dbo].[FS_FraudCase_Arbitrage_PreCondition_20180904]    Script Date: 09/04/2018 19:56:42 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
