@@ -1,5 +1,6 @@
 ﻿namespace Fanex.NAP.FS.WinService
 {
+    using Fanex.Logging;
     using Fanex.NAP.FS.Library.Core.BaseClasses;
     using Fanex.NAP.FS.Library.Core.Helpers;
     using Fanex.NAP.FS.Library.Core.Helpers.Api;
@@ -74,8 +75,9 @@
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"{ex.GetType()}: {ex.Message}\n\tids: ${custids.Join()}");
-                throw;
+                LogService.Error($"{ex.GetType().FullName}: {ex.Message}\n\tids:{custids.Join()}", ex);
+
+                return Enumerable.Empty<ArbitrageCustomer>();
             }
         }
     }
