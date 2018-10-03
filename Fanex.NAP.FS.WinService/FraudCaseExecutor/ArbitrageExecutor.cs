@@ -63,7 +63,7 @@
             }
             catch (System.Exception ex)
             {
-                Console.WriteLine($"{ex.Message}\nmatch: {matchId}\ntickets: {criteria.Matches}\nassociations: {criteria.Associations}");
+                LogService.Error($"{ex.Message}\nmatch: {matchId}\ntickets: {criteria.Matches}\nassociations: {criteria.Associations}");
             }
         }
 

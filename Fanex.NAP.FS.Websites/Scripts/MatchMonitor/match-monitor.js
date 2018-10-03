@@ -151,6 +151,10 @@ function renderFraudCase(obj, selector) {
         return '<span class="icon-approval"></span>';
     }
 
+    if (selector == 10 && fraudCase == null && obj.Status.toLowerCase() == "completed") {
+        return '<span class="icon-approval"></span>';
+    }
+
     if (fraudCase == null) {
         return "<span class='icon-neutral'></span>";
     }
