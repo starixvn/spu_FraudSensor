@@ -49,7 +49,7 @@
 
         private static void GroupData(int matchId, IEnumerable<ArbitrageTicket> tickets)
         {
-            var tsk = tickets.Select(t => t.CustId).Chunk(500).Select(GroupCustomer).ToArray();
+            var tsk = tickets.Select(t => t.CustId).Distinct().Chunk(500).Select(GroupCustomer).ToArray();
 
             Task.WaitAll(tsk);
 
