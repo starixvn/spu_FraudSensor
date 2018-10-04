@@ -5,12 +5,14 @@
     using Fanex.NAP.FS.Library.Core.Helpers;
     using Fanex.NAP.FS.Library.Core.Helpers.Api;
     using Fanex.NAP.FS.Library.Core.Helpers.Xml;
+    using Fanex.NAP.FS.Library.Core.Utilities;
     using Fanex.NAP.FS.Library.Criteria.FraudSensorTask;
     using Fanex.NAP.FS.Library.DTO;
     using Fanex.NAP.FS.Library.Models.FraudCaseTask;
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading.Tasks;
 
     [FraudCase(Library.Models.FraudCaseId.Arbitrage)]
     public class ArbitrageExecutor : FraudCaseExecutor
@@ -47,9 +49,11 @@
 
         private static void GroupData(int matchId, IEnumerable<ArbitrageTicket> tickets)
         {
-            var newCustids = new HashSet<int>(tickets.Select(t => t.CustId));
+            var tsk = tickets.Select(t => t.CustId).Chunk(500).Select(GroupCustomer).ToArray();
 
-            var customers = GroupCustomer(newCustids);
+            Task.WaitAll(tsk);
+
+            var customers = tsk.SelectMany(t => t.Result);
 
             var criteria = new ArbitrageRuleCriteria
             {
@@ -67,11 +71,11 @@
             }
         }
 
-        private static IEnumerable<ArbitrageCustomer> GroupCustomer(IEnumerable<int> custids)
+        private static async Task<IEnumerable<ArbitrageCustomer>> GroupCustomer(IEnumerable<int> custids)
         {
             try
             {
-                return ApiHelper.Post<IEnumerable<ArbitrageCustomer>>(AppSettings.MS_WEBAPI_GROUP_CUSTOMER, custids).Result;
+                return await ApiHelper.Post<IEnumerable<ArbitrageCustomer>>(AppSettings.MS_WEBAPI_GROUP_CUSTOMER, custids);
             }
             catch (Exception ex)
             {
