@@ -1,5 +1,6 @@
 ﻿#pragma warning disable S3994 // URI Parameters should not be strings
 #pragma warning disable S112 // General exceptions should never be thrown
+#pragma warning disable S4005 // "System.Uri" arguments should be used instead of strings
 
 namespace Fanex.NAP.FS.Library.Core.Helpers.Api
 {
@@ -58,9 +59,7 @@ namespace Fanex.NAP.FS.Library.Core.Helpers.Api
 
                 byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
-#pragma warning disable S4005 // "System.Uri" arguments should be used instead of strings
                 var response = await web.PostAsync(url, byteContent).ConfigureAwait(false);
-#pragma warning restore S4005 // "System.Uri" arguments should be used instead of strings
 
                 if (!response.IsSuccessStatusCode)
                 {
@@ -83,5 +82,6 @@ namespace Fanex.NAP.FS.Library.Core.Helpers.Api
     }
 }
 
+#pragma warning restore S4005 // "System.Uri" arguments should be used instead of strings
 #pragma warning restore S112 // General exceptions should never be thrown
 #pragma warning restore S3994 // URI Parameters should not be strings
