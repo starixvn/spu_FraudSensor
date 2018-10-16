@@ -22,6 +22,7 @@
         </div>
         @using (Html.BeginForm())
         {
+        <input type="hidden" id="loginToken" name="loginToken" value="@ViewBag.LoginToken" />
         <div class="form-group">
             <input type="text" class="form-control" placeholder="Username" id="username" name="username">
             <span class="icon icon-account-outline"></span>
@@ -41,13 +42,15 @@
         </div>
     </section>
     <script src="~/Scripts/jquery-3.0.0.min.js"></script>
+    <script src="~/Scripts/CryptoJS.js"></script>
     <script>
         var username = $("#username");
         var password = $("#password");
+        var token = $("#loginToken");
+
         var msg = $(".msg-error");
         var fst_load = true;
         var has_error_message = @(Model != null ? "true": "false");
-        var format = /[!#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
 
         if (has_error_message) {
             setTimeout(() => msg.text(""), 3000);
@@ -65,11 +68,10 @@
             var notEmpty = username.val().length != 0 && password.val().length != 0;
 
             if (notEmpty) {
-                if (format.test(username.val()) || format.test(password.val())) {
-                    msg.html("Invalid Username or Password");
-                    setTimeout(() => msg.text(""), 3000);
-                    return false;
-                }
+                encryptedPw = CryptoJS.CfsEnCode(password.val());
+                hashPw = CryptoJS.SHA256(encryptedPw + token.val());
+
+                password.val(hashPw);
 
                 return true;
             }

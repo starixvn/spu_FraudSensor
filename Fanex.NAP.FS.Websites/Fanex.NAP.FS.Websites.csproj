@@ -662,6 +662,7 @@
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\CheckBetReport\check-bet-report.js" />
     <Content Include="Scripts\common.js" />
+    <Content Include="Scripts\CryptoJS.js" />
     <Content Include="Scripts\DailyDataCapture\daily-data-capture.js" />
     <Content Include="Scripts\DataTables\autoFill.bootstrap.js" />
     <Content Include="Scripts\DataTables\autoFill.bootstrap.min.js" />
