@@ -360,11 +360,9 @@ BEGIN
 			,	STUFF((	SELECT DISTINCT ',', CONVERT(VARCHAR(MAX), t1.TransIds) 
 						FROM dbo.ArbitrageTicketDetails t1 WITH (NOLOCK)
 						WHERE t1.MatchId = si.MatchId AND t1.CustId = si.CustId AND t1.CurrencyId = si.CurrencyId
-											AND t1.MatchId = ft.MatchId AND t1.CustId = ft.CustId
 						FOR XML PATH('')), 1, 1, '')
 			,	SUM(si.TicketCounter)
 			,	(	SELECT COUNT(1)
-											AND t2.MatchId = ft.MatchId AND t2.CustId = ft.CustId)
 					FROM (SELECT DISTINCT t2.Bettype, t2.TotalScores, t2.Handicap
 					FROM dbo.ArbitrageTicketDetails AS t2 WITH (NOLOCK)
 					WHERE t2.MatchId = si.MatchId AND t2.CustId = si.CustId AND t2.CurrencyId = si.CurrencyId) AS A)
@@ -372,6 +370,7 @@ BEGIN
 		FROM dbo.ArbitrageTicketDetails si WITH (NOLOCK) 
 			INNER JOIN #tmpMatchesInfo AS m WITH(NOLOCK) ON si.MatchId = m.MatchId
 		GROUP BY si.MatchId, si.CustId, m.EventDate, si.CurrencyId;
+		WHERE ft.MatchId IN (SELECT DISTINCT MatchId FROM #tmpMatches WITH(NOLOCK));
 
 		-- Update table SuspiciousInfo if existed
 		UPDATE si WITH (ROWLOCK, UPDLOCK)
@@ -398,8 +397,7 @@ BEGIN
 			,	[CurrencyId]		= ft.Currency
 		FROM #tmpArbitrageDetails ft WITH (NOLOCK)
 										FROM dbo.ArbitrageTicketDetails t2 WITH (NOLOCK)
-										WHERE t2.MatchId IN (SELECT DISTINCT MatchId FROM #tmpMatches WITH(NOLOCK))
-											AND t2.MatchId = ft.MatchId AND t2.CustId = ft.CustId)
+										WHERE t2.MatchId = ft.MatchId AND t2.CustId = ft.CustId)
 				LEFT JOIN dbo.SuspiciousInfo si WITH (NOLOCK) 
 					ON si.MatchId = ft.MatchId AND si.CustId = ft.CustId  AND si.FraudCaseId = @CurrentFraudCaseId AND si.CurrencyId = ft.Currency
 				INNER JOIN #tmpMatchesInfo AS m WITH(NOLOCK) ON ft.MatchId = m.MatchId
@@ -422,7 +420,7 @@ BEGIN
 				FROM dbo.SuspiciousCustomer sc WITH (NOLOCK)
 			);
 	END;	
-
+	
 	-- Update table ScannedMatch if existed
 	UPDATE	sm WITH (ROWLOCK, UPDLOCK)
 	SET		sm.ScannedDate				= GETDATE()
@@ -446,7 +444,7 @@ BEGIN
 		LEFT JOIN dbo.ScannedMatch sm WITH (NOLOCK)ON m.matchid = sm.matchid AND sm.FraudCaseId = @CurrentFraudCaseId
 	WHERE sm.Matchid IS NULL 
 		AND sm.FraudCaseId IS NULL; 
-
+		
 	
 	-- Update table ScannedMatch if existed
 	UPDATE	sm WITH (ROWLOCK, UPDLOCK)
