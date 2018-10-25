@@ -395,15 +395,15 @@
 
             var url = AppSettings.Get("FPS_WEBAPI_GET_CUSTOMER_EVIDENCE");
 
-            var tsks =
-                rawData.Select(t => t.CustId).Distinct()
-                .Chunk(500)
-                .Select(q => ApiHelper.Post<IEnumerable<CustomerEvidence>>(url, new CustomerEvidenceList { CustIdList = string.Join(",", q) }))
-                .ToArray();
+            //var tsks =
+            //    rawData.Select(t => t.CustId).Distinct()
+            //    .Chunk(500)
+            //    .Select(q => ApiHelper.Post<IEnumerable<CustomerEvidence>>(url, new CustomerEvidenceList { CustIdList = string.Join(",", q) }))
+            //    .ToArray();
 
-            Task.WaitAll(tsks);
+            //Task.WaitAll(tsks);
 
-            var evidences = tsks.SelectMany(t => t.Result);
+            var evidences = Enumerable.Empty<CustomerEvidence>();
 
             var evidenceDict = evidences.ToLookup(c => c.CustId, c => c.EvidenceName);
 
@@ -456,12 +456,12 @@
             var legend = GetInfo(matchId, (int)FraudCaseId.Arbitrage, eventDate);
 
             var tickets = GetArbitrageTickets(matchId, eventDate).SelectMany(obj => obj.Home.Concat(obj.Away));
-            var customers = GetCustomerDetails(matchId, fraudCaseId, eventDate);
+            var customers = Enumerable.Empty<CustomerDetails>();
 
             var wb =
                 ExcelUtilities.GetWorkbook(templatePath)
                     .RenderSheet(new ArbitrageConfig(tickets.Count()), legend, tickets, null)
-                    .RenderSheet(new CustomerDetailConfig(customers.Count()), legend, customers, null);
+                    .RenderSheet(new CustomerDetailConfig(0), legend, customers, null);
 
             return wb.ToBytes();
         }
