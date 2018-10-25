@@ -12,6 +12,7 @@ namespace Fanex.NAP.FS.Websites.Controllers
     using System;
     using System.Configuration;
     using System.Linq;
+    using System.Text;
     using System.Web.Mvc;
 
     [NapAuth(FunctionKey = FSFunctionKeys.MatchMonitoring, Policy = Core.Business.Constant.Policy.Read)]
@@ -76,10 +77,11 @@ namespace Fanex.NAP.FS.Websites.Controllers
         {
             if (fraudCaseId == (int)FraudCaseId.Arbitrage && violations > 1000)
             {
-                var fileName = string.Format("FraudCaseDetails_{0}.csv", DateTime.Today.ToString("yyyyMMdd"));
                 var content = _fraudCaseDetailService.ExportArbitrageCsv(matchId, eventDate);
 
-                return File(content, "text/plain", fileName);
+                var encoded = Encoding.UTF8.GetBytes(content);
+
+                return File(encoded, "text/plain", "Arbitrage.csv");
             }
 
             var model = _fraudCaseDetailService.GetInfo(matchId, fraudCaseId, eventDate);

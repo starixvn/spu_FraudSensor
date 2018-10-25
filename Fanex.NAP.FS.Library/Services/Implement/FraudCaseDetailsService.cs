@@ -21,6 +21,7 @@
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using System.Text;
     using System.Threading.Tasks;
 
     public class FraudCaseDetailsService : IFraudCaseDetailsService
@@ -479,32 +480,25 @@
             return wb.ToBytes();
         }
 
-        public byte[] ExportArbitrageCsv(int matchId, DateTime eventDate)
+        public string ExportArbitrageCsv(int matchId, DateTime eventDate)
         {
             var tickets = GetArbitrageTickets(matchId, eventDate).SelectMany(obj => obj.Home.Concat(obj.Away));
             var info = GetInfo(matchId, (int)FraudCaseId.Arbitrage, eventDate);
 
-            using (var stream = new MemoryStream())
-            using (var writer = new StreamWriter(stream))
+            var txt = new StringBuilder();
+
+            txt.AppendLine($"match: {info.Home} - vs - {info.Away}, date: {info.EventDate.ToString("MMM/dd/YYYY")}, HT/FT: {info.HTScore}/{info.FTScore}");
+            txt.AppendLine("member,evidence,dangerous level,currency,bet id, bet team, bet type, hdp, score, odds, v.stake, Com.Stake, Full. Stake, TransDate");
+
+            foreach (var item in tickets)
             {
-                writer.WriteLine($"match: {info.Home} - vs - {info.Away}, date: {info.EventDate.ToString("MMM/dd/YYYY")}, HT/FT: {info.HTScore}/{info.FTScore}");
-                writer.WriteLine("member,evidence,dangerous level,currency,bet id, bet team, bet type, hdp, score, odds, v.stake, Com.Stake, Full. Stake, TransDate");
-
-                foreach (var item in tickets)
-                {
-                    writer.WriteLine($"{item.Username},{item.Evidences.Join(";")},{item.DangerousLevel}," +
-                        $"{item.Currency},{item.BetId},{item.BetTeam},{item.BettypeName},{item.Handicap},{item.Score}" +
-                        $"{item.Odds},{item.Stake.Virtual},{item.Stake.ComPT}" +
-                        $"{item.Stake.Full},{item.TransDate}");
-                }
-
-                writer.BaseStream.Position = 0;
-
-                var result = new byte[stream.Length];
-                stream.Write(result, 0, result.Length);
-
-                return result;
+                txt.AppendLine($"{item.Username},{item.Evidences.Join(";")},{item.DangerousLevel}," +
+                    $"{item.Currency},{item.BetId},{item.BetTeam},{item.BettypeName},{item.Handicap},{item.Score}" +
+                    $"{item.Odds},{item.Stake.Virtual},{item.Stake.ComPT}" +
+                    $"{item.Stake.Full},{item.TransDate}");
             }
+
+            return txt.ToString();
         }
     }
 }

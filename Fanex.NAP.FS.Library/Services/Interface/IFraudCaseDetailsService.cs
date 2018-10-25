@@ -41,6 +41,6 @@
 
         byte[] ExportArbitrageExcel(int matchId, DateTime eventDate, string templatePath, Func<ArbitrageGroupTicketList, bool> filter);
 
-        byte[] ExportArbitrageCsv(int matchId, DateTime eventDate);
+        string ExportArbitrageCsv(int matchId, DateTime eventDate);
     }
 }
