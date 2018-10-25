@@ -8,6 +8,7 @@
     using Fanex.NAP.FS.Library.Core.ExportExcel;
     using Fanex.NAP.FS.Library.Core.Helpers;
     using Fanex.NAP.FS.Library.Core.Helpers.Api;
+    using Fanex.NAP.FS.Library.Core.Utilities;
     using Fanex.NAP.FS.Library.Criteria.MatchMonitor;
     using Fanex.NAP.FS.Library.Criteria.MatchMonitor.FraudCaseDetails;
     using Fanex.NAP.FS.Library.DTO;
@@ -18,7 +19,9 @@
     using Fanex.NAP.FS.Library.ViewModels.MatchMonitor.FraudCaseDetails;
     using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Linq;
+    using System.Threading.Tasks;
 
     public class FraudCaseDetailsService : IFraudCaseDetailsService
     {
@@ -366,16 +369,14 @@
         {
             var url = AppSettings.Get("FPS_WEBAPI_GET_CUSTOMER_EVIDENCE");
 
-            var param = new CustomerEvidenceList
+            var tsk = custIds.Distinct().Chunk(500).Select(a => new CustomerEvidenceList
             {
                 CustIdList = string.Join(",", custIds)
-            };
-
-            var tsk = ApiHelper.Post<CustomerEvidenceList, IEnumerable<CustomerEvidence>>(url, param, environment, mailingListId);
+            }).Select(p => ApiHelper.Post<IEnumerable<CustomerEvidence>>(url, p)).ToArray();
 
             Task.WaitAll(tsk);
 
-            return tsk.Result ?? Enumerable.Empty<CustomerEvidence>();
+            return tsk.SelectMany(t => t.Result);
         }
 
         public IEnumerable<ArbitrageGroupTicketList> GetArbitrageTickets(int matchId, DateTime eventDate)
@@ -384,7 +385,15 @@
 
             var url = AppSettings.Get("FPS_WEBAPI_GET_CUSTOMER_EVIDENCE");
 
-            var evidences = ApiHelper.Post<IEnumerable<CustomerEvidence>>(url, new CustomerEvidenceList { CustIdList = string.Join(",", rawData.Select(t => t.CustId).Distinct()) }).Result;
+            var tsks =
+                rawData.Select(t => t.CustId).Distinct()
+                .Chunk(500)
+                .Select(q => ApiHelper.Post<IEnumerable<CustomerEvidence>>(url, new CustomerEvidenceList { CustIdList = string.Join(",", q) }))
+                .ToArray();
+
+            Task.WaitAll(tsks);
+
+            var evidences = tsks.SelectMany(t => t.Result);
 
             var evidenceDict = evidences.ToLookup(c => c.CustId, c => c.EvidenceName);
 
@@ -458,6 +467,34 @@
                     .RenderSheet(new ArbitrageConfig(tickets.Count(), true), legend, tickets, null);
 
             return wb.ToBytes();
+        }
+
+        public byte[] ExportArbitrageCsv(int matchId, DateTime eventDate)
+        {
+            var tickets = GetArbitrageTickets(matchId, eventDate).SelectMany(obj => obj.Home.Concat(obj.Away));
+            var info = GetInfo(matchId, (int)FraudCaseId.Arbitrage, eventDate);
+
+            using (var stream = new MemoryStream())
+            using (var writer = new StreamWriter(stream))
+            {
+                writer.WriteLine($"match: {info.Home} - vs - {info.Away}, date: {info.EventDate.ToString("MMM/dd/YYYY")}, HT/FT: {info.HTScore}/{info.FTScore}");
+                writer.WriteLine("member,evidence,dangerous level,currency,bet id, bet team, bet type, hdp, score, odds, v.stake, Com.Stake, Full. Stake, TransDate");
+
+                foreach (var item in tickets)
+                {
+                    writer.WriteLine($"{item.Username},{item.Evidences.Join(";")},{item.DangerousLevel}," +
+                        $"{item.Currency},{item.BetId},{item.BetTeam},{item.BettypeName},{item.Handicap},{item.Score}" +
+                        $"{item.Odds},{item.Stake.Virtual},{item.Stake.ComPT}" +
+                        $"{item.Stake.Full},{item.TransDate}");
+                }
+
+                writer.BaseStream.Position = 0;
+
+                var result = new byte[stream.Length];
+                stream.Write(result, 0, result.Length);
+
+                return result;
+            }
         }
     }
 }
