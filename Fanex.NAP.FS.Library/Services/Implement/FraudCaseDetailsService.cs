@@ -487,15 +487,15 @@
 
             var txt = new StringBuilder();
 
-            txt.AppendLine($"match: {info.Home} - vs - {info.Away}, date: {info.EventDate.ToString("MMM/dd/YYYY")}, HT/FT: {info.HTScore}/{info.FTScore}");
+            txt.AppendLine($"match: {info.Home} - vs - {info.Away}, date: {info.EventDate.ToString("MMM/dd/yyyy")}, HT/FT: {info.HTScore}/{info.FTScore}");
             txt.AppendLine("member,evidence,dangerous level,currency,bet id, bet team, bet type, hdp, score, odds, v.stake, Com.Stake, Full. Stake, TransDate");
 
             foreach (var item in tickets)
             {
                 txt.AppendLine($"{item.Username},{item.Evidences.Join(";")},{item.DangerousLevel}," +
-                    $"{item.Currency},{item.BetId},{item.BetTeam},{item.BettypeName},{item.Handicap},{item.Score}" +
-                    $"{item.Odds},{item.Stake.Virtual},{item.Stake.ComPT}" +
-                    $"{item.Stake.Full},{item.TransDate}");
+                    $"{item.Currency},{item.BetId},{item.BetTeam},{item.BettypeName},{item.Handicap},'{item.Score}," +
+                    $"{item.Odds},{item.Stake.Virtual},{item.Stake.ComPT}," +
+                    $"{item.Stake.Full},{item.TransDate.Replace(",", ";").Replace("<br/>", " ")}");
             }
 
             return txt.ToString();
