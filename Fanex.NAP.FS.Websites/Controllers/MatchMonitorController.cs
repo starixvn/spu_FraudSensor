@@ -72,7 +72,7 @@ namespace Fanex.NAP.FS.Websites.Controllers
             return File(_matchMonitorService.ExportExcel(criteria, templatePath), "application/vnd.ms-excel", fileName);
         }
 
-        public ActionResult GetFraudCaseDetails(int fraudCaseId, int matchId, DateTime eventDate)
+        public ActionResult GetFraudCaseDetails(int fraudCaseId, int matchId, DateTime eventDate, int violations)
         {
             var model = _fraudCaseDetailService.GetInfo(matchId, fraudCaseId, eventDate);
 
@@ -93,7 +93,12 @@ namespace Fanex.NAP.FS.Websites.Controllers
 
         public ActionResult GetFraudCaseCustomerDetails(int fraudCaseId, int matchId, DateTime eventDate)
         {
-            var data = _fraudCaseDetailService.GetCustomerDetails(matchId, fraudCaseId, eventDate, IsShowSpecialCurrencies);
+            if (fraudCaseId == (int)FraudCaseId.Arbitrage)
+            {
+                return Json(new int[0], JsonRequestBehavior.AllowGet);
+            }
+
+            var data = _fraudCaseDetailService.GetCustomerDetails(matchId, fraudCaseId, eventDate);
 
             return Json(data, JsonRequestBehavior.AllowGet);
         }

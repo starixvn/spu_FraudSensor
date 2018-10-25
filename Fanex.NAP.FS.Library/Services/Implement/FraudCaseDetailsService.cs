@@ -104,7 +104,17 @@
             using (var query = db.QueryMultiple(criteria))
             {
                 var custInfo = query.Read<CustInfo>();
-                var custEvidence = GetEvidences(custInfo.Select(info => info.CustId));
+
+                IEnumerable<CustomerEvidence> custEvidence;
+
+                if (fraudCaseId == (int)FraudCaseId.Arbitrage)
+                {
+                    custEvidence = new CustomerEvidence[0];
+                }
+                else
+                {
+                    custEvidence = GetEvidences(custInfo.Select(info => info.CustId));
+                }
 
                 var totalAssociation = GetTotalAssociations(custInfo.Select(i => i.CustId)).ToDictionary(o => o.CustId, o => o.TotalAssociation);
 
@@ -376,7 +386,7 @@
 
             Task.WaitAll(tsk);
 
-            return tsk.SelectMany(t => t.Result);
+            return tsk.Where(t => t.Result != null).SelectMany(t => t.Result);
         }
 
         public IEnumerable<ArbitrageGroupTicketList> GetArbitrageTickets(int matchId, DateTime eventDate)

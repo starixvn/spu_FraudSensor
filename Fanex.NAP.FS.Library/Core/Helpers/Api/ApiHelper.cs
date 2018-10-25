@@ -4,6 +4,7 @@
 
 namespace Fanex.NAP.FS.Library.Core.Helpers.Api
 {
+    using Fanex.Logging;
     using MailDelivery.Client;
     using Newtonsoft.Json;
     using System;
@@ -51,24 +52,33 @@ namespace Fanex.NAP.FS.Library.Core.Helpers.Api
         {
             using (var web = new HttpClient())
             {
-                var content = JsonConvert.SerializeObject(param);
-
-                var buffer = Encoding.UTF8.GetBytes(content);
-
-                var byteContent = new ByteArrayContent(buffer);
-
-                byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-
-                var response = await web.PostAsync(url, byteContent).ConfigureAwait(false);
-
-                if (!response.IsSuccessStatusCode)
+                try
                 {
-                    throw new Exception(await response.Content.ReadAsStringAsync().ConfigureAwait(false));
+                    var content = JsonConvert.SerializeObject(param);
+
+                    var buffer = Encoding.UTF8.GetBytes(content);
+
+                    var byteContent = new ByteArrayContent(buffer);
+
+                    byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
+                    var response = await web.PostAsync(url, byteContent).ConfigureAwait(false);
+
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        throw new Exception(await response.Content.ReadAsStringAsync().ConfigureAwait(false));
+                    }
+
+                    var result = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+
+                    return JsonConvert.DeserializeObject<TResult>(result);
                 }
+                catch (Exception ex)
+                {
+                    LogService.Error(ex.Message, ex);
 
-                var result = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-
-                return JsonConvert.DeserializeObject<TResult>(result);
+                    return default(TResult);
+                }
             }
         }
 

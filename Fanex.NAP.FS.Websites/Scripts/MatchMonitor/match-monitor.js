@@ -165,7 +165,7 @@ function renderFraudCase(obj, selector) {
 
     var eventDate = $("#event_date").val();
 
-    return `<a class='warning' href='MatchMonitor/GetFraudCaseDetails?fraudCaseId=${selector}&matchId=${obj.MatchId}&eventDate=${eventDate}' target='_blank'>
+    return `<a class='warning' href='MatchMonitor/GetFraudCaseDetails?fraudCaseId=${selector}&matchId=${obj.MatchId}&eventDate=${eventDate}&violations=${fraudCase.Violations}' target='_blank'>
             <span class='icon-alert-circle' ></span>
             <span class='number'>${renderViolations(fraudCase.Violations)}</span>
         </a>`;
