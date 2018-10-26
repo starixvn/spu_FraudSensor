@@ -28,6 +28,7 @@ namespace Fanex.NAP.FS.Library.Core.Helpers.Api
 
                     if (!response.IsSuccessStatusCode)
                     {
+                        Logging.LogService.Error(await response.Content.ReadAsStringAsync().ConfigureAwait(false));
                         return default(TResult);
                     }
 
