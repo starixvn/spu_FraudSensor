@@ -2,6 +2,7 @@
 
 namespace Fanex.NAP.FS.Library.Core.Helpers.Api
 {
+    using Fanex.Logging;
     using MailDelivery.Client;
     using System;
     using System.Net.Http;
@@ -20,6 +21,7 @@ namespace Fanex.NAP.FS.Library.Core.Helpers.Api
 
                     if (!response.IsSuccessStatusCode)
                     {
+                        LogService.Error(await response.Content.ReadAsStringAsync());
                         return default(TResult);
                     }
 
