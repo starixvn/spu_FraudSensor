@@ -18,6 +18,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading.Tasks;
 
     public class FraudCaseDetailsService : IFraudCaseDetailsService
     {
@@ -277,7 +278,11 @@
         {
             var url = AppSettings.Get("FPS_WEBAPI_GET_TOTAL_ASSOCIATION");
 
-            return ApiHelper.Post<string, IEnumerable<CustomerTotalAssociation>>(url, string.Join(",", custIds), environment, mailingListId).Result;
+            var tsk = ApiHelper.Post<string, IEnumerable<CustomerTotalAssociation>>(url, string.Join(",", custIds), environment, mailingListId);
+
+            Task.WaitAll(tsk);
+
+            return tsk.Result ?? Enumerable.Empty<CustomerTotalAssociation>();
         }
 
         public IEnumerable<CustomerAssociation> GetAssociations(int custId)
@@ -364,7 +369,11 @@
                 CustIdList = string.Join(",", custIds)
             };
 
-            return ApiHelper.Post<CustomerEvidenceList, IEnumerable<CustomerEvidence>>(url, param, environment, mailingListId).Result;
+            var tsk = ApiHelper.Post<CustomerEvidenceList, IEnumerable<CustomerEvidence>>(url, param, environment, mailingListId);
+
+            Task.WaitAll(tsk);
+
+            return tsk.Result ?? Enumerable.Empty<CustomerEvidence>();
         }
     }
 }

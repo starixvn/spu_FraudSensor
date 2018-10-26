@@ -11,7 +11,6 @@ namespace Fanex.NAP.FS.Library.Core.Helpers.Api
     public static class ApiHelper
     {
         public static async Task<TResult> Post<TParam, TResult>(string url, TParam param, int environment, int mailingListId)
-
         {
             try
             {
@@ -21,8 +20,9 @@ namespace Fanex.NAP.FS.Library.Core.Helpers.Api
 
                     if (!response.IsSuccessStatusCode)
                     {
-                        LogService.Error(await response.Content.ReadAsStringAsync());
-                        return default(TResult);
+                        var err = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+
+                        throw new HttpRequestException(err);
                     }
 
                     return await response.Content.ReadAsAsync<TResult>().ConfigureAwait(false);
@@ -39,6 +39,7 @@ namespace Fanex.NAP.FS.Library.Core.Helpers.Api
                 };
 
                 MailClientHandler.SendFunctionMail(newMail);
+                LogService.Error(exception.Message, exception);
 
                 return default(TResult);
             }
