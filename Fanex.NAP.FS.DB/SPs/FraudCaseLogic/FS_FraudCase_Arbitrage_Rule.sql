@@ -19,7 +19,7 @@ AS
 		- 20180924@LONG: Remove the XML Documents after usage
 		- 20180926@LONG: Remove redundant fraud tickets [Redmine ID: 99753]
 		- 20180926@LONG: Fix issue of livehomescore [Redmine ID: 000000]
-		- 20180926@LONG: Performance tunning [Redmine ID: 000000]
+		- 20180930@LONG: Enhance Performance [Redmine ID: 000000]
 		- 20181114@Long: Split data in SuspiciousInfo by Currency [Redmine ID: #104707]
 
 	Param's Explanation (filtered by):
@@ -72,6 +72,9 @@ BEGIN
 	);
 
 	CREATE CLUSTERED INDEX	#CIX_tmpMatches ON #tmpMatchesInfo (
+			MatchId				ASC
+	);
+
 			MatchId				ASC
 	);
 
@@ -181,6 +184,7 @@ BEGIN
 		,	Handicap			ASC
 		,	TotalLiveScore		ASC
 	);
+
 
 	IF OBJECT_ID('tempdb..#tmpMatchBettypeBetteamSumStake') IS NOT NULL
 	BEGIN
@@ -296,7 +300,6 @@ BEGIN
 	FROM #tmpMatchBettypeBetteamSumStake as b WITH(NOLOCK)
 	WHERE b.TotalStake > @MaxStakeToBeChecked
 	GROUP BY b.GroupId, b.MatchId, b.Bettype, b.TotalLiveScore, b.Handicap
-				INNER JOIN #tmpAssociation AS aa WITH(NOLOCK) ON bb.CustId = aa.CustId
 	HAVING COUNT(DISTINCT b.Betteam) > 1;
 
 	-- Get fraud tickets
@@ -316,6 +319,7 @@ BEGIN
 			AND r.Bettype = bb.Bettype AND r.Handicap = bb.Handicap AND r.TotalLiveScore = bb.TotalLiveScore;
 	INSERT INTO #tmpMatchesInfo(MatchId, EventDate)
 	SELECT DISTINCT t.MatchId, t.EventDate
+	FROM #tmpFraudTickets AS t WITH(NOLOCK);
 	FROM #tmpFraudTickets AS t WITH(NOLOCK);
 	-- Check the results and store/return data
 	IF EXISTS (SELECT TOP(1) 1 FROM #tmpFraudTickets WITH (NOLOCK))
@@ -360,6 +364,7 @@ BEGIN
 			,	STUFF((	SELECT DISTINCT ',', CONVERT(VARCHAR(MAX), t1.TransIds) 
 						FROM dbo.ArbitrageTicketDetails t1 WITH (NOLOCK)
 						WHERE t1.MatchId = si.MatchId AND t1.CustId = si.CustId AND t1.CurrencyId = si.CurrencyId
+						WHERE t1.MatchId = si.MatchId AND t1.CustId = si.CustId
 						FOR XML PATH('')), 1, 1, '')
 			,	SUM(si.TicketCounter)
 			,	(	SELECT COUNT(1)
@@ -370,6 +375,14 @@ BEGIN
 		FROM dbo.ArbitrageTicketDetails si WITH (NOLOCK) 
 			INNER JOIN #tmpMatchesInfo AS m WITH(NOLOCK) ON si.MatchId = m.MatchId
 		GROUP BY si.MatchId, si.CustId, m.EventDate, si.CurrencyId;
+
+		-- Update table SuspiciousInfo if existed
+		UPDATE si WITH (ROWLOCK, UPDLOCK)
+		SET		si.SuspiciousDate	=	GETDATE()
+			,	si.TransIds			=	ft.TransIds
+			,	si.TicketCounter	=	ft.TicketCounter
+			,	si.ViolationCounter =	ft.ViolationCounter
+			,	si.IsVerified		=	0
 		WHERE ft.MatchId IN (SELECT DISTINCT MatchId FROM #tmpMatches WITH(NOLOCK));
 
 		-- Update table SuspiciousInfo if existed
@@ -396,8 +409,6 @@ BEGIN
 			,	[TicketCounter]		= ft.TicketCounter
 			,	[CurrencyId]		= ft.Currency
 		FROM #tmpArbitrageDetails ft WITH (NOLOCK)
-										FROM dbo.ArbitrageTicketDetails t2 WITH (NOLOCK)
-										WHERE t2.MatchId = ft.MatchId AND t2.CustId = ft.CustId)
 				LEFT JOIN dbo.SuspiciousInfo si WITH (NOLOCK) 
 					ON si.MatchId = ft.MatchId AND si.CustId = ft.CustId  AND si.FraudCaseId = @CurrentFraudCaseId AND si.CurrencyId = ft.Currency
 				INNER JOIN #tmpMatchesInfo AS m WITH(NOLOCK) ON ft.MatchId = m.MatchId
