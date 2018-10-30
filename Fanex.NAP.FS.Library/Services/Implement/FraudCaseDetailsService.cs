@@ -19,7 +19,6 @@
     using Fanex.NAP.FS.Library.ViewModels.MatchMonitor.FraudCaseDetails;
     using System;
     using System.Collections.Generic;
-    using System.IO;
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
@@ -396,15 +395,15 @@
 
             var url = AppSettings.Get("FPS_WEBAPI_GET_CUSTOMER_EVIDENCE");
 
-            //var tsks =
-            //    rawData.Select(t => t.CustId).Distinct()
-            //    .Chunk(500)
-            //    .Select(q => ApiHelper.Post<IEnumerable<CustomerEvidence>>(url, new CustomerEvidenceList { CustIdList = string.Join(",", q) }))
-            //    .ToArray();
+            var tsks =
+                rawData.Select(t => t.CustId).Distinct()
+                .Chunk(500)
+                .Select(q => ApiHelper.Post<IEnumerable<CustomerEvidence>>(url, new CustomerEvidenceList { CustIdList = string.Join(",", q) }))
+                .ToArray();
 
-            //Task.WaitAll(tsks);
+            Task.WaitAll(tsks);
 
-            var evidences = Enumerable.Empty<CustomerEvidence>();
+            var evidences = tsks.SelectMany(t => t.Result);
 
             var evidenceDict = evidences.ToLookup(c => c.CustId, c => c.EvidenceName);
 
@@ -495,7 +494,7 @@
                 txt.AppendLine($"{item.Username},{item.Evidences.Join(";")},{item.DangerousLevel}," +
                     $"{item.Currency},{item.BetId},{item.BetTeam},{item.BettypeName},{item.Handicap},'{item.Score}," +
                     $"{item.Odds},{item.Stake.Virtual},{item.Stake.ComPT}," +
-                    $"{item.Stake.Full},{item.TransDate.Replace(",", ";").Replace("<br/>", " ")}");
+                    $"{item.Stake.Full},{item.TransDate.Replace(",", "-").Replace("<br/>", " ")}");
             }
 
             return txt.ToString();
