@@ -71,7 +71,7 @@ BEGIN
 		,	MaxTransId			BIGINT
 		,   MaxLiveHomeScore	INT
 		,	MaxLiveAwayScore	INT
-		,	IsMatchCompleted	INT
+		,	IsMatchCompleted	BIT
 	);
 	---===========================================================
 		IF OBJECT_ID('tempdb..#tmpCustomerList') IS NOT NULL
