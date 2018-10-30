@@ -491,10 +491,10 @@
 
             foreach (var item in tickets)
             {
-                txt.AppendLine($"{item.Username},{item.Evidences.Join(";")},{item.DangerousLevel}," +
+                txt.AppendLine($"{item.Username},{item.Evidences.Join(" /")},{item.DangerousLevel}," +
                     $"{item.Currency},{item.BetId},{item.BetTeam},{item.BettypeName},{item.Handicap},'{item.Score}," +
                     $"{item.Odds},{item.Stake.Virtual},{item.Stake.ComPT}," +
-                    $"{item.Stake.Full},{item.TransDate.Replace(",", "-").Replace("<br/>", " ")}");
+                    $"{item.Stake.Full},{item.TransDate.Replace(",", " -").Replace("<br/>", " ")}");
             }
 
             return txt.ToString();
