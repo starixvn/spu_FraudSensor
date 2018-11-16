@@ -5,9 +5,10 @@ SET ANSI_NULLS ON
 GO
 
 ALTER PROCEDURE [dbo].[FS_Rpt_MatchMonitor_Details_Get_ByTicket]
-	 @MatchId	INT
-	,@EventDate	DATETIME
-	,@FraudCaseId	INT	
+		@MatchId					INT
+	,	@EventDate					DATETIME
+	,	@FraudCaseId				INT	
+	,	@IsShowSpecialCurrencies	DATETIME
 AS
 /*
 	Created: 20180312@CaseyHuynh
@@ -17,6 +18,7 @@ AS
 
 	Revisions:
 		+ 20180523@CaseyHuynh: put alias for LiveHomeScore/LiveAwayScore column
+		- 20181114@Long: Adding View Permission on Special Currencies [Redmine ID: #104707]
 
 	Param's Explanation:
 */
@@ -41,7 +43,7 @@ BEGIN
 	END;
 	
 	CREATE TABLE #tmpFraudTickets (
-			TransID	BIGINT
+			TransID		BIGINT
 	 );
 
 	--===	2.1 GET: Balance Up Day and Move Bet Day
@@ -59,9 +61,10 @@ BEGIN
 	INSERT INTO #tmpFraudTickets(TransID)
 	SELECT VAL
 	FROM dbo.SuspiciousInfo si WITH(NOLOCK)
-		 CROSS APPLY dbo.SPU_StrSplit(si.transids, ',')
+		CROSS APPLY dbo.SPU_StrSplit(si.transids, ',')
 	WHERE	si.MatchId = @MatchId
-			AND si.FraudCaseId = @FraudCaseId;
+		AND si.FraudCaseId = @FraudCaseId
+		AND (@IsShowSpecialCurrencies = 1 OR si.CurrencyId NOT IN (SELECT CurrencyId FROM dbo.SpecialCurrency WITH(NOLOCK)));
 			
 	--===	2.2 GET: Homeid and AwayId
 	DECLARE @homeId INT;
@@ -133,12 +136,4 @@ BEGIN
 END;
 
 GO
-
-SET QUOTED_IDENTIFIER OFF 
-GO
-SET ANSI_NULLS ON 
-GO
- GRANT EXECUTE ON [dbo].[FS_Rpt_MatchMonitor_Details_Get_ByTicket] TO [bodbSPUNet]
-GO 
- GRANT VIEW DEFINITION ON [dbo].[FS_Rpt_MatchMonitor_Details_Get_ByTicket] TO [bodbSPUNet]
-GO 
+/*<info serverAlias="DBSPU-bodb_FraudSensor" executers="bodbSPUNet" isFunction="0" isNested="0"></info>*/

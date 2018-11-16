@@ -4,19 +4,18 @@ GO
 SET ANSI_NULLS ON 
 GO
 
-/****** Object:  Stored Procedure dbo.FS_Rpt_SuspiciousCustomer_Get    Script Date: 5/15/2018 4:21:24 PM ******/
-
 ALTER PROCEDURE [dbo].[FS_Rpt_SuspiciousCustomer_Get] 
-		@FromDate			DATETIME
-	,	@ToDate				DATETIME
-	,	@Username			NVARCHAR(50) = NULL	
-	,	@FraudCaseId		TINYINT = 0
-	,	@IsVerified			BIT = NULL
-	,	@IsDelinquent		BIT = NULL
-	,	@IsDirty			BIT = NULL
-	,	@IsHedge			BIT = NULL
-	,	@AssigneeId			INT = NULL
-	,	@Environment		INT = 3
+		@FromDate					DATETIME
+	,	@ToDate						DATETIME
+	,	@Username					NVARCHAR(50) = NULL	
+	,	@FraudCaseId				TINYINT = 0
+	,	@IsVerified					BIT = NULL
+	,	@IsDelinquent				BIT = NULL
+	,	@IsDirty					BIT = NULL
+	,	@IsHedge					BIT = NULL
+	,	@AssigneeId					INT = NULL
+	,	@Environment				INT = 3
+	,	@IsShowSpecialCurrencies	DATETIME
 AS
 /*
 	Created: 20180320@Long
@@ -29,6 +28,7 @@ AS
 			+ Remove "Having Condition on IsVerified value"
 			+ Update @AssingeeId = 0 If filter By "All"
 			+ Return Assignee Username Instead Of AssigneeId
+		- 20181114@Long: Adding View Permission on Special Currencies [Redmine ID: #104707]
 
 	Param's Explanation:    
 			+ Add Condition for Customer Log GET: cl.LogType = 1
@@ -94,7 +94,8 @@ BEGIN
 									WHEN @AssigneeId >=0 THEN @AssigneeId
 									END
 			)
-		AND (@Username IS NULL OR c.username = @Username)
+		AND (@Username IS NULL OR c.username = @Username)		
+		AND (@IsShowSpecialCurrencies = 1 OR si.CurrencyId NOT IN (SELECT CurrencyId FROM dbo.SpecialCurrency WITH(NOLOCK)))
 	GROUP BY si.custid
 		,	c.username
 		,	sc.IsDelinquent
@@ -111,15 +112,4 @@ BEGIN
 END;
 
 GO
-
-SET QUOTED_IDENTIFIER OFF 
-GO
-SET ANSI_NULLS ON 
-GO
-
-
-GO 
- GRANT EXECUTE ON [dbo].[FS_Rpt_SuspiciousCustomer_Get] TO [bodbSPUNet]
-GO 
- GRANT VIEW DEFINITION ON [dbo].[FS_Rpt_SuspiciousCustomer_Get] TO [bodbSPUNet]
-GO 
+/*<info serverAlias="DBSPU-bodb_FraudSensor" executers="bodbSPUNet" isFunction="0" isNested="0"></info>*/

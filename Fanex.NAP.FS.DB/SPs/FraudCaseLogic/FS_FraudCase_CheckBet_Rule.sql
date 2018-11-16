@@ -1,4 +1,3 @@
-USE [bodb_FraudSensor]
 GO
 SET ANSI_NULLS ON
 GO
@@ -14,6 +13,7 @@ AS
 	Original:
 
 	Revisions:
+		- 20181114@Long: Split data in SuspiciousInfo by Currency [Redmine ID: #104707]
 
 	Param's Explanation (filtered by):
 */
@@ -102,6 +102,7 @@ BEGIN
 		AwayId				INT,
 		Bettype				SMALLINT,
 		Oddstype			TINYINT,
+		CurrencyId			INT,
 		Currency			NVARCHAR(10),
 		Creator				INT,
 		LiveIndicator		BIT,
@@ -323,6 +324,7 @@ BEGIN
 			,	Oddstype
 			,	Creator
 			,	LiveIndicator
+			,	CurrencyId
 			,	Currency
 			,	NewMatchId
 			,	OldMatchId
@@ -356,6 +358,7 @@ BEGIN
 			'Oddstype'			= bt.oddstype,
 			'Creator'			= bt.creator,
 			'LiveIndicator'		= bt.liveindicator,
+			'CurrencyId'		= bt.currency,
 			'Currency'			= bt.CurrencyName,
 			'NewMatchId'		= bt.matchid,
 			'OldMatchId'		= b.matchid,
@@ -393,8 +396,8 @@ BEGIN
 	END;
 
 	----------- STORE GENERAL INFO -----------
-	INSERT INTO dbo.[ChangedTicketGeneralInfo](TransId, TransDate, Currency, Username, Creator, MatchId, HomeId, AwayId, Oddstype, CustId, Bettype, LiveIndicator)
-	SELECT DISTINCT ct.TransId, ct.TransDate, ct.Currency, ct.Username, c.username, ct.MatchId, m.homeid, m.awayid, ct.Oddstype, ct.CustId, ct.Bettype, ct.LiveIndicator
+	INSERT INTO dbo.[ChangedTicketGeneralInfo](TransId, TransDate, CurrencyId, Currency, Username, Creator, MatchId, HomeId, AwayId, Oddstype, CustId, Bettype, LiveIndicator)
+	SELECT DISTINCT ct.TransId, ct.TransDate, ct.CurrencyId, ct.Currency, ct.Username, c.username, ct.MatchId, m.homeid, m.awayid, ct.Oddstype, ct.CustId, ct.Bettype, ct.LiveIndicator
 	FROM #tmpChangedInfo AS ct WITH(NOLOCK)
 		INNER JOIN bodb02.dbo.match AS m WITH (NOLOCK) ON ct.MatchId = m.matchid		
 		INNER JOIN bodb02.dbo.Customer c WITH(NOLOCK) ON c.custid = ct.Creator;
@@ -492,7 +495,4 @@ BEGIN
 END;
 
 GO
-GRANT EXECUTE ON [dbo].[FS_FraudCase_CheckBet_Rule] TO [bodbSPUNet]
-GO
-GRANT VIEW DEFINITION ON [dbo].[FS_FraudCase_CheckBet_Rule] TO [bodbSPUNet]
-GO
+/*<info serverAlias="DBSPU-bodb_FraudSensor" executers="bodbSPUNet" isFunction="0" isNested="0"></info>*/

@@ -5,9 +5,9 @@ SET ANSI_NULLS ON
 GO
 
 ALTER PROCEDURE [dbo].[FS_Rpt_MatchMonitor_Details_Get_ByTicket_Arbitrage]
-		@MatchId			INT
-	,	@EventDate			DATETIME
-	,	@FraudCaseId		INT	
+		@MatchId					INT
+	,	@EventDate					DATETIME
+	,	@IsShowSpecialCurrencies	DATETIME
 AS
 /*
 	Created: 20180815@Long
@@ -16,6 +16,8 @@ AS
 	Original:
 
 	Revisions:
+		- 20180815@Long: Implement Get Tickets by Match & Fraud Case for Arbitrage
+		- 20181114@Long: Adding View Permission on Special Currencies [Redmine ID: #104707]
 
 	Param's Explanation:
 */
@@ -40,7 +42,8 @@ BEGIN
 	END;
 	
 	CREATE TABLE #tmpFraudTickets (
-			TransID	BIGINT
+			GroupId		INT
+		,	TransId		BIGINT
 	 );
 
 	--===	2.1 GET: Balance Up Day and Move Bet Day
@@ -54,13 +57,12 @@ BEGIN
 	WHERE @EventDate BETWEEN BUDay AND MBDay;
 	
 	--===	2.2 GET: Fraud Tickets Insert to #tmpFraudTickets	
-	--INSERT INTO #tmpFraudTickets(TransId)
-	INSERT INTO #tmpFraudTickets(TransID)
-	SELECT VAL
-	FROM dbo.SuspiciousInfo si WITH(NOLOCK)
-		 CROSS APPLY dbo.SPU_StrSplit(si.transids, ',')
+	INSERT INTO #tmpFraudTickets(GroupId, TransId)
+	SELECT si.GroupId, VAL
+	FROM dbo.ArbitrageTicketDetails si WITH(NOLOCK)
+		CROSS APPLY dbo.SPU_StrSplit(si.transids, ',')
 	WHERE	si.MatchId = @MatchId
-			AND si.FraudCaseId = @FraudCaseId;
+		AND (@IsShowSpecialCurrencies = 1 OR si.CurrencyId NOT IN (SELECT CurrencyId FROM dbo.SpecialCurrency WITH(NOLOCK)));
 			
 	--===	2.2 GET: Homeid and AwayId
 	DECLARE @homeId INT;
@@ -74,10 +76,12 @@ BEGIN
 			FROM bodb02.dbo.match m WITH(NOLOCK)
 			WHERE m.matchid = @MatchId;
 			
-			SELECT	[Username]		= b.Username
+			SELECT	[custid]		= b.custid
+				,	[Username]		= b.Username
 				,	[DangerLevel]	= c.danger2 
 				,	[BettypeId]		= b.bettype 
 				,	[TransId]		= b.Transid
+				,	[GroupId]		= f.GroupId
 				,	[TransDate]		= b.transdate
 				,	[BetId]			= b.betid
 				,	[BetTeam]		= b.betteam
@@ -103,10 +107,12 @@ BEGIN
 			FROM bodb02.dbo.match14 m WITH(NOLOCK)
 			WHERE m.matchid = @MatchId;
 			
-			SELECT	[Username]		= b.Username
+			SELECT	[custid]		= b.custid
+				,	[Username]		= b.Username
 				,	[DangerLevel]	= c.danger2 
 				,	[BettypeId]		= b.bettype 
 				,	[TransId]		= b.Transid
+				,	[GroupId]		= f.GroupId
 				,	[TransDate]		= b.transdate
 				,	[BetId]			= b.betid
 				,	[BetTeam]		= b.betteam
@@ -128,12 +134,4 @@ BEGIN
 END;
 
 GO
-
-SET QUOTED_IDENTIFIER OFF 
-GO
-SET ANSI_NULLS ON 
-GO
- GRANT EXECUTE ON [dbo].[FS_Rpt_MatchMonitor_Details_Get_ByTicket_Arbitrage] TO [bodbSPUNet]
-GO 
- GRANT VIEW DEFINITION ON [dbo].[FS_Rpt_MatchMonitor_Details_Get_ByTicket_Arbitrage] TO [bodbSPUNet]
-GO 
+/*<info serverAlias="DBSPU-bodb_FraudSensor" executers="bodbSPUNet" isFunction="0" isNested="0"></info>*/

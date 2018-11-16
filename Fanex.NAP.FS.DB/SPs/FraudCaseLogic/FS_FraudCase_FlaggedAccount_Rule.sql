@@ -18,6 +18,7 @@ AS
 		- 20180321@LONG: Support ViolatiONCounter & TicketCounter [Redmine ID: 92293]
 		- 20180406@LONG: Get flagged accounts list directly from FPS's api
 		- 20180312@CaseyHuynh: Correct Code Syntax
+		- 20181114@Long: Split data in SuspiciousInfo by Currency [Redmine ID: #104707]
 
 	Param's Explanation (filtered by):
 */
@@ -53,6 +54,7 @@ BEGIN
 		,	MatchId				INT
 		,	EventDate			DATETIME
 		,	TransId				BIGINT
+		,	Currency			INT
 	);
 
 	CREATE CLUSTERED INDEX	#CIX_tmpFraudTicketsIdx ON #tmpFraudTickets (
@@ -82,11 +84,12 @@ BEGIN
 	INSERT INTO #tmpMatches(MatchId)
 	SELECT val FROM SPU_StrSplit(@MatchIds, ',');
 
-	INSERT INTO #tmpFraudTickets(CustId, MatchId, EventDate, TransId)
-	SELECT	DISTINCT [CustId]	= ans.custid,
-      [MatchId]			= ans.matchid,
-			[EventDate]			= tch.EventDate,
-      [TransId]			= ans.transid
+	INSERT INTO #tmpFraudTickets(CustId, MatchId, EventDate, TransId, Currency)
+	SELECT	DISTINCT [CustId]	= ans.custid
+		,	[MatchId]			= ans.matchid
+		,	[EventDate]			= tch.EventDate
+		,	[TransId]			= ans.transid
+		,	[Currency]			= ans.currency
 	FROM bodb02.dbo.match tch WITH (NOLOCK)
 	INNER JOIN bodb02.dbo.bettrans ans WITH (NOLOCK) ON tch.matchid = ans.matchid
 	INNER JOIN #tmpFlaggedAccounts fa WITH (NOLOCK) ON fa.custid = ans.custid
@@ -136,7 +139,7 @@ BEGIN
 		WHERE FraudCaseId = @CurrentFraudCaseId
 			AND MatchId IN (SELECT MatchId FROM #tmpMatches WITH (NOLOCK));
 
-		INSERT INTO dbo.SuspiciousInfo(CustId, MatchId, EventDate, FraudCaseId, SuspiciousDate, TransIds, ViolatiONCounter, TicketCounter)
+		INSERT INTO dbo.SuspiciousInfo(CustId, MatchId, EventDate, FraudCaseId, SuspiciousDate, TransIds, ViolatiONCounter, TicketCounter, CurrencyId)
 		SELECT [CustId]			= ft.CustId
 			,	[MatchId]			= ft.MatchId
 			,	[EventDate]			= ft.EventDate
@@ -144,18 +147,16 @@ BEGIN
 			,	[SuspiciousDate]	= GETDATE()
 			,	[TransIds]			= STUFF((SELECT ',', CONVERT(VARCHAR(15), t1.TransId) 
 										 FROM #tmpFraudTickets AS t1 WITH (NOLOCK)
-										 WHERE t1.CustId = ft.CustId AND t1.MatchId = ft.MatchId 
+										 WHERE t1.CustId = ft.CustId AND t1.MatchId = ft.MatchId AND t1.Currency = ft.Currency
 										 FOR XML PATH('')), 1, 1, '')
 			,	[ViolatiONCounter]	= 1
-			,	[TicketCounter]		= COUNT(ft.TransId)
+			,	[TicketCounter]		= COUNT(ft.TransId)			
+			,	[CurrencyId]		= ft.Currency
 		FROM #tmpFraudTickets ft WITH (NOLOCK)
-		GROUP BY ft.CustId, ft.MatchId, ft.EventDate;		
+		GROUP BY ft.CustId, ft.MatchId, ft.EventDate, ft.Currency;		
 
 	END;
 END;
 
-GO 
- GRANT EXECUTE ON [dbo].[FS_FraudCase_FlaggedAccount_Rule] TO [bodbSPUNet]
-GO 
- GRANT VIEW DEFINITION ON [dbo].[FS_FraudCase_FlaggedAccount_Rule] TO [bodbSPUNet]
-GO 
+GO
+/*<info serverAlias="DBSPU-bodb_FraudSensor" executers="bodbSPUNet" isFunction="0" isNested="0"></info>*/
