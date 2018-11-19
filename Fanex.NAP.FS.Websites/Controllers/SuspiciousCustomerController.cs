@@ -6,12 +6,10 @@ namespace Fanex.NAP.FS.Websites.Controllers
     using Core.Service.Impl;
     using Core.Web.Attribute;
     using Library.Criteria.SuspiciousCustomer;
-    using Library.DTO;
     using Library.Services;
     using System;
     using System.Collections.Generic;
     using System.Configuration;
-    using System.Linq;
     using System.Threading.Tasks;
     using System.Web.Mvc;
 
@@ -20,9 +18,13 @@ namespace Fanex.NAP.FS.Websites.Controllers
     {
         private readonly ISuspiciousCustomerReportService _suspiciousCustomerReportService;
 
+        private bool IsShowSpecialCurrencies;
+
         public SuspiciousCustomerController()
         {
             _suspiciousCustomerReportService = new SuspiciousCustomerReportService();
+            var permission = new UserService().GetPermission(CurrentSession.UserId, SiteId, FSFunctionKeys.SpecialCurrencies);
+            IsShowSpecialCurrencies = permission > 0;
         }
 
         public ActionResult Index()
@@ -32,6 +34,7 @@ namespace Fanex.NAP.FS.Websites.Controllers
 
         public ActionResult Generate(SuspiciousCustomerReportGetCriteria criteria)
         {
+            criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
             var suspiciousCustomers = _suspiciousCustomerReportService.GetSuspiciousCustomerReport(criteria);
 
             return Json(suspiciousCustomers, JsonRequestBehavior.AllowGet);
@@ -66,8 +69,8 @@ namespace Fanex.NAP.FS.Websites.Controllers
 
         public ActionResult ExportExcel(SuspiciousCustomerReportGetCriteria criteria, string fraudCaseName, string assignee)
         {
+            criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
             var file = _suspiciousCustomerReportService.ExportExcel(criteria, fraudCaseName, assignee, Server.MapPath("~/App_Data/Excel Template/SuspiciousCustomer/template.xlsx"));
-
             var fileName = string.Format("SuspiciousCustomer_{0}.xlsx", DateTime.Now.ToString("yyyyMMdd"));
 
             return File(file, "application/vnd.ms-excel", fileName);

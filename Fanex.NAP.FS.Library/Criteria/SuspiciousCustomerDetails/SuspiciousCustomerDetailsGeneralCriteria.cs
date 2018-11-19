@@ -11,6 +11,8 @@ namespace Fanex.NAP.FS.Library.Criteria.SuspiciousCustomerDetails
 
         public DateTime ToDate { get; set; }
 
+        public bool IsShowSpecialCurrencies { get; set; }
+
         public override bool IsValid() => true;
     }
 }

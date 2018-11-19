@@ -8,28 +8,28 @@
 
     public interface IFraudCaseDetailsService
     {
-        IEnumerable<TicketDetails> GetTicketDetails(int matchId, int fraudCaseId, DateTime eventDate, bool saveChoice = false);
+        IEnumerable<TicketDetails> GetTicketDetails(int matchId, int fraudCaseId, DateTime eventDate, bool isShowSpecialCurrencies, bool saveChoice = false);
 
-        IEnumerable<CustomerDetails> GetCustomerDetails(int matchId, int fraudCaseId, DateTime eventDate);
+        IEnumerable<CustomerDetails> GetCustomerDetails(int matchId, int fraudCaseId, DateTime eventDate, bool isShowSpecialCurrencies);
 
-        byte[] ExportExcel(int matchId, int fraudCaseId, DateTime eventDate, string templatePath);
+        byte[] ExportExcel(int matchId, int fraudCaseId, DateTime eventDate, string templatePath, bool isShowSpecialCurrencies);
 
         MatchFraudCaseInfo GetInfo(int matchId, int fraudCaseId, DateTime eventDate);
 
-        IEnumerable<TicketDetails> GetLast7DaysDetails(int custId);
+        IEnumerable<TicketDetails> GetLast7DaysDetails(int custId, bool isShowSpecialCurrencies);
 
         IEnumerable<AssociatedCustomer> GetAssociatedAccounts(int custId);
 
         BettypeOrder GetOrder(string bettype);
 
-        IEnumerable<TicketInfo> GetLast7DaysInfo(int custId);
+        IEnumerable<TicketInfo> GetLast7DaysInfo(int custId, bool isShowSpecialCurrencies);
 
         IEnumerable<CustomerTotalAssociation> GetTotalAssociations(IEnumerable<int> custIds);
 
         IEnumerable<CustomerAssociation> GetAssociations(int custId);
 
-        IEnumerable<TicketDetails> GetTicketFromIP(string ip);
+        IEnumerable<TicketDetails> GetTicketFromIP(string ip, bool isShowSpecialCurrencies);
 
-        byte[] ExportToExcelIpTickets(string ip, string template);
+        byte[] ExportToExcelIpTickets(string ip, string template, bool isShowSpecialCurrencies);
     }
 }

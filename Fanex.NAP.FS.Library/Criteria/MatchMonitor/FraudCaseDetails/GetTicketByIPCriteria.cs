@@ -6,6 +6,8 @@
     {
         public string IP { get; set; }
 
+        public bool IsShowSpecialCurrencies { get; set; }
+
         public override string GetSettingKey() => "FS_Rpt_Tickets_GetByIP";
 
         public override bool IsValid() => true;

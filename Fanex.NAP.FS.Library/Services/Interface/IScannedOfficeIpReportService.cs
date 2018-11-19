@@ -7,8 +7,8 @@
 
     public interface IScannedOfficeIpReportService
     {
-        IEnumerable<TicketDetails> GetTickets(DateTime fromDate, DateTime toDate);
+        IEnumerable<TicketDetails> GetTickets(DateTime fromDate, DateTime toDate, bool isShowSpecialCurrencies);
 
-        IEnumerable<TicketInfo> GetRawTickets(DateTime fromDate, DateTime toDate);
+        IEnumerable<TicketInfo> GetRawTickets(DateTime fromDate, DateTime toDate, bool isShowSpecialCurrencies);
     }
 }

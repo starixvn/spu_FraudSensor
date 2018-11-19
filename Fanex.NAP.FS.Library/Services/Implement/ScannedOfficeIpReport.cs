@@ -14,7 +14,7 @@
 
     public class ScannedOfficeIpReport : IScannedOfficeIpReportService
     {
-        public IEnumerable<TicketDetails> GetTickets(DateTime fromDate, DateTime toDate)
+        public IEnumerable<TicketDetails> GetTickets(DateTime fromDate, DateTime toDate, bool isShowSpecialCurrencies)
         {
             var html_builder = new BetListHTMLBuilder();
             var ticketHelper = new TicketHelper();
@@ -25,7 +25,7 @@
                 "reject"
             };
 
-            return GetRawTickets(fromDate, toDate)
+            return GetRawTickets(fromDate, toDate, isShowSpecialCurrencies)
                 .Select(a =>
                 {
                     var bettype = CachedRef.GetBettypeName(a.BetTypeId);
@@ -50,12 +50,13 @@
                 });
         }
 
-        public IEnumerable<TicketInfo> GetRawTickets(DateTime fromDate, DateTime toDate)
+        public IEnumerable<TicketInfo> GetRawTickets(DateTime fromDate, DateTime toDate, bool isShowSpecialCurrencies)
         {
             var criteria = new TicketFromOfficeIpGetCriteria
             {
                 FromDate = fromDate,
-                ToDate = toDate
+                ToDate = toDate,
+                IsShowSpecialCurrencies = isShowSpecialCurrencies
             };
 
             return DataService.GetData<TicketInfo>(criteria)

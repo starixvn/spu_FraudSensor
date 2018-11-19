@@ -9,6 +9,8 @@
 
         public DateTime ToDate { get; set; }
 
+        public bool IsShowSpecialCurrencies { get; set; }
+
         public override string GetSettingKey() => "FS_Rpt_CheckBet_Get";
 
         public override bool IsValid() => true;

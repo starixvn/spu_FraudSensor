@@ -2,6 +2,7 @@
 
 namespace Fanex.NAP.FS.Websites.Controllers
 {
+    using Core.Service.Impl;
     using Fanex.NAP.Core.Web.Attribute;
     using Fanex.NAP.FS.Library.Models.SuspiciousCustomerDetails;
     using Fanex.NAP.FS.Library.Services;
@@ -14,6 +15,14 @@ namespace Fanex.NAP.FS.Websites.Controllers
     public class SuspiciousCustomerDetailsController : ReportsController
     {
         private readonly ISuspiciousCustomerReportDetailsService _detailsService = new SuspiciousCustomerReportDetailsService();
+
+        private bool IsShowSpecialCurrencies;
+
+        public SuspiciousCustomerDetailsController()
+        {
+            var permission = new UserService().GetPermission(CurrentSession.UserId, SiteId, FSFunctionKeys.SpecialCurrencies);
+            IsShowSpecialCurrencies = permission > 0;
+        }
 
         public ActionResult Index(int custId, string custName, DateTime from, DateTime to)
         {
@@ -69,12 +78,12 @@ namespace Fanex.NAP.FS.Websites.Controllers
 
         public ActionResult GetStatistics(int custId, DateTime from, DateTime to)
         {
-            return Json(_detailsService.GetStatistics(custId, from, to));
+            return Json(_detailsService.GetStatistics(custId, from, to, IsShowSpecialCurrencies));
         }
 
         public ActionResult GetViolatedTickets(int custId, DateTime from, DateTime to)
         {
-            return JData(_detailsService.GetViolatedTickets(custId, from, to));
+            return JData(_detailsService.GetViolatedTickets(custId, from, to, IsShowSpecialCurrencies));
         }
 
         public ActionResult GetFraudCases(int custId)

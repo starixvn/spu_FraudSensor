@@ -65,6 +65,8 @@ namespace Fanex.NAP.FS.Library.Criteria.SuspiciousCustomer
 
         public int Environment => int.Parse(AppSettings.Get("Environment"));
 
+        public bool IsShowSpecialCurrencies { get; set; }
+
         public override string GetSettingKey()
         {
             return "FS_Rpt_SuspiciousCustomer_Get";

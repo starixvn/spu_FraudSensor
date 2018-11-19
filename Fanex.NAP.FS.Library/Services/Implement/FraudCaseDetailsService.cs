@@ -32,13 +32,14 @@
             mailingListId = mailId;
         }
 
-        public IEnumerable<TicketDetails> GetTicketDetails(int matchId, int fraudCaseId, DateTime eventDate, bool saveChoice = false)
+        public IEnumerable<TicketDetails> GetTicketDetails(int matchId, int fraudCaseId, DateTime eventDate, bool isShowSpecialCurrencies, bool saveChoice = false)
         {
             var criteria = new GetTicketCriteria
             {
                 EventDate = eventDate,
                 FraudCaseId = fraudCaseId,
-                MatchId = matchId
+                MatchId = matchId,
+                IsShowSpecialCurrencies = isShowSpecialCurrencies
             };
 
             var legend = GetInfo(matchId, fraudCaseId, eventDate);
@@ -86,13 +87,14 @@
                 .ThenBy(t => t.Member);
         }
 
-        public IEnumerable<CustomerDetails> GetCustomerDetails(int matchId, int fraudCaseId, DateTime eventDate)
+        public IEnumerable<CustomerDetails> GetCustomerDetails(int matchId, int fraudCaseId, DateTime eventDate, bool isShowSpecialCurrencies)
         {
             var criteria = new GetCustomerCriteria
             {
                 EventDate = eventDate,
                 FraudCaseId = fraudCaseId,
-                MatchId = matchId
+                MatchId = matchId,
+                IsShowSpecialCurrencies = isShowSpecialCurrencies
             };
 
             using (var db = new ObjectDb(criteria.GetSettingKey()))
@@ -121,12 +123,12 @@
             }
         }
 
-        public byte[] ExportExcel(int matchId, int fraudCaseId, DateTime eventDate, string templatePath)
+        public byte[] ExportExcel(int matchId, int fraudCaseId, DateTime eventDate, string templatePath, bool isShowSpecialCurrencies)
         {
             var legend = GetInfo(matchId, fraudCaseId, eventDate);
 
-            var tickets = GetTicketDetails(matchId, fraudCaseId, eventDate, true);
-            var customers = GetCustomerDetails(matchId, fraudCaseId, eventDate);
+            var tickets = GetTicketDetails(matchId, fraudCaseId, eventDate, true, isShowSpecialCurrencies);
+            var customers = GetCustomerDetails(matchId, fraudCaseId, eventDate, isShowSpecialCurrencies);
 
             var wb =
                 ExcelUtilities.GetWorkbook(templatePath)
@@ -185,7 +187,7 @@
             }
         }
 
-        public IEnumerable<TicketDetails> GetLast7DaysDetails(int custId)
+        public IEnumerable<TicketDetails> GetLast7DaysDetails(int custId, bool isShowSpecialCurrencies)
         {
             var null_winloss = new HashSet<string>
             {
@@ -196,7 +198,7 @@
             var html_builder = new BetListHTMLBuilder();
             var ticketHelper = new TicketHelper();
 
-            return GetLast7DaysInfo(custId)
+            return GetLast7DaysInfo(custId, isShowSpecialCurrencies)
                 .OrderBy(a => a.TransId)
                 .Select(a =>
                 {
@@ -269,9 +271,9 @@
             return BettypeOrder.Other;
         }
 
-        public IEnumerable<TicketInfo> GetLast7DaysInfo(int custId)
+        public IEnumerable<TicketInfo> GetLast7DaysInfo(int custId, bool isShowSpecialCurrencies)
         {
-            return DataService.GetData<TicketInfo>(new Last7DaysTicketGetCriteria { CustId = custId });
+            return DataService.GetData<TicketInfo>(new Last7DaysTicketGetCriteria { CustId = custId, IsShowSpecialCurrencies = isShowSpecialCurrencies });
         }
 
         public IEnumerable<CustomerTotalAssociation> GetTotalAssociations(IEnumerable<int> custIds)
@@ -292,9 +294,9 @@
             return ApiHelper.Post<string, IEnumerable<CustomerAssociation>>(url, custId.ToString(), environment, mailingListId).Result;
         }
 
-        public IEnumerable<TicketDetails> GetTicketFromIP(string ip)
+        public IEnumerable<TicketDetails> GetTicketFromIP(string ip, bool isShowSpecialCurrencies)
         {
-            var criteria = new GetTicketByIPCriteria { IP = ip };
+            var criteria = new GetTicketByIPCriteria { IP = ip, IsShowSpecialCurrencies = isShowSpecialCurrencies };
 
             var html_builder = new BetListHTMLBuilder();
             var ticketHelper = new TicketHelper();
@@ -342,10 +344,10 @@
                 });
         }
 
-        public byte[] ExportToExcelIpTickets(string ip, string template)
+        public byte[] ExportToExcelIpTickets(string ip, string template, bool isShowSpecialCurrencies)
         {
             var data =
-                DataService.GetData<TicketInfo>(new GetTicketByIPCriteria { IP = ip })
+                DataService.GetData<TicketInfo>(new GetTicketByIPCriteria { IP = ip, IsShowSpecialCurrencies = isShowSpecialCurrencies })
                 .OrderBy(t => t.UserName)
                 .ThenBy(t => t.TransDate);
 

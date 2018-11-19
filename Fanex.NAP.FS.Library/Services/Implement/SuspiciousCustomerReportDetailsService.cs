@@ -122,13 +122,14 @@
 
         #region Statistics
 
-        public Statistics GetStatistics(int custId, DateTime from, DateTime to)
+        public Statistics GetStatistics(int custId, DateTime from, DateTime to, bool isShowSpecialCurrencies)
         {
             var criteria = new SuspiciousCustomerDetailsStatisticsGetCriteria
             {
                 CustId = custId,
                 FromDate = from,
-                ToDate = to
+                ToDate = to,
+                IsShowSpecialCurrencies = isShowSpecialCurrencies
             };
 
             using (var db = new ObjectDb(criteria.GetSettingKey()))
@@ -148,13 +149,14 @@
             }
         }
 
-        public IEnumerable<object> GetViolatedTickets(int custId, DateTime from, DateTime to)
+        public IEnumerable<object> GetViolatedTickets(int custId, DateTime from, DateTime to, bool isShowSpecialCurrencies)
         {
             var criteria = new SuspiciousCustomerDetailsViolatedTicketGetCriteria
             {
                 CustId = custId,
                 FromDate = from,
-                ToDate = to
+                ToDate = to,
+                IsShowSpecialCurrencies = isShowSpecialCurrencies
             };
 
             var html_builder = new BetListHTMLBuilder();

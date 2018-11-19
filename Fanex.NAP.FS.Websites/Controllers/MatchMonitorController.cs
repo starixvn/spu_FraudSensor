@@ -2,6 +2,7 @@
 
 namespace Fanex.NAP.FS.Websites.Controllers
 {
+    using Core.Service.Impl;
     using Fanex.NAP.Core.Web.Attribute;
     using Fanex.NAP.FS.Library.Criteria.MatchMonitor;
     using Library.Service;
@@ -20,10 +21,14 @@ namespace Fanex.NAP.FS.Websites.Controllers
 
         private readonly IMatchMonitorService _matchMonitorService;
 
+        private bool IsShowSpecialCurrencies;
+
         public MatchMonitorController()
         {
             _fraudCaseDetailService = new FraudCaseDetailsService(int.Parse(ConfigurationManager.AppSettings["Environment"]), int.Parse(ConfigurationManager.AppSettings["MailGroupId"]));
             _matchMonitorService = new MatchMonitorService();
+            var permission = new UserService().GetPermission(CurrentSession.UserId, SiteId, FSFunctionKeys.SpecialCurrencies);
+            IsShowSpecialCurrencies = permission > 0;
         }
 
         public ActionResult Index()
@@ -36,6 +41,7 @@ namespace Fanex.NAP.FS.Websites.Controllers
         [HttpPost]
         public ActionResult GetMatches(MatchGetAllCriteria criteria)
         {
+            criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
             var matchList = _matchMonitorService.GetMatches(criteria);
 
             return Json(new { data = matchList.Matches }, JsonRequestBehavior.AllowGet);
@@ -58,6 +64,7 @@ namespace Fanex.NAP.FS.Websites.Controllers
 
         public ActionResult ExportExcel(MatchGetAllCriteria criteria)
         {
+            criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
             var templatePath = Server.MapPath("~/App_Data/Excel Template/MatchMonitor/template.xlsx");
 
             var fileName = "MatchMonitor_" + DateTime.Now.ToString("yyyyMMdd") + ".xlsx";
@@ -77,7 +84,7 @@ namespace Fanex.NAP.FS.Websites.Controllers
         public async Task<ActionResult> GetFraudCaseTicketDetails(int fraudCaseId, int matchId, DateTime eventDate)
         {
             var data =
-                _fraudCaseDetailService.GetTicketDetails(matchId, fraudCaseId, eventDate)
+                _fraudCaseDetailService.GetTicketDetails(matchId, fraudCaseId, eventDate, IsShowSpecialCurrencies)
                 .GroupBy(t => t.Bettype)
                 .Select(g => new { key = g.Key, data = g.AsEnumerable() });
 
@@ -86,7 +93,7 @@ namespace Fanex.NAP.FS.Websites.Controllers
 
         public async Task<ActionResult> GetFraudCaseCustomerDetails(int fraudCaseId, int matchId, DateTime eventDate)
         {
-            var data = _fraudCaseDetailService.GetCustomerDetails(matchId, fraudCaseId, eventDate);
+            var data = _fraudCaseDetailService.GetCustomerDetails(matchId, fraudCaseId, eventDate, IsShowSpecialCurrencies);
 
             return Json(data, JsonRequestBehavior.AllowGet);
         }
@@ -96,7 +103,7 @@ namespace Fanex.NAP.FS.Websites.Controllers
             var template = Server.MapPath("~/App_Data/Excel Template/MatchMonitor/FraudCaseDetail/template.xlsx");
 
             var fileName = string.Format("FraudCaseDetails_{0}.xlsx", DateTime.Today.ToString("yyyyMMdd"));
-            return File(_fraudCaseDetailService.ExportExcel(matchId, fraudCaseId, eventDate, template), "application/vnd.ms-excel", fileName);
+            return File(_fraudCaseDetailService.ExportExcel(matchId, fraudCaseId, eventDate, template, IsShowSpecialCurrencies), "application/vnd.ms-excel", fileName);
         }
 
         [HttpPost]
@@ -110,7 +117,7 @@ namespace Fanex.NAP.FS.Websites.Controllers
 
         public ActionResult GetLast7DaysTicket(int custId)
         {
-            return Json(_fraudCaseDetailService.GetLast7DaysDetails(custId));
+            return Json(_fraudCaseDetailService.GetLast7DaysDetails(custId, IsShowSpecialCurrencies));
         }
 
         public ActionResult GetAssociation(int custId)
@@ -120,7 +127,7 @@ namespace Fanex.NAP.FS.Websites.Controllers
 
         public ActionResult GetTicketFromIP(string ip)
         {
-            return Json(_fraudCaseDetailService.GetTicketFromIP(ip));
+            return Json(_fraudCaseDetailService.GetTicketFromIP(ip, IsShowSpecialCurrencies));
         }
 
         public ActionResult GetExcelTicketFromIP(string ip)
@@ -129,7 +136,7 @@ namespace Fanex.NAP.FS.Websites.Controllers
 
             var fileName = string.Format("TicketsofIP_{0}_{1}", ip, DateTime.Today.ToString("yyyyMMdd"));
 
-            return ExcelFile(_fraudCaseDetailService.ExportToExcelIpTickets(ip, template), fileName);
+            return ExcelFile(_fraudCaseDetailService.ExportToExcelIpTickets(ip, template, IsShowSpecialCurrencies), fileName);
         }
     }
 }

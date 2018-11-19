@@ -15,6 +15,8 @@
 
         public bool IsMainMarket { get; set; }
 
+        public bool IsShowSpecialCurrencies { get; set; }
+
         public override string GetSettingKey()
         {
             return "FS_Rpt_MatchMonitor_Get";

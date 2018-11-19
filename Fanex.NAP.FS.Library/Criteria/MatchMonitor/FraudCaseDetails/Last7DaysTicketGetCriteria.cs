@@ -6,6 +6,8 @@
     {
         public int CustId { get; set; }
 
+        public bool IsShowSpecialCurrencies { get; set; }
+
         public override string GetSettingKey()
         {
             return "FS_Rpt_Ticket_Get";
