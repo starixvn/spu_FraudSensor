@@ -15,7 +15,7 @@ ALTER PROCEDURE [dbo].[FS_Rpt_SuspiciousCustomer_Get]
 	,	@IsHedge					BIT = NULL
 	,	@AssigneeId					INT = NULL
 	,	@Environment				INT = 3
-	,	@IsShowSpecialCurrencies	DATETIME
+	,	@IsShowSpecialCurrencies	BIT
 AS
 /*
 	Created: 20180320@Long
