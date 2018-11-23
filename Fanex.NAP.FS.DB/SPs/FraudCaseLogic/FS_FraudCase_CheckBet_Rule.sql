@@ -1,10 +1,8 @@
-USE [bodb_FraudSensor]
 GO
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-
 ALTER PROCEDURE [dbo].[FS_FraudCase_CheckBet_Rule] 
 AS
 /*
@@ -14,6 +12,7 @@ AS
 	Original:
 
 	Revisions:
+		- 20181120@Long: Change the way to get data
 
 	Param's Explanation (filtered by):
 */
@@ -187,7 +186,7 @@ BEGIN
 		INSERT INTO #tmpChangedTickets (transid, bettype, original_stake)
 		SELECT b.transid, b.bettype, b.stake
 		FROM bodb02.dbo.bettrans bt WITH(NOLOCK) 
-		   INNER JOIN bk.dbo.bets b WITH(NOLOCK) ON bt.transid = b.transid AND bt.MatchID = b.matchid     
+		   INNER JOIN bk.dbo.bets b WITH(NOLOCK) ON bt.transid = b.transid AND bt.MatchId = b.matchid     
 		   INNER JOIN #tmpSportbooksBettype s WITH(NOLOCK) ON s.bettype = b.bettype
 		   INNER JOIN #tmpMatches m  WITH(NOLOCK) ON bt.matchid = m.matchid
 		WHERE m.WinlossDate = @WinlossDate
@@ -245,13 +244,16 @@ BEGIN
 			-- Cash Out tickets are valid: get stake from valid bettype 911 -- Valid ticket: exclude void
 			IF EXISTS (SELECT TOP(1) 1 FROM #tmpCheckBet WITH(NOLOCK) WHERE isVoid = 0)
 			BEGIN
-				INSERT INTO #tmpCheckBet (transid, bettype, isCashOut, bettrans_stake, bets_stake, isOriginal)
+				INSERT INTO #tmpCheckBet (transid, bettype, isCashOut, bettrans_stake, bets_stake, isOriginal, isValidTP, isValidOdds, isValidBetteam)
 				SELECT b.refno, 
 					-1			AS bettype, 
 					1			AS isCashOut, 
 					bs.stake	AS bettrans_stake, 
 					0			AS bets_stake, 
-					0			AS isOriginal
+					0			AS isOriginal,
+					CASE WHEN b.tpositiontaking <> bs.tpositiontaking THEN 0 ELSE 1 END AS isValidTP,
+					CASE WHEN b.odds <> bs.odds THEN 0 ELSE 1 END AS isValidOdds,
+					CASE WHEN (b.betteam <> bs.betteam) THEN 0 ELSE 1 END AS isValidBetteam
 				FROM bodb02.dbo.bettrans b WITH(NOLOCK)
 					INNER JOIN bk.dbo.bets bs WITH(NOLOCK) ON b.transid = bs.transid
 				WHERE EXISTS (SELECT 1 FROM #tmpCheckBet c WITH(NOLOCK) WHERE b.custid = c.custid AND b.matchid = c.matchid AND b.refno = c.transid AND c.isVoid = 0)
@@ -279,13 +281,16 @@ BEGIN
 					UNION SELECT NULL
 				)
 
-				INSERT INTO #tmpCheckBet (transid, bettype, isCashOut, bettrans_stake, bets_stake, isOriginal)
+				INSERT INTO #tmpCheckBet (transid, bettype, isCashOut, bettrans_stake, bets_stake, isOriginal, isValidTP, isValidOdds, isValidBetteam)
 				SELECT b.refno, 
 					-1			AS bettype,
 					1			AS isCashOut, 
 					bs.stake	AS bettrans_stake, 
 					0			AS bets_stake, 
-					0			AS isOriginal
+					0			AS isOriginal,
+					CASE WHEN b.tpositiontaking <> bs.tpositiontaking THEN 0 ELSE 1 END AS isValidTP,
+					CASE WHEN b.odds <> bs.odds THEN 0 ELSE 1 END AS isValidOdds,
+					CASE WHEN (b.betteam <> bs.betteam) THEN 0 ELSE 1 END AS isValidBetteam
 				FROM bodb02.dbo.bettrans b WITH(NOLOCK)
 					INNER JOIN bk.dbo.bets bs WITH(NOLOCK) ON b.transid = bs.transid
 				WHERE EXISTS (SELECT 1 FROM transid t WITH(NOLOCK) WHERE b.transid = t.transid);
@@ -304,10 +309,10 @@ BEGIN
 			FROM #tmpCheckBet cb WITH(NOLOCK)
 			WHERE cb.transid NOT IN (SELECT ct.TransId FROM dbo.[ChangedTicket] ct WITH(NOLOCK))
 			GROUP BY cb.transid
-			HAVING SUM(ISNULL(cb.bettrans_stake,0) - ISNULL(cb.bets_stake,0)) <> 0
-				OR MIN(ISNULL(cb.isValidTP,0)) = 0
-				OR MIN(ISNULL(cb.isValidOdds,0)) = 0
-				OR MIN(ISNULL(cb.isValidBetteam,0)) = 0;
+			HAVING SUM(ISNULL(cb.bettrans_stake, 0) - ISNULL(cb.bets_stake, 0)) <> 0
+				OR MIN(ISNULL(cb.isValidTP, 0)) = 0
+				OR MIN(ISNULL(cb.isValidOdds, 0)) = 0
+				OR MIN(ISNULL(cb.isValidBetteam, 0)) = 0;
 		END;
 		
 		--Check ticket of sport book, racing, numbergame, virtual sports but Casino, P2P, Live CS, Bingo	
@@ -492,7 +497,4 @@ BEGIN
 END;
 
 GO
-GRANT EXECUTE ON [dbo].[FS_FraudCase_CheckBet_Rule] TO [bodbSPUNet]
-GO
-GRANT VIEW DEFINITION ON [dbo].[FS_FraudCase_CheckBet_Rule] TO [bodbSPUNet]
-GO
+/*<info serverAlias="DBSPU-bodb_FraudSensor" executers="bodbSPUNet" isFunction="0" isNested="0"></info>*/
