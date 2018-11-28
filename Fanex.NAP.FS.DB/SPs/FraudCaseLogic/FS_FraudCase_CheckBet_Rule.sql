@@ -12,7 +12,7 @@ AS
 	Original:
 
 	Revisions:
-		- 20181120@Long: Change the way to get data
+		- 20181120@Long: Change the way to get data [Redmine ID: 105113]
 
 	Param's Explanation (filtered by):
 */
@@ -34,13 +34,25 @@ BEGIN
 		@CategoryHdp1				TINYINT,
 		@CategoryHdp2				TINYINT;
 
+	IF	OBJECT_ID('tempdb..#tmpMatchesInfo') IS NOT NULL
+	BEGIN;
+		DROP TABLE	#tmpMatchesInfo;
+	END;
+	CREATE TABLE #tmpMatchesInfo(
+		WinlossDate					DATETIME,
+		MatchId						INT,
+		HomeId						INT,
+		AwayId						INT
+    );
+	CREATE UNIQUE CLUSTERED INDEX IX_tmpMatchesInfo_Bettype_MatchId ON #tmpMatchesInfo(WinlossDate, MatchId);
+
 	IF	OBJECT_ID('tempdb..#tmpMatches') IS NOT NULL
 	BEGIN;
 		DROP TABLE	#tmpMatches;
 	END;
 	CREATE TABLE #tmpMatches(
 		WinlossDate					DATETIME,
-		MatchId						INT
+		MatchId						INT,
     );
 	CREATE UNIQUE CLUSTERED INDEX IX_tmpMatches_Bettype_MatchId ON #tmpMatches(WinlossDate, MatchId);
 
@@ -142,19 +154,19 @@ BEGIN
 		@CapturedDate				= GETDATE();
 
 	-- Get completed matches to scan
-	INSERT INTO #tmpMatches(WinlossDate, MatchId)
-	SELECT m.eventdate, m.matchid
+	INSERT INTO #tmpMatchesInfo(WinlossDate, MatchId, HomeId, AwayId)
+	SELECT m.eventdate, m.matchid, m.homeid, m.awayid
 	FROM bodb02.dbo.match m WITH(NOLOCK)
 	WHERE m.eventstatus = 'completed'
 	UNION
-	SELECT m.eventdate, m.orid
+	SELECT m.eventdate, m.orid, m.teamid, -1
 	FROM bodb02.dbo.outright m WITH(NOLOCK)
 		INNER JOIN bodb02.dbo.League AS l WITH(NOLOCK) ON m.leagueid = l.leagueid
 	WHERE m.status IS NOT NULL
 		AND l.sporttype IN (SELECT DISTINCT sbm.sporttype FROM bodb02.dbo.SportBettypeMatrix AS sbm WITH(NOLOCK));
 
 	-- Remove scanned matched
-	DELETE FROM #tmpMatches WITH(ROWLOCK)
+	DELETE FROM #tmpMatchesInfo WITH(ROWLOCK)
 	WHERE MatchId IN (	
 						SELECT DISTINCT sm.MatchId 
 						FROM dbo.CheckBetScannedMatch sm WITH(NOLOCK) 
@@ -171,11 +183,15 @@ BEGIN
     DELETE #tmpSportbooksBettype WITH(ROWLOCK)
     WHERE SubProduct IN ( 'BT-Sold','BT-Bought','BT-Comm', 'BT-Winloss', 'MG-SuperLive');
 
+	INSERT INTO #tmpMatches(MatchId, WinlossDate)
+	SELECT DISTINCT c.MatchId, c.WinlossDate
+	FROM #tmpMatchesInfo c WITH(NOLOCK);
+
 	INSERT INTO dbo.CheckBetScannedMatch(MatchId, ScannedDate)
 	SELECT DISTINCT
 		'MatchId'					= c.MatchId,
 		'ScannedDate'				= @CapturedDate
-	FROM #tmpMatches c WITH(NOLOCK);
+	FROM #tmpMatchesInfo c WITH(NOLOCK);
 	
 	----------- START -----------
 	WHILE EXISTS(SELECT TOP(1) 1 FROM #tmpMatches WITH(NOLOCK))
@@ -401,7 +417,7 @@ BEGIN
 	INSERT INTO dbo.[ChangedTicketGeneralInfo](TransId, TransDate, Currency, Username, Creator, MatchId, HomeId, AwayId, Oddstype, CustId, Bettype, LiveIndicator)
 	SELECT DISTINCT ct.TransId, ct.TransDate, ct.Currency, ct.Username, c.username, ct.MatchId, m.homeid, m.awayid, ct.Oddstype, ct.CustId, ct.Bettype, ct.LiveIndicator
 	FROM #tmpChangedInfo AS ct WITH(NOLOCK)
-		INNER JOIN bodb02.dbo.match AS m WITH (NOLOCK) ON ct.MatchId = m.matchid		
+		INNER JOIN #tmpMatchesInfo AS m WITH (NOLOCK) ON ct.MatchId = m.matchid		
 		INNER JOIN bodb02.dbo.Customer c WITH(NOLOCK) ON c.custid = ct.Creator;
 
 	----------- STORE CHANGED INFO -----------
