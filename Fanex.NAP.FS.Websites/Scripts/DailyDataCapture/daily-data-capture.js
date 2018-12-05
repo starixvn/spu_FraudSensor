@@ -81,12 +81,14 @@
         scrollCollapse: true,
         columnDefs: [
             { targets: "_all", defaultContent: "-" },
-            { targets: [1, 2], className: "text-center", width: "10%" },
-            { targets: [3, 4, 5, 6, 7, 8, 9], className: "text-right" },
-            { targets: [3, 4, 5, 6], width: "9%" },
-            { targets: [7, 8, 9], width: "7%" }
+            { targets: [0], className: "text-center", width: "5%" },
+            { targets: [2, 3], className: "text-center", width: "10%" },
+            { targets: [4, 5, 6, 7, 8, 9, 10], className: "text-right" },
+            { targets: [4, 5, 6, 7], width: "9%" },
+            { targets: [8, 9, 10], width: "7%" }
         ],
         columns: [
+            { data: obj => obj.MatchId },
             { data: obj => `<span class='team-home'>${obj.Home}</span> - vs - <span class='team-away'>${obj.Away}</span>` },
             { data: obj => moment(obj.EventDate, "MMM D, YYYY HH:mm:ss").format("MMM D, YYYY") },
             { data: obj => moment(obj.ScannedDate, "MMM D, YYYY HH:mm:ss").format("MMM D, YYYY<br/>hh:mm:ss A") },

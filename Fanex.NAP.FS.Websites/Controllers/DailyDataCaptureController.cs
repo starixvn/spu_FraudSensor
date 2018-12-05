@@ -21,7 +21,8 @@
 
         public ActionResult GetMatches(DateTime fromDate, DateTime toDate)
         {
-            return Json(_service.GetMatches(new DailyDataGetCriteria { FromDate = fromDate, ToDate = toDate }));
+            var result = _service.GetMatches(new DailyDataGetCriteria { FromDate = fromDate, ToDate = toDate });
+            return Json(result);
         }
 
         public ActionResult GetMatchesExcel(DateTime fromDate, DateTime toDate)
