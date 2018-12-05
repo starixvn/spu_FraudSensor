@@ -29,57 +29,9 @@ CONSTRAINT [PK_SpecialCurrency] PRIMARY KEY CLUSTERED
 GO
 
 INSERT INTO dbo.SpecialCurrency(CurrencyId, CurrencyName, IsTest)
-VALUES(1, 'SD$', 0);
-INSERT INTO dbo.SpecialCurrency(CurrencyId, CurrencyName, IsTest)
 VALUES(2, 'RM', 0);
 INSERT INTO dbo.SpecialCurrency(CurrencyId, CurrencyName, IsTest)
 VALUES(3, 'US$', 0);
-INSERT INTO dbo.SpecialCurrency(CurrencyId, CurrencyName, IsTest)
-VALUES(4, 'TB', 0);
-INSERT INTO dbo.SpecialCurrency(CurrencyId, CurrencyName, IsTest)
-VALUES(5, 'HK$', 0);
-INSERT INTO dbo.SpecialCurrency(CurrencyId, CurrencyName, IsTest)
-VALUES(6, 'EURO', 0);
 
 ----===================A. ALTER TABLES=========================
 ----==========================================================+
-ALTER TABLE [dbo].[SuspiciousInfo]
-ADD [CurrencyId]		INT NULL;
-GO
-
-UPDATE [dbo].[SuspiciousInfo] WITH(ROWLOCK, UPDLOCK)
-SET [CurrencyId] = 0
-WHERE [CurrencyId] IS NULL;
-
-CREATE NONCLUSTERED INDEX NCIX_SuspiciousInfo_CurrencyId ON [dbo].[SuspiciousInfo] (
-	[CurrencyId]		ASC
-)
-GO
-
-ALTER TABLE [dbo].[ArbitrageTicketDetails]
-ADD [CurrencyId]		INT NULL;
-GO
-
-UPDATE [dbo].[ArbitrageTicketDetails] WITH(ROWLOCK, UPDLOCK)
-SET [CurrencyId] = 0
-WHERE [CurrencyId] IS NULL;
-
-CREATE NONCLUSTERED INDEX NCIX_ArbitrageTicketDetails_CurrencyId ON [dbo].[ArbitrageTicketDetails] (
-	[CurrencyId]		ASC
-)
-GO
-
-ALTER TABLE [dbo].[ChangedTicketGeneralInfo]
-ADD [CurrencyId]		INT NULL;
-GO
-
-UPDATE cti WITH(ROWLOCK, UPDLOCK)
-SET cti.[CurrencyId] = e.exchangeid
-FROM [dbo].[ChangedTicketGeneralInfo] AS cti
-	INNER JOIN bodb02.dbo.Exchange AS e ON cti.Currency = e.currency
-WHERE [CurrencyId] IS NULL;
-
-CREATE NONCLUSTERED INDEX NCIX_ChangedTicketGeneralInfo_CurrencyId ON [dbo].[ChangedTicketGeneralInfo] (
-	[CurrencyId]		ASC
-)
-GO

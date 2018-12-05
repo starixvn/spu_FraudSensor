@@ -95,7 +95,7 @@ BEGIN
 									END
 			)
 		AND (@Username IS NULL OR c.username = @Username)		
-		AND (@IsShowSpecialCurrencies = 1 OR si.CurrencyId NOT IN (SELECT CurrencyId FROM dbo.SpecialCurrency WITH(NOLOCK)))
+		AND (@IsShowSpecialCurrencies = 1 OR c.currency NOT IN (SELECT CurrencyId FROM dbo.SpecialCurrency WITH(NOLOCK)))
 	GROUP BY si.custid
 		,	c.username
 		,	sc.IsDelinquent

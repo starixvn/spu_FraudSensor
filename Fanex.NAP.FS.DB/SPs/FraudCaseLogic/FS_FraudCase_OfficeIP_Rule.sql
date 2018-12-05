@@ -15,7 +15,6 @@ AS
 
 	Revisions: 
 		- 20180726@Casey.Huynh: Change IP Part Number data type from TinyINT to SMALLINT. Due to IP in Bettrans has Invalid Range '345'
-		- 20181114@Long: Split data in SuspiciousInfo by Currency [Redmine ID: #104707]
 
 	Param's Explanation (filtered by):
 
@@ -23,7 +22,7 @@ AS
 BEGIN
 	SET NOCOUNT ON;
 
-	DECLARE @fraudCaseID	INT = 2;
+	DECLARE @fraudCaseID INT = 2;
 
 	--===1. INITIAL TEMP #TABLEs===========
 	--#tmpMatchInput: Store Scanned Matches with Max(transid) will be scanned
@@ -34,8 +33,8 @@ BEGIN
 
 	CREATE TABLE #tmpMatchInput
 	(
-			MatchId			INT PRIMARY KEY
-		,	EventDate		DATETIME
+		MatchId		INT PRIMARY KEY
+		, EventDate	DATETIME
 	);
 	
 	--#tmpBettype Bettype will be scanned
@@ -46,7 +45,7 @@ BEGIN
 
 	CREATE TABLE #tmpBettype
 	(
-		Bettype				INT PRIMARY KEY
+		Bettype INT PRIMARY KEY
 	);
 	
 	
@@ -58,18 +57,17 @@ BEGIN
 
 	CREATE TABLE #tmpFraudTickets
 	(
-			CustId			INT NOT NULL
-		, 	MatchId			INT NOT NULL
-		, 	TransId			BIGINT NOT NULL
-		, 	EventDate		DATE	NULL
-		,	Currency		INT
+			CustId INT NOT NULL
+		, 	MatchId INT NOT NULL
+		, 	TransId	BIGINT NOT NULL
+		, 	EventDate DATE	NULL
 	);
 	
 	--===2. INSERT DATA TO #tmpMatchInput===========
 	INSERT INTO #tmpMatchInput(MatchId)
 	SELECT val FROM dbo.SPU_StrSplit(@MatchIds, ', ');
 	
-	UPDATE	mi 
+	UPDATE mi 
 	SET		mi.EventDate = m.eventdate
 	FROM	#tmpMatchInput AS mi WITH(ROWLOCK, UPDLOCK)
 			INNER JOIN bodb02.dbo.Match m WITH (NOLOCK) ON mi.MatchId = m.matchid;
@@ -79,24 +77,23 @@ BEGIN
 	SELECT DISTINCT Bettype FROM bodb02.dbo.SportBettypeMatrix  AS sm WITH(NOLOCK) WHERE sm.ProductID = 1;	
 
 	--===4. INSERT DATE TO #tmpFraudTickets
-	INSERT INTO #tmpFraudTickets(CustId, MatchId, TransId, EventDate, Currency)
-	SELECT	b.custid
-		,	b.matchid
-		,	b.transid
-		,	mi.EventDate
-		,	b.currency
+	INSERT INTO #tmpFraudTickets(CustId, MatchId, TransId, EventDate)
+	SELECT	  b.custid
+			, b.matchid
+			, b.transid
+			, mi.EventDate
 	FROM	bodb02.dbo.bettrans AS b WITH (NOLOCK)
-		INNER JOIN #tmpMatchInput AS mi WITH (NOLOCK) ON mi.matchid = b.MatchId
-		INNER JOIN #tmpBettype AS bt WITH (NOLOCK) ON b.bettype = bt.Bettype
-		INNER JOIN dbo.OfficeIP AS oi WITH (NOLOCK) ON b.ip LIKE ''+ oi.IPRange +'.%' AND (CAST(PARSENAME(b.ip, 1) AS SMALLINT) BETWEEN oi.FromNumber AND oi.ToNumber)
+			INNER JOIN #tmpMatchInput AS mi WITH (NOLOCK) ON mi.matchid = b.MatchId
+			INNER JOIN #tmpBettype AS bt WITH (NOLOCK) ON b.bettype = bt.Bettype
+			INNER JOIN dbo.OfficeIP AS oi WITH (NOLOCK) ON b.ip LIKE ''+ oi.IPRange +'.%' AND (CAST(PARSENAME(b.ip, 1) AS SMALLINT) BETWEEN oi.FromNumber AND oi.ToNumber)
 	WHERE	b.currency NOT IN (20, 27, 28);
 	
 	--===5. INSERT SCANNED MATCH: TABLE "ScannedMatch" (ScannedDate, SuspiciousTicketsCount)===========		
 	INSERT INTO dbo.ScannedMatch (Matchid, FraudCaseId, ScannedDate, SuspiciousTicketsCount) 
-	SELECT	[MatchId] = mi.matchid 
-		,	[FraudCaseId] = @fraudCaseID
-		,	[ScannedDate] = GETDATE() 
-		,	[SuspiciousTicketsCount] = (ISNULL((SELECT COUNT(1) 
+	SELECT [MatchId] = mi.matchid 
+		, [FraudCaseId] = @fraudCaseID
+		, [ScannedDate] = GETDATE() 
+		, [SuspiciousTicketsCount] = (ISNULL((SELECT COUNT(1) 
 											FROM #tmpFraudTickets t1 WITH (NOLOCK)
 											WHERE t1.MatchId = mi.MatchId 
 											GROUP BY t1.MatchId ), 0)) 
@@ -107,7 +104,7 @@ BEGIN
 	IF EXISTS (SELECT TOP(1) 1 FROM #tmpFraudTickets WITH(NOLOCK))
 	BEGIN							
 		--===6. INSERT: TABLE "SuspiciousInfo" if (Match, Custid, FrauseCase) is Exitsing
-		INSERT INTO	dbo.SuspiciousInfo(CustId, MatchId, EventDate, FraudCaseId, SuspiciousDate, TransIds, ViolationCounter, TicketCounter, CurrencyId)
+		INSERT INTO	dbo.SuspiciousInfo(CustId, MatchId, EventDate, FraudCaseId, SuspiciousDate, TransIds, ViolatiONCounter, TicketCounter)
 		SELECT	[CustId]			= ft.CustId
 			, 	[MatchId]			= ft.MatchId
 			, 	[EventDate]			= ft.EventDate
@@ -117,14 +114,13 @@ BEGIN
 									 FROM #tmpFraudTickets AS t1 WITH(NOLOCK)
 									 WHERE t1.CustId = ft.CustId AND t1.MatchId = ft.MatchId 
 									 FOR XML PATH('')), 1, 1, '')
-			, 	[ViolationCounter]	= 1
+			, 	[ViolatiONCounter]	= 1
 			, 	[TicketCounter]		= COUNT(1)
-			,	[CurrencyId]		= ft.Currency
 		FROM	#tmpFraudTickets AS ft WITH (NOLOCK)
 				LEFT JOIN dbo.SuspiciousInfo AS si WITH (NOLOCK) 
-					ON si.MatchId = ft.MatchId AND si.FraudCaseId = @fraudCaseID AND si.CustId = ft.CustId AND ft.Currency = si.CurrencyId
+					ON si.MatchId = ft.MatchId AND si.FraudCaseId = @fraudCaseID AND si.CustId = ft.CustId 
 		WHERE	si.MatchID IS NULL AND si.FraudCaseId IS NULL AND si.CustId IS NULL
-		GROUP BY ft.CustId, ft.MatchId, ft.EventDate, ft.Currency;
+		GROUP BY ft.CustId, ft.MatchId, ft.EventDate;
 			
 		--===8. UPDATE: TABLE "SuspiciousCustomer" IsVerified=0 if has new Fraud Tickets)
 		UPDATE	sc 

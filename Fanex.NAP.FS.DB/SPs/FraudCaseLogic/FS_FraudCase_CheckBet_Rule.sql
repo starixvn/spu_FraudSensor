@@ -13,7 +13,7 @@ AS
 	Original:
 
 	Revisions:
-		- 20181114@Long: Split data in SuspiciousInfo by Currency [Redmine ID: #104707]
+		- 20181120@Long: Change the way to get data [Redmine ID: 105113]
 
 	Param's Explanation (filtered by):
 */
@@ -35,13 +35,25 @@ BEGIN
 		@CategoryHdp1				TINYINT,
 		@CategoryHdp2				TINYINT;
 
+	IF	OBJECT_ID('tempdb..#tmpMatchesInfo') IS NOT NULL
+	BEGIN;
+		DROP TABLE	#tmpMatchesInfo;
+	END;
+	CREATE TABLE #tmpMatchesInfo(
+		WinlossDate					DATETIME,
+		MatchId						INT,
+		HomeId						INT,
+		AwayId						INT
+    );
+	CREATE UNIQUE CLUSTERED INDEX IX_tmpMatchesInfo_Bettype_MatchId ON #tmpMatchesInfo(WinlossDate, MatchId);
+
 	IF	OBJECT_ID('tempdb..#tmpMatches') IS NOT NULL
 	BEGIN;
 		DROP TABLE	#tmpMatches;
 	END;
 	CREATE TABLE #tmpMatches(
 		WinlossDate					DATETIME,
-		MatchId						INT
+		MatchId						INT,
     );
 	CREATE UNIQUE CLUSTERED INDEX IX_tmpMatches_Bettype_MatchId ON #tmpMatches(WinlossDate, MatchId);
 
@@ -102,7 +114,6 @@ BEGIN
 		AwayId				INT,
 		Bettype				SMALLINT,
 		Oddstype			TINYINT,
-		CurrencyId			INT,
 		Currency			NVARCHAR(10),
 		Creator				INT,
 		LiveIndicator		BIT,
@@ -144,19 +155,19 @@ BEGIN
 		@CapturedDate				= GETDATE();
 
 	-- Get completed matches to scan
-	INSERT INTO #tmpMatches(WinlossDate, MatchId)
-	SELECT m.eventdate, m.matchid
+	INSERT INTO #tmpMatchesInfo(WinlossDate, MatchId, HomeId, AwayId)
+	SELECT m.eventdate, m.matchid, m.homeid, m.awayid
 	FROM bodb02.dbo.match m WITH(NOLOCK)
 	WHERE m.eventstatus = 'completed'
 	UNION
-	SELECT m.eventdate, m.orid
+	SELECT m.eventdate, m.orid, m.teamid, -1
 	FROM bodb02.dbo.outright m WITH(NOLOCK)
 		INNER JOIN bodb02.dbo.League AS l WITH(NOLOCK) ON m.leagueid = l.leagueid
 	WHERE m.status IS NOT NULL
 		AND l.sporttype IN (SELECT DISTINCT sbm.sporttype FROM bodb02.dbo.SportBettypeMatrix AS sbm WITH(NOLOCK));
 
 	-- Remove scanned matched
-	DELETE FROM #tmpMatches WITH(ROWLOCK)
+	DELETE FROM #tmpMatchesInfo WITH(ROWLOCK)
 	WHERE MatchId IN (	
 						SELECT DISTINCT sm.MatchId 
 						FROM dbo.CheckBetScannedMatch sm WITH(NOLOCK) 
@@ -173,11 +184,15 @@ BEGIN
     DELETE #tmpSportbooksBettype WITH(ROWLOCK)
     WHERE SubProduct IN ( 'BT-Sold','BT-Bought','BT-Comm', 'BT-Winloss', 'MG-SuperLive');
 
+	INSERT INTO #tmpMatches(MatchId, WinlossDate)
+	SELECT DISTINCT c.MatchId, c.WinlossDate
+	FROM #tmpMatchesInfo c WITH(NOLOCK);
+
 	INSERT INTO dbo.CheckBetScannedMatch(MatchId, ScannedDate)
 	SELECT DISTINCT
 		'MatchId'					= c.MatchId,
 		'ScannedDate'				= @CapturedDate
-	FROM #tmpMatches c WITH(NOLOCK);
+	FROM #tmpMatchesInfo c WITH(NOLOCK);
 	
 	----------- START -----------
 	WHILE EXISTS(SELECT TOP(1) 1 FROM #tmpMatches WITH(NOLOCK))
@@ -188,7 +203,7 @@ BEGIN
 		INSERT INTO #tmpChangedTickets (transid, bettype, original_stake)
 		SELECT b.transid, b.bettype, b.stake
 		FROM bodb02.dbo.bettrans bt WITH(NOLOCK) 
-		   INNER JOIN bk.dbo.bets b WITH(NOLOCK) ON bt.transid = b.transid AND bt.MatchID = b.matchid     
+		   INNER JOIN bk.dbo.bets b WITH(NOLOCK) ON bt.transid = b.transid AND bt.MatchId = b.matchid     
 		   INNER JOIN #tmpSportbooksBettype s WITH(NOLOCK) ON s.bettype = b.bettype
 		   INNER JOIN #tmpMatches m  WITH(NOLOCK) ON bt.matchid = m.matchid
 		WHERE m.WinlossDate = @WinlossDate
@@ -246,13 +261,16 @@ BEGIN
 			-- Cash Out tickets are valid: get stake from valid bettype 911 -- Valid ticket: exclude void
 			IF EXISTS (SELECT TOP(1) 1 FROM #tmpCheckBet WITH(NOLOCK) WHERE isVoid = 0)
 			BEGIN
-				INSERT INTO #tmpCheckBet (transid, bettype, isCashOut, bettrans_stake, bets_stake, isOriginal)
+				INSERT INTO #tmpCheckBet (transid, bettype, isCashOut, bettrans_stake, bets_stake, isOriginal, isValidTP, isValidOdds, isValidBetteam)
 				SELECT b.refno, 
 					-1			AS bettype, 
 					1			AS isCashOut, 
 					bs.stake	AS bettrans_stake, 
 					0			AS bets_stake, 
-					0			AS isOriginal
+					0			AS isOriginal,
+					CASE WHEN b.tpositiontaking <> bs.tpositiontaking THEN 0 ELSE 1 END AS isValidTP,
+					CASE WHEN b.odds <> bs.odds THEN 0 ELSE 1 END AS isValidOdds,
+					CASE WHEN (b.betteam <> bs.betteam) THEN 0 ELSE 1 END AS isValidBetteam
 				FROM bodb02.dbo.bettrans b WITH(NOLOCK)
 					INNER JOIN bk.dbo.bets bs WITH(NOLOCK) ON b.transid = bs.transid
 				WHERE EXISTS (SELECT 1 FROM #tmpCheckBet c WITH(NOLOCK) WHERE b.custid = c.custid AND b.matchid = c.matchid AND b.refno = c.transid AND c.isVoid = 0)
@@ -280,13 +298,16 @@ BEGIN
 					UNION SELECT NULL
 				)
 
-				INSERT INTO #tmpCheckBet (transid, bettype, isCashOut, bettrans_stake, bets_stake, isOriginal)
+				INSERT INTO #tmpCheckBet (transid, bettype, isCashOut, bettrans_stake, bets_stake, isOriginal, isValidTP, isValidOdds, isValidBetteam)
 				SELECT b.refno, 
 					-1			AS bettype,
 					1			AS isCashOut, 
 					bs.stake	AS bettrans_stake, 
 					0			AS bets_stake, 
-					0			AS isOriginal
+					0			AS isOriginal,
+					CASE WHEN b.tpositiontaking <> bs.tpositiontaking THEN 0 ELSE 1 END AS isValidTP,
+					CASE WHEN b.odds <> bs.odds THEN 0 ELSE 1 END AS isValidOdds,
+					CASE WHEN (b.betteam <> bs.betteam) THEN 0 ELSE 1 END AS isValidBetteam
 				FROM bodb02.dbo.bettrans b WITH(NOLOCK)
 					INNER JOIN bk.dbo.bets bs WITH(NOLOCK) ON b.transid = bs.transid
 				WHERE EXISTS (SELECT 1 FROM transid t WITH(NOLOCK) WHERE b.transid = t.transid);
@@ -305,10 +326,10 @@ BEGIN
 			FROM #tmpCheckBet cb WITH(NOLOCK)
 			WHERE cb.transid NOT IN (SELECT ct.TransId FROM dbo.[ChangedTicket] ct WITH(NOLOCK))
 			GROUP BY cb.transid
-			HAVING SUM(ISNULL(cb.bettrans_stake,0) - ISNULL(cb.bets_stake,0)) <> 0
-				OR MIN(ISNULL(cb.isValidTP,0)) = 0
-				OR MIN(ISNULL(cb.isValidOdds,0)) = 0
-				OR MIN(ISNULL(cb.isValidBetteam,0)) = 0;
+			HAVING SUM(ISNULL(cb.bettrans_stake, 0) - ISNULL(cb.bets_stake, 0)) <> 0
+				OR MIN(ISNULL(cb.isValidTP, 0)) = 0
+				OR MIN(ISNULL(cb.isValidOdds, 0)) = 0
+				OR MIN(ISNULL(cb.isValidBetteam, 0)) = 0;
 		END;
 		
 		--Check ticket of sport book, racing, numbergame, virtual sports but Casino, P2P, Live CS, Bingo	
@@ -324,7 +345,6 @@ BEGIN
 			,	Oddstype
 			,	Creator
 			,	LiveIndicator
-			,	CurrencyId
 			,	Currency
 			,	NewMatchId
 			,	OldMatchId
@@ -358,7 +378,6 @@ BEGIN
 			'Oddstype'			= bt.oddstype,
 			'Creator'			= bt.creator,
 			'LiveIndicator'		= bt.liveindicator,
-			'CurrencyId'		= bt.currency,
 			'Currency'			= bt.CurrencyName,
 			'NewMatchId'		= bt.matchid,
 			'OldMatchId'		= b.matchid,
@@ -396,10 +415,10 @@ BEGIN
 	END;
 
 	----------- STORE GENERAL INFO -----------
-	INSERT INTO dbo.[ChangedTicketGeneralInfo](TransId, TransDate, CurrencyId, Currency, Username, Creator, MatchId, HomeId, AwayId, Oddstype, CustId, Bettype, LiveIndicator)
-	SELECT DISTINCT ct.TransId, ct.TransDate, ct.CurrencyId, ct.Currency, ct.Username, c.username, ct.MatchId, m.homeid, m.awayid, ct.Oddstype, ct.CustId, ct.Bettype, ct.LiveIndicator
+	INSERT INTO dbo.[ChangedTicketGeneralInfo](TransId, TransDate, Currency, Username, Creator, MatchId, HomeId, AwayId, Oddstype, CustId, Bettype, LiveIndicator)
+	SELECT DISTINCT ct.TransId, ct.TransDate, ct.Currency, ct.Username, c.username, ct.MatchId, m.homeid, m.awayid, ct.Oddstype, ct.CustId, ct.Bettype, ct.LiveIndicator
 	FROM #tmpChangedInfo AS ct WITH(NOLOCK)
-		INNER JOIN bodb02.dbo.match AS m WITH (NOLOCK) ON ct.MatchId = m.matchid		
+		INNER JOIN #tmpMatchesInfo AS m WITH (NOLOCK) ON ct.MatchId = m.matchid		
 		INNER JOIN bodb02.dbo.Customer c WITH(NOLOCK) ON c.custid = ct.Creator;
 
 	----------- STORE CHANGED INFO -----------

@@ -54,7 +54,6 @@ BEGIN
 		,	MatchId				INT
 		,	EventDate			DATETIME
 		,	TransId				BIGINT
-		,	Currency			INT
 	);
 
 	CREATE CLUSTERED INDEX	#CIX_tmpFraudTicketsIdx ON #tmpFraudTickets (
@@ -84,12 +83,11 @@ BEGIN
 	INSERT INTO #tmpMatches(MatchId)
 	SELECT val FROM SPU_StrSplit(@MatchIds, ',');
 
-	INSERT INTO #tmpFraudTickets(CustId, MatchId, EventDate, TransId, Currency)
-	SELECT	DISTINCT [CustId]	= ans.custid
-		,	[MatchId]			= ans.matchid
-		,	[EventDate]			= tch.EventDate
-		,	[TransId]			= ans.transid
-		,	[Currency]			= ans.currency
+	INSERT INTO #tmpFraudTickets(CustId, MatchId, EventDate, TransId)
+	SELECT	DISTINCT [CustId]	= ans.custid,
+      [MatchId]			= ans.matchid,
+			[EventDate]			= tch.EventDate,
+      [TransId]			= ans.transid
 	FROM bodb02.dbo.match tch WITH (NOLOCK)
 	INNER JOIN bodb02.dbo.bettrans ans WITH (NOLOCK) ON tch.matchid = ans.matchid
 	INNER JOIN #tmpFlaggedAccounts fa WITH (NOLOCK) ON fa.custid = ans.custid
@@ -139,7 +137,7 @@ BEGIN
 		WHERE FraudCaseId = @CurrentFraudCaseId
 			AND MatchId IN (SELECT MatchId FROM #tmpMatches WITH (NOLOCK));
 
-		INSERT INTO dbo.SuspiciousInfo(CustId, MatchId, EventDate, FraudCaseId, SuspiciousDate, TransIds, ViolatiONCounter, TicketCounter, CurrencyId)
+		INSERT INTO dbo.SuspiciousInfo(CustId, MatchId, EventDate, FraudCaseId, SuspiciousDate, TransIds, ViolationCounter, TicketCounter)
 		SELECT [CustId]			= ft.CustId
 			,	[MatchId]			= ft.MatchId
 			,	[EventDate]			= ft.EventDate
@@ -147,16 +145,17 @@ BEGIN
 			,	[SuspiciousDate]	= GETDATE()
 			,	[TransIds]			= STUFF((SELECT ',', CONVERT(VARCHAR(15), t1.TransId) 
 										 FROM #tmpFraudTickets AS t1 WITH (NOLOCK)
-										 WHERE t1.CustId = ft.CustId AND t1.MatchId = ft.MatchId AND t1.Currency = ft.Currency
+										 WHERE t1.CustId = ft.CustId AND t1.MatchId = ft.MatchId 
 										 FOR XML PATH('')), 1, 1, '')
-			,	[ViolatiONCounter]	= 1
-			,	[TicketCounter]		= COUNT(ft.TransId)			
-			,	[CurrencyId]		= ft.Currency
+			,	[ViolationCounter]	= 1
+			,	[TicketCounter]		= COUNT(ft.TransId)
 		FROM #tmpFraudTickets ft WITH (NOLOCK)
-		GROUP BY ft.CustId, ft.MatchId, ft.EventDate, ft.Currency;		
+		GROUP BY ft.CustId, ft.MatchId, ft.EventDate;		
 
 	END;
-END;
+	
+	EXEC sp_xml_removedocument @idoc;
+END;	
 
 GO
 /*<info serverAlias="DBSPU-bodb_FraudSensor" executers="bodbSPUNet" isFunction="0" isNested="0"></info>*/

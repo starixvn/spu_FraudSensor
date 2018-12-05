@@ -61,10 +61,11 @@ BEGIN
 	INSERT INTO #tmpFraudTickets(TransID)
 	SELECT VAL
 	FROM dbo.SuspiciousInfo si WITH(NOLOCK)
+		INNER JOIN bodb02.dbo.Customer c WITH(NOLOCK) ON si.Custid = c.custid
 		CROSS APPLY dbo.SPU_StrSplit(si.transids, ',')
 	WHERE	si.MatchId = @MatchId
 		AND si.FraudCaseId = @FraudCaseId
-		AND (@IsShowSpecialCurrencies = 1 OR si.CurrencyId NOT IN (SELECT CurrencyId FROM dbo.SpecialCurrency WITH(NOLOCK)));
+		AND (@IsShowSpecialCurrencies = 1 OR c.currency NOT IN (SELECT CurrencyId FROM dbo.SpecialCurrency WITH(NOLOCK)));
 			
 	--===	2.2 GET: Homeid and AwayId
 	DECLARE @homeId INT;

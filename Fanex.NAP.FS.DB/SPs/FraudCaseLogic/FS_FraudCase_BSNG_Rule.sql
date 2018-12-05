@@ -20,7 +20,6 @@ AS
 			+ Update Calculate Violation BSNG Rule: count 1 per each score
 		- 20180406@Long: remove ticket status to scan for running matches
 		- 20180312@CaseyHuynh: Correct Code Syntax
-		- 20181114@Long: Split data in SuspiciousInfo by Currency [Redmine ID: #104707]
 
 	Param's Explanation (filtered by):
 */
@@ -61,7 +60,6 @@ BEGIN
 		,	TransId				BIGINT
 		,	LiveHomeScore		SMALLINT
 		,	LiveAwayScore		SMALLINT
-		,	Currency			INT
 	);
 
 	CREATE CLUSTERED INDEX	#CIX_tmpFraudTicketsIdx ON #tmpFraudTickets (
@@ -129,14 +127,13 @@ BEGIN
 	
 	
 	--- GET FRAUD TICKET
-	INSERT INTO #tmpFraudTickets (CustId, MatchId, EventDate, TransId, LiveHomeScore, LiveAwayScore, Currency)
+	INSERT INTO #tmpFraudTickets (CustId, MatchId, EventDate, TransId, LiveHomeScore, LiveAwayScore)
 	SELECT  [CustId]	= bt.custid
 		,	[MatchId]			= bt.matchid
 		,	[EventDate]			= bt.eventdate
 		,	[TransId]			= bt.transid
 		,	[LiveHomeScore]		= bt.liveawayscore
 		,	[LiveAwayScore]		= bt.livehomescore
-		,	[Currency]			= bt.currency
 	FROM (
 		SELECT  ans.custid
 			,	ans.username
@@ -153,7 +150,6 @@ BEGIN
 					,	ans.livehomescore
 				) AS TotalStake
 			,	40 * 0.01 * COALESCE(dds.maxbet, 0) AS MaxBet
-			,	ans.currency
 		FROM bodb02.dbo.match AS tch WITH (NOLOCK)
 		INNER JOIN bodb02.dbo.bettrans AS ans WITH (NOLOCK) ON tch.matchid = ans.matchid
 		INNER JOIN dbo.BSNGScanInfo AS si WITH(NOLOCK) ON si.matchid = ans.matchid
@@ -184,7 +180,6 @@ BEGIN
 			,	ans.bettype
 			,	ans.stake
 			,	ans.actualrate
-			,	ans.currency
 		) bt
 	WHERE bt.TotalStake >= bt.Maxbet;
 	
@@ -220,24 +215,23 @@ BEGIN
 		SET si.SuspiciousDate	= GETDATE()
 				,	si.TransIds	= si.TransIds + ','+ STUFF((SELECT ',', CONVERT(VARCHAR(15), t1.TransId) 
 										 FROM #tmpFraudTickets t1 WITH (NOLOCK)
-										 WHERE t1.CustId = ft.CustId AND t1.MatchId = ft.MatchId AND t1.Currency = ft.Currency
+										 WHERE t1.CustId = ft.CustId AND t1.MatchId = ft.MatchId AND si.FraudCaseId = @CurrentFraudCaseId
 										 FOR XML PATH('')), 1, 1, '')
 				,	si.TicketCounter = si.TicketCounter + (SELECT COUNT(1) 
 															FROM #tmpFraudTickets t1 WITH (NOLOCK)
-															WHERE t1.CustId = ft.CustId AND t1.MatchId = ft.MatchId AND t1.Currency = ft.Currency)
+															WHERE t1.CustId = ft.CustId AND t1.MatchId = ft.MatchId AND si.FraudCaseId = @CurrentFraudCaseId)
 				,	si.IsVerified = 0
 				,	si.ViolationCounter = si.ViolationCounter + (SELECT COUNT(1)
-										FROM (SELECT t2.LiveHomeScore, t2.LiveAwayScore
+										FROM (SELECT t2.LiveHomeScore,t2.LiveAwayScore
 										FROM #tmpFraudTickets AS t2 WITH (NOLOCK)
-										WHERE t2.CustId = ft.CustId AND t2.MatchId = ft.MatchId AND t2.Currency = ft.Currency
+										WHERE t2.CustId = ft.CustId AND t2.MatchId = ft.MatchId
 										GROUP BY t2.LiveHomeScore,t2.LiveAwayScore) AS A)
 		FROM dbo.SuspiciousInfo si 
 				INNER JOIN #tmpFraudTickets ft WITH (NOLOCK)
-					ON si.MatchId = ft.MatchId AND si.FraudCaseId = @CurrentFraudCaseId AND si.CustId = ft.CustId
-						AND si.CurrencyId = ft.Currency;
+					ON si.MatchId = ft.MatchId AND si.FraudCaseId = @CurrentFraudCaseId AND si.CustId = ft.CustId;
 							
 		--===7. INSERT: TABLE "SuspiciousInfo" if (Match,Custid,FrauseCase) is Exitsing
-		INSERT INTO dbo.SuspiciousInfo(CustId, MatchId, EventDate, FraudCaseId, SuspiciousDate, TransIds, ViolatiONCounter, TicketCounter, CurrencyId)
+		INSERT INTO dbo.SuspiciousInfo(CustId, MatchId, EventDate, FraudCaseId, SuspiciousDate, TransIds, ViolatiONCounter, TicketCounter)
 			SELECT [CustId]			= ft.CustId
 				,	[MatchId]			= ft.MatchId
 				,	[EventDate]			= ft.EventDate
@@ -245,20 +239,19 @@ BEGIN
 				,	[SuspiciousDate]	= GETDATE()
 				,	[TransIds]			= STUFF((SELECT ',', CONVERT(VARCHAR(15), t1.TransId) 
 										 FROM #tmpFraudTickets AS t1 WITH(NOLOCK)
-										 WHERE t1.CustId = ft.CustId AND t1.MatchId = ft.MatchId AND t1.Currency = ft.Currency
+										 WHERE t1.CustId = ft.CustId AND t1.MatchId = ft.MatchId 
 										 FOR XML PATH('')), 1, 1, '')
 				,	ViolationCounter = (SELECT COUNT(1)
 										FROM (SELECT t2.LiveHomeScore,t2.LiveAwayScore
 										FROM #tmpFraudTickets AS t2 WITH (NOLOCK)
-										WHERE t2.CustId = ft.CustId AND t2.MatchId = ft.MatchId AND t2.Currency = ft.Currency
+										WHERE t2.CustId = ft.CustId AND t2.MatchId = ft.MatchId
 										GROUP BY t2.LiveHomeScore,t2.LiveAwayScore) AS A)
 				,	[TicketCounter]		= COUNT(1)
-				,	[CurrencyId]		= ft.Currency
 			FROM #tmpFraudTickets ft WITH (NOLOCK)
 					LEFT JOIN dbo.SuspiciousInfo si WITH (NOLOCK) 
-						ON si.MatchId = ft.MatchId AND si.FraudCaseId = @CurrentFraudCaseId AND si.CustId = ft.CustId AND si.CurrencyId = ft.Currency
+						ON si.MatchId = ft.MatchId AND si.FraudCaseId = @CurrentFraudCaseId AND si.CustId = ft.CustId 
 			WHERE si.MatchID IS NULL AND si.FraudCaseId IS NULL AND si.CustId IS NULL
-			GROUP BY ft.CustId, ft.MatchId, ft.EventDate, ft.Currency;
+			GROUP BY ft.CustId, ft.MatchId, ft.EventDate;
 		
 	
 		--===8. UPDATE: TABLE "SuspiciousCustomer" IsVerified=0 if has new Fraud Tickets)
@@ -283,9 +276,8 @@ BEGIN
 	SET		si.HasScanned = 1, si.ScannedDate = @ScannedDate
 	FROM	dbo.BSNGScanInfo si WITH(ROWLOCK)
 			INNER JOIN #tmpMatches tm WITH(NOLOCK) ON si.MatchId = tm.matchid
-	WHERE	si.HasScanned = 0;
-	
-END
+	WHERE	si.HasScanned = 0;	
+END;
 
 GO
 /*<info serverAlias="DBSPU-bodb_FraudSensor" executers="bodbSPUNet" isFunction="0" isNested="0"></info>*/
