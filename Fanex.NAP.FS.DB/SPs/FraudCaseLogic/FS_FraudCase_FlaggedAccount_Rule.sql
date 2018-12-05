@@ -154,4 +154,7 @@ BEGIN
 	END;
 	
 	EXEC sp_xml_removedocument @idoc;
+END;	
+	
+	EXEC sp_xml_removedocument @idoc;
 END;

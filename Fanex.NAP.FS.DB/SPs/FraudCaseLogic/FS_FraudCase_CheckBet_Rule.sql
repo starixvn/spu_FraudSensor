@@ -53,7 +53,7 @@ BEGIN
 	END;
 	CREATE TABLE #tmpMatches(
 		WinlossDate					DATETIME,
-		MatchId						INT,
+		MatchId						INT
     );
 	CREATE UNIQUE CLUSTERED INDEX IX_tmpMatches_Bettype_MatchId ON #tmpMatches(WinlossDate, MatchId);
 
