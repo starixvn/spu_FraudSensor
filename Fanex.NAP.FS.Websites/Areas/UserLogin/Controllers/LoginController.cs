@@ -1,6 +1,5 @@
 ﻿namespace Fanex.NAP.FS.Areas.UserLogin.Controllers
 {
-    using Common;
     using Fanex.NAP.Core.Models;
     using Fanex.NAP.Core.Models.ParameterObject;
     using Fanex.NAP.Core.Models.ValueObject;
@@ -19,6 +18,8 @@
     using System.Collections.Generic;
     using System.Configuration;
     using System.Linq;
+    using System.Security.Cryptography;
+    using System.Text;
     using System.Web;
     using System.Web.Mvc;
     using System.Web.Security;
@@ -36,6 +37,8 @@
         private readonly ISiteService _siteService;
         private readonly IUserService _userService;
         private readonly ISecurityService _securityService;
+        private readonly SHA256Managed _hashAlgorithm;
+        private const string LoginFormToken = "_SecureLoginFormToken";
 
         #endregion members
 
@@ -59,9 +62,32 @@
             _currentSession = currentSession ?? new CurrentSession();
             _maintenanceService = maintenanceService ?? new MaintenanceService();
             _securityService = new SecurityService();
+            _hashAlgorithm = new SHA256Managed();
         }
 
         #endregion ctorssky
+
+        #region properties
+
+        public string FormToken
+        {
+            get
+            {
+                if (Session[LoginFormToken] == null)
+                {
+                    return string.Empty;
+                }
+
+                return Session[LoginFormToken].ToString();
+            }
+
+            set
+            {
+                Session[LoginFormToken] = value;
+            }
+        }
+
+        #endregion properties
 
         #region sign in
 
@@ -83,6 +109,8 @@
                 return RedirectToAction("Offline", "Common");
             }
 
+            GenerateToken();
+
             return View();
         }
 
@@ -93,14 +121,14 @@
         /// <param name="password">Password value.</param>
         /// <returns>Return result.</returns>
         [HttpPost]
-        public ActionResult Index(string username, string password)
+        public ActionResult Index(string username, string password, string loginToken)
         {
             try
             {
                 Response.BufferOutput = true;
                 object msg = null;
 
-                if (!string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(password))
+                if (!string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(password) && CheckValidToken(loginToken))
                 {
                     var user = _userService.Get(username.Trim());
 
@@ -108,14 +136,16 @@
                     {
                         if (user != null)
                         {
-                            var pw = Cryptography.CfsEnCode(password);
+                            var hashPw = GetHash(user.Password + loginToken);
 
-                            if (pw == user.Password)
+                            if (password == hashPw)
                             {
                                 var group = user.Group == null ? null : _groupService.Get(user.Group.Id);
 
                                 // gets all sites of logging-in user
                                 var siteLevelList = _userService.GetSiteLevel(user.Id, Environment);
+
+                                ClearToken();
 
                                 if ((group == null || group.IsActive) && siteLevelList.Any(x => x.IsActive))
                                 {
@@ -187,6 +217,8 @@
                     msg = "Invalid input!";
                 }
 
+                GenerateToken();
+
                 return View(msg);
             }
             catch (Exception ex)
@@ -243,6 +275,14 @@
                         });
                     }
 
+                    if (_currentSession == null || _currentSession.OnUserId == 0)
+                    {
+                        return Json(new
+                        {
+                            IsKickedOut = "1"
+                        });
+                    }
+
                     var isKickedOut = _securityService.ReCheckIn(_currentSession.OnUserId, SiteId);
 
                     return Json(new
@@ -273,6 +313,7 @@
             _securityService.Logout(_currentSession.OnUserId);
             FormsAuthentication.SignOut();
             _currentSession.ClearAll();
+            DeleteCookiesAndClearSession();
         }
 
         private void CreateUserMenu(User user)
@@ -398,6 +439,83 @@
             }
 
             return RedirectToAction("Forward", "UserSite", new { id = listSiteUrl.First().SiteUrlId });
+        }
+
+        private void AddTokenToCookie(string loginToken)
+        {
+            // Create the non-persistent secure form token cookie
+            var responseCookie = new HttpCookie(LoginFormToken)
+            {
+                HttpOnly = true,
+                Value = loginToken
+            };
+
+            // If we are using SSL, the cookie should be set to secure to
+            // prevent it from being sent over HTTP connections
+            if (FormsAuthentication.RequireSSL && Request.IsSecureConnection)
+            {
+                responseCookie.Secure = true;
+            }
+
+            // Add the cookie to the response
+            Response.Cookies.Set(responseCookie);
+        }
+
+        private void GenerateToken()
+        {
+            string loginToken = Guid.NewGuid().ToString("N");
+
+            FormToken = loginToken;
+            ViewBag.LoginToken = loginToken;
+            AddTokenToCookie(loginToken);
+        }
+
+        private bool CheckValidToken(string loginToken)
+        {
+            return !string.IsNullOrWhiteSpace(loginToken)
+                && FormToken == loginToken
+                && Request.Cookies[LoginFormToken] != null
+                && loginToken == Request.Cookies[LoginFormToken].Value;
+        }
+
+        private string GetHash(string input)
+        {
+            var encrypted = string.Empty;
+
+            if (!string.IsNullOrWhiteSpace(input))
+            {
+                var hashData = _hashAlgorithm.ComputeHash(Encoding.UTF8.GetBytes(input));
+
+                encrypted = BitConverter.ToString(hashData).Replace("-", string.Empty).ToLowerInvariant();
+            }
+
+            return encrypted;
+        }
+
+        private void ClearToken()
+        {
+            Session.Remove(LoginFormToken);
+
+            if (Request.Cookies[LoginFormToken] != null)
+            {
+                var cookie = new HttpCookie(LoginFormToken);
+
+                cookie.Expires = DateTime.Now.AddDays(-1d);
+                Response.Cookies.Add(cookie);
+            }
+        }
+
+        private void DeleteCookiesAndClearSession()
+        {
+            Response.Cookies.Clear();
+
+            HttpCookie authCookie = Request.Cookies[FormsAuthentication.FormsCookieName];
+            authCookie.Expires = DateTime.Now.AddDays(-1);
+            Response.Cookies.Add(authCookie);
+
+            CurrentSession.ClearAll();
+            Session.Clear();
+            Session.Abandon();
         }
 
         #endregion helpers

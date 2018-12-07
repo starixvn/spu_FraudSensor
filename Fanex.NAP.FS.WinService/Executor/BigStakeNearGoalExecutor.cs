@@ -1,23 +1,23 @@
-﻿namespace Fanex.NAP.FS.WinService
+﻿namespace Fanex.NAP.FS.WinService.Executor
 {
     using Fanex.NAP.FS.Library.Core.BaseClasses;
-    using Library.Core.Utilities;
+    using Fanex.NAP.FS.Library.Criteria.FraudSensorTask;
     using Library.DTO;
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
 
-    [FraudCase(Library.Models.FraudCaseId.DelayedGoal)]
-    public class DelayGoalExecutor : FraudCaseExecutor
+    [FraudCase(Library.Models.FraudCaseId.BSNG)]
+    public class BigStakeNearGoalExecutor : FraudCaseExecutor
     {
         private IEnumerable<Match> _matches;
 
         private readonly List<Task> _threads;
 
-        private const int ChunkSize = 100;
+        int _errorTimes;
 
-        public DelayGoalExecutor(FraudCase fraudCase) : base(fraudCase)
+        public BigStakeNearGoalExecutor(FraudCase fraudCase) : base(fraudCase)
         {
             _matches = new List<Match>();
             _threads = new List<Task>();
@@ -34,7 +34,7 @@
 
         protected override void ExecutePrecondition()
         {
-            _matches = _fraudSensorTaskService.DelayGoalExecutePrecondition();
+            _matches = DataService.GetData<Match>(new BigStakeNearGoalPreconditionCriteria());
         }
 
         protected override void ExecuteRule()
@@ -52,11 +52,9 @@
         {
             if (_matches != null)
             {
-                var matchChunks = _matches.Chunk(ChunkSize);
-
-                foreach (var matches in matchChunks)
+                foreach (var match in _matches)
                 {
-                    var thread = ExecuteMultiple(matches.ToList());
+                    var thread = ExecuteSingle(match);
 
                     _threads.Add(thread);
                 }
@@ -65,13 +63,13 @@
             }
         }
 
-        private Task ExecuteMultiple(List<Match> matches)
+        private Task ExecuteSingle(Match match)
         {
             var thread = Task.Factory.StartNew(m =>
             {
                 try
                 {
-                    _fraudSensorTaskService.DelayGoalExecuteRule(string.Join(",", ((List<Match>)m).Select(t => t.MatchId.ToString())));
+                    DataService.Execute(new BigStakeNearGoalRuleCriteria { MatchIds = ((Match)m).MatchId.ToString() });
 
                     _errorTimes = 0;
                 }
@@ -79,14 +77,14 @@
                 {
                     var error = "<b>Error:</b> " + exception.Message +
                               "<br><b>StackTrace:</b> " + exception.StackTrace;
-                    var message = string.Format("<b>Problem with FraudCaseId = {0}, FraudCaseName = {1}</b><br><br>", FraudCase.FraudCaseId, FraudCase.FraudCaseName) + error;
+                    var message = string.Format("<b>Problem with FraudCaseId = {0}, FraudCaseName = {1}, MatchId = {2}</b><br><br>", FraudCase.FraudCaseId, FraudCase.FraudCaseName, match.MatchId) + error;
 
                     if (_errorTimes++ < 10)
                     {
                         SendMailInform(message);
                     }
                 }
-            }, matches);
+            }, match);
 
             return thread;
         }

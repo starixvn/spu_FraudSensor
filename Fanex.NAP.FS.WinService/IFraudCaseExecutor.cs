@@ -1,10 +1,10 @@
 ﻿namespace Fanex.NAP.FS.WinService
 {
+    using Fanex.NAP.FS.Library.Models;
+
     public interface IFraudCaseExecutor
     {
-        void Start();
-
-        void Stop();
+        FraudCaseId FraudCaseId { get; }
 
         void Execute();
     }

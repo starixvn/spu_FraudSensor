@@ -1,4 +1,4 @@
-﻿namespace Fanex.NAP.FS.WinService
+﻿namespace Fanex.NAP.FS.WinService.Executor
 {
     using Fanex.NAP.FS.Library.Core.BaseClasses;
     using Fanex.NAP.FS.Library.Criteria.FraudSensorTask;
