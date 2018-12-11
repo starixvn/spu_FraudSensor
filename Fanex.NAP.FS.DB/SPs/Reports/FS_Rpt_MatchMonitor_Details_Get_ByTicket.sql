@@ -8,7 +8,7 @@ ALTER PROCEDURE [dbo].[FS_Rpt_MatchMonitor_Details_Get_ByTicket]
 		@MatchId					INT
 	,	@EventDate					DATETIME
 	,	@FraudCaseId				INT	
-	,	@IsShowSpecialCurrencies	BIT
+	,	@IsShowSpecialCurrencies	BIT = 0
 AS
 /*
 	Created: 20180312@CaseyHuynh

@@ -7,7 +7,7 @@ GO
 ALTER PROCEDURE [dbo].[FS_Rpt_MatchMonitor_Details_Get_ByTicket_Arbitrage]
 		@MatchId					INT
 	,	@EventDate					DATETIME
-	,	@IsShowSpecialCurrencies	BIT
+	,	@IsShowSpecialCurrencies	BIT = 0
 AS
 /*
 	Created: 20180815@Long

@@ -9,6 +9,7 @@ ALTER PROCEDURE [dbo].[FS_Rpt_SuspicousCustomerDetails_WinlossStatistic_Get]
 						@CustId			INT
 					,	@FromDate		DATETIME
 					,	@ToDate			DATETIME
+					,   @IsShowSpecialCurrencies	BIT = 0
 AS
 /*
 	Created:	20180506@John.Ngo
@@ -96,6 +97,7 @@ BEGIN
 			AND	b.ruben = 1
 			AND	bettype < 19999
 			AND	COALESCE(m.sporttype, l.sporttype, -1) <= 99
+			AND (@IsShowSpecialCurrencies = 1 OR b.currency NOT IN (SELECT CurrencyId FROM dbo.SpecialCurrency WITH(NOLOCK)))
 		GROUP BY b.bettype, ISNULL(m.leagueid, o.leagueid), liveindicator, YEAR(b.winlostdate), MONTH(b.winlostdate);
 		
 		 -- Add TOP() to fix wrong join order

@@ -9,7 +9,7 @@ ALTER PROCEDURE [dbo].[FS_Tbl_SuspiciousCustomer_Get]
 	,	@IsDelinquent				BIT = NULL
 	,	@IsHedge					BIT = NULL
 	,	@IsDirty					BIT = NULL
-	,	@IsShowSpecialCurrencies	BIT
+	,	@IsShowSpecialCurrencies	BIT = 0
 AS
 /*
 	Created: 20180504@CaseyHuynh
