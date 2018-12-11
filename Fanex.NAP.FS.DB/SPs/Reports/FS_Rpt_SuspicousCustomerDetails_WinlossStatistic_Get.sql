@@ -17,7 +17,8 @@ AS
 	Server:		
 
 	Revisions:
-		- 20180523: Add rptmonth and rptyear [Redmine: #95528]
+		- 20180523:		 Add rptmonth and rptyear [Redmine: #95528]
+		- 20181211@John: Adding View Permission on Special Currencies [Redmine ID: #104707]
 
 	Param's Explanation: EXEC FS_Rpt_SuspicousCustomerDetails_WinlossStatistic_Get @FromDate='2017-10-04 00:00:00',@ToDate='2018-05-02 00:00:00',@CustId=28216314
 
@@ -179,10 +180,5 @@ BEGIN
 	DROP TABLE	#WinlostDate;
 END
 
-/*
 GO
-GRANT EXECUTE ON [dbo].[FS_Rpt_SuspicousCustomerDetails_WinlossStatistic_Get] TO [bodbSPUNet]
-GO
-GRANT VIEW DEFINITION ON [dbo].[FS_Rpt_SuspicousCustomerDetails_WinlossStatistic_Get] TO [bodbSPUNet]
-GO
-*/
+/*<info serverAlias="DBSPU-bodb_FraudSensor" executers="bodbSPUNet" isFunction="0" isNested="0"></info>*/
