@@ -102,7 +102,7 @@ namespace Fanex.NAP.FS.Websites.Controllers
                 ToDate = to
             };
 
-            generalViewModel.CustInfo = _detailsService.GetSuspiciousCustomerInfo(custId);
+            generalViewModel.CustInfo = _detailsService.GetSuspiciousCustomerInfo(custId, IsShowSpecialCurrencies);
             generalViewModel.Assignee = _detailsService.GetAssignee(custId);
             generalViewModel.Currency = _detailsService.GetCustomerCurrency(custId);
 

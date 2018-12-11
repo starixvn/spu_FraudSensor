@@ -14,7 +14,7 @@
 
         DBResult UpdateAssignee(int custId, int? assignee, int userId);
 
-        SuspiciousCustomerModel GetSuspiciousCustomerInfo(int custId);
+        SuspiciousCustomerModel GetSuspiciousCustomerInfo(int custId, bool isShowSpecialCurrencies);
 
         IEnumerable<SuspiciousCustomerFraudCaseModel> GetSuspiciousCustomerFraudCase(int custId);
 

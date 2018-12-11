@@ -38,14 +38,15 @@
             return DataService.UpdateData(criteria, "Update assignee");
         }
 
-        public SuspiciousCustomerModel GetSuspiciousCustomerInfo(int custId)
+        public SuspiciousCustomerModel GetSuspiciousCustomerInfo(int custId, bool IsShowSpecialCurrencies)
         {
             var criteria = new SuspiciousCustomerGetCriteria
             {
                 CustId = custId,
                 IsDelinquent = null,
                 IsDirty = null,
-                IsHedge = null
+                IsHedge = null,
+                IsShowSpecialCurrencies = IsShowSpecialCurrencies
             };
 
             return DataService.GetSingle<SuspiciousCustomerModel>(criteria);
