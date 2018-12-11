@@ -127,7 +127,7 @@
         {
             var legend = GetInfo(matchId, fraudCaseId, eventDate);
 
-            var tickets = GetTicketDetails(matchId, fraudCaseId, eventDate, true, isShowSpecialCurrencies);
+            var tickets = GetTicketDetails(matchId, fraudCaseId, eventDate, isShowSpecialCurrencies, true);
             var customers = GetCustomerDetails(matchId, fraudCaseId, eventDate, isShowSpecialCurrencies);
 
             var wb =
