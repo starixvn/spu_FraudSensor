@@ -130,6 +130,7 @@ BEGIN
 				AND	cbd.status NOT IN (-1,18,9,10,14)
 				AND	cbd.leagueid > 0
 				AND l.sporttype <= 99
+				AND (@IsShowSpecialCurrencies = 1 OR cbd.currency NOT IN (SELECT CurrencyId FROM dbo.SpecialCurrency WITH(NOLOCK)))
 			GROUP BY cbd.bettype, cbd.leagueid, cbd.islive, YEAR(cbd.rptDate), MONTH(cbd.rptDate)
 		) _cbd
 		WHERE	d.winlostdate <= @SupportedDate;
