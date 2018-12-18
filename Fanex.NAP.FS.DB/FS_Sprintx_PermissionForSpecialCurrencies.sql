@@ -9,10 +9,8 @@ Reviewer: Billy
 USE	bodb_FraudSensor;
 GO
 
-
-----===================A. DROP TABLES=========================
-----==========================================================
-
+----===================A. DROP TABLES==========================
+----===========================================================
 
 
 ----===================B. CREATE TABLES========================
@@ -20,7 +18,8 @@ GO
 CREATE TABLE [dbo].[SpecialCurrency](
 	[CurrencyId]			INT NOT NULL,
 	[CurrencyName]			NVARCHAR(100) NULL,
-	[IsTest]				BIT DEFAULT(0),
+	[CreatedBy]				INT NULL,
+	[CreatedDate]			DATETIME NULL
 CONSTRAINT [PK_SpecialCurrency] PRIMARY KEY CLUSTERED 
 (
 	[CurrencyId]			ASC
@@ -28,10 +27,10 @@ CONSTRAINT [PK_SpecialCurrency] PRIMARY KEY CLUSTERED
 ) ON [DATA]
 GO
 
-INSERT INTO dbo.SpecialCurrency(CurrencyId, CurrencyName, IsTest)
-VALUES(2, 'RM', 0);
-INSERT INTO dbo.SpecialCurrency(CurrencyId, CurrencyName, IsTest)
-VALUES(3, 'US$', 0);
+-- custid = 20902509: Starix58
+DECLARE @today DATETIME = GETDATE();
+INSERT INTO dbo.SpecialCurrency(CurrencyId, CurrencyName, CreatedBy, CreatedDate)
+SELECT exchangeid, currency, 20902509, @today FROM bodb02.dbo.Exchange WITH(NOLOCK) WHERE CODE IN ('USD','VND')
 
 ----===================A. ALTER TABLES=========================
-----==========================================================+
+----===========================================================
