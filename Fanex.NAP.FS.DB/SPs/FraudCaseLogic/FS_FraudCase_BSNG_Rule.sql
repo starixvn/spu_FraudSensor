@@ -1,4 +1,3 @@
-
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -278,6 +277,3 @@ BEGIN
 			INNER JOIN #tmpMatches tm WITH(NOLOCK) ON si.MatchId = tm.matchid
 	WHERE	si.HasScanned = 0;	
 END;
-
-GO
-/*<info serverAlias="DBSPU-bodb_FraudSensor" executers="bodbSPUNet" isFunction="0" isNested="0"></info>*/
