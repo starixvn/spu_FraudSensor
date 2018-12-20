@@ -207,6 +207,7 @@
     <Compile Include="Core\ExportExcel\ExcelUtilities.cs" />
     <Compile Include="Core\ExportExcel\FSExcelConfig.cs" />
     <Compile Include="Core\ExportExcel\ExcelStream.cs" />
+    <Compile Include="Core\Extensions\IEnumerableExtension.cs" />
     <Compile Include="Core\Helpers\Api\ApiHelper.cs" />
     <Compile Include="Core\Helpers\AppSettings.cs" />
     <Compile Include="Core\Helpers\BetListHelper.cs" />
@@ -393,7 +394,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Core\Configurations\" />
-    <Folder Include="Core\Extensions\" />
     <Folder Include="DataAccess\" />
   </ItemGroup>
   <ItemGroup>

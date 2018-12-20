@@ -3,7 +3,6 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-
 ALTER PROCEDURE [dbo].[FS_FraudCase_CheckBet_Rule] 
 AS
 /*
@@ -512,3 +511,6 @@ BEGIN
 		'OldCaptureDate'	= c.TransDate
 	FROM #tmpChangedInfo c WITH(NOLOCK);
 END;
+
+GO
+/*<info serverAlias="DBSPU-bodb_FraudSensor" executers="bodbSPUNet" isFunction="0" isNested="0"></info>*/

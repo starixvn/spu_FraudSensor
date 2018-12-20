@@ -15,6 +15,7 @@
             return DataService.GetData<Models.DailyDataCapture.CapturedMatch>(criteria)
                 .Select(m => new CapturedMatch
                 {
+                    MatchId = m.MatchId,
                     Home = CachedRef.GetTeamName(m.HomeId),
                     Away = CachedRef.GetTeamName(m.AwayId),
                     AgentTO = new ViewModels.History<double?>

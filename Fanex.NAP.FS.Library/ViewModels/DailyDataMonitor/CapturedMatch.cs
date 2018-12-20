@@ -2,6 +2,8 @@
 {
     public class CapturedMatch
     {
+        public int MatchId { get; set; }
+
         public string Home { get; set; }
 
         public string Away { get; set; }

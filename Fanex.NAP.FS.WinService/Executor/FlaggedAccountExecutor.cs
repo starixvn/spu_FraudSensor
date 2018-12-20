@@ -1,9 +1,11 @@
-﻿namespace Fanex.NAP.FS.WinService
+﻿namespace Fanex.NAP.FS.WinService.Executor
 {
     using Fanex.NAP.FS.Library.Core.BaseClasses;
+    using Fanex.NAP.FS.Library.Core.Extensions;
     using Library.Core.Helpers.Api;
     using Library.Core.Helpers.Xml;
     using Library.Core.Utilities;
+    using Library.Criteria.FraudSensorTask;
     using Library.DTO;
     using Library.Models.FraudCase.FlaggedAccount;
     using System;
@@ -22,6 +24,8 @@
         private readonly List<Task> _threads;
 
         private const int ChunkSize = 100;
+
+        private int _errorTimes;
 
         private readonly string FPS_WEBAPI_GET_CUSTOMER_EVIDENCE = ConfigurationManager.AppSettings["FPS_WEBAPI_GET_CUSTOMER_EVIDENCE"];
 
@@ -51,7 +55,7 @@
 
         protected override void ExecutePrecondition()
         {
-            _matches = _fraudSensorTaskService.FlaggedAccountExecutePrecondition();
+            _matches = DataService.GetData<Match>(new FlaggedAccountPreconditionCriteria());
         }
 
         protected override void ExecuteRule()
@@ -84,12 +88,14 @@
 
         private Task ExecuteMultiple(List<Match> matches)
         {
+            XmlHelper.RegisterType<FlaggedCustomer>();
+
             var thread = Task.Factory.StartNew(m =>
             {
                 try
                 {
                     var flaggedAccountsXml = XmlHelper.ToXmlString(_flaggedCustomers);
-                    _fraudSensorTaskService.FlaggedAccountExecuteRule(string.Join(",", ((List<Match>)m).Select(t => t.MatchId.ToString())), flaggedAccountsXml);
+                    DataService.Execute(new FlaggedAccountRuleCriteria { MatchIds = ((List<Match>)m).Join(a => a.MatchId), FlaggedAccountsXML = flaggedAccountsXml });
 
                     _errorTimes = 0;
                 }
