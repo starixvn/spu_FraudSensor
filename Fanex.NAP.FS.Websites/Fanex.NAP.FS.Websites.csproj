@@ -973,6 +973,7 @@
     </Content>
     <Content Include="WebConfigs\Web.PRO.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="WebConfigs\Web.UAT.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
