@@ -88,17 +88,22 @@ BEGIN
 		,	tch.eventdate
 		,	ans.liveawayscore
 		,	ans.livehomescore
-	HAVING COUNT(ans.transid) >= @MinTicketsCount;
+		,	ans.transid;
+
+	DELETE t 
+	FROM #tmpFraudTickets t
+		INNER JOIN (SELECT t.MatchId, t.CustId, t.LiveHomeScore, t.LiveAwayScore
+					FROM #tmpFraudTickets t
+					GROUP BY t.MatchId, t.CustId, t.LiveHomeScore, t.LiveAwayScore
+					HAVING COUNT(t.TransId) < @MinTicketsCount) a ON t.MatchId = a.MatchId AND t.CustId = a.CustId
+						AND t.LiveHomeScore = a.LiveHomeScore AND t.LiveAwayScore = a.LiveAwayScore;
 		
 	-------INSERT SCANNED MATCH: TABLE "ScannedMatch" -------
 	INSERT INTO dbo.ScannedMatch (Matchid, FraudCaseId, ScannedDate, SuspiciousTicketsCount)  
 	SELECT [MatchId] = mi.matchid 
 		, [FraudCaseId] = @CurrentFraudCaseId
 		, [ScannedDate] = @ScannedDate 
-		, [SuspiciousTicketsCount] = (ISNULL((SELECT COUNT(1) 
-											FROM #tmpFraudTickets t1 WITH (NOLOCK)
-											WHERE t1.MatchId = mi.MatchId 
-											GROUP BY t1.MatchId, t1.CustId, t1.LiveHomeScore, t1.LiveAwayScore ),0)) 
+		, [SuspiciousTicketsCount] = 1
 	FROM #tmpMatches mi WITH (NOLOCK) 
 		LEFT JOIN dbo.ScannedMatch sm WITH (NOLOCK)ON mi.matchid = sm.matchid AND sm.FraudCaseId = @CurrentFraudCaseId
 	WHERE sm.Matchid IS NULL AND sm.FraudCaseId IS NULL ; 
