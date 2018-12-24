@@ -146,7 +146,7 @@ function renderEvent(obj) {
 function renderFraudCase(obj, selector) {
     var fraudCase = obj.FraudCases[selector];
 
-    if (((selector == 1 && obj.Score == "0 - 0") || selector != 1) && fraudCase == null && obj.Status.toLowerCase() == "completed") {
+    if (fraudCase == null && obj.Status.toLowerCase() == "completed") {
         return '<span class="icon-approval"></span>';
     }
 
