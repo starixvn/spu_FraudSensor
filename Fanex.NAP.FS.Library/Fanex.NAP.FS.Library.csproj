@@ -234,6 +234,8 @@
     <Compile Include="Criteria\FraudCase\ScannedOfficeIP\OfficeIPGetCriteria.cs" />
     <Compile Include="Criteria\FraudCase\ScannedOfficeIP\OfficeIPInsertCriteria.cs" />
     <Compile Include="Criteria\FraudCase\UpdateFraudCaseStatusCriteria.cs" />
+    <Compile Include="Criteria\FraudSensorTask\BetsNearGoalPreconditionCriteria.cs" />
+    <Compile Include="Criteria\FraudSensorTask\BetsNearGoalRuleCriteria.cs" />
     <Compile Include="Criteria\FraudSensorTask\CheckBetRuleCriteria.cs" />
     <Compile Include="Criteria\FraudSensorTask\DailyDataCaptureRuleCriteria.cs" />
     <Compile Include="Criteria\FraudSensorTask\DelayGoalPreconditionCriteria.cs" />
