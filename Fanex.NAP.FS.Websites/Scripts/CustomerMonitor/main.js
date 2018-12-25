@@ -3,6 +3,7 @@
         gen_btn = $("#generate"),
         from_date = $("#from_date"),
         to_date = $("#to_date"),
+        date_type = $("#date_type"),
         timeout_holder = null;
 
     customer_grid.DataTable({
@@ -37,16 +38,17 @@
 
     common.makeDatePicker(to_date, { dateFormat: "M dd, yy" });
 
+    from_date.change(restrict_to_date);
+
+    to_date.change(restrict_from_date);
+
+    date_type.change(restrict_date_range);
+
     $("#refresh_interval").val(60).change(e => refreshChange($(e.target))).change();
 
     function gen_data(full = true) {
         from = moment(from_date.val());
         to = moment(to_date.val());
-
-        if (from > to) {
-            common.showError("From is bigger than To");
-            return;
-        }
 
         url = "customerMonitor/GetCustomers";
 
@@ -116,5 +118,80 @@
             countdown.text(selectedVal);
             startCountingDown(countdown, selectedVal, selectedVal);
         }
+    }
+
+    function restrict_date_range() {
+        var type = parseInt(date_type.val());
+
+        var from, to;
+
+        if (type == 0) {
+            from = moment().toDate();
+            to = from;
+        } //today
+        else if (type == 1) {
+            var m = moment();
+
+            m.set("date", m.get("date") - 1);
+
+            from = m.toDate();
+            to = from;
+        } // yesterday
+        else if (type == 2) {
+            from = moment().day(1).toDate();
+            to = moment().day(7).toDate();
+        } // this week
+        else if (type == 3) {
+            from = moment().day(-6).toDate();
+            to = moment().day(0).toDate();
+        } // last week
+        else if (type == 4) {
+            from = moment().date(1).toDate();
+            to = moment().date(moment().daysInMonth()).toDate();
+        } // this month
+        else if (type == 5) {
+            var m = moment();
+
+            m.set("date", 1);
+            m.set("month", m.get("month") - 1);
+
+            from = m.toDate();
+
+            to = m.date(m.daysInMonth()).toDate();
+        } // last month
+        else if (type == 6) {
+            var m = moment();
+
+            m.set("date", 1);
+            m.set("month", m.get("month") - 1);
+
+            from = m.toDate();
+            to = moment().toDate();
+        } // since last month
+
+        if (from != null && to != null) {
+            from_date.datepicker("setDate", from);
+            to_date.datepicker("setDate", to);
+            from_date.datepicker("option", "maxDate", null);
+            to_date.datepicker("option", "minDate", "-1y");
+        }
+    }
+
+    function restrict_from_date() {
+        var to_val = to_date.datepicker("getDate");
+
+        from_date.datepicker("option", "maxDate", to_val);
+
+        from_date.datepicker("option", "minDate", moment(to_val).add(-1, "y").toDate());
+
+        date_type.val(7).change();
+    }
+
+    function restrict_to_date() {
+        var from_val = from_date.datepicker("getDate");
+
+        to_date.datepicker("option", "minDate", from_val);
+
+        date_type.val(7).change();
     }
 });
