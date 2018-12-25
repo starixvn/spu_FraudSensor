@@ -306,6 +306,7 @@
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\CheckBetReportController.cs" />
     <Compile Include="Controllers\ConfigurationsController.cs" />
+    <Compile Include="Controllers\CustomerMonitorController.cs" />
     <Compile Include="Controllers\DailyDataCaptureController.cs" />
     <Compile Include="Controllers\ErrorsController.cs" />
     <Compile Include="Controllers\NotificationController.cs" />
@@ -663,6 +664,7 @@
     <Content Include="Scripts\CheckBetReport\check-bet-report.js" />
     <Content Include="Scripts\common.js" />
     <Content Include="Scripts\CryptoJS.js" />
+    <Content Include="Scripts\CustomerMonitor\main.js" />
     <Content Include="Scripts\DailyDataCapture\daily-data-capture.js" />
     <Content Include="Scripts\DataTables\autoFill.bootstrap.js" />
     <Content Include="Scripts\DataTables\autoFill.bootstrap.min.js" />
@@ -906,6 +908,8 @@
     <Content Include="Scripts\_references.js" />
     <Content Include="Views\DailyDataCapture\Index.cshtml" />
     <Content Include="Views\CheckBetReport\Index.cshtml" />
+    <Content Include="Views\CustomerMonitor\Index.cshtml" />
+    <Content Include="Views\CustomerMonitor\MatchNote.cshtml" />
     <None Include="Views\Errors\403.cshtml" />
     <None Include="Views\Errors\404.cshtml" />
     <None Include="Views\Errors\500.cshtml" />

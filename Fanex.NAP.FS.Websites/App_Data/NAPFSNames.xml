@@ -213,4 +213,10 @@
              SpName="FS_Rpt_CheckBet_Get"
              DbName="DBFS.FraudSensor.bodbSPUNet"/>
   </Function>
+
+  <Function Name="CustomerMonitor">
+    <Setting Key="FS_Rpt_CustomerMonitor_Get"
+             SpName="FS_Rpt_CustomerMonitor_Get"
+             DbName="DBFS.FraudSensor.bodbSPUNet"/>
+  </Function>
 </Functions>
