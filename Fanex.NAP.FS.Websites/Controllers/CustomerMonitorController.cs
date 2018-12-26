@@ -11,6 +11,11 @@
     {
         readonly ICustomerMonitorService service = new CustomerMonitorService();
 
+        public CustomerMonitorController()
+        {
+
+        }
+
         public ActionResult Index()
         {
             return View();
