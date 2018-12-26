@@ -37,3 +37,11 @@ GO
 ----==========================================================
 INSERT INTO dbo.FraudCase(FraudCaseName, FraudCaseDesc, FraudCaseInterval, IsActive, IsTest, IsInternal)
 VALUES('Bets Near Goal', 'Bets Near Goal', 60, 1, 1, 1);
+
+UPDATE dbo.LogType WITH(UPDLOCK, ROWLOCK)
+SET LogTypeName = 'Insert CustomerInfo'
+WHERE LogTypeId = 12;
+
+UPDATE dbo.LogType WITH(UPDLOCK, ROWLOCK)
+SET LogTypeName = 'Delete CustomerInfo'
+WHERE LogTypeId = 13;
