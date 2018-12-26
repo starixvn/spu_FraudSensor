@@ -1016,6 +1016,7 @@
     <Analyzer Include="..\packages\SonarAnalyzer.CSharp.6.7.1.4347\analyzers\SonarAnalyzer.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="App_Data\Excel Template\CustomerMonitor\" />
     <Folder Include="Areas\UserLogin\Models\" />
     <Folder Include="Views\UM\" />
   </ItemGroup>

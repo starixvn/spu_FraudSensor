@@ -294,6 +294,7 @@
     </Compile>
     <Compile Include="Core\Resources\ErrorLookup.cs" />
     <Compile Include="ExcelConfig\CheckBetReport\CheckBetReportExcelConfig.cs" />
+    <Compile Include="ExcelConfig\CustomerMonitor\CustomerMonitorConfig.cs" />
     <Compile Include="ExcelConfig\DailyDataCapture\DailyDataCaptureExcelConfig.cs" />
     <Compile Include="ExcelConfig\FraudCase\DelayedGoal\DelayedGoalExcelConfig.cs" />
     <Compile Include="ExcelConfig\FraudCase\ScannedOfficeIP\OfficeIPExcelConfig.cs" />

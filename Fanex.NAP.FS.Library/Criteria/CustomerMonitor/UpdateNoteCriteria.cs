@@ -4,6 +4,8 @@
 
     public class UpdateNoteCriteria : CriteriaBase
     {
+        public int UserId { get; set; }
+
         public int CustId { get; set; }
 
         public string Notes { get; set; }
