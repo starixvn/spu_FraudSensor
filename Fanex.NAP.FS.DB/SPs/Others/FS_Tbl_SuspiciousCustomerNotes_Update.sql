@@ -35,8 +35,8 @@ BEGIN
 		WHERE	CustId = @CustId;
 
 		------------ Write Log ------------     
-		SELECT @LogData = 'CustId=' + DBO.SPU_ToString(@CustId) +', Notes=' + @Notes;
-		SELECT @SPName = OBJECT_NAME(@@ProcID);  
+		SELECT @SPName = OBJECT_NAME(@@ProcID);
+		SELECT @LogData = 'SPName=' + @SPName +', Notes=' + @Notes;
 
 		INSERT INTO dbo.CustomerLog(CustId, CreatorId, CustLogType, CaseId, LogDesc, LogDate)
 		VALUES(@CustId, @UserId, 1, @CurrentFraudCaseId, @LogData, GETDATE()); -- CustLogType = 1: Note
