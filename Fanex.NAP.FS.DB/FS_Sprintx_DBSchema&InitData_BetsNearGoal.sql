@@ -1,6 +1,6 @@
 /*
-Creator: 20180618@LongLuu
-Task:  Create tables for Fraud Sensor - Sprint#8
+Creator: 20181218@LongLuu
+Task:  Create tables for Fraud Sensor - Sprint#x
 Server:  bodb_FraudSensor
 
 Reviewer: Billy
@@ -29,6 +29,9 @@ GO
 
 ----===================C. ALTER TABLES=========================
 ----===========================================================
+ALTER TABLE [dbo].[SuspiciousCustomer]
+ADD Notes		NVARCHAR(2000) NULL;
+GO
 
 ----===================D. INIT DATA=========================
 ----==========================================================
