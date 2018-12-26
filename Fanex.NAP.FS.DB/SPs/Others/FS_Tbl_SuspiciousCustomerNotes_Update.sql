@@ -31,7 +31,8 @@ BEGIN
 		,	@InsertTime				DATETIME;
 
 	SELECT	@CurrentFraudCaseId		= 11; -- Bets Near Goal
-
+	SELECT @ErrCode = 0;
+	
 	BEGIN TRY  
 		UPDATE	dbo.SuspiciousCustomer WITH(ROWLOCK)
 		SET		Notes = @Notes
@@ -44,7 +45,14 @@ BEGIN
 		INSERT INTO dbo.CustomerLog(CustId, CreatorId, CustLogType, CaseId, LogDesc, LogDate)
 		VALUES(@CustId, @UserId, @CustLogType, @CurrentFraudCaseId, @LogData, @InsertTime);
 	
-		------------ Write Log ------------ 
+	END TRY  
+	BEGIN CATCH  
+		SET @ErrCode = ERROR_NUMBER();  
+	END CATCH;
+	
+	------------ Write Log ------------
+	IF @ErrCode = 0
+		BEGIN 
 		SELECT @LogData =	'CustId	=	'			+	DBO.SPU_ToString(@CustId) 
 							+ ', CreatorId	=	' 	+	DBO.SPU_ToString(@UserId) 
 							+ ', CustLogType	=	' 	+	DBO.SPU_ToString(@CustLogType)
@@ -60,11 +68,7 @@ BEGIN
 			,	@SPName		=	@SPName
 			,	@Details	=	@LogData;
 
-	END TRY  
-	BEGIN CATCH  
-		SET @ErrCode = ERROR_NUMBER();  
-	END CATCH; 
-
+		END;
 END;
 
 GO

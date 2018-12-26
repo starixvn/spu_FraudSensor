@@ -1,11 +1,9 @@
-
 SET QUOTED_IDENTIFIER ON 
 GO
 SET ANSI_NULLS ON 
 GO
 
-/****** Object:  Stored Procedure dbo.FS_Tbl_CustomerLog_Delete    Script Date: 5/15/2018 4:21:24 PM ******/
-CREATE PROCEDURE [dbo].[FS_Tbl_CustomerLog_Delete]
+ALTER PROCEDURE [dbo].[FS_Tbl_CustomerLog_Delete]
 		@CustomerLogId		INT
 	,	@UserId				INT
 	,	@ErrCode			INT	=	0 OUTPUT
@@ -17,36 +15,45 @@ AS
 	Original:
 
 	Revisions:
+				- 20181226@John: Update logic write log [Redmine ID: #106145]	
+
 	Param's Explanation:    
 */
 BEGIN
 	SET NOCOUNT ON;
 		
-	DECLARE @LogTypeId		INT	=	12;
+	DECLARE @LogTypeId		INT	=	13;
 	DECLARE		@LogData		VARCHAR(500)
 			,	@SPName		VARCHAR(100);
 	
-	DECLARE @DelCustId		INT
-			,	@DelLogType	INT
-			,	@DelCaseId	INT
-			,	@DelLogDesc	NVARCHAR(500)
-			,	@DelLogDate	DATETIME;
+	DECLARE @DelCustId			INT
+			,	@DelCusLogType	INT
+			,	@DelCaseId		INT
+			,	@DelLogDesc		NVARCHAR(500)
+			,	@DelLogDate		DATETIME;
+	
+	SELECT @ErrCode = 0;
 			
 	BEGIN TRY		
+
+		SELECT @DelCustId = CustId, @DelCaseId = CaseId, @DelLogDesc = LogDesc, @DelLogDate = LogDate, @DelCusLogType = CustLogType FROM dbo.CustomerLog WITH(NOLOCK)
+		WHERE CustomerLogId	=	@CustomerLogId;
+		
 		DELETE dbo.CustomerLog WITH(ROWLOCK)
-		WHERE CustomerLogId	=	@CustomerLogId;	
+		WHERE CustomerLogId	=	@CustomerLogId;
+		
 	END TRY
 	BEGIN CATCH
 		SELECT @ErrCode	=	ERROR_NUMBER();
 	END CATCH;
-	
-	--================ Write Log ================ 
-	IF (@ErrCode	=	0) 
-	BEGIN
-		SELECT @LogData =	',	UserId	=	'				+	DBO.SPU_ToString(@UserId) 
+
+	------------ Write Log ------------
+	IF @ErrCode = 0
+		BEGIN
+		SELECT @LogData =	'UserId	=	'				+	DBO.SPU_ToString(@UserId) 
 							+ ',	@CustomerLogId	=	'	+	DBO.SPU_ToString(@CustomerLogId)
 							+ ',	CustId	=	'			+	DBO.SPU_ToString(@DelCustId) 
-							+ ',	LogType	=	'			+	DBO.SPU_ToString(@DelLogType) 
+							+ ',	CustLogType	=	'			+	DBO.SPU_ToString(@DelCusLogType) 
 							+ ',	CaseId	=	'			+	DBO.SPU_ToString(@DelCaseId)
 							+ ',	LogDesc	=	'			+	DBO.SPU_ToString(@DelLogDesc)
 							+ ',	LogDate	=	'			+	DBO.SPU_ToString(@DelLogDate);
@@ -58,19 +65,8 @@ BEGIN
 			,	@UserId		=	@UserId  
 			,	@SPName		=	@SPName
 			,	@Details	=	@LogData;
-	END;
+		END;
 END;
 
 GO
-
-SET QUOTED_IDENTIFIER OFF 
-GO
-SET ANSI_NULLS ON 
-GO
-
-
-GO 
- GRANT EXECUTE ON [dbo].[FS_Tbl_CustomerLog_Delete] TO [bodbSPUNet]
-GO 
- GRANT VIEW DEFINITION ON [dbo].[FS_Tbl_CustomerLog_Delete] TO [bodbSPUNet]
-GO 
+/*<info serverAlias="DBSPU-bodb_FraudSensor" executers="bodbSPUNet" isFunction="0" isNested="0"></info>*/

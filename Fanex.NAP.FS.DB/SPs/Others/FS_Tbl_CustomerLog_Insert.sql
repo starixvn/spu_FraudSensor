@@ -34,7 +34,8 @@ BEGIN
 			, @SPName		VARCHAR(100);
 	
 	DECLARE @InsertTime DATETIME;
-	
+	SELECT @ErrCode = 0;
+
 	BEGIN TRY
 	
 		SELECT @InsertTime = ISNULL(@LogDate,GETDATE());
@@ -42,7 +43,14 @@ BEGIN
 		INSERT INTO dbo.CustomerLog(CustId, CreatorId, CustLogType, CaseId, LogDesc, LogDate)
 		VALUES(@CustId, @UserId, @CustLogType, @CaseId, @LogDesc, @InsertTime);
 	
-		------------ Write Log ------------
+	END TRY
+	BEGIN CATCH
+		SELECT @ErrCode	=	ERROR_NUMBER();
+	END CATCH;
+
+	------------ Write Log ------------
+	IF @ErrCode = 0
+		BEGIN
 		SELECT @LogData =	'CustId	=	'			+	DBO.SPU_ToString(@CustId) 
 							+ ', CreatorId	=	' 	+	DBO.SPU_ToString(@UserId) 
 							+ ', CustLogType	=	' 	+	DBO.SPU_ToString(@CustLogType) 
@@ -58,10 +66,7 @@ BEGIN
 			,	@SPName		=	@SPName
 			,	@Details	=	@LogData;
 	
-	END TRY
-	BEGIN CATCH
-		SELECT @ErrCode	=	ERROR_NUMBER();
-	END CATCH;
+		END;
 END;
 
 GO
