@@ -54,7 +54,7 @@
 
         common.showLoading();
 
-        $.post(url, { FromDate: from.format(), ToDate: to.format() }, function (data) {
+        $.post(url, { FromDate: from.format("MMM D, YYYY"), ToDate: to.format("MMM D, YYYY") }, function (data) {
             customer_grid.DataTable().clear().rows.add(data).draw(full);
             common.closeLoading();
         });
