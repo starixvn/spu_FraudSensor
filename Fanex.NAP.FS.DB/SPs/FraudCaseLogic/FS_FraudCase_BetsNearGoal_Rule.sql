@@ -103,7 +103,10 @@ BEGIN
 	SELECT [MatchId] = mi.matchid 
 		, [FraudCaseId] = @CurrentFraudCaseId
 		, [ScannedDate] = @ScannedDate 
-		, [SuspiciousTicketsCount] = 1
+		, [SuspiciousTicketsCount] = ISNULL((SELECT COUNT(1) 
+									   		FROM #tmpFraudTickets t1 WITH (NOLOCK)
+											WHERE t1.MatchId = mi.MatchId 
+											GROUP BY t1.MatchId ),0)
 	FROM #tmpMatches mi WITH (NOLOCK) 
 		LEFT JOIN dbo.ScannedMatch sm WITH (NOLOCK)ON mi.matchid = sm.matchid AND sm.FraudCaseId = @CurrentFraudCaseId
 	WHERE sm.Matchid IS NULL AND sm.FraudCaseId IS NULL ; 
@@ -154,7 +157,5 @@ BEGIN
 	END;	
 END;
 
-GO 
- GRANT EXECUTE ON [dbo].[FS_FraudCase_BSNG_Rule] TO [bodbSPUNet]
 GO
 /*<info serverAlias="DBSPU-bodb_FraudSensor" executers="bodbSPUNet" isFunction="0" isNested="0"></info>*/
