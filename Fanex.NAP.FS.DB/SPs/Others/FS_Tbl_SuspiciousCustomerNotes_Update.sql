@@ -6,7 +6,7 @@ GO
 ALTER PROCEDURE [dbo].[FS_Tbl_SuspiciousCustomerNotes_Update]
 		@UserId			INT 
 	,	@CustId			INT
-	,	@Notes			NVARCHAR(2000) = NULL
+	,	@Notes			NVARCHAR(500) = NULL
  
 	,	@ErrCode		INT = 0 OUTPUT  
 AS
@@ -23,9 +23,12 @@ AS
 */
 BEGIN
 	SET NOCOUNT ON;
-	DECLARE @LogData				VARCHAR(500)
+	DECLARE @LogTypeId				INT	=	11
+		,	@LogData				VARCHAR(500)
 		,	@SPName					VARCHAR(100)
-		,	@CurrentFraudCaseId		TINYINT;
+		,	@CurrentFraudCaseId		TINYINT
+		,	@CustLogType			TINYINT = 1 -- CustLogType = 1: Note
+		,	@InsertTime				DATETIME;
 
 	SELECT	@CurrentFraudCaseId		= 11; -- Bets Near Goal
 
@@ -34,16 +37,34 @@ BEGIN
 		SET		Notes = @Notes
 		WHERE	CustId = @CustId;
 
-		------------ Write Log ------------     
-		SELECT @SPName = OBJECT_NAME(@@ProcID);
-		SELECT @LogData = 'SPName=' + @SPName +', Notes=' + @Notes;
+		------------ Write CustomerLog ------------
+		SELECT @InsertTime = GETDATE();     
+		SELECT @LogData = @Notes;
 
 		INSERT INTO dbo.CustomerLog(CustId, CreatorId, CustLogType, CaseId, LogDesc, LogDate)
-		VALUES(@CustId, @UserId, 1, @CurrentFraudCaseId, @LogData, GETDATE()); -- CustLogType = 1: Note
+		VALUES(@CustId, @UserId, @CustLogType, @CurrentFraudCaseId, @LogData, @InsertTime);
+	
+		------------ Write Log ------------ 
+		SELECT @LogData =	'CustId	=	'			+	DBO.SPU_ToString(@CustId) 
+							+ ', CreatorId	=	' 	+	DBO.SPU_ToString(@UserId) 
+							+ ', CustLogType	=	' 	+	DBO.SPU_ToString(@CustLogType)
+							+ ', CaseId	=	' 		+	DBO.SPU_ToString(@CurrentFraudCaseId)
+							+ ', LogDesc	=	' 	+	DBO.SPU_ToString(@LogData)
+							+ ', LogDate	=	' 	+	DBO.SPU_ToString(@InsertTime);
+
+		SELECT @SPName	=	OBJECT_NAME(@@ProcID);
+
+		EXEC [dbo].[FS_UserLog_Insert]  
+				@LogTypeId	=	@LogTypeId   
+			,	@UserId		=	@UserId  
+			,	@SPName		=	@SPName
+			,	@Details	=	@LogData;
+
 	END TRY  
 	BEGIN CATCH  
 		SET @ErrCode = ERROR_NUMBER();  
 	END CATCH; 
+
 END;
 
 GO
