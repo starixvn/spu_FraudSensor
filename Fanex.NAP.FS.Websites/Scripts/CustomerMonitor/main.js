@@ -63,11 +63,14 @@
     function renderNote(obj) {
         var result = obj.Note;
 
-        if (result == "-") {
+        if (result == null) {
+            result = "";
+        }
+        else if (result == "-") {
             result = "-" + new Array(42).join(" ");
         }
-        else if (result.length > 40) {
-            result = result.substring(0, 27) + "...";
+        else if (result.length > 145) {
+            result = common.makeWrapString(result, 142);
         }
 
         return "<div class='container-note'>"
@@ -80,8 +83,19 @@
         $("textarea", "#match-note-popup").val(row.Note == null ? "" : row.Note);
 
         function updateNote(popup) {
-            $(popup).dialog("close");
-            gen_data(false);
+            var note = $("textarea", popup).val();
+
+            if (note != null && note != "") {
+                var url = "/CustomerMonitor/UpdateNote";
+
+                $.post(url, { CustId: row.CustId, Notes: note }, function (result) {
+                    if (result.ErrorCode == 0) {
+                        $(popup).dialog("close");
+                        gen_data(false);
+                        common.showSuccess("Note updated!");
+                    }
+                });
+            }         
         }
 
         $("#match-note-popup").clone().dialog({

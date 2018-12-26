@@ -222,6 +222,7 @@
     <Compile Include="Criteria\Api\FlaggedAccountInsertCriteria.cs" />
     <Compile Include="Criteria\CheckBetReport\CheckBetReportGetCriteria.cs" />
     <Compile Include="Criteria\CustomerMonitor\CustomerGetCriteria.cs" />
+    <Compile Include="Criteria\CustomerMonitor\UpdateNoteCriteria.cs" />
     <Compile Include="Criteria\DailyDataCapture\DailyDataGetCriteria.cs" />
     <Compile Include="Criteria\FraudCase\DelayedGoal\DelayGoalAssociationAccountInsertCriteria.cs" />
     <Compile Include="Criteria\FraudCase\DelayedGoal\DelayGoalManualAccountGetCriteria.cs" />

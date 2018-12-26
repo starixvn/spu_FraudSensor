@@ -2,6 +2,7 @@
 {
     using Fanex.NAP.FS.Library.Core.BaseClasses;
     using Fanex.NAP.FS.Library.Criteria.CustomerMonitor;
+    using Fanex.NAP.FS.Library.Models;
     using Fanex.NAP.FS.Library.Models.CustomerMonitor;
     using Fanex.NAP.FS.Library.Services.Interface;
     using System.Collections.Generic;
@@ -11,6 +12,11 @@
         public IEnumerable<Customer> GetCustomers(CustomerGetCriteria criteria)
         {
             return DataService.GetData<Customer>(criteria);
+        }
+
+        public DBResult UpdateNote(UpdateNoteCriteria criteria)
+        {
+            return DataService.UpdateData(criteria, "CustomerMonitor");
         }
     }
 }

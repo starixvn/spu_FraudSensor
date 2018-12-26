@@ -218,5 +218,9 @@
     <Setting Key="FS_Rpt_CustomerMonitor_Get"
              SpName="FS_Rpt_CustomerMonitor_Get"
              DbName="DBFS.FraudSensor.bodbSPUNet"/>
+
+    <Setting Key="FS_Tbl_SuspiciousCustomerNotes_Update"
+         SpName="FS_Tbl_SuspiciousCustomerNotes_Update"
+         DbName="DBFS.FraudSensor.bodbSPUNet"/>
   </Function>
 </Functions>
