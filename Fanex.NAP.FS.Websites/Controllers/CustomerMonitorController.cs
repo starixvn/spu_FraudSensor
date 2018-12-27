@@ -3,6 +3,7 @@
     using Fanex.NAP.Core.Service.Impl;
     using Fanex.NAP.Core.Web.Attribute;
     using Fanex.NAP.FS.Library.Criteria.CustomerMonitor;
+    using Fanex.NAP.FS.Library.ExcelConfig.CustomerMonitor;
     using Fanex.NAP.FS.Library.Services.Implement;
     using Fanex.NAP.FS.Library.Services.Interface;
     using System.Configuration;
@@ -41,6 +42,22 @@
             criteria.UserId = CurrentSession.UserId;
     
             return Json(service.UpdateNote(criteria));
+        }
+
+        public ActionResult ExportExcel(CustomerGetCriteria criteria)
+        {
+            criteria.IsShowSpecialCurrencies = isSpecialCurrency;
+            criteria.Environment = int.Parse(ConfigurationManager.AppSettings["Environment"]);
+
+            var template = Server.MapPath("~/App_data/Excel Template/CustomerMonitor/template.xlsx");
+
+            var fileName = GetExcelReportName("CustomerMonitor");
+
+            var data = service.GetCustomers(criteria);
+
+            var content = RenderExcelFile(template, wb => new CustomerMonitorConfig().RenderExcel(wb, criteria, data, null));
+
+            return ExcelFile(content, fileName);
         }
     }
 }

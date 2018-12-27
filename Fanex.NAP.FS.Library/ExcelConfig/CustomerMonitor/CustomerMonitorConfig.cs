@@ -18,7 +18,7 @@
 
             row.GetCell(idx++).SetCellValue(idx);
             row.GetCell(idx++).SetCellValue(data.Username);
-            row.GetCell(idx++).SetCellValue($"{data.TicketCount / data.MatchCount}");
+            row.GetCell(idx++).SetCellValue($"{data.TicketCount} / {data.ViolationCount} / {data.MatchCount}");
             row.GetCell(idx).SetCellValue(data.Note ?? "");
         }
 
@@ -27,8 +27,8 @@
             var cell = row.GetCell(0);
 
             new XSSFRichTextString()
-                .WriteBold("From: ").Write(legend.FromDate.ToString("MMM dd, yyyy"))
-                .WriteBold("To: ").Write(legend.ToDate.ToString("MMM dd, yyyy"))
+                .WriteBold("From: ").Write(legend.FromDate.ToString("MMM dd, yyyy") + "\n")
+                .WriteBold("To: ").Write(legend.ToDate.ToString("MMM dd, yyyy") + "\n")
                 .SetValue(cell);
         }
     }

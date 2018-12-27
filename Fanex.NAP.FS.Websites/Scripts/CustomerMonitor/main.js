@@ -46,6 +46,8 @@
 
     $("#refresh_interval").val(60).change(e => refreshChange($(e.target))).change();
 
+    $("#export").click(export_excel);
+
     function gen_data(full = true) {
         from = moment(from_date.val());
         to = moment(to_date.val());
@@ -207,5 +209,14 @@
         to_date.datepicker("option", "minDate", from_val);
 
         date_type.val(7).change();
+    }
+
+    function export_excel() {
+        from = moment(from_date.val());
+        to = moment(to_date.val());
+
+        url = "customerMonitor/exportexcel";
+
+        common.downloadFile(url, { FromDate: from.format("MMM D, YYYY"), ToDate: to.format("MMM D, YYYY") });
     }
 });
