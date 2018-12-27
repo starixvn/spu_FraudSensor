@@ -154,7 +154,7 @@
 
                     result.TicketRules = new[]
                     {
-                        "Bet type = HDP, OU, 1x2, 1H HDP, 1H OU, 1H 1x2",
+                        "Bet type = HDP, O/U, FT. 1X2, 1H HDP, 1H O/U, 1H 1X2",
                         "Transaction Date = Danger Period (before goal 30s)",
                         "Ticket count >= 5",
                         "Currency <> Test Currency",

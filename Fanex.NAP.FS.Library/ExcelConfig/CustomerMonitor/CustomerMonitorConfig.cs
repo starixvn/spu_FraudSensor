@@ -16,7 +16,7 @@
         {
             var idx = 0;
 
-            row.GetCell(idx++).SetCellValue(idx);
+            row.GetCell(idx++).SetCellValue(row.RowNum - 2);
             row.GetCell(idx++).SetCellValue(data.Username);
             row.GetCell(idx++).SetCellValue($"{data.TicketCount} / {data.ViolationCount} / {data.MatchCount}");
             row.GetCell(idx).SetCellValue(data.Note ?? "");
