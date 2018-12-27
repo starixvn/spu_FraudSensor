@@ -27,7 +27,10 @@
             { data: row => row.Username },
             { data: row => `${row.TicketCount}/${row.ViolationCount}/${row.MatchCount}` },
             { data: renderNote, createdCell: (cell, _, row) => $(".icon-note", cell).click(() => renderNotePopup(row)) }    
-        ]
+        ],
+        headerCallback: function (thread) {
+            $("th", thread).eq(2).attr("title", "ticket count/violation count/match count");
+        }
     });
 
     gen_btn.click(gen_data);
