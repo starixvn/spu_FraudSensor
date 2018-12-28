@@ -12,7 +12,8 @@ AS
 	Original:
 
 	Revisions:
-		- 20181120@Long: Change the way to get data [Redmine ID: 105113]
+		- 20181120@Long: Change the way to get data [Redmine ID: #105113]
+		- 20181228@Long: Modify to check for completely completed matches only [Redmine ID: #106073]
 
 	Param's Explanation (filtered by):
 */
@@ -165,12 +166,20 @@ BEGIN
 	WHERE m.status IS NOT NULL
 		AND l.sporttype IN (SELECT DISTINCT sbm.sporttype FROM bodb02.dbo.SportBettypeMatrix AS sbm WITH(NOLOCK));
 
-	-- Remove scanned matched
+	-- Remove scanned matches
 	DELETE FROM #tmpMatchesInfo WITH(ROWLOCK)
 	WHERE MatchId IN (	
 						SELECT DISTINCT sm.MatchId 
 						FROM dbo.CheckBetScannedMatch sm WITH(NOLOCK) 
 						WHERE CAST(sm.ScannedDate AS DATE) = CAST(@CapturedDate AS DATE)
+					);
+
+	-- Remove matches that still has running tickets
+	DELETE FROM #tmpMatchesInfo WITH(ROWLOCK)
+	WHERE MatchId IN (	
+						SELECT DISTINCT b.MatchId 
+						FROM bodb02.dbo.bettrans b WITH(NOLOCK) 
+						WHERE b.ruben = 0
 					);
 
 	INSERT INTO #tmpSportbooksBettype(Bettype, EventType, SubProduct)
