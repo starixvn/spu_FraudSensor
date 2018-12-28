@@ -12,6 +12,7 @@ AS
 	Original:
 
 	Revisions:
+		- 20181114@Long: Split data in SuspiciousInfo by Currency [Redmine ID: #104707]
 		- 20181120@Long: Change the way to get data [Redmine ID: #105113]
 		- 20181228@Long: Modify to check for completely completed matches only [Redmine ID: #107398]
 
