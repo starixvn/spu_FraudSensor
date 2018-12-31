@@ -664,7 +664,8 @@
     <Content Include="Scripts\CheckBetReport\check-bet-report.js" />
     <Content Include="Scripts\common.js" />
     <Content Include="Scripts\CryptoJS.js" />
-    <Content Include="Scripts\CustomerMonitor\main.js" />
+    <Content Include="Scripts\CustomerMonitor\CustomerDetails\customer-details.js" />
+    <Content Include="Scripts\CustomerMonitor\customer-monitor.js" />
     <Content Include="Scripts\DailyDataCapture\daily-data-capture.js" />
     <Content Include="Scripts\DataTables\autoFill.bootstrap.js" />
     <Content Include="Scripts\DataTables\autoFill.bootstrap.min.js" />
@@ -789,6 +790,7 @@
     <Content Include="App_Data\Excel Template\DailyDataCapture\template.xlsx" />
     <Content Include="App_Data\Excel Template\Check Bet Report\template.xlsx" />
     <Content Include="App_Data\Excel Template\CustomerMonitor\template.xlsx" />
+    <Content Include="App_Data\Excel Template\CustomerMonitor\CustomerDetails\template.xlsx" />
     <None Include="bundleconfig.json" />
     <Content Include="fonts\Fraud-Sensor.eot" />
     <Content Include="fonts\Fraud-Sensor.ttf" />
@@ -911,6 +913,7 @@
     <Content Include="Views\CheckBetReport\Index.cshtml" />
     <Content Include="Views\CustomerMonitor\Index.cshtml" />
     <Content Include="Views\CustomerMonitor\MatchNote.cshtml" />
+    <Content Include="Views\CustomerMonitor\CustomerDetails\Index.cshtml" />
     <None Include="Views\Errors\403.cshtml" />
     <None Include="Views\Errors\404.cshtml" />
     <None Include="Views\Errors\500.cshtml" />

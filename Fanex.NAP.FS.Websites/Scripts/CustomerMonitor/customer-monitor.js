@@ -25,11 +25,11 @@
         columns: [
             { data: (row, type, set, meta) => meta.row + 1 },
             { data: row => row.Username },
-            { data: row => `${row.TicketCount}/${row.ViolationCount}/${row.MatchCount}` },
+            { data: row => renderViolation(row) },
             { data: renderNote, createdCell: (cell, _, row) => $(".icon-note", cell).click(() => renderNotePopup(row)) }    
         ],
         headerCallback: function (thread) {
-            $("th", thread).eq(2).attr("title", "ticket count/violation count/match count");
+            $("th", thread).eq(2).attr("title", "[Ticket Count] / [Violation Count] / [Match Count]");
         }
     });
 
@@ -50,7 +50,13 @@
     $("#refresh_interval").val(60).change(e => refreshChange($(e.target))).change();
 
     $("#export").click(export_excel);
+       
 
+    function renderViolation(obj) {
+        return `<a class='warning' href='CustomerMonitor/GetCustomerTicketDetails?CustId=${obj.CustId}&Username=${obj.Username}&FromDate=${obj.FromDate}&ToDate=${obj.ToDate}&TicketCount=${obj.TicketCount}&ViolationCount=${obj.ViolationCount}&MatchCount=${obj.MatchCount}' target='_blank'>
+            <span class='number'>${row.TicketCount}/${row.ViolationCount}/${row.MatchCount}</span>
+        </a>`;
+    }
     function gen_data(full = true) {
         from = moment(from_date.val());
         to = moment(to_date.val());

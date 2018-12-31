@@ -119,6 +119,8 @@
         private static void RegisterCustomerMonitorBundles(BundleCollection bundles)
         {
             bundles.Add(new ScriptBundle("~/scripts/customer-monitor").Include("~/scripts/customermonitor/*.js"));
+
+            bundles.Add(new ScriptBundle("~/scripts/customer-monitor/customer-details").Include("~/scripts/customermonitor/customerdetails/*.js"));
         }
     }
 }

@@ -221,6 +221,7 @@
     <Compile Include="Criteria\Api\FlaggedAccountDeleteCriteria.cs" />
     <Compile Include="Criteria\Api\FlaggedAccountInsertCriteria.cs" />
     <Compile Include="Criteria\CheckBetReport\CheckBetReportGetCriteria.cs" />
+    <Compile Include="Criteria\CustomerMonitor\CustomerDetails\GetCustomerTicketsCriteria.cs" />
     <Compile Include="Criteria\CustomerMonitor\CustomerGetCriteria.cs" />
     <Compile Include="Criteria\CustomerMonitor\UpdateNoteCriteria.cs" />
     <Compile Include="Criteria\DailyDataCapture\DailyDataGetCriteria.cs" />
@@ -382,6 +383,8 @@
     <Compile Include="Services\Interface\IFraudCaseService.cs" />
     <Compile Include="Services\Interface\IMatchMonitorService.cs" />
     <Compile Include="ViewModels\CheckBetReport\CheckBetTicket.cs" />
+    <Compile Include="ViewModels\CustomerMonitor\CustomerDetails\CustomerDetailsInfo.cs" />
+    <Compile Include="ViewModels\CustomerMonitor\CustomerDetails\TicketDetails.cs" />
     <Compile Include="ViewModels\DailyDataMonitor\CapturedMatch.cs" />
     <Compile Include="ViewModels\FraudCase\DelayedGoal\Customer.cs" />
     <Compile Include="ViewModels\History.cs" />
