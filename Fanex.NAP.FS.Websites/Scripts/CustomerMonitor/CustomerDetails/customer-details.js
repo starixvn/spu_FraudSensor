@@ -14,7 +14,7 @@
 
         global_idx = 0;
 
-        var url = common.modifyRelativeUrl("/CustomerMonitor/GetCustomerTicketDetails");
+        var url = common.modifyRelativeUrl("/CustomerMonitor/GetTicketDetails");
 
         $.get(url, parameters, function (json) {
             var table = ticket_grid.DataTable();
@@ -55,6 +55,39 @@
         return result;
     }
 
+    function show_hide_match_items(target, match_value) {
+        var table = ticket_grid.DataTable();
+
+        if (filter[match_value] != null) {
+            $.fn.dataTable.ext.search[filter[match_value]] = () => true;
+            filter[match_value] = null;
+
+            if ($(target).is("span")) {
+                $(target).removeClass("icon-chevron-down").addClass("icon-chevron-up");
+            } else {
+                $("span", target).removeClass("icon-chevron-down").addClass("icon-chevron-up");
+            }
+        }
+        else {
+            var n = $.fn.dataTable.ext.search.push(function (settings, data, idx) {
+                return $(table.row(idx).node()).attr("data-match-item") != match_value;
+            });
+
+            if ($(target).is("span")) {
+                $(target).addClass("icon-chevron-down").removeClass("icon-chevron-up");
+            }
+            else {
+                $("span", target).addClass("icon-chevron-down").removeClass("icon-chevron-up");
+            }
+
+            filter[match_value] = n - 1;
+        }
+
+        table.draw(false);
+
+        $("#DataTables_Table_0_info").text(`Displaying 1 to ${totalTicket} of ${totalTicket} item(s)`);
+    }
+
     function exportExcel() {
         var url = common.modifyRelativeUrl("/CustomerMonitor/ExportExcelForDetails");
 
@@ -93,14 +126,14 @@
         columnDefs: [{ targets: "_all", defaultContent: "-" }],
         createdRow: function (row, obj) {
             if (obj.key) {
-                var td = $(`<td colspan='12' class='group'><span class='icon-chevron-up'></span> ${obj.value}</td>`);
+                var td = $(`<td colspan='10' class='group'><span class='icon-chevron-up'></span> ${obj.value}</td>`);
 
-                $(row).empty().html(td).click(e => show_hide_bettype_items(e.target, obj.value));
+                $(row).empty().html(td).click(e => show_hide_match_items(e.target, obj.value));
             } else {
-                $(row).attr("data-bettype-item", obj.Bettype);
+                $(row).attr("data-match-item", obj.MatchString);
             }
         },
-        headerCallback: tr => $(":nth-child(11)", tr).removeClass("uppercase")
+        headerCallback: tr => $(":nth-child(9)", tr).removeClass("uppercase")
     });
 
     load_ticket_grid();

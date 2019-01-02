@@ -3,8 +3,10 @@
     using Fanex.BetList.Core.Builder;
     using Fanex.BetList.Core.TicketHelper;
     using Fanex.NAP.FS.Library.Core.BaseClasses;
+    using Fanex.NAP.FS.Library.Core.ExportExcel;
     using Fanex.NAP.FS.Library.Criteria.CustomerMonitor;
     using Fanex.NAP.FS.Library.Criteria.CustomerMonitor.CustomerDetails;
+    using Fanex.NAP.FS.Library.ExcelConfig.CustomerMonitor;
     using Fanex.NAP.FS.Library.Models;
     using Fanex.NAP.FS.Library.Models.CustomerMonitor;
     using Fanex.NAP.FS.Library.Models.MatchMonitor.FraudCaseDetails;
@@ -41,10 +43,11 @@
                 .Select(a =>
                 {
 
-                    var bettype = CachedRef.GetBettypeName(a.BetTypeId, "en");
+                    var bettype = CachedRef.GetBettypeName(a.BetTypeId);
 
                     return new TicketDetails
                     {
+                        MatchString = string.Format("{0} -vs- {1}", CachedRef.GetTeamName(int.Parse(a.HomeId.ToString())), CachedRef.GetTeamName(int.Parse(a.AwayId.ToString()))),
                         TransDate = a.TransDate.ToString("MMM dd, yyyy hh:mm:ss tt"),
                         BetID = a.TransId.ToString(),
                         IP = a.IP,
@@ -62,6 +65,17 @@
                 .OrderBy(t => t.MatchId)
                 .ThenBy(t => DateTime.Parse(t.TransDate))
                 .ThenBy(t => t.Bettype);
+        }
+
+        public byte[] ExportExcel(GetCustomerTicketsCriteria criteria, CustomerDetailsInfo detailsInfo, string templatePath)
+        {
+            var tickets = GetTicketDetails(criteria, true);
+
+            var wb =
+                ExcelUtilities.GetWorkbook(templatePath)
+                    .RenderSheet(new CustomerMonitorTicketDetailConfig(tickets.Count()), detailsInfo, tickets, null);
+
+            return wb.ToBytes();
         }
     }
 }

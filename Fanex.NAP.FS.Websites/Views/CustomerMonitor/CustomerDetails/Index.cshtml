@@ -47,7 +47,7 @@
             </tr>
         </thead>
         <tbody></tbody>
-    </tableid="ticket-tab">
+        </tableid="ticket-tab">
 </div>
 
 @section scripts{
@@ -55,8 +55,11 @@
         var parameters =
             {
                 CustId: @Model.CustId,
-                FromDate: @Model.FromDate,
-                ToDate: @Model.ToDate,
+                FromDate: '@Model.FromDate.ToShortDateString()',
+                ToDate: '@Model.ToDate.ToShortDateString()',
+                TicketCount: @Model.TicketCount,
+                ViolationCount: @Model.ViolationCount,
+                MatchCount: @Model.MatchCount,
             };
     </script>
 

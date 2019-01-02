@@ -54,14 +54,14 @@
             return View("CustomerDetails/Index", model);
         }
 
-        public async Task<ActionResult> GetCustomerTicketDetails(GetCustomerTicketsCriteria criteria)
+        public ActionResult GetTicketDetails(GetCustomerTicketsCriteria criteria)
         {
             criteria.IsShowSpecialCurrencies = isSpecialCurrency;
             criteria.Environment = int.Parse(ConfigurationManager.AppSettings["Environment"]);
 
             var data =
                 _customerMonitorService.GetTicketDetails(criteria)
-                .GroupBy(t => t.MatchId)
+                .GroupBy(t => t.MatchString)
                 .Select(g => new { key = g.Key, data = g.AsEnumerable() });
 
             return Json(data, JsonRequestBehavior.AllowGet);
@@ -83,12 +83,27 @@
             return ExcelFile(content, fileName);
         }
 
-        public ActionResult ExportExcelForDetail(GetCustomerTicketsCriteria criteria)
+        public ActionResult ExportExcelForDetails(GetCustomerTicketsCriteria criteria, CustomerDetailsInfo detailsInfo)
         {
+            /*criteria.IsShowSpecialCurrencies = isSpecialCurrency;
+            criteria.Environment = int.Parse(ConfigurationManager.AppSettings["Environment"]);
+
             var template = Server.MapPath("~/App_Data/Excel Template/CustomerMonitor/CustomerDetails/template.xlsx");
 
-            var fileName = string.Format("FraudCaseDetails_{0}.xlsx", DateTime.Today.ToString("yyyyMMdd"));
-            return null;// File(_fraudCaseDetailService.ExportExcel(matchId, fraudCaseId, eventDate, template), "application/vnd.ms-excel", fileName);
+            var fileName = string.Format("CustomerMonitorDetails_{0}.xlsx", DateTime.Today.ToString("yyyyMMdd"));
+
+            var data = _customerMonitorService.GetTicketDetails(criteria, true);
+
+            var content = RenderExcelFile(template, wb => new CustomerMonitorTicketDetailConfig(data.Count()).RenderExcel(wb, detailsInfo, data, null));
+
+            return ExcelFile(content, fileName);
+            */
+            criteria.IsShowSpecialCurrencies = isSpecialCurrency;
+            criteria.Environment = int.Parse(ConfigurationManager.AppSettings["Environment"]);
+            var template = Server.MapPath("~/App_Data/Excel Template/CustomerMonitor/CustomerDetails/template.xlsx");
+
+            var fileName = string.Format("CustomerMonitorDetails_{0}.xlsx", DateTime.Today.ToString("yyyyMMdd"));
+            return File(_customerMonitorService.ExportExcel(criteria, detailsInfo, template), "application/vnd.ms-excel", fileName);
         }
     }
 }

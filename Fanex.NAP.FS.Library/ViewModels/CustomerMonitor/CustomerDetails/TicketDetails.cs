@@ -8,6 +8,8 @@
     {
         public string MatchId { get; set; }
 
+        public string MatchString { get; set; }
+
         public string TransDate { get; set; }
 
         public string BetID { get; set; }

@@ -16,6 +16,7 @@
     <Setting Key="FS_Tbl_CustomerMonitorAssignment_Get" SpName="FS_Tbl_CustomerMonitorAssignment_Get_xtest" DbName="DBFS.FraudSensor.bodbSPUNet" />
     <Setting Key="FS_SuspiciousCustomer_Assignee_Update" SpName="FS_SuspiciousCustomer_Assignee_Update_xtest" DbName="DBFS.FraudSensor.bodbSPUNet" />
     <Setting Key="FS_Tbl_CustomerMonitorAssignment_Update" SpName="FS_Tbl_CustomerMonitorAssignment_Update_xtest" DbName="DBFS.FraudSensor.bodbSPUNet" />
+    <Setting Key="FS_Rpt_BNGCustomerDetails_Get" SpName="FS_Rpt_BNGCustomerDetails_Get_xtest" DbName="DBFS.FraudSensor.bodbSPUNet" />
   </Function>
   <Function Name="MatchMonitor">
     <Setting Key="FS_Rpt_MatchMonitor_Get" SpName="FS_Rpt_MatchMonitor_Get_xtest" DbName="DBFS.FraudSensor.bodbSPUNet" />

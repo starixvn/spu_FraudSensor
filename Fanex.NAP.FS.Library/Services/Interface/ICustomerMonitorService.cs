@@ -14,5 +14,7 @@
         DBResult UpdateNote(UpdateNoteCriteria criteria);
 
         IEnumerable<TicketDetails> GetTicketDetails(GetCustomerTicketsCriteria criteria, bool saveChoice = false);
+
+        byte[] ExportExcel(GetCustomerTicketsCriteria criteria, CustomerDetailsInfo detailsInfo, string templatePath);
     }
 }
