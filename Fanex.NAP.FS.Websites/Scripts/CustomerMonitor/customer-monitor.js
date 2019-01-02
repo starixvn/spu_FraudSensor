@@ -54,7 +54,7 @@
 
     function renderViolation(obj) {
         return `<a class='warning' href='CustomerMonitor/GetCustomerTicketDetails?CustId=${obj.CustId}&Username=${obj.Username}&FromDate=${obj.FromDate}&ToDate=${obj.ToDate}&TicketCount=${obj.TicketCount}&ViolationCount=${obj.ViolationCount}&MatchCount=${obj.MatchCount}' target='_blank'>
-            <span class='number'>${row.TicketCount}/${row.ViolationCount}/${row.MatchCount}</span>
+            <span class='number'>${obj.TicketCount}/${obj.ViolationCount}/${obj.MatchCount}</span>
         </a>`;
     }
     function gen_data(full = true) {
