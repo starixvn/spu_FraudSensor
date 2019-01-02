@@ -396,6 +396,9 @@
     <Content Include="Content\scss\images\login.svg" />
     <Content Include="Content\scss\images\logo.png" />
     <Content Include="Content\scss\images\logo.svg" />
+    <Content Include="Content\scss\images\sort_asc.png" />
+    <Content Include="Content\scss\images\sort_both.png" />
+    <Content Include="Content\scss\images\sort_desc.png" />
     <Content Include="Content\scss\images\UM.svg" />
     <Content Include="Content\scss\pages\configurations\fraud-case.css" />
     <Content Include="Content\scss\pages\errors\errors.css" />

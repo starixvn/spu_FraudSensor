@@ -47,10 +47,10 @@ function load_page_events() {
                 { data: renderVerifyCheckBox, className: "text-center", width: "40px" },
                 { data: row => row.VerifiedBy, width: "100px" },
                 { data: renderEvent },
-                { data: row => row.Score, className: "text-center", width: "50px" },
+                { data: row => row.Score, className: "text-center", width: "60px" },
                 { data: row => row.Status, className: "text-center", width: "70px" },
                 { data: row => renderFraudCase(row, 1), className: "has-icon text-center", width: "70px" },
-                { data: row => renderFraudCase(row, 6), className: "has-icon text-center", width: "70px" },
+                { data: row => renderFraudCase(row, 6), className: "has-icon text-center", width: "80px" },
                 { data: row => renderFraudCase(row, 8), className: "has-icon text-center", width: "70px" },
                 { data: renderNote, className: "col-note", width: "270px" }
             ],

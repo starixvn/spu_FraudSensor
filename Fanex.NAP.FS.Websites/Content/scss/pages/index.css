@@ -859,6 +859,12 @@ table.dataTable {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box; }
+  table.dataTable thead .sorting {
+    background-image: url(../images/sort_both.png); }
+  table.dataTable thead .sorting_desc {
+    background-image: url(../images/sort_desc.png); }
+  table.dataTable thead .sorting_asc {
+    background-image: url(../images/sort_asc.png); }
 
 .dataTables_scrollHeadInner {
   background-color: #465262; }
@@ -1727,3 +1733,15 @@ table.dataTable tbody tr.selected td {
 
 .dataTables_wrapper .dataTables_paginate {
   margin-left: 20px; }
+
+.table-customer-monitor {
+  width: 740px; }
+  .table-customer-monitor .info-bng {
+    padding: 2px 6px;
+    border: 1px solid #e73239;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    border-radius: 2px;
+    color: #e73239; }
+  .table-customer-monitor .col-note {
+    padding: 0 !important; }

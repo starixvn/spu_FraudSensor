@@ -7,8 +7,16 @@
         timeout_holder = null;
 
     customer_grid.DataTable({
-        language: common.language,
         dom: "t<'pagination'<'page-size'lp>i>",
+        language: {
+            lengthMenu: "Page size _MENU_",
+            paginate: {
+                previous: "Back"
+            },
+            info: "Displaying _START_ to _END_ of _TOTAL_ item(s)",
+            infoEmpty: "",
+            zeroRecords: "There's no data"
+        },
         searching: false,
         ordering: false,
         lengthMenu: [10, 20, 50, 100, 500],
@@ -17,10 +25,11 @@
         scrollX: true,
         scrollCollapse: true,
         columnDefs: [
-            { targets: [0, 2], className: "text-center" },
-            { targets: 0, width: "4%" },
-            { targets: 1, width: "20%" },
-            { targets: 2, width: "10%" }
+            { targets: [0,2], className: "text-center" },
+            { targets: 0, width: "40px" },
+            { targets: 1, width: "182px" },
+            { targets: 2, width: "90px" },
+            { targets: 3, className: "col-note" }
         ],
         columns: [
             { data: (row, type, set, meta) => meta.row + 1 },
@@ -53,8 +62,8 @@
        
 
     function renderViolation(obj) {
-        return `<a class='warning' href='CustomerMonitor/GetCustomerTicketDetails?CustId=${obj.CustId}&Username=${obj.Username}&FromDate=${obj.FromDate}&ToDate=${obj.ToDate}&TicketCount=${obj.TicketCount}&ViolationCount=${obj.ViolationCount}&MatchCount=${obj.MatchCount}' target='_blank'>
-            <span class='number'>${obj.TicketCount}/${obj.ViolationCount}/${obj.MatchCount}</span>
+        return `<a class='info-bng' href='CustomerMonitor/GetCustomerTicketDetails?CustId=${obj.CustId}&Username=${obj.Username}&FromDate=${obj.FromDate}&ToDate=${obj.ToDate}&TicketCount=${obj.TicketCount}&ViolationCount=${obj.ViolationCount}&MatchCount=${obj.MatchCount}' target='_blank'>
+            ${obj.TicketCount}/${obj.ViolationCount}/${obj.MatchCount}
         </a>`;
     }
     function gen_data(full = true) {
