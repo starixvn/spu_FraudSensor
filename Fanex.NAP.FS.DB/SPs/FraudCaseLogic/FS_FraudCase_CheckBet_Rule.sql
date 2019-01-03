@@ -13,7 +13,7 @@ AS
 
 	Revisions:
 		- 20181120@Long: Change the way to get data [Redmine ID: #105113]
-		- 20181228@Long: Modify to check for completely completed matches only [Redmine ID: #106073]
+		- 20181228@Long: Modify to check for completely completed matches only [Redmine ID: #107398]
 
 	Param's Explanation (filtered by):
 */
