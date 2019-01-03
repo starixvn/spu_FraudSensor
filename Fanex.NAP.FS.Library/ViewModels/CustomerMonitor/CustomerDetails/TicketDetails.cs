@@ -10,6 +10,8 @@
 
         public string MatchString { get; set; }
 
+        public string LeagueMatch { get; set; }
+
         public string TransDate { get; set; }
 
         public string BetID { get; set; }

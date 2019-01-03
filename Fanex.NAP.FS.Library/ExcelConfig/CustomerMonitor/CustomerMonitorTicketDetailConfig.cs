@@ -52,7 +52,9 @@
             new XSSFRichTextString()
                 .WriteBold("Customer: ").Write(legend.Username + "\n")
                 .WriteBold("Fraud Case: ").Write("BNG \n")
+                .WriteBold("Date Range: ").Write(legend.FromDate.ToString("MMM dd, yyyy") + " - " + legend.FromDate.ToString("MMM dd, yyyy") + "\n")
                 .WriteBold("Tickets: ").Write(legend.TicketCount + "\n")
+                .WriteBold("Violations: ").Write(legend.ViolationCount + "\n")
                 .WriteBold("Matches: ").Write(legend.MatchCount + "\n")
                 .SetValue(cell1);
         }
@@ -76,7 +78,7 @@
                 .Replace("</span>", "")
                 .Replace("<span class=\"favorite\">", "");
 
-            cell.SetCellValue(string.Format("{0}{1}{2}", bet_team, handicap, score));
+            cell.SetCellValue(string.Format("{0}{1}{2}{3}", bet_team, handicap, score, t.BettypeRealName));
         }
 
         private static void GetOddsExcel(TicketDetails t, ICell cell)

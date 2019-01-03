@@ -42,14 +42,12 @@
             return DataService.GetData<TicketInfo>(criteria)
                 .Select(a =>
                 {
-
-                    var bettype = CachedRef.GetBettypeName(a.BetTypeId);
-
                     return new TicketDetails
                     {
                         MatchString = string.Format("{0} -vs- {1}", CachedRef.GetTeamName(int.Parse(a.HomeId.ToString())), CachedRef.GetTeamName(int.Parse(a.AwayId.ToString()))),
                         TransDate = a.TransDate.ToString("MMM dd, yyyy hh:mm:ss tt"),
                         BetID = a.TransId.ToString(),
+                        BettypeRealName = CachedRef.GetBettypeName(a.BetTypeId),
                         IP = a.IP,
                         Odds = new ViewModels.MatchMonitor.FraudCaseDetails.OddsDetails { Value = (double)a.Odds, Type = CachedRef.GetOddsTypeName(int.Parse(a.OddsType)), Html = html_builder.BuildOdds(a, null, ticketHelper.GetOddsTypeNameById) },
                         Score = string.Format("{0}-{1}", a.LiveHomeScore, a.LiveAwayScore),
@@ -58,13 +56,12 @@
                         WinLoss = null_winloss.Contains(a.Status.ToLowerInvariant()) ? null : new decimal?(a.Winlost),
                         Choice = html_builder.BuildChoice(a, ticketHelper, null, false),
                         ChoiceExcel = saveChoice ? html_builder.BuildChoiceBlock(a, ticketHelper, null, false) : null,
-                        BettypeRealName = bettype,
-                        RawData = saveChoice ? a : null
+                        RawData = saveChoice ? a : null,
+                        LeagueMatch = string.Format("{0} (<font color='#6666ff'> {1} </font>)", string.Format("{0} -vs- {1}", CachedRef.GetTeamName(int.Parse(a.HomeId.ToString())), CachedRef.GetTeamName(int.Parse(a.AwayId.ToString()))), CachedRef.GetLeagueName(a.LeagueId))
                     };
                 })
                 .OrderBy(t => t.MatchId)
-                .ThenBy(t => DateTime.Parse(t.TransDate))
-                .ThenBy(t => t.Bettype);
+                .ThenBy(t => DateTime.Parse(t.TransDate));
         }
 
         public byte[] ExportExcel(GetCustomerTicketsCriteria criteria, CustomerDetailsInfo detailsInfo, string templatePath)

@@ -18,10 +18,14 @@
         <td class="info-value">@Model.Username</td>
         <td class="info-name">Fraud case</td>
         <td class="info-value">BNG</td>
+        <td class="info-name">Date Range:</td>
+        <td class="info-value">@Model.FromDate.ToString("MMM dd, yyyy") - @Model.ToDate.ToString("MMM dd, yyyy")</td>
     </tr>
     <tr>
         <td class="info-name">Tickets</td>
         <td class="info-value">@Model.TicketCount</td>
+        <td class="info-name">Violation</td>
+        <td class="info-value">@Model.ViolationCount</td>
         <td class="info-name">Matches</td>
         <td class="info-value">@Model.MatchCount</td>
     </tr>

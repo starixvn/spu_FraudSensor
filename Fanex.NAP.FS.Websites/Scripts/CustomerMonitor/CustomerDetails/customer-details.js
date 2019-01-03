@@ -18,7 +18,6 @@
 
         $.get(url, parameters, function (json) {
             var table = ticket_grid.DataTable();
-
             table.clear().rows.add(process_ticket_json(json)).draw();
 
             var n = json.reduce((a, arr) => a + arr.data.length, 0);
@@ -32,6 +31,7 @@
             ticketLoad = true;
 
             if (ticketLoad) {
+            removeMatchLeague();
                 common.closeLoading();
             }
         });
@@ -94,6 +94,10 @@
         common.downloadFile(url, parameters);
     }
 
+    function removeMatchLeague() {
+        $(".match, .league").remove();
+    }
+
     ticket_grid.DataTable({
         ordering: false,
         paging: false,
@@ -130,14 +134,13 @@
 
                 $(row).empty().html(td).click(e => show_hide_match_items(e.target, obj.value));
             } else {
-                $(row).attr("data-match-item", obj.MatchString);
+                $(row).attr("data-match-item", obj.LeagueMatch);
             }
         },
         headerCallback: tr => $(":nth-child(9)", tr).removeClass("uppercase")
     });
 
     load_ticket_grid();
-
     $(".-export").click(exportExcel);
 }
 

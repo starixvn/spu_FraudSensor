@@ -60,8 +60,8 @@
             criteria.Environment = int.Parse(ConfigurationManager.AppSettings["Environment"]);
 
             var data =
-                _customerMonitorService.GetTicketDetails(criteria)
-                .GroupBy(t => t.MatchString)
+                _customerMonitorService.GetTicketDetails(criteria, true)
+                .GroupBy(t => t.LeagueMatch)
                 .Select(g => new { key = g.Key, data = g.AsEnumerable() });
 
             return Json(data, JsonRequestBehavior.AllowGet);
