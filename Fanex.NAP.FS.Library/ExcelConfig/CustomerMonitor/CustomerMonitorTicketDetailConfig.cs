@@ -25,8 +25,11 @@
             var cell_idx = 0;
 
             row.GetCell(cell_idx++).SetCellValue(row.RowNum - 2);
+            row.GetCell(cell_idx++).SetCellValue(ticket.League);
+            row.GetCell(cell_idx++).SetCellValue(ticket.MatchString);
             row.GetCell(cell_idx++).SetCellValue(ticket.TransDate);
             row.GetCell(cell_idx++).SetCellValue(ticket.BetID);
+            row.GetCell(cell_idx++).SetCellValue(ticket.BettypeRealName);
             GetChoiceExcel(ticket, row.GetCell(cell_idx++));
             row.GetCell(cell_idx++).SetCellValue(ticket.Score);
             GetOddsExcel(ticket, row.GetCell(cell_idx++));
@@ -78,7 +81,7 @@
                 .Replace("</span>", "")
                 .Replace("<span class=\"favorite\">", "");
 
-            cell.SetCellValue(string.Format("{0}{1}{2}{3}", bet_team, handicap, score, t.BettypeRealName));
+            cell.SetCellValue(string.Format("{0}{1}{2}", bet_team, handicap, score));
         }
 
         private static void GetOddsExcel(TicketDetails t, ICell cell)

@@ -12,6 +12,8 @@
 
         public string LeagueMatch { get; set; }
 
+        public string League { get; set; }
+
         public string TransDate { get; set; }
 
         public string BetID { get; set; }
