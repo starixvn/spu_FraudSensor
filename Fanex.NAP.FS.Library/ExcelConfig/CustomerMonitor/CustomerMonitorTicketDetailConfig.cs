@@ -55,7 +55,7 @@
             new XSSFRichTextString()
                 .WriteBold("Customer: ").Write(legend.Username + "\n")
                 .WriteBold("Fraud Case: ").Write("BNG \n")
-                .WriteBold("Date Range: ").Write(legend.FromDate.ToString("MMM dd, yyyy") + " - " + legend.FromDate.ToString("MMM dd, yyyy") + "\n")
+                .WriteBold("Date Range: ").Write(legend.FromDate.ToString("MMM dd, yyyy") + " - " + legend.ToDate.ToString("MMM dd, yyyy") + "\n")
                 .WriteBold("Tickets: ").Write(legend.TicketCount + "\n")
                 .WriteBold("Violations: ").Write(legend.ViolationCount + "\n")
                 .WriteBold("Matches: ").Write(legend.MatchCount + "\n")
