@@ -1,0 +1,30 @@
+.table-customer-monitor {
+  width: 900px; }
+  .table-customer-monitor .info-bng {
+    padding: 2px 6px;
+    border: 1px solid #e73239;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    border-radius: 2px;
+    color: #e73239; }
+  .table-customer-monitor .col-note {
+    padding: 0 !important; }
+
+.customer-details {
+  margin-bottom: 24px; }
+  .customer-details td {
+    border: 1px solid #d6d6d6; }
+  .customer-details .info-name {
+    white-space: nowrap;
+    min-width: 120px; }
+  .customer-details .info-value {
+    width: 230px; }
+
+.button.-export {
+  position: absolute;
+  right: 0px;
+  top: -52px; }
+
+.text-blue {
+  display: inline-block;
+  color: #3d28ff; }

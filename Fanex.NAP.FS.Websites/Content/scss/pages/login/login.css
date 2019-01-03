@@ -65,6 +65,9 @@ input, button {
   content: "";
   clear: both; }
 
+.position-relative {
+  position: relative; }
+
 .button {
   display: inline-block;
   height: 28px;

@@ -401,6 +401,7 @@
     <Content Include="Content\scss\images\sort_desc.png" />
     <Content Include="Content\scss\images\UM.svg" />
     <Content Include="Content\scss\pages\configurations\fraud-case.css" />
+    <Content Include="Content\scss\pages\customer-monitor\customer-monitor.css" />
     <Content Include="Content\scss\pages\errors\errors.css" />
     <Content Include="Content\scss\pages\index.css" />
     <Content Include="Content\scss\pages\login\login.css" />
@@ -807,6 +808,7 @@
     <Content Include="Content\scss\components\_accordion.scss" />
     <Content Include="Content\scss\pages\um\um.scss" />
     <Content Include="Content\scss\pages\errors\errors.scss" />
+    <Content Include="Content\scss\pages\customer-monitor\customer-monitor.scss" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile2.pubxml" />

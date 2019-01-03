@@ -64,8 +64,8 @@
     function renderViolation(obj) {
         fromDate = moment(from_date.val()).format("MMM D, YYYY");
         toDate = moment(to_date.val()).format("MMM D, YYYY");
-        return `<a class='warning' href='CustomerMonitor/GetCustomerTicketDetails?CustId=${obj.CustId}&Username=${obj.Username}&FromDate=${fromDate}&ToDate=${toDate}&TicketCount=${obj.TicketCount}&ViolationCount=${obj.ViolationCount}&MatchCount=${obj.MatchCount}' target='_blank'>
-            <span class='number'>${obj.TicketCount}/${obj.ViolationCount}/${obj.MatchCount}</span>
+        return `<a class='info-bng' href='CustomerMonitor/GetCustomerTicketDetails?CustId=${obj.CustId}&Username=${obj.Username}&FromDate=${fromDate}&ToDate=${toDate}&TicketCount=${obj.TicketCount}&ViolationCount=${obj.ViolationCount}&MatchCount=${obj.MatchCount}' target='_blank'>
+            ${obj.TicketCount}/${obj.ViolationCount}/${obj.MatchCount}
         </a>`;
     }
     function gen_data(full = true) {

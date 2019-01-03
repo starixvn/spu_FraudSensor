@@ -6,7 +6,7 @@
 }
 
 @section styles{
-    @Styles.Render("~/fraud-case-styles")
+    @Styles.Render("~/customer-monitor-styles")
     @Styles.Render("~/Contents/CoreBetList")
 }
 
@@ -31,10 +31,8 @@
     </tr>
 </table>
 
-<div id="detailTabs">
-
-    <button class="button -export export-in-tabs"><span class="icon-export-excel"></span>Export</button>
-
+<div class="position-relative">
+    <button class="button -export"><span class="icon-export-excel"></span>Export</button>
     <table id="ticket-details" class="table table-striped width-100per" style="width: 100%">
         <thead>
             <tr>
@@ -51,8 +49,9 @@
             </tr>
         </thead>
         <tbody></tbody>
-        </tableid="ticket-tab">
+    </table>
 </div>
+
 
 @section scripts{
     <script>
