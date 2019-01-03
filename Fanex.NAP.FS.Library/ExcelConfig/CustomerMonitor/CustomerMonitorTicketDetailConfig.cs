@@ -12,7 +12,7 @@
     {
         public CustomerMonitorTicketDetailConfig(int ticketNo)
         {
-            SheetName = "Sheet";
+            SheetName = "report";
         }
 
         protected override int SheetIndex => 0;
@@ -50,7 +50,7 @@
             var cell1 = row.GetCell(0);
 
             new XSSFRichTextString()
-                .WriteBold("Customer: ").Write(legend.Username)
+                .WriteBold("Customer: ").Write(legend.Username + "\n")
                 .WriteBold("Fraud Case: ").Write("BNG \n")
                 .WriteBold("Tickets: ").Write(legend.TicketCount + "\n")
                 .WriteBold("Matches: ").Write(legend.MatchCount + "\n")
