@@ -42,13 +42,24 @@
         }
     });
 
+    from_date.datepicker({
+        dateFormat: "M dd, yy",
+        changeMonth: true,
+        changeYear: true,
+        firstDay: 1,
+        minDate: "-1y +1d"
+    });
+
+    to_date.datepicker({
+        dateFormat: "M dd, yy",
+        changeMonth: true,
+        changeYear: true,
+        firstDay: 1
+    });
+
     gen_btn.click(gen_data);
-
+    date_type.select2();
     $("#refresh_btn").click(gen_data);
-
-    common.makeDatePicker(from_date, { dateFormat: "M dd, yy" });
-
-    common.makeDatePicker(to_date, { dateFormat: "M dd, yy" });
 
     from_date.change(restrict_to_date);
 
