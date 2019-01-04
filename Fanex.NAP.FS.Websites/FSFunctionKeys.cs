@@ -62,7 +62,5 @@ public static class FSFunctionKeys
         public const string SystemConfiguration = "SystemConfiguration";
 
         public const string CustomerMonitor = "CustomerMonitor";
-
-        public const string SpecialCurrencies = "SpecialCurrencies";
 }
  
