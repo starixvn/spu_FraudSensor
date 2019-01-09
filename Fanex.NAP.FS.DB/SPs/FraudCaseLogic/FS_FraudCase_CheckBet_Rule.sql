@@ -15,7 +15,10 @@ AS
 		- 20181114@Long: Split data in SuspiciousInfo by Currency [Redmine ID: #104707]
 		- 20181120@Long: Change the way to get data [Redmine ID: #105113]
 		- 20181228@Long: Modify to check for completely completed matches only [Redmine ID: #107398]
-
+		- 20190108@CaseyHuynh: 
+			a) Capture data to trace Issue Cashout Checkbet
+			b) Update Scanned Match only for Sporbooks
+			c) Table CheckBetScannedMatch: Keep data for 14 days only
 	Param's Explanation (filtered by):
 */
 BEGIN
@@ -37,7 +40,7 @@ BEGIN
 		@CategoryHdp2				TINYINT;
 
 	IF	OBJECT_ID('tempdb..#tmpMatchesInfo') IS NOT NULL
-	BEGIN;
+	BEGIN
 		DROP TABLE	#tmpMatchesInfo;
 	END;
 	CREATE TABLE #tmpMatchesInfo(
@@ -49,7 +52,7 @@ BEGIN
 	CREATE UNIQUE CLUSTERED INDEX IX_tmpMatchesInfo_Bettype_MatchId ON #tmpMatchesInfo(WinlossDate, MatchId);
 
 	IF	OBJECT_ID('tempdb..#tmpMatches') IS NOT NULL
-	BEGIN;
+	BEGIN
 		DROP TABLE	#tmpMatches;
 	END;
 	CREATE TABLE #tmpMatches(
@@ -59,18 +62,27 @@ BEGIN
 	CREATE UNIQUE CLUSTERED INDEX IX_tmpMatches_Bettype_MatchId ON #tmpMatches(WinlossDate, MatchId);
 
 	IF	OBJECT_ID('tempdb..#tmpSportbooksBettype') IS NOT NULL
-	BEGIN;
+	BEGIN
 		DROP TABLE	#tmpSportbooksBettype;
 	END;
 	CREATE TABLE #tmpSportbooksBettype(
 		Bettype				INT,
 		EventType			INT,
-		SubProduct			VARCHAR(500)
+		SubProduct			VARCHAR(500),
     );
 	CREATE UNIQUE CLUSTERED INDEX IX_tmpSportbooksBettype_Bettype ON #tmpSportbooksBettype(Bettype);
+
+	IF	OBJECT_ID('tempdb..#tmpSportbooksSporttype') IS NOT NULL
+	BEGIN
+		DROP TABLE	#tmpSportbooksSportType;
+	END;
+	CREATE TABLE #tmpSportbooksSportType(
+		SportType			INT,
+    );
+	CREATE UNIQUE CLUSTERED INDEX IX_tmpSportbooksSportType_SportType ON #tmpSportbooksSportType(SportType);
 	
 	IF	OBJECT_ID('tempdb..#tmpChangedTickets') IS NOT NULL
-	BEGIN;
+	BEGIN
 		DROP TABLE	#tmpChangedTickets;
 	END;
     CREATE TABLE #tmpChangedTickets(
@@ -81,7 +93,7 @@ BEGIN
 	CREATE UNIQUE CLUSTERED INDEX IX_tmpChangedTickets_TransID_Bettype ON #tmpChangedTickets(transid,bettype);
 
 	IF	OBJECT_ID('tempdb..#tmpCheckBet') IS NOT NULL
-	BEGIN;
+	BEGIN
 		DROP TABLE	#tmpCheckBet;
 	END;
 	CREATE TABLE #tmpCheckBet (
@@ -101,7 +113,7 @@ BEGIN
 	CREATE UNIQUE CLUSTERED INDEX IX_tmpCheckBet_TransID_Bettype ON #tmpCheckBet(transid,bettype);
 	
 	IF	OBJECT_ID('tempdb..#tmpChangedInfo') IS NOT NULL
-	BEGIN;
+	BEGIN
 		DROP TABLE	#tmpChangedInfo;
 	END;
 	CREATE TABLE #tmpChangedInfo (
@@ -155,19 +167,36 @@ BEGIN
 		@CategoryHdp2				= 10,
 		@CapturedDate				= GETDATE();
 
-	-- Get completed matches to scan
-	INSERT INTO #tmpMatchesInfo(WinlossDate, MatchId, HomeId, AwayId)
-	SELECT m.eventdate, m.matchid, m.homeid, m.awayid
-	FROM bodb02.dbo.match m WITH(NOLOCK)
-	WHERE m.eventstatus = 'completed'
-	UNION
-	SELECT m.eventdate, m.orid, m.teamid, -1
-	FROM bodb02.dbo.outright m WITH(NOLOCK)
-		INNER JOIN bodb02.dbo.League AS l WITH(NOLOCK) ON m.leagueid = l.leagueid
-	WHERE m.status IS NOT NULL
-		AND l.sporttype IN (SELECT DISTINCT sbm.sporttype FROM bodb02.dbo.SportBettypeMatrix AS sbm WITH(NOLOCK));
+	--SELECT SportType and Bettype of SB
+	INSERT INTO #tmpSportbooksBettype(Bettype, EventType, SubProduct)
+    SELECT	Bettype,
+			EventType,
+			SubProduct
+    FROM	bodb02.dbo.f_SportBettypeMatrix_Sel(1, 0, 0, 2, '', '', 0)
+    WHERE	ProductID = 1;
 
-	-- Remove scanned matches
+	DELETE #tmpSportbooksBettype WITH(ROWLOCK)
+    WHERE SubProduct IN ( 'BT-Sold','BT-Bought','BT-Comm', 'BT-Winloss', 'MG-SuperLive');
+
+	INSERT INTO #tmpSportbooksSportType(SportType)
+    SELECT	DISTINCT sporttype		 
+    FROM	bodb02.dbo.SportBettypeMatrix WITH(NOLOCK)
+    WHERE	ProductID = 1;
+
+	--SELECT completed matches to scanned
+	INSERT INTO #tmpMatchesInfo(WinlossDate, MatchId, HomeId, AwayId)
+	SELECT	m.eventdate, m.matchid, m.homeid, m.awayid
+	FROM	bodb02.dbo.match m WITH(NOLOCK)
+			INNER JOIN #tmpSportbooksSportType s WITH(NOLOCK) ON m.sporttype = s.SportType
+	WHERE	m.eventstatus = 'completed'
+	UNION
+	SELECT	m.eventdate, m.orid, m.teamid, -1
+	FROM	bodb02.dbo.outright m WITH(NOLOCK)
+			INNER JOIN bodb02.dbo.League AS l WITH(NOLOCK) ON m.leagueid = l.leagueid
+			INNER JOIN #tmpSportbooksSportType s WITH(NOLOCK) ON l.sporttype = s.SportType
+	WHERE m.status IS NOT NULL;
+
+	--DELETE #tmpMatchesInfo: matches were scanned
 	DELETE FROM #tmpMatchesInfo WITH(ROWLOCK)
 	WHERE MatchId IN (	
 						SELECT DISTINCT sm.MatchId 
@@ -175,23 +204,13 @@ BEGIN
 						WHERE CAST(sm.ScannedDate AS DATE) = CAST(@CapturedDate AS DATE)
 					);
 
-	-- Remove matches that still has running tickets
+	--DELETE #tmpMatchesInfo: that still has running tickets
 	DELETE FROM #tmpMatchesInfo WITH(ROWLOCK)
 	WHERE MatchId IN (	
 						SELECT DISTINCT b.MatchId 
 						FROM bodb02.dbo.bettrans b WITH(NOLOCK) 
 						WHERE b.ruben = 0
 					);
-
-	INSERT INTO #tmpSportbooksBettype(Bettype, EventType, SubProduct)
-    SELECT Bettype,
-		 EventType,
-		 SubProduct
-    FROM bodb02.dbo.f_SportBettypeMatrix_Sel(1, 0, 0, 2, '', '', 0)
-    WHERE ProductID = 1;
-
-    DELETE #tmpSportbooksBettype WITH(ROWLOCK)
-    WHERE SubProduct IN ( 'BT-Sold','BT-Bought','BT-Comm', 'BT-Winloss', 'MG-SuperLive');
 
 	INSERT INTO #tmpMatches(MatchId, WinlossDate)
 	SELECT DISTINCT c.MatchId, c.WinlossDate
@@ -202,60 +221,134 @@ BEGIN
 		'MatchId'					= c.MatchId,
 		'ScannedDate'				= @CapturedDate
 	FROM #tmpMatchesInfo c WITH(NOLOCK);
-	
+
+	-------------------TRACE DECLARE------------
+	DECLARE @TraceTime DATETIME;
+	IF	OBJECT_ID('tempdb..#tmpChangedTickets_INLOOP') IS NOT NULL
+	BEGIN
+		DROP TABLE	#tmpChangedTickets_INLOOP;
+	END;
+
+	CREATE TABLE #tmpChangedTickets_INLOOP(
+		transid				BIGINT, 
+		bettype				INT, 
+		original_stake		MONEY,
+		Step				INT,
+		TraceTime			DATETIME
+	);
+	CREATE CLUSTERED INDEX IX_tmpChangedTickets_INLOOP_TransID_Bettype ON #tmpChangedTickets_INLOOP(transid,bettype);
+
+	IF	OBJECT_ID('tempdb..#tmpCheckBet_INLOOP') IS NOT NULL
+	BEGIN
+		DROP TABLE	#tmpCheckBet_INLOOP;
+	END; 
+
+	CREATE TABLE #tmpCheckBet_INLOOP (
+	transid				BIGINT, 
+	bettype				INT, 
+	isCashOut			BIT, 
+	isVoid				BIT, 
+	custid				INT, 
+	matchid				INT, 
+	bettrans_stake		MONEY, 
+	bets_stake			MONEY, 
+	isOriginal			BIT, 
+	isValidTP			TINYINT, 
+	isValidOdds			TINYINT, 
+	isValidBetteam		TINYINT,
+	Step				INT,
+	TraceTime			DATETIME
+	);
+	CREATE CLUSTERED INDEX IX_tmpCheckBet_INLOOP_TransID_Bettype ON #tmpCheckBet_INLOOP(transid,bettype);
+
+	-----------------------------------------------------------------
 	----------- START -----------
 	WHILE EXISTS(SELECT TOP(1) 1 FROM #tmpMatches WITH(NOLOCK))
 	BEGIN  
+		-------------TRACE-----------------------
+		SELECT	@TraceTime = GETDATE();
+		DELETE #tmpChangedTickets_INLOOP;
+		--------------------------------
+
 		SELECT TOP(1) @WinlossDate = WinlossDate FROM #tmpMatches WITH(NOLOCK);
-		
+		-- STEP 01: Normal Tickets
+		INSERT INTO #tmpChangedTickets_INLOOP (transid, bettype, original_stake, step, TraceTime)
+		SELECT	b.transid, b.bettype, b.stake
+				, 1
+				, @TraceTime
+		FROM	bodb02.dbo.bettrans bt WITH(NOLOCK) 
+				INNER JOIN bk.dbo.bets b WITH(NOLOCK) ON bt.transid = b.transid AND bt.MatchId = b.matchid     
+				INNER JOIN #tmpSportbooksBettype s WITH(NOLOCK) ON s.bettype = b.bettype
+				INNER JOIN #tmpMatches m  WITH(NOLOCK) ON bt.matchid = m.matchid
+		WHERE	m.WinlossDate = @WinlossDate
+				AND bt.currency NOT IN (20, 27, 28)
+				AND bt.transid NOT IN (SELECT TransId FROM dbo.[ChangedTicket] WITH(NOLOCK))
+				AND (bt.stake <> b.stake
+					OR bt.livehomescore <> b.livehomescore
+					OR bt.liveawayscore <> b.liveawayscore
+					OR bt.tpositiontaking <> b.tpositiontaking
+					OR bt.odds <> b.odds
+					OR bt.betteam <> b.betteam
+					OR ((bt.matchid <> b.matchid) AND s.EventType = 2)
+					OR bt.hdp1 <> b.hdp1 
+					OR bt.hdp2 <> b.hdp2
+					);
+		-------------TRACE-----------------------
+		INSERT INTO TempTrace_ChangedTickets (transid, bettype, original_stake, step, TraceTime)
+		SELECT	transid, bettype, original_stake,step,TraceTime
+		FROM	#tmpChangedTickets_INLOOP ct WITH(NOLOCK);
+		--------------------------------
+
 		-- Normal Tickets
 		INSERT INTO #tmpChangedTickets (transid, bettype, original_stake)
-		SELECT b.transid, b.bettype, b.stake
-		FROM bodb02.dbo.bettrans bt WITH(NOLOCK) 
-		   INNER JOIN bk.dbo.bets b WITH(NOLOCK) ON bt.transid = b.transid AND bt.MatchId = b.matchid     
-		   INNER JOIN #tmpSportbooksBettype s WITH(NOLOCK) ON s.bettype = b.bettype
-		   INNER JOIN #tmpMatches m  WITH(NOLOCK) ON bt.matchid = m.matchid
-		WHERE m.WinlossDate = @WinlossDate
-			AND bt.currency NOT IN (20, 27, 28)
-			AND bt.transid NOT IN (SELECT TransId FROM dbo.[ChangedTicket] WITH(NOLOCK))
-			AND (bt.stake <> b.stake
-				OR bt.livehomescore <> b.livehomescore
-				OR bt.liveawayscore <> b.liveawayscore
-				OR bt.tpositiontaking <> b.tpositiontaking
-				OR bt.odds <> b.odds
-				OR bt.betteam <> b.betteam
-				OR ((bt.matchid <> b.matchid) AND s.EventType = 2)
-				OR bt.hdp1 <> b.hdp1 
-				OR bt.hdp2 <> b.hdp2
-				);
+		SELECT	b.transid, b.bettype, b.original_stake
+		FROM	#tmpChangedTickets_INLOOP b WITH(NOLOCK);
+		
+		-- STEP2: Reject Tickets
 
-		-- Reject Tickets
+		INSERT INTO #tmpChangedTickets_INLOOP (transid, bettype, original_stake,step,TraceTime)
+		SELECT	bt.transid, bt.bettype, bt.stake
+				, 2
+				, @TraceTime
+		FROM	bodb02.dbo.bettrans bt WITH(NOLOCK) 
+				INNER JOIN bk.dbo.betsReject b WITH(NOLOCK) ON bt.transid = b.transid        
+				INNER JOIN #tmpSportbooksBettype s WITH(NOLOCK) ON s.bettype = b.bettype
+				INNER JOIN #tmpMatches m  WITH(NOLOCK) ON bt.matchid = m.matchid
+		WHERE	m.WinlossDate = @WinlossDate
+				AND bt.currency NOT IN (20, 27, 28)
+				AND bt.custid <> 98632			
+				AND bt.transid NOT IN (SELECT TransId FROM dbo.[ChangedTicket] WITH(NOLOCK))
+				AND bt.status <> b.status;
+
 		INSERT INTO #tmpChangedTickets (transid, bettype, original_stake)
-		SELECT bt.transid, bt.bettype, bt.stake
-		FROM bodb02.dbo.bettrans bt WITH(NOLOCK) 
-		   INNER JOIN bk.dbo.betsReject b WITH(NOLOCK) ON bt.transid = b.transid        
-		   INNER JOIN #tmpSportbooksBettype s WITH(NOLOCK) ON s.bettype = b.bettype
-		   INNER JOIN #tmpMatches m  WITH(NOLOCK) ON bt.matchid = m.matchid
-		WHERE m.WinlossDate = @WinlossDate
-			AND bt.currency NOT IN (20, 27, 28)
-			AND bt.custid <> 98632			
-			AND bt.transid NOT IN (SELECT TransId FROM dbo.[ChangedTicket] WITH(NOLOCK))
-			AND bt.status <> b.status;
+		SELECT	b.transid, b.bettype, b.original_stake
+		FROM	#tmpChangedTickets_INLOOP b WITH(NOLOCK)
+		WHERE	Step=2;
+
+		-------------TRACE-----------------------
+		INSERT INTO TempTrace_ChangedTickets (transid, bettype, original_stake, step, TraceTime)
+		SELECT	transid, bettype, original_stake,step,TraceTime
+		FROM	#tmpChangedTickets_INLOOP ct WITH(NOLOCK)
+		WHERE	step=2;
+		--------------------------------
 	
-		-- Cash Out tickets can make stake is reduced (mean bettrans.stake <> bet.stake), must exclude Cash Out ticket is correct	
-		INSERT INTO #tmpCheckBet (transid, bettype, isCashOut, isVoid, custid, matchid, bettrans_stake, bets_stake, isOriginal, isValidTP, isValidOdds, isValidBetteam)
-		SELECT bt.transid, 
-			bt.bettype, 
-			1 AS isCashOut, 
-			CASE WHEN bt.statusID IN (102) THEN 1 ELSE 0 END, 
-			bt.custid, 
-			bt.matchid, 
-			bt.stake, 
-			b.stake, 
-			1 AS isOriginal,
-			CASE WHEN bt.tpositiontaking<>b.tpositiontaking THEN 0 ELSE 1 END AS isValidTP,
-			CASE WHEN bt.odds<>b.odds THEN 0 ELSE 1 END AS isValidOdds,
-			CASE WHEN (bt.betteam <> b.betteam) THEN 0 ELSE 1 END AS isValidBetteam
+		-- STEP 4: Cash Out tickets can make stake is reduced (mean bettrans.stake <> bet.stake), must exclude Cash Out ticket is correct
+		DELETE #tmpCheckBet_INLOOP;
+		INSERT INTO #tmpCheckBet_INLOOP (transid, bettype, isCashOut, isVoid, custid, matchid, bettrans_stake, bets_stake, isOriginal, isValidTP, isValidOdds, isValidBetteam, step, TraceTime)
+		SELECT	bt.transid, 
+				bt.bettype, 
+				1 AS isCashOut, 
+				CASE WHEN bt.statusID IN (102) THEN 1 ELSE 0 END, 
+				bt.custid, 
+				bt.matchid, 
+				bt.stake, 
+				b.stake, 
+				1 AS isOriginal,
+				CASE WHEN bt.tpositiontaking<>b.tpositiontaking THEN 0 ELSE 1 END AS isValidTP,
+				CASE WHEN bt.odds<>b.odds THEN 0 ELSE 1 END AS isValidOdds,
+				CASE WHEN (bt.betteam <> b.betteam) THEN 0 ELSE 1 END AS isValidBetteam
+				, 4
+				, @TraceTime
 		FROM bodb02.dbo.bettrans bt WITH(NOLOCK) 
 			INNER JOIN bk.dbo.bets b WITH(NOLOCK) ON bt.transid = b.transid        
 			INNER JOIN #tmpSportbooksBettype s WITH(NOLOCK) ON s.bettype = b.bettype
@@ -264,13 +357,22 @@ BEGIN
 			AND bt.currency NOT IN (20, 27, 28)
 			AND CAST(ExtraInfo AS XML).exist('/p25/@s') = 1
 			AND bt.betdaqid = 0;
-                
+        
+
+		INSERT INTO TempTrace_CheckBet(transid, bettype, isCashOut, isVoid, custid, matchid, bettrans_stake, bets_stake, isOriginal, isValidTP, isValidOdds, isValidBetteam, step, TraceTime)
+		SELECT	transid, bettype, isCashOut, isVoid, custid, matchid, bettrans_stake, bets_stake, isOriginal, isValidTP, isValidOdds, isValidBetteam, step, TraceTime
+		FROM	#tmpCheckBet_INLOOP WITH(NOLOCK);
+
+		INSERT INTO #tmpCheckBet (transid, bettype, isCashOut, isVoid, custid, matchid, bettrans_stake, bets_stake, isOriginal, isValidTP, isValidOdds, isValidBetteam)
+		SELECT	transid, bettype, isCashOut, isVoid, custid, matchid, bettrans_stake, bets_stake, isOriginal, isValidTP, isValidOdds, isValidBetteam
+		FROM	#tmpCheckBet_INLOOP WITH(NOLOCK);
+		        
 		IF EXISTS (SELECT TOP(1) 1 FROM #tmpCheckBet WITH(NOLOCK))
 		BEGIN
-			-- Cash Out tickets are valid: get stake from valid bettype 911 -- Valid ticket: exclude void
+			--STEP 05: Cash Out tickets are valid: get stake from valid bettype 911 -- Valid ticket: exclude void
 			IF EXISTS (SELECT TOP(1) 1 FROM #tmpCheckBet WITH(NOLOCK) WHERE isVoid = 0)
 			BEGIN
-				INSERT INTO #tmpCheckBet (transid, bettype, isCashOut, bettrans_stake, bets_stake, isOriginal, isValidTP, isValidOdds, isValidBetteam)
+				INSERT INTO #tmpCheckBet_INLOOP (transid, bettype, isCashOut, bettrans_stake, bets_stake, isOriginal, isValidTP, isValidOdds, isValidBetteam,step, TraceTime)
 				SELECT b.refno, 
 					-1			AS bettype, 
 					1			AS isCashOut, 
@@ -280,14 +382,26 @@ BEGIN
 					CASE WHEN b.tpositiontaking <> bs.tpositiontaking THEN 0 ELSE 1 END AS isValidTP,
 					CASE WHEN b.odds <> bs.odds THEN 0 ELSE 1 END AS isValidOdds,
 					CASE WHEN (b.betteam <> bs.betteam) THEN 0 ELSE 1 END AS isValidBetteam
+					, 5
+					, @TraceTime
 				FROM bodb02.dbo.bettrans b WITH(NOLOCK)
 					INNER JOIN bk.dbo.bets bs WITH(NOLOCK) ON b.transid = bs.transid
 				WHERE EXISTS (SELECT 1 FROM #tmpCheckBet c WITH(NOLOCK) WHERE b.custid = c.custid AND b.matchid = c.matchid AND b.refno = c.transid AND c.isVoid = 0)
 					AND b.bettype = 911
 					AND b.statusID NOT IN (102);
+
+				INSERT INTO TempTrace_CheckBet(transid, bettype, isCashOut, isVoid, custid, matchid, bettrans_stake, bets_stake, isOriginal, isValidTP, isValidOdds, isValidBetteam, step, TraceTime)
+				SELECT	transid, bettype, isCashOut, isVoid, custid, matchid, bettrans_stake, bets_stake, isOriginal, isValidTP, isValidOdds, isValidBetteam, step, TraceTime
+				FROM	#tmpCheckBet_INLOOP WITH(NOLOCK)
+				WHERE step=5;
+
+				INSERT INTO #tmpCheckBet (transid, bettype, isCashOut, isVoid, custid, matchid, bettrans_stake, bets_stake, isOriginal, isValidTP, isValidOdds, isValidBetteam)
+				SELECT	transid, bettype, isCashOut, isVoid, custid, matchid, bettrans_stake, bets_stake, isOriginal, isValidTP, isValidOdds, isValidBetteam
+				FROM	#tmpCheckBet_INLOOP WITH(NOLOCK)
+				WHERE	step=5;
 			END;
 
-			-- Cash Out tickets are invalid: get stake from bettype 911 which is maked invalid when original ticket is invalid
+			-- STEP 6: Cash Out tickets are invalid: get stake from bettype 911 which is maked invalid when original ticket is invalid
 			IF EXISTS (SELECT TOP(1) 1 FROM #tmpCheckBet WITH(NOLOCK) WHERE isVoid = 1)
 			BEGIN
 				;WITH betcheck AS (
@@ -307,7 +421,7 @@ BEGIN
 					UNION SELECT NULL
 				)
 
-				INSERT INTO #tmpCheckBet (transid, bettype, isCashOut, bettrans_stake, bets_stake, isOriginal, isValidTP, isValidOdds, isValidBetteam)
+				INSERT INTO #tmpCheckBet_INLOOP (transid, bettype, isCashOut, bettrans_stake, bets_stake, isOriginal, isValidTP, isValidOdds, isValidBetteam, step, TraceTime)
 				SELECT b.refno, 
 					-1			AS bettype,
 					1			AS isCashOut, 
@@ -317,21 +431,47 @@ BEGIN
 					CASE WHEN b.tpositiontaking <> bs.tpositiontaking THEN 0 ELSE 1 END AS isValidTP,
 					CASE WHEN b.odds <> bs.odds THEN 0 ELSE 1 END AS isValidOdds,
 					CASE WHEN (b.betteam <> bs.betteam) THEN 0 ELSE 1 END AS isValidBetteam
+					, 6
+					, @TraceTime
 				FROM bodb02.dbo.bettrans b WITH(NOLOCK)
 					INNER JOIN bk.dbo.bets bs WITH(NOLOCK) ON b.transid = bs.transid
 				WHERE EXISTS (SELECT 1 FROM transid t WITH(NOLOCK) WHERE b.transid = t.transid);
+
+				INSERT INTO TempTrace_CheckBet(transid, bettype, isCashOut, isVoid, custid, matchid, bettrans_stake, bets_stake, isOriginal, isValidTP, isValidOdds, isValidBetteam, step, TraceTime)
+				SELECT	transid, bettype, isCashOut, isVoid, custid, matchid, bettrans_stake, bets_stake, isOriginal, isValidTP, isValidOdds, isValidBetteam, step, TraceTime
+				FROM	#tmpCheckBet_INLOOP WITH(NOLOCK)
+				WHERE step=6;
+
+				INSERT INTO #tmpCheckBet (transid, bettype, isCashOut, isVoid, custid, matchid, bettrans_stake, bets_stake, isOriginal, isValidTP, isValidOdds, isValidBetteam)
+				SELECT	transid, bettype, isCashOut, isVoid, custid, matchid, bettrans_stake, bets_stake, isOriginal, isValidTP, isValidOdds, isValidBetteam
+				FROM	#tmpCheckBet_INLOOP WITH(NOLOCK)
+				WHERE	step=6;
+
 			END;
 	
-			-- Remove all Cash Out tickets from table total
+			---TRACE--------------------
+			UPDATE ct WITH(ROWLOCK)
+			SET Step = (step*10)+7
+			FROM TempTrace_CheckBet ct
+				INNER JOIN #tmpCheckBet c WITH(NOLOCK) ON ct.transid = c.transid AND ct.bettype = c.bettype;
+
+			DELETE ct WITH(ROWLOCK)
+			FROM #tmpChangedTickets_INLOOP ct
+				INNER JOIN #tmpCheckBet c WITH(NOLOCK) ON ct.transid = c.transid AND ct.bettype = c.bettype;
+
+			--STEP 7: Remove all Cash Out tickets from table total
 			DELETE ct WITH(ROWLOCK)
 			FROM #tmpChangedTickets ct
 				INNER JOIN #tmpCheckBet c WITH(NOLOCK) ON ct.transid = c.transid AND ct.bettype = c.bettype;
-		
-			-- Insert Cash Out tickets are incorrect
-			INSERT INTO #tmpChangedTickets (transid, bettype, original_stake)
+			---------------------------------
+			SELECT * FROM #tmpChangedTickets_INLOOP WITH(NOLOCK)
+			--STEP 8: Insert Cash Out tickets are incorrect
+			INSERT INTO #tmpChangedTickets_INLOOP (transid, bettype, original_stake,step,TraceTime)
 			SELECT cb.transid, 
 				MAX(cb.bettype) AS bettype, 
 				SUM(CASE WHEN cb.isOriginal = 1 THEN cb.bets_stake ELSE -cb.bettrans_stake END)  AS original_stake
+				,8
+				,@TraceTime
 			FROM #tmpCheckBet cb WITH(NOLOCK)
 			WHERE cb.transid NOT IN (SELECT ct.TransId FROM dbo.[ChangedTicket] ct WITH(NOLOCK))
 			GROUP BY cb.transid
@@ -339,9 +479,20 @@ BEGIN
 				OR MIN(ISNULL(cb.isValidTP, 0)) = 0
 				OR MIN(ISNULL(cb.isValidOdds, 0)) = 0
 				OR MIN(ISNULL(cb.isValidBetteam, 0)) = 0;
+
+			INSERT INTO #tmpChangedTickets (transid, bettype, original_stake)
+			SELECT	b.transid, b.bettype, b.original_stake
+			FROM	#tmpChangedTickets_INLOOP b WITH(NOLOCK)
+			WHERE	Step=8;
+
+		-------------TRACE-----------------------
+			INSERT INTO TempTrace_ChangedTickets (transid, bettype, original_stake, step, TraceTime)
+			SELECT	transid, bettype, original_stake,step,TraceTime
+			FROM	#tmpChangedTickets_INLOOP ct WITH(NOLOCK)
+			WHERE	step=8;
 		END;
 		
-		--Check ticket of sport book, racing, numbergame, virtual sports but Casino, P2P, Live CS, Bingo	
+		--Check ticket of sport book
 		INSERT INTO #tmpChangedInfo(
 				TransId
 			,	TransDate
@@ -520,4 +671,9 @@ BEGIN
 		'OldValue'			= c.OldHdp2,
 		'OldCaptureDate'	= c.TransDate
 	FROM #tmpChangedInfo c WITH(NOLOCK);
+
+	--===================CLEAR DATA IN CheckBetScannedMatch===========================
+	DELETE CheckBetScannedMatch WITH(NOLOCK)
+	WHERE	DATEDIFF(dd,ScannedDate,GETDATE()) > 15
+
 END;
