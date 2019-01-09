@@ -1,10 +1,8 @@
-
 SET QUOTED_IDENTIFIER ON 
 GO
 SET ANSI_NULLS ON 
 GO
 
-/****** Object:  Stored Procedure dbo.FS_Tbl_SuspiciousCustomer_Update    Script Date: 5/15/2018 4:21:24 PM ******/
 ALTER PROCEDURE [dbo].[FS_Tbl_SuspiciousCustomer_Update]
 		@UserId				INT
 	,	@Custid				INT
@@ -21,17 +19,20 @@ AS
 	Original:
 
 	Revisions:
+				- 20181226@John: Update logic write log [Redmine ID: #106145]
+
 	Param's Explanation:    
 */
 BEGIN
 	SET NOCOUNT ON;
 	
-    DECLARE @LogTypeId INT = 12;
+    DECLARE @LogTypeId INT = 11;
 	DECLARE @LogData varchar(500)
 			, @SPName varchar(100);
 	
 	DECLARE @UpdateTime DATETIME = GETDATE();
-	
+	SELECT @ErrCode = 0;
+
     BEGIN TRY
 		UPDATE [dbo].[SuspiciousCustomer] WITH(ROWLOCK, UPDLOCK)
 		SET [IsDelinquent] = ISNULL(@IsDelinquent,IsDelinquent)
@@ -68,9 +69,10 @@ BEGIN
 	IF (@ErrCode = 0) 
 	BEGIN
 		SELECT @LogData =	'UserId = ' + DBO.SPU_ToString(@UserId)
-							+ 'CustId = ' + DBO.SPU_ToString(@CustId) 
+							+ ', CustId = ' + DBO.SPU_ToString(@CustId) 
 							+ ', IsDelinquent = ' + DBO.SPU_ToString(@IsDelinquent) 
 							+ ', IsDirty = ' + DBO.SPU_ToString(@IsDirty) 
+							+ ', IsHedge = ' + DBO.SPU_ToString(@IsHedge) 
 							+ ', IsVerified = ' + DBO.SPU_ToString(@IsVerified) 
 							+ ', CreatorId = ' + DBO.SPU_ToString(@UserId);
 
@@ -82,19 +84,7 @@ BEGIN
 			,	@SPName = @SPName
 			,	@Details = @LogData;
 	END;
-
 END;
 
 GO
-
-SET QUOTED_IDENTIFIER OFF 
-GO
-SET ANSI_NULLS ON 
-GO
-
-
-GO 
- GRANT EXECUTE ON [dbo].[FS_Tbl_SuspiciousCustomer_Update] TO [bodbSPUNet]
-GO 
- GRANT VIEW DEFINITION ON [dbo].[FS_Tbl_SuspiciousCustomer_Update] TO [bodbSPUNet]
-GO 
+/*<info serverAlias="DBSPU-bodb_FraudSensor" executers="bodbSPUNet" isFunction="0" isNested="0"></info>*/

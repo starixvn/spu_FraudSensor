@@ -221,6 +221,9 @@
     <Compile Include="Criteria\Api\FlaggedAccountDeleteCriteria.cs" />
     <Compile Include="Criteria\Api\FlaggedAccountInsertCriteria.cs" />
     <Compile Include="Criteria\CheckBetReport\CheckBetReportGetCriteria.cs" />
+    <Compile Include="Criteria\CustomerMonitor\CustomerDetails\GetCustomerTicketsCriteria.cs" />
+    <Compile Include="Criteria\CustomerMonitor\CustomerGetCriteria.cs" />
+    <Compile Include="Criteria\CustomerMonitor\UpdateNoteCriteria.cs" />
     <Compile Include="Criteria\DailyDataCapture\DailyDataGetCriteria.cs" />
     <Compile Include="Criteria\FraudCase\DelayedGoal\DelayGoalAssociationAccountInsertCriteria.cs" />
     <Compile Include="Criteria\FraudCase\DelayedGoal\DelayGoalManualAccountGetCriteria.cs" />
@@ -234,6 +237,8 @@
     <Compile Include="Criteria\FraudCase\ScannedOfficeIP\OfficeIPGetCriteria.cs" />
     <Compile Include="Criteria\FraudCase\ScannedOfficeIP\OfficeIPInsertCriteria.cs" />
     <Compile Include="Criteria\FraudCase\UpdateFraudCaseStatusCriteria.cs" />
+    <Compile Include="Criteria\FraudSensorTask\BetsNearGoalPreconditionCriteria.cs" />
+    <Compile Include="Criteria\FraudSensorTask\BetsNearGoalRuleCriteria.cs" />
     <Compile Include="Criteria\FraudSensorTask\CheckBetRuleCriteria.cs" />
     <Compile Include="Criteria\FraudSensorTask\DailyDataCaptureRuleCriteria.cs" />
     <Compile Include="Criteria\FraudSensorTask\DelayGoalPreconditionCriteria.cs" />
@@ -290,6 +295,8 @@
     </Compile>
     <Compile Include="Core\Resources\ErrorLookup.cs" />
     <Compile Include="ExcelConfig\CheckBetReport\CheckBetReportExcelConfig.cs" />
+    <Compile Include="ExcelConfig\CustomerMonitor\CustomerMonitorConfig.cs" />
+    <Compile Include="ExcelConfig\CustomerMonitor\CustomerMonitorTicketDetailConfig.cs" />
     <Compile Include="ExcelConfig\DailyDataCapture\DailyDataCaptureExcelConfig.cs" />
     <Compile Include="ExcelConfig\FraudCase\DelayedGoal\DelayedGoalExcelConfig.cs" />
     <Compile Include="ExcelConfig\FraudCase\ScannedOfficeIP\OfficeIPExcelConfig.cs" />
@@ -315,6 +322,7 @@
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\CheckBetReport\CheckBetHistory.cs" />
+    <Compile Include="Models\CustomerMonitor\Customer.cs" />
     <Compile Include="Models\DailyDataCapture\CapturedMatch.cs" />
     <Compile Include="Models\DBResult.cs" />
     <Compile Include="Models\FraudCaseId.cs" />
@@ -346,9 +354,11 @@
     <Compile Include="Models\SuspiciousCustomer\SuspiciousCustomerNoteModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\Implement\CheckBetReportService.cs" />
+    <Compile Include="Services\Implement\CustomerMonitorService.cs" />
     <Compile Include="Services\Implement\DailyCaptureDataService.cs" />
     <Compile Include="Services\Implement\DelayGoalAccountService.cs" />
     <Compile Include="Services\Implement\FraudCaseDetailsService.cs" />
+    <Compile Include="Services\Interface\ICustomerMonitorService.cs" />
     <Compile Include="Services\Implement\NotificationRecipientService.cs" />
     <Compile Include="Services\Implement\NotificationService.cs" />
     <Compile Include="Services\Implement\MatchMonitorService.cs" />
@@ -374,6 +384,8 @@
     <Compile Include="Services\Interface\IFraudCaseService.cs" />
     <Compile Include="Services\Interface\IMatchMonitorService.cs" />
     <Compile Include="ViewModels\CheckBetReport\CheckBetTicket.cs" />
+    <Compile Include="ViewModels\CustomerMonitor\CustomerDetails\CustomerDetailsInfo.cs" />
+    <Compile Include="ViewModels\CustomerMonitor\CustomerDetails\TicketDetails.cs" />
     <Compile Include="ViewModels\DailyDataMonitor\CapturedMatch.cs" />
     <Compile Include="ViewModels\FraudCase\DelayedGoal\Customer.cs" />
     <Compile Include="ViewModels\History.cs" />

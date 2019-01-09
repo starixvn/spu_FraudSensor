@@ -12,6 +12,7 @@ AS
 	Original:
 
 	Revisions:
+		- 20181114@Long: Split data in SuspiciousInfo by Currency [Redmine ID: #104707]
 		- 20181120@Long: Change the way to get data [Redmine ID: #105113]
 		- 20181228@Long: Modify to check for completely completed matches only [Redmine ID: #107398]
 
@@ -53,7 +54,7 @@ BEGIN
 	END;
 	CREATE TABLE #tmpMatches(
 		WinlossDate					DATETIME,
-		MatchId						INT,
+		MatchId						INT
     );
 	CREATE UNIQUE CLUSTERED INDEX IX_tmpMatches_Bettype_MatchId ON #tmpMatches(WinlossDate, MatchId);
 
@@ -520,6 +521,3 @@ BEGIN
 		'OldCaptureDate'	= c.TransDate
 	FROM #tmpChangedInfo c WITH(NOLOCK);
 END;
-
-GO
-/*<info serverAlias="DBSPU-bodb_FraudSensor" executers="bodbSPUNet" isFunction="0" isNested="0"></info>*/

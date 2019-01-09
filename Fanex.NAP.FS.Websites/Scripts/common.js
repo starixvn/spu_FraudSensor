@@ -188,7 +188,7 @@
 
         var next_element = $input.next();
 
-        if (next_element.is("span") && !next_element.hasClass("icon-calendar-text")) {
+        if (next_element.is("span")) {
             next_element.addClass("icon-calendar-text");
         }
         else {

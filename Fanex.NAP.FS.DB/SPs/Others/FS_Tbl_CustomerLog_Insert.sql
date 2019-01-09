@@ -1,11 +1,9 @@
-
 SET QUOTED_IDENTIFIER ON 
 GO
 SET ANSI_NULLS ON 
 GO
 
-/****** Object:  Stored Procedure dbo.FS_Tbl_CustomerLog_Insert    Script Date: 5/15/2018 4:21:24 PM ******/
-CREATE PROCEDURE [dbo].[FS_Tbl_CustomerLog_Insert]
+ALTER PROCEDURE [dbo].[FS_Tbl_CustomerLog_Insert]
 		@UserId			INT
 	,	@CustId			INT
 	,	@CustLogType	INT
@@ -22,6 +20,8 @@ AS
 	Original:
 
 	Revisions:
+			- 20181226@John: Update logic write log [Redmine ID: #106145]			
+
 	Param's Explanation:   
 	 + @LogType: 1-Note, 2-Log
 	 + @CaseId: NULL if LogType is 1-Note
@@ -34,22 +34,23 @@ BEGIN
 			, @SPName		VARCHAR(100);
 	
 	DECLARE @InsertTime DATETIME;
-	
+	SELECT @ErrCode = 0;
+
 	BEGIN TRY
 	
 		SELECT @InsertTime = ISNULL(@LogDate,GETDATE());
 					
 		INSERT INTO dbo.CustomerLog(CustId, CreatorId, CustLogType, CaseId, LogDesc, LogDate)
 		VALUES(@CustId, @UserId, @CustLogType, @CaseId, @LogDesc, @InsertTime);
-		
+	
 	END TRY
 	BEGIN CATCH
 		SELECT @ErrCode	=	ERROR_NUMBER();
 	END CATCH;
-	
-	--================ Write Log ================ 
-	IF (@ErrCode	=	0) 
-	BEGIN
+
+	------------ Write Log ------------
+	IF @ErrCode = 0
+		BEGIN
 		SELECT @LogData =	'CustId	=	'			+	DBO.SPU_ToString(@CustId) 
 							+ ', CreatorId	=	' 	+	DBO.SPU_ToString(@UserId) 
 							+ ', CustLogType	=	' 	+	DBO.SPU_ToString(@CustLogType) 
@@ -64,19 +65,9 @@ BEGIN
 			,	@UserId		=	@UserId  
 			,	@SPName		=	@SPName
 			,	@Details	=	@LogData;
-	END;
+	
+		END;
 END;
 
 GO
-
-SET QUOTED_IDENTIFIER OFF 
-GO
-SET ANSI_NULLS ON 
-GO
-
-
-GO 
- GRANT EXECUTE ON [dbo].[FS_Tbl_CustomerLog_Insert] TO [bodbSPUNet]
-GO 
- GRANT VIEW DEFINITION ON [dbo].[FS_Tbl_CustomerLog_Insert] TO [bodbSPUNet]
-GO 
+/*<info serverAlias="DBSPU-bodb_FraudSensor" executers="bodbSPUNet" isFunction="0" isNested="0"></info>*/

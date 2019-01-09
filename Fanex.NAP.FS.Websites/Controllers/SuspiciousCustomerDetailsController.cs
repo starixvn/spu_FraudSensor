@@ -50,7 +50,7 @@ namespace Fanex.NAP.FS.Websites.Controllers
         [NapAuth(FunctionKey = FSFunctionKeys.SuspiciousCustomerDetails, Policy = Core.Business.Constant.Policy.Host)]
         public ActionResult RemoveLogNote(int custId, int customerLogId)
         {
-            var result = _detailsService.DeleteCustomerLogNotes(custId, customerLogId);
+            var result = _detailsService.DeleteCustomerLogNotes(CurrentSession.UserId, customerLogId);
 
             return Json(result);
         }

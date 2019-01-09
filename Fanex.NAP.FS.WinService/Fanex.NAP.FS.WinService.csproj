@@ -155,6 +155,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Executor\BetsNearGoalExecutor.cs" />
     <Compile Include="Executor\BigStakeNearGoalExecutor.cs" />
     <Compile Include="Executor\CheckBetExecutor.cs" />
     <Compile Include="Executor\DailyDataCaptureExecutor.cs" />

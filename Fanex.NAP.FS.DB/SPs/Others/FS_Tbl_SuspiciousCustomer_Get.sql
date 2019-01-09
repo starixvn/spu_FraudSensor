@@ -1,4 +1,3 @@
-
 SET QUOTED_IDENTIFIER ON 
 GO
 SET ANSI_NULLS ON 
@@ -34,7 +33,3 @@ BEGIN
 		  AND si.[IsDirty]		=	ISNULL(@IsDirty,si.IsDirty)
 		  AND (@IsShowSpecialCurrencies = 1 OR c.currency NOT IN (SELECT CurrencyId FROM dbo.SpecialCurrency WITH(NOLOCK)));
 END;
-
-GO
-/*<info serverAlias="DBSPU-bodb_FraudSensor" executers="bodbSPUNet" isFunction="0" isNested="0"></info>*/
-

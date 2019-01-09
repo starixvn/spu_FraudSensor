@@ -41,6 +41,7 @@
             RegisterNotificationBundles(bundles);
             RegisterDailyDataCaptureBundles(bundles);
             RegisterCheckBetReportBundles(bundles);
+            RegisterCustomerMonitorBundles(bundles);
         }
 
         private static void RegisterFSCoreBundles(BundleCollection bundles)
@@ -113,6 +114,15 @@
         private static void RegisterCheckBetReportBundles(BundleCollection bundles)
         {
             bundles.Add(new ScriptBundle("~/check-bet-report-scripts").Include("~/scripts/CheckBetReport/check-bet-report.js"));
+        }
+
+        private static void RegisterCustomerMonitorBundles(BundleCollection bundles)
+        {
+            bundles.Add(new StyleBundle("~/customer-monitor-styles").Include("~/content/scss/pages/customer-monitor/customer-monitor.css"));
+
+            bundles.Add(new ScriptBundle("~/scripts/customer-monitor").Include("~/scripts/customermonitor/*.js"));
+
+            bundles.Add(new ScriptBundle("~/scripts/customer-monitor/customer-details").Include("~/scripts/customermonitor/customerdetails/*.js"));
         }
     }
 }

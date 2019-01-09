@@ -1,0 +1,71 @@
+﻿@model Fanex.NAP.FS.Library.ViewModels.CustomerMonitor.CustomerDetails.CustomerDetailsInfo
+
+@{
+    ViewBag.Title = "CUSTOMER DETAILS";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section styles{
+    @Styles.Render("~/customer-monitor-styles")
+    @Styles.Render("~/Contents/CoreBetList")
+}
+
+<h1 class="title">@ViewBag.Title</h1>
+
+<table class="customer-details">
+    <tr>
+        <td class="info-name">Customer</td>
+        <td class="info-value">@Model.Username</td>
+        <td class="info-name">Fraud case</td>
+        <td class="info-value">BNG</td>
+        <td class="info-name">Date Range:</td>
+        <td class="info-value">@Model.FromDate.ToString("MMM dd, yyyy") - @Model.ToDate.ToString("MMM dd, yyyy")</td>
+    </tr>
+    <tr>
+        <td class="info-name">Tickets</td>
+        <td class="info-value">@Model.TicketCount</td>
+        <td class="info-name">Violations</td>
+        <td class="info-value">@Model.ViolationCount</td>
+        <td class="info-name">Matches</td>
+        <td class="info-value">@Model.MatchCount</td>
+    </tr>
+</table>
+
+<div class="position-relative">
+    <button class="button -export"><span class="icon-export-excel"></span>Export</button>
+    <table id="ticket-details" class="table table-striped width-100per" style="width: 100%">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Trans Date</th>
+                <th>Bet ID</th>
+                <th>Choice</th>
+                <th>Score</th>
+                <th>Odds</th>
+                <th>Stake</th>
+                <th>Win Loss</th>
+                <th>Status</th>
+                <th>IP</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+
+
+@section scripts{
+    <script>
+        var parameters =
+            {
+                CustId: @Model.CustId,
+                Username: '@Model.Username',
+                FromDate: '@Model.FromDate.ToShortDateString()',
+                ToDate: '@Model.ToDate.ToShortDateString()',
+                TicketCount: @Model.TicketCount,
+                ViolationCount: @Model.ViolationCount,
+                MatchCount: @Model.MatchCount,
+            };
+    </script>
+
+    @Scripts.Render("~/scripts/customer-monitor/customer-details")
+}

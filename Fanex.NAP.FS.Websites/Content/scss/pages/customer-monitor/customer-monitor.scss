@@ -1,0 +1,46 @@
+﻿
+@import "../../abstracts/variables";
+
+.table-customer-monitor {
+    width: 900px;
+
+    .info-bng {
+        padding: 2px 6px;        
+        border: 1px solid #e73239;
+        border-radius: 2px;    
+        color: #e73239;   
+    }
+
+    .col-note {
+        padding: 0 !important;
+    }
+}
+
+.customer-details {
+    margin-bottom: 24px;
+
+    td {
+       border: 1px solid $border-color;
+    }
+
+    .info-name {
+        white-space: nowrap;
+        min-width: 120px;
+    }
+        
+
+    .info-value {
+        width: 230px;
+    }
+}
+
+.button.-export {
+    position: absolute;
+    right: 0px;
+    top: -52px;
+}
+
+.text-blue {
+    display: inline-block;
+    color: #3d28ff;
+}

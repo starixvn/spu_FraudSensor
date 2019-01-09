@@ -1,0 +1,79 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section styles{
+    @Styles.Render("~/customer-monitor-styles")
+}
+<h1 class="title">CUSTOMER MONITOR</h1>
+
+<div class="form-filter">
+    <div class="group width-220">
+        <label class="text">Event Date</label>
+        <select class="control" id="date_type" style="width:220px !important; height: 220px !important;">
+            <option value="0">Today</option>
+            <option value="1">Yesterday</option>
+            <option value="2">This Week</option>
+            <option value="3">Last Week</option>
+            <option value="4">This Month</option>
+            <option value="5">Last Month</option>
+            <option value="6">Since Last Month</option>
+            <option value="7">Specific Date</option>
+        </select>
+    </div>
+
+    <div class="group calendar">
+        <label class="text">From</label>
+        <input type="text" id="from_date" class="control" value="@DateTime.Today.ToString("MMM dd, yyyy")">
+        <span class="icon-calendar-text"></span>
+    </div>
+
+    <div class="group calendar">
+        <label class="text">To</label>
+        <input type="text" id="to_date" class="control" value="@DateTime.Today.ToString("MMM dd, yyyy")">
+        <span class="icon-calendar-text"></span>
+    </div>
+
+    <button class="button -primary" id="generate">Generate</button>
+    <button class="button -export" id="export"><span class="icon-export-excel"></span>Export</button>
+</div>
+
+<div class="grid table-customer-monitor">
+    <div class="top-header">
+        <div class="refresh">
+            <select class="refresh-option first" id="refresh_interval">
+                <option value="--">Not refresh</option>
+                <option value="60">60s</option>
+                <option value="90">90s</option>
+                <option value="120">120s</option>
+                <option value="180">180s</option>
+            </select>
+            <div class="refresh-action">
+                <button class="icon" id="refresh_btn"><span class="icon-autorenew"></span></button>
+                <span class="number" id="refresh_countdown">-</span>
+            </div>
+        </div>
+    </div>
+
+    <table id="customer-grid" class="table table-striped" style="width: 100%">
+        <thead>
+            <tr>
+                <th class="col-no">#</th>
+                <th>Member</th>
+                <th>BNG</th>
+                <th>Note</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+
+<div hidden>
+    @Html.Partial("MatchNote")
+</div>
+
+@section scripts{
+    @Scripts.Render("~/scripts/customer-monitor")
+}

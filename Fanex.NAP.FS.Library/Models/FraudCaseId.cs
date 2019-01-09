@@ -7,6 +7,7 @@
         DelayedGoal = 8,
         ScannedOfficeIP = 2,
         DailyDataCapture = 4,
-        CheckBet =  3
+        CheckBet =  3,
+        BetsNearGoal = 11
     }
 }

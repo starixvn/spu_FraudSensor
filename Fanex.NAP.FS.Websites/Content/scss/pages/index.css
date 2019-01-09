@@ -65,6 +65,9 @@ input, button {
   content: "";
   clear: both; }
 
+.position-relative {
+  position: relative; }
+
 .button {
   display: inline-block;
   height: 28px;
@@ -859,6 +862,12 @@ table.dataTable {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box; }
+  table.dataTable thead .sorting {
+    background-image: url(../images/sort_both.png); }
+  table.dataTable thead .sorting_desc {
+    background-image: url(../images/sort_desc.png); }
+  table.dataTable thead .sorting_asc {
+    background-image: url(../images/sort_asc.png); }
 
 .dataTables_scrollHeadInner {
   background-color: #465262; }
@@ -1727,3 +1736,11 @@ table.dataTable tbody tr.selected td {
 
 .dataTables_wrapper .dataTables_paginate {
   margin-left: 20px; }
+
+.info-name {
+  padding: 10px;
+  background-color: #f0f0f0;
+  font-weight: bold; }
+
+.info-value {
+  padding: 10px; }
