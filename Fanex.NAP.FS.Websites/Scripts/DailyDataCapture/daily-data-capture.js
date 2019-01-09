@@ -88,8 +88,8 @@
             { targets: [8, 9, 10], width: "7%" }
         ],
         columns: [
-            { data: obj => obj.MatchId },
-            { data: obj => `<span class='team-home'>${obj.Home}</span> - vs - <span class='team-away'>${obj.Away}</span>` },
+            { data: obj => `${obj.MatchId}<br/><span style='color:#003399;'>${obj.MatchCode}</span>`},
+            { data: obj => `<span class='team-home'>${obj.Home}</span> - vs - <span class='team-away'>${obj.Away}</span><br/><span style='color:#003399;'>${obj.League}</span>` },
             { data: obj => moment(obj.EventDate, "MMM D, YYYY HH:mm:ss").format("MMM D, YYYY") },
             { data: obj => moment(obj.ScannedDate, "MMM D, YYYY HH:mm:ss").format("MMM D, YYYY<br/>hh:mm:ss A") },
             { data: obj => render_history(obj.CompanyTO) },

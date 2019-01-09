@@ -16,6 +16,8 @@
                 .Select(m => new CapturedMatch
                 {
                     MatchId = m.MatchId,
+                    MatchCode = m.MatchCode,
+                    League = CachedRef.GetLeagueName(m.LeagueId),
                     Home = CachedRef.GetTeamName(m.HomeId),
                     Away = CachedRef.GetTeamName(m.AwayId),
                     AgentTO = new ViewModels.History<double?>

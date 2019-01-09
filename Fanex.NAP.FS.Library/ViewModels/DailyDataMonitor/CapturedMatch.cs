@@ -4,6 +4,10 @@
     {
         public int MatchId { get; set; }
 
+        public string MatchCode { get; set; }
+
+        public string League { get; set; }
+
         public string Home { get; set; }
 
         public string Away { get; set; }
