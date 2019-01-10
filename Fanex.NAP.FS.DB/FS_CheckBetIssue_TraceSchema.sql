@@ -2,14 +2,14 @@
 	Created: 20190109@CaseyHuynh
 	Task : CLEAR Table CheckBetScannedMatch. Only Keep data in 14 days
 	DB: bodb_FraudSensor
-	Original:
-
-	Revisions:
-
-	Param's Explanation (filtered by):
+	
+	Reviewer: Billy
 */
+
+USE	bodb_FraudSensor;
+GO
 -------------------------------------------------------------------------------
-CREATE TABLE TempTrace_CheckBet (
+CREATE TABLE [dbo].[TempTrace_CheckBet] (
 	transid				BIGINT, 
 	bettype				INT, 
 	isCashOut			BIT, 
@@ -24,18 +24,29 @@ CREATE TABLE TempTrace_CheckBet (
 	isValidBetteam		TINYINT,
 	Step				INT,
 	TraceTime			DATETIME
-);
-CREATE CLUSTERED INDEX IX_TempTrace_CheckBet_TransID_Bettype ON TempTrace_CheckBet(transid,bettype);
+) ON [DATA]
+GO
 
+CREATE CLUSTERED INDEX CIX_TempTrace_CheckBet_transid_bettype ON [dbo].[TempTrace_CheckBet] (
+	transid				ASC,
+	bettype				ASC
+) ON IDX;
+GO
 ------------------------------------------------------------------------------------------------------
-CREATE TABLE TempTrace_ChangedTickets(
+CREATE TABLE [dbo].[TempTrace_ChangedTickets](
 	transid				BIGINT, 
 	bettype				INT, 
 	original_stake		MONEY,
 	Step				INT,
 	TraceTime			DATETIME
-);
-CREATE CLUSTERED INDEX IX_TempTrace_ChangedTickets_TransID_Bettype ON TempTrace_ChangedTickets(transid,bettype);
+) ON [DATA]
+GO
+
+CREATE CLUSTERED INDEX CIX_TempTrace_ChangedTickets_transid_bettype ON [dbo].[TempTrace_ChangedTickets] (
+	transid				ASC,
+	bettype				ASC
+) ON IDX;
+GO
 ------------------------------------------------------------------------------------------------------
 
 
