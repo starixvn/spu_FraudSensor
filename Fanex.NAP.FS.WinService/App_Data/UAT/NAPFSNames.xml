@@ -11,6 +11,10 @@
     <Setting Key="FS_FraudCase_BSNG_PreCondition" SpName="FS_FraudCase_BSNG_PreCondition_xtest" DbName="DBFS.FraudSensor.bodbSPUNet" />
     <Setting Key="FS_FraudCase_BSNG_Rule" SpName="FS_FraudCase_BSNG_Rule_xtest" DbName="DBFS.FraudSensor.bodbSPUNet" />
   </Function>
+  <Function Name="BetsNearGoal">
+    <Setting Key="FS_FraudCase_BetsNearGoal_PreCondition" SpName="FS_FraudCase_BetsNearGoal_PreCondition_xtest" DbName="DBFS.FraudSensor.bodbSPUNet" />
+    <Setting Key="FS_FraudCase_BetsNearGoal_Rule" SpName="FS_FraudCase_BetsNearGoal_Rule_xtest" DbName="DBFS.FraudSensor.bodbSPUNet" />
+  </Function>
   <Function Name="FlaggedAccount">
     <Setting Key="FS_FraudCase_FlaggedAccount_PreCondition" SpName="FS_FraudCase_FlaggedAccount_PreCondition_xtest" DbName="DBFS.FraudSensor.bodbSPUNet" />
     <Setting Key="FS_FraudCase_FlaggedAccount_Rule" SpName="FS_FraudCase_FlaggedAccount_Rule_xtest" DbName="DBFS.FraudSensor.bodbSPUNet" />
