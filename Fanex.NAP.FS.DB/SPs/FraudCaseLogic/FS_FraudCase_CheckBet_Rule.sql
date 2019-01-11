@@ -19,6 +19,8 @@ AS
 			a) Capture data to trace Issue Cashout Checkbet
 			b) Update Scanned Match only for Sporbooks
 			c) Table CheckBetScannedMatch: Keep data for 14 days only
+		- 20181228@Long: Remove Unique for temp tables [Redmine ID: #107398]
+
 	Param's Explanation (filtered by):
 */
 BEGIN
@@ -88,7 +90,7 @@ BEGIN
 		bettype				INT, 
 		original_stake		MONEY
 	);
-	CREATE UNIQUE CLUSTERED INDEX IX_tmpChangedTickets_TransID_Bettype ON #tmpChangedTickets(transid,bettype);
+	CREATE CLUSTERED INDEX CIX_tmpChangedTickets_TransID_Bettype ON #tmpChangedTickets(transid,bettype);
 
 	IF	OBJECT_ID('tempdb..#tmpCheckBet') IS NOT NULL
 	BEGIN
@@ -108,7 +110,7 @@ BEGIN
 		isValidOdds			TINYINT, 
 		isValidBetteam		TINYINT
 	);
-	CREATE UNIQUE CLUSTERED INDEX IX_tmpCheckBet_TransID_Bettype ON #tmpCheckBet(transid,bettype);
+	CREATE CLUSTERED INDEX CIX_tmpCheckBet_TransID_Bettype ON #tmpCheckBet(transid,bettype);
 	
 	IF	OBJECT_ID('tempdb..#tmpChangedInfo') IS NOT NULL
 	BEGIN
