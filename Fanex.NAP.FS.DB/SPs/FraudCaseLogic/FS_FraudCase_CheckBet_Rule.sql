@@ -15,12 +15,12 @@ AS
 		- 20181114@Long: Split data in SuspiciousInfo by Currency [Redmine ID: #104707]
 		- 20181120@Long: Change the way to get data [Redmine ID: #105113]
 		- 20181228@Long: Modify to check for completely completed matches only [Redmine ID: #107398]
-		- 20190108@CaseyHuynh: 
+		- 20190108@CaseyHuynh:  [Redmine ID: #107398]
 			a) Capture data to trace Issue Cashout Checkbet
 			b) Update Scanned Match only for Sporbooks
 			c) Table CheckBetScannedMatch: Keep data for 14 days only
 		- 20190109@Long: Remove Unique for temp tables [Redmine ID: #107398]
-		- 20190115@Casey: Remove Trace Data script
+		- 20190115@Casey: Remove Trace Data script  [Redmine ID: #107398]
 
 	Param's Explanation (filtered by):
 */
