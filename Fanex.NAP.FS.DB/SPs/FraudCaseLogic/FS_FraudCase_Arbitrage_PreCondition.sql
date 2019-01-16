@@ -201,13 +201,3 @@ BEGIN
 				INNER JOIN #tmpMatchMaxTransId  AS mm WITH (NOLOCK) ON am.matchid = mm.matchid;		
 
 END;
-
-GO
-GRANT EXECUTE ON [dbo].[FS_FraudCase_Arbitrage_PreCondition] TO [bodbSPUNet]
-GO
-GRANT VIEW DEFINITION ON [dbo].[FS_FraudCase_Arbitrage_PreCondition] TO [bodbSPUNet]
-GO
-
-GO
-/*<info serverAlias="DBSPU-bodb_FraudSensor" executers="bodbSPUNet" isFunction="0" isNested="0"></info>*/
-

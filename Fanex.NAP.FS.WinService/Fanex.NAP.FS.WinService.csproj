@@ -186,13 +186,15 @@
     </Compile>
     <Compile Include="FraudCaseExecutor\ArbitrageExecutor.cs" />
     <Compile Include="FraudCaseExecutor\BetsNearGoalExecutor.cs" />
+    <Compile Include="FraudCaseExecutor\BigStakeNearGoalExecutor.cs" />
     <Compile Include="FraudCaseExecutor\CheckBetExecutor.cs" />
     <Compile Include="FraudCaseExecutor\DailyDataCaptureExecutor.cs" />
-    <Compile Include="FraudCaseExecutor\FPSGetAssociationAccountExecutor.cs" />
     <Compile Include="FraudCaseExecutor\DelayGoalExecutor.cs" />
-    <Compile Include="FraudCaseExecutor\GhostExecutor.cs" />
     <Compile Include="FraudCaseExecutor\FlaggedAccountExecutor.cs" />
-    <Compile Include="FraudCaseExecutor\BigStakeNearGoalExecutor.cs" />
+    <Compile Include="FraudCaseExecutor\FPSGetAssociationAccountExecutor.cs" />
+    <Compile Include="FraudCaseExecutor\FraudCaseExecutor.cs" />
+    <Compile Include="FraudCaseExecutor\GhostExecutor.cs" />
+    <Compile Include="FraudCaseExecutor\IFraudCaseExecutor.cs" />
     <Compile Include="FraudCaseExecutor\ScannedOfficeIPExecutor.cs" />
     <Compile Include="FraudCaseFactory\FraudCaseFactory.cs" />
     <Compile Include="FraudCaseManager\FraudCaseManager.cs" />
@@ -216,8 +218,6 @@
       <DependentUpon>ProjectInstaller.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="FraudCaseExecutor\IFraudCaseExecutor.cs" />
-    <Compile Include="FraudCaseExecutor\FraudCaseExecutor.cs" />
     <Compile Include="FraudCaseLoader\IFraudCaseLoader.cs" />
     <Compile Include="FraudCaseLoader\FraudCaseLoader.cs" />
   </ItemGroup>

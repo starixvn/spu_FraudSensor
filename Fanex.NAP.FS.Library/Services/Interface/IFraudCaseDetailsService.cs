@@ -30,12 +30,10 @@
         IEnumerable<CustomerAssociation> GetAssociations(int custId);
 
         IEnumerable<TicketDetails> GetTicketFromIP(string ip, bool isShowSpecialCurrencies);
-
-        byte[] ExportToExcelIpTickets(string ip, string template, bool isShowSpecialCurrencies);
         
         IEnumerable<ArbitrageGroupTicketList> GetArbitrageTickets(int matchId, DateTime eventDate);
 
-        byte[] ExportToExcelIpTickets(string ip, string template);
+        byte[] ExportToExcelIpTickets(string ip, string template, bool isShowSpecialCurrencies);
 
         byte[] ExportArbitrageExcel(int matchId, DateTime eventDate, string templatePath);
 

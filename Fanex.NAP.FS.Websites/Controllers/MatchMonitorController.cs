@@ -103,7 +103,7 @@ namespace Fanex.NAP.FS.Websites.Controllers
 
         public ActionResult GetFraudCaseCustomerDetails(int fraudCaseId, int matchId, DateTime eventDate)
         {
-            var data = _fraudCaseDetailService.GetCustomerDetails(matchId, fraudCaseId, eventDate);
+            var data = _fraudCaseDetailService.GetCustomerDetails(matchId, fraudCaseId, eventDate, IsShowSpecialCurrencies);
 
             return Json(data, JsonRequestBehavior.AllowGet);
         }

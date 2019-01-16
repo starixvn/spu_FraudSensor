@@ -18,6 +18,7 @@ AS
 	Revisions:
 		- 20180815@Long: Implement Get Tickets by Match & Fraud Case for Arbitrage
 		- 20181114@Long: Adding View Permission on Special Currencies [Redmine ID: #104707]
+
 	Param's Explanation:
 */
 BEGIN
@@ -61,7 +62,7 @@ BEGIN
 	FROM dbo.ArbitrageTicketDetails si WITH(NOLOCK)
 		INNER JOIN bodb02.dbo.Customer c WITH(NOLOCK) ON si.CustId = c.custid
 		CROSS APPLY dbo.SPU_StrSplit(si.transids, ',')
-	WHERE	si.MatchId = @MatchId;
+	WHERE	si.MatchId = @MatchId
 		AND (@IsShowSpecialCurrencies = 1 OR c.currency NOT IN (SELECT CurrencyId FROM dbo.SpecialCurrency WITH(NOLOCK)));
 			
 	--===	2.2 GET: Homeid and AwayId
@@ -133,5 +134,3 @@ BEGIN
 		END;
 END;
 
-GO
-/*<info serverAlias="DBSPU-bodb_FraudSensor" executers="bodbSPUNet" isFunction="0" isNested="0"></info>*/
