@@ -77,7 +77,7 @@ namespace Fanex.NAP.FS.Websites.Controllers
         {
             if (fraudCaseId == (int)FraudCaseId.Arbitrage && violations > 1000)
             {
-                var content = _fraudCaseDetailService.ExportArbitrageCsv(matchId, eventDate);
+                var content = _fraudCaseDetailService.ExportArbitrageCsv(matchId, eventDate, IsShowSpecialCurrencies);
 
                 var encoded = Encoding.UTF8.GetBytes(content);
 
@@ -110,7 +110,7 @@ namespace Fanex.NAP.FS.Websites.Controllers
 
         public ActionResult GetArbitrageTicketDetails(int matchId, DateTime eventDate)
         {
-            var data = _fraudCaseDetailService.GetArbitrageTickets(matchId, eventDate);
+            var data = _fraudCaseDetailService.GetArbitrageTickets(matchId, eventDate, IsShowSpecialCurrencies);
 
             return Json(data);
         }
@@ -122,7 +122,7 @@ namespace Fanex.NAP.FS.Websites.Controllers
                 var template = Server.MapPath("~/App_Data/Excel Template/MatchMonitor/FraudCaseDetail/arbitrage.xlsx");
 
                 var fileName = string.Format("FraudCaseDetails_{0}.xlsx", DateTime.Today.ToString("yyyyMMdd"));
-                return File(_fraudCaseDetailService.ExportArbitrageExcel(matchId, eventDate, template), "application/vnd.ms-excel", fileName);
+                return File(_fraudCaseDetailService.ExportArbitrageExcel(matchId, eventDate, IsShowSpecialCurrencies, template), "application/vnd.ms-excel", fileName);
             }
             else
             {
@@ -173,7 +173,7 @@ namespace Fanex.NAP.FS.Websites.Controllers
             var fileName = string.Format("FraudCaseDetails_{0}", DateTime.Today.ToString("yyyyMMdd"));
 
             var content = _fraudCaseDetailService
-                .ExportArbitrageExcel(matchId, eventDate, template, obj => obj.BettypeName == bettype && obj.Score == score && (double)obj.Handicap == handicap && obj.GroupId == groupId);
+                .ExportArbitrageExcel(matchId, eventDate, IsShowSpecialCurrencies, template, obj => obj.BettypeName == bettype && obj.Score == score && (double)obj.Handicap == handicap && obj.GroupId == groupId);
 
             return ExcelFile(content, fileName);
         }

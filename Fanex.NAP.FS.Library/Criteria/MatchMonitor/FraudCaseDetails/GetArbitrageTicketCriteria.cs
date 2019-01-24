@@ -9,6 +9,8 @@
 
         public DateTime EventDate { get; set; }
 
+        public bool IsShowSpecialCurrencies { get; set; }
+
         public override string GetSettingKey() => "FS_Rpt_MatchMonitor_Details_Get_ByTicket_Arbitrage";
 
         public override bool IsValid() => true;

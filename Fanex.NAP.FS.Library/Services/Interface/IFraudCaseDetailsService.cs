@@ -31,14 +31,14 @@
 
         IEnumerable<TicketDetails> GetTicketFromIP(string ip, bool isShowSpecialCurrencies);
         
-        IEnumerable<ArbitrageGroupTicketList> GetArbitrageTickets(int matchId, DateTime eventDate);
+        IEnumerable<ArbitrageGroupTicketList> GetArbitrageTickets(int matchId, DateTime eventDate, bool isShowSpecialCurrencies);
 
         byte[] ExportToExcelIpTickets(string ip, string template, bool isShowSpecialCurrencies);
 
-        byte[] ExportArbitrageExcel(int matchId, DateTime eventDate, string templatePath);
+        byte[] ExportArbitrageExcel(int matchId, DateTime eventDate, bool isShowSpecialCurrencies, string templatePath);
 
-        byte[] ExportArbitrageExcel(int matchId, DateTime eventDate, string templatePath, Func<ArbitrageGroupTicketList, bool> filter);
+        byte[] ExportArbitrageExcel(int matchId, DateTime eventDate, bool isShowSpecialCurrencies, string templatePath, Func<ArbitrageGroupTicketList, bool> filter);
 
-        string ExportArbitrageCsv(int matchId, DateTime eventDate);
+        string ExportArbitrageCsv(int matchId, DateTime eventDate, bool isShowSpecialCurrencies);
     }
 }

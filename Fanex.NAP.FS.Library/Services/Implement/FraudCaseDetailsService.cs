@@ -389,9 +389,9 @@
             return tsk.Where(t => t.Result != null).SelectMany(t => t.Result);
         }
 
-        public IEnumerable<ArbitrageGroupTicketList> GetArbitrageTickets(int matchId, DateTime eventDate)
+        public IEnumerable<ArbitrageGroupTicketList> GetArbitrageTickets(int matchId, DateTime eventDate, bool isShowSpecialCurrencies)
         {
-            var rawData = DataService.GetData<TicketInfo>(new GetArbitrageTicketCriteria { MatchId = matchId, EventDate = eventDate });
+            var rawData = DataService.GetData<TicketInfo>(new GetArbitrageTicketCriteria { MatchId = matchId, EventDate = eventDate, IsShowSpecialCurrencies = isShowSpecialCurrencies });
 
             var url = AppSettings.Get("FPS_WEBAPI_GET_CUSTOMER_EVIDENCE");
 
@@ -449,13 +449,13 @@
             return data;
         }
 
-        public byte[] ExportArbitrageExcel(int matchId, DateTime eventDate, string templatePath)
+        public byte[] ExportArbitrageExcel(int matchId, DateTime eventDate, bool isShowSpecialCurrencies, string templatePath)
         {
             var fraudCaseId = (int)FraudCaseId.Arbitrage;
 
             var legend = GetInfo(matchId, (int)FraudCaseId.Arbitrage, eventDate);
 
-            var tickets = GetArbitrageTickets(matchId, eventDate).SelectMany(obj => obj.Home.Concat(obj.Away));
+            var tickets = GetArbitrageTickets(matchId, eventDate, isShowSpecialCurrencies).SelectMany(obj => obj.Home.Concat(obj.Away));
             var customers = Enumerable.Empty<CustomerDetails>();
 
             var wb =
@@ -466,11 +466,11 @@
             return wb.ToBytes();
         }
 
-        public byte[] ExportArbitrageExcel(int matchId, DateTime eventDate, string templatePath, Func<ArbitrageGroupTicketList, bool> filter)
+        public byte[] ExportArbitrageExcel(int matchId, DateTime eventDate, bool isShowSpecialCurrencies, string templatePath, Func<ArbitrageGroupTicketList, bool> filter)
         {
             var legend = GetInfo(matchId, (int)FraudCaseId.Arbitrage, eventDate);
 
-            var tickets = GetArbitrageTickets(matchId, eventDate).Where(filter).SelectMany(obj => obj.Home.Concat(obj.Away));
+            var tickets = GetArbitrageTickets(matchId, eventDate, isShowSpecialCurrencies).Where(filter).SelectMany(obj => obj.Home.Concat(obj.Away));
 
             var wb =
                 ExcelUtilities.GetWorkbook(templatePath)
@@ -479,9 +479,9 @@
             return wb.ToBytes();
         }
 
-        public string ExportArbitrageCsv(int matchId, DateTime eventDate)
+        public string ExportArbitrageCsv(int matchId, DateTime eventDate, bool isShowSpecialCurrencies)
         {
-            var tickets = GetArbitrageTickets(matchId, eventDate).SelectMany(obj => obj.Home.Concat(obj.Away));
+            var tickets = GetArbitrageTickets(matchId, eventDate, isShowSpecialCurrencies).SelectMany(obj => obj.Home.Concat(obj.Away));
             var info = GetInfo(matchId, (int)FraudCaseId.Arbitrage, eventDate);
 
             var txt = new StringBuilder();
