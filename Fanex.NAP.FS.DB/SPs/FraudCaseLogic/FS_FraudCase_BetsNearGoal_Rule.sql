@@ -15,6 +15,7 @@ AS
 
 	Revisions:	
 		- 20181207@Long: Created [Redmine ID: 106079]
+		- 20190219@Long: Store more info (Currency & Username) for table SuspiciousCutomers [Redmine ID: 107858]
 
 	Param's Explanation (filtered by):
 */
@@ -34,6 +35,9 @@ BEGIN
 	
 	CREATE TABLE #tmpFraudTickets(
 			CustId				INT
+		,	Username			NVARCHAR(50)
+		,	CurrencyId			TINYINT
+		,	CurrencyName		NVARCHAR(50)
 		,	MatchId				INT
 		,	EventDate			DATETIME
 		,	TransId				BIGINT
@@ -45,6 +49,22 @@ BEGIN
 			CustId				ASC
 		,	MatchId				ASC
 		,	TransId				ASC
+	);
+
+	IF OBJECT_ID('tempdb..#tmpFraudTicketsCustInfo') IS NOT NULL
+	BEGIN
+		DROP TABLE	#tmpFraudTicketsCustInfo;
+	END
+	
+	CREATE TABLE #tmpFraudTicketsCustInfo(
+			CustId				INT
+		,	Username			NVARCHAR(50)
+		,	CurrencyId			TINYINT
+		,	CurrencyName		NVARCHAR(50)
+	);
+
+	CREATE CLUSTERED INDEX	#CIX_tmpFraudTicketsCustInfoIdx ON #tmpFraudTicketsCustInfo (
+			CustId				ASC
 	);
 
 	IF OBJECT_ID('tempdb..#tmpMatches') IS NOT NULL
@@ -66,8 +86,11 @@ BEGIN
 	SELECT val FROM dbo.SPU_StrSplit(@MatchIds, ',');	
 	
 	------- GET FRAUD TICKETS-------
-	INSERT INTO #tmpFraudTickets (CustId, MatchId, EventDate, TransId, LiveHomeScore, LiveAwayScore)
+	INSERT INTO #tmpFraudTickets (CustId, Username, CurrencyId, CurrencyName, MatchId, EventDate, TransId, LiveHomeScore, LiveAwayScore)
 	SELECT  ans.custid
+		,	ans.Username
+		,	ans.currency
+		,	ans.CurrencyName
 		,	ans.matchid
 		,	tch.eventdate
 		,	ans.transid
@@ -143,15 +166,18 @@ BEGIN
 		WHERE si.MatchID IS NULL AND si.FraudCaseId IS NULL AND si.CustId IS NULL
 		GROUP BY ft.CustId, ft.MatchId, ft.EventDate;
 		
-		UPDATE sc WITH (ROWLOCK, UPDLOCK)
-		SET sc.IsVerified = 0
-		FROM dbo.SuspiciousCustomer sc 
-		WHERE sc.Custid IN (SELECT DISTINCT(ft.Custid)
-							FROM #tmpFraudTickets ft WITH (NOLOCK));
+		INSERT INTO #tmpFraudTicketsCustInfo (CustId, Username, CurrencyId, CurrencyName)
+		SELECT DISTINCT ft.Custid, ft.Username, ft.CurrencyId, ft.CurrencyName
+		FROM #tmpFraudTickets ft WITH (NOLOCK);
 
-		INSERT INTO dbo.SuspiciousCustomer(Custid, IsDelinquent, IsHedge, IsDirty, IsVerified)
-		SELECT DISTINCT ft.CustId, 0, 0, 0, 0
-		FROM #tmpFraudTickets ft WITH (NOLOCK)
+		UPDATE sc WITH (ROWLOCK, UPDLOCK)
+		SET sc.IsVerified = 0, sc.Username = t.Username
+		FROM dbo.SuspiciousCustomer sc
+			INNER JOIN #tmpFraudTicketsCustInfo t ON sc.Custid = t.CustId;
+
+		INSERT INTO dbo.SuspiciousCustomer(Custid, Username, CurrencyId, CurrencyName, IsDelinquent, IsHedge, IsDirty, IsVerified)
+		SELECT ft.CustId, ft.Username, ft.CurrencyId, ft.CurrencyName, 0, 0, 0, 0
+		FROM #tmpFraudTicketsCustInfo ft WITH (NOLOCK)
 		WHERE ft.CustId NOT IN (SELECT sc.CustId 
 								FROM dbo.SuspiciousCustomer sc WITH (NOLOCK));
 	END;	
