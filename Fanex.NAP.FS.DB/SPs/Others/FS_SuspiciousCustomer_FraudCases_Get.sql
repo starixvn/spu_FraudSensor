@@ -1,8 +1,3 @@
-SET QUOTED_IDENTIFIER ON 
-GO
-SET ANSI_NULLS ON 
-GO
-
 CREATE PROCEDURE [dbo].[FS_SuspiciousCustomer_FraudCases_Get]
 		@CustId	INT
 	,	@Environment		INT = 3
@@ -14,7 +9,8 @@ AS
 	Original:
 
 	Revisions:
-			20181002@JohnNgo: Check @Environment for Fraudcase
+			- 20181002@JohnNgo: Check @Environment for Fraudcase
+			- 20190114@John: Exclude Internal Fraud on Suspicious Customer report [Redmine ID:#107858]
 	
 	Param's Explanation:    
 			+ @Environment: 3-Production get Istest=0 ELSE All (Clone from [FS_FraudCase_GetAll])  
@@ -22,6 +18,8 @@ AS
 
 BEGIN
 	SET NOCOUNT ON;
+
+	DECLARE @IsInternal BIT = 0;
 
 	SELECT	[FraudCaseId]		=	fs.FraudCaseId
 		,	[FraudCaseName]		=	fs.FraudCaseName
@@ -36,7 +34,7 @@ BEGIN
 											AND su.FraudCaseId = fs.FraudCaseId)
 	FROM (
 			SELECT	[FraudCaseId]		=	si.FraudCaseId
-				,	[FraudCaseName]		=	(SELECT TOP(1) fc.FraudCaseName FROM dbo.FraudCase AS fc WITH(NOLOCK) WHERE fc.FraudCaseId = si.FraudCaseId)
+				,	[FraudCaseName]		=	(SELECT TOP(1) fc.FraudCaseName FROM dbo.FraudCase AS fc WITH(NOLOCK) WHERE fc.FraudCaseId = si.FraudCaseId AND fc.IsInternal = @IsInternal)
 				,	[Vilolations]		=	SUM(si.ViolationCounter)
 				,	[Verified]			=	SUM(CASE WHEN si.IsVerified = '1' THEN ViolationCounter ELSE 0 END) 
 				,	[LastVerifiedDate]	=	MAX(si.VerifiedDate)
@@ -44,22 +42,10 @@ BEGIN
 			WHERE CustId = @CustId
 			GROUP BY si.FraudCaseId) AS fs
 	INNER JOIN dbo.FraudCase c WITH (NOLOCK) ON c.FraudCaseId = fs.FraudCaseId
-	WHERE c.IsTest = (CASE WHEN @Environment = 3 THEN 0 ELSE c.IsTest END)
+	WHERE c.IsTest = (CASE WHEN @Environment = 3 THEN 0 ELSE c.IsTest END) AND c.IsInternal = @IsInternal
 	ORDER BY fs.FraudCaseName Asc;
 
 END;
-
-GO
-SET QUOTED_IDENTIFIER OFF 
-GO
-SET ANSI_NULLS ON 
-GO
-
-GO 
- GRANT EXECUTE ON [dbo].[FS_SuspiciousCustomer_FraudCases_Get] TO [bodbSPUNet]
-GO 
- GRANT VIEW DEFINITION ON [dbo].[FS_SuspiciousCustomer_FraudCases_Get] TO [bodbSPUNet]
-GO 
 
 GO
 /*<info serverAlias="DBSPU-bodb_FraudSensor" executers="bodbSPUNet" isFunction="0" isNested="0"></info>*/
