@@ -1,9 +1,3 @@
-
-SET QUOTED_IDENTIFIER ON 
-GO
-SET ANSI_NULLS ON 
-GO
-
 ALTER PROCEDURE [dbo].[FS_Rpt_MatchMonitor_Details_Get_ByTicket_Arbitrage]
 		@MatchId					INT
 	,	@EventDate					DATETIME
@@ -18,6 +12,7 @@ AS
 	Revisions:
 		- 20180815@Long: Implement Get Tickets by Match & Fraud Case for Arbitrage
 		- 20181114@Long: Adding View Permission on Special Currencies [Redmine ID: #104707]
+		- 20190219@John: Update logic Special Currencies and seperate Arbitrage [Redmine ID: #99753]
 
 	Param's Explanation:
 */
@@ -46,6 +41,10 @@ BEGIN
 		,	TransId		BIGINT
 	 );
 
+	CREATE CLUSTERED INDEX #CIX_tmpFraudTickets_TransID ON #tmpFraudTickets (
+			TransID			ASC
+	);
+
 	--===	2.1 GET: Balance Up Day and Move Bet Day
 	INSERT INTO #tmpBUMB(BUDay,MBDay)
 	EXECUTE bodb02.dbo.Age_SelBalanceUpDay;
@@ -60,10 +59,10 @@ BEGIN
 	INSERT INTO #tmpFraudTickets(GroupId, TransId)
 	SELECT si.GroupId, VAL
 	FROM dbo.ArbitrageTicketDetails si WITH(NOLOCK)
-		INNER JOIN bodb02.dbo.Customer c WITH(NOLOCK) ON si.CustId = c.custid
+		INNER JOIN dbo.SuspiciousCustomer c WITH(NOLOCK) ON si.CustId = c.custid
 		CROSS APPLY dbo.SPU_StrSplit(si.transids, ',')
 	WHERE	si.MatchId = @MatchId
-		AND (@IsShowSpecialCurrencies = 1 OR c.currency NOT IN (SELECT CurrencyId FROM dbo.SpecialCurrency WITH(NOLOCK)));
+		AND (@IsShowSpecialCurrencies = 1 OR c.CurrencyId NOT IN (SELECT CurrencyId FROM dbo.SpecialCurrency WITH(NOLOCK)));
 			
 	--===	2.2 GET: Homeid and AwayId
 	DECLARE @homeId INT;
