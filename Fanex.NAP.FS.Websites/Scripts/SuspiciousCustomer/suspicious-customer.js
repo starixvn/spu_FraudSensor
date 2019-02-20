@@ -117,8 +117,7 @@
         }
 
         table = customer_table.DataTable({
-                serverSide: true,
-                processing:true,
+                serverSide: true,                
                 ajax: {
                     url: urlAction,
                     data: dto,
