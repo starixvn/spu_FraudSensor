@@ -13,6 +13,8 @@
 
     var saved_dto = null;
 
+    var table = null;
+
     $("table", note_popup).DataTable({
         ordering: false,
         searching: false,
@@ -67,41 +69,7 @@
 
     $([date_type, fraud_case, is_verified, classification]).select2({
         minimumResultsForSearch: -1
-    });
-
-    customer_table.DataTable({
-        ordering: false,
-        searching: false,
-        lengthMenu: [10, 20, 50, 100, 500],
-        pageLength: 50,
-        scrollY: "70vh",
-        scrollCollapse: true,
-        dom: "t<'pagination'<'page-size'lp>i>",
-        language: {
-            lengthMenu: "Page size _MENU_",
-            paginate: {
-                previous: "Back"
-            },
-            info: "Displaying _START_ to _END_ of _TOTAL_ item(s)",
-            infoEmpty: "",
-            zeroRecords: "There's no data"
-        },
-        columns: [
-            { data: (obj, typet, set, meta) => meta.row + 1, className: "text-center", width: "40px" },
-            { data: build_classification, className: "has-icon text-center list-icon", width: "120px" },
-            { data: obj => obj.HasNote ? '<span class="icon-note-text icon-note"></span>' : null, className: "has-icon text-center", width: "90px" },
-            { data: obj => obj.IsVerified ? '<span class="icon-approval"></span>' : null, className: "has-icon text-center", width: "90px" },
-            { data: obj => `<a href="${common.modifyRelativeUrl(`/SuspiciousCustomerDetails?custId=${obj.CustId}&from=${from.val()}&to=${to.val()}&custname=${obj.Username}`)}" target='_blank'>${obj.Username}</a>`, width: "300px" },
-            { data: obj => obj.TotalViolation },
-            { data: obj => obj.ViolatedCases },
-            { data: obj => obj.BetCount },
-            { data: obj => obj.Assignee }
-        ],
-        columnDefs: [
-            { defaultContent: "-", targets: "_all" },
-            { targets: [-2, -3, -4], className: "text-right", width: "120px" }
-        ]
-    })
+    });        
 
     $(".-primary").click(get_customers);
 
@@ -142,22 +110,58 @@
 
         saved_dto = dto;
 
-        var url = common.modifyRelativeUrl("/suspiciouscustomer/Generate");
+        var urlAction = common.modifyRelativeUrl("/suspiciouscustomer/Generate");
 
-        $.get(url, dto, function (json) {
-            customer_table.DataTable().clear().rows.add(json).draw();
-            $("#customer_grid").show();
+        if (table != null) {
+            table.destroy();
+        }
 
-            if (first_time) {
-                customer_table.DataTable().draw();
-                customer_table.DataTable().draw();
-                first_time = false;
-            }
+        table = customer_table.DataTable({
+                serverSide: true,
+                processing:true,
+                ajax: {
+                    url: urlAction,
+                    data: dto,
+                    type: "POST"
+                },                
+                ordering: false,
+                searching: false,
+                lengthMenu: [10, 20, 50, 100, 500],
+                pageLength: 50,
+                scrollY: "70vh",
+                scrollCollapse: true,
+                dom: "t<'pagination'<'page-size'lp>i>",
+                language: {
+                    lengthMenu: "Page size _MENU_",
+                    paginate: {
+                        previous: "Back"
+                    },
+                    info: "Displaying _START_ to _END_ of _TOTAL_ item(s)",
+                    infoEmpty: "",
+                    zeroRecords: "There's no data"
+                },
+                columns: [                    
+                    { data: obj => obj.Counter, className: "text-center", width: "40px" },
+                    { data: build_classification, className: "has-icon text-center list-icon", width: "120px" },
+                    { data: obj => obj.HasNote ? '<span class="icon-note-text icon-note"></span>' : null, className: "has-icon text-center", width: "90px" },
+                    { data: obj => obj.IsVerified ? '<span class="icon-approval"></span>' : null, className: "has-icon text-center", width: "90px" },
+                    { data: obj => `<a href="${common.modifyRelativeUrl(`/SuspiciousCustomerDetails?custId=${obj.CustId}&from=${from.val()}&to=${to.val()}&custname=${obj.Username}`)}" target='_blank'>${obj.Username}</a>`, width: "300px" },
+                    { data: obj => obj.TotalViolation },
+                    { data: obj => obj.ViolatedCases },
+                    { data: obj => obj.BetCount },
+                    { data: obj => obj.Assignee }
+                ],
+                columnDefs: [
+                    { defaultContent: "-", targets: "_all" },
+                    { targets: [-2, -3, -4], className: "text-right", width: "120px" }
+                    ]
+                }
+        );
 
-            $("span.icon-note-text").click(e => create_popup(e, customer_table.DataTable().row($(e.target).parents("tr")).data()))
+       
 
-            common.closeLoading();
-        });
+        $("#customer_grid").show();
+        common.closeLoading();               
     }
 
     function get_fraud_case() {
