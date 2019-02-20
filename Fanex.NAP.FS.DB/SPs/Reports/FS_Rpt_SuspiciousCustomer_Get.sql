@@ -1,8 +1,3 @@
-SET QUOTED_IDENTIFIER ON 
-GO
-SET ANSI_NULLS ON 
-GO
-
 ALTER PROCEDURE [dbo].[FS_Rpt_SuspiciousCustomer_Get] 
 		@FromDate					DATETIME
 	,	@ToDate						DATETIME
@@ -15,6 +10,10 @@ ALTER PROCEDURE [dbo].[FS_Rpt_SuspiciousCustomer_Get]
 	,	@AssigneeId					INT = NULL
 	,	@Environment				INT = 3
 	,	@IsShowSpecialCurrencies	BIT = 0
+	,	@PageSize					INT	= 50
+	,	@PageIndex					INT = 1
+	,	@IsExportExcel				BIT	= 0
+	,	@TotalItems					INT = 0 OUTPUT
 AS
 /*
 	Created: 20180320@Long
@@ -28,8 +27,7 @@ AS
 			+ Update @AssingeeId = 0 If filter By "All"
 			+ Return Assignee Username Instead Of AssigneeId
 		- 20181114@Long: Adding View Permission on Special Currencies [Redmine ID: #104707]
-		- 20190114@John: Exclude Internal Fraud on Suspicious Customer report [Redmine ID:#107858]
-
+		- 20190114@John: Exclude Internal Fraud on Suspicious Customer report and support paging [Redmine ID:#107858]
 
 	Param's Explanation:    
 			+ Add Condition for Customer Log GET: cl.LogType = 1
@@ -37,7 +35,8 @@ AS
 BEGIN
 	SET NOCOUNT ON;
 	
-DECLARE @IsInternal BIT = 0;
+	DECLARE @RowCount INT, @RowStart INT, @RowEnd INT
+	DECLARE @IsInternal BIT = 0;
 
 	IF OBJECT_ID('tempdb..#tmpFraudCases') IS NOT NULL
 	BEGIN
@@ -68,6 +67,30 @@ DECLARE @IsInternal BIT = 0;
 
 	CREATE CLUSTERED INDEX #CIX_tmpCustomerSuspiciousInfo_CustId ON #tmpCustomerSuspiciousInfo (
 			CustId			ASC
+	);
+
+	IF OBJECT_ID('tempdb..#tmpCustomerSuspiciousInfoPaging') IS NOT NULL
+	BEGIN
+		DROP TABLE	#tmpCustomerSuspiciousInfoPaging;
+	END
+
+	CREATE TABLE #tmpCustomerSuspiciousInfoPaging (
+			[RowIdx]			INT
+		,	[CustId]			INT
+		,	[Username]			NVARCHAR(50)
+		,	[HasNote]			BIT
+		,	[IsDelinquent]		BIT
+		,	[IsDirty]			BIT
+		,	[IsHedge]			BIT
+		,	[IsVerified]		BIT
+		,	[TotalViolation]	INT
+		,	[ViolatedCases]		INT
+		,	[BetCount]			INT
+		,	[Assignee]			NVARCHAR(50) 
+	);
+
+	CREATE CLUSTERED INDEX #CIX_tmpCustomerSuspiciousInfoPaging_RowIdx ON #tmpCustomerSuspiciousInfoPaging (
+			RowIdx			ASC
 	);
 
 	IF OBJECT_ID('tempdb..#tmpSuspiciousInfo') IS NOT NULL
@@ -162,7 +185,9 @@ DECLARE @IsInternal BIT = 0;
 	FROM #tmpSuspiciousCustomer sc WITH(NOLOCK)
 		INNER JOIN #tmpSuspiciousInfo si WITH(NOLOCK) ON si.CustId = sc.Custid
 	
-	SELECT	[CustId]			= si.custid
+	INSERT INTO #tmpCustomerSuspiciousInfoPaging ([RowIdx], [CustId], [Username], [HasNote], [IsDelinquent], [IsDirty], [IsHedge], [IsVerified], [TotalViolation], [ViolatedCases], [BetCount], [Assignee])
+	SELECT	[RowIdx]			= ROW_NUMBER() OVER (ORDER BY si.IsDirty DESC,	si.TotalViolation DESC,	si.ViolatedCases DESC, si.BetCount DESC, c.username	DESC)
+		,	[CustId]			= si.custid
 		,	[Username]			= c.username
 		,	[HasNote]			= si.HasNote
 		,	[IsDelinquent]		= si.IsDelinquent
@@ -182,13 +207,34 @@ DECLARE @IsInternal BIT = 0;
 									END
 			)
 		AND (@Username IS NULL OR c.username = @Username)		
-		AND (@IsShowSpecialCurrencies = 1 OR c.currency NOT IN (SELECT CurrencyId FROM dbo.SpecialCurrency WITH(NOLOCK)))
-	ORDER BY IsDirty		DESC
-		,	ViolatedCases	DESC
-		,	TotalViolation	DESC
-		,	BetCount		DESC
-		,	c.username		DESC
-		;
+		AND (@IsShowSpecialCurrencies = 1 OR c.Currency NOT IN (SELECT CurrencyId FROM dbo.SpecialCurrency WITH(NOLOCK)));
+	
+	SELECT @TotalItems = @@ROWCOUNT
+	
+	IF @IsExportExcel = 0
+	BEGIN
+		SELECT  @RowStart = (@PageIndex - 1) * @PageSize + 1,
+				@RowEnd = @RowStart + @PageSize - 1
+	END
+	ELSE
+	BEGIN
+		SELECT  @RowStart = 1,
+				@RowEnd = @TotalItems
+	END
+
+	SELECT	[CustId]
+		,	[Username]
+		,	[HasNote]
+		,	[IsDelinquent]
+		,	[IsDirty]
+		,	[IsHedge]
+		,	[IsVerified]
+		,	[TotalViolation]
+		,	[ViolatedCases]
+		,	[BetCount]
+		,	[Assignee]
+	FROM #tmpCustomerSuspiciousInfoPaging WHERE RowIdx BETWEEN @RowStart AND @RowEnd
+
 END;
 
 GO
