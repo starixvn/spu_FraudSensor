@@ -96,8 +96,6 @@
     })
 
     function get_customers() {
-        //common.showLoading();
-
         var dto = {
             Username: $("#member").val(),
             FromDate: from.val(),
@@ -112,18 +110,26 @@
 
         var urlAction = common.modifyRelativeUrl("/suspiciouscustomer/Generate");
 
-        if (table != null) {
-            table.destroy();
-        }
+        //if (table != null) {
+        //    table.destroy();
+        //}
 
         table = customer_table.DataTable({
+            destroy: true,
             serverSide: true, 
-            processing: true,
+            processing: false,
             stateSave: true,
                 ajax: {
                     url: urlAction,
                     data: dto,
-                    type: "POST"
+                    type: "POST",
+                    beforeSend: function () {
+                        common.showLoading();
+                    },
+                    complete: function () {
+                        common.closeLoading(); 
+                        
+                    }
                 },                
                 ordering: false,
                 searching: false,
@@ -165,7 +171,7 @@
         });
 
         $("#customer_grid").show();
-       // common.closeLoading();               
+                    
     }
 
     function get_fraud_case() {
