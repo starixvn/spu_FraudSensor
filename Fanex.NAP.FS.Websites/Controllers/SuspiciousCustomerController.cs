@@ -12,6 +12,7 @@ namespace Fanex.NAP.FS.Websites.Controllers
     using System.Collections.Generic;
     using System.Configuration;
     using System.Linq;
+    using System.Text;
     using System.Threading.Tasks;
     using System.Web.Mvc;
 
@@ -130,11 +131,23 @@ namespace Fanex.NAP.FS.Websites.Controllers
             return Json(result, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult ExportExcel(SuspiciousCustomerReportGetCriteria criteria, string fraudCaseName, string assignee)
+        public ActionResult ExportExcel(SuspiciousCustomerReportGetCriteria criteria, string fraudCaseName, string assignee, string classificationName, string verified)
         {
             criteria.IsExportExcel = true;
             criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
-            var file = _suspiciousCustomerReportService.ExportExcel(criteria, fraudCaseName, assignee, Server.MapPath("~/App_Data/Excel Template/SuspiciousCustomer/template.xlsx"));
+            var data = _suspiciousCustomerReportService.GetData(criteria);
+            if(data.Count() > 1000)
+            {
+                var csvData = _suspiciousCustomerReportService.ExportCSV(data, criteria, fraudCaseName, assignee, classificationName, verified);
+
+                var csvFileName = string.Format("SuspiciousCustomer_{0}.csv", DateTime.Now.ToString("yyyyMMdd"));
+
+                var encoded = Encoding.UTF8.GetBytes(csvData);
+
+                return File(encoded, "text/plain", csvFileName);
+            }
+
+            var file = _suspiciousCustomerReportService.ExportExcel(criteria, fraudCaseName, assignee, Server.MapPath("~/App_Data/Excel Template/SuspiciousCustomer/template.xlsx"), data);
             var fileName = string.Format("SuspiciousCustomer_{0}.xlsx", DateTime.Now.ToString("yyyyMMdd"));
 
             return File(file, "application/vnd.ms-excel", fileName);

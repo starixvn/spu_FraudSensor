@@ -312,6 +312,10 @@
 
         dto.assignee = assignee.find(":selected").text();
 
+        dto.classificationName = classification.find(":selected").text();
+
+        dto.verified = is_verified.find(":selected").text();
+
         common.downloadFile(url, dto);
     }
 
