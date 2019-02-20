@@ -96,7 +96,7 @@
     })
 
     function get_customers() {
-        common.showLoading();
+        //common.showLoading();
 
         var dto = {
             Username: $("#member").val(),
@@ -117,7 +117,9 @@
         }
 
         table = customer_table.DataTable({
-                serverSide: true,                
+            serverSide: true, 
+            processing: true,
+            stateSave: true,
                 ajax: {
                     url: urlAction,
                     data: dto,
@@ -137,7 +139,8 @@
                     },
                     info: "Displaying _START_ to _END_ of _TOTAL_ item(s)",
                     infoEmpty: "",
-                    zeroRecords: "There's no data"
+                    zeroRecords: "There's no data",
+                    processing: 'Loading...'
                 },
                 columns: [                    
                     { data: obj => obj.Counter, className: "text-center", width: "40px" },
@@ -162,7 +165,7 @@
         });
 
         $("#customer_grid").show();
-        common.closeLoading();               
+       // common.closeLoading();               
     }
 
     function get_fraud_case() {
