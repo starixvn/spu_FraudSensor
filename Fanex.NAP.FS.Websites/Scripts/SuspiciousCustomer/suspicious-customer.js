@@ -118,7 +118,7 @@
             destroy: true,
             serverSide: true, 
             processing: false,
-            stateSave: true,
+            stateSave: false,
                 ajax: {
                     url: urlAction,
                     data: dto,
