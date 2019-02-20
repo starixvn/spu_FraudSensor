@@ -158,7 +158,7 @@
                 }
         );
                
-        table.on('click','span.icon-note-text', function() {
+        table.on('click','span.icon-note-text', function(event) {
             create_popup(event, this);            
         });
 
