@@ -143,7 +143,7 @@
                 columns: [                    
                     { data: obj => obj.Counter, className: "text-center", width: "40px" },
                     { data: build_classification, className: "has-icon text-center list-icon", width: "120px" },
-                    { data: obj => obj.HasNote ? '<span class="icon-note-text icon-note"></span>' : null, className: "has-icon text-center", width: "90px" },
+                    { data: build_note, className: "has-icon text-center", width: "90px" },
                     { data: obj => obj.IsVerified ? '<span class="icon-approval"></span>' : null, className: "has-icon text-center", width: "90px" },
                     { data: obj => `<a href="${common.modifyRelativeUrl(`/SuspiciousCustomerDetails?custId=${obj.CustId}&from=${from.val()}&to=${to.val()}&custname=${obj.Username}`)}" target='_blank'>${obj.Username}</a>`, width: "300px" },
                     { data: obj => obj.TotalViolation },
@@ -157,8 +157,10 @@
                     ]
                 }
         );
-
-       
+               
+        table.on('click','span.icon-note-text', function() {
+            create_popup(event, this);            
+        });
 
         $("#customer_grid").show();
         common.closeLoading();               
@@ -186,6 +188,10 @@
                 assignee.append(`<option value='${json[i].Id}'>${json[i].Username}</option>`)
             }
         })
+    }
+
+    function build_note(obj) {
+        return obj.HasNote ? '<span class="icon-note-text icon-note" custid="' + obj.CustId + '" username="' + obj.Username + '"></span>' : null;
     }
 
     function build_classification(obj) {
@@ -303,15 +309,17 @@
 
     function create_popup(e, data) {
         var url = common.modifyRelativeUrl("/SuspiciousCustomer/GetSuspiciousCustomerNote");
+        var custid = $(data).attr("custid");
+        var username = $(data).attr("username");       
 
-        $.get(url, { custId: data.CustId }, function (json) {
+        $.get(url, { custId: custid }, function (json) {
             $("table", note_popup).DataTable().clear().rows.add(json).draw();
 
             $("table", note_popup).DataTable().columns.adjust();
 
             note_popup.css({ top: e.clientY, left: e.clientX, position: "absolute" });
 
-            $("h2", note_popup).text(data.Username);
+            $("h2", note_popup).text(username);
 
             note_popup.show();
         });
