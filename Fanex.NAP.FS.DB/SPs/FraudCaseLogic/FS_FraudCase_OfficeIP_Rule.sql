@@ -15,6 +15,7 @@ AS
 
 	Revisions: 
 		- 20180726@Casey.Huynh: Change IP Part Number data type from TinyINT to SMALLINT. Due to IP in Bettrans has Invalid Range '345'
+		- 20190219@Long: Store more info (Currency & Username) for table SuspiciousCutomers [Redmine ID: 107858]
 
 	Param's Explanation (filtered by):
 
@@ -57,12 +58,36 @@ BEGIN
 
 	CREATE TABLE #tmpFraudTickets
 	(
-			CustId INT NOT NULL
-		, 	MatchId INT NOT NULL
-		, 	TransId	BIGINT NOT NULL
-		, 	EventDate DATE	NULL
+			CustId				INT NOT NULL			
+		,	Username			NVARCHAR(50)
+		,	CurrencyId			TINYINT
+		,	CurrencyName		NVARCHAR(50)
+		, 	MatchId				INT NOT NULL
+		, 	TransId				BIGINT NOT NULL
+		, 	EventDate			DATE	NULL
 	);
+
+	CREATE CLUSTERED INDEX	#CIX_tmpFraudTicketsIdx ON #tmpFraudTickets (
+			CustId				ASC
+		,	MatchId				ASC
+		,	TransId				ASC
+	);
+
+	IF OBJECT_ID('tempdb..#tmpFraudTicketsCustInfo') IS NOT NULL
+	BEGIN
+		DROP TABLE	#tmpFraudTicketsCustInfo;
+	END
 	
+	CREATE TABLE #tmpFraudTicketsCustInfo(
+			CustId				INT
+		,	Username			NVARCHAR(50)
+		,	CurrencyId			TINYINT
+		,	CurrencyName		NVARCHAR(50)
+	);
+
+	CREATE CLUSTERED INDEX	#CIX_tmpFraudTicketsCustInfoIdx ON #tmpFraudTicketsCustInfo (
+			CustId				ASC
+	);
 	--===2. INSERT DATA TO #tmpMatchInput===========
 	INSERT INTO #tmpMatchInput(MatchId)
 	SELECT val FROM dbo.SPU_StrSplit(@MatchIds, ', ');
@@ -77,11 +102,14 @@ BEGIN
 	SELECT DISTINCT Bettype FROM bodb02.dbo.SportBettypeMatrix  AS sm WITH(NOLOCK) WHERE sm.ProductID = 1;	
 
 	--===4. INSERT DATE TO #tmpFraudTickets
-	INSERT INTO #tmpFraudTickets(CustId, MatchId, TransId, EventDate)
-	SELECT	  b.custid
-			, b.matchid
-			, b.transid
-			, mi.EventDate
+	INSERT INTO #tmpFraudTickets(CustId, Username, CurrencyId, CurrencyName, MatchId, TransId, EventDate)
+	SELECT	b.custid
+		,	b.Username
+		,	b.currency
+		,	b.CurrencyName
+		,	b.matchid
+		,	b.transid
+		,	mi.EventDate
 	FROM	bodb02.dbo.bettrans AS b WITH (NOLOCK)
 			INNER JOIN #tmpMatchInput AS mi WITH (NOLOCK) ON mi.matchid = b.MatchId
 			INNER JOIN #tmpBettype AS bt WITH (NOLOCK) ON b.bettype = bt.Bettype
@@ -123,20 +151,23 @@ BEGIN
 		GROUP BY ft.CustId, ft.MatchId, ft.EventDate;
 			
 		--===8. UPDATE: TABLE "SuspiciousCustomer" IsVerified=0 if has new Fraud Tickets)
-		UPDATE	sc 
-		SET		sc.IsVerified=0
-		FROM	dbo.SuspiciousCustomer AS sc WITH (ROWLOCK, UPDLOCK)
-		WHERE	Custid IN (SELECT DISTINCT(Custid)
-							FROM #tmpFraudTickets  AS ft WITH (NOLOCK)
-							WHERE sc.Custid = ft.CustId);
+		INSERT INTO #tmpFraudTicketsCustInfo (CustId, Username, CurrencyId, CurrencyName)
+		SELECT DISTINCT ft.Custid, ft.Username, ft.CurrencyId, ft.CurrencyName
+		FROM #tmpFraudTickets ft WITH (NOLOCK);
+
+		UPDATE sc WITH (ROWLOCK, UPDLOCK)
+		SET sc.IsVerified = 0, sc.Username = t.Username
+		FROM dbo.SuspiciousCustomer sc 
+			INNER JOIN #tmpFraudTicketsCustInfo t ON sc.Custid = t.CustId;
 
 		--===9. INSERT: TABLE "SuspiciousCustomer" if NOT Exitsing Custid
-		INSERT INTO dbo.SuspiciousCustomer(Custid, IsDelinquent, IsHedge, IsDirty, IsVerified)
-		SELECT DISTINCT ft.CustId, 0, 0, 0, 0
-		FROM #tmpFraudTickets  AS ft WITH (NOLOCK)
-		WHERE ft.CustId NOT IN (
-				SELECT sc.CustId 
-				FROM dbo.SuspiciousCustomer  AS sc WITH (NOLOCK)
-			);
+		INSERT INTO dbo.SuspiciousCustomer(Custid, Username, CurrencyId, CurrencyName, IsDelinquent, IsHedge, IsDirty, IsVerified)
+		SELECT ft.CustId, ft.Username, ft.CurrencyId, ft.CurrencyName, 0, 0, 0, 0
+		FROM #tmpFraudTicketsCustInfo ft WITH (NOLOCK)
+		WHERE ft.CustId NOT IN (SELECT sc.CustId 
+								FROM dbo.SuspiciousCustomer sc WITH (NOLOCK));
 	END;		
 END;
+
+GO
+/*<info serverAlias="DBSPU-bodb_FraudSensor" executers="bodbSPUNet" isFunction="0" isNested="0"></info>*/

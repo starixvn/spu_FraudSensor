@@ -18,6 +18,7 @@ AS
 
 	Revisions:
 		- 20181114@Long: Adding View Permission on Special Currencies [Redmine ID: #104707]
+		- 20190219@John: Update logic Special Currencies and seperate Arbitrage [Redmine ID: #99753]
 
 	Param's Explanation:    
 */
@@ -26,10 +27,13 @@ BEGIN
 	
 	SELECT si.Custid, si.IsDelinquent, si.IsDirty, si.IsHedge, si.IsVerified
 	FROM dbo.SuspiciousCustomer si WITH(NOLOCK)
-		INNER JOIN bodb02.dbo.Customer c WITH(NOLOCK) ON si.Custid = c.custid
+		INNER JOIN dbo.SuspiciousCustomer c WITH(NOLOCK) ON si.Custid = c.custid
 	WHERE si.Custid				=	ISNULL(@Custid,si.Custid)
 		  AND si.[IsDelinquent]	=	ISNULL(@IsDelinquent,si.IsDelinquent)
 		  AND si.[IsHedge]		=	ISNULL(@IsHedge,si.IsHedge)
 		  AND si.[IsDirty]		=	ISNULL(@IsDirty,si.IsDirty)
-		  AND (@IsShowSpecialCurrencies = 1 OR c.currency NOT IN (SELECT CurrencyId FROM dbo.SpecialCurrency WITH(NOLOCK)));
+		  AND (@IsShowSpecialCurrencies = 1 OR c.CurrencyId NOT IN (SELECT CurrencyId FROM dbo.SpecialCurrency WITH(NOLOCK)));
 END;
+
+GO
+/*<info serverAlias="DBSPU-bodb_FraudSensor" executers="bodbSPUNet" isFunction="0" isNested="0"></info>*/

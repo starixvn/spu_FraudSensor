@@ -28,6 +28,7 @@ AS
 			+ Return Assignee Username Instead Of AssigneeId
 		- 20181114@Long: Adding View Permission on Special Currencies [Redmine ID: #104707]
 		- 20190114@John: Exclude Internal Fraud on Suspicious Customer report and support paging [Redmine ID:#107858]
+		- 20190219@John: Update logic Special Currencies, seperate Arbitrage [Redmine ID: #99753]
 
 	Param's Explanation:    
 			+ Add Condition for Customer Log GET: cl.LogType = 1
@@ -199,7 +200,7 @@ BEGIN
 		,	[BetCount]			= si.BetCount
 		,	[Assignee]			= (SELECT TOP 1 username FROM bodb02.dbo.Customer c WITH(NOLOCK) WHERE c.custid = cma.AssigneeId)
 	FROM #tmpCustomerSuspiciousInfo si WITH(NOLOCK)
-		INNER JOIN bodb02.dbo.Customer c WITH(NOLOCK) ON si.CustId = c.CustId
+		INNER JOIN dbo.SuspiciousCustomer c WITH(NOLOCK) ON si.CustId = c.CustId
 		LEFT JOIN dbo.CustomerMonitorAssignment AS cma WITH (NOLOCK) ON cma.CustId = si.CustId
 	WHERE (ISNULL(cma.AssigneeId,0) = CASE WHEN @AssigneeId IS NULL THEN ISNULL(cma.AssigneeId,0)
 									WHEN @AssigneeId = - 1 THEN 0
@@ -207,7 +208,7 @@ BEGIN
 									END
 			)
 		AND (@Username IS NULL OR c.username = @Username)		
-		AND (@IsShowSpecialCurrencies = 1 OR c.Currency NOT IN (SELECT CurrencyId FROM dbo.SpecialCurrency WITH(NOLOCK)));
+		AND (@IsShowSpecialCurrencies = 1 OR c.CurrencyId NOT IN (SELECT CurrencyId FROM dbo.SpecialCurrency WITH(NOLOCK)));
 	
 	SELECT @TotalItems = @@ROWCOUNT
 	

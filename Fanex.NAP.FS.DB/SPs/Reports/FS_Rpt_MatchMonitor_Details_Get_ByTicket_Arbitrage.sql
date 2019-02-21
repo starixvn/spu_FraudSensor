@@ -1,9 +1,3 @@
-
-SET QUOTED_IDENTIFIER ON 
-GO
-SET ANSI_NULLS ON 
-GO
-
 ALTER PROCEDURE [dbo].[FS_Rpt_MatchMonitor_Details_Get_ByTicket_Arbitrage]
 		@MatchId					INT
 	,	@EventDate					DATETIME
@@ -18,6 +12,7 @@ AS
 	Revisions:
 		- 20180815@Long: Implement Get Tickets by Match & Fraud Case for Arbitrage
 		- 20181114@Long: Adding View Permission on Special Currencies [Redmine ID: #104707]
+		- 20190219@John: Update logic Special Currencies and seperate Arbitrage [Redmine ID: #99753]
 
 	Param's Explanation:
 */
@@ -36,7 +31,7 @@ BEGIN
 	 );
 	 
 	 --===	1.2 INITIAL: TEMP TABLES #tmpFraudTickets: GET Fraud Tickets
-	IF OBJECT_ID('tempdb..#tmpTransId') IS NOT NULL
+	IF OBJECT_ID('tempdb..#tmpFraudTickets') IS NOT NULL
 	BEGIN
 		DROP TABLE	#tmpFraudTickets;
 	END;
@@ -44,7 +39,12 @@ BEGIN
 	CREATE TABLE #tmpFraudTickets (
 			GroupId		INT
 		,	TransId		BIGINT
+		,	IsIPFraud	BIT
 	 );
+
+	CREATE CLUSTERED INDEX #CIX_tmpFraudTickets_TransID ON #tmpFraudTickets (
+			TransID			ASC
+	);
 
 	--===	2.1 GET: Balance Up Day and Move Bet Day
 	INSERT INTO #tmpBUMB(BUDay,MBDay)
@@ -57,13 +57,13 @@ BEGIN
 	WHERE @EventDate BETWEEN BUDay AND MBDay;
 	
 	--===	2.2 GET: Fraud Tickets Insert to #tmpFraudTickets	
-	INSERT INTO #tmpFraudTickets(GroupId, TransId)
-	SELECT si.GroupId, VAL
+	INSERT INTO #tmpFraudTickets(GroupId, TransId, IsIPFraud)
+	SELECT si.GroupId, VAL, si.IsIPFraud
 	FROM dbo.ArbitrageTicketDetails si WITH(NOLOCK)
-		INNER JOIN bodb02.dbo.Customer c WITH(NOLOCK) ON si.CustId = c.custid
+		INNER JOIN dbo.SuspiciousCustomer c WITH(NOLOCK) ON si.CustId = c.custid
 		CROSS APPLY dbo.SPU_StrSplit(si.transids, ',')
 	WHERE	si.MatchId = @MatchId
-		AND (@IsShowSpecialCurrencies = 1 OR c.currency NOT IN (SELECT CurrencyId FROM dbo.SpecialCurrency WITH(NOLOCK)));
+		AND (@IsShowSpecialCurrencies = 1 OR c.CurrencyId NOT IN (SELECT CurrencyId FROM dbo.SpecialCurrency WITH(NOLOCK)));
 			
 	--===	2.2 GET: Homeid and AwayId
 	DECLARE @homeId INT;
@@ -96,7 +96,8 @@ BEGIN
 				,	[CurrencyName]	= b.currencyname
 				,	[FullStake]		= b.stake * b.actualrate 
 				,	[ComPTStake]	= b.stake * (1 - b.tpositiontaking) * b.actualrate 
-				,	[VirtualStake]	= b.stake * (1 - b.tpositiontaking) * b.virtualrate 
+				,	[VirtualStake]	= b.stake * (1 - b.tpositiontaking) * b.virtualrate
+				,	[IsIPFraud]		= f.IsIPFraud
 			FROM bodb02.dbo.bettrans b WITH(NOLOCK)
 				INNER JOIN #tmpFraudTickets f WITH(NOLOCK) ON b.transid = f.TransID
 				INNER JOIN bodb02.dbo.custInfo c WITH(NOLOCK) ON b.custid = c.custid;
@@ -127,7 +128,8 @@ BEGIN
 				,	[CurrencyName]	= b.currencyname
 				,	[FullStake]		= b.stake * b.actualrate 
 				,	[ComPTStake]	= b.stake * (1 - b.tpositiontaking) * b.actualrate 
-				,	[VirtualStake]	= b.stake * (1 - b.tpositiontaking) * b.virtualrate 
+				,	[VirtualStake]	= b.stake * (1 - b.tpositiontaking) * b.virtualrate
+				,	[IsIPFraud]		= f.IsIPFraud
 			FROM bodb02.dbo.bettrans14 b WITH(NOLOCK)
 				INNER JOIN #tmpFraudTickets f WITH(NOLOCK) ON b.transid = f.TransID
 				INNER JOIN bodb02.dbo.custInfo c WITH(NOLOCK) ON b.custid = c.custid;

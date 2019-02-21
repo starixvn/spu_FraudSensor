@@ -18,6 +18,7 @@ AS
 		- 20180406@LONG: Get flagged accounts list directly from FPS's api
 		- 20180312@CaseyHuynh: Correct Code Syntax
 		- 20181114@Long: Split data in SuspiciousInfo by Currency [Redmine ID: #104707]
+		- 20190219@Long: Store more info (Currency & Username) for table SuspiciousCutomers [Redmine ID: 107858]
 
 	Param's Explanation (filtered by):
 */
@@ -50,6 +51,9 @@ BEGIN
 	
 	CREATE TABLE #tmpFraudTickets(
 			CustId				INT
+		,	Username			NVARCHAR(50)
+		,	CurrencyId			TINYINT
+		,	CurrencyName		NVARCHAR(50)
 		,	MatchId				INT
 		,	EventDate			DATETIME
 		,	TransId				BIGINT
@@ -59,6 +63,22 @@ BEGIN
 			CustId				ASC
 		,	MatchId				ASC
 		,	TransId				ASC
+	);
+
+	IF OBJECT_ID('tempdb..#tmpFraudTicketsCustInfo') IS NOT NULL
+	BEGIN
+		DROP TABLE	#tmpFraudTicketsCustInfo;
+	END
+	
+	CREATE TABLE #tmpFraudTicketsCustInfo(
+			CustId				INT
+		,	Username			NVARCHAR(50)
+		,	CurrencyId			TINYINT
+		,	CurrencyName		NVARCHAR(50)
+	);
+
+	CREATE CLUSTERED INDEX	#CIX_tmpFraudTicketsCustInfoIdx ON #tmpFraudTicketsCustInfo (
+			CustId				ASC
 	);
 
 	IF OBJECT_ID('tempdb..#tmpMatches') IS NOT NULL
@@ -82,11 +102,14 @@ BEGIN
 	INSERT INTO #tmpMatches(MatchId)
 	SELECT val FROM SPU_StrSplit(@MatchIds, ',');
 
-	INSERT INTO #tmpFraudTickets(CustId, MatchId, EventDate, TransId)
-	SELECT	DISTINCT [CustId]	= ans.custid,
-      [MatchId]			= ans.matchid,
-			[EventDate]			= tch.EventDate,
-      [TransId]			= ans.transid
+	INSERT INTO #tmpFraudTickets(CustId, Username, CurrencyId, CurrencyName, MatchId, EventDate, TransId)
+	SELECT	DISTINCT [CustId]	= ans.custid
+		,	[Username]			= ans.Username
+		,	[CurrencyId]		= ans.currency
+		,	[CurrencyName]		= ans.CurrencyName
+		,	[MatchId]			= ans.matchid
+		,	[EventDate]			= tch.EventDate
+		,	[TransId]			= ans.transid
 	FROM bodb02.dbo.match tch WITH (NOLOCK)
 	INNER JOIN bodb02.dbo.bettrans ans WITH (NOLOCK) ON tch.matchid = ans.matchid
 	INNER JOIN #tmpFlaggedAccounts fa WITH (NOLOCK) ON fa.custid = ans.custid
@@ -116,21 +139,20 @@ BEGIN
 	-- Check the results and store/return data
 	IF(SELECT COUNT(1) FROM #tmpFraudTickets WITH (NOLOCK)) > 0
 	BEGIN
-	
-		UPDATE sc WITH (ROWLOCK)
-		SET sc.IsVerified = 0 
+		INSERT INTO #tmpFraudTicketsCustInfo (CustId, Username, CurrencyId, CurrencyName)
+		SELECT DISTINCT ft.Custid, ft.Username, ft.CurrencyId, ft.CurrencyName
+		FROM #tmpFraudTickets ft WITH (NOLOCK);
+
+		UPDATE sc WITH (ROWLOCK, UPDLOCK)
+		SET sc.IsVerified = 0, sc.Username = t.Username
 		FROM dbo.SuspiciousCustomer sc 
-		WHERE Custid IN (SELECT DISTINCT(Custid)
-							FROM #tmpFraudTickets ft WITH (NOLOCK)
-							WHERE sc.Custid = ft.CustId);
+			INNER JOIN #tmpFraudTicketsCustInfo t ON sc.Custid = t.CustId;
 	
-		INSERT INTO dbo.SuspiciousCustomer(Custid)
-		SELECT DISTINCT ft.CustId
-		FROM #tmpFraudTickets ft WITH (NOLOCK)
-		WHERE ft.CustId NOT IN (
-				SELECT sc.CustId 
-				FROM dbo.SuspiciousCustomer sc WITH (NOLOCK)
-			);
+		INSERT INTO dbo.SuspiciousCustomer(Custid, Username, CurrencyId, CurrencyName, IsDelinquent, IsHedge, IsDirty, IsVerified)
+		SELECT ft.CustId, ft.Username, ft.CurrencyId, ft.CurrencyName, 0, 0, 0, 0
+		FROM #tmpFraudTicketsCustInfo ft WITH (NOLOCK)
+		WHERE ft.CustId NOT IN (SELECT sc.CustId 
+								FROM dbo.SuspiciousCustomer sc WITH (NOLOCK));
 					
 		DELETE FROM dbo.SuspiciousInfo WITH (ROWLOCK)
 		WHERE FraudCaseId = @CurrentFraudCaseId
@@ -154,7 +176,7 @@ BEGIN
 	END;
 	
 	EXEC sp_xml_removedocument @idoc;
-END;	
-	
-	EXEC sp_xml_removedocument @idoc;
 END;
+
+GO
+/*<info serverAlias="DBSPU-bodb_FraudSensor" executers="bodbSPUNet" isFunction="0" isNested="0"></info>*/

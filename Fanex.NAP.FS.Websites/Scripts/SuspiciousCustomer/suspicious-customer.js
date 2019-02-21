@@ -13,6 +13,8 @@
 
     var saved_dto = null;
 
+    var table = null;
+
     $("table", note_popup).DataTable({
         ordering: false,
         searching: false,
@@ -67,41 +69,7 @@
 
     $([date_type, fraud_case, is_verified, classification]).select2({
         minimumResultsForSearch: -1
-    });
-
-    customer_table.DataTable({
-        ordering: false,
-        searching: false,
-        lengthMenu: [10, 20, 50, 100, 500],
-        pageLength: 50,
-        scrollY: "70vh",
-        scrollCollapse: true,
-        dom: "t<'pagination'<'page-size'lp>i>",
-        language: {
-            lengthMenu: "Page size _MENU_",
-            paginate: {
-                previous: "Back"
-            },
-            info: "Displaying _START_ to _END_ of _TOTAL_ item(s)",
-            infoEmpty: "",
-            zeroRecords: "There's no data"
-        },
-        columns: [
-            { data: (obj, typet, set, meta) => meta.row + 1, className: "text-center", width: "40px" },
-            { data: build_classification, className: "has-icon text-center list-icon", width: "120px" },
-            { data: obj => obj.HasNote ? '<span class="icon-note-text icon-note"></span>' : null, className: "has-icon text-center", width: "90px" },
-            { data: obj => obj.IsVerified ? '<span class="icon-approval"></span>' : null, className: "has-icon text-center", width: "90px" },
-            { data: obj => `<a href="${common.modifyRelativeUrl(`/SuspiciousCustomerDetails?custId=${obj.CustId}&from=${from.val()}&to=${to.val()}&custname=${obj.Username}`)}" target='_blank'>${obj.Username}</a>`, width: "300px" },
-            { data: obj => obj.TotalViolation },
-            { data: obj => obj.ViolatedCases },
-            { data: obj => obj.BetCount },
-            { data: obj => obj.Assignee }
-        ],
-        columnDefs: [
-            { defaultContent: "-", targets: "_all" },
-            { targets: [-2, -3, -4], className: "text-right", width: "120px" }
-        ]
-    })
+    });        
 
     $(".-primary").click(get_customers);
 
@@ -128,8 +96,6 @@
     })
 
     function get_customers() {
-        common.showLoading();
-
         var dto = {
             Username: $("#member").val(),
             FromDate: from.val(),
@@ -142,22 +108,70 @@
 
         saved_dto = dto;
 
-        var url = common.modifyRelativeUrl("/suspiciouscustomer/Generate");
+        var urlAction = common.modifyRelativeUrl("/suspiciouscustomer/Generate");
 
-        $.get(url, dto, function (json) {
-            customer_table.DataTable().clear().rows.add(json).draw();
-            $("#customer_grid").show();
+        //if (table != null) {
+        //    table.destroy();
+        //}
 
-            if (first_time) {
-                customer_table.DataTable().draw();
-                customer_table.DataTable().draw();
-                first_time = false;
-            }
-
-            $("span.icon-note-text").click(e => create_popup(e, customer_table.DataTable().row($(e.target).parents("tr")).data()))
-
-            common.closeLoading();
+        table = customer_table.DataTable({
+            destroy: true,
+            serverSide: true, 
+            processing: false,
+            stateSave: false,
+                ajax: {
+                    url: urlAction,
+                    data: dto,
+                    type: "POST",
+                    beforeSend: function () {
+                        common.showLoading();
+                    },
+                    complete: function () {
+                        common.closeLoading(); 
+                        
+                    }
+                },                
+                ordering: false,
+                searching: false,
+                lengthMenu: [10, 20, 50, 100, 500],
+                pageLength: 50,
+                scrollY: "70vh",
+                scrollCollapse: true,
+                dom: "t<'pagination'<'page-size'lp>i>",
+                language: {
+                    lengthMenu: "Page size _MENU_",
+                    paginate: {
+                        previous: "Back"
+                    },
+                    info: "Displaying _START_ to _END_ of _TOTAL_ item(s)",
+                    infoEmpty: "",
+                    zeroRecords: "There's no data",
+                    processing: 'Loading...'
+                },
+                columns: [                    
+                    { data: obj => obj.Counter, className: "text-center", width: "40px" },
+                    { data: build_classification, className: "has-icon text-center list-icon", width: "120px" },
+                    { data: build_note, className: "has-icon text-center", width: "90px" },
+                    { data: obj => obj.IsVerified ? '<span class="icon-approval"></span>' : null, className: "has-icon text-center", width: "90px" },
+                    { data: obj => `<a href="${common.modifyRelativeUrl(`/SuspiciousCustomerDetails?custId=${obj.CustId}&from=${from.val()}&to=${to.val()}&custname=${obj.Username}`)}" target='_blank'>${obj.Username}</a>`, width: "300px" },
+                    { data: obj => obj.TotalViolation },
+                    { data: obj => obj.ViolatedCases },
+                    { data: obj => obj.BetCount },
+                    { data: obj => obj.Assignee }
+                ],
+                columnDefs: [
+                    { defaultContent: "-", targets: "_all" },
+                    { targets: [-2, -3, -4], className: "text-right", width: "120px" }
+                    ]
+                }
+        );
+               
+        table.on('click','span.icon-note-text', function(event) {
+            create_popup(event, this);            
         });
+
+        $("#customer_grid").show();
+                    
     }
 
     function get_fraud_case() {
@@ -182,6 +196,10 @@
                 assignee.append(`<option value='${json[i].Id}'>${json[i].Username}</option>`)
             }
         })
+    }
+
+    function build_note(obj) {
+        return obj.HasNote ? '<span class="icon-note-text icon-note" custid="' + obj.CustId + '" username="' + obj.Username + '"></span>' : null;
     }
 
     function build_classification(obj) {
@@ -294,20 +312,26 @@
 
         dto.assignee = assignee.find(":selected").text();
 
+        dto.classificationName = classification.find(":selected").text();
+
+        dto.verified = is_verified.find(":selected").text();
+
         common.downloadFile(url, dto);
     }
 
     function create_popup(e, data) {
         var url = common.modifyRelativeUrl("/SuspiciousCustomer/GetSuspiciousCustomerNote");
+        var custid = $(data).attr("custid");
+        var username = $(data).attr("username");       
 
-        $.get(url, { custId: data.CustId }, function (json) {
+        $.get(url, { custId: custid }, function (json) {
             $("table", note_popup).DataTable().clear().rows.add(json).draw();
 
             $("table", note_popup).DataTable().columns.adjust();
 
             note_popup.css({ top: e.clientY, left: e.clientX, position: "absolute" });
 
-            $("h2", note_popup).text(data.Username);
+            $("h2", note_popup).text(username);
 
             note_popup.show();
         });

@@ -9,6 +9,14 @@ namespace Fanex.NAP.FS.Library.Criteria.SuspiciousCustomer
 
     public class SuspiciousCustomerReportGetCriteria : CriteriaBase
     {
+        public int PageSize { get; set; }
+
+        public int PageIndex { get; set; }
+
+        public int TotalItems { get; set; }
+
+        public bool IsExportExcel { get; set; }
+
         public DateTime FromDate { get; set; }
 
         public DateTime ToDate { get; set; }

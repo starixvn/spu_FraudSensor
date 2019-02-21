@@ -348,6 +348,7 @@
     <Compile Include="Models\MatchMonitor\Match.cs" />
     <Compile Include="Models\SuspiciousCustomerDetails\FraudCaseViolated.cs" />
     <Compile Include="Models\SuspiciousCustomerDetails\Statistics.cs" />
+    <Compile Include="Models\SuspiciousCustomer\DataTableAjaxPostModel.cs" />
     <Compile Include="Models\SuspiciousCustomer\SuspiciousCustomerModel.cs" />
     <Compile Include="Models\SuspiciousInfo\SuspciousCustomerInfo.cs" />
     <Compile Include="Models\SuspiciousInfo\SuspiciousCustomerFraudCaseModel.cs" />
@@ -416,7 +417,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Core\Configurations\" />
-    <Folder Include="Core\Extensions\" />
     <Folder Include="DataAccess\" />
   </ItemGroup>
   <ItemGroup>

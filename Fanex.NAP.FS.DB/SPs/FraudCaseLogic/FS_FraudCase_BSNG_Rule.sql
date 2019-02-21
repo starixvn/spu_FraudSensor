@@ -19,6 +19,7 @@ AS
 			+ Update Calculate Violation BSNG Rule: count 1 per each score
 		- 20180406@Long: remove ticket status to scan for running matches
 		- 20180312@CaseyHuynh: Correct Code Syntax
+		- 20190219@Long: Store more info (Currency & Username) for table SuspiciousCutomers [Redmine ID: 107858]
 
 	Param's Explanation (filtered by):
 */
@@ -54,6 +55,9 @@ BEGIN
 	
 	CREATE TABLE #tmpFraudTickets(
 			CustId				INT
+		,	Username			NVARCHAR(50)
+		,	CurrencyId			TINYINT
+		,	CurrencyName		NVARCHAR(50)
 		,	MatchId				INT
 		,	EventDate			DATETIME
 		,	TransId				BIGINT
@@ -65,6 +69,22 @@ BEGIN
 			CustId				ASC
 		,	MatchId				ASC
 		,	TransId				ASC
+	);
+
+	IF OBJECT_ID('tempdb..#tmpFraudTicketsCustInfo') IS NOT NULL
+	BEGIN
+		DROP TABLE	#tmpFraudTicketsCustInfo;
+	END
+	
+	CREATE TABLE #tmpFraudTicketsCustInfo(
+			CustId				INT
+		,	Username			NVARCHAR(50)
+		,	CurrencyId			TINYINT
+		,	CurrencyName		NVARCHAR(50)
+	);
+
+	CREATE CLUSTERED INDEX	#CIX_tmpFraudTicketsCustInfoIdx ON #tmpFraudTicketsCustInfo (
+			CustId				ASC
 	);
 	-------------------------------------
 
@@ -126,8 +146,11 @@ BEGIN
 	
 	
 	--- GET FRAUD TICKET
-	INSERT INTO #tmpFraudTickets (CustId, MatchId, EventDate, TransId, LiveHomeScore, LiveAwayScore)
-	SELECT  [CustId]	= bt.custid
+	INSERT INTO #tmpFraudTickets (CustId, Username, CurrencyId, CurrencyName, MatchId, EventDate, TransId, LiveHomeScore, LiveAwayScore)
+	SELECT  [CustId]			= bt.custid
+		,	[Username]			= bt.Username
+		,	[CurrencyId]		= bt.currency
+		,	[CurrencyName]		= bt.CurrencyName
 		,	[MatchId]			= bt.matchid
 		,	[EventDate]			= bt.eventdate
 		,	[TransId]			= bt.transid
@@ -136,6 +159,8 @@ BEGIN
 	FROM (
 		SELECT  ans.custid
 			,	ans.username
+			,	ans.currency
+			,	ans.CurrencyName
 			,	ans.matchid
 			,	tch.eventdate
 			,	ans.transid
@@ -170,6 +195,8 @@ BEGIN
 			AND si.HasScanned = 0
 		GROUP BY ans.custid
 			,	ans.username
+			,	ans.currency
+			,	ans.CurrencyName
 			,	ans.matchid
 			,	tch.eventdate
 			,	ans.transid
@@ -254,21 +281,21 @@ BEGIN
 		
 	
 		--===8. UPDATE: TABLE "SuspiciousCustomer" IsVerified=0 if has new Fraud Tickets)
-			UPDATE sc WITH (ROWLOCK, UPDLOCK)
-			SET sc.IsVerified=0
-			FROM dbo.SuspiciousCustomer sc 
-			WHERE Custid IN (SELECT DISTINCT(Custid)
-								FROM #tmpFraudTickets ft WITH (NOLOCK)
-								WHERE sc.Custid = ft.CustId);
+		INSERT INTO #tmpFraudTicketsCustInfo (CustId, Username, CurrencyId, CurrencyName)
+		SELECT DISTINCT ft.Custid, ft.Username, ft.CurrencyId, ft.CurrencyName
+		FROM #tmpFraudTickets ft WITH (NOLOCK);
+
+		UPDATE sc WITH (ROWLOCK, UPDLOCK)
+		SET sc.IsVerified = 0, sc.Username = t.Username
+		FROM dbo.SuspiciousCustomer sc 
+			INNER JOIN #tmpFraudTicketsCustInfo t ON sc.Custid = t.CustId;
 
 		--===9. INSERT: TABLE "SuspiciousCustomer" if NOT Exitsing Custid
-			INSERT INTO dbo.SuspiciousCustomer(Custid,IsDelinquent,IsHedge,IsDirty,IsVerified)
-			SELECT DISTINCT ft.CustId, 0,0,0,0
-			FROM #tmpFraudTickets ft WITH (NOLOCK)
-			WHERE ft.CustId NOT IN (
-					SELECT sc.CustId 
-					FROM dbo.SuspiciousCustomer sc WITH (NOLOCK)
-				);
+		INSERT INTO dbo.SuspiciousCustomer(Custid, Username, CurrencyId, CurrencyName, IsDelinquent, IsHedge, IsDirty, IsVerified)
+		SELECT ft.CustId, ft.Username, ft.CurrencyId, ft.CurrencyName, 0, 0, 0, 0
+		FROM #tmpFraudTicketsCustInfo ft WITH (NOLOCK)
+		WHERE ft.CustId NOT IN (SELECT sc.CustId 
+								FROM dbo.SuspiciousCustomer sc WITH (NOLOCK));
 	END;
 	
 	UPDATE si
@@ -277,3 +304,6 @@ BEGIN
 			INNER JOIN #tmpMatches tm WITH(NOLOCK) ON si.MatchId = tm.matchid
 	WHERE	si.HasScanned = 0;	
 END;
+
+GO
+/*<info serverAlias="DBSPU-bodb_FraudSensor" executers="bodbSPUNet" isFunction="0" isNested="0"></info>*/

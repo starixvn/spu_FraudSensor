@@ -19,6 +19,7 @@ AS
 	Revisions:
 		+ 20180523@CaseyHuynh: put alias for LiveHomeScore/LiveAwayScore column
 		- 20181114@Long: Adding View Permission on Special Currencies [Redmine ID: #104707]
+		- 20190219@John: Update logic Special Currencies and seperate Arbitrage [Redmine ID: #99753]
 
 	Param's Explanation:
 */
@@ -46,6 +47,10 @@ BEGIN
 			TransID		BIGINT
 	 );
 
+	CREATE CLUSTERED INDEX #CIX_tmpFraudTickets_TransID ON #tmpFraudTickets (
+			TransID			ASC
+	);
+
 	--===	2.1 GET: Balance Up Day and Move Bet Day
 	INSERT INTO #tmpBUMB(BUDay,MBDay)
 	EXECUTE bodb02.dbo.Age_SelBalanceUpDay;
@@ -61,11 +66,11 @@ BEGIN
 	INSERT INTO #tmpFraudTickets(TransID)
 	SELECT VAL
 	FROM dbo.SuspiciousInfo si WITH(NOLOCK)
-		INNER JOIN bodb02.dbo.Customer c WITH(NOLOCK) ON si.Custid = c.custid
+		INNER JOIN dbo.SuspiciousCustomer c WITH(NOLOCK) ON si.Custid = c.custid
 		CROSS APPLY dbo.SPU_StrSplit(si.transids, ',')
 	WHERE	si.MatchId = @MatchId
 		AND si.FraudCaseId = @FraudCaseId
-		AND (@IsShowSpecialCurrencies = 1 OR c.currency NOT IN (SELECT CurrencyId FROM dbo.SpecialCurrency WITH(NOLOCK)));
+		AND (@IsShowSpecialCurrencies = 1 OR c.CurrencyId NOT IN (SELECT CurrencyId FROM dbo.SpecialCurrency WITH(NOLOCK)));
 			
 	--===	2.2 GET: Homeid and AwayId
 	DECLARE @homeId INT;

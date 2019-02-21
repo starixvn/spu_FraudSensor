@@ -5,11 +5,14 @@ namespace Fanex.NAP.FS.Websites.Controllers
     using Core.Business;
     using Core.Service.Impl;
     using Core.Web.Attribute;
+    using Fanex.NAP.FS.Library.Models.SuspiciousCustomer;
     using Library.Criteria.SuspiciousCustomer;
     using Library.Services;
     using System;
     using System.Collections.Generic;
     using System.Configuration;
+    using System.Linq;
+    using System.Text;
     using System.Threading.Tasks;
     using System.Web.Mvc;
 
@@ -18,7 +21,7 @@ namespace Fanex.NAP.FS.Websites.Controllers
     {
         private readonly ISuspiciousCustomerReportService _suspiciousCustomerReportService;
 
-        private bool IsShowSpecialCurrencies;
+        private readonly bool IsShowSpecialCurrencies;
 
         public SuspiciousCustomerController()
         {
@@ -32,12 +35,73 @@ namespace Fanex.NAP.FS.Websites.Controllers
             return View();
         }
 
-        public ActionResult Generate(SuspiciousCustomerReportGetCriteria criteria)
+        [HttpPost]
+        public ActionResult Generate(DataTableAjaxPostModel criteria)
         {
-            criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
-            var suspiciousCustomers = _suspiciousCustomerReportService.GetSuspiciousCustomerReport(criteria);
+            int filteredResultsCount = 0;
+            int totalResultsCount = 0;
 
-            return Json(suspiciousCustomers, JsonRequestBehavior.AllowGet);
+            criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
+            
+
+            var result = FilterData(criteria, out filteredResultsCount, out totalResultsCount);
+
+            return Json(new
+            {
+                draw = criteria.draw,
+                recordsTotal = totalResultsCount,
+                recordsFiltered = filteredResultsCount,
+                data = result
+            }, JsonRequestBehavior.AllowGet);
+        }
+
+        public IList<SuspiciousCustomerReportModel> FilterData(DataTableAjaxPostModel model, out int filteredResultsCount, out int totalResultsCount)
+        {
+            var take = model.length;
+            var skip = model.start;
+            var pageIndex = (skip / take) + 1;
+
+            var searchBy = new SuspiciousCustomerReportGetCriteria
+            {
+                AssigneeId = model.AssigneeId,
+                Classification = model.Classification,
+                FraudCaseId = model.FraudCaseId,
+                FromDate = model.FromDate,
+                IsShowSpecialCurrencies = model.IsShowSpecialCurrencies,
+                IsVerified = model.IsVerified,
+                ToDate = model.ToDate,
+                Username = model.Username,
+                PageSize = take,
+                PageIndex = pageIndex,
+                TotalItems = 0
+            };
+           
+            // search the dbase taking into consideration table sorting and paging
+            var result = GetDataFromDbase(searchBy, take, skip, out filteredResultsCount, out totalResultsCount);
+
+            if (result == null)
+            {
+                // empty collection...
+                return new List<SuspiciousCustomerReportModel>();
+            }
+
+            return result;
+        }
+
+        public List<SuspiciousCustomerReportModel> GetDataFromDbase(SuspiciousCustomerReportGetCriteria searchBy, int take, int skip, out int filteredResultsCount, out int totalResultsCount)
+        {
+            var suspiciousCustomers = _suspiciousCustomerReportService.GetSuspiciousCustomerReport(searchBy);
+            var counter = skip + 1;           
+
+            var result = suspiciousCustomers.Select(x => {
+                x.Counter = counter++;
+                return x;
+            }).ToList();
+
+            filteredResultsCount = searchBy.TotalItems;
+            totalResultsCount = searchBy.TotalItems;
+
+            return result;
         }
 
         public ActionResult GetFraudCases()
@@ -67,10 +131,23 @@ namespace Fanex.NAP.FS.Websites.Controllers
             return Json(result, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult ExportExcel(SuspiciousCustomerReportGetCriteria criteria, string fraudCaseName, string assignee)
+        public ActionResult ExportExcel(SuspiciousCustomerReportGetCriteria criteria, string fraudCaseName, string assignee, string classificationName, string verified)
         {
+            criteria.IsExportExcel = true;
             criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
-            var file = _suspiciousCustomerReportService.ExportExcel(criteria, fraudCaseName, assignee, Server.MapPath("~/App_Data/Excel Template/SuspiciousCustomer/template.xlsx"));
+            var data = _suspiciousCustomerReportService.GetData(criteria);
+            if(data.Count() > 1000)
+            {
+                var csvData = _suspiciousCustomerReportService.ExportCSV(data, criteria, fraudCaseName, assignee, classificationName, verified);
+
+                var csvFileName = string.Format("SuspiciousCustomer_{0}.csv", DateTime.Now.ToString("yyyyMMdd"));
+
+                var encoded = Encoding.UTF8.GetBytes(csvData);
+
+                return File(encoded, "text/plain", csvFileName);
+            }
+
+            var file = _suspiciousCustomerReportService.ExportExcel(criteria, fraudCaseName, assignee, Server.MapPath("~/App_Data/Excel Template/SuspiciousCustomer/template.xlsx"), data);
             var fileName = string.Format("SuspiciousCustomer_{0}.xlsx", DateTime.Now.ToString("yyyyMMdd"));
 
             return File(file, "application/vnd.ms-excel", fileName);
