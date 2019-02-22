@@ -4,7 +4,7 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
-ALTER PROCEDURE [dbo].[FS_FraudCase_Arbitrage_Rule_xtest] 
+ALTER PROCEDURE [dbo].[FS_FraudCase_Arbitrage_Rule_xtest3] 
 		@Matches			VARCHAR(MAX) = NULL -- xml format
 	,	@Associations		VARCHAR(MAX) = NULL -- xml format
 AS
@@ -105,6 +105,9 @@ BEGIN
 	CREATE TABLE #tmpBettrans
 	(
 			CustId				INT
+		,	Username			NVARCHAR(50)
+		,	CurrencyId			TINYINT
+		,	CurrencyName		NVARCHAR(50)
 		,	TransId				BIGINT
 		,	MatchId				INT
 		,	Bettype				INT
@@ -125,6 +128,9 @@ BEGIN
 	CREATE TABLE #tmpBettransAssociation
 	(
 			CustId				INT
+		,	Username			NVARCHAR(50)
+		,	CurrencyId			TINYINT
+		,	CurrencyName		NVARCHAR(50)
 		,	TransId				BIGINT
 		,	MatchId				INT
 		,	Bettype				INT
@@ -150,8 +156,6 @@ BEGIN
 	);
 
 	CREATE NONCLUSTERED INDEX	#NCIX_tmpBettransAssociation_IP ON #tmpBettransAssociation(IP ASC);
-	--CREATE NONCLUSTERED INDEX	#NCIX_tmpBettransAssociation_GroupId ON #tmpBettransAssociation(GroupId ASC);
-	--CREATE NONCLUSTERED INDEX	#NCIX_tmpBettransAssociation_CustId ON #tmpBettransAssociation (CustId ASC);
 
 	IF OBJECT_ID('tempdb..#tmpIPGroup') IS NOT NULL
 	BEGIN
@@ -188,6 +192,9 @@ BEGIN
 	
 	CREATE TABLE #tmpFraudTickets(
 			CustId				INT
+		,	Username			NVARCHAR(50)
+		,	CurrencyId			TINYINT
+		,	CurrencyName		NVARCHAR(50)
 		,	MatchId				INT
 		,	GroupId				INT
 		,	Bettype				INT
@@ -244,8 +251,7 @@ BEGIN
 	EXEC sp_xml_preparedocument @idocAssociation OUTPUT, @Associations;
 
 	-- Execute a SELECT statement that uses the OPENXML rowset provider
--- Execute a SELECT statement that uses the OPENXML rowset provider
-	/*
+	
 	INSERT INTO #tmpMatches (MatchId, CustId, BetType, Handicap, LiveHomeScore, LiveAwayScore)
 	SELECT	Data.MatchId
 		,	Data.CustId
@@ -270,19 +276,13 @@ BEGIN
 			CustId INT '@CustId'	
 		,	GroupId INT '@GroupId'
 	) AS Data;
-	*/
-
-	INSERT INTO #tmpMatches (MatchId, CustId, BetType, Handicap, LiveHomeScore, LiveAwayScore)
-	SELECT	MatchId, CustId, BetType, Handicap, LiveHomeScore, LiveAwayScore
-	FROM	DebugArbitrageCustList WITH(NOLOCK)
-
-	INSERT INTO #tmpAssociation (CustId, GroupId)
-	SELECT	Custid, GroupId
-	FROM	DebugArbitrageAssociation WITH(NOLOCK)
 
 	--================GET: BETTRANS TICKET
-	INSERT INTO #tmpBettrans(CustId, MatchId, TransId, Bettype, TotalLiveScore, Betteam, Handicap, Stake, EventDate, IP)
+	INSERT INTO #tmpBettrans(CustId, Username, CurrencyId, CurrencyName, MatchId, TransId, Bettype, TotalLiveScore, Betteam, Handicap, Stake, EventDate, IP)
 	SELECT	[CustId]			= b.custid
+		,	[Username]			= b.Username
+		,	[CurrencyId]		= b.currency
+		,	[CurrencyName]		= b.CurrencyName
 		,	[MatchId]			= b.matchid
 		,	[TransId]			= b.transid
 		,	[Bettype]			= b.bettype
@@ -300,8 +300,11 @@ BEGIN
 			AND b.Currency NOT IN (20, 27, 28);
 
 	---===========GET: FILTER ASSOCIATION TICKETS
-	INSERT INTO #tmpBettransAssociation(CustId, MatchId, TransId, Bettype, TotalLiveScore, Betteam, Handicap, Stake, EventDate, Ip, GroupId)
+	INSERT INTO #tmpBettransAssociation(CustId, Username, CurrencyId, CurrencyName, MatchId, TransId, Bettype, TotalLiveScore, Betteam, Handicap, Stake, EventDate, Ip, GroupId, IsIPFraud)
 	SELECT	b.CustId
+			, b.Username
+			, b.CurrencyId
+			, b.CurrencyName
 			, b.MatchId
 			, b.TransId
 			, b.Bettype
@@ -312,6 +315,7 @@ BEGIN
 			, b.EventDate
 			, b.Ip
 			, a.GroupId
+			, 0	AS IsIPFraud
 	FROM	#tmpBettrans AS b WITH(NOLOCK)
 			INNER JOIN #tmpAssociation AS a WITH(NOLOCK) ON b.CustId = a.CustId;
 
@@ -327,10 +331,10 @@ BEGIN
 	WHILE (@flag = 1)
 	BEGIN
 			
-		DELETE #tmpIPGroup
+		DELETE #tmpIPGroup;
 		
 		INSERT INTO #tmpIPGroup(GroupId, MinGroupId)
-		SELECT a.GroupId, MIN(minGroupId) A
+		SELECT a.GroupId, MIN(minGroupId) MinGroupId
 		FROM	(
 		SELECT	t.Ip
 				, t.GROUPId
@@ -344,7 +348,7 @@ BEGIN
 		BEGIN
 						
 			Update	t
-			SET		t.GroupId = g.MinGroupId, IsIPFraud = 1
+			SET		t.GroupId = g.MinGroupId
 			FROM	#tmpBettransAssociation t WITH(ROWLOCK)
 					INNER JOIN #tmpIPGroup g WITH(NOLOCK) ON t.GroupId = g.GroupId;
 		END;
@@ -354,8 +358,11 @@ BEGIN
 		END;		
 	END;
 
-	INSERT INTO #tmpBettransAssociation(CustId, MatchId, TransId, Bettype, TotalLiveScore, Betteam, Handicap, Stake, EventDate, Ip, GroupId, IsIPFraud)
-	SELECT	b.CustId
+	INSERT INTO #tmpBettransAssociation(CustId, Username, CurrencyId, CurrencyName,MatchId, TransId, Bettype, TotalLiveScore, Betteam, Handicap, Stake, EventDate, Ip, GroupId, IsIPFraud)
+	SELECT	DISTINCT b.CustId
+			, b.Username
+			, b.CurrencyId
+			, b.CurrencyName
 			, b.MatchId
 			, b.TransId
 			, b.Bettype
@@ -386,8 +393,11 @@ BEGIN
 	HAVING COUNT(DISTINCT ba.Betteam) > 1;
 	
 	-- Get fraud tickets
-	INSERT INTO #tmpFraudTickets (CustId, MatchId, GroupId, Bettype, EventDate, TransId, TotalLiveScore, Handicap, IsIPFraud)
+	INSERT INTO #tmpFraudTickets (CustId, Username, CurrencyId, CurrencyName, MatchId, GroupId, Bettype, EventDate, TransId, TotalLiveScore, Handicap, IsIPFraud)
 	SELECT  [CustId]			= bb.CustId
+		,	[Username]			= bb.Username
+		,	[CurrencyId]		= bb.CurrencyId
+		,	[CurrencyName]		= bb.CurrencyName
 		,	[MatchId]			= r.matchid
 		,	[GroupId]			= r.GroupId
 		,	[Bettype]			= bb.Bettype
@@ -400,7 +410,7 @@ BEGIN
 		INNER JOIN #tmpBettransAssociation bb WITH(NOLOCK) ON r.GroupId = bb.GroupId AND r.MatchId = bb.MatchId
 					AND r.Bettype = bb.Bettype AND r.TotalLiveScore = bb.TotalLiveScore AND r.Handicap = bb.Handicap 
 	WHERE r.TotalStakeH > @MaxStakeToBeChecked AND r.TotalStakeA > @MaxStakeToBeChecked
-
+	
 	-- Check the results and store/return data
 	IF EXISTS (SELECT TOP(1) 1 FROM #tmpFraudTickets WITH (NOLOCK))
 	BEGIN		
@@ -428,10 +438,6 @@ BEGIN
 												AND t2.TotalLiveScore = ft.TotalLiveScore AND t2.CustId = ft.CustId AND t2.GroupId = ft.GroupId)
 			,	[IsIPFraud]			= ft.IsIPFraud
 		FROM #tmpFraudTickets ft WITH (NOLOCK)
-				LEFT JOIN dbo.ArbitrageTicketDetails si WITH (NOLOCK) 
-					ON si.MatchId = ft.MatchId AND si.BetType = ft.BetType AND si.Handicap = ft.Handicap 
-					AND si.TotalScores = ft.TotalLiveScore AND si.CustId = ft.CustId AND  si.GroupId = ft.GroupId					
-		WHERE si.CustId IS NULL AND si.MatchID IS NULL AND si.GroupId IS NULL
 		GROUP BY ft.CustId, ft.MatchId, ft.GroupId, ft.Bettype, ft.Handicap, ft.TotalLiveScore,ft.IsIPFraud;		
 
 		-- Update table SuspiciousInfo if existed
@@ -450,9 +456,8 @@ BEGIN
 										FROM dbo.ArbitrageTicketDetails AS t2 WITH (NOLOCK)
 										WHERE t2.MatchId = ft.MatchId AND t2.CustId = ft.CustId) AS A)
 		FROM dbo.ArbitrageSuspiciousInfo si
-				INNER JOIN dbo.ArbitrageTicketDetails ft WITH (NOLOCK)
-					ON si.MatchId = ft.MatchId AND si.CustId = ft.CustId AND si.FraudCaseId = @CurrentFraudCaseId
-		WHERE ft.MatchId IN (SELECT DISTINCT MatchId FROM #tmpMatches WITH(NOLOCK));		
+				INNER JOIN #tmpFraudTickets ft WITH (NOLOCK)
+					ON si.MatchId = ft.MatchId AND si.CustId = ft.CustId AND si.FraudCaseId = @CurrentFraudCaseId;	
 							
 		-- Insert new records for table SuspiciousInfo
 		INSERT INTO dbo.ArbitrageSuspiciousInfo(CustId, MatchId, EventDate, FraudCaseId, SuspiciousDate, TransIds, ViolatiONCounter, TicketCounter)
@@ -469,14 +474,13 @@ BEGIN
 										FROM (SELECT DISTINCT t2.Bettype, t2.TotalScores, t2.Handicap
 										FROM dbo.ArbitrageTicketDetails AS t2 WITH (NOLOCK)
 										WHERE t2.MatchId = ft.MatchId AND t2.CustId = ft.CustId) AS A)
-			,	[TicketCounter]		= (SELECT SUM(t2.TicketCounter) 
-										FROM dbo.ArbitrageTicketDetails t2 WITH (NOLOCK)
-										WHERE t2.MatchId = ft.MatchId AND t2.CustId = ft.CustId)
+			,	[TicketCounter]		= (SELECT SUM(t3.TicketCounter) 
+										FROM dbo.ArbitrageTicketDetails t3 WITH (NOLOCK)
+										WHERE t3.MatchId = ft.MatchId AND t3.CustId = ft.CustId)
 		FROM #tmpFraudTickets ft WITH (NOLOCK)
 				LEFT JOIN dbo.ArbitrageSuspiciousInfo si WITH (NOLOCK) 
 					ON si.MatchId = ft.MatchId AND si.CustId = ft.CustId  AND si.FraudCaseId = @CurrentFraudCaseId
-		WHERE si.MatchID IS NULL AND si.FraudCaseId IS NULL AND si.CustId IS NULL
-			AND ft.MatchId IN (SELECT DISTINCT MatchId FROM #tmpMatches WITH(NOLOCK))
+		WHERE si.MatchID IS NULL
 		GROUP BY ft.CustId, ft.MatchId, ft.EventDate;
 			
 		-- Update table SuspiciousCustomer if existed
@@ -488,8 +492,8 @@ BEGIN
 							WHERE sc.Custid = ft.CustId);
 
 		-- Insert new records for table SuspiciousCustomer
-		INSERT INTO dbo.SuspiciousCustomer(Custid, IsDelinquent, IsHedge, IsDirty, IsVerified)
-		SELECT DISTINCT ft.CustId, 0, 0, 0, 0
+		INSERT INTO dbo.SuspiciousCustomer(Custid, IsDelinquent, IsHedge, IsDirty, IsVerified, Username, CurrencyId, CurrencyName)
+		SELECT DISTINCT ft.CustId, 0, 0, 0, 0, ft.Username, ft.CurrencyId,ft.CurrencyName
 		FROM #tmpFraudTickets ft WITH (NOLOCK)
 		WHERE ft.CustId NOT IN (
 				SELECT sc.CustId 
@@ -525,3 +529,5 @@ BEGIN
 	EXEC sp_xml_removedocument @idocMatch;
 	EXEC sp_xml_removedocument @idocAssociation;
 END;
+
+/*<info serverAlias="DBSPU-bodb_FraudSensor" executers="bodbSPUNet" isFunction="0" isNested="0"></info>*/
