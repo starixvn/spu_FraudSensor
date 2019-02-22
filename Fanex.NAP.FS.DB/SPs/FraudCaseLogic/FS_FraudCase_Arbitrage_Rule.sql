@@ -484,7 +484,7 @@ BEGIN
 			
 		-- Update table SuspiciousCustomer if existed
 		UPDATE sc WITH (ROWLOCK, UPDLOCK)
-		SET sc.IsVerified = 0, sc.Custid = ct.username
+		SET sc.IsVerified = 0, sc.Username = ct.Username
 		FROM dbo.SuspiciousCustomer sc 
 				, (	SELECT DISTINCT Custid, Username
 					FROM #tmpFraudTickets ft WITH (NOLOCK)) AS ct
