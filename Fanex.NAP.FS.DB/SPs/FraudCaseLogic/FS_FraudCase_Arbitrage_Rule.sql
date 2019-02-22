@@ -3,8 +3,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-
-ALTER PROCEDURE [dbo].[FS_FraudCase_Arbitrage_Rule_xtest3] 
+ALTER PROCEDURE [dbo].[FS_FraudCase_Arbitrage_Rule] 
 		@Matches			VARCHAR(MAX) = NULL -- xml format
 	,	@Associations		VARCHAR(MAX) = NULL -- xml format
 AS
@@ -485,11 +484,11 @@ BEGIN
 			
 		-- Update table SuspiciousCustomer if existed
 		UPDATE sc WITH (ROWLOCK, UPDLOCK)
-		SET sc.IsVerified = 0
+		SET sc.IsVerified = 0, sc.Custid = ct.username
 		FROM dbo.SuspiciousCustomer sc 
-		WHERE sc.Custid IN (SELECT DISTINCT(Custid)
-							FROM #tmpFraudTickets ft WITH (NOLOCK)
-							WHERE sc.Custid = ft.CustId);
+				, (	SELECT DISTINCT Custid, Username
+					FROM #tmpFraudTickets ft WITH (NOLOCK)) AS ct
+		WHERE sc.Custid = ct.CustId
 
 		-- Insert new records for table SuspiciousCustomer
 		INSERT INTO dbo.SuspiciousCustomer(Custid, IsDelinquent, IsHedge, IsDirty, IsVerified, Username, CurrencyId, CurrencyName)
