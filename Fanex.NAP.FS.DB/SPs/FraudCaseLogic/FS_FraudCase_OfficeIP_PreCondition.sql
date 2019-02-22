@@ -38,7 +38,7 @@ BEGIN
 	FROM	bodb02.dbo.SportBettypeMatrix sbm WITH (NOLOCK)
 	WHERE	sbm.ProductID = 1;
 	
-	SELECT	m.matchid ,m.eventdate
+	SELECT	m.matchid, m.eventdate
 	FROM	bodb02.dbo.match m WITH (NOLOCK)
 			INNER JOIN #tmpSporttype s WITH (NOLOCK) ON s.sporttype = m.sporttype
 			INNER JOIN bodb02.dbo.league l WITH (NOLOCK) ON m.leagueid = l.leagueid

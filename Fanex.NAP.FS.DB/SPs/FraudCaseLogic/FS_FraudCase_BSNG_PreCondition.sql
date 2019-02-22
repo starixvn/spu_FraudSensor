@@ -60,6 +60,12 @@ BEGIN
 			AND l.isTest = 0
 			AND m.kickofftime <= @CurrentTime	
 			AND	m.livehomescore + liveawayscore > 0;
+
+	--- RETURN MATCH HAS NEW SCORE
+	SELECT  ms.MatchId
+	FROM	dbo.MatchScore AS ms WITH (NOLOCK)
+	WHERE	ms.UpdatedDate = @CurrentTime
+			AND ms.HasScanned = 0;	
 	
 	--- UPDATE HASSCANNED = 1 FOR COMPLETED MATCH IF SCANNED ALL SCORED (EXCEPT THE LAST SCORE)
 	UPDATE	ms 
@@ -78,17 +84,9 @@ BEGIN
 	FROM	dbo.MatchScore AS ms WITH (ROWLOCK, UPDLOCK)
 			INNER JOIN bodb02.dbo.Match AS m WITH(NOLOCK) ON m.MatchId = ms.MatchId
 	WHERE	(ms.TotalScores) < (m.LiveHomeScore + m.LiveAwayScore)
-			AND ms.HasScanned = 0;
-	
-	--- RETURN MATCH HAS NEW SCORE
-	SELECT  ms.MatchId
-	FROM	dbo.MatchScore AS ms WITH (NOLOCK)
-	WHERE	ms.UpdatedDate = @CurrentTime
 			AND ms.HasScanned = 0;			
 END;
 
-GO 
- GRANT EXECUTE ON [dbo].[FS_FraudCase_BSNG_PreCondition] TO [bodbSPUNet];
-GO 
- GRANT VIEW DEFINITION ON [dbo].[FS_FraudCase_BSNG_PreCondition] TO [bodbSPUNet];
-GO 
+GO
+/*<info serverAlias="DBSPU-bodb_FraudSensor" executers="bodbSPUNet" isFunction="0" isNested="0"></info>*/
+

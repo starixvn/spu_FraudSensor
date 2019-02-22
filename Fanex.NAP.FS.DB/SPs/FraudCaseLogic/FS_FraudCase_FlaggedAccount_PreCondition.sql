@@ -21,6 +21,16 @@ AS
 BEGIN
 	SET NOCOUNT ON;	
 
+	IF OBJECT_ID('tempdb..#tmpMatches') IS NOT NULL
+	BEGIN
+		DROP TABLE	#tmpMatches;
+	END;
+
+	CREATE TABLE #tmpMatches(
+			MatchId			INT PRIMARY KEY
+	);
+
+	INSERT INTO #tmpMatches(MatchId)
 	SELECT DISTINCT m.matchid AS MatchId
 	FROM bodb02.dbo.match AS m WITH (NOLOCK)
 		INNER JOIN bodb02.dbo.League AS l WITH(NOLOCK) ON m.leagueid = l.leagueid
@@ -28,10 +38,21 @@ BEGIN
 		m.eventstatus = 'running'
 		AND m.sporttype = 1
 		AND m.kickofftime <= GETDATE()
+		AND l.isTest = 0
+	UNION
+	SELECT DISTINCT m.matchid AS MatchId
+	FROM bodb02.dbo.match AS m WITH (NOLOCK)
+		INNER JOIN bodb02.dbo.League AS l WITH(NOLOCK) ON m.leagueid = l.leagueid
+		LEFT JOIN dbo.ScannedMatch AS ms WITH(NOLOCK)ON ms.matchid = m.matchid AND ms.FraudCaseId = 6
+	WHERE ms.MatchId IS NULL
+		AND m.eventstatus = 'completed'
+		AND m.sporttype = 1
+		AND m.kickofftime <= GETDATE()
 		AND l.isTest = 0;
+
+	SELECT DISTINCT MatchId
+	FROM #tmpMatches WITH(NOLOCK);
 END;
-GO 
- GRANT EXECUTE ON [dbo].[FS_FraudCase_FlaggedAccount_PreCondition] TO [bodbSPUNet]
-GO 
- GRANT VIEW DEFINITION ON [dbo].[FS_FraudCase_FlaggedAccount_PreCondition] TO [bodbSPUNet]
-GO 
+
+GO
+/*<info serverAlias="DBSPU-bodb_FraudSensor" executers="bodbSPUNet" isFunction="0" isNested="0"></info>*/
