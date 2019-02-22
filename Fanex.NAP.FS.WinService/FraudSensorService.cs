@@ -4,30 +4,33 @@
     using MailDelivery.Client;
     using System.Configuration;
     using System.ServiceProcess;
-    using System.Threading;
     using System.Threading.Tasks;
+    using System.Timers;
 
     public partial class FraudSensorService : ServiceBase
     {
         private IFraudCaseLoader _fraudCaseLoader;
-
         private IReceivingMessageHandler _receivingMessageHandler;
-
-        private Thread _thread;
+        private System.Timers.Timer timer;
 
         public FraudSensorService(IFraudCaseLoader fraudCaseLoader = null, IReceivingMessageHandler receivingMessageHandler = null)
         {
+            InitializeComponent();
+
             _fraudCaseLoader = fraudCaseLoader ?? new FraudCaseLoader();
 
             _receivingMessageHandler = receivingMessageHandler ?? new ReceivingMessageHandler();
 
-            InitializeComponent();
+            timer = new System.Timers.Timer();            
         }
 
         protected override void OnStart(string[] args)
         {
-            _thread = new Thread(RunOnStart);
-            _thread.Start();
+            timer.Elapsed += RunOnStart;
+            timer.Interval = 10000;
+            timer.Start();
+
+            Logger.Log.Info("SPU FS 2 Service is starting");
         }
 
         protected override void OnStop()
@@ -36,23 +39,25 @@
 
             _receivingMessageHandler.ClearCases();
 
-            SendMailInform(false);
+            timer.Dispose();
 
-            _thread.Abort();
+            SendMailInform("SPU - New FS Service Stopped");
         }
 
         protected override void OnShutdown()
         {
-            SendMailInform(false);
+            SendMailInform("SPU - New FS - Server is rebooting.");
 
             Logger.Log.Info("SPU FS 2 Service Stopped");
 
             _receivingMessageHandler.ClearCases();
 
             MailClientHandler.Stop();
+
+            timer.Dispose();
         }
 
-        public void RunOnStart()
+        public void RunOnStart(object source, ElapsedEventArgs e)       
         {
             try
             {
@@ -74,8 +79,10 @@
 
                 if (AppSettings.Environment != "1")
                 {
-                    SendMailInform(true);
+                    SendMailInform("SPU - New FS Service Started");
                 }
+
+                timer.Stop();               
 
                 Logger.Log.Info("SPU FS 2 Service - Loading fraudcases have done.");
             }
@@ -85,18 +92,12 @@
             }
         }
 
-        private void SendMailInform(bool serviceStarting)
+        private void SendMailInform(string subject)
         {
             Task.Factory.StartNew(() =>
             {
                 try
                 {
-                    var subject = "SPU - New FS Service Started";
-                    if (!serviceStarting)
-                    {
-                        subject = "SPU - New FS Service Stopped";
-                    }
-
                     var newMail = new Fanex.MailDelivery.Core.Models.Mail
                     {
                         Subject = subject,
@@ -107,9 +108,9 @@
 
                     MailClientHandler.SendFunctionMail(newMail);
                 }
-                catch
+                catch (System.Exception ex)
                 {
-                    ////ignore comment
+                    Logger.Log.Error(ex.Message, ex);
                 }
             });
         }

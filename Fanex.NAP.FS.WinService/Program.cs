@@ -4,6 +4,7 @@ using Fanex.Logging;
 using System;
 using System.Configuration;
 using System.ServiceProcess;
+using System.Reflection;
 
 namespace Fanex.NAP.FS.WinService
 {
@@ -12,7 +13,7 @@ namespace Fanex.NAP.FS.WinService
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
-        private static void Main()
+        private static void Main(string[] args)
         {
             try
             {
@@ -31,7 +32,30 @@ namespace Fanex.NAP.FS.WinService
                     new FraudSensorService()
                 };
 
-                ServiceBase.Run(ServicesToRun);
+                if (Environment.UserInteractive)
+                {
+                    // run console
+                    var type = typeof(ServiceBase);
+                    const BindingFlags Flags = BindingFlags.Instance | BindingFlags.NonPublic;
+                    var method = type.GetMethod("OnStart", Flags);
+
+                    foreach (var service in ServicesToRun)
+                    {
+                        method.Invoke(service, new object[] { args });
+                    }
+
+                    Console.WriteLine("Press any key to exit!");
+                    Console.ReadLine();
+
+                    foreach (var service in ServicesToRun)
+                    {
+                        service.Stop();
+                    }
+                }
+                else
+                { 
+                    ServiceBase.Run(ServicesToRun);
+                }
             }
             catch (System.Exception ex)
             {
