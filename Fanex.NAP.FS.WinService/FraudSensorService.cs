@@ -2,6 +2,7 @@
 {
     using Logging;
     using MailDelivery.Client;
+    using System;
     using System.Configuration;
     using System.ServiceProcess;
     using System.Threading.Tasks;
@@ -30,7 +31,7 @@
             timer.Interval = 10000;
             timer.Start();
 
-            Logger.Log.Info("SPU FS 2 Service is starting");
+            SendMailInform("SPU - New FPS - Service is starting. Waiting for 10s for starting. Now is " + DateTime.Now);            
         }
 
         protected override void OnStop()
@@ -41,12 +42,12 @@
 
             timer.Dispose();
 
-            SendMailInform("SPU - New FS Service Stopped");
+            SendMailInform("SPU - New FS Service Stopped. Now is " + DateTime.Now);
         }
 
         protected override void OnShutdown()
         {
-            SendMailInform("SPU - New FS - Server is rebooting.");
+            SendMailInform("SPU - New FS - Server is rebooting. Now is " + DateTime.Now);
 
             Logger.Log.Info("SPU FS 2 Service Stopped");
 
@@ -79,7 +80,7 @@
 
                 if (AppSettings.Environment != "1")
                 {
-                    SendMailInform("SPU - New FS Service Started");
+                    SendMailInform("SPU - New FS Service Started. Now is " + DateTime.Now);
                 }
 
                 timer.Stop();               
