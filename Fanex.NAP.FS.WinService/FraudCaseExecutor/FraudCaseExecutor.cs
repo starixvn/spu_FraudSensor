@@ -130,26 +130,23 @@
 
         protected void SendMailInform(string message, string subject = null)
         {
-            Task.Factory.StartNew(() =>
+            try
             {
-                try
+                var environment = GetEnvironment();
+                var newMail = new MailDelivery.Core.Models.Mail
                 {
-                    var environment = GetEnvironment();
-                    var newMail = new MailDelivery.Core.Models.Mail
-                    {
-                        Subject = string.Format("[({0}) SPU FS] ", environment) + (string.IsNullOrEmpty(subject) ? " Error" : subject),
-                        Title = "SPU Fraud Sensor",
-                        Body = message,
-                        MailingListId = int.Parse(ConfigurationManager.AppSettings["MailingListId"])
-                    };
+                    Subject = string.Format("[({0}) SPU FS] ", environment) + (string.IsNullOrEmpty(subject) ? " Error" : subject),
+                    Title = "SPU Fraud Sensor",
+                    Body = message,
+                    MailingListId = int.Parse(ConfigurationManager.AppSettings["MailingListId"])
+                };
 
-                    MailClientHandler.SendFunctionMail(newMail);
-                }
-                catch (Exception exception)
-                {
-                    WriteLog(exception);
-                }
-            });
+                MailClientHandler.SendFunctionMail(newMail);
+            }
+            catch (Exception exception)
+            {
+                WriteLog(exception);
+            }
         }
 
         #region private method

@@ -28,6 +28,8 @@
                 if (fraudCase.IsActive)
                 {
                     _sendingCase.Send(fraudCase.FraudCaseId);
+
+                    Logging.Logger.Log.Info($"fraudcase: {fraudCase.FraudCaseName} - active: {fraudCase.IsActive}. Sent to queue.");
                 }
             }
         }
