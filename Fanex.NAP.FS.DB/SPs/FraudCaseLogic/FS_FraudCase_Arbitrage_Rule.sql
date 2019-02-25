@@ -122,7 +122,10 @@ BEGIN
 			CustId				ASC
 	);
 
-
+	IF OBJECT_ID('tempdb..#tmpBettransAssociation') IS NOT NULL
+    BEGIN
+        DROP TABLE  #tmpBettransAssociation;
+    END
 
 	CREATE TABLE #tmpBettransAssociation
 	(
@@ -279,7 +282,7 @@ BEGIN
 
 	--================GET: BETTRANS TICKET
 	INSERT INTO #tmpBettrans(CustId, Username, CurrencyId, CurrencyName, MatchId, TransId, Bettype, TotalLiveScore, Betteam, Handicap, Stake, EventDate, IP)
-	SELECT	[CustId]			= b.custid
+	SELECT	DISTINCT [CustId]	= b.custid
 		,	[Username]			= b.Username
 		,	[CurrencyId]		= b.currency
 		,	[CurrencyName]		= b.CurrencyName
@@ -339,8 +342,7 @@ BEGIN
 		WHERE	a.GroupId != a.MinGroupId
 
 		IF EXISTS (SELECT TOP(1) (1)FROM #tmpIPGroup WITH(NOLOCK))
-		BEGIN
-						
+		BEGIN						
 			Update	t
 			SET		t.GroupId = g.MinGroupId
 			FROM	#tmpBettransAssociation t WITH(ROWLOCK)
@@ -350,7 +352,6 @@ BEGIN
 			SET		t.IsIPFraud = 1
 			FROM	#tmpBettransAssociation t WITH(ROWLOCK)
 					INNER JOIN #tmpIPGroup g WITH(NOLOCK) ON t.IP = g.IP;
-
 		END;
 		ELSE
 		BEGIN 
