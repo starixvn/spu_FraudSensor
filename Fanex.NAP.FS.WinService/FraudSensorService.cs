@@ -34,7 +34,7 @@
 
         protected override void OnStart(string[] args)
         {
-            SendMailInform("SPU - New FPS - Service is starting. Waiting for 10s for starting. Now is " + DateTime.Now);
+            SendMailInform("SPU - Fraud Sensor - Service is starting. Waiting for 10s for starting. Now is " + DateTime.Now);
 
             timer.Elapsed += RunOnStart;
             timer.Interval = 10000;
@@ -43,20 +43,20 @@
 
         protected override void OnStop()
         {
-            Logger.Log.Info("SPU FS 2 Service Stopped");
+            Logger.Log.Info("SPU Fraud Sensor Service Stopped");
 
             _receivingMessageHandler.ClearCases();
 
             timer.Dispose();
 
-            SendMailInform("SPU - New FS - Service Stopped. Now is " + DateTime.Now);
+            SendMailInform("SPU - Fraud Sensor - Service Stopped. Now is " + DateTime.Now);
         }
 
         protected override void OnShutdown()
         {
-            SendMailInform("SPU - New FS - Server is rebooting. Now is " + DateTime.Now);
+            SendMailInform("SPU - Fraud Sensor - Server is rebooting. Now is " + DateTime.Now);
 
-            Logger.Log.Info("SPU FS 2 Service Stopped");
+            Logger.Log.Info("SPU Fraud Sensor Service Stopped");
 
             _receivingMessageHandler.ClearCases();
 
@@ -69,7 +69,7 @@
         {
             try
             {
-                Logger.Log.Info("SPU FS 2 Service Started");
+                Logger.Log.Info("SPU Fraud Sensor Service Started");
 
                 if (AppSettings.Environment != "1")
                 {                   
@@ -77,17 +77,17 @@
                     queue.Clear();
                 }
 
-                Logger.Log.Info("SPU FS 2 Service - Loading fraudcases");
+                Logger.Log.Info("SPU Fraud Sensor Service - Loading fraudcases");
 
                 _fraudCaseLoader.LoadFraudCases();
 
                 _receivingMessageHandler.TriggerReceivingMessage();
 
-                SendMailInform("SPU - New FS - Service Started. Now is " + DateTime.Now);
+                SendMailInform("SPU - Fraud Sensor - Service Started. Now is " + DateTime.Now);
 
                 timer.Stop();               
 
-                Logger.Log.Info("SPU FS 2 Service - Loading fraudcases have done.");
+                Logger.Log.Info("SPU Fraud Sensor Service - Loading fraudcases have done.");
             }
             catch (System.Exception ex)
             {
