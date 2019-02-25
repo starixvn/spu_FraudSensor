@@ -104,25 +104,27 @@
 
         private void SendMailInform(string subject)
         {
-            Task.Factory.StartNew(() =>
-            {
-                try
-                {
-                    var newMail = new Fanex.MailDelivery.Core.Models.Mail
-                    {
-                        Subject = subject,
-                        Title = "SPU Fraud Sensor",
-                        Body = subject,
-                        MailingListId = int.Parse(ConfigurationManager.AppSettings["MailingListId"])
-                    };
+            //Task.Factory.StartNew(() =>
+            //{
 
-                    MailClientHandler.SendFunctionMail(newMail);
-                }
-                catch (System.Exception ex)
+            //});
+
+            try
+            {
+                var newMail = new Fanex.MailDelivery.Core.Models.Mail
                 {
-                    Logger.Log.Error(ex.Message, ex);
-                }
-            });
+                    Subject = subject,
+                    Title = "SPU Fraud Sensor",
+                    Body = subject,
+                    MailingListId = int.Parse(ConfigurationManager.AppSettings["MailingListId"])
+                };
+
+                MailClientHandler.SendFunctionMail(newMail);
+            }
+            catch (System.Exception ex)
+            {
+                Logger.Log.Error(ex.Message, ex);
+            }
         }
     }
 }
