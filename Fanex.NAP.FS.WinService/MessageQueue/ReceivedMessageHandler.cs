@@ -25,9 +25,7 @@
             {
                 var message = msg.Body;
                 var id = (int)message;
-                var label = msg.Label;
-
-                Logger.Log.Info("SPU Fraud Sensor Service - Id:" + id + ", Label: " + label );
+                var label = msg.Label;                              
 
                 if (string.IsNullOrEmpty(label))
                 {
