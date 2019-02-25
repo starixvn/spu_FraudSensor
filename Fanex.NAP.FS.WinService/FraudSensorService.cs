@@ -27,11 +27,14 @@
 
         protected override void OnStart(string[] args)
         {
+            if (AppSettings.Environment != "1")
+            { 
+                SendMailInform("SPU - New FPS - Service is starting. Waiting for 10s for starting. Now is " + DateTime.Now);
+            }
+
             timer.Elapsed += RunOnStart;
             timer.Interval = 10000;
-            timer.Start();
-
-            SendMailInform("SPU - New FPS - Service is starting. Waiting for 10s for starting. Now is " + DateTime.Now);            
+            timer.Start();                        
         }
 
         protected override void OnStop()
@@ -42,12 +45,18 @@
 
             timer.Dispose();
 
-            SendMailInform("SPU - New FS Service Stopped. Now is " + DateTime.Now);
+            if (AppSettings.Environment != "1")
+            { 
+                SendMailInform("SPU - New FS Service Stopped. Now is " + DateTime.Now);
+            }
         }
 
         protected override void OnShutdown()
         {
-            SendMailInform("SPU - New FS - Server is rebooting. Now is " + DateTime.Now);
+            if (AppSettings.Environment != "1")
+            { 
+                SendMailInform("SPU - New FS - Server is rebooting. Now is " + DateTime.Now);
+            }
 
             Logger.Log.Info("SPU FS 2 Service Stopped");
 
