@@ -45,10 +45,13 @@
 
             _timer.Start();
 
-            PreExecute(null, null);
+            PreExecute(null, null);                      
 
             var message = string.Format("{1} (ID = {0}) {2}", FraudCase.FraudCaseId, FraudCase.FraudCaseName, "ACTIVE");
+
             SendMailInform(message, message);
+
+            Logger.Log.Info("SPU Fraud Sensor Service - " + FraudCase.FraudCaseName + " is sent by mail.");
         }
 
         public virtual void Execute()
