@@ -33,34 +33,26 @@ BEGIN
 			MatchId			INT
 		,	EventDate		DATE
 		,	KickOffTime		DATETIME
+		,	EventStatus		NVARCHAR(20)
 	);
 
-	INSERT INTO #tmpMatchRunning(MatchId, EventDate, KickOffTime)
+	INSERT INTO #tmpMatchRunning(MatchId, EventDate, KickOffTime, EventStatus)
 	SELECT	[MatchId]		= m.matchid
 		,	[EventDate]		= m.eventdate
 		,	[KickOffTime]	= m.kickofftime
+		,	[eventstatus]	= m.eventstatus
 	FROM bodb02.dbo.match AS m WITH(NOLOCK)
 		INNER JOIN bodb02.dbo.League AS l WITH(NOLOCK) ON m.leagueid = l.leagueid
-		INNER JOIN bodb02.dbo.Bettrans AS b WITH(NOLOCK) ON m.matchid=b.matchid
 	WHERE m.sporttype = 1
-		AND	m.eventstatus = 'Running'
-		AND	m.kickofftime <= GETDATE()
-		AND l.IsMainMarket = 1
-		AND l.isTest = 0
-	UNION
-	SELECT	[MatchId]		= m.matchid
-		,	[EventDate]		= m.eventdate
-		,	[KickOffTime]	= m.kickofftime
-	FROM bodb02.dbo.match AS m WITH(NOLOCK)
-		INNER JOIN bodb02.dbo.League AS l WITH(NOLOCK) ON m.leagueid = l.leagueid
-		INNER JOIN bodb02.dbo.Bettrans AS b WITH(NOLOCK) ON m.matchid=b.matchid
-		LEFT JOIN dbo.ScannedMatch as sm WITH(NOLOCK) ON m.matchid = sm.MatchId AND sm.FraudCaseId = @fraudCaseID
-	WHERE sm.MatchId IS NULL
-		AND m.sporttype = 1
-		AND	m.eventstatus = 'Completed'
+		AND	(m.eventstatus = 'Running' OR m.eventstatus = 'Completed')
 		AND	m.kickofftime <= GETDATE()
 		AND l.IsMainMarket = 1
 		AND l.isTest = 0;
+
+	DELETE mr
+	FROM #tmpMatchRunning AS mr
+		LEFT JOIN dbo.ScannedMatch as sm WITH(NOLOCK) ON mr.matchid = sm.MatchId AND sm.FraudCaseId = @fraudCaseID
+	WHERE sm.MatchId IS NOT NULL AND mr.EventStatus = 'Completed';
  
 	---Insert New Match to DelayGoalMatchScanning: LastScannedTransId default = 0 
 	INSERT INTO dbo.DelayGoalMatchScanning (Matchid, EventDate, KickOffTime, fromTransId)	
@@ -73,7 +65,7 @@ BEGIN
 	WHERE ms.Matchid IS NULL;
 	
 	---Return Match List Need to Scanning
-	SELECT mr.Matchid
+	SELECT DISTINCT mr.Matchid
 	FROM #tmpMatchRunning AS mr WITH(NOLOCK);
 	
 END;
