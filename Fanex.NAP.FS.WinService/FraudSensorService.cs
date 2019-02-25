@@ -73,9 +73,9 @@
 
                 Logger.Log.Info("SPU FS 2 Service - Loading fraudcases");
 
-                _fraudCaseLoader.LoadFraudCases();
+                //_fraudCaseLoader.LoadFraudCases();
 
-                _receivingMessageHandler.TriggerReceivingMessage();
+                //_receivingMessageHandler.TriggerReceivingMessage();
 
                 if (AppSettings.Environment != "1")
                 {

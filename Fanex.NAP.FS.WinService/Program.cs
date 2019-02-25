@@ -32,30 +32,7 @@ namespace Fanex.NAP.FS.WinService
                     new FraudSensorService()
                 };
 
-                if (Environment.UserInteractive)
-                {
-                    // run console
-                    var type = typeof(ServiceBase);
-                    const BindingFlags Flags = BindingFlags.Instance | BindingFlags.NonPublic;
-                    var method = type.GetMethod("OnStart", Flags);
-
-                    foreach (var service in ServicesToRun)
-                    {
-                        method.Invoke(service, new object[] { args });
-                    }
-
-                    Console.WriteLine("Press any key to exit!");
-                    Console.ReadLine();
-
-                    foreach (var service in ServicesToRun)
-                    {
-                        service.Stop();
-                    }
-                }
-                else
-                { 
-                    ServiceBase.Run(ServicesToRun);
-                }
+                ServiceBase.Run(ServicesToRun);
             }
             catch (System.Exception ex)
             {
