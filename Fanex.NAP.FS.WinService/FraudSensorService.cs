@@ -18,19 +18,23 @@
         {
             InitializeComponent();
 
+            if (AppSettings.Environment != "1")
+            {
+                MailClientHandler.Start();
+            }
+
             _fraudCaseLoader = fraudCaseLoader ?? new FraudCaseLoader();
 
             _receivingMessageHandler = receivingMessageHandler ?? new ReceivingMessageHandler();
 
-            timer = new System.Timers.Timer();            
+            timer = new System.Timers.Timer();
+
+            
         }
 
         protected override void OnStart(string[] args)
         {
-            if (AppSettings.Environment != "1")
-            { 
-                SendMailInform("SPU - New FPS - Service is starting. Waiting for 10s for starting. Now is " + DateTime.Now);
-            }
+            SendMailInform("SPU - New FPS - Service is starting. Waiting for 10s for starting. Now is " + DateTime.Now);
 
             timer.Elapsed += RunOnStart;
             timer.Interval = 10000;
@@ -45,18 +49,12 @@
 
             timer.Dispose();
 
-            if (AppSettings.Environment != "1")
-            { 
-                SendMailInform("SPU - New FS Service Stopped. Now is " + DateTime.Now);
-            }
+            SendMailInform("SPU - New FS Service Stopped. Now is " + DateTime.Now);
         }
 
         protected override void OnShutdown()
         {
-            if (AppSettings.Environment != "1")
-            { 
-                SendMailInform("SPU - New FS - Server is rebooting. Now is " + DateTime.Now);
-            }
+            SendMailInform("SPU - New FS - Server is rebooting. Now is " + DateTime.Now);
 
             Logger.Log.Info("SPU FS 2 Service Stopped");
 
@@ -74,9 +72,7 @@
                 Logger.Log.Info("SPU FS 2 Service Started");
 
                 if (AppSettings.Environment != "1")
-                {
-                    MailClientHandler.Start();
-
+                {                   
                     var queue = new MessageQueueReceiver();
                     queue.Clear();
                 }
@@ -87,10 +83,7 @@
 
                 //_receivingMessageHandler.TriggerReceivingMessage();
 
-                if (AppSettings.Environment != "1")
-                {
-                    SendMailInform("SPU - New FS Service Started. Now is " + DateTime.Now);
-                }
+                SendMailInform("SPU - New FS Service Started. Now is " + DateTime.Now);
 
                 timer.Stop();               
 
@@ -104,27 +97,25 @@
 
         private void SendMailInform(string subject)
         {
-            //Task.Factory.StartNew(() =>
-            //{
-
-            //});
-
-            try
+            Task.Factory.StartNew(() =>
             {
-                var newMail = new Fanex.MailDelivery.Core.Models.Mail
+                try
                 {
-                    Subject = subject,
-                    Title = "SPU Fraud Sensor",
-                    Body = subject,
-                    MailingListId = int.Parse(ConfigurationManager.AppSettings["MailingListId"])
-                };
+                    var newMail = new Fanex.MailDelivery.Core.Models.Mail
+                    {
+                        Subject = subject,
+                        Title = "SPU Fraud Sensor",
+                        Body = subject,
+                        MailingListId = int.Parse(ConfigurationManager.AppSettings["MailingListId"])
+                    };
 
-                MailClientHandler.SendFunctionMail(newMail);
-            }
-            catch (System.Exception ex)
-            {
-                Logger.Log.Error(ex.Message, ex);
-            }
+                    MailClientHandler.SendFunctionMail(newMail);
+                }
+                catch (System.Exception ex)
+                {
+                    Logger.Log.Error(ex.Message, ex);
+                }
+            });
         }
     }
 }
