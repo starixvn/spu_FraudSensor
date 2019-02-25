@@ -13,8 +13,9 @@ AS
 	Original:
 
 	Revisions:
-		- 20180312@CaseyHuynh: Correct Code Syntax
+		- 20180312@CaseyHuynh:	Correct Code Syntax
 		- 20180525@Casey.Huynh: Exclude League Test
+		- 20190225@Long.Luu:	Scanning for completed matches during UM time [Redmine ID: #106820]
 		
 	Param's Explanation (filtered by):
 */
