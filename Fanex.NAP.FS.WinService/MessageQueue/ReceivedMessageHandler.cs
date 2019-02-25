@@ -1,5 +1,6 @@
 ﻿namespace Fanex.NAP.FS.WinService
 {
+    using Fanex.Logging;
     using Library.FSMQ;
     using System;
     using System.Messaging;
@@ -25,6 +26,8 @@
                 var message = msg.Body;
                 var id = (int)message;
                 var label = msg.Label;
+
+                Logger.Log.Info("SPU Fraud Sensor Service - Id:" + id + ", Label: " + label );
 
                 if (string.IsNullOrEmpty(label))
                 {

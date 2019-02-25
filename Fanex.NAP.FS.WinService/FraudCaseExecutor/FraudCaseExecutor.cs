@@ -43,16 +43,13 @@
 
             _timer.Elapsed += PreExecute;
 
-            _timer.Start();
-
-            Logger.Log.Info("SPU Fraud Sensor Service - " + FraudCase.FraudCaseName + " is preExecuted.");
+            _timer.Start();                        
 
             PreExecute(null, null);                      
 
             var message = string.Format("{1} (ID = {0}) {2}", FraudCase.FraudCaseId, FraudCase.FraudCaseName, "ACTIVE");
 
             SendMailInform(message, message);
-
             
         }
 
@@ -63,9 +60,7 @@
                 if (AppSettings.Environment == "2" && FraudCase.FraudCaseId != 10)
                 {
                     return;
-                }
-
-                Logger.Log.Info("SPU Fraud Sensor Service - " + FraudCase.FraudCaseName + " is executing.");
+                }                                
 
                 var underMaintenanceBusiness = new UMBusiness();
                 var isUnderMaintenance = underMaintenanceBusiness.isUnderMaintainence(Sites.AccountSite, ConfigurationManager.AppSettings["FSUrl"]);
