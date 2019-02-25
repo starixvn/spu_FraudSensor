@@ -35,6 +35,7 @@ namespace Fanex.NAP.FS.Websites.Controllers
         public ActionResult Index()
         {
             ViewBag.Username = this.User.Identity.Name;
+            ViewBag.Environment = int.Parse(ConfigurationManager.AppSettings["Environment"]);
 
             return View(_matchMonitorService.GetBalanceUpDate());
         }
