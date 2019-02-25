@@ -115,7 +115,7 @@ BEGIN
 		,	Handicap			SMALLMONEY
 		,	Stake				MONEY
 		,	EventDate			DATETIME
-		,	IP					VARCHAR(15)
+		,	IP					BIGINT
 	);
 
 	CREATE NONCLUSTERED INDEX	#NCIX_tmpBettrans_CustId ON #tmpBettrans (
@@ -138,7 +138,7 @@ BEGIN
 		,	Handicap			SMALLMONEY
 		,	Stake				MONEY
 		,	EventDate			DATETIME
-		,	Ip					VARCHAR(15)
+		,	Ip					BIGINT
 		,	GroupId				INT
 		,	IsIPFraud			BIT		
 	);
@@ -163,8 +163,9 @@ BEGIN
 
 	CREATE TABLE #tmpIPGroup
 	(
-			GroupId				INT
-		,	MinGroupId			INT
+			IP					BIGINT
+		,	GroupId				INT
+		,	MinGroupId			INT	
 	);
 	
 
@@ -318,10 +319,6 @@ BEGIN
 	FROM	#tmpBettrans AS b WITH(NOLOCK)
 			INNER JOIN #tmpAssociation AS a WITH(NOLOCK) ON b.CustId = a.CustId;
 
-	DELETE	b
-	FROM	#tmpBettrans b WITH(ROWLOCK)
-			INNER JOIN #tmpBettransAssociation g WITH(NOLOCK) ON b.transid = g.TransId;
-
 	---- Merge Group By IP
 		--Find IP has more than one groupId
 
@@ -332,16 +329,14 @@ BEGIN
 			
 		DELETE #tmpIPGroup;
 		
-		INSERT INTO #tmpIPGroup(GroupId, MinGroupId)
-		SELECT a.GroupId, MIN(minGroupId) MinGroupId
-		FROM	(
-		SELECT	t.Ip
-				, t.GROUPId
-				, MIN(GROUPID) OVER (PARTITION BY IP ) MinGroupId
-		FROM		#tmpBettransAssociation t WITH(NOLOCK)
-		GROUP BY	IP, GroupId) a
-		Group by a.GroupId
-		HAVING a.GroupId != MIN(minGroupId)
+		INSERT INTO #tmpIPGroup(IP,GroupId, MinGroupId)
+		SELECT	a.IP, a.GroupId, a.MinGroupId	
+		FROM	(SELECT		t.Ip
+							, t.GroupId
+							, MIN(GroupId) OVER (PARTITION BY IP ) AS MinGroupId
+				FROM		#tmpBettransAssociation t WITH(NOLOCK)
+				GROUP BY	IP, GroupId) a
+		WHERE	a.GroupId != a.MinGroupId
 
 		IF EXISTS (SELECT TOP(1) (1)FROM #tmpIPGroup WITH(NOLOCK))
 		BEGIN
@@ -350,6 +345,12 @@ BEGIN
 			SET		t.GroupId = g.MinGroupId
 			FROM	#tmpBettransAssociation t WITH(ROWLOCK)
 					INNER JOIN #tmpIPGroup g WITH(NOLOCK) ON t.GroupId = g.GroupId;
+
+			Update	t
+			SET		t.IsIPFraud = 1
+			FROM	#tmpBettransAssociation t WITH(ROWLOCK)
+					INNER JOIN #tmpIPGroup g WITH(NOLOCK) ON t.IP = g.IP;
+
 		END;
 		ELSE
 		BEGIN 
