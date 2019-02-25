@@ -49,7 +49,7 @@
 
             timer.Dispose();
 
-            SendMailInform("SPU - New FS Service Stopped. Now is " + DateTime.Now);
+            SendMailInform("SPU - New FS - Service Stopped. Now is " + DateTime.Now);
         }
 
         protected override void OnShutdown()
@@ -79,11 +79,11 @@
 
                 Logger.Log.Info("SPU FS 2 Service - Loading fraudcases");
 
-                //_fraudCaseLoader.LoadFraudCases();
+                _fraudCaseLoader.LoadFraudCases();
 
-                //_receivingMessageHandler.TriggerReceivingMessage();
+                _receivingMessageHandler.TriggerReceivingMessage();
 
-                SendMailInform("SPU - New FS Service Started. Now is " + DateTime.Now);
+                SendMailInform("SPU - New FS - Service Started. Now is " + DateTime.Now);
 
                 timer.Stop();               
 
