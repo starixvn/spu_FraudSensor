@@ -13,9 +13,9 @@ AS
 	Original:
 
 	Revisions:
-		- 20180312@CaseyHuynh: Correct Code Syntax
-		- 20180525@Casey.Huynh: Exclude League Test
-		
+		- 20180312@CaseyHuynh:	Correct Code Syntax
+		- 20180525@Casey.Huynh: Exclude League Test		
+		- 20190225@Long.Luu:	Scanning for completed matches during UM time [Redmine ID: #106820]
 
 	Param's Explanation:
 */
@@ -33,14 +33,12 @@ BEGIN
 			MatchId			INT
 		,	EventDate		DATE
 		,	KickOffTime		DATETIME
-		,	MaxTransid		BIGINT
 	);
 
-	INSERT INTO #tmpMatchRunning(MatchId,EventDate,KickOffTime,MaxTransid)
+	INSERT INTO #tmpMatchRunning(MatchId, EventDate, KickOffTime)
 	SELECT	[MatchId]		= m.matchid
 		,	[EventDate]		= m.eventdate
 		,	[KickOffTime]	= m.kickofftime
-		,	[MaxTransid]	= max(b.transid)
 	FROM bodb02.dbo.match AS m WITH(NOLOCK)
 		INNER JOIN bodb02.dbo.League AS l WITH(NOLOCK) ON m.leagueid = l.leagueid
 		INNER JOIN bodb02.dbo.Bettrans AS b WITH(NOLOCK) ON m.matchid=b.matchid
@@ -49,7 +47,20 @@ BEGIN
 		AND	m.kickofftime <= GETDATE()
 		AND l.IsMainMarket = 1
 		AND l.isTest = 0
-	GROUP BY  m.matchid, m.eventdate, m.kickofftime;
+	UNION
+	SELECT	[MatchId]		= m.matchid
+		,	[EventDate]		= m.eventdate
+		,	[KickOffTime]	= m.kickofftime
+	FROM bodb02.dbo.match AS m WITH(NOLOCK)
+		INNER JOIN bodb02.dbo.League AS l WITH(NOLOCK) ON m.leagueid = l.leagueid
+		INNER JOIN bodb02.dbo.Bettrans AS b WITH(NOLOCK) ON m.matchid=b.matchid
+		LEFT JOIN dbo.ScannedMatch as sm WITH(NOLOCK) ON m.matchid = sm.MatchId AND sm.FraudCaseId = @fraudCaseID
+	WHERE sm.MatchId IS NULL
+		AND m.sporttype = 1
+		AND	m.eventstatus = 'Completed'
+		AND	m.kickofftime <= GETDATE()
+		AND l.IsMainMarket = 1
+		AND l.isTest = 0;
  
 	---Insert New Match to DelayGoalMatchScanning: LastScannedTransId default = 0 
 	INSERT INTO dbo.DelayGoalMatchScanning (Matchid, EventDate, KickOffTime, fromTransId)	
@@ -66,8 +77,7 @@ BEGIN
 	FROM #tmpMatchRunning AS mr WITH(NOLOCK);
 	
 END;
-GO 
- GRANT EXECUTE ON [dbo].[FS_FraudCase_DelayGoal_PreCondition] TO [bodbSPUNet]
-GO 
- GRANT VIEW DEFINITION ON [dbo].[FS_FraudCase_DelayGoal_PreCondition] TO [bodbSPUNet]
-GO 
+
+GO
+/*<info serverAlias="DBSPU-bodb_FraudSensor" executers="bodbSPUNet" isFunction="0" isNested="0"></info>*/
+
