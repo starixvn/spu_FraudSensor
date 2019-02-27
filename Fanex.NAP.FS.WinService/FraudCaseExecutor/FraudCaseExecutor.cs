@@ -46,10 +46,7 @@
 
             PreExecute(null, null);
 
-            if (FraudCase.FraudCaseId == 6)
-            {
-                NotifyEmail("Start fuction");
-            }
+            NotifyEmail();
         }
 
         public virtual void Execute()
@@ -203,9 +200,9 @@
             return environment;
         }
 
-        private void NotifyEmail(string times)
+        private void NotifyEmail()
         {
-            var message = string.Format(times + " - {1} (ID = {0}) {2}", FraudCase.FraudCaseId, FraudCase.FraudCaseName, "ACTIVE");
+            var message = string.Format("{1} (ID = {0}) {2}", FraudCase.FraudCaseId, FraudCase.FraudCaseName, "ACTIVE");
 
             SendMailInform(message, message);
         }

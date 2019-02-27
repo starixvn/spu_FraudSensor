@@ -36,9 +36,7 @@
             {
                 CustIdList = string.Empty,
                 EvidenceCodeList = string.Empty
-            };
-
-            Logger.Log.Info("SPU Fraud Sensor Service - FlaggedAccountExecutor is calling...");
+            };                        
 
             try
             {
@@ -46,10 +44,8 @@
             }
             catch (Exception ex)
             {
-                Logger.Log.Info("SPU Fraud Sensor Service - FlaggedAccountExecutor: " + ex.Message);                
-            }
-
-            Logger.Log.Info("SPU Fraud Sensor Service - Flagged Account Counter: " + _flaggedCustomers.Count());
+                Logger.Log.Error("SPU Fraud Sensor Service - FlaggedAccountExecutor: " + ex.Message);                
+            }                        
         }
 
         protected override void ClearOldResult()
