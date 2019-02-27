@@ -44,7 +44,7 @@ BEGIN
 			MatchId				INT
 		,	CustId				INT
 		,	BetType				INT
-		,	Handicap			MONEY
+		,	Handicap			SMALLMONEY
 		,	LiveHomeScore		INT
 		,	LiveAwayScore		INT
 	);
@@ -85,7 +85,7 @@ BEGIN
 			[MatchId]			INT
 		,	[TotalLiveScore]	INT
 		,	[Bettype]			INT
-		,	[Handicap]			INT
+		,	[Handicap]			SMALLMONEY
 		,	[IP]				BIGINT
 	);
 
@@ -163,7 +163,7 @@ BEGIN
 			MatchId				INT	
 		,	TotalLiveScore		INT
 		,	Bettype				INT
-		,	Handicap			INT
+		,	Handicap			SMALLMONEY
 		,	IP					BIGINT
 		,	MergeGroupId		INT
 		,	MinGroupId			INT	
@@ -234,7 +234,7 @@ BEGIN
 	END
 	
 	CREATE TABLE #tmpMatchBettypeBetteamSumStake(
-			GroupId				INT
+			MergeGroupId		INT
 		,	MatchId				INT
 		,	Bettype				INT
 		,	TotalLiveScore		INT
@@ -244,7 +244,7 @@ BEGIN
 	);
 
 	CREATE CLUSTERED INDEX	#CIX_tmpMatchBettypeBetteamSumStakeIdx ON #tmpMatchBettypeBetteamSumStake (
-			GroupId				ASC
+			MergeGroupId		ASC
 		,	MatchId				ASC
 		,	Bettype				ASC
 		,	Handicap			ASC
@@ -373,7 +373,7 @@ BEGIN
 
 	END;
 	--=================================================================================================	
-	INSERT INTO #tmpMatchBettypeBetteamSumStake(GroupId, MatchId, Bettype, Handicap, TotalLiveScore, TotalStakeH, TotalStakeA)
+	INSERT INTO #tmpMatchBettypeBetteamSumStake(MergeGroupId, MatchId, Bettype, Handicap, TotalLiveScore, TotalStakeH, TotalStakeA)
 	SELECT DISTINCT ba.MergeGroupId
 		,	ba.MatchId
 		,	ba.Bettype
@@ -402,7 +402,7 @@ BEGIN
 		,	[IP]				= bb.Ip
 		,	[MergeGroupId]		= bb.MergeGroupId
 	FROM #tmpMatchBettypeBetteamSumStake AS r WITH(NOLOCK)
-		INNER JOIN #tmpBettransAssociation bb WITH(NOLOCK) ON r.GroupId = bb.MergeGroupId AND r.MatchId = bb.MatchId
+		INNER JOIN #tmpBettransAssociation bb WITH(NOLOCK) ON r.MergeGroupId = bb.MergeGroupId AND r.MatchId = bb.MatchId
 					AND r.Bettype = bb.Bettype AND r.TotalLiveScore = bb.TotalLiveScore AND r.Handicap = bb.Handicap
 	WHERE r.TotalStakeH > @MaxStakeToBeChecked AND r.TotalStakeA > @MaxStakeToBeChecked
 	ORder by MatchId, TotalLiveScore, Bettype, Handicap, transid
