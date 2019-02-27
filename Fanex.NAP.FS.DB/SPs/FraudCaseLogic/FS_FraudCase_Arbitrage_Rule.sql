@@ -450,12 +450,12 @@ BEGIN
 			,	[TransIds]			= STUFF((SELECT ',', CONVERT(VARCHAR(15), t1.TransId) 
 											FROM #tmpFraudTickets AS t1 WITH(NOLOCK)
 											WHERE t1.MatchId = ft.MatchId AND t1.BetType = ft.BetType AND t1.Handicap = ft.Handicap 
-												AND t1.TotalLiveScore = ft.TotalLiveScore AND t1.CustId = ft.CustId AND t1.MergeGroupId = ft.MergeGroupId												
+												AND t1.TotalLiveScore = ft.TotalLiveScore AND t1.CustId = ft.CustId AND t1.MergeGroupId = ft.MergeGroupId  AND t1.IsIPFraud = ft.IsIPFraud												
 											FOR XML PATH('')), 1, 1, '')
 			,	[TicketCounter]		= (SELECT COUNT(t2.TransId) 
 										FROM #tmpFraudTickets t2 WITH (NOLOCK)
 										WHERE t2.MatchId = ft.MatchId AND t2.BetType = ft.BetType AND t2.Handicap = ft.Handicap 
-												AND t2.TotalLiveScore = ft.TotalLiveScore AND t2.CustId = ft.CustId AND t2.MergeGroupId = ft.MergeGroupId)
+												AND t2.TotalLiveScore = ft.TotalLiveScore AND t2.CustId = ft.CustId AND t2.MergeGroupId = ft.MergeGroupId  AND t2.IsIPFraud = ft.IsIPFraud) 
 			,	[IsIPFraud]			= ft.IsIPFraud
 		FROM #tmpFraudTickets ft WITH (NOLOCK)
 		GROUP BY ft.CustId, ft.MatchId, ft.MergeGroupId, ft.Bettype, ft.Handicap, ft.TotalLiveScore,ft.IsIPFraud;		
