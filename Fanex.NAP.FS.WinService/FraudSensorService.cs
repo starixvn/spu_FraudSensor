@@ -27,9 +27,7 @@
 
             _receivingMessageHandler = receivingMessageHandler ?? new ReceivingMessageHandler();
 
-            timer = new System.Timers.Timer();
-
-            
+            timer = new System.Timers.Timer();            
         }
 
         protected override void OnStart(string[] args)

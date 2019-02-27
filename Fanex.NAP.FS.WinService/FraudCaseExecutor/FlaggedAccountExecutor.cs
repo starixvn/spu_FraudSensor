@@ -1,5 +1,6 @@
 ﻿namespace Fanex.NAP.FS.WinService
 {
+    using Fanex.Logging;
     using Fanex.NAP.FS.Library.Core.BaseClasses;
     using Library.Core.Helpers.Api;
     using Library.Core.Helpers.Xml;
@@ -37,7 +38,11 @@
                 EvidenceCodeList = string.Empty
             };
 
+            Logger.Log.Info("SPU Fraud Sensor Service - FlaggedAccountExecutor is calling...");
+
             _flaggedCustomers = ApiHelper.Post<CustomerEvidenceList, IEnumerable<FlaggedCustomer>>(FPS_WEBAPI_GET_CUSTOMER_EVIDENCE, param, 2, 82).Result;
+
+            Logger.Log.Info("SPU Fraud Sensor Service - Flagged Account Counter: " + _flaggedCustomers.Count());
         }
 
         protected override void ClearOldResult()
