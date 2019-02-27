@@ -77,9 +77,7 @@
                     ExecuteRule();
 
                     TakeNextAction();
-                }
-
-                Logger.Log.Info("SPU Fraud Sensor Service - " + FraudCase.FraudCaseName + " is executed.");
+                }                                
             }
             catch (Exception exception)
             {
@@ -157,7 +155,7 @@
 
         private void PreExecute(object sender, ElapsedEventArgs elapsedEventArgs)
         {
-            Logger.Log.Info("SPU Fraud Sensor Service - _isRunning: " + _isRunning + ", _isStoppedManually: " + _isStoppedManually);
+            Logger.Log.Info("SPU Fraud Sensor Service - _isRunning(" + _isRunning + "), _isStoppedManually(" + _isStoppedManually + ")");
 
             if (_isRunning || _isStoppedManually)
             {

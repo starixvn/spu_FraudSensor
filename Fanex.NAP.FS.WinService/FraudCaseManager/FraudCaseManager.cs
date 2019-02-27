@@ -66,7 +66,7 @@
 
         private void AddCase(FraudCase fraudCase)
         {
-            Logger.Log.Info("SPU Fraud Sensor Service - " + fraudCase.FraudCaseName + " is " + fraudCase.IsActive + " and Existing(" + Exist(fraudCase) + ")");
+            Logger.Log.Info("SPU Fraud Sensor Service - " + "IsActive(" + fraudCase.IsActive + "), Existing(" + Exist(fraudCase) + ")");
 
             if (!fraudCase.IsActive || Exist(fraudCase))
             {
