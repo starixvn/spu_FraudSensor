@@ -432,22 +432,22 @@ BEGIN
 		INSERT INTO dbo.ArbitrageTicketDetails(CustId, MatchId, GroupId, BetType, Handicap, TotalScores, TransIds, TicketCounter, IsIPFraud)
 		SELECT	[CustId]			= ft.CustId
 			,	[MatchId]			= ft.MatchId
-			,	[GroupId]			= ft.GroupId
+			,	[GroupId]			= ft.MergeGroupId
 			,	[Bettype]			= ft.Bettype
 			,	[Handicap]			= ft.Handicap
 			,	[TotalScores]		= ft.TotalLiveScore
 			,	[TransIds]			= STUFF((SELECT ',', CONVERT(VARCHAR(15), t1.TransId) 
 											FROM #tmpFraudTickets AS t1 WITH(NOLOCK)
 											WHERE t1.MatchId = ft.MatchId AND t1.BetType = ft.BetType AND t1.Handicap = ft.Handicap 
-												AND t1.TotalLiveScore = ft.TotalLiveScore AND t1.CustId = ft.CustId AND t1.GroupId = ft.GroupId												
+												AND t1.TotalLiveScore = ft.TotalLiveScore AND t1.CustId = ft.CustId AND t1.MergeGroupId = ft.MergeGroupId												
 											FOR XML PATH('')), 1, 1, '')
 			,	[TicketCounter]		= (SELECT COUNT(t2.TransId) 
 										FROM #tmpFraudTickets t2 WITH (NOLOCK)
 										WHERE t2.MatchId = ft.MatchId AND t2.BetType = ft.BetType AND t2.Handicap = ft.Handicap 
-												AND t2.TotalLiveScore = ft.TotalLiveScore AND t2.CustId = ft.CustId AND t2.GroupId = ft.GroupId)
+												AND t2.TotalLiveScore = ft.TotalLiveScore AND t2.CustId = ft.CustId AND t2.MergeGroupId = ft.MergeGroupId)
 			,	[IsIPFraud]			= ft.IsIPFraud
 		FROM #tmpFraudTickets ft WITH (NOLOCK)
-		GROUP BY ft.CustId, ft.MatchId, ft.GroupId, ft.Bettype, ft.Handicap, ft.TotalLiveScore,ft.IsIPFraud;		
+		GROUP BY ft.CustId, ft.MatchId, ft.MergeGroupId, ft.Bettype, ft.Handicap, ft.TotalLiveScore,ft.IsIPFraud;		
 
 		-- Update table SuspiciousInfo if existed
 		UPDATE si WITH (ROWLOCK, UPDLOCK)
