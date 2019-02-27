@@ -8,7 +8,6 @@
     using System;
     using System.Configuration;
     using System.Diagnostics;
-    using System.Threading.Tasks;
     using System.Timers;
 
     public abstract class FraudCaseExecutor : IFraudCaseExecutor, IDisposable
@@ -43,11 +42,14 @@
 
             _timer.Elapsed += PreExecute;
 
-            _timer.Start();                        
+            _timer.Start();
 
-            PreExecute(null, null);                      
+            PreExecute(null, null);
 
-                      
+            if (FraudCase.FraudCaseId == 6)
+            {
+                NotifyEmail("Start fuction");
+            }
         }
 
         public virtual void Execute()
@@ -57,7 +59,7 @@
                 if (AppSettings.Environment == "2" && FraudCase.FraudCaseId != 10)
                 {
                     return;
-                }                                
+                }
 
                 var underMaintenanceBusiness = new UMBusiness();
                 var isUnderMaintenance = underMaintenanceBusiness.isUnderMaintainence(Sites.AccountSite, ConfigurationManager.AppSettings["FSUrl"]);
@@ -73,9 +75,7 @@
                     ExecuteRule();
 
                     TakeNextAction();
-
-                    NotifyEmail("Execute fuction");
-                }                                
+                }
             }
             catch (Exception exception)
             {
@@ -154,11 +154,11 @@
 
         private void PreExecute(object sender, ElapsedEventArgs elapsedEventArgs)
         {
-            
+
             if (_isRunning || _isStoppedManually)
             {
                 return;
-            }                        
+            }
 
 #if DEBUG
             var stopwatch = new Stopwatch();
@@ -167,7 +167,7 @@
 
             _isRunning = true;
 
-            Execute();            
+            Execute();
 
             _isRunning = false;
 
