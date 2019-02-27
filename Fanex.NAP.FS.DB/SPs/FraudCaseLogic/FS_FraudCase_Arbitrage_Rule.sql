@@ -89,6 +89,13 @@ BEGIN
 		,	[IP]				BIGINT
 	);
 
+	IF	OBJECT_ID('tempdb..#tmpMatchList') IS NOT NULL
+	BEGIN;
+		DROP TABLE #tmpMatchList;
+	END;
+	CREATE TABLE #tmpMatchList (MatchId INT)
+
+
 	IF OBJECT_ID('tempdb..#tmpBettrans') IS NOT NULL
 	BEGIN
 		DROP TABLE	#tmpBettrans;
@@ -334,7 +341,11 @@ BEGIN
 
 	Declare @Matchid INT
 
-	SELECT @Matchid = (SELECT TOP(1) Matchid FROM #tmpMatches WITH(NOLOCK))
+	INSERT INTO #tmpMatchList(MatchId)
+	SELECT DISTINCT MatchId
+	FROM #tmpMatches
+	
+	SELECT @Matchid = (SELECT TOP(1) Matchid FROM #tmpMatchList WITH(NOLOCK))
 
 
 	WHILE (@Matchid IS NOT NULL)
@@ -366,10 +377,10 @@ BEGIN
 			WHERE	t.Matchid = @Matchid;
 		END;
 
-		DELETE #tmpMatches
+		DELETE #tmpMatchList
 		WHERE MatchId = @Matchid
 
-		SELECT @Matchid = (SELECT TOP(1) Matchid FROM #tmpMatches WITH(NOLOCK))	
+		SELECT @Matchid = (SELECT TOP(1) Matchid FROM #tmpMatchList WITH(NOLOCK))	
 
 	END;
 	--=================================================================================================	
