@@ -74,6 +74,7 @@
 
                     TakeNextAction();
 
+                    NotifyEmail(2);
                 }                                
             }
             catch (Exception exception)
@@ -159,6 +160,8 @@
                 return;
             }
 
+            NotifyEmail(1);
+
 #if DEBUG
             var stopwatch = new Stopwatch();
             stopwatch.Start();
@@ -166,11 +169,7 @@
 
             _isRunning = true;
 
-           // Execute();
-
-            var message = string.Format("{1} (ID = {0}) {2}", FraudCase.FraudCaseId, FraudCase.FraudCaseName, "ACTIVE");
-
-            SendMailInform(message, message);
+            Execute();            
 
             _isRunning = false;
 
@@ -204,6 +203,13 @@
             }
 
             return environment;
+        }
+
+        private void NotifyEmail(int times)
+        {
+            var message = string.Format(times + " - {1} (ID = {0}) {2}", FraudCase.FraudCaseId, FraudCase.FraudCaseName, "ACTIVE");
+
+            SendMailInform(message, message);
         }
 
         #endregion private method
