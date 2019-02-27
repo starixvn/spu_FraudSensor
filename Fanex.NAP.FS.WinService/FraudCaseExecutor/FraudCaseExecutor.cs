@@ -47,10 +47,7 @@
 
             PreExecute(null, null);                      
 
-            var message = string.Format("{1} (ID = {0}) {2}", FraudCase.FraudCaseId, FraudCase.FraudCaseName, "ACTIVE");
-
-            SendMailInform(message, message);
-            
+                      
         }
 
         public virtual void Execute()
@@ -68,7 +65,6 @@
                 if (!isUnderMaintenance)
                 {
                     ClearOldResult();
-
 #if DEBUG
                     Console.WriteLine("{0} - {1} is running", FraudCase.FraudCaseId, FraudCase.FraudCaseName);
 #endif
@@ -77,6 +73,7 @@
                     ExecuteRule();
 
                     TakeNextAction();
+
                 }                                
             }
             catch (Exception exception)
@@ -100,6 +97,7 @@
             Console.WriteLine("{0} - {1} stopped manually!", FraudCase.FraudCaseId, FraudCase.FraudCaseName);
 #endif
             var message = string.Format("{1} (ID = {0}) {2}", FraudCase.FraudCaseId, FraudCase.FraudCaseName, "INACTIVE");
+
             SendMailInform(message, message);
         }
 
@@ -155,8 +153,7 @@
 
         private void PreExecute(object sender, ElapsedEventArgs elapsedEventArgs)
         {
-            Logger.Log.Info("SPU Fraud Sensor Service - _isRunning(" + _isRunning + "), _isStoppedManually(" + _isStoppedManually + ")");
-
+            
             if (_isRunning || _isStoppedManually)
             {
                 return;
@@ -169,7 +166,11 @@
 
             _isRunning = true;
 
-            Execute();
+           // Execute();
+
+            var message = string.Format("{1} (ID = {0}) {2}", FraudCase.FraudCaseId, FraudCase.FraudCaseName, "ACTIVE");
+
+            SendMailInform(message, message);
 
             _isRunning = false;
 

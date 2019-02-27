@@ -22,14 +22,10 @@
             var fraudCases = _fraudCaseService.Get(null, 1, int.Parse(ConfigurationManager.AppSettings["Environment"]));
 
             foreach (var fraudCase in fraudCases)
-            {
-                Logging.Logger.Log.Info($"fraudcase: {fraudCase.FraudCaseName} - active: {fraudCase.IsActive}");
-
+            {              
                 if (fraudCase.IsActive)
                 {
-                    _sendingCase.Send(fraudCase.FraudCaseId);
-
-                    Logging.Logger.Log.Info($"fraudcase: {fraudCase.FraudCaseName} - active: {fraudCase.IsActive}. Sent to queue.");
+                    _sendingCase.Send(fraudCase.FraudCaseId);                
                 }
             }
         }
