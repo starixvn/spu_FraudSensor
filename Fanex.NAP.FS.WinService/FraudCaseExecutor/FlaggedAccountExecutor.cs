@@ -40,7 +40,14 @@
 
             Logger.Log.Info("SPU Fraud Sensor Service - FlaggedAccountExecutor is calling...");
 
-            _flaggedCustomers = ApiHelper.Post<CustomerEvidenceList, IEnumerable<FlaggedCustomer>>(FPS_WEBAPI_GET_CUSTOMER_EVIDENCE, param, 2, 82).Result;
+            try
+            {
+                _flaggedCustomers = ApiHelper.Post<CustomerEvidenceList, IEnumerable<FlaggedCustomer>>(FPS_WEBAPI_GET_CUSTOMER_EVIDENCE, param, 2, 82).Result;
+            }
+            catch (Exception ex)
+            {
+                Logger.Log.Info("SPU Fraud Sensor Service - FlaggedAccountExecutor: " + ex.Message);                
+            }
 
             Logger.Log.Info("SPU Fraud Sensor Service - Flagged Account Counter: " + _flaggedCustomers.Count());
         }
