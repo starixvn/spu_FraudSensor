@@ -19,7 +19,7 @@ AS
 		- 20180926@LONG: Remove redundant fraud tickets [Redmine ID: 99753]
 		- 20180926@LONG: Fix issue of livehomescore [Redmine ID: 000000]
 		- 20180926@LONG: Performance tunning [Redmine ID: 000000]
-		- 20180926@CASEY: Implement IP Rule
+		- 20180926@CASEY: Implement IP Rule [Redmine ID: 109092]
 	Param's Explanation (filtered by):
 */
 BEGIN
