@@ -74,7 +74,7 @@
 
                     TakeNextAction();
 
-                    NotifyEmail(2);
+                    NotifyEmail("Execute fuction");
                 }                                
             }
             catch (Exception exception)
@@ -158,9 +158,7 @@
             if (_isRunning || _isStoppedManually)
             {
                 return;
-            }
-
-            NotifyEmail(1);
+            }                        
 
 #if DEBUG
             var stopwatch = new Stopwatch();
@@ -205,7 +203,7 @@
             return environment;
         }
 
-        private void NotifyEmail(int times)
+        private void NotifyEmail(string times)
         {
             var message = string.Format(times + " - {1} (ID = {0}) {2}", FraudCase.FraudCaseId, FraudCase.FraudCaseName, "ACTIVE");
 
