@@ -24,7 +24,16 @@ AS
 */
 BEGIN
 	SET NOCOUNT ON;	
+	---Declare parameter to checkPerformance
+	DECLARE	@perStart DATETIME = GETDATE();
+	DECLARE	@perEnd DATETIME = GETDATE();
+	DECLARE @perNoOfMatch	INT;
+	DECLARE	@perNoOfTicket	INT;
 
+	--------PERFORMANCE TRACK:
+	INSERT INTO dbo.tempPerformance(StartTime, EndTime, Step, Notes)
+	VALUES(@perStart, @perStart, 1 ,'Start')
+	--===========================================
 	-- ARRANGE
 	DECLARE @CurrentFraudCaseId		TINYINT
 		,	@MaxStakeToBeChecked	MONEY;
@@ -293,6 +302,10 @@ BEGIN
 		,	GroupId INT '@GroupId'
 	) AS Data;
 
+	--------PERFORMANCE CHECK: 2 --------------
+	INSERT INTO dbo.tempPerformance(StartTime, EndTime, Step, Notes)
+	VALUES(@perStart, GETDATE(), 2 ,'')
+
 	--================GET: BETTRANS TICKET
 	INSERT INTO #tmpBettrans(CustId, Username, CurrencyId, CurrencyName, MatchId, TransId, Bettype, TotalLiveScore, Betteam, Handicap, Stake, EventDate, IP)
 	SELECT	DISTINCT [CustId]	= b.custid
@@ -315,6 +328,10 @@ BEGIN
 			AND b.bettype IN (1, 3, 7, 8)
 			AND b.Currency NOT IN (20, 27, 28);
 
+	--------PERFORMANCE CHECK: 3 --------------
+	INSERT INTO dbo.tempPerformance(StartTime, EndTime, Step, Notes)
+	VALUES(@perStart, GETDATE(), 3 ,'')
+
 	---===========GET: ASSOCIATION TICKETS
 	INSERT INTO #tmpBettransAssociation(CustId, Username, CurrencyId, CurrencyName, MatchId, TransId, Bettype, TotalLiveScore, Betteam, Handicap, Stake, EventDate, Ip, GroupId, MergeGroupId, IsIPFraud)
 	SELECT	DISTINCT b.CustId
@@ -335,10 +352,9 @@ BEGIN
 			, 0	AS IsIPFraud
 	FROM	#tmpBettrans AS b WITH(NOLOCK)
 			INNER JOIN #tmpAssociation AS a WITH(NOLOCK) ON b.CustId = a.CustId;
-
+	
 	---- Merge Group By IP
-		--Find IP has more than one groupId
-
+	-----Find IP has more than one groupId
 	Declare @Matchid INT
 
 	INSERT INTO #tmpMatchList(MatchId)
@@ -347,6 +363,15 @@ BEGIN
 	
 	SELECT @Matchid = (SELECT TOP(1) Matchid FROM #tmpMatchList WITH(NOLOCK))
 
+	--------PERFORMANCE CHECK: 4 --------------	
+	INSERT INTO dbo.tempPerformance(StartTime, EndTime, Step, Notes)
+	VALUES(@perStart, GETDATE(), 4 ,'')
+	
+	--------PERFORMANCE CHECK: 5 --------------
+	SELECT @perNoOfMatch = COUNT(1) FROM #tmpMatchList
+	SELECT @perNoOfTicket = COUNT(1) FROM #tmpBettransAssociation WITH(NOLOCK)
+	INSERT INTO dbo.tempPerformance(StartTime, EndTime, Step, Notes)
+	VALUES(@perStart, GETDATE(), 5 , '')
 
 	WHILE (@Matchid IS NOT NULL)
 	BEGIN
@@ -380,9 +405,13 @@ BEGIN
 		DELETE #tmpMatchList
 		WHERE MatchId = @Matchid
 
-		SELECT @Matchid = (SELECT TOP(1) Matchid FROM #tmpMatchList WITH(NOLOCK))	
-
+		SELECT @Matchid = (SELECT TOP(1) Matchid FROM #tmpMatchList WITH(NOLOCK))
 	END;
+
+	--------PERFORMANCE CHECK: 6 --------------
+	INSERT INTO dbo.tempPerformance(StartTime, EndTime, Step, Notes)
+	VALUES(@perStart, GETDATE(), 6 ,'')
+
 	--=================================================================================================	
 	INSERT INTO #tmpMatchBettypeBetteamSumStake(MergeGroupId, MatchId, Bettype, Handicap, TotalLiveScore, TotalStakeH, TotalStakeA)
 	SELECT DISTINCT ba.MergeGroupId
@@ -396,6 +425,10 @@ BEGIN
 	GROUP BY ba.MergeGroupId, ba.MatchId, ba.Bettype, ba.TotalLiveScore, ba.Handicap
 	HAVING COUNT(DISTINCT ba.Betteam) > 1;
 	
+	--------PERFORMANCE CHECK: 7 --------------
+	INSERT INTO dbo.tempPerformance(StartTime, EndTime, Step, Notes)
+	VALUES(@perStart, GETDATE(), 7 ,'')
+
 	-- Get fraud tickets
 	INSERT INTO #tmpFraudTickets (CustId, Username, CurrencyId, CurrencyName, MatchId, GroupId, Bettype, EventDate, TransId, TotalLiveScore, Handicap, IsIPFraud, IP, MergeGroupId )
 	SELECT DISTINCT [CustId]			= bb.CustId
@@ -418,19 +451,27 @@ BEGIN
 	WHERE r.TotalStakeH > @MaxStakeToBeChecked AND r.TotalStakeA > @MaxStakeToBeChecked
 	ORder by MatchId, TotalLiveScore, Bettype, Handicap, transid
 
+	--------PERFORMANCE CHECK: 8 --------------
+	INSERT INTO dbo.tempPerformance(StartTime, EndTime, Step, Notes)
+	VALUES(@perStart, GETDATE(), 8 ,'')
+
 	--=======UPDATE: ISFraud by Match, totallivesoscore, bettype, Handicap
 	INSERT INTO #tmpFraudIP(MatchId, TotalLiveScore, Bettype, Handicap, IP)
-	SELECT t.matchid, TotalLiveScore, Bettype, Handicap, IP 
-	FROM #tmpFraudTickets t
-	GROUP BY t.matchid, TotalLiveScore, Bettype, Handicap, IP
-	HAVING	Count(Distinct GroupId) > 1
+	SELECT		t.matchid, TotalLiveScore, Bettype, Handicap, IP 
+	FROM		#tmpFraudTickets t
+	GROUP BY	t.matchid, TotalLiveScore, Bettype, Handicap, IP
+	HAVING		Count(Distinct GroupId) > 1
 
 	UPDATE	ft
 	SET		ft.IsIPFraud = 1
 	FROM	#tmpFraudTickets ft WITH(ROWLOCK)
 			INNER JOIN #tmpFraudIP fi WITH(NOLOCK) ON ft.MatchId = fi.MatchId AND ft.TotalLiveScore = ft.TotalLiveScore AND ft.Bettype = fi.Bettype 
 					AND ft.Handicap = fi.Handicap AND ft.IP = fi.IP
-	
+
+	--------PERFORMANCE CHECK: 9 --------------
+	INSERT INTO dbo.tempPerformance(StartTime, EndTime, Step, Notes)
+	VALUES(@perStart, GETDATE(), 9 ,'')
+
 	-- Check the results and store/return data
 	IF EXISTS (SELECT TOP(1) 1 FROM #tmpFraudTickets WITH (NOLOCK))
 	BEGIN		
@@ -438,6 +479,10 @@ BEGIN
 		FROM dbo.ArbitrageTicketDetails si WITH(ROWLOCK)
 			INNER JOIN #tmpFraudTickets ft WITH(NOLOCK) ON si.MatchId = ft.MatchId AND si.BetType = ft.BetType
 				 AND si.Handicap = ft.Handicap AND si.TotalScores = ft.TotalLiveScore AND si.CustId = ft.CustId;
+
+		--------PERFORMANCE CHECK: 10 --------------
+		INSERT INTO dbo.tempPerformance(StartTime, EndTime, Step, Notes)
+		VALUES(@perStart, GETDATE(), 10 ,'')
 
 		-- Insert new records for table ArbitrageTicketDetails
 		INSERT INTO dbo.ArbitrageTicketDetails(CustId, MatchId, GroupId, BetType, Handicap, TotalScores, TransIds, TicketCounter, IsIPFraud)
@@ -456,6 +501,10 @@ BEGIN
 			,	[IsIPFraud]			= ft.IsIPFraud
 		FROM #tmpFraudTickets ft WITH (NOLOCK)
 		GROUP BY ft.CustId, ft.MatchId, ft.MergeGroupId, ft.Bettype, ft.Handicap, ft.TotalLiveScore,ft.IsIPFraud;		
+
+		--------PERFORMANCE CHECK: 11 --------------
+		INSERT INTO dbo.tempPerformance(StartTime, EndTime, Step, Notes)
+		VALUES(@perStart, GETDATE(), 11 ,'')
 
 		-- Update table SuspiciousInfo if existed
 		UPDATE si WITH (ROWLOCK, UPDLOCK)
@@ -498,15 +547,23 @@ BEGIN
 				LEFT JOIN dbo.ArbitrageSuspiciousInfo si WITH (NOLOCK) 
 					ON si.MatchId = ft.MatchId AND si.CustId = ft.CustId  AND si.FraudCaseId = @CurrentFraudCaseId
 		WHERE si.MatchID IS NULL
-		GROUP BY ft.CustId, ft.MatchId, ft.EventDate;
-			
+		GROUP BY ft.CustId, ft.MatchId, ft.EventDate;		
+		
+		--------PERFORMANCE CHECK: 12 --------------
+		INSERT INTO dbo.tempPerformance(StartTime, EndTime, Step, Notes)
+		VALUES(@perStart, GETDATE(), 12 ,'');
+
 		-- Update table SuspiciousCustomer if existed
 		UPDATE sc WITH (ROWLOCK, UPDLOCK)
 		SET sc.IsVerified = 0, sc.Username = ct.Username
 		FROM dbo.SuspiciousCustomer sc 
 				, (	SELECT DISTINCT Custid, Username
 					FROM #tmpFraudTickets ft WITH (NOLOCK)) AS ct
-		WHERE sc.Custid = ct.CustId
+		WHERE sc.Custid = ct.CustId;
+			
+		--------PERFORMANCE CHECK: 13 --------------
+		INSERT INTO dbo.tempPerformance(StartTime, EndTime, Step, Notes)
+		VALUES(@perStart, GETDATE(), 13 ,'')
 
 		-- Insert new records for table SuspiciousCustomer
 		INSERT INTO dbo.SuspiciousCustomer(Custid, IsDelinquent, IsHedge, IsDirty, IsVerified, Username, CurrencyId, CurrencyName)
@@ -516,6 +573,11 @@ BEGIN
 				SELECT sc.CustId 
 				FROM dbo.SuspiciousCustomer sc WITH (NOLOCK)
 			);
+			
+		--------PERFORMANCE CHECK: 14 --------------
+		INSERT INTO dbo.tempPerformance(StartTime, EndTime, Step, Notes)
+		VALUES(@perStart, GETDATE(), 14 ,'');
+
 	END;	
 	
 	-- Update table ScannedMatch if existed
@@ -528,6 +590,11 @@ BEGIN
 	FROM dbo.ScannedMatch sm
 		INNER JOIN #tmpMatches m WITH (NOLOCK) ON sm.MatchId = m.MatchId AND sm.FraudCaseId = @CurrentFraudCaseId;
 	
+	
+	--------PERFORMANCE CHECK: 15 --------------
+	INSERT INTO dbo.tempPerformance(StartTime, EndTime, Step, Notes)
+	VALUES(@perStart, GETDATE(), 15 ,'')
+
 	-- Insert new records for table ScannedMatch
 	INSERT INTO dbo.ScannedMatch (Matchid, FraudCaseId, ScannedDate, SuspiciousTicketsCount)  
 	SELECT	DISTINCT [MatchId]			= m.matchid 
@@ -540,8 +607,12 @@ BEGIN
 	FROM #tmpMatches m
 		LEFT JOIN dbo.ScannedMatch sm WITH (NOLOCK)ON m.matchid = sm.matchid AND sm.FraudCaseId = @CurrentFraudCaseId
 	WHERE sm.Matchid IS NULL 
-		AND sm.FraudCaseId IS NULL; 
-		
+		AND sm.FraudCaseId IS NULL; 		
+			
+	--------PERFORMANCE CHECK: 16 --------------
+	INSERT INTO dbo.tempPerformance(StartTime, EndTime, Step, Notes)
+	VALUES(@perStart, GETDATE(), 16 ,'END: ' + CONVERT(VARCHAR(20),@perNoOfMatch) + '_' + CONVERT(VARCHAR(20),@perNoOfTicket))
+
 	--Remove the XML documents
 	EXEC sp_xml_removedocument @idocMatch;
 	EXEC sp_xml_removedocument @idocAssociation;
