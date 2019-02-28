@@ -11,7 +11,7 @@ Reviewer: Billy
 ALTER TABLE ArbitrageTicketDetails
 ADD IsIPFraud BIT
 
-CREATE NONCLUSTERED INDEX [CIX_ArbitrageTicketDetails_IsIPFraud] ON [dbo].[ArbitrageTicketDetails]
+CREATE NONCLUSTERED INDEX [NCIX_ArbitrageTicketDetails_IsIPFraud] ON [dbo].[ArbitrageTicketDetails]
 (
 	[IsIPFraud] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [IDX]
@@ -22,7 +22,7 @@ ADD CurrencyId		TINYINT NULL
 	, CurrencyName	NVARCHAR(50) NULL
 	, Username		NVARCHAR(50) NULL
 
-CREATE NONCLUSTERED INDEX [CIX_SuspiciousCustomer_CurrencyId] ON [dbo].[SuspiciousCustomer]
+CREATE NONCLUSTERED INDEX [NCIX_SuspiciousCustomer_CurrencyId] ON [dbo].[SuspiciousCustomer]
 (
 	[CurrencyId] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [IDX]
