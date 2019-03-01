@@ -1,5 +1,6 @@
 ﻿namespace Fanex.NAP.FS.WinService
 {
+    using Fanex.Logging;
     using Library.FSMQ;
     using Library.Services;
     using System.Configuration;
@@ -25,7 +26,9 @@
             {              
                 if (fraudCase.IsActive)
                 {
-                    _sendingCase.Send(fraudCase.FraudCaseId);                
+                    _sendingCase.Send(fraudCase.FraudCaseId);
+
+                    Logger.Log.Info("FS Service - " + fraudCase.FraudCaseId + " - " + fraudCase.FraudCaseName);
                 }
             }
         }
