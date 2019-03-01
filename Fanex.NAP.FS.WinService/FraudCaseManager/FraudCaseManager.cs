@@ -21,11 +21,16 @@
 
         public void AddCase(int fraudCaseId)
         {
-            var fraudCase = _fraudCaseService.GetByFraudCaseId(fraudCaseId);
+            try
+            {
+                var fraudCase = _fraudCaseService.GetByFraudCaseId(fraudCaseId);                
 
-            Logger.Log.Info("FS Service - AddCase function - " + fraudCase.FraudCaseId + " - " + fraudCase.FraudCaseName);
-
-            AddCase(fraudCase);
+                AddCase(fraudCase);
+            }
+            catch (Exception ex)
+            {
+                Logger.Log.Error("FS Service - AddCase function - " + ex.Message);
+            }
         }
 
         public void ClearCases()
