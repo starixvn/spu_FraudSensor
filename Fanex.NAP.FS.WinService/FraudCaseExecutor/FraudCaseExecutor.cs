@@ -204,6 +204,8 @@
         {
             var message = string.Format("{1} (ID = {0}) {2}", FraudCase.FraudCaseId, FraudCase.FraudCaseName, "ACTIVE");
 
+            Logger.Log.Info(message);
+
             SendMailInform(message, message);
         }
 
