@@ -23,6 +23,8 @@
         {
             var fraudCase = _fraudCaseService.GetByFraudCaseId(fraudCaseId);
 
+            Logger.Log.Info("FS Service - AddCase function - " + fraudCase.FraudCaseId + " - " + fraudCase.FraudCaseName);
+
             AddCase(fraudCase);
         }
 

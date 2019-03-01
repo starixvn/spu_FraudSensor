@@ -26,7 +26,7 @@
             {              
                 if (fraudCase.IsActive)
                 {
-                    _sendingCase.Send(fraudCase.FraudCaseId);
+                    _sendingCase.Send(fraudCase.FraudCaseId);                
 
                     Logger.Log.Info("FS Service - " + fraudCase.FraudCaseId + " - " + fraudCase.FraudCaseName);
                 }
