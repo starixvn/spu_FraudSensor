@@ -7,7 +7,7 @@
             var obj = ip_table.DataTable().row(target).data();
 
             common.showConfirmation(`Do you want you delete IP range ${obj.FromIp} - ${obj.ToIp}?`, function () {
-                var url = common.modifyRelativeUrl("FraudCase/DeleteIpRange");
+                var url = common.modifyRelativeUrl("/FraudCase/DeleteIpRange");
 
                 $.get(url, obj, common.handleUpdateAjax(null, () => ip_table.DataTable().ajax.reload()));
             });
