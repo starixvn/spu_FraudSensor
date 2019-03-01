@@ -73,14 +73,14 @@
 
         private void AddCase(FraudCase fraudCase)
         {           
-            if (!fraudCase.IsActive || Exist(fraudCase))
+            if (!fraudCase.IsActive || Exist(fraudCase))  
             {
                 return;
             }
 
             var executor = FraudCaseFactory.GetExecutor(fraudCase);
 
-            Logger.Log.Info("SPU Fraud Sensor Service - FraudCaseName:" + executor.FraudCase.FraudCaseName + ", FraudCaseId:" + executor.FraudCase.FraudCaseId);
+           // Logger.Log.Info("SPU Fraud Sensor Service - FraudCaseName:" + executor.FraudCase.FraudCaseName + ", FraudCaseId:" + executor.FraudCase.FraudCaseId);
 
             FraudCaseExecutors.Add(executor);
 

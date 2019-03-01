@@ -28,7 +28,7 @@
                 {
                     _sendingCase.Send(fraudCase.FraudCaseId);                
 
-                    Logger.Log.Info("FS Service - " + fraudCase.FraudCaseId + " - " + fraudCase.FraudCaseName);
+                    //Logger.Log.Info("FS Service - " + fraudCase.FraudCaseId + " - " + fraudCase.FraudCaseName);
                 }
             }
         }
