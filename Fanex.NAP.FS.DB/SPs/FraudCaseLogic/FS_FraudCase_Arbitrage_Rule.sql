@@ -78,11 +78,11 @@ BEGIN
 
 	CREATE TABLE	#tmpAssociation (
 			[CustId]			INT NOT NULL PRIMARY KEY
-		,	[GroupId]			INT NOT NULL
+		,	GraphDBGroupID			INT NOT NULL
 	);
 
 	CREATE NONCLUSTERED INDEX	#NCIX_tmpAssociation_GroupID ON #tmpAssociation (
-			[GroupId]			ASC
+			GraphDBGroupID			ASC
 	);
 
 	IF	OBJECT_ID('tempdb..#tmpFraudIP') IS NOT NULL
@@ -276,7 +276,7 @@ BEGIN
 	EXEC sp_xml_preparedocument @idocAssociation OUTPUT, @Associations;
 
 	-- Execute a SELECT statement that uses the OPENXML rowset provider
-	
+	/*
 	INSERT INTO #tmpMatches (MatchId, CustId, BetType, Handicap, LiveHomeScore, LiveAwayScore)
 	SELECT	Data.MatchId
 		,	Data.CustId
@@ -300,8 +300,17 @@ BEGIN
 	FROM OPENXML(@idocAssociation, '/Root/Association', 2) WITH (
 			CustId INT '@CustId'	
 		,	GroupId INT '@GroupId'
-	) AS Data;
+	) AS Data;*/
 
+	INSERT INTO #tmpMatches (MatchId, CustId, BetType, Handicap, LiveHomeScore, LiveAwayScore)
+		SELECT	MatchId, CustId, BetType, Handicap, LiveHomeScore, LiveAwayScore
+		FROM	DebugArbitrageCustList 
+
+		INSERT INTO #tmpAssociation (CustId, GraphDBGroupID)
+		SELECT		CustId
+					, GroupId
+		FROM	DebugArbitrageAssociation
+	
 	--------PERFORMANCE CHECK: 2 --------------
 	INSERT INTO dbo.tempPerformance(StartTime, EndTime, Step, Notes)
 	VALUES(@perStart, GETDATE(), 2 ,'')
@@ -347,8 +356,8 @@ BEGIN
 			, b.Stake
 			, b.EventDate
 			, b.Ip
-			, a.GroupId AS GroupID
-			, a.GroupId AS MergeGroupID
+			, a.GraphDBGroupID AS GroupID
+			, a.GraphDBGroupID AS MergeGroupID
 			, 0	AS IsIPFraud
 	FROM	#tmpBettrans AS b WITH(NOLOCK)
 			INNER JOIN #tmpAssociation AS a WITH(NOLOCK) ON b.CustId = a.CustId;
@@ -425,6 +434,7 @@ BEGIN
 	GROUP BY ba.MergeGroupId, ba.MatchId, ba.Bettype, ba.TotalLiveScore, ba.Handicap
 	HAVING COUNT(DISTINCT ba.Betteam) > 1;
 	
+	
 	--------PERFORMANCE CHECK: 7 --------------
 	INSERT INTO dbo.tempPerformance(StartTime, EndTime, Step, Notes)
 	VALUES(@perStart, GETDATE(), 7 ,'')
@@ -450,7 +460,7 @@ BEGIN
 					AND r.Bettype = bb.Bettype AND r.TotalLiveScore = bb.TotalLiveScore AND r.Handicap = bb.Handicap
 	WHERE r.TotalStakeH > @MaxStakeToBeChecked AND r.TotalStakeA > @MaxStakeToBeChecked
 	ORder by MatchId, TotalLiveScore, Bettype, Handicap, transid
-
+	
 	--------PERFORMANCE CHECK: 8 --------------
 	INSERT INTO dbo.tempPerformance(StartTime, EndTime, Step, Notes)
 	VALUES(@perStart, GETDATE(), 8 ,'')
@@ -458,10 +468,10 @@ BEGIN
 	--=======UPDATE: ISFraud by Match, totallivesoscore, bettype, Handicap
 	INSERT INTO #tmpFraudIP(MatchId, TotalLiveScore, Bettype, Handicap, IP)
 	SELECT		t.matchid, TotalLiveScore, Bettype, Handicap, IP 
-	FROM		#tmpFraudTickets t
+	FROM		#tmpFraudTickets t WITH(NOLOCK)
+	WHERE		t.GroupId != t.MergeGroupId
 	GROUP BY	t.matchid, TotalLiveScore, Bettype, Handicap, IP
-	HAVING		Count(Distinct GroupId) > 1
-
+	
 	UPDATE	ft
 	SET		ft.IsIPFraud = 1
 	FROM	#tmpFraudTickets ft WITH(ROWLOCK)
@@ -485,7 +495,7 @@ BEGIN
 		VALUES(@perStart, GETDATE(), 10 ,'')
 
 		-- Insert new records for table ArbitrageTicketDetails
-		INSERT INTO dbo.ArbitrageTicketDetails(CustId, MatchId, GroupId, BetType, Handicap, TotalScores, TransIds, TicketCounter, IsIPFraud)
+		INSERT INTO dbo.ArbitrageTicketDetails(CustId, MatchId, GroupId, BetType, Handicap, TotalScores, TransIds, TicketCounter, IsIPFraud, GraphDBGroupId)
 		SELECT	[CustId]			= ft.CustId
 			,	[MatchId]			= ft.MatchId
 			,	[GroupId]			= ft.MergeGroupId
@@ -499,6 +509,7 @@ BEGIN
 											FOR XML PATH('')), 1, 1, '')
 			,	[TicketCounter]		= Count(ft.transId)
 			,	[IsIPFraud]			= ft.IsIPFraud
+			,	[GraphDBGroupId]	= Min(ft.GroupId)
 		FROM #tmpFraudTickets ft WITH (NOLOCK)
 		GROUP BY ft.CustId, ft.MatchId, ft.MergeGroupId, ft.Bettype, ft.Handicap, ft.TotalLiveScore,ft.IsIPFraud;		
 
@@ -565,6 +576,7 @@ BEGIN
 		INSERT INTO dbo.tempPerformance(StartTime, EndTime, Step, Notes)
 		VALUES(@perStart, GETDATE(), 13 ,'')
 
+		
 		-- Insert new records for table SuspiciousCustomer
 		INSERT INTO dbo.SuspiciousCustomer(Custid, IsDelinquent, IsHedge, IsDirty, IsVerified, Username, CurrencyId, CurrencyName)
 		SELECT DISTINCT ft.CustId, 0, 0, 0, 0, ft.Username, ft.CurrencyId,ft.CurrencyName
@@ -616,6 +628,7 @@ BEGIN
 	--Remove the XML documents
 	EXEC sp_xml_removedocument @idocMatch;
 	EXEC sp_xml_removedocument @idocAssociation;
+
 END;
 
 /*<info serverAlias="DBFS-bodb_FraudSensor" executers="bodbSPUNet" isFunction="0" isNested="0"></info>*/
