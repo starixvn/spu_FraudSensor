@@ -1,5 +1,6 @@
 ---==========================================================================
 ALTER TABLE ArbitrageTicketDetails
+ADD	GraphDBGroupId INT
 ADD IsIPFraud BIT
 
 CREATE NONCLUSTERED INDEX [CIX_ArbitrageTicketDetails_IsIPFraud] ON [dbo].[ArbitrageTicketDetails]
