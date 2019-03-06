@@ -25,15 +25,14 @@ AS
 BEGIN
 	SET NOCOUNT ON;
 	
-	SELECT si.Custid, si.IsDelinquent, si.IsDirty, si.IsHedge, si.IsVerified
-	FROM dbo.SuspiciousCustomer si WITH(NOLOCK)
-		INNER JOIN dbo.SuspiciousCustomer c WITH(NOLOCK) ON si.Custid = c.custid
-	WHERE si.Custid				=	ISNULL(@Custid,si.Custid)
-		  AND si.[IsDelinquent]	=	ISNULL(@IsDelinquent,si.IsDelinquent)
-		  AND si.[IsHedge]		=	ISNULL(@IsHedge,si.IsHedge)
-		  AND si.[IsDirty]		=	ISNULL(@IsDirty,si.IsDirty)
-		  AND (@IsShowSpecialCurrencies = 1 OR c.CurrencyId NOT IN (SELECT CurrencyId FROM dbo.SpecialCurrency WITH(NOLOCK)));
+	SELECT sc.Custid, sc.IsDelinquent, sc.IsDirty, sc.IsHedge, sc.IsVerified
+	FROM dbo.SuspiciousCustomer sc WITH(NOLOCK)
+	WHERE sc.Custid				=	ISNULL(@Custid,sc.Custid)
+		  AND sc.[IsDelinquent]	=	ISNULL(@IsDelinquent,sc.IsDelinquent)
+		  AND sc.[IsHedge]		=	ISNULL(@IsHedge,sc.IsHedge)
+		  AND sc.[IsDirty]		=	ISNULL(@IsDirty,sc.IsDirty)
+		  AND (@IsShowSpecialCurrencies = 1 OR sc.CurrencyId NOT IN (SELECT CurrencyId FROM dbo.SpecialCurrency WITH(NOLOCK)));
 END;
 
 GO
-/*<info serverAlias="DBSPU-bodb_FraudSensor" executers="bodbSPUNet" isFunction="0" isNested="0"></info>*/
+/*<info serverAlias="DBFS-bodb_FraudSensor" executers="bodbSPUNet" isFunction="0" isNested="0"></info>*/

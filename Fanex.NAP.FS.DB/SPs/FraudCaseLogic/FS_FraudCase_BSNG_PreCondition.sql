@@ -19,7 +19,8 @@ AS
 		- 20180605@Casey.Huynh: Enhance SP
 		- 20180726@Casey.Huynh: Enhance SP: GET NEW MATCH for both Completed Match and Running Match if MatchID is not existing in MatchScore table 
 								(remove condition m.EventStatus='Running')
-		- 20180727@John.Ngo: Get new match for both Completed Match and Running Match if MatchId is not existing in MatchScore table
+		- 20180727@John.Ngo:	Get new match for both Completed Match and Running Match if MatchId is not existing in MatchScore table
+		- 20190225@Long.Luu:	Scanning for completed matches during UM time [Redmine ID: #106820]
 
 	Param's Explanation (filtered by):  
 */
@@ -60,6 +61,11 @@ BEGIN
 			AND l.isTest = 0
 			AND m.kickofftime <= @CurrentTime	
 			AND	m.livehomescore + liveawayscore > 0;
+
+	--- RETURN MATCH HAS NEW SCORE
+	SELECT  ms.MatchId
+	FROM	dbo.MatchScore AS ms WITH (NOLOCK)
+	WHERE	ms.HasScanned = 0;	
 	
 	--- UPDATE HASSCANNED = 1 FOR COMPLETED MATCH IF SCANNED ALL SCORED (EXCEPT THE LAST SCORE)
 	UPDATE	ms 
@@ -78,17 +84,9 @@ BEGIN
 	FROM	dbo.MatchScore AS ms WITH (ROWLOCK, UPDLOCK)
 			INNER JOIN bodb02.dbo.Match AS m WITH(NOLOCK) ON m.MatchId = ms.MatchId
 	WHERE	(ms.TotalScores) < (m.LiveHomeScore + m.LiveAwayScore)
-			AND ms.HasScanned = 0;
-	
-	--- RETURN MATCH HAS NEW SCORE
-	SELECT  ms.MatchId
-	FROM	dbo.MatchScore AS ms WITH (NOLOCK)
-	WHERE	ms.UpdatedDate = @CurrentTime
 			AND ms.HasScanned = 0;			
 END;
 
-GO 
- GRANT EXECUTE ON [dbo].[FS_FraudCase_BSNG_PreCondition] TO [bodbSPUNet];
-GO 
- GRANT VIEW DEFINITION ON [dbo].[FS_FraudCase_BSNG_PreCondition] TO [bodbSPUNet];
-GO 
+GO
+/*<info serverAlias="DBFS-bodb_FraudSensor" executers="bodbSPUNet" isFunction="0" isNested="0"></info>*/
+

@@ -68,7 +68,8 @@ BEGIN
 	FROM dbo.SuspiciousInfo si WITH(NOLOCK)
 		INNER JOIN dbo.SuspiciousCustomer c WITH(NOLOCK) ON si.Custid = c.custid
 		CROSS APPLY dbo.SPU_StrSplit(si.transids, ',')
-	WHERE	si.MatchId = @MatchId
+	WHERE si.EventDate = @EventDate
+		AND si.MatchId = @MatchId
 		AND si.FraudCaseId = @FraudCaseId
 		AND (@IsShowSpecialCurrencies = 1 OR c.CurrencyId NOT IN (SELECT CurrencyId FROM dbo.SpecialCurrency WITH(NOLOCK)));
 			
@@ -105,8 +106,9 @@ BEGIN
 				,	ISNULL(b.IP,'') [IP]
 				,	b.currencyname
 			FROM bodb02.dbo.bettrans b WITH(NOLOCK)
-					INNER JOIN #tmpFraudTickets f WITH(NOLOCK) 
-						ON b.transid = f.TransID;
+					INNER JOIN #tmpFraudTickets f WITH(NOLOCK) ON b.transid = f.TransID
+			WHERE b.winlostdate = @EventDate;
+
 		END;
 	ELSE
 		BEGIN		
@@ -136,10 +138,10 @@ BEGIN
 				,	ISNULL(b.IP,'') [IP]
 				,	b.currencyname
 			FROM bodb02.dbo.bettrans14 b WITH(NOLOCK)
-					INNER JOIN #tmpFraudTickets f WITH(NOLOCK) 
-						ON b.transid = f.TransID;
+					INNER JOIN #tmpFraudTickets f WITH(NOLOCK) ON b.transid = f.TransID
+			WHERE b.winlostdate = @EventDate;
 		END;
 END;
 
 GO
-/*<info serverAlias="DBSPU-bodb_FraudSensor" executers="bodbSPUNet" isFunction="0" isNested="0"></info>*/
+/*<info serverAlias="DBFS-bodb_FraudSensor" executers="bodbSPUNet" isFunction="0" isNested="0"></info>*/

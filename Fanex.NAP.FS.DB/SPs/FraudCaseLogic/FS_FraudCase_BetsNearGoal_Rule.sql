@@ -107,6 +107,9 @@ BEGIN
 		AND ans.currency NOT IN (20, 27, 28)
 		AND ans.statusID = 112 -- WON tickets
 	GROUP BY ans.custid
+		,	ans.Username
+		,	ans.currency
+		,	ans.CurrencyName
 		,	ans.matchid
 		,	tch.eventdate
 		,	ans.liveawayscore
@@ -184,4 +187,4 @@ BEGIN
 END;
 
 GO
-/*<info serverAlias="DBSPU-bodb_FraudSensor" executers="bodbSPUNet" isFunction="0" isNested="0"></info>*/
+/*<info serverAlias="DBFS-bodb_FraudSensor" executers="bodbSPUNet" isFunction="0" isNested="0"></info>*/

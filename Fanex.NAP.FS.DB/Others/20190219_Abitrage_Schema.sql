@@ -1,5 +1,6 @@
 ---==========================================================================
 ALTER TABLE ArbitrageTicketDetails
+ADD	GraphDBGroupId INT
 ADD IsIPFraud BIT
 
 CREATE NONCLUSTERED INDEX [CIX_ArbitrageTicketDetails_IsIPFraud] ON [dbo].[ArbitrageTicketDetails]
@@ -61,3 +62,13 @@ CREATE NONCLUSTERED INDEX [NCIX_ArbitrageSuspiciousInfo_CustId] ON [dbo].[Arbitr
 INCLUDE ( 	[IsVerified]) WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [IDX]
 GO
 
+-----------------
+
+CREATE TABLE tempPerformance
+(
+	ID	INT			IDENTITY
+	, StartTime		DATETIME	NULL
+	, EndTime		DATETIME	NULL
+	, Step			TinyINT
+	, Notes			NVARCHAR(1000)	NULL
+)

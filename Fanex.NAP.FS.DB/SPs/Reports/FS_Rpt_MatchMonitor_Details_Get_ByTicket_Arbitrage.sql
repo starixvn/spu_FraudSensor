@@ -100,7 +100,9 @@ BEGIN
 				,	[IsIPFraud]		= f.IsIPFraud
 			FROM bodb02.dbo.bettrans b WITH(NOLOCK)
 				INNER JOIN #tmpFraudTickets f WITH(NOLOCK) ON b.transid = f.TransID
-				INNER JOIN bodb02.dbo.custInfo c WITH(NOLOCK) ON b.custid = c.custid;
+				INNER JOIN bodb02.dbo.custInfo c WITH(NOLOCK) ON b.custid = c.custid
+			WHERE b.winlostdate = @EventDate;
+
 		END;
 	ELSE
 		BEGIN		
@@ -132,7 +134,11 @@ BEGIN
 				,	[IsIPFraud]		= f.IsIPFraud
 			FROM bodb02.dbo.bettrans14 b WITH(NOLOCK)
 				INNER JOIN #tmpFraudTickets f WITH(NOLOCK) ON b.transid = f.TransID
-				INNER JOIN bodb02.dbo.custInfo c WITH(NOLOCK) ON b.custid = c.custid;
+				INNER JOIN bodb02.dbo.custInfo c WITH(NOLOCK) ON b.custid = c.custid
+			WHERE b.winlostdate = @EventDate;
+
 		END;
 END;
 
+GO
+/*<info serverAlias="DBFS-bodb_FraudSensor" executers="bodbSPUNet" isFunction="0" isNested="0"></info>*/
