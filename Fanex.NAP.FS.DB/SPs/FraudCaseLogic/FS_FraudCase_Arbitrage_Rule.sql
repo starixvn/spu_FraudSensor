@@ -295,7 +295,7 @@ BEGIN
 		,	[Handicap]			= (b.hdp1 - b.hdp2)
 		,	[stake]				= (b.stake * b.actualrate)
 		,	[EventDate]			= b.winlostdate
-		,	[IP]				= ISNULL(dbo.IPAddressToInteger(b.IP),0)
+		,	[IP]				= ISNULL(dbo.f_IPAddressToInteger(b.IP),0)
 	FROM	bodb02.dbo.bettrans AS b WITH(NOLOCK)
 			INNER JOIN #tmpMatches AS m WITH(NOLOCK) ON b.matchid = m.MatchId AND b.bettype = m.BetType	AND b.custid = m.CustId
 					AND (b.hdp1 - b.hdp2) = m.Handicap AND b.livehomescore = m.LiveHomeScore AND b.liveawayscore = m.LiveAwayScore
