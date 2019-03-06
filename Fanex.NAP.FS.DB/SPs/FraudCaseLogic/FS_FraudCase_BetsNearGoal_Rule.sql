@@ -107,6 +107,9 @@ BEGIN
 		AND ans.currency NOT IN (20, 27, 28)
 		AND ans.statusID = 112 -- WON tickets
 	GROUP BY ans.custid
+		,	ans.Username
+		,	ans.currency
+		,	ans.CurrencyName
 		,	ans.matchid
 		,	tch.eventdate
 		,	ans.liveawayscore
