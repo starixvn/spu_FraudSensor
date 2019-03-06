@@ -318,8 +318,8 @@ BEGIN
 			, b.Stake
 			, b.EventDate
 			, b.Ip
-			, a.GraphDBGroupID AS GroupID
-			, a.GraphDBGroupID AS GroupID
+			, a.GroupID AS GraphDBGroupID
+			, a.GroupID AS GroupID
 			, 0	AS IsIPFraud
 	FROM	#tmpBettrans AS b WITH(NOLOCK)
 			INNER JOIN #tmpAssociation AS a WITH(NOLOCK) ON b.CustId = a.CustId;
