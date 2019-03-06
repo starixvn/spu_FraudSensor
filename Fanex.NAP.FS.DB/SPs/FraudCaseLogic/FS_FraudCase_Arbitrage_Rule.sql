@@ -68,11 +68,11 @@ BEGIN
 
 	CREATE TABLE	#tmpAssociation (
 			[CustId]			INT NOT NULL PRIMARY KEY
-		,	GraphDBGroupID			INT NOT NULL
+		,	GroupID			INT NOT NULL
 	);
 
 	CREATE NONCLUSTERED INDEX	#NIX_tmpAssociation_GroupID ON #tmpAssociation (
-			GraphDBGroupID			ASC
+			GroupID			ASC
 	);
 
 	IF	OBJECT_ID('tempdb..#tmpFraudIP') IS NOT NULL
@@ -318,7 +318,7 @@ BEGIN
 			, b.Stake
 			, b.EventDate
 			, b.Ip
-			, a.GraphDBGroupID AS GraphDBGroupID
+			, a.GraphDBGroupID AS GroupID
 			, a.GraphDBGroupID AS GroupID
 			, 0	AS IsIPFraud
 	FROM	#tmpBettrans AS b WITH(NOLOCK)
