@@ -404,20 +404,20 @@ BEGIN
 				INNER JOIN #tmpBettransAssociation bb WITH(NOLOCK) ON  r.MatchId = bb.MatchId AND r.GroupId = bb.GroupId 
 							AND r.Bettype = bb.Bettype AND r.TotalScore = bb.TotalScore AND r.Handicap = bb.Handicap
 	WHERE		r.TotalStakeH > @MaxStakeToBeChecked AND r.TotalStakeA > @MaxStakeToBeChecked
-	ORder by	MatchId, TotalScore, Bettype, Handicap, transid
+	ORDER BY	MatchId, TotalScore, Bettype, Handicap, transid;
 	
 	--=======UPDATE: ISFraud by Match, totallivesoscore, bettype, Handicap
 	INSERT INTO #tmpFraudIP(MatchId, TotalScore, Bettype, Handicap, IP)
 	SELECT		t.matchid, TotalScore, Bettype, Handicap, IP 
 	FROM		#tmpFraudTickets t WITH(NOLOCK)
 	WHERE		t.GraphDBGroupId != t.GroupId
-	GROUP BY	t.matchid, TotalScore, Bettype, Handicap, IP
+	GROUP BY	t.matchid, TotalScore, Bettype, Handicap, IP;
 	
 	UPDATE	ft
 	SET		ft.IsIPFraud = 1
 	FROM	#tmpFraudTickets ft WITH(ROWLOCK)
 			INNER JOIN #tmpFraudIP fi WITH(NOLOCK) ON ft.MatchId = fi.MatchId AND ft.TotalScore = ft.TotalScore AND ft.Bettype = fi.Bettype 
-					AND ft.Handicap = fi.Handicap AND ft.IP = fi.IP
+					AND ft.Handicap = fi.Handicap AND ft.IP = fi.IP;
 
 	-- Check the results and store/return data
 	IF EXISTS (SELECT TOP(1) 1 FROM #tmpFraudTickets WITH (NOLOCK))
@@ -443,8 +443,8 @@ BEGIN
 			,	[TicketCounter]		= Count(ft.transId)
 			,	[IsIPFraud]			= ft.IsIPFraud
 			,	[GraphDBGroupId]	= Min(ft.GroupId)
-		FROM #tmpFraudTickets ft WITH (NOLOCK)
-		GROUP BY ft.CustId, ft.MatchId, ft.GroupId, ft.Bettype, ft.Handicap, ft.TotalScore,ft.IsIPFraud;		
+		FROM		#tmpFraudTickets ft WITH (NOLOCK)
+		GROUP BY	ft.CustId, ft.MatchId, ft.GroupId, ft.Bettype, ft.Handicap, ft.TotalScore,ft.IsIPFraud;		
 
 		-- Update table SuspiciousInfo if existed
 		UPDATE si WITH (ROWLOCK, UPDLOCK)
@@ -492,19 +492,19 @@ BEGIN
 		-- Update table SuspiciousCustomer if existed
 		UPDATE sc WITH (ROWLOCK, UPDLOCK)
 		SET sc.IsVerified = 0, sc.Username = ct.Username
-		FROM dbo.SuspiciousCustomer sc 
-				, (	SELECT DISTINCT Custid, Username
-					FROM #tmpFraudTickets ft WITH (NOLOCK)) AS ct
-		WHERE sc.Custid = ct.CustId;
+		FROM dbo.SuspiciousCustomer AS sc
+		CROSS APPLY (
+					SELECT TOP(1) CustId, Username
+					FROM #tmpFraudTickets AS ft WITH (NOLOCK)
+					WHERE ft.CustId = sc.CustId) AS ct
 		
 		-- Insert new records for table SuspiciousCustomer
 		INSERT INTO dbo.SuspiciousCustomer(Custid, IsDelinquent, IsHedge, IsDirty, IsVerified, Username, CurrencyId, CurrencyName)
 		SELECT DISTINCT ft.CustId, 0, 0, 0, 0, ft.Username, ft.CurrencyId,ft.CurrencyName
 		FROM #tmpFraudTickets ft WITH (NOLOCK)
-		WHERE ft.CustId NOT IN (
-				SELECT sc.CustId 
-				FROM dbo.SuspiciousCustomer sc WITH (NOLOCK)
-			);
+				LEFT JOIN dbo.SuspiciousCustomer sc WITH (NOLOCK) ON ft.CustId = sc.CustId
+		WHERE	sc.CustId IS NULL;
+
 	END;	
 	
 	-- Update table ScannedMatch if existed
@@ -526,7 +526,7 @@ BEGIN
 											FROM dbo.ArbitrageTicketDetails t1 WITH (NOLOCK)
 											WHERE t1.MatchId = m.MatchId 
 											GROUP BY t1.MatchId ),0)
-	FROM #tmpMatches m
+	FROM #tmpMatches m WITH(NOLOCK)
 		LEFT JOIN dbo.ScannedMatch sm WITH (NOLOCK)ON m.matchid = sm.matchid AND sm.FraudCaseId = @CurrentFraudCaseId
 	WHERE sm.Matchid IS NULL 
 		AND sm.FraudCaseId IS NULL; 		
