@@ -13,7 +13,7 @@ AS
 	Revisions: 
 		- 20180815@LONG: Implement PreCondition for Arbitrage fraud case
 		- 20180926@LONG: Remove redundant fraud tickets
-
+		- 20190311@CaseyHuynh:	Scanning for completed matches during UM time [Redmine ID: #106820]
 	Param's Explanation (filtered by):  
 	
 */
