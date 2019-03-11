@@ -20,6 +20,7 @@ AS
 		- 20180926@LONG: Fix issue of livehomescore [Redmine ID: 000000]
 		- 20180926@LONG: Performance tunning [Redmine ID: 000000]
 		- 20180926@CASEY: Implement IP Rule [Redmine ID: 109092]
+		- 20190316@CaseyHuynh: Enhance Performance, Update SuspiciousCustomer [Redmine ID: 110060]
 	Param's Explanation (filtered by):
 */
 BEGIN
@@ -490,13 +491,16 @@ BEGIN
 		GROUP BY ft.CustId, ft.MatchId, ft.EventDate;		
 
 		-- Update table SuspiciousCustomer if existed
-		UPDATE sc WITH (ROWLOCK, UPDLOCK)
-		SET sc.IsVerified = 0, sc.Username = ct.Username
-		FROM dbo.SuspiciousCustomer AS sc
-		CROSS APPLY (
-					SELECT TOP(1) CustId, Username
-					FROM #tmpFraudTickets AS ft WITH (NOLOCK)
-					WHERE ft.CustId = sc.CustId) AS ct
+		WITH rs AS
+		(
+			SELECT		CustId, Username
+			FROM		#tmpFraudTickets WITH(NOLOCK)
+			GROUP BY	custid, username 
+		)
+		UPDATE	sc WITH (ROWLOCK, UPDLOCK)
+		SET		sc.IsVerified = 0, sc.Username = rs.Username
+		FROM	dbo.SuspiciousCustomer AS sc
+				INNER JOIN rs ON sc.custid = rs.custid;
 		
 		-- Insert new records for table SuspiciousCustomer
 		INSERT INTO dbo.SuspiciousCustomer(Custid, IsDelinquent, IsHedge, IsDirty, IsVerified, Username, CurrencyId, CurrencyName)
