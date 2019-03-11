@@ -19,6 +19,7 @@ AS
 		- 20180312@CaseyHuynh: Correct Code Syntax
 		- 20181114@Long: Split data in SuspiciousInfo by Currency [Redmine ID: #104707]
 		- 20190219@Long: Store more info (Currency & Username) for table SuspiciousCutomers [Redmine ID: 107858]
+		- 20190319@Casey.Huynh: Enhance Performance table #tmpFraudTickets [110060]
 
 	Param's Explanation (filtered by):
 */
@@ -50,19 +51,18 @@ BEGIN
 	END
 	
 	CREATE TABLE #tmpFraudTickets(
-			CustId				INT
+			CustId				INT		NOT NULL
+		,	MatchId				INT		NOT NULL
+		,	TransId				BIGINT	NOT NULL
 		,	Username			NVARCHAR(50)
 		,	CurrencyId			TINYINT
-		,	CurrencyName		NVARCHAR(50)
-		,	MatchId				INT
+		,	CurrencyName		NVARCHAR(50)		
 		,	EventDate			DATETIME
-		,	TransId				BIGINT
-	);
-
-	CREATE CLUSTERED INDEX	#CIX_tmpFraudTicketsIdx ON #tmpFraudTickets (
-			CustId				ASC
-		,	MatchId				ASC
-		,	TransId				ASC
+		,	PRIMARY KEY CLUSTERED (
+				CustId				ASC
+			,	MatchId				ASC
+			,	TransId				ASC
+		)		
 	);
 
 	IF OBJECT_ID('tempdb..#tmpFraudTicketsCustInfo') IS NOT NULL
