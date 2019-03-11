@@ -20,7 +20,7 @@ AS
 		- 20180926@LONG: Fix issue of livehomescore [Redmine ID: 000000]
 		- 20180926@LONG: Performance tunning [Redmine ID: 000000]
 		- 20180926@CASEY: Implement IP Rule [Redmine ID: 109092]
-		- 201903116@CaseyHuynh: Enhance Performance, Update SuspiciousCustomer [Redmine ID: 110060]
+		- 20190316@CaseyHuynh: Enhance Performance, Update SuspiciousCustomer [Redmine ID: 110060]
 	Param's Explanation (filtered by):
 */
 BEGIN
