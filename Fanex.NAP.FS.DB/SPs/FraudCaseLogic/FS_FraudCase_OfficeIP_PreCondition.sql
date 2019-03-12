@@ -29,7 +29,7 @@ BEGIN
 	END
 	
 	CREATE TABLE #tmpSporttype(
-		Sporttype	INT
+		Sporttype	INT	NOT	NULL PRIMARY KEY CLUSTERED
 	);
 	
 	--- GET SPORTBOOK SPORTTYPE
@@ -49,6 +49,4 @@ BEGIN
 
 END;
 GO 
- GRANT EXECUTE ON dbo.FS_FraudCase_OfficeIP_PreCondition TO bodbSPUNet;
-GO 
- GRANT VIEW DEFINITION ON dbo.FS_FraudCase_OfficeIP_PreCondition TO bodbSPUNet;
+/*<info serverAlias="DBFS-bodb_FraudSensor" executers="bodbSPUNet" isFunction="0" isNested="0"></info>*/

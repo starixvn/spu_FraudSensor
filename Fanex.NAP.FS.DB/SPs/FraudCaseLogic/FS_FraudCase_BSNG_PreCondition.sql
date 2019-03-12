@@ -21,7 +21,7 @@ AS
 								(remove condition m.EventStatus='Running')
 		- 20180727@John.Ngo:	Get new match for both Completed Match and Running Match if MatchId is not existing in MatchScore table
 		- 20190225@Long.Luu:	Scanning for completed matches during UM time [Redmine ID: #106820]
-
+		- 20190320@Casey.Huynh: Enhance Performance, Remove #tmpChangedMatch redundant table [110060]
 	Param's Explanation (filtered by):  
 */
 BEGIN
@@ -31,19 +31,6 @@ BEGIN
 	
 	SET @CurrentTime = GETDATE();
 	
-	IF OBJECT_ID('tempdb..#tmpChangedMatch') IS NOT NULL
-	BEGIN
-		DROP TABLE	#tmpChangedMatch;
-	END
-	
-	CREATE TABLE #tmpChangedMatch(
-		MatchID INT
-		, EventDate	DATETIME
-		, EventStatus	NVARCHAR(100)
-		, TotalScores	TINYINT
-		, HasScanned	BIT
-	);
-
 	--- ============1. INSERT NEW MATCH=============================
 	INSERT INTO dbo.MatchScore(MatchId, EventDate, EventStatus, TotalScores, HasScanned, UpdatedDate)
 	SELECT	m.matchid

@@ -13,7 +13,7 @@ AS
 	Revisions: 
 		- 20180815@LONG: Implement PreCondition for Arbitrage fraud case
 		- 20180926@LONG: Remove redundant fraud tickets
-
+		- 20190320@Casey.Huynh: Enhance Performance, define PRIMARY KEY in table [110060]
 	Param's Explanation (filtered by):  
 	
 */
@@ -33,7 +33,7 @@ BEGIN
 
 	CREATE TABLE #tmpScanMatches
 	(
-		MatchId			INT PRIMARY KEY
+		MatchId			INT	NOT	NULL PRIMARY KEY CLUSTERED
 		, IsMatchCompleted	BIT
 	);
 	--======================================
@@ -45,7 +45,7 @@ BEGIN
 
 	CREATE TABLE #tmpMatchRunning
 	(
-		MatchId			INT PRIMARY KEY
+		MatchId			INT	NOT	NULL PRIMARY KEY CLUSTERED
 	);
 
 	---======================================================
@@ -56,7 +56,7 @@ BEGIN
 
 	CREATE TABLE #tmpMatchCompleted
 	(
-		MatchId			INT PRIMARY KEY
+		MatchId			INT	NOT	NULL PRIMARY KEY CLUSTERED
 	);
 	
 	---=======================================================
@@ -67,7 +67,7 @@ BEGIN
 
 	CREATE TABLE #tmpMatchMaxTransId
 	(
-			MatchId				INT
+			MatchId				INT	NOT	NULL PRIMARY KEY CLUSTERED
 		,	MaxTransId			BIGINT
 		,   MaxLiveHomeScore	INT
 		,	MaxLiveAwayScore	INT
@@ -81,12 +81,20 @@ BEGIN
 
 	CREATE TABLE #tmpCustomerList
 	(
-			MatchId				INT
-		,	Bettype				INT
-		,	Handicap			SMALLMONEY
-		,   LiveHomeScore		INT
-		,	LiveAwayScore		INT
-		,	CustId				INT
+			MatchId				INT	NOT	NULL
+		,	Bettype				INT	NOT	NULL
+		,	Handicap			SMALLMONEY NOT	NULL
+		,   LiveHomeScore		INT	NOT	NULL
+		,	LiveAwayScore		INT	NOT	NULL
+		,	CustId				INT	NOT	NULL
+		,	PRIMARY KEY CLUSTERED (
+			MatchId			ASC
+			, Bettype		ASC
+			, Handicap		ASC
+			, LiveHomeScore	ASC
+			, LiveAwayScore	ASC
+			, CustId		ASC
+			)
 	);
 	--============================================================
 	--- GET Match Completed that has not Completed Scanning
@@ -199,5 +207,6 @@ BEGIN
 			, am.IsMatchCompleted = mm.IsMatchCompleted
 	FROM	dbo.ArbitrageMatchScanning AS am WITH (ROWLOCK)
 				INNER JOIN #tmpMatchMaxTransId  AS mm WITH (NOLOCK) ON am.matchid = mm.matchid;		
-
 END;
+GO
+/*<info serverAlias="DBFS-bodb_FraudSensor" executers="bodbSPUNet" isFunction="0" isNested="0"></info>*/
