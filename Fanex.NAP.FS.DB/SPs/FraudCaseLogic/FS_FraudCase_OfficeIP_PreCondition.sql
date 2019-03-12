@@ -15,7 +15,7 @@ AS
 	Original:
 
 	Revisions: 
-
+		- 20190320@Casey.Huynh: Enhance Performance, define PRIMARY KEY in table [110060]
 	Param's Explanation (filtered by):
 
 */
