@@ -34,7 +34,7 @@ BEGIN
 	
 	--- GET SPORTBOOK SPORTTYPE
 	INSERT INTO #tmpSporttype (Sporttype)
-	SELECT	DISTINCT(Sporttype)
+	SELECT	DISTINCT(SportType)
 	FROM	bodb02.dbo.SportBettypeMatrix sbm WITH (NOLOCK)
 	WHERE	sbm.ProductID = 1;
 	
@@ -46,7 +46,6 @@ BEGIN
 	WHERE	m.eventstatus = 'completed'
 			AND l.isTest = 0
 			AND sm.MatchId IS NULL;
-
 END;
 GO 
 /*<info serverAlias="DBFS-bodb_FraudSensor" executers="bodbSPUNet" isFunction="0" isNested="0"></info>*/
