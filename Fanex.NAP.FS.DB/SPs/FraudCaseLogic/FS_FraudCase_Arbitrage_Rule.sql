@@ -163,8 +163,6 @@ BEGIN
 		
 	);
 
-	CREATE NONCLUSTERED INDEX	#NIX_tmpBettransAssociation_IP ON #tmpBettransAssociation(IP ASC);
-
 	IF OBJECT_ID('tempdb..#tmpIPGroup') IS NOT NULL
 	BEGIN
 		DROP TABLE	#tmpIPGroup;
@@ -348,7 +346,7 @@ BEGIN
 				FROM		#tmpBettransAssociation t WITH(NOLOCK)
 				WHERE		t.Matchid = @Matchid
 				GROUP BY	t.MatchID, t.Bettype, t.TotalScore, t.Handicap, t.IP, t.GroupId) a
-		WHERE	a.GroupId != a.MinGroupId ;
+		WHERE	a.GroupId <> a.MinGroupId ;
 
 		IF EXISTS (SELECT TOP(1) (1) FROM #tmpIPGroup WITH(NOLOCK))
 		BEGIN		
@@ -407,7 +405,7 @@ BEGIN
 	INSERT INTO #tmpFraudIP(MatchId, TotalScore, Bettype, Handicap, IP)
 	SELECT		t.matchid, TotalScore, Bettype, Handicap, IP 
 	FROM		#tmpFraudTickets t WITH(NOLOCK)
-	WHERE		t.GraphDBGroupId != t.GroupId
+	WHERE		t.GraphDBGroupId <> t.GroupId
 	GROUP BY	t.matchid, TotalScore, Bettype, Handicap, IP;
 	
 	UPDATE	ft
