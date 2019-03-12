@@ -27,7 +27,7 @@ function load_page_events() {
 
     $("#export").click(exportExcel);
 
-    var t = isShowArbitrage ? $("#match_grid table")
+    var t = $("#match_grid table")
         .DataTable({
             searching: false,
             lengthMenu: [10, 20, 50, 100, 500],
@@ -66,48 +66,8 @@ function load_page_events() {
                 zeroRecords: "There's no data"
             },
             headerCallback: th => $("th", th).removeClass("has-icon"),
-            order: [[3, "asc"]]            
-        })
-        : $("#match_grid table")
-            .DataTable({
-                searching: false,
-                lengthMenu: [10, 20, 50, 100, 500],
-                pageLength: 50,
-                scrollY: "61vh",
-                scrollX: true,
-                scrollCollapse: true,
-                columnDefs: [
-                    { targets: "_all", defaultContent: "-" },
-                    { targets: [-2, -3, -4], type: "fraud-case" },
-                    { targets: 1, type: "check-box" },
-                    { targets: 4, type: "score" },
-                    { targets: [0, -1, 1, 2], orderable: false }
-                ],
-                columns: [
-                    { data: (row, type, set, meta) => meta.row + 1, className: "text-center", width: "40px" },
-                    { data: renderVerifyCheckBox, className: "text-center", width: "40px" },
-                    { data: row => row.VerifiedBy, width: "100px" },
-                    { data: renderEvent },
-                    { data: row => row.Score, className: "text-center", width: "60px" },
-                    { data: row => row.Status, className: "text-center", width: "70px" },
-                    { data: row => renderFraudCase(row, 1), className: "has-icon text-center", width: "70px" },
-                    { data: row => renderFraudCase(row, 6), className: "has-icon text-center", width: "80px" },
-                    { data: row => renderFraudCase(row, 8), className: "has-icon text-center", width: "70px" },
-                    { data: renderNote, className: "col-note", width: "270px" }
-                ],
-                dom: "t<'pagination'<'page-size'lp>i>",
-                language: {
-                    lengthMenu: "Page size _MENU_",
-                    paginate: {
-                        previous: "Back"
-                    },
-                    info: "Displaying _START_ to _END_ of _TOTAL_ item(s)",
-                    infoEmpty: "",
-                    zeroRecords: "There's no data"
-                },
-                headerCallback: th => $("th", th).removeClass("has-icon"),
-                order: [[3, "asc"]]
-            });
+            order: [[3, "asc"]]
+        });
 
     t.on('order.dt search.dt', function () {
         t.column(0, { search: 'applied', order: 'applied' }).nodes().each(function (cell, i) {

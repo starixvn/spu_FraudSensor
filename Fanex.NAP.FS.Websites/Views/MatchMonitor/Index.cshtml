@@ -78,11 +78,7 @@
                 <th class="col-bsng">BSNG</th>
                 <th class="col-flagged-acc">Flagged Accounts</th>
                 <th class="col-delay-goal">Delay <br /> Goal</th>
-                @if (ViewBag.Environment != 3)
-                {
-                    <th class="col-delay-goal">Arbitrage</th>
-                }
-                
+                <th class="col-delay-goal">Arbitrage</th>
                 <th>Note</th>
             </tr>
         </thead>
@@ -98,7 +94,7 @@
     <script>
         var balanceUpDay = new Date(@Model.BalanceUpDay.Year, @(Model.BalanceUpDay.Month - 1), @Model.BalanceUpDay.Day);
         var username = "@ViewBag.Username";
-        var isShowArbitrage = @ViewBag.Environment == 3 ? false : true;
+        var isOnPRO = @ViewBag.Environment == 3 ? false : true;
     </script>
     @Scripts.Render("~/scripts/match-monitor")
 }
