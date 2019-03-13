@@ -1,0 +1,103 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{E60465E7-1880-4A9E-846C-964AF786CE7E}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Fanex.NAP.FS.Service</RootNamespace>
+    <AssemblyName>Fanex.NAP.FS.Service</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Dapper, Version=1.60.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Dapper.1.60.1\lib\net451\Dapper.dll</HintPath>
+    </Reference>
+    <Reference Include="EasyNetQ, Version=3.4.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\EasyNetQ.3.4.0\lib\net451\EasyNetQ.dll</HintPath>
+    </Reference>
+    <Reference Include="Fanex.Data, Version=3.0.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Fanex.Data.3.0.2\lib\net461\Fanex.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="Fanex.Data.Repository, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Fanex.Data.Repository.3.0.0\lib\net461\Fanex.Data.Repository.dll</HintPath>
+    </Reference>
+    <Reference Include="Fanex.Logging, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Fanex.Logging.2.0.0\lib\net461\Fanex.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Diagnostics.Tracing.EventSource, Version=2.0.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Diagnostics.Tracing.EventSource.Redist.2.0.1\lib\net461\Microsoft.Diagnostics.Tracing.EventSource.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="RabbitMQ.Client, Version=5.0.0.0, Culture=neutral, PublicKeyToken=89e7d7c5feba84ce, processorArchitecture=MSIL">
+      <HintPath>..\packages\RabbitMQ.Client.5.1.0\lib\net451\RabbitMQ.Client.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.ServiceProcess" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BigStakeNearGoalService.cs" />
+    <Compile Include="FraudCaseService.cs" />
+    <Compile Include="MicroServiceBase.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Fanex.NAP.FS.Core\Fanex.NAP.FS.Core.csproj">
+      <Project>{f95ab8f2-f7dc-4c12-89e0-090fb0ec6414}</Project>
+      <Name>Fanex.NAP.FS.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Fanex.NAP.FS.Library\Fanex.NAP.FS.Library.csproj">
+      <Project>{2d6f84f8-e9b5-49ec-b487-05b44e994dcc}</Project>
+      <Name>Fanex.NAP.FS.Library</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Fanex.NAP.FS.Model\Fanex.NAP.FS.Model.csproj">
+      <Project>{5ce0ba40-0a37-4c89-a33b-d61c7944be08}</Project>
+      <Name>Fanex.NAP.FS.Model</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Fanex.NAP.FS.Queue\Fanex.NAP.FS.Queue.csproj">
+      <Project>{feffed8a-7e97-4b9a-baed-06ef734fc456}</Project>
+      <Name>Fanex.NAP.FS.Queue</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
