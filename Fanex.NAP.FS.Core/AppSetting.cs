@@ -111,5 +111,13 @@ namespace Fanex.NAP.FS.Core
                 return ConfigurationManager.AppSettings["HeartBeat-Path"];
             }
         }
+
+        public static string HeartBeatPort
+        {
+            get
+            {
+                return ConfigurationManager.AppSettings["HeartBeat-Port"];
+            }
+        }
     }
 }
