@@ -183,7 +183,7 @@ namespace Fanex.NAP.FS.Service
 
             Report(status, exception);
 
-            Console.WriteLine($"Fraud case {_fraudCase.FraudCaseName} is executed.");
+            LogService.Error($"{projectName} - {_serviceName} - Exception: {exception}");
         }
 
         protected virtual void Report(bool status, string exception) { }          

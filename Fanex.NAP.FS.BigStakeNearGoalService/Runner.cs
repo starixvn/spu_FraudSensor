@@ -28,22 +28,16 @@ namespace Fanex.NAP.FS.BigStakeNearGoalService
 
         protected override void Precondition()
         {
-            _matches = bigStakeNearGoalService.PreCondition();
-
-            Console.WriteLine("Executing Pre-Condition...");
+            _matches = bigStakeNearGoalService.PreCondition();            
         }
 
         protected override void Rule()
         {
-            ExecuteBySaparatedThreads();
-
-            Console.WriteLine("Executing Rule...");
+            ExecuteBySaparatedThreads();            
         }
 
         protected override void CleanResult()
-        {
-            Console.WriteLine("Clean Result...");
-
+        {           
             if (_matches != null && _matches.Any())
             {
                 _matches = Enumerable.Empty<Match>();
@@ -53,11 +47,9 @@ namespace Fanex.NAP.FS.BigStakeNearGoalService
 
         protected override void Report(bool status, string exception)
         {
-            Console.WriteLine("Report...");
-
             var client = new RestClient(AppSetting.HeartBeatUrl);
-
             var request = new RestRequest("/api/HealthCheck/beat", Method.POST);
+
             request.AddQueryParameter("serviceName", serviceName);
             request.AddQueryParameter("status", status.ToString());
             request.AddQueryParameter("exception", exception);
