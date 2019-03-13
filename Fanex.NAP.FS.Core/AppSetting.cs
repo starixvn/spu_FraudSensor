@@ -119,5 +119,12 @@ namespace Fanex.NAP.FS.Core
                 return ConfigurationManager.AppSettings["HeartBeat-Port"];
             }
         }
+
+        public static string GroupCustomerPath {
+            get
+            {
+                return ConfigurationManager.AppSettings["MS-WEBAPI-GROUP-CUSTOMER"];
+            }
+        }
     }
 }

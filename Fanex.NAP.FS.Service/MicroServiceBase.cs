@@ -80,6 +80,8 @@ namespace Fanex.NAP.FS.Service
 
         private void GetMessage(Action<FraudCaseMessage> handler)
         {
+            Console.WriteLine($"{_serviceName} is listening....");
+
             _rabbitMQ.AdvanceBus.Consume(_rabbitMQ.Queue, x => x.Add<FraudCaseMessage>((message, info) =>
             {
                 handler(message.Body);

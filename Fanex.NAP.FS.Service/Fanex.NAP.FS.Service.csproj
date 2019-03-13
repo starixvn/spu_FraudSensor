@@ -70,6 +70,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ArbitrageService.cs" />
     <Compile Include="BigStakeNearGoalService.cs" />
     <Compile Include="FraudCaseService.cs" />
     <Compile Include="MicroServiceBase.cs">
