@@ -1,4 +1,3 @@
-/****** Object:  StoredProcedure [dbo].[FS_FraudCase_Arbitrage_Rule_LongEnhance]    Script Date: 11/15/2018 9:21:57 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -21,6 +20,7 @@ AS
 		- 20180926@LONG: Performance tunning [Redmine ID: 000000]
 		- 20180926@CASEY: Implement IP Rule [Redmine ID: 109092]
 		- 20190316@CaseyHuynh: Enhance Performance, Update SuspiciousCustomer [Redmine ID: 110060]
+		- 20190320@Casey.Huynh: Enhance Performance, define PRIMARY KEY in table [110060]
 	Param's Explanation (filtered by):
 */
 BEGIN
@@ -47,20 +47,15 @@ BEGIN
 		,	Handicap			SMALLMONEY
 		,	LiveHomeScore		INT
 		,	LiveAwayScore		INT
+		,	PRIMARY KEY CLUSTERED (
+				MatchId				ASC
+			,	CustId				ASC
+			,	BetType				ASC
+			,	Handicap			ASC	
+			,	LiveHomeScore		ASC
+			,	LiveAwayScore		ASC
+			) 
 	);
-
-	CREATE CLUSTERED INDEX	#IX_tmpMatches_MatchIdCustIdBettype ON #tmpMatches (
-			MatchId				ASC
-		,	CustId				ASC
-		,	BetType				ASC		
-		,	LiveHomeScore		ASC
-		,	LiveAwayScore		ASC
-	);
-
-	CREATE NONCLUSTERED INDEX	#NIX_tmpMatches_MatchId ON #tmpMatches (
-			MatchId				ASC
-	);
-
 
 	IF	OBJECT_ID('tempdb..#tmpAssociation') IS NOT NULL
 	BEGIN;
@@ -68,7 +63,7 @@ BEGIN
 	END;
 
 	CREATE TABLE	#tmpAssociation (
-			[CustId]			INT NOT NULL PRIMARY KEY
+			[CustId]		INT NOT NULL PRIMARY KEY CLUSTERED
 		,	GroupID			INT NOT NULL
 	);
 
@@ -82,18 +77,27 @@ BEGIN
 	END;
 
 	CREATE TABLE	#tmpFraudIP (
-			[MatchId]			INT
-		,	[TotalScore]	INT
-		,	[Bettype]			INT
-		,	[Handicap]			SMALLMONEY
-		,	[IP]				BIGINT
+			[MatchId]			INT NOT NULL
+		,	[TotalScore]		INT NOT NULL
+		,	[Bettype]			INT NOT NULL
+		,	[Handicap]			SMALLMONEY NOT NULL
+		,	[IP]				BIGINT NOT NULL
+		PRIMARY KEY CLUSTERED(
+			MatchId			ASC
+			, TotalScore	ASC
+			, Bettype		ASC
+			, Handicap		ASC
+			, IP			ASC
+		)
 	);
 
 	IF	OBJECT_ID('tempdb..#tmpMatchList') IS NOT NULL
 	BEGIN;
 		DROP TABLE #tmpMatchList;
 	END;
-	CREATE TABLE #tmpMatchList (MatchId INT)
+	CREATE TABLE #tmpMatchList (
+		MatchId INT NOT NULL PRIMARY KEY CLUSTERED
+	);
 
 
 	IF OBJECT_ID('tempdb..#tmpBettrans') IS NOT NULL
@@ -111,7 +115,7 @@ BEGIN
 		,	Username			NVARCHAR(50)
 		,	CurrencyId			TINYINT
 		,	CurrencyName		NVARCHAR(50)
-		,	TransId				BIGINT		
+		,	TransId				BIGINT	NOT NULL PRIMARY KEY CLUSTERED
 		,	Betteam				NVARCHAR(50)		
 		,	Stake				MONEY
 		,	EventDate			DATETIME
@@ -129,37 +133,35 @@ BEGIN
 
 	CREATE TABLE #tmpBettransAssociation
 	(
-			MatchId				INT
-		,	TotalScore			INT
-		,	Bettype				INT
-		,	Handicap			SMALLMONEY
-		,	CustId				INT
-		,	GraphDBGroupId		INT
-		,	GroupId				INT
+			MatchId				INT NOT NULL
+		,	TotalScore			INT NOT NULL
+		,	Bettype				INT NOT NULL
+		,	Handicap			SMALLMONEY NOT NULL
+		,	CustId				INT NOT NULL
+		,	GraphDBGroupId		INT NOT NULL
+		,	GroupId				INT NOT NULL
 		,	Username			NVARCHAR(50)
 		,	CurrencyId			TINYINT
 		,	CurrencyName		NVARCHAR(50)
-		,	TransId				BIGINT		
-		,	Betteam				NVARCHAR(50)		
+		,	TransId				BIGINT	
+		,	Betteam				NVARCHAR(50) NOT NULL		
 		,	Stake				MONEY
 		,	EventDate			DATETIME
-		,	Ip					BIGINT		
+		,	Ip					BIGINT NOT NULL
 		,	IsIPFraud			BIT		
 	);
 
-	CREATE NONCLUSTERED INDEX	#NIX_tmpBettransAssociation ON #tmpBettransAssociation(
-			
+	CREATE CLUSTERED INDEX	#NIX_tmpBettransAssociation ON #tmpBettransAssociation(			
 			MatchId				ASC
 		,	TotalScore			ASC		
 		,	Bettype				ASC
 		,	Handicap			ASC
+		,	IP					ASC
 		,	GroupId				ASC
 		,   CustId				ASC		
 		,	Betteam				ASC
 		
 	);
-
-	CREATE NONCLUSTERED INDEX	#NIX_tmpBettransAssociation_IP ON #tmpBettransAssociation(IP ASC);
 
 	IF OBJECT_ID('tempdb..#tmpIPGroup') IS NOT NULL
 	BEGIN
@@ -168,11 +170,11 @@ BEGIN
 
 	CREATE TABLE #tmpIPGroup
 	(		
-			MatchId				INT	
-		,	TotalScore			INT
-		,	Bettype				INT
-		,	Handicap			SMALLMONEY
-		,	IP					BIGINT
+			MatchId				INT	NOT NULL
+		,	TotalScore			INT NOT NULL
+		,	Bettype				INT NOT NULL
+		,	Handicap			SMALLMONEY NOT NULL
+		,	IP					BIGINT NOT NULL
 		,	GroupId				INT
 		,	MinGroupId			INT	
 	);
@@ -203,22 +205,17 @@ BEGIN
 		,	CurrencyName		NVARCHAR(50)		
 		,	Bettype				INT
 		,	EventDate			DATETIME
-		,	TransId				BIGINT		
+		,	TransId				BIGINT	
 		,   Ip					BIGINT		
 	);
 
 	CREATE CLUSTERED INDEX	#IX_tmpFraudTicketsIdx ON #tmpFraudTickets (
 			MatchId				ASC
+		,	CustId				ASC	
 		,	TotalScore			ASC
 		,	Bettype				ASC
 		,	Handicap			ASC
-		,	GroupId				ASC
-		,	CustId				ASC		
-	);
-
-	CREATE NONCLUSTERED INDEX	#NIX_tmpFraudTicketsIdx ON #tmpFraudTickets (
-			MatchId				ASC
-		,	CustId				ASC
+		,	GroupId				ASC			
 	);
 
 	IF OBJECT_ID('tempdb..#tmpMatchBettypeBetteamSumStake') IS NOT NULL
@@ -232,20 +229,17 @@ BEGIN
 		,	TotalScore			INT
 		,	Bettype				INT
 		,	Handicap			SMALLMONEY	
-		,	GroupId		INT			
+		,	GroupId				INT			
 		,	TotalStakeH			MONEY
 		,	TotalStakeA			MONEY
-	);
-
-	CREATE CLUSTERED INDEX	#IX_tmpMatchBettypeBetteamSumStakeIdx ON #tmpMatchBettypeBetteamSumStake (
-			
-			MatchId				ASC
-		,	TotalScore			ASC
-		,	Bettype				ASC
-		,	Handicap			ASC
-		,	GroupId		ASC
-		
-	);
+		,	PRIMARY KEY CLUSTERED (			
+				MatchId				ASC
+			,	TotalScore			ASC
+			,	Bettype				ASC
+			,	Handicap			ASC
+			,	GroupId		ASC
+			)
+	);	
 
 	-- INIT	
 	DECLARE @idocMatch INT
@@ -352,7 +346,7 @@ BEGIN
 				FROM		#tmpBettransAssociation t WITH(NOLOCK)
 				WHERE		t.Matchid = @Matchid
 				GROUP BY	t.MatchID, t.Bettype, t.TotalScore, t.Handicap, t.IP, t.GroupId) a
-		WHERE	a.GroupId != a.MinGroupId ;
+		WHERE	a.GroupId <> a.MinGroupId ;
 
 		IF EXISTS (SELECT TOP(1) (1) FROM #tmpIPGroup WITH(NOLOCK))
 		BEGIN		
@@ -411,7 +405,7 @@ BEGIN
 	INSERT INTO #tmpFraudIP(MatchId, TotalScore, Bettype, Handicap, IP)
 	SELECT		t.matchid, TotalScore, Bettype, Handicap, IP 
 	FROM		#tmpFraudTickets t WITH(NOLOCK)
-	WHERE		t.GraphDBGroupId != t.GroupId
+	WHERE		t.GraphDBGroupId <> t.GroupId
 	GROUP BY	t.matchid, TotalScore, Bettype, Handicap, IP;
 	
 	UPDATE	ft
@@ -540,5 +534,5 @@ BEGIN
 	EXEC sp_xml_removedocument @idocAssociation;
 
 END;
-
+GO
 /*<info serverAlias="DBFS-bodb_FraudSensor" executers="bodbSPUNet" isFunction="0" isNested="0"></info>*/

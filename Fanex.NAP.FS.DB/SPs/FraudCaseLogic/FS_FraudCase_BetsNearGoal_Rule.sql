@@ -16,7 +16,8 @@ AS
 	Revisions:	
 		- 20181207@Long: Created [Redmine ID: 106079]
 		- 20190219@Long: Store more info (Currency & Username) for table SuspiciousCutomers [Redmine ID: 107858]
-
+		- 20190319@Casey.Huynh: Enhance Performance table #tmpFraudTickets [110060]
+		- 20190320@Casey.Huynh: Enhance Performance, define PRIMARY KEY in table [110060]
 	Param's Explanation (filtered by):
 */
 BEGIN
@@ -34,21 +35,20 @@ BEGIN
 	END
 	
 	CREATE TABLE #tmpFraudTickets(
-			CustId				INT
+			CustId				INT				NOT NULL
+		,	MatchId				INT				NOT NULL
+		,	TransId				BIGINT			NOT NULL
 		,	Username			NVARCHAR(50)
 		,	CurrencyId			TINYINT
-		,	CurrencyName		NVARCHAR(50)
-		,	MatchId				INT
-		,	EventDate			DATETIME
-		,	TransId				BIGINT
+		,	CurrencyName		NVARCHAR(50)		
+		,	EventDate			DATETIME		
 		,	LiveHomeScore		SMALLINT
 		,	LiveAwayScore		SMALLINT
-	);
-
-	CREATE CLUSTERED INDEX	#CIX_tmpFraudTicketsIdx ON #tmpFraudTickets (
-			CustId				ASC
-		,	MatchId				ASC
-		,	TransId				ASC
+		,	PRIMARY KEY CLUSTERED (
+				CustId				ASC
+			,	MatchId				ASC
+			,	TransId				ASC
+		)
 	);
 
 	IF OBJECT_ID('tempdb..#tmpFraudTicketsCustInfo') IS NOT NULL
@@ -57,14 +57,10 @@ BEGIN
 	END
 	
 	CREATE TABLE #tmpFraudTicketsCustInfo(
-			CustId				INT
+			CustId				INT	NOT NULL PRIMARY KEY CLUSTERED
 		,	Username			NVARCHAR(50)
 		,	CurrencyId			TINYINT
 		,	CurrencyName		NVARCHAR(50)
-	);
-
-	CREATE CLUSTERED INDEX	#CIX_tmpFraudTicketsCustInfoIdx ON #tmpFraudTicketsCustInfo (
-			CustId				ASC
 	);
 
 	IF OBJECT_ID('tempdb..#tmpMatches') IS NOT NULL
@@ -74,7 +70,7 @@ BEGIN
 
 	CREATE TABLE #tmpMatches
 	(
-		MatchId			INT PRIMARY KEY
+		MatchId			INT NOT NULL PRIMARY KEY CLUSTERED
 		, EventDate		DATETIME
 		, EventStatus	NVARCHAR(50)
 		, CurrentScore	TINYINT

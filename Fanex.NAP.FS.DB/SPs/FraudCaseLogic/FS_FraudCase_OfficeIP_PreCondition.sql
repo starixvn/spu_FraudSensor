@@ -15,7 +15,7 @@ AS
 	Original:
 
 	Revisions: 
-
+		- 20190320@Casey.Huynh: Enhance Performance, define PRIMARY KEY in table [110060]
 	Param's Explanation (filtered by):
 
 */
@@ -29,12 +29,12 @@ BEGIN
 	END
 	
 	CREATE TABLE #tmpSporttype(
-		Sporttype	INT
+		Sporttype	INT	NOT	NULL PRIMARY KEY CLUSTERED
 	);
 	
 	--- GET SPORTBOOK SPORTTYPE
 	INSERT INTO #tmpSporttype (Sporttype)
-	SELECT	DISTINCT(Sporttype)
+	SELECT	DISTINCT(SportType)
 	FROM	bodb02.dbo.SportBettypeMatrix sbm WITH (NOLOCK)
 	WHERE	sbm.ProductID = 1;
 	
@@ -46,9 +46,6 @@ BEGIN
 	WHERE	m.eventstatus = 'completed'
 			AND l.isTest = 0
 			AND sm.MatchId IS NULL;
-
 END;
 GO 
- GRANT EXECUTE ON dbo.FS_FraudCase_OfficeIP_PreCondition TO bodbSPUNet;
-GO 
- GRANT VIEW DEFINITION ON dbo.FS_FraudCase_OfficeIP_PreCondition TO bodbSPUNet;
+/*<info serverAlias="DBFS-bodb_FraudSensor" executers="bodbSPUNet" isFunction="0" isNested="0"></info>*/

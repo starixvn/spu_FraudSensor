@@ -21,6 +21,7 @@ AS
 			c) Table CheckBetScannedMatch: Keep data for 14 days only
 		- 20190109@Long: Remove Unique for temp tables [Redmine ID: #107398]
 		- 20190115@Casey: Remove Trace Data script  [Redmine ID: #107398]
+		- 20190320@Casey.Huynh: Enhance Performance, define PRIMARY KEY in table [110060]
 
 	Param's Explanation (filtered by):
 */
@@ -50,10 +51,13 @@ BEGIN
 		WinlossDate					DATETIME,
 		MatchId						INT,
 		HomeId						INT,
-		AwayId						INT
+		AwayId						INT,
+		PRIMARY KEY CLUSTERED (
+			WinlossDate		ASC
+			, MatchId		ASC
+		)
     );
-	CREATE UNIQUE CLUSTERED INDEX IX_tmpMatchesInfo_Bettype_MatchId ON #tmpMatchesInfo(WinlossDate, MatchId);
-
+	
 	IF	OBJECT_ID('tempdb..#tmpMatches') IS NOT NULL
 	BEGIN
 		DROP TABLE	#tmpMatches;
@@ -61,9 +65,12 @@ BEGIN
 	CREATE TABLE #tmpMatches(
 		WinlossDate					DATETIME,
 		MatchId						INT
+		PRIMARY KEY CLUSTERED (
+			WinlossDate		ASC
+			, MatchId		ASC
+		)
     );
-	CREATE UNIQUE CLUSTERED INDEX IX_tmpMatches_Bettype_MatchId ON #tmpMatches(WinlossDate, MatchId);
-
+	
 	IF	OBJECT_ID('tempdb..#tmpSportbooksBettype') IS NOT NULL
 	BEGIN
 		DROP TABLE	#tmpSportbooksBettype;
@@ -89,10 +96,13 @@ BEGIN
     CREATE TABLE #tmpChangedTickets(
 		transid				BIGINT, 
 		bettype				INT, 
-		original_stake		MONEY
+		original_stake		MONEY,
+		PRIMARY KEY CLUSTERED (
+			transid			ASC
+			, bettype		ASC
+		)
 	);
-	CREATE CLUSTERED INDEX CIX_tmpChangedTickets_TransID_Bettype ON #tmpChangedTickets(transid,bettype);
-
+	
 	IF	OBJECT_ID('tempdb..#tmpCheckBet') IS NOT NULL
 	BEGIN
 		DROP TABLE	#tmpCheckBet;
@@ -110,9 +120,12 @@ BEGIN
 		isValidTP			TINYINT, 
 		isValidOdds			TINYINT, 
 		isValidBetteam		TINYINT
+		PRIMARY KEY CLUSTERED (
+			transid			ASC
+			, bettype		ASC
+		)
 	);
-	CREATE CLUSTERED INDEX CIX_tmpCheckBet_TransID_Bettype ON #tmpCheckBet(transid,bettype);
-	
+		
 	IF	OBJECT_ID('tempdb..#tmpChangedInfo') IS NOT NULL
 	BEGIN
 		DROP TABLE	#tmpChangedInfo;
@@ -545,5 +558,5 @@ BEGIN
 	WHERE	DATEDIFF(dd, ScannedDate, GETDATE()) > 15;
 
 END;
-
-/*<info serverAlias="DBSPU-bodb_FraudSensor" executers="bodbSPUNet" isFunction="0" isNested="0"></info>*/
+GO
+/*<info serverAlias="DBFS-bodb_FraudSensor" executers="bodbSPUNet" isFunction="0" isNested="0"></info>*/

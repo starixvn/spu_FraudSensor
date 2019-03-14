@@ -16,7 +16,7 @@ AS
 		- 20180312@CaseyHuynh:	Correct Code Syntax
 		- 20180525@Casey.Huynh: Exclude League Test
 		- 20190225@Long.Luu:	Scanning for completed matches during UM time [Redmine ID: #106820]
-		
+		- 20190320@Casey.Huynh: Enhance Performance, define PRIMARY KEY in table [110060]
 	Param's Explanation (filtered by):
 */
 BEGIN
@@ -30,7 +30,7 @@ BEGIN
 	END;
 
 	CREATE TABLE #tmpMatches(
-			MatchId			INT PRIMARY KEY		
+			MatchId			INT	NOT	NULL PRIMARY KEY CLUSTERED		
 		,	EventStatus		NVARCHAR(20)
 	);
 
