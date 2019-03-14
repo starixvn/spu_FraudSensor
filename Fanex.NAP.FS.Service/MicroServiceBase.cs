@@ -53,6 +53,9 @@ namespace Fanex.NAP.FS.Service
 
         protected override void OnStart(string[] args)
         {
+#if DEBUG
+            Console.WriteLine($"-> {_serviceName} is starting...");
+#endif
             if (!string.IsNullOrWhiteSpace(_queueName))
             {             
                 try
@@ -102,6 +105,9 @@ namespace Fanex.NAP.FS.Service
         
         private FraudCase GetFraudCase(int fraudCaseId)
         {
+#if DEBUG
+            Console.WriteLine("-> Get fraud case action is executing...");
+#endif
             var fraudCaseService = new FraudCaseService();
 
             var fraudCase = fraudCaseService.GetByFraudCaseId(fraudCaseId);
@@ -125,7 +131,10 @@ namespace Fanex.NAP.FS.Service
             switch (fraudCaseMessage.Action)
             {
                 case Model.Action.Add:
-                    {                       
+                    {
+#if DEBUG
+                        Console.WriteLine("-> Add action is executing...");
+#endif
                         _fraudCase = GetFraudCase(fraudCaseMessage.Id);
 
                         if (_timer.Enabled)
@@ -141,7 +150,10 @@ namespace Fanex.NAP.FS.Service
                         break;
                     }
                 case Model.Action.Update:
-                    {                        
+                    {
+#if DEBUG
+                        Console.WriteLine("-> Update action is executing...");
+#endif
                         _timer.Stop();
 
                         _fraudCase = GetFraudCase(fraudCaseMessage.Id);
@@ -151,7 +163,10 @@ namespace Fanex.NAP.FS.Service
                         break;
                     }
                 case Model.Action.Delete:
-                    {                        
+                    {
+#if DEBUG
+                        Console.WriteLine("-> Delete action is executing...");
+#endif
                         _timer.Stop();
                         CleanResult();
 
@@ -171,21 +186,27 @@ namespace Fanex.NAP.FS.Service
 
             try
             {
+#if DEBUG
+                Console.WriteLine("-> Fraud Case is executing at " + DateTime.Now);
+#endif
                 CleanResult();
                 Precondition();
                 Rule();
                 NextAction();
+
+#if DEBUG
+                Console.WriteLine("=> Fraud Case is executed at " + DateTime.Now);
+#endif
             }
             catch (Exception ex)
             {
-
                 exception = ex.Message;
                 status = false;
+
+                LogService.Critical($"{projectName} - {_serviceName} - Exception: {ex.Message}");
             }
 
-            Report(status, exception);
-
-            LogService.Error($"{projectName} - {_serviceName} - Exception: {exception}");
+            Report(status, exception);            
         }
 
         protected virtual void Report(bool status, string exception) { }          

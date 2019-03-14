@@ -89,7 +89,7 @@ namespace Fanex.NAP.FS.ArbitrageService
             }
             catch (Exception ex)
             {
-                LogService.Error($"{projectName} - {serviceName} - Exception: {ex.Message}");
+                LogService.Error($"{projectName} - {serviceName} - Cannot get Group Customer from Web API - Exception: {ex.Message}");
 
                 return Enumerable.Empty<ArbitrageCustomer>();
             }
