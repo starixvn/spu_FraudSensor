@@ -12,11 +12,17 @@ namespace Fanex.NAP.FS.MainService
             if (!status)
             {
                 string message = $"Service name: {serviceName} - Status: {status} - Exception: {exception}";
-
+#if DEBUG
                 System.Console.WriteLine(message);
-
+#endif
                 LogService.Error(message);
             }
+        }
+
+        [HttpGet]
+        public string Testing()
+        {
+            return "I'm here. Everything is ok now.";
         }
     }
 }
