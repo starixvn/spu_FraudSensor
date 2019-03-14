@@ -203,7 +203,7 @@ namespace Fanex.NAP.FS.Service
                 exception = ex.Message;
                 status = false;
 
-                LogService.Critical($"{projectName} - {_serviceName} - Exception: {ex.Message}");
+                LogService.Critical($"{projectName} - {_serviceName} - Handle Action Executing - Exception: {ex.Message}");
             }
 
             Report(status, exception);            
