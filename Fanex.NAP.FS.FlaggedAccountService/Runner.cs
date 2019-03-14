@@ -7,6 +7,7 @@ using Fanex.NAP.FS.Library.DTO;
 using Fanex.NAP.FS.Library.Models;
 using Fanex.NAP.FS.Library.Models.FraudCase.FlaggedAccount;
 using Fanex.NAP.FS.Service;
+using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -20,8 +21,7 @@ namespace Fanex.NAP.FS.FlaggedAccountService
     {
         private const int ChunkSize = 100;
         protected readonly Service.FlaggedAccountService flaggedAccountService;
-        private readonly IEnumerable<FlaggedCustomer> _flaggedCustomers;
-        protected int _errorTimes;
+        private readonly IEnumerable<FlaggedCustomer> _flaggedCustomers;        
         private readonly string FPS_WEBAPI_GET_CUSTOMER_EVIDENCE = AppSetting.CustomerEvidenceApi;
 
         static string serviceName = "Flagged Account Service";
@@ -53,6 +53,23 @@ namespace Fanex.NAP.FS.FlaggedAccountService
             
 
             InitializeComponent();
+        }
+
+        protected override void Report(bool status, string exception)
+        {
+            var client = new RestClient(AppSetting.HeartBeatUrl);
+            var request = new RestRequest("/api/HealthCheck/beat", Method.POST);
+
+            request.AddQueryParameter("serviceName", serviceName);
+            request.AddQueryParameter("status", status.ToString());
+            request.AddQueryParameter("exception", exception);
+
+            var result = client.Execute(request);
+
+            if (!result.IsSuccessful)
+            {
+                LogService.Error(result.ErrorMessage);
+            }
         }
 
         protected override void CleanResult()
@@ -99,8 +116,7 @@ namespace Fanex.NAP.FS.FlaggedAccountService
                 {
                     var flaggedAccountsXml = XmlHelper.ToXmlString(_flaggedCustomers);
                     flaggedAccountService.ExecuteRule(string.Join(",", ((List<Match>)m).Select(t => t.MatchId.ToString())), flaggedAccountsXml);
-
-                    _errorTimes = 0;
+                                       
                 }
                 catch (Exception exception)
                 {
