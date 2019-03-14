@@ -120,10 +120,18 @@ namespace Fanex.NAP.FS.Core
             }
         }
 
-        public static string GroupCustomerPath {
+        public static string GroupCustomerPath
+        {
             get
             {
                 return ConfigurationManager.AppSettings["MS-WEBAPI-GROUP-CUSTOMER"];
+            }
+        }
+        public static string CustomerEvidenceApi
+        {
+            get
+            {
+                return ConfigurationManager.AppSettings["FPS-WEBAPI-GET-CUSTOMER-EVIDENCE"];
             }
         }
     }

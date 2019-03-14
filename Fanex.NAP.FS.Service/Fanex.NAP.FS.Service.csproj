@@ -72,6 +72,7 @@
   <ItemGroup>
     <Compile Include="ArbitrageService.cs" />
     <Compile Include="BigStakeNearGoalService.cs" />
+    <Compile Include="FlaggedAccountService.cs" />
     <Compile Include="FraudCaseService.cs" />
     <Compile Include="MicroServiceBase.cs">
       <SubType>Component</SubType>
