@@ -78,15 +78,7 @@ namespace Fanex.NAP.FS.Core
             {
                 return ConfigurationManager.AppSettings["Queue-Exchange"];
             }
-        }
-
-        public static string RoutingKey
-        {
-            get
-            {
-                return ConfigurationManager.AppSettings["Queue-RoutingKey"];
-            }
-        }
+        }        
 
         public static string FanexLogCategory
         {

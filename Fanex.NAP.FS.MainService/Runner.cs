@@ -48,7 +48,7 @@ namespace Fanex.NAP.FS.MainService
             }
             catch (Exception ex)
             {
-                LogService.Error($"{projectName} - Main Service - Exception: {ex.Message}");
+                LogService.Error($"{projectName} - Main Service - Load Fraud Case - Exception: {ex.Message}");
             }
         }
 
@@ -92,8 +92,10 @@ namespace Fanex.NAP.FS.MainService
                             var log = $"{projectName} - Load Fraud Case - Queue: {_rabbitMQ.QueueName}, RoutingKey: {_rabbitMQ.RoutingKey}, Exchange: {_rabbitMQ.ExchangeName}";
 
                             _rabbitMQ.AdvanceBus.PublishAsync(_rabbitMQ.Exchange, _rabbitMQ.RoutingKey, false, message);
-
+#if DEBUG
                             Console.WriteLine(log);
+#endif
+
                             LogService.Info(log);
                         }
                     }
