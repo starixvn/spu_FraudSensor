@@ -67,9 +67,16 @@
         public ActionResult ChangeCaseStatus(int fraudCaseId, bool isActive)
         {
             _fraudCaseService.ChangeFraudCaseStatus((FraudCaseId)fraudCaseId, CurrentSession.UserId);
-
-            var sender = SendingMessageFactory.GetSender(isActive ? SendingType.Activating : SendingType.Deactivating);
-            sender.Send(fraudCaseId);
+            if (fraudCaseId == 1)
+            {
+                //send to rabbitmq
+                var abc = string.Empty;
+            }
+            else
+            {
+                var sender = SendingMessageFactory.GetSender(isActive ? SendingType.Activating : SendingType.Deactivating);
+                sender.Send(fraudCaseId);
+            }
 
             return Json(new object());
         }
