@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
-using System.Web.Http;
 using Microsoft.Owin;
 using Owin;
+using System.Web.Http;
 
 [assembly: OwinStartup(typeof(Fanex.NAP.FS.MainService.Startup))]
 
