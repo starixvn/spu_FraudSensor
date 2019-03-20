@@ -14,7 +14,7 @@ AS
 		- 20180815@LONG: Implement PreCondition for Arbitrage fraud case
 		- 20180926@LONG: Remove redundant fraud tickets
 		- 20190312@Casey.Huynh: Enhance Performance, define PRIMARY KEY in table [110060]
-		- 20190314@Casey.Huynh: Implement, scan for completed Match
+		- 20190314@Casey.Huynh: Implement, scan for completed Match [110566]
 
 	Param's Explanation (filtered by):  
 	

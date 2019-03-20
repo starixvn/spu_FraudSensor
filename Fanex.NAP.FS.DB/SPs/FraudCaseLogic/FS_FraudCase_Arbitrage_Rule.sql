@@ -2,7 +2,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-ALTER PROCEDURE [dbo].[FS_FraudCase_Arbitrage_Rule_UM] 
+ALTER PROCEDURE [dbo].[FS_FraudCase_Arbitrage_Rule] 
 		@Matches			VARCHAR(MAX) = NULL -- xml format
 	,	@Associations		VARCHAR(MAX) = NULL -- xml format
 AS
@@ -21,7 +21,7 @@ AS
 		- 20180926@CASEY: Implement IP Rule [Redmine ID: 109092]
 		- 20190316@CaseyHuynh: Enhance Performance, Update SuspiciousCustomer [Redmine ID: 110060]
 		- 20190320@Casey.Huynh: Enhance Performance, define PRIMARY KEY in table [110060]
-		- 20190314@Casey.Huynh: Implement, scan for completed Match [110060]
+		- 20190314@Casey.Huynh: Implement, scan for completed Match [110566]
 	Param's Explanation (filtered by):
 */
 BEGIN
@@ -534,26 +534,23 @@ BEGIN
 	EXEC sp_xml_removedocument @idocMatch;
 	EXEC sp_xml_removedocument @idocAssociation;
 	
-	-------------------UPDATE PRECONDITON--------------------------------------
+	-------------------UPDATE SCANNING PRECONDITON--------------------------------------
 	---------------------------------------------------------------------------
-	
-	DELETE		a
-	FROM		ArbitrageMatchScoreHDP a WITH(ROWLOCK)
-	INNER JOIN	#tmpMatches	m WITH(NOLOCK)
-				ON	a.MatchId = m.MatchId
-				AND	a.TotalScores = m.LiveHomeScore + m.LiveAwayScore
-				AND a.Handicap = m.Handicap
-				AND a.BetType = m.BetType;
 
 	INSERT INTO ArbitrageMatchScoreHDP (MatchId, TotalScores, BetType, Handicap, HasScanned, UpdatedDate)
-	SELECT		b.MatchID
-				, b.TotalScore
-				, b.BetType
-				, b.Handicap
+	SELECT		m.MatchID
+				, m.LiveHomeScore + m.LiveAwayScore
+				, m.BetType
+				, m.Handicap
 				, 0 AS HasScanned
 				, @ScannedDate
-	FROM		#tmpBettrans b WITH(NOLOCK)
-	GROUP BY	b.MatchId, b.TotalScore, b.Bettype, b.Handicap;
+	FROM		#tmpMatches m WITH(NOLOCK)
+	LEFT JOIN	ArbitrageMatchScoreHDP a WITH(ROWLOCK)
+				ON	m.MatchId = a.MatchId
+				AND	m.LiveHomeScore + LiveAwayScore = a.TotalScores
+				AND m.BetType = a.BetType
+				AND m.Handicap = a.Handicap
+	GROUP BY	m.MatchId,m.LiveHomeScore,m.LiveAwayScore, m.Bettype, m.Handicap;
 
 	--=====Update Matched Completed
 	WITH #tmpCompletedMatch AS
@@ -588,7 +585,6 @@ BEGIN
 	
 	--====Update for LiveScore has completed
 
-
 	--1. UPDATE SCANNING STATUS
 	UPDATE		sh WITH(ROWLOCK)
 	SET			sh.HasScanned = 1, sh.UpdatedDate = @ScannedDate
@@ -600,7 +596,7 @@ BEGIN
 				ON ms.MatchId = sh.MatchId
 	WHERE		sh.TotalScores < ms.TotalScore
 				AND sh.HasScanned = 0;
-END
+END;
 
 GO
 /*<info serverAlias="DBFS-bodb_FraudSensor" executers="bodbSPUNet" isFunction="0" isNested="0"></info>*/
