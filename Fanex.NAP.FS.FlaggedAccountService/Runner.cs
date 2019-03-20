@@ -21,7 +21,7 @@ namespace Fanex.NAP.FS.FlaggedAccountService
     {
         private const int ChunkSize = 100;
         protected readonly Service.FlaggedAccountService flaggedAccountService;
-        private readonly IEnumerable<FlaggedCustomer> _flaggedCustomers;        
+        private readonly IEnumerable<FlaggedCustomer> _flaggedCustomers;
         private readonly string FPS_WEBAPI_GET_CUSTOMER_EVIDENCE = AppSetting.CustomerEvidenceApi;
 
         static string serviceName = "Flagged Account Service";
@@ -40,7 +40,8 @@ namespace Fanex.NAP.FS.FlaggedAccountService
 
             try
             {
-                _flaggedCustomers = ApiHelper.Post<CustomerEvidenceList, IEnumerable<FlaggedCustomer>>(FPS_WEBAPI_GET_CUSTOMER_EVIDENCE, param, 2, 82).Result;
+                //_flaggedCustomers = ApiHelper.Post<CustomerEvidenceList, IEnumerable<FlaggedCustomer>>(FPS_WEBAPI_GET_CUSTOMER_EVIDENCE, param, 2, 82).Result;
+                _flaggedCustomers = ApiHelper.Post<IEnumerable<FlaggedCustomer>>(FPS_WEBAPI_GET_CUSTOMER_EVIDENCE,param).Result;
             }
             catch (Exception exception)
             {

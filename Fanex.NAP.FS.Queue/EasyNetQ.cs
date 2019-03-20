@@ -51,7 +51,7 @@ namespace Fanex.NAP.FS.Queue
                this.VirtualHost,
                this.PrefetchCount,
                this.Username,
-               this.Password);                        
+               this.Password);
 
             if(Bus == null)
             {
