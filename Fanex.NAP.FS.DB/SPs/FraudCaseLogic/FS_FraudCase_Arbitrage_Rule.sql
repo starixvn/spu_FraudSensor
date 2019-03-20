@@ -2,7 +2,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-ALTER PROCEDURE [dbo].[FS_FraudCase_Arbitrage_Rule] 
+ALTER PROCEDURE [dbo].[FS_FraudCase_Arbitrage_Rule_UM] 
 		@Matches			VARCHAR(MAX) = NULL -- xml format
 	,	@Associations		VARCHAR(MAX) = NULL -- xml format
 AS
@@ -21,6 +21,7 @@ AS
 		- 20180926@CASEY: Implement IP Rule [Redmine ID: 109092]
 		- 20190316@CaseyHuynh: Enhance Performance, Update SuspiciousCustomer [Redmine ID: 110060]
 		- 20190320@Casey.Huynh: Enhance Performance, define PRIMARY KEY in table [110060]
+		- 20190314@Casey.Huynh: Implement, scan for completed Match [110060]
 	Param's Explanation (filtered by):
 */
 BEGIN
@@ -332,7 +333,7 @@ BEGIN
 	WHILE (@Matchid IS NOT NULL)
 	BEGIN
 			
-		DELETE #tmpIPGroup;
+		TRUNCATE TABLE #tmpIPGroup;
 		
 		INSERT INTO #tmpIPGroup(MatchId, TotalScore, bettype, handicap, IP, GroupId, MinGroupId)
 		SELECT	DISTINCT a.MatchId, a.TotalScore, a.bettype, a.handicap, a.IP, a.GroupId, a.MinGroupId	
@@ -527,12 +528,79 @@ BEGIN
 	FROM #tmpMatches m WITH(NOLOCK)
 		LEFT JOIN dbo.ScannedMatch sm WITH (NOLOCK)ON m.matchid = sm.matchid AND sm.FraudCaseId = @CurrentFraudCaseId
 	WHERE sm.Matchid IS NULL 
-		AND sm.FraudCaseId IS NULL; 		
+		AND sm.FraudCaseId IS NULL; 	
 
 	--Remove the XML documents
 	EXEC sp_xml_removedocument @idocMatch;
 	EXEC sp_xml_removedocument @idocAssociation;
+	
+	-------------------UPDATE PRECONDITON--------------------------------------
+	---------------------------------------------------------------------------
+	
+	DELETE		a
+	FROM		ArbitrageMatchScoreHDP a WITH(ROWLOCK)
+	INNER JOIN	#tmpMatches	m WITH(NOLOCK)
+				ON	a.MatchId = m.MatchId
+				AND	a.TotalScores = m.LiveHomeScore + m.LiveAwayScore
+				AND a.Handicap = m.Handicap
+				AND a.BetType = m.BetType;
 
-END;
+	INSERT INTO ArbitrageMatchScoreHDP (MatchId, TotalScores, BetType, Handicap, HasScanned, UpdatedDate)
+	SELECT		b.MatchID
+				, b.TotalScore
+				, b.BetType
+				, b.Handicap
+				, 0 AS HasScanned
+				, @ScannedDate
+	FROM		#tmpBettrans b WITH(NOLOCK)
+	GROUP BY	b.MatchId, b.TotalScore, b.Bettype, b.Handicap;
+
+	--=====Update Matched Completed
+	WITH #tmpCompletedMatch AS
+	(
+		SELECT		DISTINCT ams.MatchID
+		FROM		#tmpMatches m WITH(NOLOCK)
+		INNER JOIN	dbo.ArbitrageMatchScanning ams WITH(NOLOCK)
+					ON	m.MatchId = ams.MatchId 
+					AND	ams.IsMatchCompleted = 1
+	)
+	UPDATE		sh
+	SET			sh.HasScanned = 1,  sh.UpdatedDate = @ScannedDate
+	FROM		dbo.ArbitrageMatchScoreHDP sh WITH(ROWLOCK)
+	INNER JOIN	#tmpCompletedMatch cm WITH(NOLOCK)
+				ON cm.MatchId = sh.MatchId
+	WHERE		sh.MatchId = cm.MatchID;
+
+	WITH #tmpCompletedMatch AS
+	(
+		SELECT		DISTINCT ams.MatchID
+		FROM		#tmpMatches m WITH(NOLOCK)
+		INNER JOIN	dbo.ArbitrageMatchScanning ams WITH(NOLOCK)
+					ON	m.MatchId = ams.MatchId 
+					AND	ams.IsMatchCompleted = 1
+	)
+	UPDATE		ams
+	SET			ams.IsScanCompleted = 1, ams.CapturedDate = @ScannedDate
+	FROM		dbo.ArbitrageMatchScanning ams WITH(ROWLOCK)
+	INNER JOIN	#tmpCompletedMatch cm WITH(NOLOCK)
+				ON ams.MatchId = cm.MatchId				
+				AND ams.IsMatchCompleted = 1;
+	
+	--====Update for LiveScore has completed
+
+
+	--1. UPDATE SCANNING STATUS
+	UPDATE		sh WITH(ROWLOCK)
+	SET			sh.HasScanned = 1, sh.UpdatedDate = @ScannedDate
+	FROM		dbo.ArbitrageMatchScoreHDP sh WITH(ROWLOCK)
+	INNER JOIN	(	SELECT	m.MatchId
+						, MAX(m.liveHomeScore + m.LiveAwayScore) AS TotalScore
+					FROM	#tmpMatches m WITH(NOLOCK)
+					GROUP BY MatchId) AS ms
+				ON ms.MatchId = sh.MatchId
+	WHERE		sh.TotalScores < ms.TotalScore
+				AND sh.HasScanned = 0;
+END
+
 GO
 /*<info serverAlias="DBFS-bodb_FraudSensor" executers="bodbSPUNet" isFunction="0" isNested="0"></info>*/
