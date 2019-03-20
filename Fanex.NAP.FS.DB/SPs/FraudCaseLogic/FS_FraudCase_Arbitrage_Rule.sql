@@ -550,6 +550,7 @@ BEGIN
 				AND	m.LiveHomeScore + LiveAwayScore = a.TotalScores
 				AND m.BetType = a.BetType
 				AND m.Handicap = a.Handicap
+	WHERE		a.Matchid IS NULL
 	GROUP BY	m.MatchId,m.LiveHomeScore,m.LiveAwayScore, m.Bettype, m.Handicap;
 
 	--=====Update Matched Completed
