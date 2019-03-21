@@ -23,7 +23,5 @@
         public History<string> Status { get; set; }
 
         public string Creator { get; set; }
-
-        public int Group { get; set; }
     }
 }

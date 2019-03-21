@@ -114,18 +114,7 @@
             { data: obj => render_history(obj.PoistionTaking) },
             { data: obj => render_history(obj.Status, false, true) },
             { data: obj => obj.Creator },
-        ],
-        createdRow: function (row, obj) {
-            if (group != null && obj.Group != group) {
-                highlight = !highlight;
-            }
-
-            if (highlight) {
-                $(row).addClass("odd-group-db");
-            }
-
-            group = obj.Group;
-        }
+        ]
     });
 
     $("#generate").click(generate_report);

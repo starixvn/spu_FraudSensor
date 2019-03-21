@@ -71,20 +71,6 @@ namespace Fanex.NAP.FS.Library.ExcelConfig.CheckBetReport
                 .WriteWithFont(history.New ?? "-", new XSSFFont { Color = IndexedColors.Coral.Index });
         }
 
-        protected override IRow GetTemplateRow(ISheet sheet, CheckBetTicket data)
-        {
-            if (group != null && group != data.Group)
-            {
-                highLight = !highLight;
-            }
-
-            var result = highLight ? sheet.GetRow(sheet.LastRowNum) : sheet.GetRow(sheet.LastRowNum - 1);
-
-            group = data?.Group;
-
-            return result;
-        }
-
         protected override void CleanupTemplate(ISheet sheet)
         {
             var template1 = sheet.GetRow(sheet.LastRowNum - 1);

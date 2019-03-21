@@ -8,21 +8,16 @@ namespace Fanex.NAP.FS.Library.Services.Implement
     using Fanex.BetList.Core.TicketHelper;
     using Fanex.NAP.FS.Library.Core.BaseClasses;
     using Fanex.NAP.FS.Library.Core.Helpers;
-    using Fanex.NAP.FS.Library.Core.Helpers.Api;
     using Fanex.NAP.FS.Library.Criteria.CheckBetReport;
-    using Fanex.NAP.FS.Library.DTO;
     using Fanex.NAP.FS.Library.Models.CheckBetReport;
     using Fanex.NAP.FS.Library.Services.Interface;
     using Fanex.NAP.FS.Library.ViewModels.CheckBetReport;
-    using RemotingRef;
     using System;
     using System.Collections.Generic;
-    using System.Configuration;
     using System.Linq;
 
     public class CheckBetReportService : ICheckBetReportService, IDisposable
     {
-
         private readonly TicketHelper ticketHelper = new TicketHelper();
 
         private readonly BetListExcelBuilder excelBuilder = new BetListExcelBuilder();
@@ -31,16 +26,12 @@ namespace Fanex.NAP.FS.Library.Services.Implement
         {
             var data = DataService.GetData<CheckBetHistory>(criteria);
 
-            var groups = BuildGroup(GetFPSData(data.Select(d => d.CustId))).ToList();
-
             return data
-                .Select(d => GetTicket(d, groups))
-                .GroupBy(t => t.Group)
-                .OrderByDescending(g => g.Count())
-                .SelectMany(g => g.OrderBy(t => t.Username).ThenBy(t => t.BetId));
+                .Select(d => GetTicket(d))
+                .OrderBy(t => t.Username).ThenBy(t => t.BetId);
         }
 
-        private CheckBetTicket GetTicket(CheckBetHistory history, List<HashSet<int>> groups)
+        private CheckBetTicket GetTicket(CheckBetHistory history)
         {
             var oldTicket = new Ticket
             {
@@ -108,7 +99,6 @@ namespace Fanex.NAP.FS.Library.Services.Implement
                 },
                 Creator = history.Creator,
                 Currency = history.Currency,
-                Group = groups.FindIndex(g => g.Contains(history.CustId)),
                 Odds = new ViewModels.History<string>
                 {
                     New = $"{history.NewOdds.Pick(0).ToString("N2")} ({CachedRef.GetOddsTypeName(history.OddsType)})",
@@ -132,44 +122,6 @@ namespace Fanex.NAP.FS.Library.Services.Implement
                 TransDate = history.TransDate.ToString("MMM dd, yyyy HH:mm:ss"),
                 Username = history.Username
             };
-        }
-
-        private IEnumerable<HashSet<int>> BuildGroup(IEnumerable<IEnumerable<int>> sets)
-        {
-            var groups = new List<HashSet<int>>();
-
-            if (sets.Any())
-            {
-                groups.Add(new HashSet<int>(sets.First()));
-
-                foreach (var set in sets.Skip(1))
-                {
-                    var newGroup = new HashSet<int>(set);
-
-                    foreach (var g in groups.Where(g => set.Intersect(g).Any()))
-                    {
-                        newGroup.UnionWith(g);
-                        g.Clear();
-                    }
-
-                    groups.RemoveAll(g => g.Count == 0);
-                    groups.Add(newGroup);
-                }
-            }
-
-            return groups;
-        }
-
-        private IEnumerable<IEnumerable<int>> GetFPSData(IEnumerable<int> data)
-        {
-            var fpsData = ApiHelper.Post<string, IEnumerable<CustomerAssociation>>(
-                    AppSettings.Get("FPS_WEBAPI_GET_ASSOCIATION_ACCOUNT"),
-                    data.Join(), //new CustomerList { CustIdList = data.Join() },
-                    int.Parse(ConfigurationManager.AppSettings["Environment"]),
-                    int.Parse(ConfigurationManager.AppSettings["MailingListId"])
-                ).Result;
-
-            return data.GroupJoin(fpsData, d => d, d => d.FromCustId, (key, g) => g.Select(d => d.ToCustId).Concat(new[] { key }));
         }
 
         public void Dispose()
