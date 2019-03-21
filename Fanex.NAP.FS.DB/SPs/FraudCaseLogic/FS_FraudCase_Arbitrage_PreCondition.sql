@@ -13,7 +13,9 @@ AS
 	Revisions: 
 		- 20180815@LONG: Implement PreCondition for Arbitrage fraud case
 		- 20180926@LONG: Remove redundant fraud tickets
-		- 20190320@Casey.Huynh: Enhance Performance, define PRIMARY KEY in table [110060]
+		- 20190312@Casey.Huynh: Enhance Performance, define PRIMARY KEY in table [110060]
+		- 20190314@Casey.Huynh: Implement, scan for completed Match [110566]
+
 	Param's Explanation (filtered by):  
 	
 */
@@ -24,57 +26,8 @@ BEGIN
 	DECLARE @CurrentTime DATETIME;
 	
 	SET @CurrentTime = GETDATE();
-	
-	---================SCANNING MATCH=========================
-		IF OBJECT_ID('tempdb..#tmpScanMatches') IS NOT NULL
-	BEGIN
-		DROP TABLE	#tmpScanMatches;
-	END
 
-	CREATE TABLE #tmpScanMatches
-	(
-		MatchId			INT	NOT	NULL PRIMARY KEY CLUSTERED
-		, IsMatchCompleted	BIT
-	);
-	--======================================
-
-	IF OBJECT_ID('tempdb..#tmpMatchRunning') IS NOT NULL
-	BEGIN
-		DROP TABLE	#tmpMatchRunning;
-	END
-
-	CREATE TABLE #tmpMatchRunning
-	(
-		MatchId			INT	NOT	NULL PRIMARY KEY CLUSTERED
-	);
-
-	---======================================================
-		IF OBJECT_ID('tempdb..#tmpMatchCompleted') IS NOT NULL
-	BEGIN
-		DROP TABLE	#tmpMatchCompleted;
-	END
-
-	CREATE TABLE #tmpMatchCompleted
-	(
-		MatchId			INT	NOT	NULL PRIMARY KEY CLUSTERED
-	);
-	
-	---=======================================================
-	IF OBJECT_ID('tempdb..#tmpMatchMaxTransId') IS NOT NULL
-	BEGIN
-		DROP TABLE	#tmpMatchMaxTransId;
-	END
-
-	CREATE TABLE #tmpMatchMaxTransId
-	(
-			MatchId				INT	NOT	NULL PRIMARY KEY CLUSTERED
-		,	MaxTransId			BIGINT
-		,   MaxLiveHomeScore	INT
-		,	MaxLiveAwayScore	INT
-		,	IsMatchCompleted	BIT
-	);
-	---===========================================================
-		IF OBJECT_ID('tempdb..#tmpCustomerList') IS NOT NULL
+	IF OBJECT_ID('tempdb..#tmpCustomerList') IS NOT NULL
 	BEGIN
 		DROP TABLE	#tmpCustomerList;
 	END
@@ -82,131 +35,116 @@ BEGIN
 	CREATE TABLE #tmpCustomerList
 	(
 			MatchId				INT	NOT	NULL
-		,	Bettype				INT	NOT	NULL
-		,	Handicap			SMALLMONEY NOT	NULL
 		,   LiveHomeScore		INT	NOT	NULL
 		,	LiveAwayScore		INT	NOT	NULL
+		,	Bettype				INT	NOT	NULL
+		,	Handicap			SMALLMONEY NOT	NULL		
 		,	CustId				INT	NOT	NULL
 		,	PRIMARY KEY CLUSTERED (
 			MatchId			ASC
-			, Bettype		ASC
-			, Handicap		ASC
 			, LiveHomeScore	ASC
 			, LiveAwayScore	ASC
+			, Bettype		ASC
+			, Handicap		ASC			
 			, CustId		ASC
 			)
-	);
-	--============================================================
-	--- GET Match Completed that has not Completed Scanning
-	INSERT INTO #tmpScanMatches(MatchId, IsMatchCompleted)
-	SELECT	m.matchid
-			, 1 AS IsMatchCompleted
-	FROM	bodb02.dbo.Match AS m WITH(NOLOCK)
-			INNER JOIN dbo.ArbitrageMatchScanning AS ams WITH (NOLOCK) ON m.matchid = ams.MatchId
-	WHERE ams.IsScanCompleted = 0
-			AND m.eventstatus = 'Completed';
+	);	
+
+	IF OBJECT_ID('tempdb..#tmpCompletedMatch') IS NOT NULL
+	BEGIN
+		DROP TABLE	#tmpCompletedMatch;
+	END
+
+	CREATE TABLE #tmpCompletedMatch
+	(
+			MatchId	INT	NOT	NULL PRIMARY KEY CLUSTERED
+	);	
+	--======UPDATE Match Complete Status
+	UPDATE		ams
+	SET			ams.IsMatchCompleted = 1, ams.CapturedDate = @CurrentTime
+	FROM		dbo.ArbitrageMatchScanning	ams WITH(ROWLOCK)
+	INNER JOIN	bodb02.dbo.match m WITH(NOLOCK)
+				ON	ams.MatchId = m.matchid
+	WHERE		m.eventstatus = 'Completed'
+				AND ams.IsMatchCompleted = 0;
+
+	--==INSERT:	NEW MATCH
+	INSERT INTO dbo.ArbitrageMatchScanning(MatchId, IsMatchCompleted, IsScanCompleted, CapturedDate)
+	SELECT		m.Matchid
+				, (CASE WHEN m.eventstatus = 'Completed' THEN 1 ELSE 0 END) AS IsMatchCompleted
+				, 0 AS IsScanCompleted
+				, @CurrentTime AS CapturedDate				
+	FROM		bodb02.dbo.League l WITH(NOLOCK)
+	INNER JOIN	bodb02.dbo.match m WITH(NOLOCK)
+				ON l.leagueid = m.leagueid
+	LEFT JOIN	dbo.ArbitrageMatchScanning a WITH(NOLOCK)
+				ON a.MatchId = m.matchid
+	WHERE		m.sporttype	= 1
+				AND (m.eventstatus = 'Running' OR m.eventstatus = 'Completed')
+				AND m.MatchCode	NOT LIKE '%hedge%'
+				AND m.kickofftime <= @CurrentTime	
+				AND l.isTest = 0
+				AND a.MatchId IS NULL;
+
+	--==2. INSERT:	Customer List that has not scanned completed by (MatchId, TotalScore, Bettype, Handicap, Custid)
+	INSERT INTO #tmpCustomerList(MatchId, LiveHomeScore, LiveAwayScore, Bettype, Handicap, CustId)
+	SELECT		b.MatchId
+				, b.LiveHomeScore
+				, b.LiveAwayScore
+				, b.Bettype
+				, b.hdp1 - b.hdp2 AS Handicap				
+				, b.CustId
+	FROM		bodb02.dbo.bettrans b WITH(NOLOCK)
+	INNER JOIN	dbo.ArbitrageMatchScanning m WITH(NOLOCK)
+				ON	b.matchid = m.matchid
+	LEFT JOIN	dbo.ArbitrageMatchScoreHDP sh WITH(NOLOCK)
+				ON	b.matchid = sh.MatchId
+				AND b.livehomescore + b.LiveAwayScore = sh.TotalScores
+				AND b.bettype = sh.BetType
+				AND b.hdp1 + b.hdp2 = sh.Handicap
+				AND sh.HasScanned = 1
+	WHERE		m.IsScanCompleted = 0  --Match not yet Scanned Completed							
+				AND b.bettype IN (1, 3, 7, 8)
+				AND b.Currency NOT IN (20, 27, 28)
+				AND	sh.MatchId IS NULL -- HDC IS NOT SCANNED				
+	GROUP BY	b.MatchId, b.livehomescore, b.liveawayscore, b.betType, b.hdp1, b.hdp2, b.CustId;
+
+	--==3. UPDATE: COMPLETED MATCHED IF MATCH.EVENTSTATUS IS COMPLETED AND ALL BETTYPE (1,3,5,7,8) IS SCANNED
+
+	UPDATE		sh
+	SET			sh.HasScanned = 1, sh.UpdatedDate = @CurrentTime
+	FROM		dbo.ArbitrageMatchScoreHDP sh WITH(ROWLOCK)
+	INNER JOIN	dbo.ArbitrageMatchScanning m WITH(ROWLOCK)
+				ON sh.MatchId = m.MatchId
+	LEFT JOIN	(	SELECT	DISTINCT MatchId
+					FROM	#tmpCustomerList c	WITH(NOLOCK)
+				) sm 
+				ON	m.MatchId = sm.MatchId
+	WHERE		m.IsMatchCompleted = 1
+				AND m.IsScanCompleted = 0
+				AND sm.MatchId IS NULL
+				AND	sh.HasScanned = 0;	
 	
-	-- GET Match Running
-	INSERT INTO #tmpScanMatches(MatchId, IsMatchCompleted)
-	SELECT	m.matchid
-			, 0 AS IsMatchCompleted
-	FROM	bodb02.dbo.Match AS m WITH(NOLOCK)
-			INNER JOIN bodb02.dbo.league AS l WITH (NOLOCK) ON m.leagueid = l.leagueid
-	WHERE	m.sporttype			= 1
-			AND m.eventstatus	= 'Running'
-			AND	m.MatchCode		NOT LIKE '%hedge%'
-			AND m.kickofftime <= @CurrentTime	
-			AND l.isTest = 0;
-	
-		--- GET Current MaxTransId
-	INSERT INTO #tmpMatchMaxTransId(MatchId, IsMatchCompleted, MaxTransId, MaxLiveHomeScore, MaxLiveAwayScore)	
-	SELECT	m.MatchID
-			, m.IsMatchCompleted
-			, MAX(b.TransId)		AS MaxTransId
-			, MAX(b.Livehomescore)	AS MaxLiveHomeScore
-			, MAX(b.LiveawayScore)	AS MaxLiveAwayScore
-	FROM	#tmpScanMatches AS m WITH(NOLOCK)
-			INNER JOIN bodb02.dbo.bettrans AS b WITH(NOLOCK)ON m.MatchId = b.matchid
-	GROUP BY m.matchid, m.IsMatchCompleted;	
-	
-	---Insert New Match to ArbitrageGoalMatchScanning: LastScannedTransId default = 0 
-	INSERT INTO dbo.ArbitrageMatchScanning (Matchid, MaxTransId, LiveHomeScore, LiveAwayScore, CapturedDate, IsScanCompleted, IsMatchCompleted)	
-	SELECT	mr.matchid	AS MatchId
-		,	0 AS MaxTransid
-		,	mr.MaxLiveHomeScore 
-		,	mr.MaxLiveAwayScore
-		,	CapturedDate	= GETDATE()
-		,	IsScanCompleted	= 0
-		,	mr.IsMatchCompleted
-	FROM #tmpMatchMaxTransId AS mr WITH(NOLOCK)
-		LEFT JOIN dbo.ArbitrageMatchScanning AS ms WITH(NOLOCK)ON mr.matchid = ms.matchid
-	WHERE ms.Matchid IS NULL;	
-	
-	--- GET CUSTID Has not been Scanned
-	INSERT INTO #tmpCustomerList(MatchId, Bettype, Handicap, LiveHomeScore, LiveAwayScore, CustId)
-	SELECT  DISTINCT MatchId = b.MatchId		
-		,	BetType = b.bettype
-		,	Handicap = (b.hdp1 - b.hdp2)
-		,	LiveHomeScore = b.livehomescore
-		,	LiveAwayScore = b.liveawayscore
-		,	CustId = b.custid
-	FROM	bodb02.dbo.bettrans AS b WITH (NOLOCK) 
-			INNER JOIN dbo.ArbitrageMatchScanning AS a WITH (NOLOCK) ON b.matchid = a.matchid
-	WHERE	b.transid > a.MaxTransId
-			AND b.bettype IN (1, 3, 7, 8)
-			AND b.Currency NOT IN (20, 27, 28)
-			AND a.IsScanCompleted = 0
-	GROUP BY b.matchid, b.BetType, b.hdp1,b.hdp2, b.livehomescore,b.liveawayscore, b.custid;	
-	
-	----- RETURN CUSTOMER LIST
-	SELECT MatchId
-			, Bettype
-			, Handicap
-			, LiveHomeScore
-			, LiveAwayScore
-			, CustId
-	FROM	#tmpCustomerList WITH (NOLOCK)
-	ORDER BY MatchId, Bettype, Handicap, LiveHomeScore, LiveAwayScore, CustId;
-	
-	
-	---- NEW ArbitrageMatchScoreHDP
-	INSERT INTO ArbitrageMatchScoreHDP (MatchId, BetType, Handicap, TotalScores, HasScanned, UpdatedDate)
-	SELECT		cl.MatchId
-				, cl.BetType
-				, cl.Handicap
-				, (cl.LiveAwayScore+cl.LiveHomeScore) AS TotalScores
-				, 0 AS HasScanned
-				, @CurrentTime AS UpdatedDate
-	FROM		#tmpCustomerList AS cl WITH (NOLOCK)
-				LEFT JOIN ArbitrageMatchScoreHDP AS ams WITH (NOLOCK) 
-					ON cl.MatchId = ams.MatchId AND cl.Bettype = ams.BetType AND cl.Handicap = ams.Handicap AND (cl.LiveAwayScore+cl.LiveHomeScore) = ams.TotalScores
-	WHERE		ams.MatchId IS NULL
-	GROUP BY	cl.MatchId, cl.Bettype, cl.Handicap, cl.LiveHomeScore, cl.LiveAwayScore;
-	
-	------UPDATE ArbitrageMatchScoreHDP
-	UPDATE	ams
-	SET		ams.HasScanned = 1
-	FROM	dbo.ArbitrageMatchScoreHDP AS ams WITH (NOLOCK)
-					INNER JOIN #tmpCustomerList AS cl WITH (NOLOCK)
-						ON cl.MatchId = ams.MatchId AND (cl.LiveAwayScore+cl.LiveHomeScore) > ams.TotalScores
-			WHERE	ams.HasScanned = 0;
-	
-	UPDATE	ams
-	SET		ams.HasScanned = 1
-	FROM	dbo.ArbitrageMatchScoreHDP AS ams WITH (NOLOCK)
-					INNER JOIN #tmpMatchMaxTransId AS cl WITH (NOLOCK) ON cl.MatchId = ams.MatchId
-			WHERE	ams.HasScanned = 0
-					AND cl.IsMatchCompleted = 1;
-	
-	------UPDATE MaxTransId for Matches
-	UPDATE	am
-	SET		am.maxTransId = mm.MaxTransId
-			, am.LiveHomeScore = mm.MaxLiveHomeScore
-			, am.LiveAwayScore = mm.MaxLiveAwayScore
-			, am.IsScanCompleted = mm.IsMatchCompleted
-			, am.IsMatchCompleted = mm.IsMatchCompleted
-	FROM	dbo.ArbitrageMatchScanning AS am WITH (ROWLOCK)
-				INNER JOIN #tmpMatchMaxTransId  AS mm WITH (NOLOCK) ON am.matchid = mm.matchid;		
+	UPDATE		ams
+	SET			ams.IsScanCompleted = 1, ams.CapturedDate = @CurrentTime
+	FROM		dbo.ArbitrageMatchScanning ams WITH(ROWLOCK)
+	LEFT JOIN	(	SELECT	DISTINCT MatchId
+					FROM	#tmpCustomerList c	WITH(NOLOCK)
+				) sm 
+				ON	ams.MatchId = sm.MatchId
+	WHERE		ams.IsMatchCompleted = 1
+				AND ams.IsScanCompleted = 0
+				AND sm.MatchId IS NULL;
+					
+	--==4. RETURN Scanning GROUP BY (MATCH, LiveHomeScore, LiveAwayScore, Bettype, Handicap, CustId)
+	SELECT		MatchId
+				, LiveHomeScore
+				, LiveAwayScore
+				, Bettype
+				, Handicap
+				, CustId
+	FROM		#tmpCustomerList c WITH(NOLOCK);
 END;
+
 GO
-/*<info serverAlias="DBFS-bodb_FraudSensor" executers="bodbSPUNet" isFunction="0" isNested="0"></info>*/
+/*<info serverAlias="DBFS-bodb_FraudSensor" executers="bodbSPUNet" isFunction="0" isNested="0"></info>*/	
