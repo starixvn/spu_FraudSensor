@@ -7,36 +7,81 @@ using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.ServiceProcess;
 using System.Threading.Tasks;
 
 namespace Fanex.NAP.FS.BigStakeNearGoalService
 {
-    public partial class Runner : MicroServiceBase
+    public partial class Runner : ServiceBase
     {
         static string serviceName = "Big Stake Near Goal Service";
+        static string projectName = "Fraud Sensor Service";
 
         static Service.BigStakeNearGoalService bigStakeNearGoalService;
+        private IEnumerable<Match> _matches;
+        private readonly List<Task> _threads;
+        private MicroService baseService;
 
-        public Runner() : base(serviceName, FraudCaseId.BSNG)
+        public Runner()
         {
             _matches = new List<Match>();
             _threads = new List<Task>();
             bigStakeNearGoalService = new Service.BigStakeNearGoalService();
+            baseService = new MicroService(serviceName, FraudCaseId.BSNG);
 
             InitializeComponent();
         }
 
-        protected override void Precondition()
+        protected override void OnStart(string[] args)
+        {
+            baseService.Start(OnTimedEvent);
+        }
+
+        protected override void OnStop()
+        {
+            baseService.Hold();
+        }
+
+        private void OnTimedEvent(Object source, System.Timers.ElapsedEventArgs e)
+        {
+            var exception = string.Empty;
+            var status = true;
+
+            try
+            {
+#if DEBUG
+                            Console.WriteLine("-> Fraud Case is executing at " + DateTime.Now);
+#endif
+                CleanResult();
+                Precondition();
+                Rule();
+
+#if DEBUG
+                            Console.WriteLine("=> Fraud Case is executed at " + DateTime.Now);
+#endif
+            }
+            catch (Exception ex)
+            {
+                exception = ex.Message;
+                status = false;
+
+                LogService.Critical($"{projectName} - {serviceName} - Handle Action Executing - Exception: {ex.Message}");
+            }
+
+            Report(status, exception);
+        }
+
+        void Precondition()
         {
             _matches = bigStakeNearGoalService.PreCondition();            
         }
 
-        protected override void Rule()
+        void Rule()
         {
             ExecuteBySaparatedThreads();            
         }
 
-        protected override void CleanResult()
+        void CleanResult()
         {           
             if (_matches != null && _matches.Any())
             {
@@ -45,21 +90,9 @@ namespace Fanex.NAP.FS.BigStakeNearGoalService
             }
         }
 
-        protected override void Report(bool status, string exception)
+        void Report(bool status, string exception)
         {
-            var client = new RestClient(AppSetting.HeartBeatUrl);
-            var request = new RestRequest("/api/HealthCheck/beat", Method.POST);
-
-            request.AddQueryParameter("serviceName", serviceName);
-            request.AddQueryParameter("status", status.ToString());
-            request.AddQueryParameter("exception", exception);
-
-            var result = client.Execute(request);
-
-            if (!result.IsSuccessful)
-            {
-                LogService.Error(result.ErrorMessage);
-            }
+            baseService.Report(status, exception);
         }
 
         private Task ExecuteSingle(Match match)
@@ -76,7 +109,7 @@ namespace Fanex.NAP.FS.BigStakeNearGoalService
                 {
                     var error = "<b>Error:</b> " + exception.Message +
                               "<br><b>StackTrace:</b> " + exception.StackTrace;
-                    var message = string.Format("<b>Problem with FraudCaseId = {0}, FraudCaseName = {1}, MatchId = {2}</b><br><br>", _fraudCase.FraudCaseId, _fraudCase.FraudCaseName, match.MatchId) + error;
+                    var message = string.Format("<b>Problem with FraudCaseId = {0}, FraudCaseName = {1}, MatchId = {2}</b><br><br>", baseService.FraudCase.FraudCaseId, baseService.FraudCase.FraudCaseName, match.MatchId) + error;
 
                     LogService.Error(message);
                 }

@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{11ACA009-BE55-49AA-8993-88F38EC50A9E}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
     <RootNamespace>Fanex.NAP.FS.ArbitrageService</RootNamespace>
     <AssemblyName>Fanex.NAP.FS.ArbitrageService</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>

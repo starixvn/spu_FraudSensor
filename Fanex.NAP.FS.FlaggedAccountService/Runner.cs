@@ -13,11 +13,12 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Linq;
+using System.ServiceProcess;
 using System.Threading.Tasks;
 
 namespace Fanex.NAP.FS.FlaggedAccountService
 {
-    public partial class Runner : MicroServiceBase
+    public partial class Runner : ServiceBase
     {
         private const int ChunkSize = 100;
         protected readonly Service.FlaggedAccountService flaggedAccountService;
@@ -25,12 +26,18 @@ namespace Fanex.NAP.FS.FlaggedAccountService
         private readonly string FPS_WEBAPI_GET_CUSTOMER_EVIDENCE = AppSetting.CustomerEvidenceApi;
 
         static string serviceName = "Flagged Account Service";
+        static string projectName = "Fraud Sensor Service";
 
-        public Runner() : base(serviceName, FraudCaseId.FlaggedAccount)
+        private IEnumerable<Match> _matches;
+        private readonly List<Task> _threads;
+        private MicroService baseService;
+
+        public Runner()
         {
             _matches = new List<Match>();
             _threads = new List<Task>();
             _flaggedCustomers = new List<FlaggedCustomer>();
+            baseService = new MicroService(serviceName, FraudCaseId.FlaggedAccount);
 
             var param = new CustomerEvidenceList
             {
@@ -55,38 +62,61 @@ namespace Fanex.NAP.FS.FlaggedAccountService
             InitializeComponent();
         }
 
-        protected override void Report(bool status, string exception)
+        protected override void OnStart(string[] args)
         {
-            var client = new RestClient(AppSetting.HeartBeatUrl);
-            var request = new RestRequest("/api/HealthCheck/beat", Method.POST);
-
-            request.AddQueryParameter("serviceName", serviceName);
-            request.AddQueryParameter("status", status.ToString());
-            request.AddQueryParameter("exception", exception);
-
-            var result = client.Execute(request);
-
-            if (!result.IsSuccessful)
-            {
-                LogService.Error(result.ErrorMessage);
-            }
+            baseService.Start(OnTimedEvent);
         }
 
-        protected override void CleanResult()
+        protected override void OnStop()
         {
-            if (_matches != null && _matches.Any())
-            {
-                _matches = Enumerable.Empty<Match>();
-                _threads.Clear();
-            }
+            baseService.Hold();
         }
 
-        protected override void Precondition()
+        private void OnTimedEvent(Object source, System.Timers.ElapsedEventArgs e)
+        {
+            var exception = string.Empty;
+            var status = true;
+
+            try
+            {
+#if DEBUG
+                            Console.WriteLine("-> Fraud Case is executing at " + DateTime.Now);
+#endif
+                CleanResult();
+                Precondition();
+                Rule();
+
+#if DEBUG
+                            Console.WriteLine("=> Fraud Case is executed at " + DateTime.Now);
+#endif
+            }
+            catch (Exception ex)
+            {
+                exception = ex.Message;
+                status = false;
+
+                LogService.Critical($"{projectName} - {serviceName} - Handle Action Executing - Exception: {ex.Message}");
+            }
+
+            Report(status, exception);
+        }
+
+        void Report(bool status, string exception)
+        {
+            baseService.Report(status, exception);
+        }
+
+        void CleanResult()
+        {
+            baseService.Clean(_matches, _threads);
+        }
+
+        void Precondition()
         {
             _matches = flaggedAccountService.ExecutePrecondition();
         }
 
-        protected override void Rule()
+        void Rule()
         {
             ExecuteBySaparatedThreads();
         }

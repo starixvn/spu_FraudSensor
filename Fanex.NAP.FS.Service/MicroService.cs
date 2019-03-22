@@ -12,33 +12,34 @@ using System.Threading.Tasks;
 using System.Timers;
 using System.Linq;
 using System.Net.Http;
+using RestSharp;
 
 namespace Fanex.NAP.FS.Service
 {
-    public class MicroServiceBase : ServiceBase
+    public class MicroService
     {
         private static Queue.EasyNetQ _rabbitMQ;
         private static Timer _timer;
         private static string _serviceName;
         private static string _queueName;
+        protected FraudCase _fraudCase;       
 
-        protected FraudCase _fraudCase;
-        protected IEnumerable<Match> _matches;
-        protected List<Task> _threads;
+        private readonly string projectName = "Fraud Sensor Service";
 
-        private string projectName = "Fraud Sensor Service";
+        public FraudCase FraudCase
+        {
+            get {
+                return _fraudCase;
+            }
+        }
 
-        public MicroServiceBase(string serviceName, FraudCaseId fraudCaseId)
+        public MicroService(string serviceName, FraudCaseId fraudCaseId)
         {
             _rabbitMQ = new Queue.EasyNetQ(AppSetting.Host + ":" + AppSetting.Post,
                AppSetting.VirtualHost,
                AppSetting.PrefetchCount,
                AppSetting.UserName,
-               AppSetting.Password);                    
-            
-            _timer = new Timer();
-            _timer.Elapsed += OnTimedEvent;
-            _timer.AutoReset = true;
+               AppSetting.Password);                               
 
             _queueName = Enum.GetName(typeof(FraudCaseId), fraudCaseId);
             _serviceName = serviceName;
@@ -51,13 +52,13 @@ namespace Fanex.NAP.FS.Service
                .Bind();
         }
 
-        protected override void OnStart(string[] args)
+        public void Start(ElapsedEventHandler onTimedEvent)
         {
 #if DEBUG
             Console.WriteLine($"-> {_serviceName} is starting...");
 #endif
             if (!string.IsNullOrWhiteSpace(_queueName))
-            {             
+            {
                 try
                 {
                     GetMessage(MessageHandler);
@@ -71,14 +72,44 @@ namespace Fanex.NAP.FS.Service
             {
                 LogService.Error($"{projectName} - {_serviceName} - Exception: {_queueName} is empty.");
             }
+
+            _timer = new Timer();
+            _timer.Elapsed += onTimedEvent;
+            _timer.AutoReset = true;
         }
 
-        protected override void OnStop()
+        public void Hold()
         {
             _rabbitMQ.Dispose();
             _timer.Dispose();
 
             LogService.Info($"{_serviceName} is stopped. Please contact with Admin.");
+        }
+          
+        public void Clean(IEnumerable<Match> matches, List<Task> threads)
+        {
+            if (matches != null && matches.Any())
+            {
+                matches = Enumerable.Empty<Match>();
+                threads.Clear();
+            }
+        }
+
+        public void Report(bool status, string exception)
+        {
+            var client = new RestClient(AppSetting.HeartBeatUrl);
+            var request = new RestRequest("/api/HealthCheck/beat", Method.POST);
+
+            request.AddQueryParameter("serviceName", _serviceName);
+            request.AddQueryParameter("status", status.ToString());
+            request.AddQueryParameter("exception", exception);
+
+            var result = client.Execute(request);
+
+            if (!result.IsSuccessful)
+            {
+                LogService.Error(result.ErrorMessage);
+            }
         }
 
         private void GetMessage(Action<FraudCaseMessage> handler)
@@ -167,8 +198,7 @@ namespace Fanex.NAP.FS.Service
 #if DEBUG
                         Console.WriteLine("-> Delete action is executing...");
 #endif
-                        _timer.Stop();
-                        CleanResult();
+                        _timer.Stop();                        
 
                         break;
                     }
@@ -178,45 +208,5 @@ namespace Fanex.NAP.FS.Service
                     }
             }
         }
-
-        private void OnTimedEvent(Object source, System.Timers.ElapsedEventArgs e)
-        {
-            var exception = string.Empty;
-            var status = true;
-
-            try
-            {
-#if DEBUG
-                Console.WriteLine("-> Fraud Case is executing at " + DateTime.Now);
-#endif
-                CleanResult();
-                Precondition();
-                Rule();
-                NextAction();
-
-#if DEBUG
-                Console.WriteLine("=> Fraud Case is executed at " + DateTime.Now);
-#endif
-            }
-            catch (Exception ex)
-            {
-                exception = ex.Message;
-                status = false;
-
-                LogService.Critical($"{projectName} - {_serviceName} - Handle Action Executing - Exception: {ex.Message}");
-            }
-
-            Report(status, exception);            
-        }
-
-        protected virtual void Report(bool status, string exception) { }          
-
-        protected virtual void Precondition() { }
-
-        protected virtual void Rule() { }
-
-        protected virtual void NextAction() { }
-
-        protected virtual void CleanResult() { }
     }
 }
