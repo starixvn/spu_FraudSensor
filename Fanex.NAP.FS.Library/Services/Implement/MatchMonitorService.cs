@@ -24,6 +24,11 @@
                     var fraudCases = query.Read<Library.Models.MatchMonitor.FraudCase>();
                     var matches = query.Read<Library.Models.MatchMonitor.Match>();
 
+                    foreach(var item in fraudCases)
+                    {
+                        item.SuspiciousTicketsCount = item.SuspiciousTicketsCount == null ? 0 : item.SuspiciousTicketsCount;
+                    }
+
                     return new MatchList
                     {
                         Matches =
