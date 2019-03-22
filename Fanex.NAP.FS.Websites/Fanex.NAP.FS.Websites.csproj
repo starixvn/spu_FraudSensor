@@ -53,6 +53,10 @@
       <HintPath>..\packages\Dapper.1.50.2\lib\net45\Dapper.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="EasyNetQ, Version=3.4.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\EasyNetQ.3.4.5\lib\net451\EasyNetQ.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Enyim.Caching, Version=2.12.0.0, Culture=neutral, PublicKeyToken=81137140da4e57ef, processorArchitecture=MSIL">
       <HintPath>..\packages\Fanex.Caching.1.0.404.95\lib\net40\Enyim.Caching.dll</HintPath>
     </Reference>
@@ -102,6 +106,10 @@
       <HintPath>..\packages\MessagePack.1.7.3.4\lib\net45\MessagePack.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Diagnostics.Tracing.EventSource, Version=1.1.28.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Diagnostics.Tracing.EventSource.Redist.1.1.28\lib\net46\Microsoft.Diagnostics.Tracing.EventSource.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.Practices.EnterpriseLibrary.Caching, Version=5.0.414.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\EnterpriseLibrary.Caching.5.0.414.0\lib\net40\Microsoft.Practices.EnterpriseLibrary.Caching.dll</HintPath>
     </Reference>
@@ -142,6 +150,10 @@
     </Reference>
     <Reference Include="ONEbook.UM, Version=2.0.2.9, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ONEbook.UM.2.0.2.9\lib\net40\ONEbook.UM.dll</HintPath>
+    </Reference>
+    <Reference Include="RabbitMQ.Client, Version=5.0.0.0, Culture=neutral, PublicKeyToken=89e7d7c5feba84ce, processorArchitecture=MSIL">
+      <HintPath>..\packages\RabbitMQ.Client.5.1.0\lib\net451\RabbitMQ.Client.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="RemotingRef, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\RemotingRef.2.0.0.17\lib\net40\RemotingRef.dll</HintPath>
@@ -1018,6 +1030,14 @@
     <ProjectReference Include="..\Fanex.NAP.FS.Library\Fanex.NAP.FS.Library.csproj">
       <Project>{2d6f84f8-e9b5-49ec-b487-05b44e994dcc}</Project>
       <Name>Fanex.NAP.FS.Library</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Fanex.NAP.FS.Model\Fanex.NAP.FS.Model.csproj">
+      <Project>{5CE0BA40-0A37-4C89-A33B-D61C7944BE08}</Project>
+      <Name>Fanex.NAP.FS.Model</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Fanex.NAP.FS.Queue\Fanex.NAP.FS.Queue.csproj">
+      <Project>{FEFFED8A-7E97-4B9A-BAED-06EF734FC456}</Project>
+      <Name>Fanex.NAP.FS.Queue</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

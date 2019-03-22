@@ -8,12 +8,10 @@
     using Fanex.NAP.FS.Library.Models;
     using Fanex.NAP.FS.Library.Services.Implement;
     using Fanex.NAP.FS.Library.Services.Interface;
-    using Library.Core.BaseClasses;
-    using Library.Core.BaseClasses.RabbitMQ;
+    using Queue;
     using Library.Core.Helpers.Xml;
     using Library.Criteria.FraudCase.DelayedGoal;
     using Library.DTO;
-    using Library.RabbitMQ;
     using Library.Services;
     using System;
     using System.Collections.Generic;
@@ -21,6 +19,8 @@
     using System.Linq;
     using System.Web.Mvc;
     using ViewModels.FraudCase;
+    using Model;
+    using EasyNetQ;
 
     [NapAuth(FunctionKey = FSFunctionKeys.FraudCase, Policy = Core.Business.Constant.Policy.Read)]
     public class FraudCaseController : ConfigurationsController
@@ -30,7 +30,7 @@
         private readonly IFraudCaseService _fraudCaseService;
         private readonly IOfficeIPService _ipService;
         private readonly INotificationRecipientService _recipientService = new NotificationRecipientService();
-        private readonly EasyNetQService _rabbitMQService = new EasyNetQService();
+        private static EasyNetQ _rabbitMQ;
 
         public FraudCaseController()
         {
@@ -69,12 +69,27 @@
             _fraudCaseService.ChangeFraudCaseStatus((FraudCaseId)fraudCaseId, CurrentSession.UserId);
             if (fraudCaseId == (int)FraudCaseId.BSNG || fraudCaseId == (int)FraudCaseId.Arbitrage || fraudCaseId == (int)FraudCaseId.FlaggedAccount)
             {
-                var data = new FraudCaseStatus
+                var fraudCaseName = Enum.GetName(typeof(FraudCaseId), fraudCaseId);
+                if (!string.IsNullOrWhiteSpace(fraudCaseName))
                 {
-                    FraudCase = (FraudCaseId)fraudCaseId,
-                    SendingType = isActive ? SendingType.Activating : SendingType.Deactivating
-                };
-                _rabbitMQService.Enqueue(data);
+                    _rabbitMQ
+                        .DeclareQueue(fraudCaseName)
+                        .DeclareRoutingKey(fraudCaseName)
+                        .Bind();
+
+                    if (!string.IsNullOrWhiteSpace(_rabbitMQ.QueueName))
+                    {
+                        var message = new Message<FraudCaseMessage>(new FraudCaseMessage
+                        {
+                            Action = isActive ? Model.Action.Activating : Model.Action.Deactivating,
+                            Id = fraudCaseId,
+                            Name = fraudCaseName,
+                            Message = "Message is sent at" + DateTime.Now
+                        }, new MessageProperties { DeliveryMode = 2, Priority = 9 });
+
+                        _rabbitMQ.AdvanceBus.PublishAsync(_rabbitMQ.Exchange, _rabbitMQ.RoutingKey, false, message);
+                    }
+                }
             }
             else
             {

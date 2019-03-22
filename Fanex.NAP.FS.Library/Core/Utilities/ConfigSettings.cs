@@ -53,20 +53,9 @@
             return ConfigurationManager.AppSettings["RabbitMQ-Port"];
         }
 
-        public static string RabbitMQ_Queue()
-        {
-            return ConfigurationManager.AppSettings["RabbitMQ-Queue"];
-        }
-
-
         public static string RabbitMQ_Exchange()
         {
             return ConfigurationManager.AppSettings["RabbitMQ-Exchange"];
-        }
-
-        public static string RabbitMQ_RoutingKey()
-        {
-            return ConfigurationManager.AppSettings["RabbitMQ-RoutingKey"];
         }
     }
 }

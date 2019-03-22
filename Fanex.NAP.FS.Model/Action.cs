@@ -15,6 +15,8 @@ namespace Fanex.NAP.FS.Model
         Get,
         Post,
         HealthCheck,
-        Reply
+        Reply,
+        Deactivating,
+        Activating
     }
 }
