@@ -21,6 +21,7 @@
     using ViewModels.FraudCase;
     using Model;
     using EasyNetQ;
+    using Library.Core.Utilities;
 
     [NapAuth(FunctionKey = FSFunctionKeys.FraudCase, Policy = Core.Business.Constant.Policy.Read)]
     public class FraudCaseController : ConfigurationsController
@@ -37,6 +38,16 @@
             _delayGoalAccountService = new DelayGoalAccountService();
             _fraudCaseService = new FraudCaseService();
             _ipService = new OfficeIPService();
+
+            _rabbitMQ = new EasyNetQ(ConfigSettings.RabbitMQ_Host() + ":" + ConfigSettings.RabbitMQ_Port(),
+                ConfigSettings.RabbitMQ_VirtualHost(),
+                Convert.ToInt32(ConfigSettings.RabbitMQ_PrefetchCount()),
+                ConfigSettings.RabbitMQ_Username(),
+                ConfigSettings.RabbitMQ_Password());
+
+            _rabbitMQ
+                .CreateBus()
+                .DeclareExchange(ConfigSettings.RabbitMQ_Exchange());
 
             ViewBag.IsHost = UserService.IsHavingPermission(CurrentSession.UserId, int.Parse(AppSettings.Get("SiteId")), FSFunctionKeys.FraudCase, Core.Business.Constant.Policy.Host);
         }
