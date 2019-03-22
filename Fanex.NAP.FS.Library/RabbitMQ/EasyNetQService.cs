@@ -1,5 +1,7 @@
 ﻿using EasyNetQ;
 using EasyNetQ.Topology;
+using Fanex.NAP.FS.Library.Core.BaseClasses;
+using Fanex.NAP.FS.Library.Core.BaseClasses.RabbitMQ;
 using Fanex.NAP.FS.Library.Core.Utilities;
 using System;
 using System.Collections.Generic;
@@ -31,12 +33,12 @@ namespace Fanex.NAP.FS.Library.RabbitMQ
             _advancedBus.Bind(_receive_exchange, _receive_queue, ConfigSettings.RabbitMQ_RoutingKey());
         }
 
-        public void Enqueue(int data)
+        public void Enqueue(FraudCaseStatus data)
         {
-            var message = new Message<int>(data);
+            var message = new Message<FraudCaseStatus>(data, new MessageProperties { DeliveryMode = 2 });
 
             // set persistent for message
-            //_advancedBus.PublishAsync<int>(_receive_exchange, ConfigSettings.RabbitMQ_RoutingKey(), true, message);
+            _advancedBus.PublishAsync(_receive_exchange, ConfigSettings.RabbitMQ_RoutingKey(), true, message);
         }
     }
 }

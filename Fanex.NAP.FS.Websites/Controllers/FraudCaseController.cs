@@ -8,9 +8,12 @@
     using Fanex.NAP.FS.Library.Models;
     using Fanex.NAP.FS.Library.Services.Implement;
     using Fanex.NAP.FS.Library.Services.Interface;
+    using Library.Core.BaseClasses;
+    using Library.Core.BaseClasses.RabbitMQ;
     using Library.Core.Helpers.Xml;
     using Library.Criteria.FraudCase.DelayedGoal;
     using Library.DTO;
+    using Library.RabbitMQ;
     using Library.Services;
     using System;
     using System.Collections.Generic;
@@ -23,14 +26,11 @@
     public class FraudCaseController : ConfigurationsController
     {
         private readonly string FPS_WEBAPI_GET_ASSOCIATION_ACCOUNT = ConfigurationManager.AppSettings["FPS_WEBAPI_GET_ASSOCIATION_ACCOUNT"];
-
         private readonly IDelayGoalAccountService _delayGoalAccountService;
-
         private readonly IFraudCaseService _fraudCaseService;
-
         private readonly IOfficeIPService _ipService;
-
         private readonly INotificationRecipientService _recipientService = new NotificationRecipientService();
+        private readonly EasyNetQService _rabbitMQService = new EasyNetQService();
 
         public FraudCaseController()
         {
@@ -67,10 +67,14 @@
         public ActionResult ChangeCaseStatus(int fraudCaseId, bool isActive)
         {
             _fraudCaseService.ChangeFraudCaseStatus((FraudCaseId)fraudCaseId, CurrentSession.UserId);
-            if (fraudCaseId == 1)
+            if (fraudCaseId == (int)FraudCaseId.BSNG || fraudCaseId == (int)FraudCaseId.Arbitrage || fraudCaseId == (int)FraudCaseId.FlaggedAccount)
             {
-                //send to rabbitmq
-                var abc = string.Empty;
+                var data = new FraudCaseStatus
+                {
+                    FraudCase = (FraudCaseId)fraudCaseId,
+                    SendingType = isActive ? SendingType.Activating : SendingType.Deactivating
+                };
+                _rabbitMQService.Enqueue(data);
             }
             else
             {

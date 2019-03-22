@@ -204,6 +204,7 @@
     <Compile Include="Core\BaseClasses\CachedRef.cs" />
     <Compile Include="Core\BaseClasses\DataService.cs" />
     <Compile Include="Core\BaseClasses\FraudCaseAttribute.cs" />
+    <Compile Include="Core\BaseClasses\RabbitMQ\FraudCaseStatus.cs" />
     <Compile Include="Core\ExportExcel\ExcelUtilities.cs" />
     <Compile Include="Core\ExportExcel\FSExcelConfig.cs" />
     <Compile Include="Core\ExportExcel\ExcelStream.cs" />
