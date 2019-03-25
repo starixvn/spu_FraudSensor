@@ -106,7 +106,8 @@
 
     function showResponse(data){
         if (data.ErrorCode != 0) {
-            common.showError(data.ErrorMsg);
+            var msg = data.ErrorMsg !== null ? data.ErrorMsg : ("Error code: " + data.ErrorCode);
+            common.showError(msg);
         } else {
             common.showSuccess();
             internal_account_table.DataTable().ajax.reload();

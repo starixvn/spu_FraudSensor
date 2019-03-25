@@ -81,18 +81,18 @@ namespace Fanex.NAP.FS.Library.Core.Resources {
         /// <summary>
         ///   Looks up a localized string similar to User name already existed.
         /// </summary>
-        internal static string FraudCase_OfficeIPInternalAccount_1401 {
+        internal static string FraudCase_OfficeIPInternalAccount_2201 {
             get {
-                return ResourceManager.GetString("FraudCase_OfficeIPInternalAccount_1401", resourceCulture);
+                return ResourceManager.GetString("FraudCase_OfficeIPInternalAccount_2201", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Member doesn&apos;t exits.
+        ///   Looks up a localized string similar to User name doesn&apos;t exits.
         /// </summary>
-        internal static string FraudCase_OfficeIPInternalAccount_1402 {
+        internal static string FraudCase_OfficeIPInternalAccount_2202 {
             get {
-                return ResourceManager.GetString("FraudCase_OfficeIPInternalAccount_1402", resourceCulture);
+                return ResourceManager.GetString("FraudCase_OfficeIPInternalAccount_2202", resourceCulture);
             }
         }
     }
