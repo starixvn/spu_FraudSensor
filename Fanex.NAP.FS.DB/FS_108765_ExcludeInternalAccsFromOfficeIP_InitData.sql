@@ -1,6 +1,6 @@
 /*
 Creator: 20190321@Long
-Task:    Exclude Internal Accounts from Office IP [Redmine ID: 108765]
+Task:    Exclude Internal Accounts from Office IP [Redmine ID: 107865]
 Server:  bodb_FraudSensor
 
 Reviewer: Billy

@@ -18,7 +18,7 @@ AS
 		- 20190219@Long.Luu:	Store more info (Currency & Username) for table SuspiciousCutomers [Redmine ID: 107858]
 		- 20190319@Casey.Huynh: Enhance Performance table #tmpFraudTickets [110060]
 		- 20190320@Casey.Huynh: Enhance Performance, define PRIMARY KEY in table [110060]
-		- 20190322@Long.Luu:	Exclude Internal Accounts from Office IP Scanning [Redmine ID: 108765]
+		- 20190322@Long.Luu:	Exclude Internal Accounts from Office IP Scanning [Redmine ID: 107865]
 
 	Param's Explanation (filtered by):
 
