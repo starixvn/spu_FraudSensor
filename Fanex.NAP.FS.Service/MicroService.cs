@@ -123,6 +123,9 @@ namespace Fanex.NAP.FS.Service
 
             if (!result.IsSuccessful)
             {
+#if DEBUG
+                System.Console.WriteLine($"Report error: {result.ErrorMessage}" );
+#endif
                 LogService.Error(result.ErrorMessage);
             }
         }
