@@ -208,5 +208,3 @@ BEGIN
 	FROM	dbo.ArbitrageMatchScanning AS am WITH (ROWLOCK)
 				INNER JOIN #tmpMatchMaxTransId  AS mm WITH (NOLOCK) ON am.matchid = mm.matchid;		
 END;
-GO
-/*<info serverAlias="DBFS-bodb_FraudSensor" executers="bodbSPUNet" isFunction="0" isNested="0"></info>*/
