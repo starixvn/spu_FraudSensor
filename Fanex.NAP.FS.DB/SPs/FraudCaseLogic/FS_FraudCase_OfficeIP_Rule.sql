@@ -140,7 +140,7 @@ BEGIN
 	INSERT INTO #tmpBettype(Bettype)
 	SELECT DISTINCT Bettype FROM bodb02.dbo.SportBettypeMatrix  AS sm WITH(NOLOCK) WHERE sm.ProductID = 1;	
 
-	--===4. INSERT DATE TO #tmpFraudTickets
+	--===4. INSERT DATE TO #tmpFraudTicketsRaw
 	INSERT INTO #tmpFraudTicketsRaw(CustId, Username, CurrencyId, CurrencyName, MatchId, TransId, EventDate, ARecommend, MRecommend, SRecommend)
 	SELECT	b.custid
 		,	b.Username
@@ -168,7 +168,7 @@ BEGIN
 		,	t.TransId
 		,	t.EventDate
 	FROM	#tmpFraudTicketsRaw AS t WITH (NOLOCK)
-		LEFT JOIN dbo.OfficeIPInternalAccount AS a WITH(NOLOCK) ON (t.ARecommend = a.CustId OR t.MRecommend = a.CustId OR t.SRecommend = a.CustId)
+		LEFT JOIN dbo.OfficeIPInternalAccount AS a WITH(NOLOCK) ON (t.ARecommend = a.CustId OR t.MRecommend = a.CustId OR t.SRecommend = a.CustId OR t.CustId = a.CustId)
 	WHERE	a.CustId IS NULL;	
 	
 	--===5. INSERT SCANNED MATCH: TABLE "ScannedMatch" (ScannedDate, SuspiciousTicketsCount)===========		
