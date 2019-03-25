@@ -21,6 +21,7 @@ namespace Fanex.NAP.FS.Service
         private static Queue.EasyNetQ _rabbitMQ;
         private static Timer _timer;
         private static string _serviceName;
+        private static int _fraudCaseId;
         private static string _queueName;
         protected FraudCase _fraudCase;       
 
@@ -42,6 +43,7 @@ namespace Fanex.NAP.FS.Service
                AppSetting.Password);                               
 
             _queueName = Enum.GetName(typeof(FraudCaseId), fraudCaseId);
+            _fraudCaseId = Convert.ToInt32(fraudCaseId);
             _serviceName = serviceName;
 
             _rabbitMQ
@@ -57,11 +59,28 @@ namespace Fanex.NAP.FS.Service
 #if DEBUG
             Console.WriteLine($"-> {_serviceName} is starting...");
 #endif
+            _timer = new Timer();
+            _timer.Elapsed += onTimedEvent;
+            _timer.AutoReset = true;
+
             if (!string.IsNullOrWhiteSpace(_queueName))
             {
                 try
                 {
-                    GetMessage(MessageHandler);
+                   var fraudCaseMessage = GetMessage(MessageHandler);
+
+                    if(fraudCaseMessage == null)
+                    {
+                        var fraudCase = GetFraudCase(_fraudCaseId);
+
+                        MessageHandler(new FraudCaseMessage {
+                            Action = Model.Action.Add,
+                            Id = fraudCase.FraudCaseId,
+                            Name = fraudCase.FraudCaseName,
+                            Message = "Add message",
+                            ServiceName = _serviceName                            
+                        });
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -71,11 +90,7 @@ namespace Fanex.NAP.FS.Service
             else
             {
                 LogService.Error($"{projectName} - {_serviceName} - Exception: {_queueName} is empty.");
-            }
-
-            _timer = new Timer();
-            _timer.Elapsed += onTimedEvent;
-            _timer.AutoReset = true;
+            }           
         }
 
         public void Hold()
@@ -112,14 +127,19 @@ namespace Fanex.NAP.FS.Service
             }
         }
 
-        private void GetMessage(Action<FraudCaseMessage> handler)
+        private FraudCaseMessage GetMessage(Action<FraudCaseMessage> handler)
         {
             Console.WriteLine($"{_serviceName} is listening....");
 
+            FraudCaseMessage fraudCaseMessage = null;
+
             _rabbitMQ.AdvanceBus.Consume(_rabbitMQ.Queue, x => x.Add<FraudCaseMessage>((message, info) =>
             {
-                handler(message.Body);
+                fraudCaseMessage = message.Body;
+                handler(fraudCaseMessage);
             }));
+
+            return fraudCaseMessage;
         }
 
         private void MessageHandler(FraudCaseMessage message)
@@ -168,15 +188,10 @@ namespace Fanex.NAP.FS.Service
 #endif
                         _fraudCase = GetFraudCase(fraudCaseMessage.Id);
 
-                        if (_timer.Enabled)
-                        {
-                            _timer.Stop();
+                        if (!_timer.Enabled)
+                        {                           
                             _timer.Start();
-                        }
-                        else
-                        {
-                            _timer.Start();
-                        }
+                        }                        
 
                         break;
                     }
