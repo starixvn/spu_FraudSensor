@@ -55,8 +55,8 @@ namespace Fanex.NAP.FS.ArbitrageService
                             Console.WriteLine("-> Fraud Case is executing at " + DateTime.Now);
 #endif
                 CleanResult();
-                Precondition();
-                Rule();
+               // Precondition();
+              //  Rule();
 
 #if DEBUG
                             Console.WriteLine("=> Fraud Case is executed at " + DateTime.Now);
