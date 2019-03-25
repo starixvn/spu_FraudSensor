@@ -54,12 +54,12 @@ BEGIN
 	
 	
 	--#tmpFraudTickets: Store Fraud Ticket
-	IF OBJECT_ID('tempdb..#tmpFraudTicketsRaw') IS NOT NULL
+	IF OBJECT_ID('tempdb..#tmpFraudTickets') IS NOT NULL
 	BEGIN
-		DROP TABLE	#tmpFraudTicketsRaw;
+		DROP TABLE	#tmpFraudTickets;
 	END;
 
-	CREATE TABLE #tmpFraudTicketsRaw
+	CREATE TABLE #tmpFraudTickets
 	(
 			CustId				INT NOT NULL
 		, 	MatchId				INT NOT NULL
@@ -78,33 +78,11 @@ BEGIN
 		)
 	);
 
-	CREATE NONCLUSTERED INDEX	#NIX_tmpFraudTicketsRaw_Recommend ON #tmpFraudTicketsRaw (
+	CREATE NONCLUSTERED INDEX	#NIX_tmpFraudTickets_Recommend ON #tmpFraudTickets (
 			ARecommend			ASC
 		,	MRecommend			ASC
 		,	SRecommend			ASC
 	);
-
-	IF OBJECT_ID('tempdb..#tmpFraudTickets') IS NOT NULL
-	BEGIN
-		DROP TABLE	#tmpFraudTickets;
-	END;
-
-	CREATE TABLE #tmpFraudTickets
-	(
-			CustId				INT NOT NULL
-		, 	MatchId				INT NOT NULL
-		, 	TransId				BIGINT NOT NULL		
-		,	Username			NVARCHAR(50)
-		,	CurrencyId			TINYINT
-		,	CurrencyName		NVARCHAR(50)		
-		, 	EventDate			DATE NULL
-		,	PRIMARY KEY CLUSTERED (
-				CustId				ASC
-			,	MatchId				ASC
-			,	TransId				ASC
-		)
-	);
-
 
 	IF OBJECT_ID('tempdb..#tmpFraudTicketsCustInfo') IS NOT NULL
 	BEGIN
@@ -116,15 +94,6 @@ BEGIN
 		,	Username			NVARCHAR(50)
 		,	CurrencyId			TINYINT
 		,	CurrencyName		NVARCHAR(50)
-	);
-
-	IF OBJECT_ID('tempdb..#tmpInternalMemberAccounts') IS NOT NULL
-	BEGIN
-		DROP TABLE	#tmpInternalMemberAccounts;
-	END
-	
-	CREATE TABLE #tmpInternalMemberAccounts(
-			CustId				INT NOT NULL PRIMARY KEY CLUSTERED
 	);
 
 	--===2. INSERT DATA TO #tmpMatchInput===========
@@ -140,8 +109,8 @@ BEGIN
 	INSERT INTO #tmpBettype(Bettype)
 	SELECT DISTINCT Bettype FROM bodb02.dbo.SportBettypeMatrix  AS sm WITH(NOLOCK) WHERE sm.ProductID = 1;	
 
-	--===4. INSERT DATE TO #tmpFraudTicketsRaw
-	INSERT INTO #tmpFraudTicketsRaw(CustId, Username, CurrencyId, CurrencyName, MatchId, TransId, EventDate, ARecommend, MRecommend, SRecommend)
+	--===4. INSERT DATE TO #tmpFraudTickets
+	INSERT INTO #tmpFraudTickets(CustId, Username, CurrencyId, CurrencyName, MatchId, TransId, EventDate, ARecommend, MRecommend, SRecommend)
 	SELECT	b.custid
 		,	b.Username
 		,	b.currency
@@ -159,18 +128,9 @@ BEGIN
 	WHERE	b.currency NOT IN (20, 27, 28);
 
 	--===4-plus. REMOVE INTERNAL ACCOUNT FROM #tmpFraudTickets
-	INSERT INTO #tmpFraudTickets(CustId, Username, CurrencyId, CurrencyName, MatchId, TransId, EventDate)
-	SELECT	t.CustId
-		,	t.Username
-		,	t.CurrencyId
-		,	t.CurrencyName
-		,	t.MatchId
-		,	t.TransId
-		,	t.EventDate
-	FROM	#tmpFraudTicketsRaw AS t WITH (NOLOCK)
-		LEFT JOIN dbo.OfficeIPInternalAccount AS a WITH(NOLOCK) ON (t.ARecommend = a.CustId OR t.MRecommend = a.CustId OR t.SRecommend = a.CustId OR t.CustId = a.CustId)
-	WHERE	a.CustId IS NULL;	
-	
+	DELETE tr FROM #tmpFraudTickets AS tr
+			INNER JOIN dbo.OfficeIPInternalAccount AS a WITH(NOLOCK) ON (tr.ARecommend = a.CustId OR tr.MRecommend = a.CustId OR tr.SRecommend = a.CustId OR tr.CustId = a.CustId)
+
 	--===5. INSERT SCANNED MATCH: TABLE "ScannedMatch" (ScannedDate, SuspiciousTicketsCount)===========		
 	INSERT INTO dbo.ScannedMatch (Matchid, FraudCaseId, ScannedDate, SuspiciousTicketsCount) 
 	SELECT [MatchId] = mi.matchid 
