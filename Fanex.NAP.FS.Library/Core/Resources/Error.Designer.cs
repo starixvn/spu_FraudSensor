@@ -19,7 +19,7 @@ namespace Fanex.NAP.FS.Library.Core.Resources {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Error {
@@ -75,6 +75,24 @@ namespace Fanex.NAP.FS.Library.Core.Resources {
         internal static string FraudCase_DelayedGoal_4001 {
             get {
                 return ResourceManager.GetString("FraudCase_DelayedGoal_4001", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User name already existed.
+        /// </summary>
+        internal static string FraudCase_OfficeIPInternalAccount_1401 {
+            get {
+                return ResourceManager.GetString("FraudCase_OfficeIPInternalAccount_1401", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Member doesn&apos;t exits.
+        /// </summary>
+        internal static string FraudCase_OfficeIPInternalAccount_1402 {
+            get {
+                return ResourceManager.GetString("FraudCase_OfficeIPInternalAccount_1402", resourceCulture);
             }
         }
     }

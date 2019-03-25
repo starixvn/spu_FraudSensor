@@ -11,5 +11,11 @@
         DBResult AddIpRange(string fromIp, string toIp, int userId);
 
         DBResult DeleteIpRange(string fromIp, string toIp, int userId);
+
+        IEnumerable<OfficeIPInternalAccount> GetInternalAccounts();
+
+        DBResult AddInternalAccount(string userName, int userId);
+
+        DBResult DeleteInternalAccount(int custId, int userId);
     }
 }

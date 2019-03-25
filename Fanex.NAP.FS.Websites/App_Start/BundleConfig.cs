@@ -79,6 +79,8 @@
 
             bundles.Add(new ScriptBundle("~/fraud-case-scripts/scanned-office-ip").Include("~/scripts/fraudcase/scanned-office-ip.js"));
 
+            bundles.Add(new ScriptBundle("~/fraud-case-scripts/scanned-office-account").Include("~/scripts/fraudcase/scanned-office-account.js")); 
+
             bundles.Add(new ScriptBundle("~/fraud-case-scripts/daily-data-capture").Include("~/scripts/fraudcase/daily-data-capture.js"));
         }
 
