@@ -90,7 +90,7 @@
         }
 
         if (username != null && username.length != 0) {
-            var url = common.modifyRelativeUrl("FraudCase/AddInternalAccount");
+            var url = common.modifyRelativeUrl("/FraudCase/AddInternalAccount");
 
             common.showLoading();
             $.post({
