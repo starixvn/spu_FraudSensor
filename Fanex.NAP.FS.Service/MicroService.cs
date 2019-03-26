@@ -44,7 +44,7 @@ namespace Fanex.NAP.FS.Service
                AppSetting.Password);
 
             var fraudCaseService = new FraudCaseService();
-            var fraudCase = fraudCaseService.GetByFraudCaseId((int)fraudCaseId);
+            var fraudCase = fraudCaseService.GetByFraudCaseId((int)fraudCaseId, AppSetting.Environment);
 
             _queueName = Enum.GetName(typeof(FraudCaseId), fraudCaseId);
             _fraudCaseId = Convert.ToInt32(fraudCaseId);
