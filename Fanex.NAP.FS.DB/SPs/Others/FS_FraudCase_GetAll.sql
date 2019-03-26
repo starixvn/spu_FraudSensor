@@ -1,13 +1,7 @@
-USE [bodb_FraudSensor]
-GO
-SET ANSI_NULLS ON;
-GO
-SET QUOTED_IDENTIFIER ON;
-GO
 ALTER PROCEDURE [dbo].[FS_FraudCase_GetAll]
-	@IsInternal BIT = NULL
-	, @IsActive BIT	= NULL	
-	, @Environment INT	= 3
+		@IsInternal		BIT = NULL
+	,	@IsActive		BIT	= NULL	
+	,	@Environment	INT	= 3
 AS
 /*
 	Created: 20180306@Aaron
@@ -19,6 +13,7 @@ AS
 	Revisions: 
 	 + 20180414@Casey: Add parameters @IsInternal, @IsActive, @IsTest
 	 + 20180605@CaseyHuynh: Update @IsInternal Default Value is NULL
+	 + 20190326@Long.Luu:	Manage for query fraud cases on variety environments [Redmine ID: #109592]
 
 	Param's Explanation (filtered by):
 	 + @IsInternal: NULL-All, 0-NotInternal, 1-Internal
@@ -34,13 +29,14 @@ BEGIN
 		,	fc.IsActive
 		,	fc.IsTest
 	FROM	dbo.FraudCase fc WITH (NOLOCK)
-	WHERE	fc.IsInternal = ISNULL(@IsInternal,fc.IsInternal)
-			AND fc.IsActive = ISNULL(@IsActive,fc.IsActive)
-			AND fc.IsTest = (CASE WHEN @Environment = 3 THEN 0 ELSE fc.IsTest END)
+	WHERE	fc.IsInternal = ISNULL(@IsInternal, fc.IsInternal)
+			AND fc.IsActive = ISNULL(@IsActive, fc.IsActive)
+			AND fc.IsTest = (	CASE WHEN @Environment = 3 THEN 0 
+									WHEN @Environment = 2 THEN 1
+									ELSE fc.IsTest 
+								END)
 	ORDER BY FraudCaseId;
 END;
-GO 
- GRANT EXECUTE ON [dbo].[FS_FraudCase_GetAll] TO [bodbSPUNet]
-GO 
- GRANT VIEW DEFINITION ON [dbo].[FS_FraudCase_GetAll] TO [bodbSPUNet]
-GO 
+
+GO
+/*<info serverAlias="DBFS-bodb_FraudSensor" executers="bodbSPUNet" isFunction="0" isNested="0"></info>*/
