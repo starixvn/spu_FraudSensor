@@ -95,7 +95,7 @@ namespace Fanex.NAP.FS.FlaggedAccountService
                 exception = ex.Message;
                 status = false;
 
-                LogService.Critical($"{projectName} - {serviceName} - Handle Action Executing - Exception: {ex.Message}");
+                LogService.Critical($"{projectName} - {serviceName} - OnTimedEvent Exception: {ex.Message}");
             }
 
             Report(status, exception);

@@ -65,7 +65,7 @@ namespace Fanex.NAP.FS.ArbitrageService
                 exception = ex.Message;
                 status = false;
 
-                LogService.Critical($"{projectName} - {serviceName} - Handle Action Executing - Exception: {ex.Message}");
+                LogService.Critical($"{projectName} - {serviceName} - OnTimedEvent Exception: {ex.Message}");
             }
 
             Report(status, exception);
@@ -90,7 +90,7 @@ namespace Fanex.NAP.FS.ArbitrageService
             }
             catch (Exception ex)
             {
-                LogService.Error($"{projectName} - {serviceName} - Cannot get Group Customer from Web API - Exception: {ex.Message}");
+                LogService.Error($"{projectName} - {serviceName} - GroupCustomer Exception: Cannot get Group Customer from Web API - Exception: {ex.Message}");
 
                 return Enumerable.Empty<ArbitrageCustomer>();
             }
@@ -104,14 +104,21 @@ namespace Fanex.NAP.FS.ArbitrageService
         void Precondition()
         {
             tickets = arbitrageService.PreCondition();
+
+#if DEBUG
+            Console.WriteLine("=> Pre-Condition is executing at " + DateTime.Now + ". Ticket counter: " + tickets.Count());
+#endif
         }
 
         void Rule()
         {
             XmlHelper.RegisterType<ArbitrageTicket>();
             XmlHelper.RegisterType<ArbitrageCustomer>();
-
-            foreach (var g in tickets.GroupBy(t => t.MatchId))
+            var ticketGroupBy = tickets.GroupBy(t => t.MatchId);
+#if DEBUG
+            Console.WriteLine("=> Rule is executing at " + DateTime.Now + ". Ticket Group By counter: " + ticketGroupBy.Count());
+#endif
+            foreach (var g in ticketGroupBy)
             {
                 GroupData(g.Key, g);
             }

@@ -89,12 +89,12 @@ namespace Fanex.NAP.FS.Service
                 }
                 catch (Exception ex)
                 {
-                    LogService.Error($"{projectName} - {_serviceName} - Exception: {ex.Message}");
+                    LogService.Error($"{projectName} - {_serviceName} - Start Exception: {ex.Message}");
                 }
             }
             else
             {
-                LogService.Error($"{projectName} - {_serviceName} - Exception: {_queueName} is empty.");
+                LogService.Error($"{projectName} - {_serviceName} - Start Exception: {_queueName} is empty.");
             }           
         }
 
@@ -125,14 +125,21 @@ namespace Fanex.NAP.FS.Service
             request.AddQueryParameter("exception", exception);
             request.AddQueryParameter("timeout", _fraudcaseInterval.ToString());
 
-            var result = client.Execute(request);
-
-            if (!result.IsSuccessful)
+            try
             {
+                var result = client.Execute(request);
+
+                if (!result.IsSuccessful)
+                {
 #if DEBUG
-                System.Console.WriteLine($"Report error: {result.ErrorMessage}" );
+                    System.Console.WriteLine($"Report error: {result.ErrorMessage}");
 #endif
-                LogService.Error(result.ErrorMessage);
+                    LogService.Error(result.ErrorMessage);
+                }
+            }
+            catch (Exception ex)
+            {
+                LogService.Error($"{projectName} - {_serviceName} - Report Exeption:{ex.Message}");
             }
         }
 
@@ -159,7 +166,7 @@ namespace Fanex.NAP.FS.Service
             }
             catch (Exception ex)
             {
-                LogService.Error($"{projectName} - {_serviceName} - Exception: {ex.Message}");
+                LogService.Error($"{projectName} - {_serviceName} - MessageHandler Exception: {ex.Message}");
             }           
         }
         
@@ -179,7 +186,7 @@ namespace Fanex.NAP.FS.Service
             }
             else
             {
-                LogService.Error($"{_serviceName} cannot load Fraud Case from DB with ID= { fraudCaseId }. Please contact with Admin.");
+                LogService.Error($"{projectName} - {_serviceName} - GetFraudCase Exception: Cannot load Fraud Case from DB with ID= { fraudCaseId }");                
             }
 
             return null;

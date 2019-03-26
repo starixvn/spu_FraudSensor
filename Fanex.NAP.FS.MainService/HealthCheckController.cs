@@ -26,9 +26,9 @@ namespace Fanex.NAP.FS.MainService
                 {
                     string message = $"Service name: {serviceName} - Status: {status} - Exception: {exception}";
 #if DEBUG
-                        System.Console.WriteLine(message);
+                    System.Console.WriteLine(message);
 #endif
-                        LogService.Error(message);
+                    LogService.Error(message);
                 }
 
                 Thread.Sleep((timeout + 5) * 1000);
@@ -36,10 +36,16 @@ namespace Fanex.NAP.FS.MainService
                 var errorMessage = $"Health check - Service name: {serviceName} - Do not receive heart beat in " + timeout + " seconds";
                 LogService.Error(errorMessage);
 
-            });
-            thread.Name = serviceName;
+            })
+            {
+                Name = serviceName
+            };
             thread.Start();
             threadsMonitor.Add(thread);
+
+#if DEBUG
+            System.Console.WriteLine($"{serviceName} is reported already.");
+#endif
         }
 
         [HttpGet]
