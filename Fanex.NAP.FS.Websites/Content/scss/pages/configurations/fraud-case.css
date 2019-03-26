@@ -245,3 +245,7 @@
   left: 4px;
   height: 4px;
   width: 7px; }
+
+.internal-account-list {
+    display:none;
+}
