@@ -40,9 +40,14 @@ namespace Fanex.NAP.FS.MainService
             {
                 GetFraudCase();
 
-                var baseAddress = string.Format("http://{0}:{1}", GetLocalIPAddress(), AppSetting.HeartBeatPort);
+                var localIp = GetLocalIPAddress();
 
-                _server = WebApp.Start<Startup>(url: baseAddress);
+                var startOptions = new StartOptions();
+                startOptions.Urls.Add(string.Format("http://{0}:{1}", localIp, AppSetting.HeartBeatPort));
+                startOptions.Urls.Add(string.Format("http://{0}:{1}", "localhost", AppSetting.HeartBeatPort));
+                startOptions.Urls.Add(string.Format("http://{0}:{1}", "127.0.0.1", AppSetting.HeartBeatPort));
+       
+                _server = WebApp.Start<Startup>(startOptions);
 
                 LogService.Info($"{projectName} - Main service is started.");
             }
