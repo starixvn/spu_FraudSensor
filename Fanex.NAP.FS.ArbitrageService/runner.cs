@@ -1,10 +1,16 @@
 ﻿using Fanex.Logging;
+using Fanex.NAP.FS.Core;
+using Fanex.NAP.FS.Library.Core.Helpers.Api;
+using Fanex.NAP.FS.Library.Core.Helpers.Xml;
 using Fanex.NAP.FS.Library.Models;
 using Fanex.NAP.FS.Library.Models.FraudCaseTask;
+using Fanex.NAP.FS.Library.Core.Utilities;
 using Fanex.NAP.FS.Service;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.ServiceProcess;
+using System.Threading.Tasks;
 
 namespace Fanex.NAP.FS.ArbitrageService
 {
@@ -47,8 +53,8 @@ namespace Fanex.NAP.FS.ArbitrageService
                 Console.WriteLine("-> Fraud Case is executing at " + DateTime.Now);
 #endif
                 CleanResult();
-                // Precondition();
-                //  Rule();
+                Precondition();
+                Rule();
 
 #if DEBUG
                 Console.WriteLine("=> Fraud Case is executed at " + DateTime.Now);
@@ -65,30 +71,30 @@ namespace Fanex.NAP.FS.ArbitrageService
             Report(status, exception);
         }
 
-        //private void GroupData(int matchId, IEnumerable<ArbitrageTicket> tickets)
-        //{
-        //    var tsk = tickets.Select(t => t.CustId).Distinct().Chunk(500).Select(GroupCustomer).ToArray();
+        private void GroupData(int matchId, IEnumerable<ArbitrageTicket> tickets)
+        {
+            var tsk = tickets.Select(t => t.CustId).Distinct().Chunk(500).Select(GroupCustomer).ToArray();
 
-        //    Task.WaitAll(tsk);
+            Task.WaitAll(tsk);
 
-        //    var customers = tsk.SelectMany(t => t.Result);
+            var customers = tsk.SelectMany(t => t.Result);
 
-        //    arbitrageService.Rule(tickets.ToXmlString(), customers.ToXmlString());
-        //}
+            arbitrageService.Rule(tickets.ToXmlString(), customers.ToXmlString());
+        }
 
-        //private async Task<IEnumerable<ArbitrageCustomer>> GroupCustomer(IEnumerable<int> custids)
-        //{
-        //    try
-        //    {
-        //        return await ApiHelper.Post<IEnumerable<ArbitrageCustomer>>(AppSetting.GroupCustomerPath, custids);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        LogService.Error($"{projectName} - {serviceName} - Cannot get Group Customer from Web API - Exception: {ex.Message}");
+        private async Task<IEnumerable<ArbitrageCustomer>> GroupCustomer(IEnumerable<int> custids)
+        {
+            try
+            {
+                return await ApiHelper.Post<IEnumerable<ArbitrageCustomer>>(AppSetting.GroupCustomerPath, custids);
+            }
+            catch (Exception ex)
+            {
+                LogService.Error($"{projectName} - {serviceName} - Cannot get Group Customer from Web API - Exception: {ex.Message}");
 
-        //        return Enumerable.Empty<ArbitrageCustomer>();
-        //    }
-        //}
+                return Enumerable.Empty<ArbitrageCustomer>();
+            }
+        }
 
         void Report(bool status, string exception)
         {
@@ -100,16 +106,16 @@ namespace Fanex.NAP.FS.ArbitrageService
             tickets = arbitrageService.PreCondition();
         }
 
-        //void Rule()
-        //{
-        //    XmlHelper.RegisterType<ArbitrageTicket>();
-        //    XmlHelper.RegisterType<ArbitrageCustomer>();
+        void Rule()
+        {
+            XmlHelper.RegisterType<ArbitrageTicket>();
+            XmlHelper.RegisterType<ArbitrageCustomer>();
 
-        //    foreach (var g in tickets.GroupBy(t => t.MatchId))
-        //    {
-        //        GroupData(g.Key, g);
-        //    }
-        //}
+            foreach (var g in tickets.GroupBy(t => t.MatchId))
+            {
+                GroupData(g.Key, g);
+            }
+        }
 
         void CleanResult()
         {
