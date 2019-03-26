@@ -7,7 +7,7 @@ Reviewer: Billy
 */ 
 
 INSERT INTO dbo.LogType (LogTypeId, LogTypeName, LogTypeDesc)
-VALUES(20, 'Insert Office IP Internal Accounts', 'Insert Office IP Internal Accounts');
+VALUES(22, 'Insert Office IP Internal Accounts', 'Insert Office IP Internal Accounts');
 
 INSERT INTO dbo.LogType (LogTypeId, LogTypeName, LogTypeDesc)
-VALUES(21, 'Update Office IP Internal Accounts', 'Update Office IP Internal Accounts');
+VALUES(23, 'Update Office IP Internal Accounts', 'Update Office IP Internal Accounts');

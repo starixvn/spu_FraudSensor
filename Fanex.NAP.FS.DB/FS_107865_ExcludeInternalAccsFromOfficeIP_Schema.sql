@@ -7,11 +7,11 @@ Reviewer: Billy
 */ 
 
 CREATE TABLE [dbo].[OfficeIPInternalAccount](
-	[CustId]		[int] NOT NULL,
-	[RoleId]		[tinyint] NOT NULL,
-	[CreatedBy]		[int] NULL,
-	[CreatedDate]	[datetime] NULL,
-	[IsActive]		[bit] NULL,
+	[CustId]		INT NOT NULL,
+	[RoleId]		TINYINT NOT NULL,
+	[CreatedBy]		INT NULL,
+	[CreatedDate]	DATETIME NULL,
+	[IsActive]		BIT NULL,
  CONSTRAINT [PK_OfficeIPInternalAccount] PRIMARY KEY CLUSTERED 
 (
 	[CustId] ASC
