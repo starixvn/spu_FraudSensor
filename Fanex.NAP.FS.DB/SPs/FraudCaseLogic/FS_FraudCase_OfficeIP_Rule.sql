@@ -130,6 +130,7 @@ BEGIN
 	--===4-plus. REMOVE INTERNAL ACCOUNT FROM #tmpFraudTickets
 	DELETE tr FROM #tmpFraudTickets AS tr
 			INNER JOIN dbo.OfficeIPInternalAccount AS a WITH(NOLOCK) ON (tr.ARecommend = a.CustId OR tr.MRecommend = a.CustId OR tr.SRecommend = a.CustId OR tr.CustId = a.CustId)
+			WHERE a.IsActive = 1;
 
 	--===5. INSERT SCANNED MATCH: TABLE "ScannedMatch" (ScannedDate, SuspiciousTicketsCount)===========		
 	INSERT INTO dbo.ScannedMatch (Matchid, FraudCaseId, ScannedDate, SuspiciousTicketsCount) 
