@@ -21,11 +21,12 @@ namespace Fanex.NAP.FS.Service
             }
         }
 
-        public FraudCase GetByFraudCaseId(int fraudCaseId)
+        public FraudCase GetByFraudCaseId(int fraudCaseId, int environment)
         {
             var criteria = new FraudCaseGetByIdCriteria()
             {
-                FraudCaseId = fraudCaseId
+                FraudCaseId = fraudCaseId,
+                Environment = environment
             };
 
             using (var db = new ObjectDb(criteria.GetSettingKey()))

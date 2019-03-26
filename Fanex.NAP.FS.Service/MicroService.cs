@@ -164,7 +164,7 @@ namespace Fanex.NAP.FS.Service
 #endif
             var fraudCaseService = new FraudCaseService();
 
-            var fraudCase = fraudCaseService.GetByFraudCaseId(fraudCaseId);
+            var fraudCase = fraudCaseService.GetByFraudCaseId(fraudCaseId, AppSetting.Environment);
 
             if (fraudCase != null)
             {

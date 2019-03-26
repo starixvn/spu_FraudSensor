@@ -116,14 +116,23 @@ namespace Fanex.NAP.FS.Core
         {
             get
             {
-                return ConfigurationManager.AppSettings["MS-WEBAPI-GROUP-CUSTOMER"];
+                return ConfigurationManager.AppSettings["MS-WebAPI-GroupCustomer"];
             }
         }
+
         public static string CustomerEvidenceApi
         {
             get
             {
-                return ConfigurationManager.AppSettings["FPS-WEBAPI-GET-CUSTOMER-EVIDENCE"];
+                return ConfigurationManager.AppSettings["FPS-WebAPI-Get-CustomerEvidence"];
+            }
+        }
+
+        public static string SentryLogging
+        {
+            get
+            {
+                return ConfigurationManager.AppSettings["Log-SentryLogging-Config"];
             }
         }
     }

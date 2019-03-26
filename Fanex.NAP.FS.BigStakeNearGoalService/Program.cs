@@ -34,7 +34,7 @@ namespace Fanex.NAP.FS.BigStakeNearGoalService
                      {
                          new SentryLogging(new SentryEngineOptions
                          {
-                             Dsn = new Dsn("https://14293c00a15d46cbbd3ef5ca909e160d@sentry.nexdev.net/27")                             
+                             Dsn = new Dsn(AppSetting.SentryLogging)                             
                          })
                      });
 
