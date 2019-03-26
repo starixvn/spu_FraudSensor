@@ -14,14 +14,15 @@ namespace Fanex.NAP.FS.MainService
         public void Beat(string serviceName, bool status, string exception, int timeout)
         {
             var thread = threadsMonitor.Where(t => t.Name == serviceName).FirstOrDefault();
-            if (thread != null)
+             if (thread != null)
             {
                 threadsMonitor.Remove(thread);
                 thread.Abort();
             }
-
+            System.Console.WriteLine("Start FU");
             thread = new Thread(() =>
             {
+                System.Console.WriteLine("FU");
                 if (!status)
                 {
                     string message = $"Service name: {serviceName} - Status: {status} - Exception: {exception}";
@@ -31,9 +32,9 @@ namespace Fanex.NAP.FS.MainService
                         LogService.Error(message);
                 }
 
-                Thread.Sleep((timeout + 5) * 1000);
+                //Thread.Sleep((timeout + 5) * 1000);
 
-                var errorMessage = $"Service name: {serviceName} - Do not receive heart beat in " + timeout + " seconds";
+                var errorMessage = $"Health check - Service name: {serviceName} - Do not receive heart beat in " + timeout + " seconds";
                 LogService.Error(errorMessage);
 
             });
@@ -45,7 +46,7 @@ namespace Fanex.NAP.FS.MainService
         [HttpGet]
         public string Testing()
         {
-            return "I'm here. Everything is ok now.";
+            return "I'm here. Everything is ok now. (Nhìn cái gì!! OK rồi =.=')";
         }
     }
 }

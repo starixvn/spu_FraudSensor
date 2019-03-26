@@ -21,6 +21,7 @@ namespace Fanex.NAP.FS.Service
         private static Queue.EasyNetQ _rabbitMQ;
         private static Timer _timer;
         private static string _serviceName;
+        private static int _fraudcaseInterval;
         private static int _fraudCaseId;
         private static string _queueName;
         protected FraudCase _fraudCase;       
@@ -40,11 +41,15 @@ namespace Fanex.NAP.FS.Service
                AppSetting.VirtualHost,
                AppSetting.PrefetchCount,
                AppSetting.UserName,
-               AppSetting.Password);                               
+               AppSetting.Password);
+
+            var fraudCaseService = new FraudCaseService();
+            var fraudCase = fraudCaseService.GetByFraudCaseId((int)fraudCaseId);
 
             _queueName = Enum.GetName(typeof(FraudCaseId), fraudCaseId);
             _fraudCaseId = Convert.ToInt32(fraudCaseId);
             _serviceName = serviceName;
+            _fraudcaseInterval = fraudCase.FraudCaseInterval;
 
             _rabbitMQ
                .CreateBus()
@@ -118,6 +123,7 @@ namespace Fanex.NAP.FS.Service
             request.AddQueryParameter("serviceName", _serviceName);
             request.AddQueryParameter("status", status.ToString());
             request.AddQueryParameter("exception", exception);
+            request.AddQueryParameter("timeout", _fraudcaseInterval.ToString());
 
             var result = client.Execute(request);
 
@@ -163,7 +169,6 @@ namespace Fanex.NAP.FS.Service
             Console.WriteLine("-> Get fraud case action is executing...");
 #endif
             var fraudCaseService = new FraudCaseService();
-
             var fraudCase = fraudCaseService.GetByFraudCaseId(fraudCaseId, AppSetting.Environment);
 
             if (fraudCase != null)
