@@ -24,7 +24,9 @@ namespace Fanex.NAP.FS.Service
         private static int _fraudcaseInterval;
         private static int _fraudCaseId;
         private static string _queueName;
-        protected FraudCase _fraudCase;       
+
+        protected FraudCase _fraudCase;
+        protected FraudCaseService fraudCaseService;
 
         private readonly string projectName = "Fraud Sensor Service";
 
@@ -37,19 +39,16 @@ namespace Fanex.NAP.FS.Service
 
         public MicroService(string serviceName, FraudCaseId fraudCaseId)
         {
+            fraudCaseService = new FraudCaseService();
             _rabbitMQ = new Queue.EasyNetQ(AppSetting.Host + ":" + AppSetting.Post,
                AppSetting.VirtualHost,
                AppSetting.PrefetchCount,
                AppSetting.UserName,
-               AppSetting.Password);
-
-            var fraudCaseService = new FraudCaseService();
-            var fraudCase = fraudCaseService.GetByFraudCaseId((int)fraudCaseId, AppSetting.Environment);
-
+               AppSetting.Password);                        
+            
             _queueName = Enum.GetName(typeof(FraudCaseId), fraudCaseId);
             _fraudCaseId = Convert.ToInt32(fraudCaseId);
-            _serviceName = serviceName;
-            _fraudcaseInterval = fraudCase.FraudCaseInterval;
+            _serviceName = serviceName;            
 
             _rabbitMQ
                .CreateBus()
@@ -79,7 +78,7 @@ namespace Fanex.NAP.FS.Service
                         var fraudCase = GetFraudCase(_fraudCaseId);
 
                         MessageHandler(new FraudCaseMessage {
-                            Action = Model.Action.Add,
+                            Action = fraudCase.IsActive ? Model.Action.Activating : Model.Action.Deactivating,
                             Id = fraudCase.FraudCaseId,
                             Name = fraudCase.FraudCaseName,
                             Message = "Add message",
@@ -123,7 +122,7 @@ namespace Fanex.NAP.FS.Service
             request.AddQueryParameter("serviceName", _serviceName);
             request.AddQueryParameter("status", status.ToString());
             request.AddQueryParameter("exception", exception);
-            request.AddQueryParameter("timeout", _fraudcaseInterval.ToString());
+            request.AddQueryParameter("timeout", _fraudCase.FraudCaseInterval.ToString());
 
             try
             {
@@ -174,8 +173,7 @@ namespace Fanex.NAP.FS.Service
         {
 #if DEBUG
             Console.WriteLine("-> Get fraud case action is executing...");
-#endif
-            var fraudCaseService = new FraudCaseService();
+#endif            
             var fraudCase = fraudCaseService.GetByFraudCaseId(fraudCaseId, AppSetting.Environment);
 
             if (fraudCase != null)
@@ -183,20 +181,20 @@ namespace Fanex.NAP.FS.Service
                 _timer.Interval = fraudCase.FraudCaseInterval * 1000;
 
                 return fraudCase;
-            }
-            else
-            {
-                LogService.Error($"{projectName} - {_serviceName} - GetFraudCase Exception: Cannot load Fraud Case from DB with ID= { fraudCaseId }");                
-            }
+            }            
 
-            return null;
+            return new FraudCase {
+                FraudCaseInterval = 0,
+                FraudCaseId = 0,
+                IsActive = false                
+            };
         }
 
         private void ActionHandler(FraudCaseMessage fraudCaseMessage)
         {
             switch (fraudCaseMessage.Action)
             {
-                case Model.Action.Add:
+                case Model.Action.Activating:
                     {
 #if DEBUG
                         Console.WriteLine("-> Add action is executing...");
@@ -210,7 +208,7 @@ namespace Fanex.NAP.FS.Service
 
                         break;
                     }
-                case Model.Action.Update:
+                case Model.Action.Updating:
                     {
 #if DEBUG
                         Console.WriteLine("-> Update action is executing...");
@@ -223,7 +221,7 @@ namespace Fanex.NAP.FS.Service
 
                         break;
                     }
-                case Model.Action.Delete:
+                case Model.Action.Deactivating:                
                     {
 #if DEBUG
                         Console.WriteLine("-> Delete action is executing...");

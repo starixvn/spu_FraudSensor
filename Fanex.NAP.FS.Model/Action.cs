@@ -8,15 +8,13 @@ namespace Fanex.NAP.FS.Model
 {
     public enum Action
     {
-        None,
-        Add,
-        Update,
-        Delete,
+        None,       
         Get,
         Post,
         HealthCheck,
         Reply,
         Deactivating,
-        Activating
+        Activating,
+        Updating
     }
 }
