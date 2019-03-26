@@ -22,6 +22,7 @@ AS
 		- 20190316@CaseyHuynh: Enhance Performance, Update SuspiciousCustomer [Redmine ID: 110060]
 		- 20190320@Casey.Huynh: Enhance Performance, define PRIMARY KEY in table [110060]
 		- 20190314@Casey.Huynh: Implement, scan for completed Match [110566]
+		- 20190326@Casey.Huynh: Fix Data NUll [110914]
 	Param's Explanation (filtered by):
 */
 BEGIN
