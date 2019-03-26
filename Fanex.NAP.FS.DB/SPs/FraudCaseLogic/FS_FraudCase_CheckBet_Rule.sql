@@ -22,6 +22,7 @@ AS
 		- 20190109@Long: Remove Unique for temp tables [Redmine ID: #107398]
 		- 20190115@Casey: Remove Trace Data script  [Redmine ID: #107398]
 		- 20190320@Casey.Huynh: Enhance Performance, define PRIMARY KEY in table [110060]
+		- 20190325@Long.Luu: Fix issue with cash out tickets [Redmine ID: #107398]
 
 	Param's Explanation (filtered by):
 */
@@ -120,11 +121,9 @@ BEGIN
 		isValidTP			TINYINT, 
 		isValidOdds			TINYINT, 
 		isValidBetteam		TINYINT
-		PRIMARY KEY CLUSTERED (
-			transid			ASC
-			, bettype		ASC
-		)
 	);
+
+	CREATE CLUSTERED INDEX CIX_tmpCheckBet_TransID_Bettype ON #tmpCheckBet(transid, bettype);
 		
 	IF	OBJECT_ID('tempdb..#tmpChangedInfo') IS NOT NULL
 	BEGIN
