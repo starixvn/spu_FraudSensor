@@ -82,7 +82,7 @@ namespace Fanex.NAP.FS.MainService
                     {
                         var message = new Message<FraudCaseMessage>(new FraudCaseMessage
                         {
-                            Action = Model.Action.Add,
+                            Action = Model.Action.Activating,
                             Id = fraudCase.FraudCaseId,
                             Name = fraudCase.FraudCaseName,
                             Message = "Message is sent at" + DateTime.Now
