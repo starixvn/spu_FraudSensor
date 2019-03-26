@@ -20,8 +20,7 @@ namespace Fanex.NAP.FS.Service
     {
         private static Queue.EasyNetQ _rabbitMQ;
         private static Timer _timer;
-        private static string _serviceName;
-        private static int _fraudcaseInterval;
+        private static string _serviceName;        
         private static int _fraudCaseId;
         private static string _queueName;
 
@@ -77,13 +76,10 @@ namespace Fanex.NAP.FS.Service
                     {
                         var fraudCase = GetFraudCase(_fraudCaseId);
 
-                        MessageHandler(new FraudCaseMessage {
-                            Action = fraudCase.IsActive ? Model.Action.Activating : Model.Action.Deactivating,
-                            Id = fraudCase.FraudCaseId,
-                            Name = fraudCase.FraudCaseName,
-                            Message = "Add message",
-                            ServiceName = _serviceName                            
-                        });
+                        MessageHandler(new FraudCaseMessage
+                        {
+                            Action = fraudCase != null ? Model.Action.Activating : Model.Action.Deactivating,
+                        }); 
                     }
                 }
                 catch (Exception ex)
@@ -144,8 +140,9 @@ namespace Fanex.NAP.FS.Service
 
         private FraudCaseMessage GetMessage(Action<FraudCaseMessage> handler)
         {
+#if DEBUG
             Console.WriteLine($"{_serviceName} is listening....");
-
+#endif
             FraudCaseMessage fraudCaseMessage = null;
 
             _rabbitMQ.AdvanceBus.Consume(_rabbitMQ.Queue, x => x.Add<FraudCaseMessage>((message, info) =>
