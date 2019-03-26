@@ -38,6 +38,7 @@ namespace Fanex.NAP.FS.FlaggedAccountService
             _threads = new List<Task>();
             _flaggedCustomers = new List<FlaggedCustomer>();
             baseService = new MicroService(serviceName, FraudCaseId.FlaggedAccount);
+            flaggedAccountService = new Service.FlaggedAccountService();
 
             var param = new CustomerEvidenceList
             {
