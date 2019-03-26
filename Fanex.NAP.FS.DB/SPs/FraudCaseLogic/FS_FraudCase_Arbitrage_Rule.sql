@@ -355,8 +355,12 @@ BEGIN
 			UPDATE	t
 			SET		t.GroupId = g.MinGroupId
 			FROM	#tmpBettransAssociation t WITH(ROWLOCK)
-					INNER JOIN #tmpIPGroup g WITH(NOLOCK) ON g.MatchId = t.MatchId AND g.TotalScore = t.TotalScore
-								AND g.Handicap = t.Handicap AND g.IP = t.IP
+			INNER JOIN	#tmpIPGroup g WITH(NOLOCK)
+						ON	g.MatchId = t.MatchId
+						AND g.TotalScore = t.TotalScore
+						AND	g.Bettype = t.Bettype
+						AND g.Handicap = t.Handicap
+						AND g.IP = t.IP
 			WHERE	t.Matchid = @Matchid;
 		END;
 
