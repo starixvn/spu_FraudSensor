@@ -181,9 +181,7 @@ namespace Fanex.NAP.FS.Service
                 return fraudCase;
             }            
 
-            return new FraudCase {
-                FraudCaseInterval = 0,
-                FraudCaseId = 0,
+            return new FraudCase {               
                 IsActive = false                
             };
         }
@@ -199,7 +197,7 @@ namespace Fanex.NAP.FS.Service
 #endif
                         _fraudCase = GetFraudCase(fraudCaseMessage.Id);
 
-                        if (!_timer.Enabled)
+                        if (_fraudCase.IsActive && !_timer.Enabled)
                         {                           
                             _timer.Start();
                         }                        
@@ -215,7 +213,10 @@ namespace Fanex.NAP.FS.Service
 
                         _fraudCase = GetFraudCase(fraudCaseMessage.Id);
 
-                        _timer.Start();
+                        if(_fraudCase.IsActive)
+                        { 
+                            _timer.Start();
+                        }
 
                         break;
                     }
@@ -237,7 +238,10 @@ namespace Fanex.NAP.FS.Service
 
                         _fraudCase = GetFraudCase(fraudCaseMessage.Id);
 
-                        _timer.Start();
+                        if (_fraudCase.IsActive)
+                        {
+                            _timer.Start();
+                        }
 
                         break;
                     }

@@ -22,6 +22,7 @@ namespace Fanex.NAP.FS.ArbitrageService
         static Service.ArbitrageService arbitrageService;
         private MicroService baseService;
         private IEnumerable<ArbitrageTicket> tickets;
+        private bool isRunning = false;
 
         public Runner()
         {
@@ -52,10 +53,15 @@ namespace Fanex.NAP.FS.ArbitrageService
 #if DEBUG
                 Console.WriteLine("-> Fraud Case is executing at " + DateTime.Now);
 #endif
+                if (isRunning) return;
+
+                isRunning = true;
+
                 CleanResult();
                 Precondition();
                 Rule();
 
+                isRunning = false;
 #if DEBUG
                 Console.WriteLine("=> Fraud Case is executed at " + DateTime.Now);
 #endif
@@ -75,6 +81,10 @@ namespace Fanex.NAP.FS.ArbitrageService
         private void GroupData(int matchId, IEnumerable<ArbitrageTicket> tickets)
         {
             var tsk = tickets.Select(t => t.CustId).Distinct().Chunk(500).Select(GroupCustomer).ToArray();
+
+#if DEBUG
+            Console.WriteLine("=> GroupData is executing at " + DateTime.Now + ". Ticket By counter: " + tsk.Count());
+#endif
 
             Task.WaitAll(tsk);
 

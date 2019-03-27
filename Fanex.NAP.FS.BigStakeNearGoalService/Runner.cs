@@ -21,6 +21,7 @@ namespace Fanex.NAP.FS.BigStakeNearGoalService
         private IEnumerable<Match> _matches;
         private readonly List<Task> _threads;
         private MicroService baseService;
+        private bool isRunning = false;
 
         public Runner()
         {
@@ -52,12 +53,18 @@ namespace Fanex.NAP.FS.BigStakeNearGoalService
 #if DEBUG
                             Console.WriteLine("-> Fraud Case is executing at " + DateTime.Now);
 #endif
+                if (isRunning) return;
+
+                isRunning = true;
+
                 CleanResult();
                 Precondition();
                 Rule();
 
+                isRunning = false;
+
 #if DEBUG
-                            Console.WriteLine("=> Fraud Case is executed at " + DateTime.Now);
+                Console.WriteLine("=> Fraud Case is executed at " + DateTime.Now);
 #endif
                 LogService.Info($"{projectName} - {serviceName} - Executed at {DateTime.Now}");
             }

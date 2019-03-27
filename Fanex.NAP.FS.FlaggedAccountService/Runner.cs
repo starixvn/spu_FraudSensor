@@ -29,6 +29,8 @@ namespace Fanex.NAP.FS.FlaggedAccountService
         private readonly List<Task> _threads;
         private MicroService baseService;
 
+        private bool isRunning = false;
+
         public Runner()
         {
             _matches = new List<Match>();
@@ -80,9 +82,15 @@ namespace Fanex.NAP.FS.FlaggedAccountService
 #if DEBUG
                 Console.WriteLine("-> Fraud Case is executing at " + DateTime.Now);
 #endif
+                if (isRunning) return;
+
+                isRunning = true;
+
                 CleanResult();
                 Precondition();
                 Rule();
+
+                isRunning = false;
 #if DEBUG
                 Console.WriteLine("=> Fraud Case is executed at " + DateTime.Now);
 #endif
