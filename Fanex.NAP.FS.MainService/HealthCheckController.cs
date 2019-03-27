@@ -28,6 +28,7 @@ namespace Fanex.NAP.FS.MainService
 
             thread = new Thread(() =>
             {
+                var count = 0;
                 if (!status)
                 {
                     string message = $"Service name: {serviceName} - Status: {status} - Exception: {exception}";
@@ -38,12 +39,17 @@ namespace Fanex.NAP.FS.MainService
                 }
 
                 Thread.Sleep((timeout + 5) * 1000);
+                do
+                {
+                    var notifyMessage = $"Health check - Service name: {serviceName} - Retry action " + count + " time(s)";
+                    LogService.Error(notifyMessage);
 
-                RetryFraudCaseService(fraudcaseid);
+                    RetryFraudCaseService(fraudcaseid);
+                    Thread.Sleep((timeout + 5) * 1000);
+                    count++;
+                } while (count < 3);
 
-                Thread.Sleep((timeout + 10) * 1000);
-
-                var errorMessage = $"Health check - Service name: {serviceName} - Do not receive heart beat in " + timeout + " seconds";
+                var errorMessage = $"Health check - Service name: {serviceName} - Do not receive heart beat in " + timeout * 3 + " seconds";
                 LogService.Error(errorMessage);
 
             })
@@ -85,7 +91,7 @@ namespace Fanex.NAP.FS.MainService
                     {
                         var message = new Message<FraudCaseMessage>(new FraudCaseMessage
                         {
-                            Action = Model.Action.Activating,
+                            Action = Model.Action.Retry,
                             Id = fraudCase.FraudCaseId,
                             Name = fraudCase.FraudCaseName,
                             Message = "Message is sent at" + DateTime.Now

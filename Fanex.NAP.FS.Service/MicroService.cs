@@ -235,6 +235,10 @@ namespace Fanex.NAP.FS.Service
 #endif
                         _timer.Stop();
 
+                        _fraudCase = GetFraudCase(fraudCaseMessage.Id);
+
+                        _timer.Start();
+
                         break;
                     }
                 default:
