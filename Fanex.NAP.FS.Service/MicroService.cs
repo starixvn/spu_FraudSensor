@@ -74,12 +74,11 @@ namespace Fanex.NAP.FS.Service
 
                     if(fraudCaseMessage == null)
                     {
-                        var fraudCase = GetFraudCase(_fraudCaseId);
-
                         MessageHandler(new FraudCaseMessage
                         {
-                            Action = fraudCase != null ? Model.Action.Activating : Model.Action.Deactivating,
-                        }); 
+                            Action = Model.Action.Activating,
+                            Id = _fraudCaseId
+                        });
                     }
                 }
                 catch (Exception ex)
