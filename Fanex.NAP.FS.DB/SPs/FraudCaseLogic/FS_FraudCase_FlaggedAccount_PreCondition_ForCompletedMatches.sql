@@ -33,5 +33,3 @@ GO
  GRANT EXECUTE ON [dbo].[FS_FraudCase_FlaggedAccount_PreCondition_ForCompletedMatches] TO [bodbSPUNet]
 GO 
  GRANT VIEW DEFINITION ON [dbo].[FS_FraudCase_FlaggedAccount_PreCondition_ForCompletedMatches] TO [bodbSPUNet]
-GO 
-/*<info serverAlias="DBSPU-bodb_FraudSensor" executers="bodbSPUNet" isFunction="0" isNested="0"></info>*/
