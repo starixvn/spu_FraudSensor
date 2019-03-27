@@ -24,6 +24,14 @@ namespace Fanex.NAP.FS.Core
             }
         }
 
+        public static string AppData
+        {
+            get
+            {
+                return ConfigurationManager.AppSettings["AppData-Path"];
+            }
+        }
+
         public static string Host
         {
             get

@@ -25,7 +25,7 @@ namespace Fanex.NAP.FS.BigStakeNearGoalService
             DbSettingProviderManager
                     .StartNewSession()
                     .Use(new ConnectionStringProvider20())
-                    .UseDefaultDbSettingProvider("~/App_Data", false)
+                    .UseDefaultDbSettingProvider(AppSetting.AppData, false)
                     .Run();
 
             LogManager

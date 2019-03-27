@@ -24,7 +24,7 @@ namespace Fanex.NAP.FS.FlaggedAccountService
             DbSettingProviderManager
                    .StartNewSession()
                    .Use(new ConnectionStringProvider20())
-                   .UseDefaultDbSettingProvider("~/App_Data", false)
+                   .UseDefaultDbSettingProvider(AppSetting.AppData, false)
                    .Run();
 
             LogManager.SetDefaultLogCategory(AppSetting.FanexLogCategory)
