@@ -65,7 +65,7 @@ namespace Fanex.NAP.FS.ArbitrageService
                 exception = ex.Message;
                 status = false;
 
-                LogService.Critical($"{projectName} - {serviceName} - OnTimedEvent Exception: {ex.Message}");
+                LogService.Error($"{projectName} - {serviceName} - OnTimedEvent Exception: {ex.Message}");
             }
 
             Report(status, exception);

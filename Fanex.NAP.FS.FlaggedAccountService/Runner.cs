@@ -7,10 +7,8 @@ using Fanex.NAP.FS.Library.DTO;
 using Fanex.NAP.FS.Library.Models;
 using Fanex.NAP.FS.Library.Models.FraudCase.FlaggedAccount;
 using Fanex.NAP.FS.Service;
-using RestSharp;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Data;
 using System.Linq;
 using System.ServiceProcess;
@@ -23,7 +21,6 @@ namespace Fanex.NAP.FS.FlaggedAccountService
         private const int ChunkSize = 100;
         protected readonly Service.FlaggedAccountService flaggedAccountService;
         private readonly IEnumerable<FlaggedCustomer> _flaggedCustomers;
-        private readonly string FPS_WEBAPI_GET_CUSTOMER_EVIDENCE = AppSetting.CustomerEvidenceApi;
 
         static string serviceName = "Flagged Account Service";
         static string projectName = "Fraud Sensor Service";
@@ -47,8 +44,8 @@ namespace Fanex.NAP.FS.FlaggedAccountService
             };
 
             try
-            {                
-                _flaggedCustomers = ApiHelper.Post<IEnumerable<FlaggedCustomer>>(FPS_WEBAPI_GET_CUSTOMER_EVIDENCE,param).Result;
+            {
+                _flaggedCustomers = ApiHelper.Post<IEnumerable<FlaggedCustomer>>(AppSetting.CustomerEvidenceApi, param).Result;
             }
             catch (Exception exception)
             {
@@ -58,7 +55,7 @@ namespace Fanex.NAP.FS.FlaggedAccountService
 
                 LogService.Error(message);
             }
-            
+
 
             InitializeComponent();
         }
@@ -81,14 +78,13 @@ namespace Fanex.NAP.FS.FlaggedAccountService
             try
             {
 #if DEBUG
-                            Console.WriteLine("-> Fraud Case is executing at " + DateTime.Now);
+                Console.WriteLine("-> Fraud Case is executing at " + DateTime.Now);
 #endif
                 CleanResult();
                 Precondition();
                 Rule();
-
 #if DEBUG
-                            Console.WriteLine("=> Fraud Case is executed at " + DateTime.Now);
+                Console.WriteLine("=> Fraud Case is executed at " + DateTime.Now);
 #endif
             }
             catch (Exception ex)
@@ -147,7 +143,7 @@ namespace Fanex.NAP.FS.FlaggedAccountService
                 {
                     var flaggedAccountsXml = XmlHelper.ToXmlString(_flaggedCustomers);
                     flaggedAccountService.ExecuteRule(string.Join(",", ((List<Match>)m).Select(t => t.MatchId.ToString())), flaggedAccountsXml);
-                                       
+
                 }
                 catch (Exception exception)
                 {
