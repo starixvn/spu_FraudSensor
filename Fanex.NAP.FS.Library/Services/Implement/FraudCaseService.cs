@@ -26,11 +26,12 @@
             });
         }
 
-        public bool CheckActiveFraudCase(FraudCaseId id)
+        public bool CheckActiveFraudCase(FraudCaseId id, int envConfig)
         {
             var criteria = new GetIsActiveCriteria
             {
-                FraudCaseId = (int)id
+                FraudCaseId = (int)id,
+                Environment = envConfig
             };
 
             var result = DataService.GetSingle<dynamic>(criteria);

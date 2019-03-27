@@ -15,6 +15,7 @@ namespace Fanex.NAP.FS.Model
         Reply,
         Deactivating,
         Activating,
-        Updating
+        Updating,
+        Retry
     }
 }

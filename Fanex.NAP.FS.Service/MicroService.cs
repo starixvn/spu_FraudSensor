@@ -119,6 +119,7 @@ namespace Fanex.NAP.FS.Service
             request.AddQueryParameter("status", status.ToString());
             request.AddQueryParameter("exception", exception);
             request.AddQueryParameter("timeout", _fraudCase.FraudCaseInterval.ToString());
+            request.AddQueryParameter("fraudcaseid", _fraudCase.FraudCaseId.ToString());
 
             try
             {
@@ -224,6 +225,15 @@ namespace Fanex.NAP.FS.Service
                         Console.WriteLine("-> Delete action is executing...");
 #endif
                         _timer.Stop();                        
+
+                        break;
+                    }
+                case Model.Action.Retry:
+                    {
+#if DEBUG
+                        Console.WriteLine("-> Retry action is executing...");
+#endif
+                        _timer.Stop();
 
                         break;
                     }

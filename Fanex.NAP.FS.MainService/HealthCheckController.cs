@@ -17,7 +17,7 @@ namespace Fanex.NAP.FS.MainService
         private static Queue.EasyNetQ _rabbitMQ;
 
         [HttpPost]
-        public void Beat(string serviceName, bool status, string exception, int timeout)
+        public void Beat(string serviceName, bool status, string exception, int timeout, int fraudcaseid)
         {
             var thread = threadsMonitor.Where(t => t.Name == serviceName).FirstOrDefault();
             if (thread != null)
@@ -39,7 +39,10 @@ namespace Fanex.NAP.FS.MainService
 
                 Thread.Sleep((timeout + 5) * 1000);
 
-                //RetryFraudCaseService()
+                RetryFraudCaseService(fraudcaseid);
+
+                Thread.Sleep((timeout + 10) * 1000);
+
                 var errorMessage = $"Health check - Service name: {serviceName} - Do not receive heart beat in " + timeout + " seconds";
                 LogService.Error(errorMessage);
 

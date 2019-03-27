@@ -32,6 +32,7 @@
         private readonly IOfficeIPService _ipService;
         private readonly INotificationRecipientService _recipientService = new NotificationRecipientService();
         private static EasyNetQ _rabbitMQ;
+        private static int envConfig = int.Parse(ConfigurationManager.AppSettings["Environment"]);
 
         public FraudCaseController()
         {
@@ -56,8 +57,8 @@
         {
             var fraudCaseViewModel = new FraudCaseViewModel();
             fraudCaseViewModel.FraudCaseInfo = Library.Models.FraudCase.FraudCase.GetFraudCase(FraudCaseId.BSNG);
-            fraudCaseViewModel.FraudCaseList = _fraudCaseService.Get(null, null, int.Parse(ConfigurationManager.AppSettings["Environment"]));
-            fraudCaseViewModel.FraudCaseInfo.IsActive = _fraudCaseService.CheckActiveFraudCase(FraudCaseId.BSNG);
+            fraudCaseViewModel.FraudCaseList = _fraudCaseService.Get(null, null, envConfig);
+            fraudCaseViewModel.FraudCaseInfo.IsActive = _fraudCaseService.CheckActiveFraudCase(FraudCaseId.BSNG, envConfig);
 
             return View(fraudCaseViewModel);
         }
@@ -69,7 +70,7 @@
             var fraudCaseViewModel = new FraudCaseViewModel();
             fraudCaseViewModel.FraudCaseInfo = Library.Models.FraudCase.FraudCase.GetFraudCase(caseid);
             fraudCaseViewModel.FraudCaseList = _fraudCaseService.Get(null, null, int.Parse(ConfigurationManager.AppSettings["Environment"]));
-            fraudCaseViewModel.FraudCaseInfo.IsActive = _fraudCaseService.CheckActiveFraudCase(caseid);
+            fraudCaseViewModel.FraudCaseInfo.IsActive = _fraudCaseService.CheckActiveFraudCase(caseid, envConfig);
 
             return View(fraudCaseViewModel);
         }
