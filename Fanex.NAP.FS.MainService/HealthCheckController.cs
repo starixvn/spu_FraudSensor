@@ -8,6 +8,7 @@ using System;
 using EasyNetQ;
 using Fanex.NAP.FS.Model;
 using Fanex.NAP.FS.Library.Models;
+using Fanex.NAP.FS.Core;
 
 namespace Fanex.NAP.FS.MainService
 {
@@ -15,6 +16,19 @@ namespace Fanex.NAP.FS.MainService
     {
         private static List<Thread> threadsMonitor = new List<Thread>();
         private static Queue.EasyNetQ _rabbitMQ;
+
+        public HealthCheckController()
+        {
+            _rabbitMQ = new Queue.EasyNetQ(AppSetting.Host + ":" + AppSetting.Post,
+                AppSetting.VirtualHost,
+                AppSetting.PrefetchCount,
+                AppSetting.UserName,
+                AppSetting.Password);
+
+            _rabbitMQ
+                .CreateBus()
+                .DeclareExchange(AppSetting.Exchange);
+        }
 
         [HttpPost]
         public void Beat(string serviceName, bool status, string exception, int timeout, int fraudcaseid)
@@ -41,7 +55,7 @@ namespace Fanex.NAP.FS.MainService
                 Thread.Sleep((timeout + 5) * 1000);
                 do
                 {
-                    var notifyMessage = $"Health check - Service name: {serviceName} - Retry action " + count + " time(s)";
+                    var notifyMessage = $"Health check - Service name: {serviceName} - Retry action " + (count + 1) + " time(s)";
                     LogService.Error(notifyMessage);
 
                     RetryFraudCaseService(fraudcaseid);
@@ -74,7 +88,7 @@ namespace Fanex.NAP.FS.MainService
         {
             var fraudCaseService = new Service.FraudCaseService();
 
-            var fraudCase = fraudCaseService.Get(null, 1, Core.AppSetting.Environment).Where(x => x.FraudCaseId == fraudCaseId).FirstOrDefault();
+            var fraudCase = fraudCaseService.GetByFraudCaseId(1, Core.AppSetting.Environment);
 
             if (fraudCase.IsActive)
             {
