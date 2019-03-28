@@ -21,10 +21,15 @@
 
         public ArbitrageExecutor(FraudCase fraudCase) : base(fraudCase)
         {
+            var message = "Arbitrage is activating";
+            SendMailInform(message, message);
         }
 
         protected override void ExecutePrecondition()
         {
+            var message = "Arbitrage is processing precondition";
+            SendMailInform(message, message);
+
             tickets = DataService.GetData<ArbitrageTicket>(new ArbitragePreconditionCriteria());
         }
 

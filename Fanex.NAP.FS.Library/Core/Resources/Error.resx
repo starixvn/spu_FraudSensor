@@ -123,4 +123,10 @@
   <data name="FraudCase_DelayedGoal_4001" xml:space="preserve">
     <value>Member name doesn't exist!</value>
   </data>
+  <data name="FraudCase_OfficeIPInternalAccount_2201" xml:space="preserve">
+    <value>User name already existed</value>
+  </data>
+  <data name="FraudCase_OfficeIPInternalAccount_2202" xml:space="preserve">
+    <value>User name doesn't exits</value>
+  </data>
 </root>

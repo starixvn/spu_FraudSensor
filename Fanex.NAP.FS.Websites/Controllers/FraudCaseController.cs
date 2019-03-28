@@ -162,6 +162,39 @@
 
         #endregion scanned office ip
 
+        #region scanned office internal account      
+        public ActionResult GetAllInternalAccount()
+        {
+            return JData(_ipService.GetInternalAccounts());
+        }
+
+        [HttpPost]
+        [NapAuth(FunctionKey = FSFunctionKeys.FraudCase, Policy = Core.Business.Constant.Policy.Host)]
+        public ActionResult AddInternalAccount(string userName)
+        {
+            return Json(_ipService.AddInternalAccount(userName, CurrentSession.UserId));
+        }
+
+        [HttpPost]
+        [NapAuth(FunctionKey = FSFunctionKeys.FraudCase, Policy = Core.Business.Constant.Policy.Host)]
+        public ActionResult DeleteInternalAccount(int custId)
+        {
+            return Json(_ipService.DeleteInternalAccount(custId, CurrentSession.UserId));
+        }
+
+        public ActionResult ExportExcelInternalAccount()
+        {
+            var template = Server.MapPath("~/App_Data/Excel Template/FraudCase/ScannedOfficeIP/InternalAccountTemplate.xlsx");
+
+            var file = RenderExcelFile(
+                    template,
+                    wb => new OfficeIPInternalAccountExcelConfig().RenderExcel(wb, null, _ipService.GetInternalAccounts(), null)
+                );
+
+            return ExcelFile(file, $"InternalAccountList_{DateTime.Today.ToString("yyyyMMdd")}");
+        }
+        #endregion scanned office internal account
+
         #region notification recipient
 
         public ActionResult GetRecipients(FraudCaseId fraudCase)

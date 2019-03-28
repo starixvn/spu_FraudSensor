@@ -111,7 +111,8 @@
             break;
         case FraudCaseId.ScannedOfficeIP:
             @Html.Partial("ScannedOfficeIP/Dialog")
-            break;
+            @Html.Partial("ScannedOfficeIP/InternalAccountDialog")
+            break;     
         case FraudCaseId.DailyDataCapture:
         case FraudCaseId.CheckBet:
             @Html.Partial("DailyDataCapture/Dialog")
@@ -138,6 +139,7 @@
                 break;
             case FraudCaseId.ScannedOfficeIP:
                 @Scripts.Render("~/fraud-case-scripts/scanned-office-ip")
+                @Scripts.Render("~/fraud-case-scripts/scanned-office-account")
                 break;
             case FraudCaseId.DailyDataCapture:
             case FraudCaseId.CheckBet:

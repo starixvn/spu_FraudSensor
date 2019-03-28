@@ -232,6 +232,9 @@
     <Compile Include="Criteria\FraudCase\FraudCaseGetCriteria.cs" />
     <Compile Include="Criteria\FraudCase\GetIsActiveCriteria.cs" />
     <Compile Include="Criteria\FraudCase\ScannedOfficeIP\OfficeIPDeleteCriteria.cs" />
+    <Compile Include="Criteria\FraudCase\ScannedOfficeIP\OfficeIPInternalAccountDeleteCriteria.cs" />
+    <Compile Include="Criteria\FraudCase\ScannedOfficeIP\OfficeIPInternalAccountGetCriteria.cs" />
+    <Compile Include="Criteria\FraudCase\ScannedOfficeIP\OfficeIPInternalAccountInsertCriteria.cs" />
     <Compile Include="Criteria\FraudCase\ScannedOfficeIP\OfficeIPGetCriteria.cs" />
     <Compile Include="Criteria\FraudCase\ScannedOfficeIP\OfficeIPInsertCriteria.cs" />
     <Compile Include="Criteria\FraudCase\UpdateFraudCaseStatusCriteria.cs" />
@@ -302,6 +305,7 @@
     <Compile Include="ExcelConfig\DailyDataCapture\DailyDataCaptureExcelConfig.cs" />
     <Compile Include="ExcelConfig\FraudCase\DelayedGoal\DelayedGoalExcelConfig.cs" />
     <Compile Include="ExcelConfig\FraudCase\ScannedOfficeIP\OfficeIPExcelConfig.cs" />
+    <Compile Include="ExcelConfig\FraudCase\ScannedOfficeIP\OfficeIPInternalAccountExcelConfig.cs" />
     <Compile Include="ExcelConfig\MatchMonitor\ArbitrageConfig.cs" />
     <Compile Include="ExcelConfig\MatchMonitor\CustomerDetailConfig.cs" />
     <Compile Include="ExcelConfig\MatchMonitor\MatchMonitorExcelConfig.cs" />
@@ -336,6 +340,7 @@
     <Compile Include="Models\FraudCase\FlaggedAccount\FlaggedCustomer.cs" />
     <Compile Include="Models\FraudCase\FraudCase.cs" />
     <Compile Include="Models\FraudCase\NotificationRecipient.cs" />
+    <Compile Include="Models\FraudCase\ScannedOfficeIP\OfficeIPInternalAccount.cs" />
     <Compile Include="Models\FraudCase\ScannedOfficeIP\OfficeIp.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\MatchMonitor\BalanceUpDate.cs" />

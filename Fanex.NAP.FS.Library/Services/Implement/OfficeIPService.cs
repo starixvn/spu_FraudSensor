@@ -39,11 +39,41 @@
             };
 
             return DataService.UpdateData(criteria, "OfficeIP");
-        }
+        }        
 
         public IEnumerable<OfficeIp> GetIps()
         {
             return DataService.GetData<OfficeIp>(new OfficeIPGetCriteria());
         }
+
+        #region Exclude Internal Account
+        public IEnumerable<OfficeIPInternalAccount> GetInternalAccounts()
+        {
+            return DataService.GetData<OfficeIPInternalAccount>(new OfficeIPInternalAccountGetCriteria());
+        }
+
+        public DBResult AddInternalAccount(string userName, int userId)
+        {
+            var criteria = new OfficeIPInternalAccountInsertCriteria
+            {
+                UserId = userId,
+                Username = userName
+            };
+
+            return DataService.UpdateData(criteria, "FraudCase_OfficeIPInternalAccount");
+        }
+
+        public DBResult DeleteInternalAccount(int custId, int userId)
+        {
+            var criteria = new OfficeIPInternalAccountDeleteCriteria
+            {
+                CustId = custId,
+                UserId = userId,
+                IsActive = false
+            };
+
+            return DataService.UpdateData(criteria, "FraudCase_OfficeIPInternalAccount");
+        }
+        #endregion Exclude Internal Account
     }
 }

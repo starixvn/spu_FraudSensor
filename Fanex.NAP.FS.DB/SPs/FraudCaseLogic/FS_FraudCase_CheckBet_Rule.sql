@@ -557,5 +557,3 @@ BEGIN
 	WHERE	DATEDIFF(dd, ScannedDate, GETDATE()) > 15;
 
 END;
-GO
-/*<info serverAlias="DBFS-bodb_FraudSensor" executers="bodbSPUNet" isFunction="0" isNested="0"></info>*/
