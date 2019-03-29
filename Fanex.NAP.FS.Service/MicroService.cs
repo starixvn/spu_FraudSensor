@@ -13,6 +13,10 @@ using System.Timers;
 using System.Linq;
 using System.Net.Http;
 using RestSharp;
+using ONEbook.UM.AspNetMVC.Configuration;
+using ONEbook.UM;
+using ONEbook.UM.Helpers;
+using ONEbook.UM.Services;
 
 namespace Fanex.NAP.FS.Service
 {
@@ -136,6 +140,20 @@ namespace Fanex.NAP.FS.Service
             {
                 LogService.Error($"{projectName} - {_serviceName} - Report Exeption:{ex.Message}");
             }
+        }
+
+        public bool CheckUM()
+        {
+            //var umConfig = new UMClientConfiguration();
+            //UMClientManager
+            //    .UseConfig(umConfig)
+            //    .UseRestClient(new RestClient(umConfig))
+            //    .UseHttpContext(new HttpContextHelper())
+            //    .AddErrorHandler(errorHandler);
+
+            //var maintenanceService = new MaintenanceService();
+            //var underMaintenanceInfo = maintenanceService.IsUnderMaintenance();
+            return false;
         }
 
         private FraudCaseMessage GetMessage(Action<FraudCaseMessage> handler)
