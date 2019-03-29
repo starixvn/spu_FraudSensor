@@ -144,16 +144,15 @@ namespace Fanex.NAP.FS.Service
 
         public bool CheckUM()
         {
-            //var umConfig = new UMClientConfiguration();
-            //UMClientManager
-            //    .UseConfig(umConfig)
-            //    .UseRestClient(new RestClient(umConfig))
-            //    .UseHttpContext(new HttpContextHelper())
-            //    .AddErrorHandler(errorHandler);
+            var umConfig = new UMClientConfiguration();
+            UMClientManager
+                .UseConfig(umConfig)
+                .UseRestClient(new ONEbook.UM.Transport.RestClient(umConfig))
+                .UseHttpContext(new HttpContextHelper());
 
-            //var maintenanceService = new MaintenanceService();
-            //var underMaintenanceInfo = maintenanceService.IsUnderMaintenance();
-            return false;
+            var maintenanceService = new MaintenanceService();
+            var isUM = maintenanceService.IsUnderMaintenance().Result;
+            return isUM;
         }
 
         private FraudCaseMessage GetMessage(Action<FraudCaseMessage> handler)
