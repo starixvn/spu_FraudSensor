@@ -109,31 +109,22 @@ namespace Fanex.NAP.FS.FlaggedAccountService
 
         void Report(bool status, string exception)
         {
-            LogService.Info($"{projectName} - {serviceName} - Report at {DateTime.Now}");
             baseService.Report(status, exception);
-            LogService.Info($"{projectName} - {serviceName} - Run Report() successfully at {DateTime.Now}");
         }
 
         void CleanResult()
         {
-            LogService.Info($"{projectName} - {serviceName} - Run CleanResult() at {DateTime.Now}");
-            LogService.Info($"{projectName} - {serviceName} - Executed at {DateTime.Now}");
             baseService.Clean(_matches, _threads);
-            LogService.Info($"{projectName} - {serviceName} - Run CleanResult() successfully at {DateTime.Now}");
         }
 
         void Precondition()
         {
-            LogService.Info($"{projectName} - {serviceName} - Run Precondition() at {DateTime.Now}");
             _matches = flaggedAccountService.ExecutePrecondition();
-            LogService.Info($"{projectName} - {serviceName} - Run Precondition() successfully at {DateTime.Now}");
         }
 
         void Rule()
         {
-            LogService.Info($"{projectName} - {serviceName} - Run rule at {DateTime.Now}");
             ExecuteBySaparatedThreads();
-            LogService.Info($"{projectName} - {serviceName} - Run rule successfully at {DateTime.Now}");
         }
 
         private void ExecuteBySaparatedThreads()
@@ -159,15 +150,7 @@ namespace Fanex.NAP.FS.FlaggedAccountService
             {
                 try
                 {
-                    var debugMess = string.Empty;
-                    foreach (var item in _flaggedCustomers)
-                    {
-                        debugMess += $"CustId: {item.CustId} - EviCode: {item.EvidenceCode} ||| ";
-                    }
-
-                    LogService.Error($"Flagged Account debug: - {debugMess}");
                     var flaggedAccountsXml = XmlHelper.ToXmlString(_flaggedCustomers);
-                    LogService.Error($"Flagged Account XML - {flaggedAccountsXml}");
                     flaggedAccountService.ExecuteRule(string.Join(",", ((List<Match>)m).Select(t => t.MatchId.ToString())), flaggedAccountsXml);
 
                 }
