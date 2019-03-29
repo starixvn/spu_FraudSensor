@@ -48,31 +48,34 @@ namespace Fanex.NAP.FS.ArbitrageService
             var exception = string.Empty;
             var status = true;
 
-            try
+            if (!baseService.CheckUM())
             {
+                try
+                {
 #if DEBUG
-                Console.WriteLine("-> Fraud Case is executing at " + DateTime.Now);
+                    Console.WriteLine("-> Fraud Case is executing at " + DateTime.Now);
 #endif
-                if (isRunning) return;
+                    if (isRunning) return;
 
-                isRunning = true;
+                    isRunning = true;
 
-                CleanResult();
-                Precondition();
-                Rule();
+                    CleanResult();
+                    Precondition();
+                    Rule();
 
-                isRunning = false;
+                    isRunning = false;
 #if DEBUG
-                Console.WriteLine("=> Fraud Case is executed at " + DateTime.Now);
+                    Console.WriteLine("=> Fraud Case is executed at " + DateTime.Now);
 #endif
-                LogService.Info($"{projectName} - {serviceName} - Executed at {DateTime.Now}");
-            }
-            catch (Exception ex)
-            {
-                exception = ex.Message;
-                status = false;
+                    LogService.Info($"{projectName} - {serviceName} - Executed at {DateTime.Now}");
+                }
+                catch (Exception ex)
+                {
+                    exception = ex.Message;
+                    status = false;
 
-                LogService.Error($"{projectName} - {serviceName} - OnTimedEvent Exception: {ex.Message}");
+                    LogService.Error($"{projectName} - {serviceName} - OnTimedEvent Exception: {ex.Message}");
+                }
             }
 
             Report(status, exception);
