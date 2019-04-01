@@ -74,11 +74,12 @@ namespace Fanex.NAP.FS.Service
             {
                 try
                 {
-                   var fraudCaseMessage = GetMessage(MessageHandler);
+                    var fraudCaseMessage = GetMessage(MessageHandler);
 
-                    if(fraudCaseMessage == null)
+                    if (fraudCaseMessage == null)
                     {
                         LogService.Info($"{projectName} - {_serviceName} - Start service - Fraud case id: {_fraudCaseId}");
+
                         MessageHandler(new FraudCaseMessage
                         {
                             Action = Model.Action.Activating,
@@ -96,7 +97,15 @@ namespace Fanex.NAP.FS.Service
                 LogService.Error($"{projectName} - {_serviceName} - Start Exception: {_queueName} is empty.");
             }
 
-            _fraudCase = GetFraudCase(_fraudCaseId);
+            InvokeActionHandlerEvent(onTimedEvent);
+        }
+
+        private void InvokeActionHandlerEvent(ElapsedEventHandler onTimedEvent)
+        {
+            if (_fraudCase == null)
+            {
+                _fraudCase = GetFraudCase(_fraudCaseId);
+            }
 
             onTimedEvent.Invoke(null, null);
         }
