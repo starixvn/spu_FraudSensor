@@ -83,12 +83,12 @@ namespace Fanex.NAP.FS.BigStakeNearGoalService
 
         void Precondition()
         {
-            _matches = bigStakeNearGoalService.PreCondition();            
+            _matches = bigStakeNearGoalService.PreCondition();
         }
 
         void Rule()
         {
-            ExecuteBySaparatedThreads();            
+            ExecuteBySaparatedThreads();
         }
 
         void CleanResult()
