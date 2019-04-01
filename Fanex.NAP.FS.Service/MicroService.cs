@@ -94,7 +94,11 @@ namespace Fanex.NAP.FS.Service
             else
             {
                 LogService.Error($"{projectName} - {_serviceName} - Start Exception: {_queueName} is empty.");
-            }           
+            }
+
+            _fraudCase = GetFraudCase(_fraudCaseId);
+
+            onTimedEvent.Invoke(null, null);
         }
 
         public void Hold()
