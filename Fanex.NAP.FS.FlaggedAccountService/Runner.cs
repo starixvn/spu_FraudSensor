@@ -95,7 +95,6 @@ namespace Fanex.NAP.FS.FlaggedAccountService
 #if DEBUG
                     Console.WriteLine("=> Fraud Case is executed at " + DateTime.Now);
 #endif
-                    LogService.Info($"{projectName} - {serviceName} - Executed at {DateTime.Now}");
                 }
                 catch (Exception ex)
                 {

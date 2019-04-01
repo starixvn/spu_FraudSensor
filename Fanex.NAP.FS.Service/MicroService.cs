@@ -187,8 +187,8 @@ namespace Fanex.NAP.FS.Service
         {
 #if DEBUG
             Console.WriteLine("-> Get fraud case action is executing...");
-#endif            
-            var fraudCase = fraudCaseService.GetByFraudCaseId(fraudCaseId, AppSetting.Environment);
+#endif
+            var fraudCase = fraudCaseService.GetFraudCaseFromConfig();
 
             if (fraudCase != null)
             {
@@ -203,8 +203,8 @@ namespace Fanex.NAP.FS.Service
 
             LogService.Info($"{projectName} - {_serviceName} - Fraud case is null. Please check again.");
 
-            return new FraudCase {               
-                IsActive = false                
+            return new FraudCase {
+                IsActive = false
             };
         }
 

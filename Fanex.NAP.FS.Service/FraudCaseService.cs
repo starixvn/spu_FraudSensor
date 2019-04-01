@@ -1,4 +1,5 @@
 ﻿using Fanex.Data;
+using Fanex.NAP.FS.Core;
 using Fanex.NAP.FS.Library.Criteria;
 using Fanex.NAP.FS.Library.DTO;
 using System;
@@ -33,6 +34,21 @@ namespace Fanex.NAP.FS.Service
             {
                 return db.QueryEntity<FraudCase>(criteria);
             }
+        }
+
+        public FraudCase GetFraudCaseFromConfig()
+        {
+            var fraudCase = new FraudCase()
+            {
+                FraudCaseId = AppSetting.Environment,
+                FraudCaseName = AppSetting.FraudCaseName,
+                FraudCaseInterval = AppSetting.FraudCaseInterval,
+                FraudCaseDesc = AppSetting.FraudCaseDesc,
+                IsActive = AppSetting.IsActive,
+                IsTest = AppSetting.IsTest
+            };
+
+            return fraudCase;
         }
     }
 }

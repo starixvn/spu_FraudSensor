@@ -143,5 +143,48 @@ namespace Fanex.NAP.FS.Core
                 return ConfigurationManager.AppSettings["Log-SentryLogging-Config"];
             }
         }
+
+        public static int FraudCaseId
+        {
+            get
+            {
+                return Convert.ToInt32(ConfigurationManager.AppSettings["FraudCase.FraudCaseId"].ToString());
+            }
+        }
+        public static string FraudCaseName
+        {
+            get
+            {
+                return ConfigurationManager.AppSettings["FraudCase.FraudCaseName"];
+            }
+        }
+        public static int FraudCaseInterval
+        {
+            get
+            {
+                return Convert.ToInt32(ConfigurationManager.AppSettings["FraudCase.FraudCaseInterval"].ToString());
+            }
+        }
+        public static string FraudCaseDesc
+        {
+            get
+            {
+                return ConfigurationManager.AppSettings["FraudCase.FraudCaseDesc"];
+            }
+        }
+        public static bool IsActive
+        {
+            get
+            {
+                return Convert.ToBoolean(ConfigurationManager.AppSettings["FraudCase.IsActive"].ToString());
+            }
+        }
+        public static bool IsTest
+        {
+            get
+            {
+                return Convert.ToBoolean(ConfigurationManager.AppSettings["FraudCase.IsTest"].ToString());
+            }
+        }
     }
 }
