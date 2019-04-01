@@ -194,8 +194,14 @@ namespace Fanex.NAP.FS.Service
             {
                 _timer.Interval = fraudCase.FraudCaseInterval * 1000;
 
+#if DEBUG
+                Console.WriteLine($"=> Fraud case name: {fraudCase.FraudCaseName}, IsActive: {fraudCase.IsActive}, IsTest: {fraudCase.IsTest}, Interval: {fraudCase.FraudCaseInterval} ");
+#endif
+
                 return fraudCase;
-            }            
+            }
+
+            LogService.Info($"{projectName} - {_serviceName} - Fraud case is null. Please check again.");
 
             return new FraudCase {               
                 IsActive = false                
@@ -213,6 +219,10 @@ namespace Fanex.NAP.FS.Service
 #endif
                         _fraudCase = GetFraudCase(fraudCaseMessage.Id);
 
+#if DEBUG
+                        Console.WriteLine($"=>Activing - Fraud case name: {_fraudCase.FraudCaseName}, IsActive: {_fraudCase.IsActive}, IsTest: {_fraudCase.IsTest}, Interval: {_fraudCase.FraudCaseInterval}, Timer Enable: {_timer.Enabled} ");
+#endif
+
                         if (_fraudCase.IsActive && !_timer.Enabled)
                         {                           
                             _timer.Start();
@@ -229,7 +239,10 @@ namespace Fanex.NAP.FS.Service
 
                         _fraudCase = GetFraudCase(fraudCaseMessage.Id);
 
-                        if(_fraudCase.IsActive)
+#if DEBUG
+                        Console.WriteLine($"=>Updating - Fraud case name: {_fraudCase.FraudCaseName}, IsActive: {_fraudCase.IsActive}, IsTest: {_fraudCase.IsTest}, Interval: {_fraudCase.FraudCaseInterval}, Timer Enable: {_timer.Enabled}  ");
+#endif
+                        if (_fraudCase.IsActive)
                         { 
                             _timer.Start();
                         }
@@ -253,6 +266,10 @@ namespace Fanex.NAP.FS.Service
                         _timer.Stop();
 
                         _fraudCase = GetFraudCase(fraudCaseMessage.Id);
+
+#if DEBUG
+                        Console.WriteLine($"=>Retry - Fraud case name: {_fraudCase.FraudCaseName}, IsActive: {_fraudCase.IsActive}, IsTest: {_fraudCase.IsTest}, Interval: {_fraudCase.FraudCaseInterval}, Timer Enable: {_timer.Enabled}  ");
+#endif
 
                         if (_fraudCase.IsActive)
                         {

@@ -2,9 +2,9 @@
 using Fanex.NAP.FS.Core;
 using Fanex.NAP.FS.Library.Core.Helpers.Api;
 using Fanex.NAP.FS.Library.Core.Helpers.Xml;
+using Fanex.NAP.FS.Library.Core.Utilities;
 using Fanex.NAP.FS.Library.Models;
 using Fanex.NAP.FS.Library.Models.FraudCaseTask;
-using Fanex.NAP.FS.Library.Core.Utilities;
 using Fanex.NAP.FS.Service;
 using System;
 using System.Collections.Generic;
@@ -46,11 +46,15 @@ namespace Fanex.NAP.FS.ArbitrageService
         private void OnTimedEvent(Object source, System.Timers.ElapsedEventArgs e)
         {
             var exception = string.Empty;
-            var status = true;
+            var status = true;           
 
-            if (!baseService.CheckUM())
+            try
             {
-                try
+                var isUM = baseService.CheckUM();
+#if DEBUG
+                Console.WriteLine("-> Fraud Case UM: " + isUM);
+#endif
+                if (!isUM)
                 {
 #if DEBUG
                     Console.WriteLine("-> Fraud Case is executing at " + DateTime.Now);
@@ -69,13 +73,13 @@ namespace Fanex.NAP.FS.ArbitrageService
 #endif
                     LogService.Info($"{projectName} - {serviceName} - Executed at {DateTime.Now}");
                 }
-                catch (Exception ex)
-                {
-                    exception = ex.Message;
-                    status = false;
+            }
+            catch (Exception ex)
+            {
+                exception = ex.Message;
+                status = false;
 
-                    LogService.Error($"{projectName} - {serviceName} - OnTimedEvent Exception: {ex.Message}");
-                }
+                LogService.Error($"{projectName} - {serviceName} - OnTimedEvent Exception: {ex.Message}");
             }
 
             Report(status, exception);
