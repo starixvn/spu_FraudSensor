@@ -78,7 +78,7 @@ namespace Fanex.NAP.FS.Service
 
                     if(fraudCaseMessage == null)
                     {
-                        LogService.Error($"{projectName} - {_serviceName} - Start service - Fraud case id: {_fraudCaseId}");
+                        LogService.Info($"{projectName} - {_serviceName} - Start service - Fraud case id: {_fraudCaseId}");
                         MessageHandler(new FraudCaseMessage
                         {
                             Action = Model.Action.Activating,
@@ -189,7 +189,12 @@ namespace Fanex.NAP.FS.Service
 #if DEBUG
             Console.WriteLine("-> Get fraud case action is executing...");
 #endif
+            var isUatTest = AppSetting.Environment == 2 ? true : false;
             var fraudCase = fraudCaseService.GetFraudCaseFromConfig();
+            if (!isUatTest)
+            {
+                fraudCase = fraudCaseService.GetByFraudCaseId(fraudCaseId, AppSetting.Environment);
+            }
 
             if (fraudCase != null)
             {
