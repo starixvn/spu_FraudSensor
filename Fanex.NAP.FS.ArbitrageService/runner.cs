@@ -51,16 +51,13 @@ namespace Fanex.NAP.FS.ArbitrageService
             try
             {
                 var isUM = baseService.CheckUM();
-#if DEBUG
-                Console.WriteLine("-> Fraud Case UM: " + isUM);
-#endif
+
                 if (!isUM)
                 {
+                    if (isRunning) return;
 #if DEBUG
                     Console.WriteLine("-> Fraud Case is executing at " + DateTime.Now);
 #endif
-                    if (isRunning) return;
-
                     isRunning = true;
 
                     CleanResult();
