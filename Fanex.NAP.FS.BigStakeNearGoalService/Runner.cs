@@ -57,7 +57,7 @@ namespace Fanex.NAP.FS.BigStakeNearGoalService
                     if (isRunning) return;
 
                     isRunning = true;
-
+                    LogService.Info($"{projectName} - {serviceName} - Start execution at {DateTime.Now}");
                     CleanResult();
                     Precondition();
                     Rule();

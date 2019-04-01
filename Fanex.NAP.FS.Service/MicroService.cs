@@ -78,6 +78,7 @@ namespace Fanex.NAP.FS.Service
 
                     if(fraudCaseMessage == null)
                     {
+                        LogService.Error($"{projectName} - {_serviceName} - Start service - Fraud case id: {_fraudCaseId}");
                         MessageHandler(new FraudCaseMessage
                         {
                             Action = Model.Action.Activating,
