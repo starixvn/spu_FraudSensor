@@ -133,16 +133,16 @@ namespace Fanex.NAP.FS.Service
             }
         }
 
-        public void Report(bool status, string exception)
+        public void Report(ReportModel model)
         {
             var client = new RestClient(AppSetting.HeartBeatUrl);
             var request = new RestRequest("/api/HealthCheck/beat", Method.POST);
 
-            request.AddQueryParameter("serviceName", _serviceName);
-            request.AddQueryParameter("status", status.ToString());
-            request.AddQueryParameter("exception", exception);
-            request.AddQueryParameter("timeout", _fraudCase.FraudCaseInterval.ToString());
-            request.AddQueryParameter("fraudcaseid", _fraudCase.FraudCaseId.ToString());
+            request.AddQueryParameter("serviceName", model.ServiceName);
+            request.AddQueryParameter("status", model.Status.ToString());
+            request.AddQueryParameter("exception", model.Exception);
+            request.AddQueryParameter("timeout", model.Timeout.ToString());
+            request.AddQueryParameter("fraudcaseid", model.FraudcaseId.ToString());
 
             try
             {

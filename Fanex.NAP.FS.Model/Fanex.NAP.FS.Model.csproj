@@ -45,6 +45,7 @@
     <Compile Include="Environment.cs" />
     <Compile Include="FraudCaseMessage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReportModel.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

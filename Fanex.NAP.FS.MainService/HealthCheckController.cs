@@ -33,7 +33,8 @@ namespace Fanex.NAP.FS.MainService
         [HttpPost]
         public void Beat(string serviceName, bool status, string exception, int timeout, int fraudcaseid)
         {
-            LogService.Info($"Service name: {serviceName} - Status: {status} - Fraud case ID: {fraudcaseid} - Message: Executed at {DateTime.Now}");
+            var message = $"Service name: {serviceName} - Status: {status} - Fraud case ID: {fraudcaseid} - Message: Executed at {DateTime.Now}";
+            LogService.Info(message);
 
 //            var thread = threadsMonitor.Where(t => t.Name == serviceName).FirstOrDefault();
 //            if (thread != null)
@@ -83,7 +84,7 @@ namespace Fanex.NAP.FS.MainService
 //            threadsMonitor.Add(thread);
 
 #if DEBUG
-            System.Console.WriteLine($"{serviceName} is reported already.");
+            System.Console.WriteLine(message);
 #endif
         }
 

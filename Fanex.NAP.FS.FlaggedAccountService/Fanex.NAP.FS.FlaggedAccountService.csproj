@@ -108,6 +108,10 @@
       <Project>{2d6f84f8-e9b5-49ec-b487-05b44e994dcc}</Project>
       <Name>Fanex.NAP.FS.Library</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Fanex.NAP.FS.Model\Fanex.NAP.FS.Model.csproj">
+      <Project>{5ce0ba40-0a37-4c89-a33b-d61c7944be08}</Project>
+      <Name>Fanex.NAP.FS.Model</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Fanex.NAP.FS.Service\Fanex.NAP.FS.Service.csproj">
       <Project>{e60465e7-1880-4a9e-846c-964af786ce7e}</Project>
       <Name>Fanex.NAP.FS.Service</Name>

@@ -1,6 +1,7 @@
 ﻿using Fanex.Logging;
 using Fanex.NAP.FS.Library.DTO;
 using Fanex.NAP.FS.Library.Models;
+using Fanex.NAP.FS.Model;
 using Fanex.NAP.FS.Service;
 using System;
 using System.Collections.Generic;
@@ -102,7 +103,17 @@ namespace Fanex.NAP.FS.BigStakeNearGoalService
 
         void Report(bool status, string exception)
         {
-            baseService.Report(status, exception);
+            var model = new ReportModel()
+            {
+
+                ServiceName = serviceName,
+                Exception = exception,
+                FraudcaseId = baseService.FraudCase.FraudCaseId,
+                Status = status,
+                Timeout = baseService.FraudCase.FraudCaseInterval
+            };
+
+            baseService.Report(model);
         }
 
         private Task ExecuteSingle(Match match)
