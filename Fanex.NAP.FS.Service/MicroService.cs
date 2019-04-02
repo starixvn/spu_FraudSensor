@@ -204,6 +204,7 @@ namespace Fanex.NAP.FS.Service
 #endif
             var isUatTest = AppSetting.Environment == 2 ? true : false;
             var fraudCase = fraudCaseService.GetFraudCaseFromConfig();
+
             if (!isUatTest)
             {
                 fraudCase = fraudCaseService.GetByFraudCaseId(fraudCaseId, AppSetting.Environment);

@@ -94,7 +94,15 @@ namespace Fanex.NAP.FS.ArbitrageService
 
             var customers = tsk.SelectMany(t => t.Result);
 
+#if DEBUG
+            Console.WriteLine("=> GroupData is executing at " + DateTime.Now + ". Customers counter: " + customers.Count());
+#endif
+
             arbitrageService.Rule(tickets.ToXmlString(), customers.ToXmlString());
+
+#if DEBUG
+            Console.WriteLine("===> GroupData is executed at " + DateTime.Now);
+#endif
         }
 
         private async Task<IEnumerable<ArbitrageCustomer>> GroupCustomer(IEnumerable<int> custids)
