@@ -105,7 +105,6 @@ namespace Fanex.NAP.FS.BigStakeNearGoalService
         {
             var model = new ReportModel()
             {
-
                 ServiceName = serviceName,
                 Exception = exception,                
                 Status = status,
