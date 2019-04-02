@@ -19,12 +19,11 @@
 
         public void LoadFraudCases()
         {
-            //var fraudCases = _fraudCaseService.Get(null, 1, int.Parse(ConfigurationManager.AppSettings["Environment"]));
+            var fraudCases = _fraudCaseService.Get(null, 1, int.Parse(ConfigurationManager.AppSettings["Environment"]));
 
-            Logging.Logger.Log.Info($"fraudcase: Arbitrage - active: Active");
-
-            _sendingCase.Send(10);
-            /*
+            //Logging.Logger.Log.Info($"fraudcase: Arbitrage - active: Active");
+            //_sendingCase.Send(10);
+                        
             foreach (var fraudCase in fraudCases)
             {
                 Logging.Logger.Log.Info($"fraudcase: {fraudCase.FraudCaseName} - active: {fraudCase.IsActive}");
@@ -33,7 +32,7 @@
                 {
                     _sendingCase.Send(fraudCase.FraudCaseId);
                 }
-            }*/
+            }
         }
     }
 }
