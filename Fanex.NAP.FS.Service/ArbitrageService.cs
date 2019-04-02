@@ -17,7 +17,8 @@ namespace Fanex.NAP.FS.Service
 
             using (var db = new ObjectDb(criteria.GetSettingKey()))
             {
-                return db.Query<ArbitrageTicket>(criteria);
+                return null;
+                //return db.Query<ArbitrageTicket>(criteria);
             }
         }
 
@@ -33,7 +34,7 @@ namespace Fanex.NAP.FS.Service
             {
                 var param = criteria.GetSpParams();
 
-                db.ExecuteNonQuery(param);
+               // db.ExecuteNonQuery(param);
             }
         }
     }

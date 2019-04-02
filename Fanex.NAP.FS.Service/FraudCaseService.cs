@@ -17,7 +17,7 @@ namespace Fanex.NAP.FS.Service
             var criteria = new FraudCaseGetCriteria(isInternal, isActive, environment);;
             
             using (var db = new ObjectDb(criteria.GetSettingKey()))
-            {
+            {                
                 return db.Query<FraudCase>(criteria);
             }
         }
@@ -31,7 +31,7 @@ namespace Fanex.NAP.FS.Service
             };
 
             using (var db = new ObjectDb(criteria.GetSettingKey()))
-            {
+            {                
                 return db.QueryEntity<FraudCase>(criteria);
             }
         }
