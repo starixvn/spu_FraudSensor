@@ -42,29 +42,36 @@ namespace Fanex.NAP.FS.MainService
 
             thread = new Thread(() =>
             {
-                var count = 0;
-                if (!status)
+                try
                 {
-                    string message = $"Service name: {serviceName} - Status: {status} - Exception: {exception}";
+                    var count = 0;
+                    if (!status)
+                    {
+                        string message = $"Service name: {serviceName} - Status: {status} - Exception: {exception}";
 #if DEBUG
-                    System.Console.WriteLine(message);
+                        System.Console.WriteLine(message);
 #endif
-                    LogService.Error(message);
-                }
+                        LogService.Error(message);
+                    }
 
-                Thread.Sleep((timeout + 5) * 1000);
-                do
-                {
-                    var notifyMessage = $"Health check - Service name: {serviceName} - Retry action " + (count + 1) + " time(s)";
-                    LogService.Error(notifyMessage);
-
-                    RetryFraudCaseService(fraudcaseid);
                     Thread.Sleep((timeout + 5) * 1000);
-                    count++;
-                } while (count < 3);
+                    do
+                    {
+                        var notifyMessage = $"Health check - Service name: {serviceName} - Retry action " + (count + 1) + " time(s)";
+                        LogService.Error(notifyMessage);
 
-                var errorMessage = $"Health check - Service name: {serviceName} - Do not receive heart beat in " + timeout * 3 + " seconds";
-                LogService.Error(errorMessage);
+                        RetryFraudCaseService(fraudcaseid);
+                        Thread.Sleep((timeout + 5) * 1000);
+                        count++;
+                    } while (count < 3);
+
+                    var errorMessage = $"Health check - Service name: {serviceName} - Do not receive heart beat in " + timeout * 3 + " seconds";
+                    LogService.Error(errorMessage);
+                }
+                catch (Exception ex)
+                {
+                    LogService.Error($"Main Service - Beat function - Exception: {ex.Message}");
+                }
 
             })
             {
