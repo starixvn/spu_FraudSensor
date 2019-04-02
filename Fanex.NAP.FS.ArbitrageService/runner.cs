@@ -46,7 +46,7 @@ namespace Fanex.NAP.FS.ArbitrageService
         private void OnTimedEvent(Object source, System.Timers.ElapsedEventArgs e)
         {
             var exception = string.Empty;
-            var status = true;           
+            var status = true;
 
             try
             {
@@ -137,13 +137,17 @@ namespace Fanex.NAP.FS.ArbitrageService
         {
             XmlHelper.RegisterType<ArbitrageTicket>();
             XmlHelper.RegisterType<ArbitrageCustomer>();
-            var ticketGroupBy = tickets.GroupBy(t => t.MatchId);
-#if DEBUG
-            Console.WriteLine("=> Rule is executing at " + DateTime.Now + ". Ticket Group By counter: " + ticketGroupBy.Count());
-#endif
-            foreach (var g in ticketGroupBy)
+
+            if (tickets != null && tickets.Any())
             {
-                GroupData(g.Key, g);
+                var ticketGroupBy = tickets.GroupBy(t => t.MatchId);
+#if DEBUG
+                Console.WriteLine("=> Rule is executing at " + DateTime.Now + ". Ticket Group By counter: " + ticketGroupBy.Count());
+#endif
+                foreach (var g in ticketGroupBy)
+                {
+                    GroupData(g.Key, g);
+                }
             }
         }
 
