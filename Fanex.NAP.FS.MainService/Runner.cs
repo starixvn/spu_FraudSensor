@@ -101,7 +101,7 @@ namespace Fanex.NAP.FS.MainService
                             Console.WriteLine(log);
 #endif
 
-                            LogService.Info(log);
+                            //LogService.Info(log);
                         }
                     }
                 }

@@ -9,25 +9,30 @@ using EasyNetQ;
 using Fanex.NAP.FS.Model;
 using Fanex.NAP.FS.Library.Models;
 using Fanex.NAP.FS.Core;
+using System.Threading.Tasks;
 
 namespace Fanex.NAP.FS.MainService
 {
     public class HealthCheckController : ApiController
     {
-       // private static List<Thread> threadsMonitor = new List<Thread>();
-        //private static Queue.EasyNetQ _rabbitMQ;
+        private static List<FraudCaseHealth> lstFCHealth;
+        private static Queue.EasyNetQ _rabbitMQ;
 
-        public HealthCheckController()
+        static HealthCheckController()
         {
-            //_rabbitMQ = new Queue.EasyNetQ(AppSetting.Host + ":" + AppSetting.Post,
-            //    AppSetting.VirtualHost,
-            //    AppSetting.PrefetchCount,
-            //    AppSetting.UserName,
-            //    AppSetting.Password);
+            lstFCHealth = new List<FraudCaseHealth>();
+            _rabbitMQ = new Queue.EasyNetQ(AppSetting.Host + ":" + AppSetting.Post,
+                AppSetting.VirtualHost,
+                AppSetting.PrefetchCount,
+                AppSetting.UserName,
+                AppSetting.Password);
 
-            //_rabbitMQ
-            //    .CreateBus()
-            //    .DeclareExchange(AppSetting.Exchange);
+            _rabbitMQ
+                .CreateBus()
+                .DeclareExchange(AppSetting.Exchange);
+
+            var thread = new Thread(CheckFraudCaseStatus);
+            thread.Start();
         }
 
         [HttpPost]
@@ -36,55 +41,36 @@ namespace Fanex.NAP.FS.MainService
             var message = $"Service name: {serviceName} - Status: {status} - Fraud case ID: {fraudcaseid} - Message: Executed at {DateTime.Now}";
             LogService.Info(message);
 
-//            var thread = threadsMonitor.Where(t => t.Name == serviceName).FirstOrDefault();
-//            if (thread != null)
-//            {
-//                threadsMonitor.Remove(thread);
-//                thread.Abort();
-//            }
+            var fcHealth = lstFCHealth.Where(f => f.FraudCaseId == fraudcaseid).FirstOrDefault();
+            if (fcHealth == null)
+            {
+                var fraudcase = new FraudCaseHealth()
+                {
+                    FraudCaseId = fraudcaseid,
+                    IsLive = true,
+                    TimeOut = timeout,
+                    LastTimeSignal = DateTime.Now
+                };
 
-//            thread = new Thread(() =>
-//            {
-//                try
-//                {
-//                    var count = 0;
-//                    if (!status)
-//                    {
-//                        string message = $"Service name: {serviceName} - Status: {status} - Exception: {exception}";
-//#if DEBUG
-//                        System.Console.WriteLine(message);
-//#endif
-//                        LogService.Error(message);
-//                    }
+                lstFCHealth.Add(fraudcase);
+            }
+            else
+            {
+                fcHealth.TimeOut = timeout;
+                fcHealth.LastTimeSignal = DateTime.Now;
+            }
 
-//                    Thread.Sleep((timeout + 5) * 1000);
-//                    do
-//                    {
-//                        var notifyMessage = $"Health check - Service name: {serviceName} - Retry action " + (count + 1) + " time(s)";
-//                        LogService.Error(notifyMessage);
-
-//                        RetryFraudCaseService(fraudcaseid);
-//                        Thread.Sleep((timeout + 5) * 1000);
-//                        count++;
-//                    } while (count < 3);
-
-//                    var errorMessage = $"Health check - Service name: {serviceName} - Do not receive heart beat in " + timeout * 3 + " seconds";
-//                    LogService.Error(errorMessage);
-//                }
-//                catch (Exception ex)
-//                {
-//                    LogService.Error($"Main Service - Beat function - Exception: {ex.Message}");
-//                }
-
-//            })
-//            {
-//                Name = serviceName
-//            };
-//            thread.Start();
-//            threadsMonitor.Add(thread);
+            if (!status)
+            {
+                message = $"Service name: {serviceName} - Status: {status} - Exception: {exception}";
+#if DEBUG
+                System.Console.WriteLine(message);
+#endif
+                LogService.Error(message);
+            }
 
 #if DEBUG
-            System.Console.WriteLine(message);
+            System.Console.WriteLine($"{serviceName} is reported already.");
 #endif
         }
 
@@ -94,45 +80,68 @@ namespace Fanex.NAP.FS.MainService
             return "I'm here. Everything is ok now. (Nhìn cái gì!! OK rồi =.=')";
         }
 
-//        private void RetryFraudCaseService(int fraudCaseId)
-//        {
-//            var fraudCaseService = new Service.FraudCaseService();
+        private static void RetryFraudCaseService(int fraudCaseId)
+        {
+            var fraudCaseService = new Service.FraudCaseService();
+            var fraudCase = fraudCaseService.GetByFraudCaseId(1, Core.AppSetting.Environment);
 
-//            var fraudCase = fraudCaseService.GetByFraudCaseId(1, Core.AppSetting.Environment);
+            if (fraudCase.IsActive)
+            {
+                var fraudCaseName = Enum.GetName(typeof(FraudCaseId), fraudCase.FraudCaseId);
 
-//            if (fraudCase.IsActive)
-//            {
-//                var fraudCaseName = Enum.GetName(typeof(FraudCaseId), fraudCase.FraudCaseId);
+                if (!string.IsNullOrWhiteSpace(fraudCaseName))
+                {
+                    _rabbitMQ
+                        .DeclareQueue(fraudCaseName)
+                        .DeclareRoutingKey(fraudCaseName)
+                        .Bind();
 
-//                if (!string.IsNullOrWhiteSpace(fraudCaseName))
-//                {
-//                    _rabbitMQ
-//                        .DeclareQueue(fraudCaseName)
-//                        .DeclareRoutingKey(fraudCaseName)
-//                        .Bind();
+                    if (!string.IsNullOrWhiteSpace(_rabbitMQ.QueueName))
+                    {
+                        var message = new Message<FraudCaseMessage>(new FraudCaseMessage
+                        {
+                            Action = Model.Action.Retry,
+                            Id = fraudCase.FraudCaseId,
+                            Name = fraudCase.FraudCaseName,
+                            Message = "Message is sent at" + DateTime.Now
+                        }, new MessageProperties { DeliveryMode = 2, Priority = 9 });
 
-//                    if (!string.IsNullOrWhiteSpace(_rabbitMQ.QueueName))
-//                    {
-//                        var message = new Message<FraudCaseMessage>(new FraudCaseMessage
-//                        {
-//                            Action = Model.Action.Retry,
-//                            Id = fraudCase.FraudCaseId,
-//                            Name = fraudCase.FraudCaseName,
-//                            Message = "Message is sent at" + DateTime.Now
-//                        }, new MessageProperties { DeliveryMode = 2, Priority = 9 });
+                        var log = $"Load Fraud Case - Queue: {_rabbitMQ.QueueName}, RoutingKey: {_rabbitMQ.RoutingKey}, Exchange: {_rabbitMQ.ExchangeName}";
 
-//                        var log = $"Load Fraud Case - Queue: {_rabbitMQ.QueueName}, RoutingKey: {_rabbitMQ.RoutingKey}, Exchange: {_rabbitMQ.ExchangeName}";
+                        _rabbitMQ.AdvanceBus.PublishAsync(_rabbitMQ.Exchange, _rabbitMQ.RoutingKey, false, message);
+#if DEBUG
+                        Console.WriteLine(log);
+#endif
 
-//                        _rabbitMQ.AdvanceBus.PublishAsync(_rabbitMQ.Exchange, _rabbitMQ.RoutingKey, false, message);
-//#if DEBUG
-//                        Console.WriteLine(log);
-//#endif
+                        LogService.Info(log);
+                    }
 
-//                        LogService.Info(log);
-//                    }
+                }
+            }
+        }
 
-//                }
-//            }
-//        }
+        private static void CheckFraudCaseStatus()
+        {
+            do
+            {
+                Parallel.ForEach(lstFCHealth, fcHealth =>
+                {
+                    var timeout = fcHealth.TimeOut;
+                    var period = (DateTime.Now - fcHealth.LastTimeSignal).TotalSeconds;
+                    if (period > fcHealth.TimeOut)
+                    {
+                        var notifyMessage = $"Health check - Service name: {fcHealth.FraudCaseId} - Retry service";
+                        LogService.Error(notifyMessage);
+                        RetryFraudCaseService(fcHealth.FraudCaseId);
+                        period = (DateTime.Now - fcHealth.LastTimeSignal).TotalSeconds;
+
+                        var errorMessage = $"Health check - Service name: {fcHealth.FraudCaseId} - Do not receive heart beat in " + period + " seconds";
+                        LogService.Error(errorMessage);
+                    }
+                });
+
+                Thread.Sleep(10000);
+            } while (true);
+        }
     }
 }

@@ -77,16 +77,16 @@ namespace Fanex.NAP.FS.FlaggedAccountService
         {
             var exception = string.Empty;
             var status = true;
-
+            Report(status, exception);
             try
             {
                 var isUM = baseService.CheckUM();
                 if (!isUM)
                 {
+                    if (isRunning) return;
 #if DEBUG
                     Console.WriteLine("-> Fraud Case is executing at " + DateTime.Now);
 #endif
-                    if (isRunning) return;
 
                     isRunning = true;
 
