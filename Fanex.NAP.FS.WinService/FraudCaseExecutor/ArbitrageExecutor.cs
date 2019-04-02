@@ -21,8 +21,6 @@
 
         public ArbitrageExecutor(FraudCase fraudCase) : base(fraudCase)
         {
-            var message = "Arbitrage is activating";
-            SendMailInform(message, message);
         }
 
         protected override void ExecutePrecondition()
