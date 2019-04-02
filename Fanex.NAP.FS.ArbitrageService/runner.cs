@@ -125,8 +125,7 @@ namespace Fanex.NAP.FS.ArbitrageService
             var model = new ReportModel() {
 
                 ServiceName = serviceName,
-                Exception = exception,
-                FraudcaseId = baseService.FraudCase.FraudCaseId,
+                Exception = exception,                
                 Status = status,
                 Timeout = baseService.FraudCase.FraudCaseInterval
             };
