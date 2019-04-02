@@ -17,13 +17,14 @@ using ONEbook.UM.AspNetMVC.Configuration;
 using ONEbook.UM;
 using ONEbook.UM.Helpers;
 using ONEbook.UM.Services;
+using System.Threading;
 
 namespace Fanex.NAP.FS.Service
 {
     public class MicroService
     {
         private static Queue.EasyNetQ _rabbitMQ;
-        private static Timer _timer;
+        private static System.Timers.Timer _timer;
         private static string _serviceName;        
         private static int _fraudCaseId;
         private static string _queueName;
@@ -66,7 +67,7 @@ namespace Fanex.NAP.FS.Service
 #if DEBUG
             Console.WriteLine($"-> {_serviceName} is starting...");
 #endif
-            _timer = new Timer();
+            _timer = new System.Timers.Timer();
             _timer.Elapsed += onTimedEvent;
             _timer.AutoReset = true;
 
@@ -97,7 +98,12 @@ namespace Fanex.NAP.FS.Service
                 LogService.Error($"{projectName} - {_serviceName} - Start Exception: {_queueName} is empty.");
             }
 
-            InvokeActionHandlerEvent(onTimedEvent);
+            ThreadPool.QueueUserWorkItem(new WaitCallback((_) =>
+            {
+                Thread.Sleep(1000 * 10);
+
+                InvokeActionHandlerEvent(onTimedEvent);
+            }));            
         }
 
         private void InvokeActionHandlerEvent(ElapsedEventHandler onTimedEvent)
@@ -105,7 +111,7 @@ namespace Fanex.NAP.FS.Service
             if (_fraudCase == null)
             {
                 _fraudCase = GetFraudCase(_fraudCaseId);
-            }
+            }                        
 
             onTimedEvent.Invoke(null, null);
         }

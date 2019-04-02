@@ -76,9 +76,11 @@ namespace Fanex.NAP.FS.FlaggedAccountService
         {
             var exception = string.Empty;
             var status = true;
-            if (!baseService.CheckUM())
+
+            try
             {
-                try
+                var isUM = baseService.CheckUM();
+                if (!isUM)
                 {
 #if DEBUG
                     Console.WriteLine("-> Fraud Case is executing at " + DateTime.Now);
@@ -96,13 +98,13 @@ namespace Fanex.NAP.FS.FlaggedAccountService
                     Console.WriteLine("=> Fraud Case is executed at " + DateTime.Now);
 #endif
                 }
-                catch (Exception ex)
-                {
-                    exception = ex.Message;
-                    status = false;
+            }
+            catch (Exception ex)
+            {
+                exception = ex.Message;
+                status = false;
 
-                    LogService.Critical($"{projectName} - {serviceName} - OnTimedEvent Exception: {ex.Message}");
-                }
+                LogService.Critical($"{projectName} - {serviceName} - OnTimedEvent Exception: {ex.Message}");
             }
 
             Report(status, exception);

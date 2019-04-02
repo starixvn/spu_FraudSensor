@@ -1,9 +1,7 @@
 ﻿using Fanex.Logging;
-using Fanex.NAP.FS.Core;
 using Fanex.NAP.FS.Library.DTO;
 using Fanex.NAP.FS.Library.Models;
 using Fanex.NAP.FS.Service;
-using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,10 +45,13 @@ namespace Fanex.NAP.FS.BigStakeNearGoalService
         {
             var exception = string.Empty;
             var status = true;
-            if (!baseService.CheckUM())
+
+            try
             {
-                try
+                var isUM = baseService.CheckUM();
+                if (!isUM)
                 {
+
 #if DEBUG
                     Console.WriteLine("-> Fraud Case is executing at " + DateTime.Now);
 #endif
@@ -69,13 +70,13 @@ namespace Fanex.NAP.FS.BigStakeNearGoalService
 #endif
                     LogService.Info($"{projectName} - {serviceName} - Executed at {DateTime.Now}");
                 }
-                catch (Exception ex)
-                {
-                    exception = ex.Message;
-                    status = false;
+            }
+            catch (Exception ex)
+            {
+                exception = ex.Message;
+                status = false;
 
-                    LogService.Critical($"{projectName} - {serviceName} - OnTimedEvent Exception: {ex.Message}");
-                }
+                LogService.Critical($"{projectName} - {serviceName} - OnTimedEvent Exception: {ex.Message}");
             }
 
             Report(status, exception);
@@ -92,7 +93,7 @@ namespace Fanex.NAP.FS.BigStakeNearGoalService
         }
 
         void CleanResult()
-        {           
+        {
             if (_matches != null && _matches.Any())
             {
                 _matches = Enumerable.Empty<Match>();
