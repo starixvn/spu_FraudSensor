@@ -58,7 +58,6 @@ namespace Fanex.NAP.FS.BigStakeNearGoalService
                     if (isRunning) return;
 
                     isRunning = true;
-                    LogService.Info($"{projectName} - {serviceName} - Start execution at {DateTime.Now}");
                     CleanResult();
                     Precondition();
                     Rule();
@@ -68,7 +67,6 @@ namespace Fanex.NAP.FS.BigStakeNearGoalService
 #if DEBUG
                     Console.WriteLine("=> Fraud Case is executed at " + DateTime.Now);
 #endif
-                    LogService.Info($"{projectName} - {serviceName} - Executed at {DateTime.Now}");
                 }
             }
             catch (Exception ex)
