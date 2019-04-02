@@ -14,71 +14,73 @@ namespace Fanex.NAP.FS.MainService
 {
     public class HealthCheckController : ApiController
     {
-        private static List<Thread> threadsMonitor = new List<Thread>();
-        private static Queue.EasyNetQ _rabbitMQ;
+       // private static List<Thread> threadsMonitor = new List<Thread>();
+        //private static Queue.EasyNetQ _rabbitMQ;
 
         public HealthCheckController()
         {
-            _rabbitMQ = new Queue.EasyNetQ(AppSetting.Host + ":" + AppSetting.Post,
-                AppSetting.VirtualHost,
-                AppSetting.PrefetchCount,
-                AppSetting.UserName,
-                AppSetting.Password);
+            //_rabbitMQ = new Queue.EasyNetQ(AppSetting.Host + ":" + AppSetting.Post,
+            //    AppSetting.VirtualHost,
+            //    AppSetting.PrefetchCount,
+            //    AppSetting.UserName,
+            //    AppSetting.Password);
 
-            _rabbitMQ
-                .CreateBus()
-                .DeclareExchange(AppSetting.Exchange);
+            //_rabbitMQ
+            //    .CreateBus()
+            //    .DeclareExchange(AppSetting.Exchange);
         }
 
         [HttpPost]
         public void Beat(string serviceName, bool status, string exception, int timeout, int fraudcaseid)
         {
-            var thread = threadsMonitor.Where(t => t.Name == serviceName).FirstOrDefault();
-            if (thread != null)
-            {
-                threadsMonitor.Remove(thread);
-                thread.Abort();
-            }
+            LogService.Info($"Service name: {serviceName} - Status: {status} - Fraud case ID: {fraudcaseid} - Message: Executed at {DateTime.Now}");
 
-            thread = new Thread(() =>
-            {
-                try
-                {
-                    var count = 0;
-                    if (!status)
-                    {
-                        string message = $"Service name: {serviceName} - Status: {status} - Exception: {exception}";
-#if DEBUG
-                        System.Console.WriteLine(message);
-#endif
-                        LogService.Error(message);
-                    }
+//            var thread = threadsMonitor.Where(t => t.Name == serviceName).FirstOrDefault();
+//            if (thread != null)
+//            {
+//                threadsMonitor.Remove(thread);
+//                thread.Abort();
+//            }
 
-                    Thread.Sleep((timeout + 5) * 1000);
-                    do
-                    {
-                        var notifyMessage = $"Health check - Service name: {serviceName} - Retry action " + (count + 1) + " time(s)";
-                        LogService.Error(notifyMessage);
+//            thread = new Thread(() =>
+//            {
+//                try
+//                {
+//                    var count = 0;
+//                    if (!status)
+//                    {
+//                        string message = $"Service name: {serviceName} - Status: {status} - Exception: {exception}";
+//#if DEBUG
+//                        System.Console.WriteLine(message);
+//#endif
+//                        LogService.Error(message);
+//                    }
 
-                        RetryFraudCaseService(fraudcaseid);
-                        Thread.Sleep((timeout + 5) * 1000);
-                        count++;
-                    } while (count < 3);
+//                    Thread.Sleep((timeout + 5) * 1000);
+//                    do
+//                    {
+//                        var notifyMessage = $"Health check - Service name: {serviceName} - Retry action " + (count + 1) + " time(s)";
+//                        LogService.Error(notifyMessage);
 
-                    var errorMessage = $"Health check - Service name: {serviceName} - Do not receive heart beat in " + timeout * 3 + " seconds";
-                    LogService.Error(errorMessage);
-                }
-                catch (Exception ex)
-                {
-                    LogService.Error($"Main Service - Beat function - Exception: {ex.Message}");
-                }
+//                        RetryFraudCaseService(fraudcaseid);
+//                        Thread.Sleep((timeout + 5) * 1000);
+//                        count++;
+//                    } while (count < 3);
 
-            })
-            {
-                Name = serviceName
-            };
-            thread.Start();
-            threadsMonitor.Add(thread);
+//                    var errorMessage = $"Health check - Service name: {serviceName} - Do not receive heart beat in " + timeout * 3 + " seconds";
+//                    LogService.Error(errorMessage);
+//                }
+//                catch (Exception ex)
+//                {
+//                    LogService.Error($"Main Service - Beat function - Exception: {ex.Message}");
+//                }
+
+//            })
+//            {
+//                Name = serviceName
+//            };
+//            thread.Start();
+//            threadsMonitor.Add(thread);
 
 #if DEBUG
             System.Console.WriteLine($"{serviceName} is reported already.");
@@ -91,45 +93,45 @@ namespace Fanex.NAP.FS.MainService
             return "I'm here. Everything is ok now. (Nhìn cái gì!! OK rồi =.=')";
         }
 
-        private void RetryFraudCaseService(int fraudCaseId)
-        {
-            var fraudCaseService = new Service.FraudCaseService();
+//        private void RetryFraudCaseService(int fraudCaseId)
+//        {
+//            var fraudCaseService = new Service.FraudCaseService();
 
-            var fraudCase = fraudCaseService.GetByFraudCaseId(1, Core.AppSetting.Environment);
+//            var fraudCase = fraudCaseService.GetByFraudCaseId(1, Core.AppSetting.Environment);
 
-            if (fraudCase.IsActive)
-            {
-                var fraudCaseName = Enum.GetName(typeof(FraudCaseId), fraudCase.FraudCaseId);
+//            if (fraudCase.IsActive)
+//            {
+//                var fraudCaseName = Enum.GetName(typeof(FraudCaseId), fraudCase.FraudCaseId);
 
-                if (!string.IsNullOrWhiteSpace(fraudCaseName))
-                {
-                    _rabbitMQ
-                        .DeclareQueue(fraudCaseName)
-                        .DeclareRoutingKey(fraudCaseName)
-                        .Bind();
+//                if (!string.IsNullOrWhiteSpace(fraudCaseName))
+//                {
+//                    _rabbitMQ
+//                        .DeclareQueue(fraudCaseName)
+//                        .DeclareRoutingKey(fraudCaseName)
+//                        .Bind();
 
-                    if (!string.IsNullOrWhiteSpace(_rabbitMQ.QueueName))
-                    {
-                        var message = new Message<FraudCaseMessage>(new FraudCaseMessage
-                        {
-                            Action = Model.Action.Retry,
-                            Id = fraudCase.FraudCaseId,
-                            Name = fraudCase.FraudCaseName,
-                            Message = "Message is sent at" + DateTime.Now
-                        }, new MessageProperties { DeliveryMode = 2, Priority = 9 });
+//                    if (!string.IsNullOrWhiteSpace(_rabbitMQ.QueueName))
+//                    {
+//                        var message = new Message<FraudCaseMessage>(new FraudCaseMessage
+//                        {
+//                            Action = Model.Action.Retry,
+//                            Id = fraudCase.FraudCaseId,
+//                            Name = fraudCase.FraudCaseName,
+//                            Message = "Message is sent at" + DateTime.Now
+//                        }, new MessageProperties { DeliveryMode = 2, Priority = 9 });
 
-                        var log = $"Load Fraud Case - Queue: {_rabbitMQ.QueueName}, RoutingKey: {_rabbitMQ.RoutingKey}, Exchange: {_rabbitMQ.ExchangeName}";
+//                        var log = $"Load Fraud Case - Queue: {_rabbitMQ.QueueName}, RoutingKey: {_rabbitMQ.RoutingKey}, Exchange: {_rabbitMQ.ExchangeName}";
 
-                        _rabbitMQ.AdvanceBus.PublishAsync(_rabbitMQ.Exchange, _rabbitMQ.RoutingKey, false, message);
-#if DEBUG
-                        Console.WriteLine(log);
-#endif
+//                        _rabbitMQ.AdvanceBus.PublishAsync(_rabbitMQ.Exchange, _rabbitMQ.RoutingKey, false, message);
+//#if DEBUG
+//                        Console.WriteLine(log);
+//#endif
 
-                        LogService.Info(log);
-                    }
+//                        LogService.Info(log);
+//                    }
 
-                }
-            }
-        }
+//                }
+//            }
+//        }
     }
 }
