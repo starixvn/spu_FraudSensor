@@ -39,7 +39,7 @@
 
             try
             {
-                _flaggedCustomers = ApiHelper.Post<CustomerEvidenceList, IEnumerable<FlaggedCustomer>>(FPS_WEBAPI_GET_CUSTOMER_EVIDENCE, param, int.Parse(ConfigurationManager.AppSettings["Environment"]), 82).Result;
+                _flaggedCustomers = ApiHelper.Post<IEnumerable<FlaggedCustomer>>(FPS_WEBAPI_GET_CUSTOMER_EVIDENCE, param).Result;
             }
             catch (Exception e)
             {
