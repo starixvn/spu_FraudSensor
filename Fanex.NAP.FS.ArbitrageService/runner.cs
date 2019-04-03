@@ -75,6 +75,7 @@ namespace Fanex.NAP.FS.ArbitrageService
             }
             catch (Exception ex)
             {
+                isRunning = false;
                 exception = ex.Message;
                 status = false;
 

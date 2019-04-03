@@ -76,6 +76,7 @@ namespace Fanex.NAP.FS.BigStakeNearGoalService
             {
                 exception = ex.Message;
                 status = false;
+                isRunning = false;
 
                 LogService.Critical($"{projectName} - {serviceName} - OnTimedEvent Exception: {ex.Message}");
             }

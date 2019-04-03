@@ -103,6 +103,7 @@ namespace Fanex.NAP.FS.FlaggedAccountService
             }
             catch (Exception ex)
             {
+                isRunning = false;
                 exception = ex.Message;
                 status = false;
 
