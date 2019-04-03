@@ -7,22 +7,24 @@ ALTER PROCEDURE [dbo].[FS_FraudCase_Arbitrage_Rule]
 	,	@Associations		VARCHAR(MAX) = NULL -- xml format
 AS
 /*
-	Created: 20180816@Long
+	Created: 20180816@Long.Luu
 	Task : Rule for Arbitrage fraud case
 	DB: bodb_FraudSensor
 	Original:
 
 	Revisions:
-		- 20180815@LONG: Implement Rule for Arbitrage fraud case
-		- 20180924@LONG: Remove the XML Documents after usage
-		- 20180926@LONG: Remove redundant fraud tickets [Redmine ID: 99753]
-		- 20180926@LONG: Fix issue of livehomescore [Redmine ID: 000000]
-		- 20180926@LONG: Performance tunning [Redmine ID: 000000]
-		- 20180926@CASEY: Implement IP Rule [Redmine ID: 109092]
+		- 20180815@Long.Luu: Implement Rule for Arbitrage fraud case
+		- 20180924@Long.Luu: Remove the XML Documents after usage
+		- 20180926@Long.Luu: Remove redundant fraud tickets [Redmine ID: 99753]
+		- 20180926@Long.Luu: Fix issue of livehomescore [Redmine ID: 000000]
+		- 20180926@Long.Luu: Performance tunning [Redmine ID: 000000]
+		- 20180926@CASEY:Implement IP Rule [Redmine ID: 109092]
 		- 20190316@CaseyHuynh: Enhance Performance, Update SuspiciousCustomer [Redmine ID: 110060]
 		- 20190320@Casey.Huynh: Enhance Performance, define PRIMARY KEY in table [110060]
 		- 20190314@Casey.Huynh: Implement, scan for completed Match [110566]
 		- 20190326@Casey.Huynh: Fix Data NUll [110914]
+		- 20190403@Long.Luu: Adding LiveHomeScore, LiveAwayScore for ArbitrageTicketDetails table [Redmine ID: 111069]
+
 	Param's Explanation (filtered by):
 */
 BEGIN
@@ -85,11 +87,11 @@ BEGIN
 		,	[Handicap]			SMALLMONEY NOT NULL
 		,	[IP]				BIGINT NOT NULL
 		PRIMARY KEY CLUSTERED(
-			MatchId			ASC
-			, TotalScore	ASC
-			, Bettype		ASC
-			, Handicap		ASC
-			, IP			ASC
+				MatchId			ASC
+			,	TotalScore		ASC
+			,	Bettype			ASC
+			,	Handicap		ASC
+			,	IP				ASC
 		)
 	);
 
@@ -111,6 +113,8 @@ BEGIN
 	(
 			MatchId				INT	
 		,	TotalScore			INT
+		,	LiveHomeScore		SMALLINT
+		,	LiveAwayScore		SMALLINT
 		,	Bettype				INT
 		,	Handicap			SMALLMONEY
 		,	CustId				INT
@@ -137,6 +141,8 @@ BEGIN
 	(
 			MatchId				INT NOT NULL
 		,	TotalScore			INT NOT NULL
+		,	LiveHomeScore		SMALLINT NOT NULL
+		,	LiveAwayScore		SMALLINT NOT NULL
 		,	Bettype				INT NOT NULL
 		,	Handicap			SMALLMONEY NOT NULL
 		,	CustId				INT NOT NULL
@@ -197,6 +203,8 @@ BEGIN
 	CREATE TABLE #tmpFraudTickets(
 			MatchId				INT
 		,	TotalScore			INT
+		,	LiveHomeScore		SMALLINT
+		,	LiveAwayScore		SMALLINT
 		,	Handicap			SMALLMONEY
 		,	GroupId				INT
 		,	GraphDBGroupId		INT
@@ -229,17 +237,19 @@ BEGIN
 			
 			MatchId				INT
 		,	TotalScore			INT
+		,	LiveHomeScore		SMALLINT
+		,	LiveAwayScore		SMALLINT
 		,	Bettype				INT
 		,	Handicap			SMALLMONEY	
 		,	GroupId				INT			
 		,	TotalStakeH			MONEY
 		,	TotalStakeA			MONEY
 		,	PRIMARY KEY CLUSTERED (			
-				MatchId				ASC
-			,	TotalScore			ASC
-			,	Bettype				ASC
-			,	Handicap			ASC
-			,	GroupId		ASC
+				MatchId			ASC
+			,	TotalScore		ASC
+			,	Bettype			ASC
+			,	Handicap		ASC
+			,	GroupId			ASC
 			)
 	);	
 
@@ -279,7 +289,7 @@ BEGIN
 	) AS Data;
 	
 	--================GET: BETTRANS TICKET
-	INSERT INTO #tmpBettrans(CustId, Username, CurrencyId, CurrencyName, MatchId, TransId, Bettype, TotalScore, Betteam, Handicap, Stake, EventDate, IP)
+	INSERT INTO #tmpBettrans(CustId, Username, CurrencyId, CurrencyName, MatchId, TransId, Bettype, TotalScore, LiveHomeScore, LiveAwayScore, Betteam, Handicap, Stake, EventDate, IP)
 	SELECT	DISTINCT [CustId]	= b.custid
 		,	[Username]			= b.Username
 		,	[CurrencyId]		= b.currency
@@ -287,7 +297,9 @@ BEGIN
 		,	[MatchId]			= b.matchid
 		,	[TransId]			= b.transid
 		,	[Bettype]			= b.bettype
-		,	[TotalScore]	= (b.livehomescore + b.liveawayscore)
+		,	[TotalScore]		= (b.livehomescore + b.liveawayscore)
+		,	[LiveHomeScore]		= b.livehomescore
+		,	[LiveAwayScore]		= b.liveawayscore
 		,	[Betteam]			= b.betteam
 		,	[Handicap]			= (b.hdp1 - b.hdp2)
 		,	[stake]				= (b.stake * b.actualrate)
@@ -301,25 +313,27 @@ BEGIN
 			AND b.Currency NOT IN (20, 27, 28);
 
 	---===========GET: ASSOCIATION TICKETS
-	INSERT INTO #tmpBettransAssociation(CustId, Username, CurrencyId, CurrencyName, MatchId, TransId, Bettype, TotalScore, Betteam, Handicap, Stake, EventDate, Ip, GraphDBGroupID, GroupId, IsIPFraud)
+	INSERT INTO #tmpBettransAssociation(CustId, Username, CurrencyId, CurrencyName, MatchId, TransId, Bettype, TotalScore, LiveHomeScore, LiveAwayScore, Betteam, Handicap, Stake, EventDate, Ip, GraphDBGroupID, GroupId, IsIPFraud)
 	SELECT	DISTINCT b.CustId
-			, b.Username
-			, b.CurrencyId
-			, b.CurrencyName
-			, b.MatchId
-			, b.TransId
-			, b.Bettype
-			, b.TotalScore
-			, b.Betteam
-			, b.Handicap
-			, b.Stake
-			, b.EventDate
-			, b.Ip
-			, a.GroupID AS GraphDBGroupID
-			, a.GroupID AS GroupID
-			, 0	AS IsIPFraud
+		,	b.Username
+		,	b.CurrencyId
+		,	b.CurrencyName
+		,	b.MatchId
+		,	b.TransId
+		,	b.Bettype
+		,	b.TotalScore
+		,	b.LiveHomeScore
+		,	b.LiveAwayScore
+		,	b.Betteam
+		,	b.Handicap
+		,	b.Stake
+		,	b.EventDate
+		,	b.Ip
+		,	a.GroupID AS GraphDBGroupID
+		,	a.GroupID AS GroupID
+		,	0	AS IsIPFraud
 	FROM	#tmpBettrans AS b WITH(NOLOCK)
-			INNER JOIN #tmpAssociation AS a WITH(NOLOCK) ON b.CustId = a.CustId;
+		INNER JOIN #tmpAssociation AS a WITH(NOLOCK) ON b.CustId = a.CustId;
 	
 	---- Merge Group By IP
 	-----Find IP has more than one groupId
@@ -371,21 +385,23 @@ BEGIN
 	END;
 
 	--=================================================================================================	
-	INSERT INTO	#tmpMatchBettypeBetteamSumStake(MatchId, TotalScore, Bettype, Handicap, GroupId, TotalStakeH, TotalStakeA)
+	INSERT INTO	#tmpMatchBettypeBetteamSumStake(MatchId, TotalScore, LiveHomeScore, LiveAwayScore, Bettype, Handicap, GroupId, TotalStakeH, TotalStakeA)
 	SELECT DISTINCT
 				[Matchid]			= ba.MatchId
 			,	[TotalScore]		= ba.TotalScore
+			,	[LiveHomeScore]		= ba.LiveHomeScore
+			,	[LiveAwayScore]		= ba.LiveAwayScore
 			,	[Bettype]			= ba.Bettype
 			,	[Handicap]			= ba.Handicap
 			,	[GroupId]			= ba.GroupId	
 			,	[TotalStakeH]		= SUM(CASE WHEN ba.Betteam = 'h' then ba.stake ELSE 0 END)
 			,	[TotalStakeA]		= SUM(CASE WHEN ba.Betteam = 'a' then ba.stake ELSE 0 END)
 	FROM		#tmpBettransAssociation ba WITH(NOLOCK)
-	GROUP BY	ba.GroupId, ba.MatchId, ba.Bettype, ba.TotalScore, ba.Handicap
+	GROUP BY	ba.GroupId, ba.MatchId, ba.Bettype, ba.TotalScore, ba.LiveHomeScore, ba.LiveAwayScore, ba.Handicap
 	HAVING		COUNT(DISTINCT ba.Betteam) > 1;
 	
 	-- Get fraud tickets
-	INSERT INTO #tmpFraudTickets (CustId, Username, CurrencyId, CurrencyName, MatchId, GroupId, Bettype, EventDate, TransId, TotalScore, Handicap, IsIPFraud, IP, GraphDBGroupId )
+	INSERT INTO #tmpFraudTickets (CustId, Username, CurrencyId, CurrencyName, MatchId, GroupId, Bettype, EventDate, TransId, TotalScore, LiveHomeScore, LiveAwayScore, Handicap, IsIPFraud, IP, GraphDBGroupId )
 	SELECT DISTINCT 
 				[CustId]			= bb.CustId
 			,	[Username]			= bb.Username
@@ -397,6 +413,8 @@ BEGIN
 			,	[EventDate]			= bb.EventDate
 			,	[TransId]			= bb.TransId
 			,	[TotalScore]		= r.TotalScore
+			,	[LiveHomeScore]		= r.LiveHomeScore
+			,	[LiveAwayScore]		= r.LiveAwayScore
 			,	[Handicap]			= r.Handicap
 			,	[IsIPFraud]			= bb.IsIPFraud
 			,	[IP]				= bb.Ip
@@ -429,13 +447,15 @@ BEGIN
 								AND si.Handicap = ft.Handicap AND si.CustId = ft.CustId;
 
 		-- Insert new records for table ArbitrageTicketDetails
-		INSERT INTO dbo.ArbitrageTicketDetails(CustId, MatchId, GroupId, BetType, Handicap, TotalScores, TransIds, TicketCounter, IsIPFraud, GraphDBGroupId)
+		INSERT INTO dbo.ArbitrageTicketDetails(CustId, MatchId, GroupId, BetType, Handicap, LiveHomeScore, LiveAwayScore, TotalScores, TransIds, TicketCounter, IsIPFraud, GraphDBGroupId)
 		SELECT	[CustId]			= ft.CustId
 			,	[MatchId]			= ft.MatchId
 			,	[GroupId]			= ft.GroupId
 			,	[Bettype]			= ft.Bettype
 			,	[Handicap]			= ft.Handicap
 			,	[TotalScores]		= ft.TotalScore
+			,	[LiveHomeScore]		= ft.LiveHomeScore
+			,	[LiveAwayScore]		= ft.LiveAwayScore
 			,	[TransIds]			= STUFF((SELECT ',', CONVERT(VARCHAR(15), t1.TransId) 
 											FROM #tmpFraudTickets AS t1 WITH(NOLOCK)
 											WHERE t1.MatchId = ft.MatchId AND t1.BetType = ft.BetType AND t1.Handicap = ft.Handicap 
@@ -445,7 +465,7 @@ BEGIN
 			,	[IsIPFraud]			= ft.IsIPFraud
 			,	[GraphDBGroupId]	= Min(ft.GroupId)
 		FROM		#tmpFraudTickets ft WITH (NOLOCK)
-		GROUP BY	ft.CustId, ft.MatchId, ft.GroupId, ft.Bettype, ft.Handicap, ft.TotalScore,ft.IsIPFraud;		
+		GROUP BY	ft.CustId, ft.MatchId, ft.GroupId, ft.Bettype, ft.Handicap, ft.TotalScore, ft.LiveHomeScore, ft.LiveAwayScore, ft.IsIPFraud;		
 
 		-- Update table SuspiciousInfo if existed
 		UPDATE si WITH (ROWLOCK, UPDLOCK)
