@@ -77,7 +77,7 @@ namespace Fanex.NAP.FS.ArbitrageService
                 exception = ex.Message;
                 status = false;
 
-                LogService.Error($"{projectName} - {serviceName} - OnTimedEvent Exception: {ex.Message}");
+                LogService.Error($"{projectName} - {serviceName} - OnTimeEvent Exeption", ex);
             }
 
             Report(status, exception, "Fraud Case is executed at " + DateTime.Now);
@@ -89,7 +89,7 @@ namespace Fanex.NAP.FS.ArbitrageService
 
             var tsk = tickets.Select(t => t.CustId).Distinct().Chunk(500).Select(GroupCustomer).ToArray();
 
-            message = "=> GroupData is executing at " + DateTime.Now + ". Ticket By counter: " + tsk.Count();
+            message = "=> GroupData is executing at " + DateTime.Now + ". Ticket counter: " + tsk.Count();
 
             LogService.Info(message);
 #if DEBUG
