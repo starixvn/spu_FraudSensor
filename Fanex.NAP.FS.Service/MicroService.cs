@@ -143,6 +143,7 @@ namespace Fanex.NAP.FS.Service
             request.AddQueryParameter("exception", model.Exception);
             request.AddQueryParameter("timeout", model.Timeout.ToString());
             request.AddQueryParameter("fraudcaseid", _fraudCaseId.ToString());
+            request.AddQueryParameter("message", model.Message);
 
             try
             {

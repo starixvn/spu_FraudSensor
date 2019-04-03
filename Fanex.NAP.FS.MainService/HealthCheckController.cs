@@ -36,10 +36,10 @@ namespace Fanex.NAP.FS.MainService
         }
 
         [HttpPost]
-        public void Beat(string serviceName, bool status, string exception, int timeout, int fraudcaseid)
+        public void Beat(string serviceName, bool status, string exception, int timeout, int fraudcaseid, string message)
         {
-            var message = $"Service name: {serviceName} - Status: {status} - Fraud case ID: {fraudcaseid} - Message: Executed at {DateTime.Now}";
-            LogService.Info(message);
+            var body = $"Service name: {serviceName} - Status: {status} - Fraud case ID: {fraudcaseid} - Message: {message}";
+            LogService.Info(body);
 
 //            var fcHealth = lstFCHealth.Where(f => f.FraudCaseId == fraudcaseid).FirstOrDefault();
 //            if (fcHealth == null)

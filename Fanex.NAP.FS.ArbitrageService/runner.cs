@@ -181,6 +181,10 @@ namespace Fanex.NAP.FS.ArbitrageService
                     message = $"=> Match Id: {g.Key} - Ticket counter: {g.Count()} - Executed at {DateTime.Now} ";
 
                     LogService.Info(message);
+
+#if DEBUG
+                    Console.WriteLine(message);
+#endif
                 }
             }
         }
