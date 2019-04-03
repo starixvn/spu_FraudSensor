@@ -15,5 +15,7 @@ namespace Fanex.NAP.FS.Model
         public string Exception { get; set; }
 
         public int Timeout { get; set; }
+
+        public string Message { get; set; }
     }
 }

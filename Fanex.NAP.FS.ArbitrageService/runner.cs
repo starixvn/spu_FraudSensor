@@ -80,29 +80,41 @@ namespace Fanex.NAP.FS.ArbitrageService
                 LogService.Error($"{projectName} - {serviceName} - OnTimedEvent Exception: {ex.Message}");
             }
 
-            Report(status, exception);
+            Report(status, exception, "Fraud Case is executed at " + DateTime.Now);
         }
 
         private void GroupData(int matchId, IEnumerable<ArbitrageTicket> tickets)
         {
+            var message = string.Empty;
+
             var tsk = tickets.Select(t => t.CustId).Distinct().Chunk(500).Select(GroupCustomer).ToArray();
 
+            message = "=> GroupData is executing at " + DateTime.Now + ". Ticket By counter: " + tsk.Count();
+
+            LogService.Info(message);
 #if DEBUG
-            Console.WriteLine("=> GroupData is executing at " + DateTime.Now + ". Ticket By counter: " + tsk.Count());
+            Console.WriteLine(message);
 #endif
 
             Task.WaitAll(tsk);
 
             var customers = tsk.SelectMany(t => t.Result);
 
+            message = "=> GroupData is executing at " + DateTime.Now + ". Customers counter: " + customers.Count();
+
+            LogService.Info(message);
 #if DEBUG
-            Console.WriteLine("=> GroupData is executing at " + DateTime.Now + ". Customers counter: " + customers.Count());
+            Console.WriteLine(message);
 #endif
 
             arbitrageService.Rule(tickets.ToXmlString(), customers.ToXmlString());
 
+            message = "===> GroupData is executed at " + DateTime.Now;
+
+            LogService.Info(message);
+
 #if DEBUG
-            Console.WriteLine("===> GroupData is executed at " + DateTime.Now);
+            Console.WriteLine(message);
 #endif
         }
 
@@ -120,14 +132,15 @@ namespace Fanex.NAP.FS.ArbitrageService
             }
         }
 
-        void Report(bool status, string exception)
+        void Report(bool status, string exception, string message)
         {
             var model = new ReportModel() {
 
                 ServiceName = serviceName,
                 Exception = exception,                
                 Status = status,
-                Timeout = baseService.FraudCase.FraudCaseInterval
+                Timeout = baseService.FraudCase.FraudCaseInterval,
+                Message = message
             };
 
             baseService.Report(model);
@@ -135,10 +148,15 @@ namespace Fanex.NAP.FS.ArbitrageService
 
         void Precondition()
         {
+            var message = string.Empty;
+
             tickets = arbitrageService.PreCondition();
 
+            message = "=> Pre-Condition is executing at " + DateTime.Now + ". Ticket counter: " + tickets.Count();
+
+            LogService.Info(message);
 #if DEBUG
-            Console.WriteLine("=> Pre-Condition is executing at " + DateTime.Now + ". Ticket counter: " + tickets.Count());
+            Console.WriteLine(message);
 #endif
         }
 
@@ -150,12 +168,19 @@ namespace Fanex.NAP.FS.ArbitrageService
             if (tickets != null && tickets.Any())
             {
                 var ticketGroupBy = tickets.GroupBy(t => t.MatchId);
+                var message = "=> Rule is executing at " + DateTime.Now + ". Ticket Group By counter: " + ticketGroupBy.Count();
+
+                LogService.Info(message);
 #if DEBUG
-                Console.WriteLine("=> Rule is executing at " + DateTime.Now + ". Ticket Group By counter: " + ticketGroupBy.Count());
+                Console.WriteLine(message);
 #endif
                 foreach (var g in ticketGroupBy)
                 {
                     GroupData(g.Key, g);
+
+                    message = $"=> Match Id: {g.Key} - Ticket counter: {g.Count()} - Executed at {DateTime.Now} ";
+
+                    LogService.Info(message);
                 }
             }
         }
