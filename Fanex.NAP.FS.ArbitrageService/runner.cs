@@ -50,8 +50,7 @@ namespace Fanex.NAP.FS.ArbitrageService
         {
             var exception = string.Empty;
             var status = true;
-            Report(status, exception, "Fraud Case start execution at " + DateTime.Now);
-
+            
             try
             {
                 var isUM = baseService.CheckUM();
@@ -71,8 +70,7 @@ namespace Fanex.NAP.FS.ArbitrageService
                     isRunning = false;
 #if DEBUG
                     Console.WriteLine("=> Fraud Case is executed at " + DateTime.Now);
-#endif
-                   // LogService.Info($"{projectName} - {serviceName} - Executed at {DateTime.Now}");
+#endif                   
                 }
             }
             catch (Exception ex)
