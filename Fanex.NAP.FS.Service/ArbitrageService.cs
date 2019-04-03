@@ -30,7 +30,7 @@ namespace Fanex.NAP.FS.Service
                 Associations = associations
             };
 
-            using (var db = new ObjectDb(criteria.GetSettingKey()))
+            using (var db = new ObjectDb(criteria.GetSettingKey(), 3600))
             {
                 var param = criteria.GetSpParams();
 
