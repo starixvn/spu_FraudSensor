@@ -65,6 +65,14 @@ namespace Fanex.NAP.FS.MainService
             LogService.Info($"{projectName} - Main service is stopped.");
         }
 
+        protected override void OnShutdown()
+        {
+            _rabbitMQ.Dispose();
+            _server.Dispose();
+
+            LogService.Info($"{projectName} - Main service is shutted down.");
+        }
+
         private void GetFraudCase()
         {
             var fraudCaseService = new Service.FraudCaseService();
