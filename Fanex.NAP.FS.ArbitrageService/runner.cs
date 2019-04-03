@@ -90,7 +90,6 @@ namespace Fanex.NAP.FS.ArbitrageService
             var tsk = tickets.Select(t => t.CustId).Distinct().Chunk(500).Select(GroupCustomer).ToArray();
 
             message = "=> GroupData is executing at " + DateTime.Now + ". Ticket counter: " + tsk.Count();
-
             LogService.Info(message);
 #if DEBUG
             Console.WriteLine(message);
@@ -101,7 +100,6 @@ namespace Fanex.NAP.FS.ArbitrageService
             var customers = tsk.SelectMany(t => t.Result);
 
             message = "=> GroupData is executing at " + DateTime.Now + ". Customers counter: " + customers.Count();
-
             LogService.Info(message);
 #if DEBUG
             Console.WriteLine(message);
@@ -110,7 +108,6 @@ namespace Fanex.NAP.FS.ArbitrageService
             arbitrageService.Rule(tickets.ToXmlString(), customers.ToXmlString());
 
             message = "===> GroupData is executed at " + DateTime.Now;
-
             LogService.Info(message);
 
 #if DEBUG
@@ -153,8 +150,8 @@ namespace Fanex.NAP.FS.ArbitrageService
             tickets = arbitrageService.PreCondition();
 
             message = "=> Pre-Condition is executing at " + DateTime.Now + ". Ticket counter: " + tickets.Count();
-
             LogService.Info(message);
+
 #if DEBUG
             Console.WriteLine(message);
 #endif
@@ -168,18 +165,20 @@ namespace Fanex.NAP.FS.ArbitrageService
             if (tickets != null && tickets.Any())
             {
                 var ticketGroupBy = tickets.GroupBy(t => t.MatchId);
-                var message = "=> Rule is executing at " + DateTime.Now + ". Ticket Group By counter: " + ticketGroupBy.Count();
 
+                var message = "=> Rule is executing at " + DateTime.Now + ". Ticket Group By counter: " + ticketGroupBy.Count();
                 LogService.Info(message);
 #if DEBUG
                 Console.WriteLine(message);
 #endif
                 foreach (var g in ticketGroupBy)
                 {
+                    message = $"=> Match Id: {g.Key} - Ticket counter: {g.Count()} - Executing at {DateTime.Now} ";
+                    LogService.Info(message);
+
                     GroupData(g.Key, g);
 
                     message = $"=> Match Id: {g.Key} - Ticket counter: {g.Count()} - Executed at {DateTime.Now} ";
-
                     LogService.Info(message);
 
 #if DEBUG
