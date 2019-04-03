@@ -1,4 +1,6 @@
 ﻿using Fanex.Logging;
+using Fanex.Logging.Extensions;
+using Fanex.Logging.Extensions.Database;
 using Fanex.NAP.FS.Core;
 using Fanex.NAP.FS.Library.Core.Helpers.Api;
 using Fanex.NAP.FS.Library.Core.Helpers.Xml;
@@ -79,7 +81,11 @@ namespace Fanex.NAP.FS.ArbitrageService
                 exception = ex.Message;
                 status = false;
 
-                LogService.Error($"{projectName} - {serviceName} - OnTimeEvent Exeption", ex);
+                var logMessage = new LogMessage(ex.Message)
+                    .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
+                    .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
+
+                LogService.Error($"{projectName} - {serviceName} - OnTimeEvent Exeption", logMessage);
             }
 
             Report(status, exception, "Fraud Case is executed at " + DateTime.Now);
