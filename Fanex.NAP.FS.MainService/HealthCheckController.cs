@@ -41,33 +41,33 @@ namespace Fanex.NAP.FS.MainService
             var body = $"Service name: {serviceName} - Status: {status} - Fraud case ID: {fraudcaseid} - Message: {message}";
             LogService.Info(body);
 
-//            var fcHealth = lstFCHealth.Where(f => f.FraudCaseId == fraudcaseid).FirstOrDefault();
-//            if (fcHealth == null)
-//            {
-//                var fraudcase = new FraudCaseHealth()
-//                {
-//                    FraudCaseId = fraudcaseid,
-//                    IsLive = true,
-//                    TimeOut = timeout,
-//                    LastTimeSignal = DateTime.Now
-//                };
+            var fcHealth = lstFCHealth.Where(f => f.FraudCaseId == fraudcaseid).FirstOrDefault();
+            if (fcHealth == null)
+            {
+                var fraudcase = new FraudCaseHealth()
+                {
+                    FraudCaseId = fraudcaseid,
+                    IsLive = true,
+                    TimeOut = timeout,
+                    LastTimeSignal = DateTime.Now
+                };
 
-//                lstFCHealth.Add(fraudcase);
-//            }
-//            else
-//            {
-//                fcHealth.TimeOut = timeout;
-//                fcHealth.LastTimeSignal = DateTime.Now;
-//            }
+                lstFCHealth.Add(fraudcase);
+            }
+            else
+            {
+                fcHealth.TimeOut = timeout;
+                fcHealth.LastTimeSignal = DateTime.Now;
+            }
 
-//            if (!status)
-//            {
-//                message = $"Service name: {serviceName} - Status: {status} - Exception: {exception}";
-//#if DEBUG
-//                System.Console.WriteLine(message);
-//#endif
-//                LogService.Error(message);
-//            }
+            if (!status)
+            {
+                message = $"Service name: {serviceName} - Status: {status} - Exception: {exception}";
+#if DEBUG
+                System.Console.WriteLine(message);
+#endif
+                LogService.Error(message);
+            }
 
 #if DEBUG
             System.Console.WriteLine($"{serviceName} is reported already.");
