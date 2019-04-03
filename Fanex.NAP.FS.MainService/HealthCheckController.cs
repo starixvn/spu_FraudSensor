@@ -39,7 +39,12 @@ namespace Fanex.NAP.FS.MainService
         public void Beat(string serviceName, bool status, string exception, int timeout, int fraudcaseid, string message)
         {
             var body = $"Service name: {serviceName} - Status: {status} - Fraud case ID: {fraudcaseid} - Message: {message}";
+            
+#if DEBUG
+            System.Console.WriteLine(body);
+#else
             LogService.Info(body);
+#endif
 
             var fcHealth = lstFCHealth.Where(f => f.FraudCaseId == fraudcaseid).FirstOrDefault();
             if (fcHealth == null)
@@ -65,13 +70,11 @@ namespace Fanex.NAP.FS.MainService
                 message = $"Service name: {serviceName} - Status: {status} - Exception: {exception}";
 #if DEBUG
                 System.Console.WriteLine(message);
-#endif
+#else
                 LogService.Error(message);
-            }
-
-#if DEBUG
-            System.Console.WriteLine($"{serviceName} is reported already.");
 #endif
+
+            }
         }
 
         [HttpGet]

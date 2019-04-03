@@ -247,7 +247,7 @@ namespace Fanex.NAP.FS.Service
                         _fraudCase = GetFraudCase(fraudCaseMessage.Id);
 
 #if DEBUG
-                        Console.WriteLine($"=>Activing - Fraud case name: {_fraudCase.FraudCaseName}, IsActive: {_fraudCase.IsActive}, IsTest: {_fraudCase.IsTest}, Interval: {_fraudCase.FraudCaseInterval}, Timer Enable: {_timer.Enabled} ");
+                        Console.WriteLine($"=> Activing - Fraud case name: {_fraudCase.FraudCaseName}, IsActive: {_fraudCase.IsActive}, IsTest: {_fraudCase.IsTest}, Interval: {_fraudCase.FraudCaseInterval}, Timer Enable: {_timer.Enabled} ");
 #endif
 
                         if (_fraudCase.IsActive && !_timer.Enabled)
@@ -267,7 +267,7 @@ namespace Fanex.NAP.FS.Service
                         _fraudCase = GetFraudCase(fraudCaseMessage.Id);
 
 #if DEBUG
-                        Console.WriteLine($"=>Updating - Fraud case name: {_fraudCase.FraudCaseName}, IsActive: {_fraudCase.IsActive}, IsTest: {_fraudCase.IsTest}, Interval: {_fraudCase.FraudCaseInterval}, Timer Enable: {_timer.Enabled}  ");
+                        Console.WriteLine($"=> Updating - Fraud case name: {_fraudCase.FraudCaseName}, IsActive: {_fraudCase.IsActive}, IsTest: {_fraudCase.IsTest}, Interval: {_fraudCase.FraudCaseInterval}, Timer Enable: {_timer.Enabled}  ");
 #endif
                         if (_fraudCase.IsActive)
                         { 
@@ -295,7 +295,7 @@ namespace Fanex.NAP.FS.Service
                         _fraudCase = GetFraudCase(fraudCaseMessage.Id);
 
 #if DEBUG
-                        Console.WriteLine($"=>Retry - Fraud case name: {_fraudCase.FraudCaseName}, IsActive: {_fraudCase.IsActive}, IsTest: {_fraudCase.IsTest}, Interval: {_fraudCase.FraudCaseInterval}, Timer Enable: {_timer.Enabled}  ");
+                        Console.WriteLine($"=> Retry - Fraud case name: {_fraudCase.FraudCaseName}, IsActive: {_fraudCase.IsActive}, IsTest: {_fraudCase.IsTest}, Interval: {_fraudCase.FraudCaseInterval}, Timer Enable: {_timer.Enabled}  ");
 #endif
 
                         if (_fraudCase.IsActive && !_timer.Enabled)

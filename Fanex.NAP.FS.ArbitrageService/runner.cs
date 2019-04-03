@@ -95,29 +95,45 @@ namespace Fanex.NAP.FS.ArbitrageService
 
             var tsk = tickets.Select(t => t.CustId).Distinct().Chunk(500).Select(GroupCustomer).ToArray();
 
-            message = "=> GroupData is executing at " + DateTime.Now + ". Ticket counter: " + tsk.Count();
-            LogService.Info(message);
+            message = $"- Rule for match {matchId} is executing at " + DateTime.Now + ". Ticket counter: " + tsk.Count();
+            
 #if DEBUG
             Console.WriteLine(message);
+#else
+            LogService.Info(message);
 #endif
 
             Task.WaitAll(tsk);
 
             var customers = tsk.SelectMany(t => t.Result);
 
-            message = "=> GroupData is executing at " + DateTime.Now + ". Customers counter: " + customers.Count();
-            LogService.Info(message);
+            message = $"- Rule for match {matchId} is executing at " + DateTime.Now + ". Customers counter: " + customers.Count();
+            
 #if DEBUG
             Console.WriteLine(message);
+#else
+            LogService.Info(message);
 #endif
 
-            arbitrageService.Rule(tickets.ToXmlString(), customers.ToXmlString());
+            try
+            {
+                arbitrageService.Rule(tickets.ToXmlString(), customers.ToXmlString());
+            }
+            catch (Exception ex)
+            {
+                var logMessage = new LogMessage(ex.Message)
+                    .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
+                    .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
 
-            message = "===> GroupData is executed at " + DateTime.Now;
-            LogService.Info(message);
+                LogService.Error($"{projectName} - {serviceName} - GroupData Exeption", logMessage);
+            }
+
+            message = $"=> Rule for match {matchId} is executed at " + DateTime.Now;            
 
 #if DEBUG
             Console.WriteLine(message);
+#else
+            LogService.Info(message);
 #endif
         }
 
@@ -155,11 +171,13 @@ namespace Fanex.NAP.FS.ArbitrageService
 
             tickets = arbitrageService.PreCondition();
 
-            message = "=> Pre-Condition is executing at " + DateTime.Now + ". Ticket counter: " + tickets.Count();
+            message = "===> Pre-Condition is executing at " + DateTime.Now + ". Ticket counter: " + tickets.Count();
             LogService.Info(message);
 
 #if DEBUG
             Console.WriteLine(message);
+#else
+            LogService.Info(message);
 #endif
         }
 
@@ -172,23 +190,26 @@ namespace Fanex.NAP.FS.ArbitrageService
             {
                 var ticketGroupBy = tickets.GroupBy(t => t.MatchId);
 
-                var message = "=> Rule is executing at " + DateTime.Now + ". Ticket Group By counter: " + ticketGroupBy.Count();
-                LogService.Info(message);
+                var message = "===> Rule funtion is executing at " + DateTime.Now + ". Ticket Group By Per Match counter: " + ticketGroupBy.Count();
+                
 #if DEBUG
                 Console.WriteLine(message);
+#else
+                LogService.Info(message);
 #endif
                 foreach (var g in ticketGroupBy)
                 {
-                    message = $"=> Match Id: {g.Key} - Ticket counter: {g.Count()} - Executing at {DateTime.Now} ";
+                    message = $"===> Match Id: {g.Key} - Ticket counter: {g.Count()} - Executing at {DateTime.Now} ";
                     LogService.Info(message);
 
                     GroupData(g.Key, g);
 
-                    message = $"=> Match Id: {g.Key} - Ticket counter: {g.Count()} - Executed at {DateTime.Now} ";
-                    LogService.Info(message);
-
+                    message = $"===> Match Id: {g.Key} - Ticket counter: {g.Count()} - Executed at {DateTime.Now} ";
+                    
 #if DEBUG
                     Console.WriteLine(message);
+#else
+                    LogService.Info(message);
 #endif
                 }
             }
