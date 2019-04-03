@@ -83,7 +83,7 @@ namespace Fanex.NAP.FS.MainService
         private static void RetryFraudCaseService(int fraudCaseId)
         {
             var fraudCaseService = new Service.FraudCaseService();
-            var fraudCase = fraudCaseService.GetByFraudCaseId(1, Core.AppSetting.Environment);
+            var fraudCase = fraudCaseService.GetByFraudCaseId(fraudCaseId, Core.AppSetting.Environment);
 
             if (fraudCase.IsActive)
             {
@@ -106,24 +106,23 @@ namespace Fanex.NAP.FS.MainService
                             Message = "Message is sent at" + DateTime.Now
                         }, new MessageProperties { DeliveryMode = 2, Priority = 9 });
 
-                        var log = $"Load Fraud Case - Queue: {_rabbitMQ.QueueName}, RoutingKey: {_rabbitMQ.RoutingKey}, Exchange: {_rabbitMQ.ExchangeName}";
+                        var log = $"Reload Fraud Case - Queue: {_rabbitMQ.QueueName}, RoutingKey: {_rabbitMQ.RoutingKey}, Exchange: {_rabbitMQ.ExchangeName}";
 
                         _rabbitMQ.AdvanceBus.PublishAsync(_rabbitMQ.Exchange, _rabbitMQ.RoutingKey, false, message);
 #if DEBUG
                         Console.WriteLine(log);
 #endif
-
-                        LogService.Info(log);
                     }
 
                 }
             }
         }
 
-        private static void CheckFraudCaseStatus()
+        private static async void CheckFraudCaseStatus()
         {
             do
             {
+                var startTime = DateTime.Now;
                 Parallel.ForEach(lstFCHealth, fcHealth =>
                 {
                     var timeout = fcHealth.TimeOut;
@@ -135,12 +134,12 @@ namespace Fanex.NAP.FS.MainService
                         RetryFraudCaseService(fcHealth.FraudCaseId);
                         period = (DateTime.Now - fcHealth.LastTimeSignal).TotalSeconds;
 
-                        var errorMessage = $"Health check - Service name: {fcHealth.FraudCaseId} - Do not receive heart beat in " + period + " seconds";
+                        var errorMessage = $"Health check - Service name: {fcHealth.FraudCaseId} - Do not receive heart beat in " + (int)period + " seconds";
                         LogService.Error(errorMessage);
                     }
                 });
 
-                Thread.Sleep(10000);
+                await Task.Delay(30000);
             } while (true);
         }
     }

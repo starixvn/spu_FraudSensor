@@ -298,7 +298,7 @@ namespace Fanex.NAP.FS.Service
                         Console.WriteLine($"=>Retry - Fraud case name: {_fraudCase.FraudCaseName}, IsActive: {_fraudCase.IsActive}, IsTest: {_fraudCase.IsTest}, Interval: {_fraudCase.FraudCaseInterval}, Timer Enable: {_timer.Enabled}  ");
 #endif
 
-                        if (_fraudCase.IsActive)
+                        if (_fraudCase.IsActive && !_timer.Enabled)
                         {
                             _timer.Start();
                         }

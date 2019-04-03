@@ -48,6 +48,7 @@ namespace Fanex.NAP.FS.ArbitrageService
         {
             var exception = string.Empty;
             var status = true;
+            Report(status, exception, "Fraud Case start execution at " + DateTime.Now);
 
             try
             {

@@ -46,6 +46,7 @@ namespace Fanex.NAP.FS.BigStakeNearGoalService
         {
             var exception = string.Empty;
             var status = true;
+            Report(status, exception);
 
             try
             {
