@@ -10,6 +10,7 @@ using Fanex.NAP.FS.Model;
 using Fanex.NAP.FS.Library.Models;
 using Fanex.NAP.FS.Core;
 using System.Threading.Tasks;
+using Fanex.NAP.FS.Library.DTO;
 
 namespace Fanex.NAP.FS.MainService
 {
@@ -39,7 +40,7 @@ namespace Fanex.NAP.FS.MainService
         public void Beat(string serviceName, bool status, string exception, int timeout, int fraudcaseid, string message)
         {
             var body = $"Service name: {serviceName} - Status: {status} - Fraud case ID: {fraudcaseid} - Message: {message}";
-            
+
 #if DEBUG
             System.Console.WriteLine(body);
 #else
@@ -86,7 +87,15 @@ namespace Fanex.NAP.FS.MainService
         private static void RetryFraudCaseService(int fraudCaseId)
         {
             var fraudCaseService = new Service.FraudCaseService();
-            var fraudCase = fraudCaseService.GetByFraudCaseId(fraudCaseId, AppSetting.Environment);
+            FraudCase fraudCase = null;
+            if (AppSetting.Environment == 2)
+            {
+                fraudCase = fraudCaseService.GetFraudCaseFromConfig();
+            }
+            else
+            {
+                fraudCase = fraudCaseService.GetByFraudCaseId(fraudCaseId, AppSetting.Environment);
+            }
 
             if (fraudCase.IsActive)
             {
@@ -133,19 +142,19 @@ namespace Fanex.NAP.FS.MainService
                     var fraudCaseName = Enum.GetName(typeof(FraudCaseId), fcHealth.FraudCaseId);
                     if (period > fcHealth.TimeOut)
                     {
-                        var notifyMessage = $"Health check - Service name: {fraudCaseName} - Retry service";
-                        LogService.Error(notifyMessage);
                         try
                         {
                             RetryFraudCaseService(fcHealth.FraudCaseId);
+                            var notifyMessage = $"Health check - Service name: {fraudCaseName} - Retry service";
+                            LogService.Error(notifyMessage);
                         }
                         catch (Exception ex)
                         {
                             LogService.Error($"Health check - Error occurs: {ex.Message}");
                         }
-                        
+
                         period = (DateTime.Now - fcHealth.LastTimeSignal).TotalSeconds;
-                        
+
                         var errorMessage = $"Health check - Service name: {fraudCaseName} - Do not receive heart beat in " + (int)period + " seconds";
                         LogService.Error(errorMessage);
                     }

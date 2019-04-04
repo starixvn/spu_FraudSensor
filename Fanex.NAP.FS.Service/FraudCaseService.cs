@@ -40,7 +40,7 @@ namespace Fanex.NAP.FS.Service
         {
             var fraudCase = new FraudCase()
             {
-                FraudCaseId = AppSetting.Environment,
+                FraudCaseId = AppSetting.FraudCaseId,
                 FraudCaseName = AppSetting.FraudCaseName,
                 FraudCaseInterval = AppSetting.FraudCaseInterval,
                 FraudCaseDesc = AppSetting.FraudCaseDesc,
