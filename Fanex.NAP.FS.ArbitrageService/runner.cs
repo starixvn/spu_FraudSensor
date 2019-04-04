@@ -50,6 +50,7 @@ namespace Fanex.NAP.FS.ArbitrageService
         {
             var exception = string.Empty;
             var status = true;
+            Report(status, exception, "Fraud Case is executed at " + DateTime.Now);
 
             try
             {
@@ -160,6 +161,7 @@ namespace Fanex.NAP.FS.ArbitrageService
                 Exception = exception,
                 Status = status,
                 Timeout = baseService.FraudCase.FraudCaseInterval,
+                IsActive = baseService.FraudCase.IsActive,
                 Message = message
             };
 

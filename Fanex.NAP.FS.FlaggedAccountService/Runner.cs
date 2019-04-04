@@ -121,7 +121,8 @@ namespace Fanex.NAP.FS.FlaggedAccountService
                 ServiceName = serviceName,
                 Exception = exception,                
                 Status = status,
-                Timeout = baseService.FraudCase.FraudCaseInterval
+                Timeout = baseService.FraudCase.FraudCaseInterval,
+                IsActive = baseService.FraudCase.IsActive
             };
 
             baseService.Report(model);

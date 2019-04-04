@@ -36,6 +36,10 @@ namespace Fanex.NAP.FS.Service
             }
         }
 
+        /// <summary>
+        /// Use this for Micro service
+        /// </summary>
+        /// <returns></returns>
         public FraudCase GetFraudCaseFromConfig()
         {
             var fraudCase = new FraudCase()

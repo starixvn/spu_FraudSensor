@@ -111,6 +111,7 @@ namespace Fanex.NAP.FS.BigStakeNearGoalService
                 ServiceName = serviceName,
                 Exception = exception,                
                 Status = status,
+                IsActive = baseService.FraudCase.IsActive,
                 Timeout = baseService.FraudCase.FraudCaseInterval
             };
 

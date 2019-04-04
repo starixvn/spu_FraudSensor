@@ -37,9 +37,10 @@ namespace Fanex.NAP.FS.MainService
         }
 
         [HttpPost]
-        public void Beat(string serviceName, bool status, string exception, int timeout, int fraudcaseid, string message)
+        public void Beat(int fraudcaseid, bool status, string exception, int timeout, bool isActive, string message)
         {
-            var body = $"Service name: {serviceName} - Status: {status} - Fraud case ID: {fraudcaseid} - Message: {message}";
+            var fraudCaseName = Enum.GetName(typeof(FraudCaseId), fraudcaseid);
+            var body = $"Service name: {fraudCaseName} - Status: {status} - Fraud case ID: {fraudcaseid} - Message: {message}";
 
 #if DEBUG
             System.Console.WriteLine(body);
@@ -55,6 +56,7 @@ namespace Fanex.NAP.FS.MainService
                     FraudCaseId = fraudcaseid,
                     IsLive = true,
                     TimeOut = timeout,
+                    IsActive = isActive,
                     LastTimeSignal = DateTime.Now
                 };
 
@@ -62,13 +64,14 @@ namespace Fanex.NAP.FS.MainService
             }
             else
             {
+                fcHealth.IsActive = isActive;
                 fcHealth.TimeOut = timeout;
                 fcHealth.LastTimeSignal = DateTime.Now;
             }
 
             if (!status)
             {
-                message = $"Service name: {serviceName} - Status: {status} - Exception: {exception}";
+                message = $"Service name: {fraudCaseName} - Status: {status} - Exception: {exception}";
 #if DEBUG
                 System.Console.WriteLine(message);
 #else
@@ -87,10 +90,17 @@ namespace Fanex.NAP.FS.MainService
         private static void RetryFraudCaseService(int fraudCaseId)
         {
             var fraudCaseService = new Service.FraudCaseService();
+            var fraudCaseName = Enum.GetName(typeof(FraudCaseId), fraudCaseId);
             FraudCase fraudCase = null;
+
             if (AppSetting.Environment == 2)
             {
-                fraudCase = fraudCaseService.GetFraudCaseFromConfig();
+                fraudCase = new FraudCase()
+                {
+                    FraudCaseId = fraudCaseId,
+                    FraudCaseName = fraudCaseName,
+                    IsActive = lstFCHealth.Where(f => f.FraudCaseId == fraudCaseId).FirstOrDefault().IsActive
+                };
             }
             else
             {
@@ -99,8 +109,6 @@ namespace Fanex.NAP.FS.MainService
 
             if (fraudCase.IsActive)
             {
-                var fraudCaseName = Enum.GetName(typeof(FraudCaseId), fraudCase.FraudCaseId);
-
                 if (!string.IsNullOrWhiteSpace(fraudCaseName))
                 {
                     _rabbitMQ

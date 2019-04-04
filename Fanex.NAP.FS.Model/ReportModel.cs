@@ -16,6 +16,8 @@ namespace Fanex.NAP.FS.Model
 
         public int Timeout { get; set; }
 
+        public bool IsActive { get; set; }
+
         public string Message { get; set; }
     }
 }

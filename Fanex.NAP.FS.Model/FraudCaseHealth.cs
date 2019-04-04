@@ -14,6 +14,8 @@ namespace Fanex.NAP.FS.Model
 
         public int TimeOut { get; set; }
 
+        public bool IsActive { get; set; }
+
         public DateTime LastTimeSignal { get; set; }
     }
 }

@@ -138,13 +138,13 @@ namespace Fanex.NAP.FS.Service
             var client = new RestClient(AppSetting.HeartBeatUrl);
             var request = new RestRequest("/api/HealthCheck/beat", Method.POST);
 
-            request.AddQueryParameter("serviceName", model.ServiceName);
+            request.AddQueryParameter("fraudcaseid", _fraudCaseId.ToString());
             request.AddQueryParameter("status", model.Status.ToString());
             request.AddQueryParameter("exception", model.Exception);
             request.AddQueryParameter("timeout", model.Timeout.ToString());
-            request.AddQueryParameter("fraudcaseid", _fraudCaseId.ToString());
+            request.AddQueryParameter("isActive", model.IsActive.ToString());
             request.AddQueryParameter("message", model.Message);
-
+            
             try
             {
                 var result = client.Execute(request);
