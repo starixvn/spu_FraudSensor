@@ -508,7 +508,31 @@ BEGIN
 				LEFT JOIN dbo.ArbitrageSuspiciousInfo si WITH (NOLOCK) 
 					ON si.MatchId = ft.MatchId AND si.CustId = ft.CustId  AND si.FraudCaseId = @CurrentFraudCaseId
 		WHERE si.MatchID IS NULL
-		GROUP BY ft.CustId, ft.MatchId, ft.EventDate;		
+		GROUP BY ft.CustId, ft.MatchId, ft.EventDate;	
+	
+		-- Update table ScannedMatch if existed
+		UPDATE	sm WITH (ROWLOCK, UPDLOCK)
+		SET		sm.ScannedDate				= GETDATE()
+			,	sm.SuspiciousTicketsCount	= ISNULL((SELECT SUM(t1.TicketCounter)
+												FROM dbo.ArbitrageTicketDetails t1 WITH (NOLOCK)
+												WHERE t1.MatchId = m.MatchId 
+												GROUP BY t1.MatchId ),0)
+		FROM dbo.ScannedMatch sm
+			INNER JOIN #tmpMatches m WITH (NOLOCK) ON sm.MatchId = m.MatchId AND sm.FraudCaseId = @CurrentFraudCaseId;
+
+		-- Insert new records for table ScannedMatch
+		INSERT INTO dbo.ScannedMatch (Matchid, FraudCaseId, ScannedDate, SuspiciousTicketsCount)  
+		SELECT	DISTINCT [MatchId]			= m.matchid 
+			,	[FraudCaseId]				= @CurrentFraudCaseId
+			,	[ScannedDate]				= GETDATE() 
+			,	[SuspiciousTicketsCount]	= ISNULL((SELECT SUM(t1.TicketCounter)
+												FROM dbo.ArbitrageTicketDetails t1 WITH (NOLOCK)
+												WHERE t1.MatchId = m.MatchId 
+												GROUP BY t1.MatchId ),0)
+		FROM #tmpMatches m WITH(NOLOCK)
+			LEFT JOIN dbo.ScannedMatch sm WITH (NOLOCK)ON m.matchid = sm.matchid AND sm.FraudCaseId = @CurrentFraudCaseId
+		WHERE sm.Matchid IS NULL 
+			AND sm.FraudCaseId IS NULL;	
 
 		-- Update table SuspiciousCustomer if existed
 		WITH rs AS
@@ -528,32 +552,7 @@ BEGIN
 		FROM #tmpFraudTickets ft WITH (NOLOCK)
 				LEFT JOIN dbo.SuspiciousCustomer sc WITH (NOLOCK) ON ft.CustId = sc.CustId
 		WHERE	sc.CustId IS NULL;
-
 	END;	
-	
-	-- Update table ScannedMatch if existed
-	UPDATE	sm WITH (ROWLOCK, UPDLOCK)
-	SET		sm.ScannedDate				= GETDATE()
-		,	sm.SuspiciousTicketsCount	= ISNULL((SELECT SUM(t1.TicketCounter)
-											FROM dbo.ArbitrageTicketDetails t1 WITH (NOLOCK)
-											WHERE t1.MatchId = m.MatchId 
-											GROUP BY t1.MatchId ),0)
-	FROM dbo.ScannedMatch sm
-		INNER JOIN #tmpMatches m WITH (NOLOCK) ON sm.MatchId = m.MatchId AND sm.FraudCaseId = @CurrentFraudCaseId;
-
-	-- Insert new records for table ScannedMatch
-	INSERT INTO dbo.ScannedMatch (Matchid, FraudCaseId, ScannedDate, SuspiciousTicketsCount)  
-	SELECT	DISTINCT [MatchId]			= m.matchid 
-		,	[FraudCaseId]				= @CurrentFraudCaseId
-		,	[ScannedDate]				= GETDATE() 
-		,	[SuspiciousTicketsCount]	= ISNULL((SELECT SUM(t1.TicketCounter)
-											FROM dbo.ArbitrageTicketDetails t1 WITH (NOLOCK)
-											WHERE t1.MatchId = m.MatchId 
-											GROUP BY t1.MatchId ),0)
-	FROM #tmpMatches m WITH(NOLOCK)
-		LEFT JOIN dbo.ScannedMatch sm WITH (NOLOCK)ON m.matchid = sm.matchid AND sm.FraudCaseId = @CurrentFraudCaseId
-	WHERE sm.Matchid IS NULL 
-		AND sm.FraudCaseId IS NULL; 	
 
 	--Remove the XML documents
 	EXEC sp_xml_removedocument @idocMatch;

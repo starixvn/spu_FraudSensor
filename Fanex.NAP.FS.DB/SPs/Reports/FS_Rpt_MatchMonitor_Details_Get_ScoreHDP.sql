@@ -1,6 +1,5 @@
 ALTER PROCEDURE [dbo].[FS_Rpt_MatchMonitor_Details_Get_ScoreHDP]
 		@MatchId					INT
-	,	@EventDate					DATETIME
 	,	@IsShowSpecialCurrencies	BIT = 0
 AS
 /*
