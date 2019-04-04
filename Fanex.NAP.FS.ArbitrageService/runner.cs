@@ -172,8 +172,7 @@ namespace Fanex.NAP.FS.ArbitrageService
 
             tickets = arbitrageService.PreCondition();
 
-            message = "===> Pre-Condition is executing at " + DateTime.Now + ". Ticket counter: " + tickets.Count();
-            LogService.Info(message);
+            message = "===> Pre-Condition is executing at " + DateTime.Now + ". Ticket counter: " + tickets.Count();          
 
 #if DEBUG
             Console.WriteLine(message);
@@ -202,7 +201,11 @@ namespace Fanex.NAP.FS.ArbitrageService
                 Parallel.ForEach(ticketGroupBy, (g) =>
                 {
                     message = $"===> Match Id: {g.Key} - Ticket counter: {g.Count()} - Executing at {DateTime.Now} ";
-                    LogService.Info(message);
+#if DEBUG
+                    Console.WriteLine(message);
+#else
+                        LogService.Info(message);
+#endif
 
                     GroupData(g.Key, g);
 
