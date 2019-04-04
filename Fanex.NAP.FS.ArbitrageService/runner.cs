@@ -95,7 +95,7 @@ namespace Fanex.NAP.FS.ArbitrageService
 
             var tsk = tickets.Select(t => t.CustId).Distinct().Chunk(500).Select(GroupCustomer).ToArray();
 
-            message = $"- Rule for match {matchId} is executing at " + DateTime.Now + ". Ticket counter: " + tsk.Count();
+            message = $"- Rule for match {matchId} is executing. Ticket counter: " + tsk.Count();
 
 #if DEBUG
             Console.WriteLine(message);
@@ -107,7 +107,7 @@ namespace Fanex.NAP.FS.ArbitrageService
 
             var customers = tsk.SelectMany(t => t.Result);
 
-            message = $"- Rule for match {matchId} is executing at " + DateTime.Now + ". Customers counter: " + customers.Count();
+            message = $"- Rule for match {matchId} is executing. Customers counter: " + customers.Count();
 
 #if DEBUG
             Console.WriteLine(message);
@@ -128,7 +128,7 @@ namespace Fanex.NAP.FS.ArbitrageService
                 LogService.Error($"{projectName} - {serviceName} - GroupData Exeption", logMessage);
             }
 
-            message = $"=> Rule for match {matchId} is executed at " + DateTime.Now;
+            message = $"=> Rule for match {matchId} is executed.";
 
 #if DEBUG
             Console.WriteLine(message);
@@ -172,7 +172,7 @@ namespace Fanex.NAP.FS.ArbitrageService
 
             tickets = arbitrageService.PreCondition();
 
-            message = "===> Pre-Condition is executing at " + DateTime.Now + ". Ticket counter: " + tickets.Count();          
+            message = "===> Pre-Condition is executing. Ticket counter: " + tickets.Count();
 
 #if DEBUG
             Console.WriteLine(message);
@@ -190,7 +190,7 @@ namespace Fanex.NAP.FS.ArbitrageService
             {
                 var ticketGroupBy = tickets.GroupBy(t => t.MatchId);
 
-                var message = "===> Rule funtion is executing at " + DateTime.Now + ". Ticket Group By Per Match counter: " + ticketGroupBy.Count();
+                var message = "===> Rule funtion is executing. Ticket Group By Per Match counter: " + ticketGroupBy.Count();
 
 #if DEBUG
                 Console.WriteLine(message);
@@ -198,9 +198,12 @@ namespace Fanex.NAP.FS.ArbitrageService
                 LogService.Info(message);
 #endif
 
-                Parallel.ForEach(ticketGroupBy, (g) =>
+                Parallel.ForEach(ticketGroupBy, new ParallelOptions
                 {
-                    message = $"===> Match Id: {g.Key} - Ticket counter: {g.Count()} - Executing at {DateTime.Now} ";
+                    MaxDegreeOfParallelism = 2
+                }, (g) =>
+{
+                    message = $"===> Match Id: {g.Key} - Ticket counter: {g.Count()} - Executing";
 #if DEBUG
                     Console.WriteLine(message);
 #else
@@ -209,7 +212,7 @@ namespace Fanex.NAP.FS.ArbitrageService
 
                     GroupData(g.Key, g);
 
-                    message = $"===> Match Id: {g.Key} - Ticket counter: {g.Count()} - Executed at {DateTime.Now} ";
+message = $"===> Match Id: {g.Key} - Ticket counter: {g.Count()} - Executed";
 
 #if DEBUG
                     Console.WriteLine(message);
