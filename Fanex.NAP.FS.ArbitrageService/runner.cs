@@ -50,7 +50,7 @@ namespace Fanex.NAP.FS.ArbitrageService
         {
             var exception = string.Empty;
             var status = true;
-            
+
             try
             {
                 var isUM = baseService.CheckUM();
@@ -96,7 +96,7 @@ namespace Fanex.NAP.FS.ArbitrageService
             var tsk = tickets.Select(t => t.CustId).Distinct().Chunk(500).Select(GroupCustomer).ToArray();
 
             message = $"- Rule for match {matchId} is executing at " + DateTime.Now + ". Ticket counter: " + tsk.Count();
-            
+
 #if DEBUG
             Console.WriteLine(message);
 #else
@@ -108,7 +108,7 @@ namespace Fanex.NAP.FS.ArbitrageService
             var customers = tsk.SelectMany(t => t.Result);
 
             message = $"- Rule for match {matchId} is executing at " + DateTime.Now + ". Customers counter: " + customers.Count();
-            
+
 #if DEBUG
             Console.WriteLine(message);
 #else
@@ -128,7 +128,7 @@ namespace Fanex.NAP.FS.ArbitrageService
                 LogService.Error($"{projectName} - {serviceName} - GroupData Exeption", logMessage);
             }
 
-            message = $"=> Rule for match {matchId} is executed at " + DateTime.Now;            
+            message = $"=> Rule for match {matchId} is executed at " + DateTime.Now;
 
 #if DEBUG
             Console.WriteLine(message);
@@ -153,10 +153,11 @@ namespace Fanex.NAP.FS.ArbitrageService
 
         void Report(bool status, string exception, string message)
         {
-            var model = new ReportModel() {
+            var model = new ReportModel()
+            {
 
                 ServiceName = serviceName,
-                Exception = exception,                
+                Exception = exception,
                 Status = status,
                 Timeout = baseService.FraudCase.FraudCaseInterval,
                 Message = message
@@ -191,13 +192,14 @@ namespace Fanex.NAP.FS.ArbitrageService
                 var ticketGroupBy = tickets.GroupBy(t => t.MatchId);
 
                 var message = "===> Rule funtion is executing at " + DateTime.Now + ". Ticket Group By Per Match counter: " + ticketGroupBy.Count();
-                
+
 #if DEBUG
                 Console.WriteLine(message);
 #else
                 LogService.Info(message);
 #endif
-                foreach (var g in ticketGroupBy)
+
+                Parallel.ForEach(ticketGroupBy, (g) =>
                 {
                     message = $"===> Match Id: {g.Key} - Ticket counter: {g.Count()} - Executing at {DateTime.Now} ";
                     LogService.Info(message);
@@ -205,13 +207,13 @@ namespace Fanex.NAP.FS.ArbitrageService
                     GroupData(g.Key, g);
 
                     message = $"===> Match Id: {g.Key} - Ticket counter: {g.Count()} - Executed at {DateTime.Now} ";
-                    
+
 #if DEBUG
                     Console.WriteLine(message);
 #else
-                    LogService.Info(message);
+                        LogService.Info(message);
 #endif
-                }
+                });
             }
         }
 
