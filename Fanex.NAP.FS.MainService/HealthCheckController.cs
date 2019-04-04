@@ -86,7 +86,7 @@ namespace Fanex.NAP.FS.MainService
         private static void RetryFraudCaseService(int fraudCaseId)
         {
             var fraudCaseService = new Service.FraudCaseService();
-            var fraudCase = fraudCaseService.GetByFraudCaseId(fraudCaseId, Core.AppSetting.Environment);
+            var fraudCase = fraudCaseService.GetByFraudCaseId(fraudCaseId, AppSetting.Environment);
 
             if (fraudCase.IsActive)
             {
@@ -130,19 +130,28 @@ namespace Fanex.NAP.FS.MainService
                 {
                     var timeout = fcHealth.TimeOut;
                     var period = (DateTime.Now - fcHealth.LastTimeSignal).TotalSeconds;
+                    var fraudCaseName = Enum.GetName(typeof(FraudCaseId), fcHealth.FraudCaseId);
                     if (period > fcHealth.TimeOut)
                     {
-                        var notifyMessage = $"Health check - Service name: {fcHealth.FraudCaseId} - Retry service";
+                        var notifyMessage = $"Health check - Service name: {fraudCaseName} - Retry service";
                         LogService.Error(notifyMessage);
-                        RetryFraudCaseService(fcHealth.FraudCaseId);
+                        try
+                        {
+                            RetryFraudCaseService(fcHealth.FraudCaseId);
+                        }
+                        catch (Exception ex)
+                        {
+                            LogService.Error($"Health check - Error occurs: {ex.Message}");
+                        }
+                        
                         period = (DateTime.Now - fcHealth.LastTimeSignal).TotalSeconds;
-
-                        var errorMessage = $"Health check - Service name: {fcHealth.FraudCaseId} - Do not receive heart beat in " + (int)period + " seconds";
+                        
+                        var errorMessage = $"Health check - Service name: {fraudCaseName} - Do not receive heart beat in " + (int)period + " seconds";
                         LogService.Error(errorMessage);
                     }
                 });
 
-                await Task.Delay(30000);
+                await Task.Delay(65000);
             } while (true);
         }
     }
