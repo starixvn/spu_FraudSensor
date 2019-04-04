@@ -83,7 +83,7 @@ namespace Fanex.NAP.FS.ArbitrageService
                     .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
                     .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
 
-                LogService.Error($"{projectName} - {serviceName} - OnTimeEvent Exeption", logMessage);
+                LogService.Error($"{projectName} - {serviceName} - OnTimeEvent Exeption {logMessage}");
             }
 
             Report(status, exception, "Fraud Case is executed at " + DateTime.Now);
@@ -125,7 +125,7 @@ namespace Fanex.NAP.FS.ArbitrageService
                     .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
                     .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
 
-                LogService.Error($"{projectName} - {serviceName} - GroupData Exeption", logMessage);
+                LogService.Error($"{projectName} - {serviceName} - GroupData Exeption: {logMessage}");
             }
 
             message = $"=> Rule for match {matchId} is executed.";
@@ -212,7 +212,7 @@ namespace Fanex.NAP.FS.ArbitrageService
 
                     GroupData(g.Key, g);
 
-message = $"===> Match Id: {g.Key} - Ticket counter: {g.Count()} - Executed";
+                    message = $"===> Match Id: {g.Key} - Ticket counter: {g.Count()} - Executed";
 
 #if DEBUG
                     Console.WriteLine(message);
