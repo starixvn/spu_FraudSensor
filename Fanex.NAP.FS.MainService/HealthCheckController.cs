@@ -40,13 +40,6 @@ namespace Fanex.NAP.FS.MainService
         public void Beat(int fraudcaseid, bool status, string exception, int timeout, bool isActive, string message)
         {
             var fraudCaseName = Enum.GetName(typeof(FraudCaseId), fraudcaseid);
-            var body = $"Service name: {fraudCaseName} - Status: {status} - Fraud case ID: {fraudcaseid} - Message: {message}";
-
-#if DEBUG
-            System.Console.WriteLine(body);
-#else
-            LogService.Info(body);
-#endif
 
             var fcHealth = lstFCHealth.Where(f => f.FraudCaseId == fraudcaseid).FirstOrDefault();
             if (fcHealth == null)
