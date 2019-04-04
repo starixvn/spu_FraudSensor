@@ -60,9 +60,10 @@ namespace Fanex.NAP.FS.BigStakeNearGoalService
                     if (isRunning) return;
 
                     isRunning = true;
-                    CleanResult();
-                    Precondition();
-                    Rule();
+
+                    //CleanResult();
+                    //Precondition();
+                    //Rule();
 
                     isRunning = false;
 

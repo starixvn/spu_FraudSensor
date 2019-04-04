@@ -90,9 +90,9 @@ namespace Fanex.NAP.FS.FlaggedAccountService
 
                     isRunning = true;
 
-                    CleanResult();
-                    Precondition();
-                    Rule();
+                    //CleanResult();
+                    //Precondition();
+                    //Rule();
 
                     isRunning = false;
 #if DEBUG
