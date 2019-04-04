@@ -23,6 +23,7 @@ AS
 		- 20190225@Long.Luu:	Scanning for completed matches during UM time [Redmine ID: #106820]
 		- 20190320@Casey.Huynh: Enhance Performance, Remove #tmpChangedMatch redundant table [110060]
 		- 20190329@Casey.Huynh: Implement Completed Match when the score is rejected: move code update table MatchScore completed Status to sp rule [111079]
+		- 20190329@Casey.Huynh: Implement, not scan Match if it has no ticket in bettran table [111454]
 	Param's Explanation (filtered by):  
 */
 BEGIN
@@ -33,7 +34,8 @@ BEGIN
 	SET @CurrentTime = GETDATE();
 	
 	--- ============1. INSERT NEW MATCH=============================
-	INSERT INTO dbo.MatchScore(MatchId, EventDate, EventStatus, TotalScores, HasScanned, UpdatedDate)
+	;WITH newMatch AS
+	(
 	SELECT		m.matchid
 				, m.eventdate
 				, m.eventstatus
@@ -50,7 +52,20 @@ BEGIN
 				AND m.sporttype = 1
 				AND l.isTest = 0
 				AND m.kickofftime <= @CurrentTime	
-				AND	m.livehomescore + liveawayscore > 0;
+				AND	m.livehomescore + m.liveawayscore > 0
+	)
+
+	INSERT INTO dbo.MatchScore(MatchId, EventDate, EventStatus, TotalScores, HasScanned, UpdatedDate)
+	SELECT		m.matchid
+				, m.eventdate
+				, m.eventstatus
+				, m.TotalScores
+				, m.HasScanned
+				, m.UpdatedDate
+	FROM		newMatch AS m WITH(NOLOCK)
+	WHERE		EXISTS (SELECT TOP(1) Matchid
+						FROM	bodb02.dbo.bettrans b WITH(NOLOCK)
+						WHERE	b.matchid = m.Matchid);
 
 	--- RETURN MATCH HAS NEW SCORE
 	SELECT		ms.MatchId
