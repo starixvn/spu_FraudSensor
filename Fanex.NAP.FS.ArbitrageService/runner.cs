@@ -49,11 +49,12 @@ namespace Fanex.NAP.FS.ArbitrageService
         private void OnTimedEvent(Object source, System.Timers.ElapsedEventArgs e)
         {
             var exception = string.Empty;
-            var status = true;
-            Report(status, exception, "Fraud Case is executed at " + DateTime.Now);
+            var status = true;           
 
             try
             {
+                Report(status, exception, "Fraud Case is executing at " + DateTime.Now);
+
                 var isUM = baseService.CheckUM();
 
                 if (!isUM)
