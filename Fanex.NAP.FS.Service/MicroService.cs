@@ -121,7 +121,7 @@ namespace Fanex.NAP.FS.Service
             _rabbitMQ.Dispose();
             _timer.Dispose();
 
-            LogService.Info($"{_serviceName} is stopped. Please contact with Admin.");
+            LogService.Error($"{_serviceName} is stopped. Please contact with Admin.");
         }
           
         public void Clean(IEnumerable<Match> matches, List<Task> threads)
