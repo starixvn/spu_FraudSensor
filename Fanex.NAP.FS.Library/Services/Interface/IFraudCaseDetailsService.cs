@@ -1,11 +1,11 @@
 ﻿namespace Fanex.NAP.FS.Library.Service
 {
+    using Criteria.MatchMonitor.FraudCaseDetails;    
     using Fanex.NAP.FS.Library.DTO;
     using Fanex.NAP.FS.Library.Models.MatchMonitor.FraudCaseDetails;
     using Fanex.NAP.FS.Library.ViewModels.MatchMonitor.FraudCaseDetails;
     using System;
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
+    using System.Collections.Generic;    
 
     public interface IFraudCaseDetailsService
     {
@@ -32,6 +32,14 @@
         IEnumerable<TicketDetails> GetTicketFromIP(string ip, bool isShowSpecialCurrencies);
         
         IEnumerable<ArbitrageGroupTicketList> GetArbitrageTickets(int matchId, DateTime eventDate, bool isShowSpecialCurrencies);
+
+        IEnumerable<ArbitrageGroupTicketList> GetArbitrageTickets(GetArbitrageTicketCriteria criteria, IEnumerable<ScoreHDP> lstScoreHDP);
+
+        IEnumerable<Evidence> GetListEvidences();
+
+        IEnumerable<Currency> GetAllCurrency();
+
+        IEnumerable<ScoreHDP> GetScoreHDP(int matchId, bool isShowSpecialCurrencies);
 
         byte[] ExportToExcelIpTickets(string ip, string template, bool isShowSpecialCurrencies);
 

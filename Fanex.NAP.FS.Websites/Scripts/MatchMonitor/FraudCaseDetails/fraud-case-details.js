@@ -4,8 +4,7 @@
         customer_grid = $("#customer-tab table"),
         associated_accounts = $("#associated-accounts"),
         ticket_last_7_days = $("#tickets-last-7-days"),
-        ticket_by_ip = $("#ticket-by-ip");
-
+        ticket_by_ip = $("#ticket-by-ip");        
     var global_idx = 0;
 
     var filter = {};
@@ -14,15 +13,54 @@
 
     var ticketLoad = false;
 
-    var customerLoad = false;
+    var customerLoad = false;    
 
-    function load_ticket_grid() {
+    function getListEvidences() {
+        var url = common.modifyRelativeUrl("/MatchMonitor/GetEvidences");       
+
+        $.get(url, {}, function (json) {          
+            for (var i = 0; i < json.length; i++) {
+                $("#ddlEvidence").append(`<option value='${json[i].EvidenceCode}'>${json[i].EvidenceName}</option>`)
+            }
+           
+            $("#ddlEvidence").multipleSelect({
+                width: 300,
+                selectAll: false
+            });
+        })
+    };
+
+    function getAllCurrency() {
+        var url = common.modifyRelativeUrl("/MatchMonitor/GetAllCurrency");        
+
+        $.get(url, {}, function (json) {
+            $("#currency").append("<option>All</option>");
+
+            for (var i = 0; i < json.length; i++) {
+                $("#currency").append(`<option value='${json[i].CurrencyId}'>${json[i].CurrencyName}</option>`)
+            }
+        })
+    };
+
+    function getScoreHDP() {
+        var url = common.modifyRelativeUrl("/MatchMonitor/GetScoreHDP");        
+
+        $.get(url, parameters, function (json) {
+            $("#scoreHDP").append("<option>All</option>");
+            
+            localStorage['AllScoreHDP'] = "all Scrore";
+
+            for (var i = 0; i < json.length; i++) {
+                $("#scoreHDP").append(`<option value='${json[i].BetType}'>${json[i].BetTypeName}</option>`);                
+            }
+        })
+    }
+
+    function loadTicketGrid() {
         common.showLoading();
 
         if (isArbitrage) {
-            var url = common.modifyRelativeUrl("/MatchMonitor/GetArbitrageTicketDetails");
-
-            $.get(url, parameters, renderArbitrageGrid);
+            loadLazyArbitrages();          
         }
         else {
             global_idx = 0;
@@ -50,12 +88,12 @@
 
                 if (ticketLoad && customerLoad) {
                     common.closeLoading();
-                }
+                }                
             });
         }
     }
 
-    function load_customer_grid() {
+    function loadCustomerGrid() {
         common.showLoading();
 
         var url = common.modifyRelativeUrl("/MatchMonitor/GetFraudCaseCustomerDetails");
@@ -427,6 +465,79 @@
         });
     }
 
+    function loadLazyArbitrages() {
+        var url = common.modifyRelativeUrl("/MatchMonitor/GetArbitrageTicketDetails");
+        var allScoreHDP = localStorage['AllScoreHDP'];
+        var criteria = {
+            liveStatus: $("#market").val(),
+            evidence: $("#evidence").val(),
+            currencyId: $("#currency").val(),
+            transDateFrom: $("#transDateFrom").val(),
+            transDateTo: $("#transDateTo").val(),
+            bettype: $("#scoreHDP").val(),
+            scoreHDP: '',
+            matchId: parameters.matchId,
+            eventDate: parameters.eventDate
+        };
+
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data: criteria,
+            beforeSend: loadBeforeSend,
+            success: function (data) {
+                loadSuccess(data);
+            },
+            error: loadError
+        });
+    };
+
+    function bindScrollHandler() {
+        //$('.dataTables_scrollBody').scroll(function (handleData) {
+        //    if ($('.dataTables_scrollBody').scrollTop() + $('.dataTables_scrollBody').height() > $(document).height()) {
+        //        loadArbitrages();
+        //    }
+        //});
+    };
+
+    function unbindScrollHandler() {
+        $('.dataTables_scrollBody').unbind("scroll");
+    };
+
+    function loadBeforeSend() {
+        // Disable scroll event handler
+        unbindScrollHandler();
+    };
+
+    function loadSuccess(data) {
+        // Delay a bit before displaying the result and re-enabling scroll event handler
+        setTimeout(function () {
+            renderArbitrageGrid(data);
+            // Re-enable scroll handler
+            bindScrollHandler();
+        }, 500);
+    };
+
+    function loadError(error) {
+        console.log(error);
+    };
+
+    function loadGrids() {        
+        //bindScrollHandler();
+
+        loadTicketGrid();
+
+        loadCustomerGrid();
+    };
+
+    function init() {
+        getListEvidences();
+
+        getAllCurrency();
+
+        getScoreHDP();      
+    }
+
     customer_grid.DataTable({
         ordering: false,
         searching: false,
@@ -454,15 +565,13 @@
             { data: obj => obj.AssociatedAccounts, className: "text-right", width: "50px" },
             { defaultContent: renderCustomerAction(), className: "has-icon text-center", width: "70px" }
         ]
-    });
-
-    load_ticket_grid();
-
-    load_customer_grid();
+    });   
 
     detail_tabs.tabs({
         activate: (e, ui) => switchTab(ui)
     });
+
+    $("#generate").click(loadGrids);
 
     $(".-export").click(exportExcel);
 
@@ -595,7 +704,9 @@
             { data: obj => obj.Status, width: "50px", className: "text-center uppercase" }
         ],
         headerCallback: tr => $("th", tr).removeClass("uppercase")
-    });
+    });  
+
+    init();
 }
 
 $(fraud_case_details);

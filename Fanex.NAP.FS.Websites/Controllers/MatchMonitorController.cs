@@ -6,10 +6,13 @@ namespace Fanex.NAP.FS.Websites.Controllers
     using Fanex.NAP.Core.Web.Attribute;
     using Fanex.NAP.FS.Library.Criteria.MatchMonitor;
     using Fanex.NAP.FS.Library.Models;
+    using Library.Criteria.MatchMonitor.FraudCaseDetails;
+    using Library.Models.MatchMonitor.FraudCaseDetails;
     using Library.Service;
     using Service;
     using Service.MatchMonitor;
     using System;
+    using System.Collections.Generic;
     using System.Configuration;
     using System.Linq;
     using System.Text;
@@ -108,12 +111,26 @@ namespace Fanex.NAP.FS.Websites.Controllers
 
             return Json(data, JsonRequestBehavior.AllowGet);
         }
-
+      
         public ActionResult GetArbitrageTicketDetails(int matchId, DateTime eventDate)
         {
             var data = _fraudCaseDetailService.GetArbitrageTickets(matchId, eventDate, IsShowSpecialCurrencies);
-
+                      
             return Json(data);
+        }
+
+        [HttpPost]
+        public JsonResult GetArbitrageTicketDetails(GetArbitrageTicketCriteria criteria)
+        {
+            IEnumerable<ScoreHDP> lstScoreHDP = null;
+            var objCache = HttpContext.Cache["ScoreHDP"];
+            if (objCache != null)
+            {
+                lstScoreHDP = objCache as IEnumerable<ScoreHDP>;
+            }
+            var data = _fraudCaseDetailService.GetArbitrageTickets(criteria, lstScoreHDP);
+
+            return Json(data, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult ExportExcelForDetail(int fraudCaseId, int matchId, DateTime eventDate)
@@ -177,6 +194,29 @@ namespace Fanex.NAP.FS.Websites.Controllers
                 .ExportArbitrageExcel(matchId, eventDate, IsShowSpecialCurrencies, template, obj => obj.BettypeName == bettype && obj.Score == score && (double)obj.Handicap == handicap && obj.GroupId == groupId);
 
             return ExcelFile(content, fileName);
+        }
+
+        public JsonResult GetEvidences()
+        {
+            var data = _fraudCaseDetailService.GetListEvidences();
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult GetAllCurrency()
+        {
+            var data = _fraudCaseDetailService.GetAllCurrency();
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult GetScoreHDP(int matchId, DateTime eventDate)
+        {
+            var data = _fraudCaseDetailService.GetScoreHDP(matchId, IsShowSpecialCurrencies);
+
+            HttpContext.Cache["ScoreHDP"] = data;
+
+            return Json(data, JsonRequestBehavior.AllowGet);
         }
     }
 }

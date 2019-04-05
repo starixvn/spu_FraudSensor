@@ -9,6 +9,8 @@
 @section styles{
     @Styles.Render("~/fraud-case-styles")
     @Styles.Render("~/Contents/CoreBetList")
+    @*<link href="~/Content/themes/base/jquery-ui.min.css" rel="stylesheet" />*@
+    <link href="~/Content/jquery-ui-timepicker-addon.min.css" rel="stylesheet" />
 
     <style>
         /*div.dataTables_wrapper {
@@ -35,6 +37,51 @@
     </tr>
 </table>
 
+<div class="form-filter">
+    <div class="group width-160">
+        <label class="text">Market</label>
+        <div class="edit-field col_9">
+            <select class="control" id="market">
+                <option value="-1" selected>All</option>
+                <option value="0">Non-Live</option>
+                <option value="1">Live</option>
+            </select>
+        </div>
+    </div>
+    <div class="group width-160">
+        <label class="text">Currency</label>
+        <div class="edit-field col_9">
+            <select class="control" id="currency"></select>
+        </div>
+    </div>
+    <div class="group width-300">
+        <label>Evidence</label>
+        <div class="edit-field">
+            <select id="ddlEvidence" multiple="multiple"></select>
+        </div>
+    </div>       
+</div>
+<div class="form-filter">
+    <div class="group">
+        <label class="text">Trans Date</label>
+        <div class="edit-field col_9">
+            <input type="text" id="transDateFrom" class="form-control date-time-picker" value="@Model.EventDate">
+        </div>
+    </div>
+    <div class="group">
+        <div class="edit-field col_9">
+            <input type="text" id="transDateTo" class="form-control date-time-picker" value="@Model.EventDate">
+        </div>        
+    </div>
+    <div class="group">
+        <label class="text">HDP/Score</label>    
+        <div class="edit-field col_9">
+            <select class="control" id="scoreHDP"></select>
+        </div>
+    </div>
+    <button class="button -primary" id="generate">Generate</button>
+</div>
+
 <div id="detailTabs">
     <ul>
         <li><a href="#ticket-tab" id="tickets">By Ticket</a></li>
@@ -48,7 +95,10 @@
     @Html.Partial("FraudCaseDetails/CustomerDetails")
 </div>
 
-@section scripts{
+@section scripts{    
+    @Scripts.Render("~/bundles/jqueryval")
+    <script src="~/Scripts/jquery-ui-1.12.1.min.js"></script>
+    <script src="~/Scripts/jquery-ui-timepicker-addon.min.js"></script>
     <script>
         var parameters =
             {
@@ -59,7 +109,26 @@
 
         var bu_date = "@ViewBag.BUDate.ToString("MMM dd, yyyy")";
 
-        var isArbitrage = @(Convert.ToInt32((FraudCaseId)Model.FraudCaseId == FraudCaseId.Arbitrage))
+        var isArbitrage = @(Convert.ToInt32((FraudCaseId)Model.FraudCaseId == FraudCaseId.Arbitrage));
+
+        //datetime picker
+        $(".date-time-picker").datetimepicker({
+            timeFormat: 'HH:mm:ss',
+            stepHour: 2,
+            stepMinute: 10,
+            stepSecond: 10
+        });
+
+        jQuery.validator.methods.date = function (value, element) {
+            var isChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
+            if (isChrome) {
+                var d = new Date();
+                return this.optional(element) || !/Invalid|NaN/.test(new Date(d.toLocaleDateString(value)));
+            } else {
+                return this.optional(element) || !/Invalid|NaN/.test(new Date(value));
+            }
+        };
+
     </script>
 
     @Scripts.Render("~/scripts/match-monitor/fraud-case-details")

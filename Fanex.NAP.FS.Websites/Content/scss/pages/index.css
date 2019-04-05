@@ -1453,12 +1453,22 @@ table.dataTable tbody tr.selected td {
     -ms-transform: scaleY(0.8);
     -o-transform: scaleY(0.8);
     transform: scaleY(0.8);
-    -webkit-transition: opacity .2s .1s ease-out, -webkit-transform .2s .1s ease-out;
-    transition: opacity .2s .1s ease-out, -webkit-transform .2s .1s ease-out;
-    -o-transition: opacity .2s .1s ease-out, -o-transform .2s .1s ease-out;
-    -moz-transition: transform .2s .1s ease-out, opacity .2s .1s ease-out, -moz-transform .2s .1s ease-out;
-    transition: transform .2s .1s ease-out, opacity .2s .1s ease-out;
-    transition: transform .2s .1s ease-out, opacity .2s .1s ease-out, -webkit-transform .2s .1s ease-out, -moz-transform .2s .1s ease-out, -o-transform .2s .1s ease-out;
+    -webkit-transition: opacity .2s .1s ease-out,
+ -webkit-transform .2s .1s ease-out;
+    transition: opacity .2s .1s ease-out,
+ -webkit-transform .2s .1s ease-out;
+    -o-transition: opacity .2s .1s ease-out,
+ -o-transform .2s .1s ease-out;
+    -moz-transition: transform .2s .1s ease-out,
+ opacity .2s .1s ease-out,
+ -moz-transform .2s .1s ease-out;
+    transition: transform .2s .1s ease-out,
+ opacity .2s .1s ease-out;
+    transition: transform .2s .1s ease-out,
+ opacity .2s .1s ease-out,
+ -webkit-transform .2s .1s ease-out,
+ -moz-transform .2s .1s ease-out,
+ -o-transform .2s .1s ease-out;
     -webkit-transform-origin: 0 0;
     -moz-transform-origin: 0 0;
     -ms-transform-origin: 0 0;
@@ -1671,6 +1681,14 @@ table.dataTable tbody tr.selected td {
 
 .form-filter .width-160 {
   width: 160px; }
+
+.form-filter .width-220 {
+  width: 220px;
+}
+
+.form-filter .width-300 {
+  width: 300px;
+}
 
 .form-filter .width-400 {
   width: 400px; }

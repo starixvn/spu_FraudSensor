@@ -255,8 +255,10 @@
     <Compile Include="Criteria\FraudSensorTask\OfficeIPRuleCriteria.cs" />
     <Compile Include="Criteria\MatchMonitor\BalanceUpDateGetCriteria.cs" />
     <Compile Include="Criteria\MatchMonitor\FraudCaseDetails\GetArbitrageTicketCriteria.cs" />
+    <Compile Include="Criteria\MatchMonitor\FraudCaseDetails\GetCurrencyCriteria.cs" />
     <Compile Include="Criteria\MatchMonitor\FraudCaseDetails\GetCustomerCriteria.cs" />
     <Compile Include="Criteria\MatchMonitor\FraudCaseDetails\GetMatchInfoCriteria.cs" />
+    <Compile Include="Criteria\MatchMonitor\FraudCaseDetails\GetScoreHDP.cs" />
     <Compile Include="Criteria\MatchMonitor\FraudCaseDetails\GetTicketCriteria.cs" />
     <Compile Include="Criteria\MatchMonitor\FraudCaseDetails\Last7DaysTicketGetCriteria.cs" />
     <Compile Include="Criteria\MatchMonitor\FraudCaseDetails\GetTicketByIPCriteria.cs" />
@@ -345,8 +347,11 @@
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\MatchMonitor\BalanceUpDate.cs" />
     <Compile Include="Models\MatchMonitor\FraudCase.cs" />
+    <Compile Include="Models\MatchMonitor\FraudCaseDetails\Currency.cs" />
     <Compile Include="Models\MatchMonitor\FraudCaseDetails\CustEvidence.cs" />
     <Compile Include="Models\MatchMonitor\FraudCaseDetails\CustInfo.cs" />
+    <Compile Include="Models\MatchMonitor\FraudCaseDetails\Evidence.cs" />
+    <Compile Include="Models\MatchMonitor\FraudCaseDetails\ScoreHDP.cs" />
     <Compile Include="Models\MatchMonitor\FraudCaseDetails\MatchInfo.cs" />
     <Compile Include="Models\MatchMonitor\FraudCaseDetails\TicketInfo.cs" />
     <Compile Include="Models\MatchMonitor\League.cs" />
