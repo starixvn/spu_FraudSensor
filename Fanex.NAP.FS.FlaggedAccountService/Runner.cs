@@ -1,4 +1,6 @@
 ﻿using Fanex.Logging;
+using Fanex.Logging.Extensions;
+using Fanex.Logging.Extensions.Database;
 using Fanex.NAP.FS.Core;
 using Fanex.NAP.FS.Library.Core.Helpers.Api;
 using Fanex.NAP.FS.Library.Core.Helpers.Xml;
@@ -77,10 +79,14 @@ namespace Fanex.NAP.FS.FlaggedAccountService
         {
             var exception = string.Empty;
             var status = true;
-            Report(status, exception);
+            
+
             try
             {
-                var isUM = baseService.CheckUM();
+                Report(status, exception, "Fraud Case is executing at " + DateTime.Now);
+
+                var isUM = baseService.CheckUM();                
+
                 if (!isUM)
                 {
                     if (isRunning) return;
@@ -106,13 +112,17 @@ namespace Fanex.NAP.FS.FlaggedAccountService
                 exception = ex.Message;
                 status = false;
 
-                LogService.Critical($"{projectName} - {serviceName} - OnTimedEvent Exception: {ex.Message}");
+                var logMessage = new LogMessage(ex.Message)
+                    .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
+                    .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
+
+                LogService.Error($"{projectName} - {serviceName} - OnTimeEvent Exeption {logMessage}");
             }
 
-            Report(status, exception);
+            Report(status, exception, "Fraud Case is executed at " + DateTime.Now);
         }
 
-        void Report(bool status, string exception)
+        void Report(bool status, string exception, string message)
         {
             var model = new ReportModel()
             {
@@ -121,7 +131,8 @@ namespace Fanex.NAP.FS.FlaggedAccountService
                 Exception = exception,                
                 Status = status,
                 Timeout = baseService.FraudCase.FraudCaseInterval,
-                IsActive = baseService.FraudCase.IsActive
+                IsActive = baseService.FraudCase.IsActive,
+                Message = message
             };
 
             baseService.Report(model);
@@ -169,13 +180,13 @@ namespace Fanex.NAP.FS.FlaggedAccountService
                     flaggedAccountService.ExecuteRule(string.Join(",", ((List<Match>)m).Select(t => t.MatchId.ToString())), flaggedAccountsXml);
 
                 }
-                catch (Exception exception)
+                catch (Exception ex)
                 {
-                    var error = "<b>Error:</b> " + exception.Message +
-                              "<br><b>StackTrace:</b> " + exception.StackTrace;
-                    var message = string.Format("<b>Problem with FraudCaseId = {0}, FraudCaseName = {1}</b><br><br>", FraudCaseId.FlaggedAccount, serviceName) + error;
+                    var logMessage = new LogMessage(ex.Message)
+                    .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
+                    .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
 
-                    LogService.Error(message);
+                    LogService.Error($"{projectName} - {serviceName} - ExecuteMultiple Exeption {logMessage}");
                 }
             }, matches);
 

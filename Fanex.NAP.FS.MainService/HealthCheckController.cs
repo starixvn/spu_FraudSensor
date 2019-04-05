@@ -64,11 +64,11 @@ namespace Fanex.NAP.FS.MainService
 
             if (!status)
             {
-                message = $"Service name: {fraudCaseName} - Status: {status} - Exception: {exception}";
+                var bodyMessage = $"Service name: {fraudCaseName} - Status: {status} - Message: {message} - Exception: {exception}";
 #if DEBUG
-                System.Console.WriteLine(message);
+                System.Console.WriteLine(bodyMessage);
 #else
-                LogService.Error(message);
+                LogService.Error(bodyMessage);
 #endif
 
             }

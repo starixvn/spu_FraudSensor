@@ -1,4 +1,6 @@
 ﻿using Fanex.Logging;
+using Fanex.Logging.Extensions;
+using Fanex.Logging.Extensions.Database;
 using Fanex.NAP.FS.Library.DTO;
 using Fanex.NAP.FS.Library.Models;
 using Fanex.NAP.FS.Model;
@@ -46,10 +48,11 @@ namespace Fanex.NAP.FS.BigStakeNearGoalService
         {
             var exception = string.Empty;
             var status = true;
-            Report(status, exception);
-
+            
             try
             {
+                Report(status, exception, "Fraud Case is executing at " + DateTime.Now);
+
                 var isUM = baseService.CheckUM();
                 if (!isUM)
                 {
@@ -78,10 +81,14 @@ namespace Fanex.NAP.FS.BigStakeNearGoalService
                 status = false;
                 isRunning = false;
 
-                LogService.Critical($"{projectName} - {serviceName} - OnTimedEvent Exception: {ex.Message}");
+                var logMessage = new LogMessage(ex.Message)
+                    .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
+                    .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
+
+                LogService.Error($"{projectName} - {serviceName} - OnTimeEvent Exeption {logMessage}");
             }
 
-            Report(status, exception);
+            Report(status, exception, "Fraud Case is executed at " + DateTime.Now);
         }
 
         void Precondition()
@@ -103,7 +110,7 @@ namespace Fanex.NAP.FS.BigStakeNearGoalService
             }
         }
 
-        void Report(bool status, string exception)
+        void Report(bool status, string exception, string message)
         {
             var model = new ReportModel()
             {
@@ -111,7 +118,8 @@ namespace Fanex.NAP.FS.BigStakeNearGoalService
                 Exception = exception,                
                 Status = status,
                 IsActive = baseService.FraudCase.IsActive,
-                Timeout = baseService.FraudCase.FraudCaseInterval
+                Timeout = baseService.FraudCase.FraudCaseInterval,
+                Message  = message
             };
 
             baseService.Report(model);
@@ -127,13 +135,13 @@ namespace Fanex.NAP.FS.BigStakeNearGoalService
 
                     bigStakeNearGoalService.Rule(matchIds);
                 }
-                catch (Exception exception)
+                catch (Exception ex)
                 {
-                    var error = "<b>Error:</b> " + exception.Message +
-                              "<br><b>StackTrace:</b> " + exception.StackTrace;
-                    var message = string.Format("<b>Problem with FraudCaseId = {0}, FraudCaseName = {1}, MatchId = {2}</b><br><br>", baseService.FraudCase.FraudCaseId, baseService.FraudCase.FraudCaseName, match.MatchId) + error;
+                    var logMessage = new LogMessage(ex.Message)
+                    .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
+                    .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
 
-                    LogService.Error(message);
+                    LogService.Error($"{projectName} - {serviceName} - ExecuteSingle Exeption {logMessage}");
                 }
             }, match);
 
