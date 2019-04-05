@@ -61,16 +61,15 @@ namespace Fanex.NAP.FS.BigStakeNearGoalService
 
                     isRunning = true;
 
-                    //CleanResult();
-                    //Precondition();
-                    //Rule();
+                    CleanResult();
+                    Precondition();
+                    Rule();
 
                     isRunning = false;
 
 #if DEBUG
                     Console.WriteLine("=> Fraud Case is executed at " + DateTime.Now);
 #endif
-                 //   LogService.Info($"{projectName} - {serviceName} - Executed at {DateTime.Now}");
                 }
             }
             catch (Exception ex)
