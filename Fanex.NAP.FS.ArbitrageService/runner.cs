@@ -192,7 +192,7 @@ namespace Fanex.NAP.FS.ArbitrageService
 
                 Parallel.ForEach(ticketGroupBy, new ParallelOptions
                 {
-                    MaxDegreeOfParallelism = 2
+                    MaxDegreeOfParallelism = 1
                 }, (g) =>
 {
                     message = $"===> Match Id: {g.Key} - Ticket counter: {g.Count()} - Executing";
