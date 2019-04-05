@@ -101,8 +101,6 @@ namespace Fanex.NAP.FS.ArbitrageService
 
 #if DEBUG
             Console.WriteLine(message);
-#else
-            LogService.Info(message);
 #endif
 
             Task.WaitAll(tsk);
@@ -113,8 +111,6 @@ namespace Fanex.NAP.FS.ArbitrageService
 
 #if DEBUG
             Console.WriteLine(message);
-#else
-            LogService.Info(message);
 #endif
 
             try
@@ -127,15 +123,13 @@ namespace Fanex.NAP.FS.ArbitrageService
                     .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
                     .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
 
-                LogService.Error($"{projectName} - {serviceName} - GroupData Exeption: {logMessage}");
+                LogService.Error($"{projectName} - {serviceName} - MatchId: {matchId} - GroupData Exeption: {logMessage}");
             }
 
             message = $"=> Rule for match {matchId} is executed.";
 
 #if DEBUG
             Console.WriteLine(message);
-#else
-            LogService.Info(message);
 #endif
         }
 
@@ -157,7 +151,6 @@ namespace Fanex.NAP.FS.ArbitrageService
         {
             var model = new ReportModel()
             {
-
                 ServiceName = serviceName,
                 Exception = exception,
                 Status = status,
@@ -179,8 +172,6 @@ namespace Fanex.NAP.FS.ArbitrageService
 
 #if DEBUG
             Console.WriteLine(message);
-#else
-            LogService.Info(message);
 #endif
         }
 
@@ -197,8 +188,6 @@ namespace Fanex.NAP.FS.ArbitrageService
 
 #if DEBUG
                 Console.WriteLine(message);
-#else
-                LogService.Info(message);
 #endif
 
                 Parallel.ForEach(ticketGroupBy, new ParallelOptions
@@ -209,8 +198,6 @@ namespace Fanex.NAP.FS.ArbitrageService
                     message = $"===> Match Id: {g.Key} - Ticket counter: {g.Count()} - Executing";
 #if DEBUG
                     Console.WriteLine(message);
-#else
-                        LogService.Info(message);
 #endif
 
                     GroupData(g.Key, g);
@@ -219,8 +206,6 @@ namespace Fanex.NAP.FS.ArbitrageService
 
 #if DEBUG
                     Console.WriteLine(message);
-#else
-                        LogService.Info(message);
 #endif
                 });
             }
