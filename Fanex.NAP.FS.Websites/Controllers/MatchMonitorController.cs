@@ -124,6 +124,7 @@ namespace Fanex.NAP.FS.Websites.Controllers
         {
             IEnumerable<ScoreHDP> lstScoreHDP = null;
             var objCache = HttpContext.Cache["ScoreHDP"];
+            var test = 1;
             if (objCache != null)
             {
                 lstScoreHDP = objCache as IEnumerable<ScoreHDP>;
