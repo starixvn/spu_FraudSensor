@@ -80,54 +80,35 @@ namespace Fanex.NAP.FS.MainService
             return "I'm here. Everything is ok now. (Nhìn cái gì!! OK rồi =.=')";
         }
 
-        private static void RetryFraudCaseService(int fraudCaseId)
+        private static void RetryFraudCaseService(FraudCase fraudCase)
         {
             var fraudCaseService = new Service.FraudCaseService();
-            var fraudCaseName = Enum.GetName(typeof(FraudCaseId), fraudCaseId);
-            FraudCase fraudCase = null;
 
-            if (AppSetting.Environment == 2)
+            if (!string.IsNullOrWhiteSpace(fraudCase.FraudCaseName))
             {
-                fraudCase = new FraudCase()
+                _rabbitMQ
+                    .DeclareQueue(fraudCase.FraudCaseName)
+                    .DeclareRoutingKey(fraudCase.FraudCaseName)
+                    .Bind();
+
+                if (!string.IsNullOrWhiteSpace(_rabbitMQ.QueueName))
                 {
-                    FraudCaseId = fraudCaseId,
-                    FraudCaseName = fraudCaseName,
-                    IsActive = lstFCHealth.Where(f => f.FraudCaseId == fraudCaseId).FirstOrDefault().IsActive
-                };
-            }
-            else
-            {
-                fraudCase = fraudCaseService.GetByFraudCaseId(fraudCaseId, AppSetting.Environment);
-            }
-
-            if (fraudCase.IsActive)
-            {
-                if (!string.IsNullOrWhiteSpace(fraudCaseName))
-                {
-                    _rabbitMQ
-                        .DeclareQueue(fraudCaseName)
-                        .DeclareRoutingKey(fraudCaseName)
-                        .Bind();
-
-                    if (!string.IsNullOrWhiteSpace(_rabbitMQ.QueueName))
+                    var message = new Message<FraudCaseMessage>(new FraudCaseMessage
                     {
-                        var message = new Message<FraudCaseMessage>(new FraudCaseMessage
-                        {
-                            Action = Model.Action.Retry,
-                            Id = fraudCase.FraudCaseId,
-                            Name = fraudCase.FraudCaseName,
-                            Message = "Message is sent at" + DateTime.Now
-                        }, new MessageProperties { DeliveryMode = 2, Priority = 9 });
+                        Action = Model.Action.Retry,
+                        Id = fraudCase.FraudCaseId,
+                        Name = fraudCase.FraudCaseName,
+                        Message = "Message is sent at" + DateTime.Now
+                    }, new MessageProperties { DeliveryMode = 2, Priority = 9 });
 
-                        var log = $"Reload Fraud Case - Queue: {_rabbitMQ.QueueName}, RoutingKey: {_rabbitMQ.RoutingKey}, Exchange: {_rabbitMQ.ExchangeName}";
+                    var log = $"Reload Fraud Case - Queue: {_rabbitMQ.QueueName}, RoutingKey: {_rabbitMQ.RoutingKey}, Exchange: {_rabbitMQ.ExchangeName}";
 
-                        _rabbitMQ.AdvanceBus.PublishAsync(_rabbitMQ.Exchange, _rabbitMQ.RoutingKey, false, message);
+                    _rabbitMQ.AdvanceBus.PublishAsync(_rabbitMQ.Exchange, _rabbitMQ.RoutingKey, false, message);
 #if DEBUG
-                        Console.WriteLine(log);
+                    Console.WriteLine(log);
 #endif
-                    }
-
                 }
+
             }
         }
 
@@ -138,14 +119,31 @@ namespace Fanex.NAP.FS.MainService
                 var startTime = DateTime.Now;
                 Parallel.ForEach(lstFCHealth, fcHealth =>
                 {
+                    var fraudCaseService = new Service.FraudCaseService();
                     var timeout = fcHealth.TimeOut;
                     var period = (DateTime.Now - fcHealth.LastTimeSignal).TotalSeconds;
                     var fraudCaseName = Enum.GetName(typeof(FraudCaseId), fcHealth.FraudCaseId);
-                    if (period > fcHealth.TimeOut)
+                    FraudCase fraudCase = null;
+
+                    if (AppSetting.Environment == 2)
+                    {
+                        fraudCase = new FraudCase()
+                        {
+                            FraudCaseId = fcHealth.FraudCaseId,
+                            FraudCaseName = fraudCaseName,
+                            IsActive = lstFCHealth.Where(f => f.FraudCaseId == fcHealth.FraudCaseId).FirstOrDefault().IsActive
+                        };
+                    }
+                    else
+                    {
+                        fraudCase = fraudCaseService.GetByFraudCaseId(fcHealth.FraudCaseId, AppSetting.Environment);
+                    }
+
+                    if (fraudCase.IsActive && period > fcHealth.TimeOut)
                     {
                         try
                         {
-                            RetryFraudCaseService(fcHealth.FraudCaseId);
+                            RetryFraudCaseService(fraudCase);
                             var notifyMessage = $"Health check - Service name: {fraudCaseName} - Retry service";
                             LogService.Error(notifyMessage);
                         }
