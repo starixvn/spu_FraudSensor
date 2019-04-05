@@ -1,8 +1,3 @@
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-
 ALTER PROCEDURE [dbo].[FS_FraudCase_BSNG_Rule] 
 	@MatchIds VARCHAR(MAX) = NULL
 AS
@@ -301,6 +296,3 @@ BEGIN
 			INNER JOIN #tmpMatches tm WITH(NOLOCK) ON si.MatchId = tm.matchid
 	WHERE	si.HasScanned = 0;	
 END;
-
-GO
-/*<info serverAlias="DBFS-bodb_FraudSensor" executers="bodbSPUNet" isFunction="0" isNested="0"></info>*/

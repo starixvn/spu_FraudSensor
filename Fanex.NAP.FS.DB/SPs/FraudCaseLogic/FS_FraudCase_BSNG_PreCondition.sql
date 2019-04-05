@@ -1,9 +1,3 @@
-USE [bodb_FraudSensor]
-GO
-SET QUOTED_IDENTIFIER ON ;
-GO
-SET ANSI_NULLS ON ;
-GO
 ALTER PROCEDURE [dbo].[FS_FraudCase_BSNG_PreCondition] 
 AS
 /*
@@ -73,7 +67,4 @@ BEGIN
 	WHERE	(ms.TotalScores) < (m.LiveHomeScore + m.LiveAwayScore)
 			AND ms.HasScanned = 0;			
 END;
-
-GO
-/*<info serverAlias="DBFS-bodb_FraudSensor" executers="bodbSPUNet" isFunction="0" isNested="0"></info>*/
 
