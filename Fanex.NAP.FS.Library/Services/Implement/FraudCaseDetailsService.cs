@@ -561,26 +561,27 @@
         public IEnumerable<Evidence> GetListEvidences()
         {
             List<Evidence> lstEvidences = new List<Evidence>();
-            lstEvidences.Add(new Evidence { EvidenceCode = "5.1", EvidenceName = "Danger 10" });
-            lstEvidences.Add(new Evidence { EvidenceCode = "5.2", EvidenceName = "Smart Punter" });
-            lstEvidences.Add(new Evidence { EvidenceCode = "5.4", EvidenceName = "8RM Accounts" });
-            lstEvidences.Add(new Evidence { EvidenceCode = "5.5", EvidenceName = "Danger 5" });
-            lstEvidences.Add(new Evidence { EvidenceCode = "5.6", EvidenceName = "Danger 6" });
-            lstEvidences.Add(new Evidence { EvidenceCode = "5.7", EvidenceName = "Danger 7" });
-            lstEvidences.Add(new Evidence { EvidenceCode = "5.8", EvidenceName = "Danger 8" });
-            lstEvidences.Add(new Evidence { EvidenceCode = "5.9", EvidenceName = "Danger 9" });
-            lstEvidences.Add(new Evidence { EvidenceCode = "5.10", EvidenceName = "Danger 10" });
-            lstEvidences.Add(new Evidence { EvidenceCode = "6.1", EvidenceName = "MBC Abnormal Group 1" });
-            lstEvidences.Add(new Evidence { EvidenceCode = "6.2", EvidenceName = "Abnormal Betting - Other Bettype" });
-            lstEvidences.Add(new Evidence { EvidenceCode = "6.3", EvidenceName = "Goal Delay - Provider" });
-            lstEvidences.Add(new Evidence { EvidenceCode = "6.4", EvidenceName = "MBC Abnormal Group 2" });
-            lstEvidences.Add(new Evidence { EvidenceCode = "6.5", EvidenceName = "Licensee Abnormal Betting  1" });
-            lstEvidences.Add(new Evidence { EvidenceCode = "6.6", EvidenceName = "Hedging Group" });
-            lstEvidences.Add(new Evidence { EvidenceCode = "6.7", EvidenceName = "Licensee Fixed Game & Goal Delay" });
-            lstEvidences.Add(new Evidence { EvidenceCode = "6.8", EvidenceName = "Licensee Both Side Betting" });
-            lstEvidences.Add(new Evidence { EvidenceCode = "6.9", EvidenceName = "Licensee Monitoring Group" });
-            lstEvidences.Add(new Evidence { EvidenceCode = "6.10", EvidenceName = "Backup Group" });
-            lstEvidences.Add(new Evidence { EvidenceCode = "7.1", EvidenceName = "Abnormal - Snooker" });
+            lstEvidences.Add(new Evidence { EvidenceCode = "5.1", EvidenceName = "5.1 - Danger 10" });
+            lstEvidences.Add(new Evidence { EvidenceCode = "5.2", EvidenceName = "5.2 - Smart Punter" });
+            lstEvidences.Add(new Evidence { EvidenceCode = "5.3", EvidenceName = "5.3 - 8RM Accounts" });
+            lstEvidences.Add(new Evidence { EvidenceCode = "5.4", EvidenceName = "5.4 - VIP Monitor Accounts" });
+            lstEvidences.Add(new Evidence { EvidenceCode = "5.5", EvidenceName = "5.5 - Danger 5" });
+            lstEvidences.Add(new Evidence { EvidenceCode = "5.6", EvidenceName = "5.6 - Danger 6" });
+            lstEvidences.Add(new Evidence { EvidenceCode = "5.7", EvidenceName = "5.7 - Danger 7" });
+            lstEvidences.Add(new Evidence { EvidenceCode = "5.8", EvidenceName = "5.8 - Danger 8" });
+            lstEvidences.Add(new Evidence { EvidenceCode = "5.9", EvidenceName = "5.9 - Danger 9" });
+            lstEvidences.Add(new Evidence { EvidenceCode = "5.10", EvidenceName = "5.10 - Danger 10" });
+            lstEvidences.Add(new Evidence { EvidenceCode = "6.1", EvidenceName = "6.1 - MBC Abnormal Group 1" });
+            lstEvidences.Add(new Evidence { EvidenceCode = "6.2", EvidenceName = "6.2 - Abnormal Betting - Other Bettype" });
+            lstEvidences.Add(new Evidence { EvidenceCode = "6.3", EvidenceName = "6.3 - Goal Delay - Provider" });
+            lstEvidences.Add(new Evidence { EvidenceCode = "6.4", EvidenceName = "6.4 - MBC Abnormal Group 2" });
+            lstEvidences.Add(new Evidence { EvidenceCode = "6.5", EvidenceName = "6.5 - Licensee Abnormal Betting  1" });
+            lstEvidences.Add(new Evidence { EvidenceCode = "6.6", EvidenceName = "6.6 - Hedging Group" });
+            lstEvidences.Add(new Evidence { EvidenceCode = "6.7", EvidenceName = "6.7 - Licensee Fixed Game & Goal Delay" });
+            lstEvidences.Add(new Evidence { EvidenceCode = "6.8", EvidenceName = "6.8 - Licensee Both Side Betting" });
+            lstEvidences.Add(new Evidence { EvidenceCode = "6.9", EvidenceName = "6.9 - Licensee Monitoring Group" });
+            lstEvidences.Add(new Evidence { EvidenceCode = "6.10", EvidenceName = "6.10 - Backup Group" });
+            lstEvidences.Add(new Evidence { EvidenceCode = "7.1", EvidenceName = "7.1 - Abnormal - Snooker" });
 
             return lstEvidences;
         }

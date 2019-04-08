@@ -17,31 +17,19 @@
 
     var ticketLoad = false;
 
-    var customerLoad = false;    
+    var customerLoad = false;
 
-    //from_date.datepicker({       
-    //    changeMonth: true,
-    //    changeYear: true,
-    //    firstDay: 1,
-    //    minDate: moment(`${moment().year() - 1}/${moment().subtract(10, "months").month()}/1`, "Y/M/D").toDate()
-    //}).datepicker("setDate", new Date()).change(restrictToDate);
-
-    //to_date.datepicker({       
-    //    changeMonth: true,
-    //    changeYear: true,
-    //    firstDay: 1,
-    //    minDate: moment(`${moment().year() - 1}/${moment().subtract(10, "months").month()}/1`, "Y/M/D").toDate()
-    //}).datepicker("setDate", new Date()).change(restrictFromDate);
-
-    //function restrictFromDate() {
-    //    var to_val = to_date.datepicker("getDate");
-    //    from_date.datepicker("option", "maxDate", to_val);
-    //};
-
-    //function restrictToDate() {
-    //    var from_val = from_date.datepicker("getDate");
-    //    to_date.datepicker("option", "minDate", from_val);
-    //};
+    from_date.datepicker({       
+        changeMonth: true,
+        changeYear: true,
+        firstDay: 1,
+        minDate: moment(`${moment().year() - 1}/${moment().subtract(10, "months").month()}/1`, "M dd, yy").toDate()
+    }).datepicker("setDate", new Date()).change(restrictToDate);
+   
+    function restrictToDate() {
+        var from_val = from_date.datepicker("getDate");
+        to_date.datepicker("option", "minDate", from_val);
+    };
     
     function handleMultipleSelect() {           
         $("#ddlEvidence").multiselect({
