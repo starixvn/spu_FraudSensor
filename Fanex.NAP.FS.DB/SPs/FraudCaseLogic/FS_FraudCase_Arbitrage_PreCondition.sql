@@ -114,7 +114,7 @@ BEGIN
 	UPDATE		sh
 	SET			sh.HasScanned = 1, sh.UpdatedDate = @CurrentTime
 	FROM		dbo.ArbitrageMatchScoreHDP sh WITH(ROWLOCK)
-	INNER JOIN	dbo.ArbitrageMatchScanning m WITH(ROWLOCK)
+	INNER JOIN	dbo.ArbitrageMatchScanning m WITH(NOLOCK)
 				ON sh.MatchId = m.MatchId
 	LEFT JOIN	(	SELECT	DISTINCT MatchId
 					FROM	#tmpCustomerList c	WITH(NOLOCK)
