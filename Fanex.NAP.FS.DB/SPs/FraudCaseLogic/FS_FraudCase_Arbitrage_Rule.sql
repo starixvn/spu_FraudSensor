@@ -447,7 +447,7 @@ BEGIN
 								AND si.Handicap = ft.Handicap AND si.CustId = ft.CustId;
 
 		-- Insert new records for table ArbitrageTicketDetails
-		INSERT INTO dbo.ArbitrageTicketDetails(CustId, MatchId, GroupId, BetType, Handicap, LiveHomeScore, LiveAwayScore, TotalScores, TransIds, TicketCounter, IsIPFraud, GraphDBGroupId)
+		INSERT INTO dbo.ArbitrageTicketDetails(CustId, MatchId, GroupId, BetType, Handicap, TotalScores, LiveHomeScore, LiveAwayScore, TransIds, TicketCounter, IsIPFraud, GraphDBGroupId)
 		SELECT	[CustId]			= ft.CustId
 			,	[MatchId]			= ft.MatchId
 			,	[GroupId]			= ft.GroupId
