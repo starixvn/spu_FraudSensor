@@ -54,8 +54,10 @@
     <Compile Include="BigStakeNearGoalService.cs" />
     <Compile Include="FlaggedAccountService.cs" />
     <Compile Include="FraudCaseService.cs" />
+    <Compile Include="IFraudcaseService.cs" />
     <Compile Include="MicroService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ScannedOfficeIpService.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Fanex.NAP.FS.Core\Fanex.NAP.FS.Core.csproj">

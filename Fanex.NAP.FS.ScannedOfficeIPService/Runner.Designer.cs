@@ -1,6 +1,6 @@
 ﻿namespace Fanex.NAP.FS.ScannedOfficeIPService
 {
-    partial class Service1
+    partial class Runner
     {
         /// <summary> 
         /// Required designer variable.
