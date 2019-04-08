@@ -12,6 +12,8 @@ namespace Fanex.NAP.FS.Service
 
         void Rule(string matchIds, string param1);
 
-        void Rule(string matchIds);                
+        void Rule(string matchIds);
+
+        void Rule();
     }
 }

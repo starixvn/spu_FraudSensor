@@ -1,6 +1,6 @@
 ﻿namespace Fanex.NAP.FS.DailyDataCaptureService
 {
-    partial class Service1
+    partial class Runner
     {
         /// <summary> 
         /// Required designer variable.

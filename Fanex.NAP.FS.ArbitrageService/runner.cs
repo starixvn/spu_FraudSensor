@@ -124,10 +124,11 @@ namespace Fanex.NAP.FS.ArbitrageService
                 LogService.Error($"{projectName} - {serviceName} - MatchId: {matchId} - GroupData Exeption: {logMessage}");
             }
 
-#if DEBUG
             message = $"=> Rule for match {matchId} is executed.";
+#if DEBUG
             Console.WriteLine(message);
 #endif
+            LogService.Info(message);
         }
 
         private async Task<IEnumerable<ArbitrageCustomer>> GroupCustomer(IEnumerable<int> custids)

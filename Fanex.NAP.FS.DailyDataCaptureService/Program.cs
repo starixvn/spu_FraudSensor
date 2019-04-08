@@ -17,7 +17,7 @@ namespace Fanex.NAP.FS.DailyDataCaptureService
             ServiceBase[] ServicesToRun;
             ServicesToRun = new ServiceBase[]
             {
-                new Service1()
+                new Runner()
             };
             ServiceBase.Run(ServicesToRun);
         }
