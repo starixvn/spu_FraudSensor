@@ -15,7 +15,7 @@ AS
 		- 20180926@LONG: Remove redundant fraud tickets
 		- 20190312@Casey.Huynh: Enhance Performance, define PRIMARY KEY in table [110060]
 		- 20190314@Casey.Huynh: Implement, scan for completed Match [110566]
-		- 20190408@Casey.Huynh: Fix, Update "Rowlock" to "Nolock" for table ArbitrageMatchScanning [111069]
+		- 20190408@Casey.Huynh: Update "Rowlock" to "Nolock" for table ArbitrageMatchScanning, Insert to ArbitrageMatchScoreHDP handicap=hdp1-hdp2 [111069]
 	Param's Explanation (filtered by):  
 	
 */
@@ -101,7 +101,7 @@ BEGIN
 				ON	b.matchid = sh.MatchId
 				AND b.livehomescore + b.LiveAwayScore = sh.TotalScores
 				AND b.bettype = sh.BetType
-				AND b.hdp1 + b.hdp2 = sh.Handicap
+				AND b.hdp1 - b.hdp2 = sh.Handicap
 				AND sh.HasScanned = 1
 	WHERE		m.IsScanCompleted = 0  --Match not yet Scanned Completed							
 				AND b.bettype IN (1, 3, 7, 8)
