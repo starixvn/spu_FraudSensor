@@ -1,6 +1,7 @@
 ﻿using Fanex.Logging;
 using Fanex.Logging.Extensions;
 using Fanex.Logging.Extensions.Database;
+using Fanex.NAP.FS.Library.DTO;
 using Fanex.NAP.FS.Library.Models;
 using Fanex.NAP.FS.Model;
 using Fanex.NAP.FS.Service;
@@ -13,6 +14,7 @@ using System.Linq;
 using System.ServiceProcess;
 using System.Text;
 using System.Threading.Tasks;
+using Fanex.NAP.FS.Library.Core.Utilities;
 
 namespace Fanex.NAP.FS.ScannedOfficeIPService
 {
@@ -24,11 +26,15 @@ namespace Fanex.NAP.FS.ScannedOfficeIPService
 
         private MicroService baseService;
         private bool isRunning = false;
+        private IEnumerable<Match> _matches;
+        private readonly Queue<Task> _tasks;
 
         public Runner()
         {
             baseService = new MicroService(serviceName, FraudCaseId.ScannedOfficeIP);
             scannedOfficeIpService = new ScannedOfficeIpService();
+            _matches = new List<Match>();
+            _tasks = new Queue<Task>();
 
             InitializeComponent();
         }
@@ -81,7 +87,7 @@ namespace Fanex.NAP.FS.ScannedOfficeIPService
                 var logMessage = new LogMessage(ex.Message)
                     .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex)).ToString();
 
-                LogService.Error($"{projectName} - {serviceName} - OnTimeEvent Exeption {logMessage}");
+                LogService.Error($"{projectName} - {serviceName} - Execute Exeption {logMessage}");
             }
 
             Report(status, exception, "Fraud Case is executed at " + DateTime.Now);
@@ -104,15 +110,32 @@ namespace Fanex.NAP.FS.ScannedOfficeIPService
 
         void CleanResult()
         {
-
+            baseService.Clean(_matches, null);
+            _tasks.Clear();
         }
 
         void Precondition() {
-
+            _matches = scannedOfficeIpService.PreCondition<Match>();
         }
 
-        void Rule() {
+        void Rule()
+        {
+            if (_matches != null && _matches.Any())
+            {
+                foreach (var chunk in _matches.Chunk(100))
+                {
+                    var ids = chunk.Select(m => m.MatchId);
 
+                    _tasks.Enqueue(Task.Run(() => scannedOfficeIpService.Rule(string.Join(",", ids))));
+                }
+
+                Task.WaitAll(_tasks.ToArray());
+
+                foreach (var item in _tasks.Where(t => t.IsFaulted))
+                {
+                    LogService.Error($"{projectName} - {serviceName} - Rule Exception: {item.Exception.Message}, {item.Exception}");
+                }
+            }
         }
     }
 }
