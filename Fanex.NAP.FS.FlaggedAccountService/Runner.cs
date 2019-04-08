@@ -145,7 +145,7 @@ namespace Fanex.NAP.FS.FlaggedAccountService
 
         void Precondition()
         {
-            _matches = flaggedAccountService.ExecutePrecondition();
+            _matches = flaggedAccountService.PreCondition<Match>();
         }
 
         void Rule()
@@ -177,7 +177,7 @@ namespace Fanex.NAP.FS.FlaggedAccountService
                 try
                 {
                     var flaggedAccountsXml = XmlHelper.ToXmlString(_flaggedCustomers);
-                    flaggedAccountService.ExecuteRule(string.Join(",", ((List<Match>)m).Select(t => t.MatchId.ToString())), flaggedAccountsXml);
+                    flaggedAccountService.Rule(string.Join(",", ((List<Match>)m).Select(t => t.MatchId.ToString())), flaggedAccountsXml);
 
                 }
                 catch (Exception ex)

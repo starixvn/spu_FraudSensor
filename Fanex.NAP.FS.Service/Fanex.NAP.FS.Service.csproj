@@ -54,7 +54,7 @@
     <Compile Include="BigStakeNearGoalService.cs" />
     <Compile Include="FlaggedAccountService.cs" />
     <Compile Include="FraudCaseService.cs" />
-    <Compile Include="IFraudcaseService.cs" />
+    <Compile Include="IExecutorService.cs" />
     <Compile Include="MicroService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ScannedOfficeIpService.cs" />

@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace Fanex.NAP.FS.Service
 {
-   public class BigStakeNearGoalService
+   public class BigStakeNearGoalService : IExecutorService
     {
-        public IEnumerable<Match> PreCondition()
+        public IEnumerable<Match> PreCondition<Match>()
         {
             var criteria = new BigStakeNearGoalPreconditionCriteria();
 
@@ -19,7 +19,7 @@ namespace Fanex.NAP.FS.Service
             {
                 return db.Query<Match>(criteria);
             }
-        }
+        }               
 
         public void Rule(string matchIds)
         {
@@ -33,6 +33,11 @@ namespace Fanex.NAP.FS.Service
 
                 db.ExecuteNonQuery(param);
             }
+        }
+
+        public void Rule(string matchIds, string param1)
+        {
+            throw new NotImplementedException();
         }
     }
 }

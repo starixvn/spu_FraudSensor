@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace Fanex.NAP.FS.Service
 {
-    public class FlaggedAccountService
-    {
-        public IEnumerable<Match> ExecutePrecondition()
+    public class FlaggedAccountService: IExecutorService
+    {      
+        public IEnumerable<Match> PreCondition<Match>()
         {
             var criteria = new FlaggedAccountPreconditionCriteria();
 
@@ -21,12 +21,12 @@ namespace Fanex.NAP.FS.Service
             }
         }
 
-        public void ExecuteRule(string matchIds, string flaggedAccounts)
+        public void Rule(string matchIds, string param1)
         {
             var criteria = new FlaggedAccountRuleCriteria()
             {
                 MatchIds = matchIds,
-                FlaggedAccountsXML = flaggedAccounts
+                FlaggedAccountsXML = param1
             };
 
             using (var db = new ObjectDb(criteria.GetSettingKey()))
@@ -34,6 +34,11 @@ namespace Fanex.NAP.FS.Service
                 var param = criteria.GetSpParams();
                 db.ExecuteNonQuery(param);
             }
+        }
+
+        public void Rule(string matchIds)
+        {
+            throw new NotImplementedException();
         }
     }
 }

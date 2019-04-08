@@ -164,7 +164,7 @@ namespace Fanex.NAP.FS.ArbitrageService
         {
             var message = string.Empty;
 
-            tickets = arbitrageService.PreCondition();
+            tickets = arbitrageService.PreCondition<ArbitrageTicket>();
 
             message = "===> Pre-Condition is executing. Ticket counter: " + tickets.Count();
 

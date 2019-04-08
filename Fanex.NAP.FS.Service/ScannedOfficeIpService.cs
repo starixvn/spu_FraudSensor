@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace Fanex.NAP.FS.Service
 {
-    public class ScannedOfficeIpService : IFraudcaseService<Match>
+    public class ScannedOfficeIpService : IExecutorService
     {
-        public IEnumerable<Match> PreCondition()
+        public IEnumerable<Match> PreCondition<Match>()
         {
             var criteria = new OfficeIPPreconditionCriteria();
 
@@ -36,7 +36,7 @@ namespace Fanex.NAP.FS.Service
             }
         }
 
-        public void Rule(string matchIds, string associations)
+        public void Rule(string matchIds, string param1)
         {
             throw new NotImplementedException();
         }
