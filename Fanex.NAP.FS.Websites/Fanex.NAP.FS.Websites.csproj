@@ -813,6 +813,7 @@
     <Content Include="Content\scss\pages\um\um.scss" />
     <Content Include="Content\scss\pages\errors\errors.scss" />
     <Content Include="Content\scss\pages\customer-monitor\customer-monitor.scss" />
+    <Content Include="Content\scss\MultipleSelect\jquery.multiselect.css" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile2.pubxml" />
@@ -973,6 +974,7 @@
     <Content Include="Views\CustomerMonitor\Index.cshtml" />
     <Content Include="Views\CustomerMonitor\MatchNote.cshtml" />
     <Content Include="Views\CustomerMonitor\CustomerDetails\Index.cshtml" />
+    <Content Include="Scripts\MultipleSelect\jquery.multiselect.js" />
     <None Include="Views\Errors\403.cshtml" />
     <None Include="Views\Errors\404.cshtml" />
     <None Include="Views\Errors\500.cshtml" />

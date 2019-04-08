@@ -80,18 +80,10 @@ namespace Fanex.NAP.FS.Websites.Controllers
 
         public ActionResult GetFraudCaseDetails(int fraudCaseId, int matchId, DateTime eventDate, int violations)
         {
-            if (fraudCaseId == (int)FraudCaseId.Arbitrage && violations > 1000)
-            {
-                var content = _fraudCaseDetailService.ExportArbitrageCsv(matchId, eventDate, IsShowSpecialCurrencies);
-
-                var encoded = Encoding.UTF8.GetBytes(content);
-
-                return File(encoded, "text/plain", "Arbitrage.csv");
-            }
-
             var model = _fraudCaseDetailService.GetInfo(matchId, fraudCaseId, eventDate);
 
             ViewBag.BUDate = _matchMonitorService.GetBalanceUpDate().BalanceUpDay;
+            ViewBag.EvidenceList = _fraudCaseDetailService.GetListEvidences();
 
             return View("FraudCaseDetails/Index", model);
         }

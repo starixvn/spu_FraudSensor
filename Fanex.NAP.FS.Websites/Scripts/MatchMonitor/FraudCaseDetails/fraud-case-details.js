@@ -42,20 +42,12 @@
     //    var from_val = from_date.datepicker("getDate");
     //    to_date.datepicker("option", "minDate", from_val);
     //};
-
-    function getListEvidences() {
-        var url = common.modifyRelativeUrl("/MatchMonitor/GetListEvidences");
-
-        $.get(url, {}, function (json) {          
-            for (var i = 0; i < json.length; i++) {
-                $("#ddlEvidence").append(`<option value='${json[i].EvidenceCode}'>${json[i].EvidenceName}</option>`)
-            }
-           
-            $("#ddlEvidence").multipleSelect({
-                width: 300,
-                selectAll: false
-            });
-        })
+    
+    function handleMultipleSelect() {           
+        $("#ddlEvidence").multiselect({
+            menuHeight: 300,
+            menuWidth: 300
+        });
     };
 
     function getAllCurrency() {
@@ -225,12 +217,7 @@
     }
 
     function exportExcel() {
-        var url = common.modifyRelativeUrl("/MatchMonitor/ExportExcelArbitrage");
-        var arrEvidences = $("#ddlEvidence").multipleSelect("getSelects");
-        var evidenceCode = '';
-        if (arrEvidences != null && arrEvidences.length > 0) {
-            evidenceCode = arrEvidences.join(",");
-        }
+        evidenceCode = getEvidenceSelected();
 
         var criteria = {
             liveStatus: $("#market").val(),
@@ -242,6 +229,9 @@
             matchId: parameters.matchId,
             eventDate: parameters.eventDate
         };
+
+        var url = common.modifyRelativeUrl("/MatchMonitor/ExportExcelArbitrage");
+
         common.downloadFile(url, criteria);
     }
 
@@ -541,11 +531,8 @@
     };
 
     function loadGrids() {
-        var arrEvidences = $("#ddlEvidence").multipleSelect("getSelects");
-        var evidenceCode = '';
-        if (arrEvidences != null && arrEvidences.length > 0) {
-            evidenceCode = arrEvidences.join(",");
-        }
+        evidenceCode = getEvidenceSelected();
+
         var criteria = {
             liveStatus: $("#market").val(),
             evidenceCodeList: evidenceCode,
@@ -562,12 +549,27 @@
         loadTicketGrid(criteria);        
     };
 
-    function init() {
-        getListEvidences();
+    function getEvidenceSelected()
+    {
+        var arrEvidences = $("#ddlEvidence").multiselect("getChecked");
+        var array = [];
 
+        for (var i = 0; i < arrEvidences.length; i++) {
+            array.push($(arrEvidences[i]).attr('value'));
+        }
+
+        if (arrEvidences != null && arrEvidences.length > 0) {
+           var evidenceCode = array.join(",");
+        }
+        return evidenceCode;
+    }
+
+    function init() {
         getAllCurrency();
 
-        getScoreHDP();      
+        getScoreHDP();
+
+        handleMultipleSelect();
     }
 
     customer_grid.DataTable({

@@ -71,6 +71,7 @@
 /// <reference path="moment.js" />
 /// <reference path="moment-with-locales.js" />
 /// <reference path="multiple-select.js" />
+/// <reference path="multipleselect/jquery.multiselect.js" />
 /// <reference path="notification/notification.js" />
 /// <reference path="numeral/numeral.js" />
 /// <reference path="popper.js" />

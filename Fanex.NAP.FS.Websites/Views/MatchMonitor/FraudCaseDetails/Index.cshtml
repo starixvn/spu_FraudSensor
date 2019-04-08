@@ -1,4 +1,5 @@
 ﻿@using Fanex.NAP.FS.Library.Models;
+@using Fanex.NAP.FS.Library.Models.MatchMonitor.FraudCaseDetails;
 @model Fanex.NAP.FS.Library.ViewModels.MatchMonitor.FraudCaseDetails.MatchFraudCaseInfo
 
 @{
@@ -8,8 +9,9 @@
 
 @section styles{
     @Styles.Render("~/fraud-case-styles")
-    @Styles.Render("~/Contents/CoreBetList")        
+    @Styles.Render("~/Contents/CoreBetList")            
     <link href="~/Content/jquery-ui-timepicker-addon.min.css" rel="stylesheet" />
+    <link href="~/Content/scss/MultipleSelect/jquery.multiselect.css" rel="stylesheet" />    
 
     <style>
         /*div.dataTables_wrapper {
@@ -54,22 +56,27 @@
         </div>
     </div>
     <div class="group width-300">
-        <label class="text">Evidence</label>
+        <label class="text">Evidence</label>        
         <div class="edit-field col_9">
-            <select id="ddlEvidence" multiple="multiple"></select>
+            <select id="ddlEvidence" multiple="multiple">
+                @foreach (var item in (IEnumerable<Evidence>)ViewBag.EvidenceList)
+                {
+                    <option value="@item.EvidenceCode">@item.EvidenceName</option>
+                }
+            </select>
         </div>
-    </div>   
+    </div>
 </div>
 <div class="form-filter">
     <div class="group">
         <label class="text">Trans Date</label>
         <div class="edit-field col_9">
-            <input type="text" id="transDateFrom" class="form-control date-time-picker" value="@String.Format("{0:M/d/yyyy HH:mm:ss}", Model.EventDate)">
+            <input type="text" id="transDateFrom" class="form-control date-time-picker" value="@String.Format("{0:MMM dd, yyyy HH:mm:ss}", Model.EventDate)">
         </div>
     </div>
     <div class="group">
         <div class="edit-field col_9">
-            <input type="text" id="transDateTo" class="form-control date-time-picker" value="@String.Format("{0:M/d/yyyy HH:mm:ss}", Model.EventDate)">
+            <input type="text" id="transDateTo" class="form-control date-time-picker" value="@String.Format("{0:MMM dd, yyyy HH:mm:ss}", Model.EventDate)">
         </div>        
     </div>
     <div class="group">
@@ -97,7 +104,8 @@
 @section scripts{    
     @Scripts.Render("~/bundles/jqueryval")
     <script src="~/Scripts/jquery-ui-1.12.1.min.js"></script>
-    <script src="~/Scripts/jquery-ui-timepicker-addon.min.js"></script>
+    <script src="~/Scripts/jquery-ui-timepicker-addon.min.js"></script>   
+    <script src="~/Scripts/MultipleSelect/jquery.multiselect.js"></script> 
     <script>
         var parameters =
             {
@@ -112,6 +120,7 @@
 
         //datetime picker
         $(".date-time-picker").datetimepicker({
+            dateFormat: 'M dd, yy',
             timeFormat: 'HH:mm:ss',
             stepHour: 2,
             stepMinute: 10,
@@ -127,8 +136,8 @@
                 return this.optional(element) || !/Invalid|NaN/.test(new Date(value));
             }
         };
-    
+                
     </script>
 
-    @Scripts.Render("~/scripts/match-monitor/fraud-case-details")
+    @Scripts.Render("~/scripts/match-monitor/fraud-case-details")    
 }
