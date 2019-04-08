@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Functions>  
   <Function Name="BigStakeNearGoal">
-    <Setting Key="FS_FraudCase_BSNG_PreCondition" SpName="FS_FraudCase_BSNG_PreCondition_xtest" DbName="DBFS.bodb_FraudSensor.bodbSPUNet" />
-    <Setting Key="FS_FraudCase_BSNG_Rule" SpName="FS_FraudCase_BSNG_Rule_xtest" DbName="DBFS.bodb_FraudSensor.bodbSPUNet" />
+    <Setting Key="FS_FraudCase_BSNG_PreCondition" SpName="FS_FraudCase_BSNG_PreCondition_xtest" DbName="DBFS.bodb_FraudSensor.bodbSPUNet" TimeOut="600"/>
+    <Setting Key="FS_FraudCase_BSNG_Rule" SpName="FS_FraudCase_BSNG_Rule_xtest" DbName="DBFS.bodb_FraudSensor.bodbSPUNet" TimeOut="600"/>
     <Setting Key="FS_FraudCase_GetById" SpName="FS_FraudCase_GetById_xtest" DbName="DBFS.bodb_FraudSensor.bodbSPUNet" />
   </Function>
  </Functions>
