@@ -40,5 +40,10 @@ namespace Fanex.NAP.FS.Service
         {
             throw new NotImplementedException();
         }
+
+        public void Rule()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
