@@ -211,10 +211,11 @@ namespace Fanex.NAP.FS.ArbitrageService
 
                     GroupData(g.Key, g);
 
-#if DEBUG
                     message = $"===> Match Id: {g.Key} - Ticket counter: {g.Count()} - Executed";
+#if DEBUG
                     Console.WriteLine(message);
 #endif
+                    LogService.Info(message);
                 });
             }
         }
