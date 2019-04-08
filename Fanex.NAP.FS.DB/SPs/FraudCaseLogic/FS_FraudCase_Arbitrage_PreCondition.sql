@@ -15,7 +15,7 @@ AS
 		- 20180926@LONG: Remove redundant fraud tickets
 		- 20190312@Casey.Huynh: Enhance Performance, define PRIMARY KEY in table [110060]
 		- 20190314@Casey.Huynh: Implement, scan for completed Match [110566]
-
+		- 20190408@Casey.Huynh: Fix, Update "Rowlock" to "Nolock" for table ArbitrageMatchScanning [111069]
 	Param's Explanation (filtered by):  
 	
 */
