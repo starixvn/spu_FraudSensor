@@ -114,12 +114,21 @@ namespace Fanex.NAP.FS.ArbitrageService
 #if DEBUG
                 Console.WriteLine(message);
 #endif            
-                arbitrageService.Rule(tickets.ToXmlString(), customers.ToXmlString());
+                if(tickets.Any() && customers.Any())
+                {
+                    arbitrageService.Rule(tickets.ToXmlString(), customers.ToXmlString());
+                }
+                else
+                {
+                    LogService.Error($"{projectName} - {serviceName} - MatchId: {matchId} - Exeption: tickets({tickets.Count()}) or customers({customers.Count()}) are null.");
+                }
+                
             }
             catch (Exception ex)
             {
                 var logMessage = new LogMessage(ex.Message)
-                    .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex)).ToString();
+                    .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
+                    .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();                    
 
                 LogService.Error($"{projectName} - {serviceName} - MatchId: {matchId} - GroupData Exeption: {logMessage}");
             }
