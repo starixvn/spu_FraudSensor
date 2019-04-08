@@ -37,7 +37,7 @@ namespace Fanex.NAP.FS.Service
         }
 
         /// <summary>
-        /// Use this for Micro service
+        /// Use this for Micro service on UAT
         /// </summary>
         /// <returns></returns>
         public FraudCase GetFraudCaseFromConfig()
