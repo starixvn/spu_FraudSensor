@@ -508,8 +508,8 @@ BEGIN
 				LEFT JOIN dbo.ArbitrageSuspiciousInfo si WITH (NOLOCK) 
 					ON si.MatchId = ft.MatchId AND si.CustId = ft.CustId  AND si.FraudCaseId = @CurrentFraudCaseId
 		WHERE si.MatchID IS NULL
-		GROUP BY ft.CustId, ft.MatchId, ft.EventDate;	
-	
+		GROUP BY ft.CustId, ft.MatchId, ft.EventDate;			
+
 		-- Update table ScannedMatch if existed
 		UPDATE	sm WITH (ROWLOCK, UPDLOCK)
 		SET		sm.ScannedDate				= GETDATE()
@@ -552,7 +552,7 @@ BEGIN
 		FROM #tmpFraudTickets ft WITH (NOLOCK)
 				LEFT JOIN dbo.SuspiciousCustomer sc WITH (NOLOCK) ON ft.CustId = sc.CustId
 		WHERE	sc.CustId IS NULL;
-	END;	
+	END;
 
 	--Remove the XML documents
 	EXEC sp_xml_removedocument @idocMatch;
@@ -569,7 +569,7 @@ BEGIN
 				, 0 AS HasScanned
 				, @ScannedDate
 	FROM		#tmpMatches m WITH(NOLOCK)
-	LEFT JOIN	ArbitrageMatchScoreHDP a WITH(ROWLOCK)
+	LEFT JOIN	ArbitrageMatchScoreHDP a WITH(NOLOCK)
 				ON	m.MatchId = a.MatchId
 				AND	m.LiveHomeScore + LiveAwayScore = a.TotalScores
 				AND m.BetType = a.BetType
