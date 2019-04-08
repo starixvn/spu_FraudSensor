@@ -49,7 +49,7 @@ namespace Fanex.NAP.FS.ArbitrageService
         private void Execute(Object source, System.Timers.ElapsedEventArgs e)
         {
             var exception = string.Empty;
-            var status = true;           
+            var status = true;
 
             try
             {
@@ -83,7 +83,7 @@ namespace Fanex.NAP.FS.ArbitrageService
 
                 var logMessage = new LogMessage(ex.Message)
                     .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex)).ToString();
-                    
+
                 LogService.Error($"{projectName} - {serviceName} - OnTimeEvent Exeption {logMessage}");
             }
 
@@ -94,26 +94,26 @@ namespace Fanex.NAP.FS.ArbitrageService
         {
             var message = string.Empty;
 
-            var tsk = tickets.Select(t => t.CustId).Distinct().Chunk(500).Select(GroupCustomer).ToArray();
-
-            message = $"- Rule for match {matchId} is executing. Ticket counter: " + tsk.Count();
-
-#if DEBUG
-            Console.WriteLine(message);
-#endif
-
-            Task.WaitAll(tsk);
-
-            var customers = tsk.SelectMany(t => t.Result);
-
-            message = $"- Rule for match {matchId} is executing. Customers counter: " + customers.Count();
-
-#if DEBUG
-            Console.WriteLine(message);
-#endif
-
             try
             {
+
+                var tsk = tickets.Select(t => t.CustId).Distinct().Chunk(500).Select(GroupCustomer).ToArray();
+
+                message = $"- Rule for match {matchId} is executing. Ticket counter: " + tsk.Count();
+
+#if DEBUG
+                Console.WriteLine(message);
+#endif
+
+                Task.WaitAll(tsk);
+
+                var customers = tsk.SelectMany(t => t.Result);
+
+                message = $"- Rule for match {matchId} is executing. Customers counter: " + customers.Count();
+
+#if DEBUG
+                Console.WriteLine(message);
+#endif            
                 arbitrageService.Rule(tickets.ToXmlString(), customers.ToXmlString());
             }
             catch (Exception ex)
@@ -124,9 +124,8 @@ namespace Fanex.NAP.FS.ArbitrageService
                 LogService.Error($"{projectName} - {serviceName} - MatchId: {matchId} - GroupData Exeption: {logMessage}");
             }
 
-            message = $"=> Rule for match {matchId} is executed.";
-
 #if DEBUG
+            message = $"=> Rule for match {matchId} is executed.";
             Console.WriteLine(message);
 #endif
         }
@@ -166,9 +165,8 @@ namespace Fanex.NAP.FS.ArbitrageService
 
             tickets = arbitrageService.PreCondition<ArbitrageTicket>();
 
-            message = "===> Pre-Condition is executing. Ticket counter: " + tickets.Count();
-
 #if DEBUG
+            message = "===> Pre-Condition is executing. Ticket counter: " + tickets.Count();
             Console.WriteLine(message);
 #endif
         }
@@ -192,17 +190,17 @@ namespace Fanex.NAP.FS.ArbitrageService
                 {
                     MaxDegreeOfParallelism = 1
                 }, (g) =>
-{
-                    message = $"===> Match Id: {g.Key} - Ticket counter: {g.Count()} - Executing";
+                {
+
 #if DEBUG
+                    message = $"===> Match Id: {g.Key} - Ticket counter: {g.Count()} - Executing";
                     Console.WriteLine(message);
 #endif
 
                     GroupData(g.Key, g);
 
-                    message = $"===> Match Id: {g.Key} - Ticket counter: {g.Count()} - Executed";
-
 #if DEBUG
+                    message = $"===> Match Id: {g.Key} - Ticket counter: {g.Count()} - Executed";
                     Console.WriteLine(message);
 #endif
                 });
