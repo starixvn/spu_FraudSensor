@@ -8,8 +8,7 @@
 
 @section styles{
     @Styles.Render("~/fraud-case-styles")
-    @Styles.Render("~/Contents/CoreBetList")
-    @*<link href="~/Content/themes/base/jquery-ui.min.css" rel="stylesheet" />*@
+    @Styles.Render("~/Contents/CoreBetList")        
     <link href="~/Content/jquery-ui-timepicker-addon.min.css" rel="stylesheet" />
 
     <style>
@@ -55,22 +54,22 @@
         </div>
     </div>
     <div class="group width-300">
-        <label>Evidence</label>
-        <div class="edit-field">
+        <label class="text">Evidence</label>
+        <div class="edit-field col_9">
             <select id="ddlEvidence" multiple="multiple"></select>
         </div>
-    </div>       
+    </div>   
 </div>
 <div class="form-filter">
     <div class="group">
         <label class="text">Trans Date</label>
         <div class="edit-field col_9">
-            <input type="text" id="transDateFrom" class="form-control date-time-picker" value="@Model.EventDate">
+            <input type="text" id="transDateFrom" class="form-control date-time-picker" value="@String.Format("{0:M/d/yyyy HH:mm:ss}", Model.EventDate)">
         </div>
     </div>
     <div class="group">
         <div class="edit-field col_9">
-            <input type="text" id="transDateTo" class="form-control date-time-picker" value="@Model.EventDate">
+            <input type="text" id="transDateTo" class="form-control date-time-picker" value="@String.Format("{0:M/d/yyyy HH:mm:ss}", Model.EventDate)">
         </div>        
     </div>
     <div class="group">
@@ -128,7 +127,7 @@
                 return this.optional(element) || !/Invalid|NaN/.test(new Date(value));
             }
         };
-
+    
     </script>
 
     @Scripts.Render("~/scripts/match-monitor/fraud-case-details")

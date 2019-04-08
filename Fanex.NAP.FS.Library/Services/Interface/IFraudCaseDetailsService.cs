@@ -33,6 +33,8 @@
         
         IEnumerable<ArbitrageGroupTicketList> GetArbitrageTickets(int matchId, DateTime eventDate, bool isShowSpecialCurrencies);
 
+        IEnumerable<CustomerDetails> GetCustomerArbitrageDetails(GetCustomerArbitrageCriteria criteria, IEnumerable<ScoreHDP> lstScoreHDP);
+
         IEnumerable<ArbitrageGroupTicketList> GetArbitrageTickets(GetArbitrageTicketCriteria criteria, IEnumerable<ScoreHDP> lstScoreHDP);
 
         IEnumerable<Evidence> GetListEvidences();
@@ -47,6 +49,10 @@
 
         byte[] ExportArbitrageExcel(int matchId, DateTime eventDate, bool isShowSpecialCurrencies, string templatePath, Func<ArbitrageGroupTicketList, bool> filter);
 
+        byte[] ExportArbitrageExcel(GetArbitrageTicketCriteria criteria, IEnumerable<ScoreHDP> lstScoreHDP, string templatePath);
+
         string ExportArbitrageCsv(int matchId, DateTime eventDate, bool isShowSpecialCurrencies);
+
+        string ExportArbitrageCsvFromList(int matchId, DateTime eventDate, IEnumerable<ArbitrageGroupTicketList> lstArbitrageTicket);        
     }
 }

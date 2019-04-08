@@ -4,7 +4,11 @@
         customer_grid = $("#customer-tab table"),
         associated_accounts = $("#associated-accounts"),
         ticket_last_7_days = $("#tickets-last-7-days"),
-        ticket_by_ip = $("#ticket-by-ip");        
+        ticket_by_ip = $("#ticket-by-ip");
+
+    var from_date = $("#transDateFrom");
+    var to_date = $("#transDateTo");
+
     var global_idx = 0;
 
     var filter = {};
@@ -15,8 +19,32 @@
 
     var customerLoad = false;    
 
+    //from_date.datepicker({       
+    //    changeMonth: true,
+    //    changeYear: true,
+    //    firstDay: 1,
+    //    minDate: moment(`${moment().year() - 1}/${moment().subtract(10, "months").month()}/1`, "Y/M/D").toDate()
+    //}).datepicker("setDate", new Date()).change(restrictToDate);
+
+    //to_date.datepicker({       
+    //    changeMonth: true,
+    //    changeYear: true,
+    //    firstDay: 1,
+    //    minDate: moment(`${moment().year() - 1}/${moment().subtract(10, "months").month()}/1`, "Y/M/D").toDate()
+    //}).datepicker("setDate", new Date()).change(restrictFromDate);
+
+    //function restrictFromDate() {
+    //    var to_val = to_date.datepicker("getDate");
+    //    from_date.datepicker("option", "maxDate", to_val);
+    //};
+
+    //function restrictToDate() {
+    //    var from_val = from_date.datepicker("getDate");
+    //    to_date.datepicker("option", "minDate", from_val);
+    //};
+
     function getListEvidences() {
-        var url = common.modifyRelativeUrl("/MatchMonitor/GetEvidences");       
+        var url = common.modifyRelativeUrl("/MatchMonitor/GetListEvidences");
 
         $.get(url, {}, function (json) {          
             for (var i = 0; i < json.length; i++) {
@@ -34,7 +62,7 @@
         var url = common.modifyRelativeUrl("/MatchMonitor/GetAllCurrency");        
 
         $.get(url, {}, function (json) {
-            $("#currency").append("<option>All</option>");
+            $("#currency").append("<option value=-1>All</option>");
 
             for (var i = 0; i < json.length; i++) {
                 $("#currency").append(`<option value='${json[i].CurrencyId}'>${json[i].CurrencyName}</option>`)
@@ -46,21 +74,19 @@
         var url = common.modifyRelativeUrl("/MatchMonitor/GetScoreHDP");        
 
         $.get(url, parameters, function (json) {
-            $("#scoreHDP").append("<option>All</option>");
-            
-            localStorage['AllScoreHDP'] = "all Scrore";
-
+            $("#scoreHDP").append("<option value=-1>All</option>");
+                     
             for (var i = 0; i < json.length; i++) {
                 $("#scoreHDP").append(`<option value='${json[i].BetType}'>${json[i].BetTypeName}</option>`);                
             }
         })
     }
 
-    function loadTicketGrid() {
+    function loadTicketGrid(criteria) {
         common.showLoading();
 
         if (isArbitrage) {
-            loadLazyArbitrages();          
+            loadArbitrages(criteria);
         }
         else {
             global_idx = 0;
@@ -90,15 +116,15 @@
                     common.closeLoading();
                 }                
             });
-        }
+        }        
     }
 
-    function loadCustomerGrid() {
+    function loadCustomerGrid(criteria) {
         common.showLoading();
 
         var url = common.modifyRelativeUrl("/MatchMonitor/GetFraudCaseCustomerDetails");
 
-        $.get(url, parameters, function (json) {
+        $.post(url, criteria, function (json) {
             customer_grid.DataTable().clear().rows.add(json).draw();
 
             $("#customers").text(`By Customers (${json.length})`);
@@ -199,9 +225,24 @@
     }
 
     function exportExcel() {
-        var url = common.modifyRelativeUrl("/MatchMonitor/ExportExcelForDetail");
+        var url = common.modifyRelativeUrl("/MatchMonitor/ExportExcelArbitrage");
+        var arrEvidences = $("#ddlEvidence").multipleSelect("getSelects");
+        var evidenceCode = '';
+        if (arrEvidences != null && arrEvidences.length > 0) {
+            evidenceCode = arrEvidences.join(",");
+        }
 
-        common.downloadFile(url, parameters);
+        var criteria = {
+            liveStatus: $("#market").val(),
+            evidenceCodeList: evidenceCode,
+            currencyId: $("#currency").val(),
+            transDateFrom: $("#transDateFrom").val(),
+            transDateTo: $("#transDateTo").val(),
+            bettype: $("#scoreHDP").val(),
+            matchId: parameters.matchId,
+            eventDate: parameters.eventDate
+        };
+        common.downloadFile(url, criteria);
     }
 
     function removeMatchLeague() {
@@ -297,6 +338,8 @@
     }
 
     function renderArbitrageGrid(json) {
+        ticket_grid.DataTable().clear();
+
         var data = (json || []).reduce(function (arr, obj) {
             obj.key = true;
 
@@ -465,69 +508,58 @@
         });
     }
 
-    function loadLazyArbitrages() {
+    function loadArbitrages(criteria) {       
         var url = common.modifyRelativeUrl("/MatchMonitor/GetArbitrageTicketDetails");
-        var allScoreHDP = localStorage['AllScoreHDP'];
-        var criteria = {
-            liveStatus: $("#market").val(),
-            evidence: $("#evidence").val(),
-            currencyId: $("#currency").val(),
-            transDateFrom: $("#transDateFrom").val(),
-            transDateTo: $("#transDateTo").val(),
-            bettype: $("#scoreHDP").val(),
-            scoreHDP: '',
-            matchId: parameters.matchId,
-            eventDate: parameters.eventDate
-        };
-
+        
         $.ajax({
             type: 'POST',
-            url: url,
-            data: criteria,
-            beforeSend: loadBeforeSend,
-            success: function (data) {
-                loadSuccess(data);
+            url: url,            
+            data: criteria,          
+            success: function (response) {
+                //close icon waiting
+                if (ticketLoad && customerLoad) {
+                    common.closeLoading();
+                }
+                if (response != null) {
+                    if (response.Download) {
+                        window.location = '/MatchMonitor/DownloadFileCSV?fileGuid=' + response.FileGuid
+                           + '&filename=' + response.FileName;
+                    }
+                    else {
+                        renderArbitrageGrid(response.Content);
+                    }
+                }           
             },
-            error: loadError
+            error: function (err) {
+                loadError(err);
+            }
         });
-    };
-
-    function bindScrollHandler() {
-        //$('.dataTables_scrollBody').scroll(function (handleData) {
-        //    if ($('.dataTables_scrollBody').scrollTop() + $('.dataTables_scrollBody').height() > $(document).height()) {
-        //        loadArbitrages();
-        //    }
-        //});
-    };
-
-    function unbindScrollHandler() {
-        $('.dataTables_scrollBody').unbind("scroll");
-    };
-
-    function loadBeforeSend() {
-        // Disable scroll event handler
-        unbindScrollHandler();
-    };
-
-    function loadSuccess(data) {
-        // Delay a bit before displaying the result and re-enabling scroll event handler
-        setTimeout(function () {
-            renderArbitrageGrid(data);
-            // Re-enable scroll handler
-            bindScrollHandler();
-        }, 500);
     };
 
     function loadError(error) {
         console.log(error);
     };
 
-    function loadGrids() {        
-        //bindScrollHandler();
+    function loadGrids() {
+        var arrEvidences = $("#ddlEvidence").multipleSelect("getSelects");
+        var evidenceCode = '';
+        if (arrEvidences != null && arrEvidences.length > 0) {
+            evidenceCode = arrEvidences.join(",");
+        }
+        var criteria = {
+            liveStatus: $("#market").val(),
+            evidenceCodeList: evidenceCode,
+            currencyId: $("#currency").val(),
+            transDateFrom: $("#transDateFrom").val(),
+            transDateTo: $("#transDateTo").val(),
+            bettype: $("#scoreHDP").val(),
+            matchId: parameters.matchId,
+            eventDate: parameters.eventDate
+        };
 
-        loadTicketGrid();
+        loadCustomerGrid(criteria);
 
-        loadCustomerGrid();
+        loadTicketGrid(criteria);        
     };
 
     function init() {

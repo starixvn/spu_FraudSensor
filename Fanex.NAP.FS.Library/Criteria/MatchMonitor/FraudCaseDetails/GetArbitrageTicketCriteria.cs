@@ -5,8 +5,7 @@
     using System;
 
     public class GetArbitrageTicketCriteria : CriteriaBase
-    {
-       
+    {       
         public int MatchId { get; set; }
 
         public DateTime EventDate { get; set; }
@@ -17,6 +16,9 @@
 
         public int CurrencyId { get; set; }
 
+        [SpParam(Ignored = true)]
+        public string EvidenceCodeList { get; set; }
+
         public DateTime TransDateFrom { get; set; }
 
         public DateTime TransDateTo { get; set; }
@@ -26,7 +28,10 @@
         public float Handicap { get; set; }
 
         public int TotalScores { get; set; }
-     
+
+        [SpParam(Ignored = true)]
+        public int TotalTicket { get; set; }
+
         public override string GetSettingKey() => "FS_Rpt_MatchMonitor_Details_Get_ByTicket_Arbitrage";
 
         public override bool IsValid() => true;

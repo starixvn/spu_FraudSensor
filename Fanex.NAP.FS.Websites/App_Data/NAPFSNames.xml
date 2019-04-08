@@ -94,6 +94,10 @@
     <Setting Key="FS_Rpt_MatchMonitor_Details_Get_ScoreHDP"
         SpName="FS_Rpt_MatchMonitor_Details_Get_ScoreHDP"
         DbName="DBFS.bodb_FraudSensor.bodbSPUNet" />
+
+    <Setting Key="FS_Rpt_MatchMonitor_Details_Get_ByCustomer_Arbitrage"
+        SpName="FS_Rpt_MatchMonitor_Details_Get_ByCustomer_Arbitrage"
+        DbName="DBFS.bodb_FraudSensor.bodbSPUNet" />
   </Function>
 
   <Function Name="FraudCase">

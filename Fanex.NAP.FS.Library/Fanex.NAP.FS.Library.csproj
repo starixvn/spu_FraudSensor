@@ -256,6 +256,7 @@
     <Compile Include="Criteria\MatchMonitor\BalanceUpDateGetCriteria.cs" />
     <Compile Include="Criteria\MatchMonitor\FraudCaseDetails\GetArbitrageTicketCriteria.cs" />
     <Compile Include="Criteria\MatchMonitor\FraudCaseDetails\GetCurrencyCriteria.cs" />
+    <Compile Include="Criteria\MatchMonitor\FraudCaseDetails\GetCustomerArbitrageCriteria.cs" />
     <Compile Include="Criteria\MatchMonitor\FraudCaseDetails\GetCustomerCriteria.cs" />
     <Compile Include="Criteria\MatchMonitor\FraudCaseDetails\GetMatchInfoCriteria.cs" />
     <Compile Include="Criteria\MatchMonitor\FraudCaseDetails\GetScoreHDP.cs" />

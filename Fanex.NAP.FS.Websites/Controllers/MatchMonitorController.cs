@@ -15,6 +15,7 @@ namespace Fanex.NAP.FS.Websites.Controllers
     using System.Collections.Generic;
     using System.Configuration;
     using System.Linq;
+    using System.Net;
     using System.Text;
     using System.Web.Mvc;
 
@@ -111,7 +112,22 @@ namespace Fanex.NAP.FS.Websites.Controllers
 
             return Json(data, JsonRequestBehavior.AllowGet);
         }
-      
+
+        [HttpPost]
+        public JsonResult GetFraudCaseCustomerDetails(GetCustomerArbitrageCriteria criteria)
+        {
+            IEnumerable<ScoreHDP> lstScoreHDP = null;
+            var objCache = HttpContext.Cache["ScoreHDP"];
+
+            if (objCache != null)
+            {
+                lstScoreHDP = objCache as IEnumerable<ScoreHDP>;
+            }
+            var data = _fraudCaseDetailService.GetCustomerArbitrageDetails(criteria, lstScoreHDP);
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
         public ActionResult GetArbitrageTicketDetails(int matchId, DateTime eventDate)
         {
             var data = _fraudCaseDetailService.GetArbitrageTickets(matchId, eventDate, IsShowSpecialCurrencies);
@@ -120,18 +136,73 @@ namespace Fanex.NAP.FS.Websites.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetArbitrageTicketDetails(GetArbitrageTicketCriteria criteria)
+        public ActionResult GetArbitrageTicketDetails(GetArbitrageTicketCriteria criteria)
         {
             IEnumerable<ScoreHDP> lstScoreHDP = null;
             var objCache = HttpContext.Cache["ScoreHDP"];
-            var test = 1;
+            
             if (objCache != null)
             {
                 lstScoreHDP = objCache as IEnumerable<ScoreHDP>;
             }
+           
             var data = _fraudCaseDetailService.GetArbitrageTickets(criteria, lstScoreHDP);
 
-            return Json(data, JsonRequestBehavior.AllowGet);
+            // check total the ticket which has more than 1000 tickets will download file CSV and inform for user
+            if (criteria.TotalTicket >= 1000)
+            {
+                // write a file CSV
+                var csvData = _fraudCaseDetailService.ExportArbitrageCsvFromList(criteria.MatchId, criteria.EventDate, data);
+                var csvFileName = string.Format("ArbitrageTicket_{0}.csv", DateTime.Now.ToString("yyyyMMdd"));
+
+                var encoded = Encoding.UTF8.GetBytes(csvData);
+                string handle = Guid.NewGuid().ToString();
+                TempData[handle] = encoded;
+                //write file
+                return new JsonResult { Data = new { Download = true,  FileGuid = handle, FileName = csvFileName } };
+            }
+            return new JsonResult { Data = new { Download = false, Content = data } };            
+        }
+        
+        public ActionResult DownloadFileCSV(string fileGuid, string fileName)
+        {
+            if (TempData[fileGuid] != null)
+            {
+                byte[] data = TempData[fileGuid] as byte[];
+                return File(data, "application/csv", fileName);
+            }
+            return new EmptyResult();
+        }
+      
+        public ActionResult ExportExcelArbitrage(int liveStatus, string evidenCodeList, int currencyId, DateTime transDateFrom, DateTime transDateTo, int betType, int matchId, DateTime eventDate)
+        {
+            var template = Server.MapPath("~/App_Data/Excel Template/MatchMonitor/FraudCaseDetail/arbitrage.xlsx");           
+
+            GetArbitrageTicketCriteria criteria = new GetArbitrageTicketCriteria
+            {
+                LiveStatus = liveStatus,
+                EvidenceCodeList = evidenCodeList,
+                CurrencyId = currencyId,
+                TransDateTo = transDateTo,
+                TransDateFrom = transDateFrom,
+                Bettype = betType,
+                MatchId = matchId,
+                EventDate = eventDate
+            };
+
+            IEnumerable<ScoreHDP> lstScoreHDP = null;
+            var objCache = HttpContext.Cache["ScoreHDP"];
+
+            if (objCache != null)
+            {
+                lstScoreHDP = objCache as IEnumerable<ScoreHDP>;
+            }
+
+            var content = _fraudCaseDetailService.ExportArbitrageExcel(criteria, lstScoreHDP, template);
+
+            var fileName = string.Format("FraudCaseDetails_{0}.xlsx", DateTime.Today.ToString("yyyyMMdd"));
+
+            return File(content, "application/vnd.ms-excel", fileName);            
         }
 
         public ActionResult ExportExcelForDetail(int fraudCaseId, int matchId, DateTime eventDate)
@@ -148,7 +219,7 @@ namespace Fanex.NAP.FS.Websites.Controllers
                 var template = Server.MapPath("~/App_Data/Excel Template/MatchMonitor/FraudCaseDetail/template.xlsx");
 
                 var fileName = string.Format("FraudCaseDetails_{0}.xlsx", DateTime.Today.ToString("yyyyMMdd"));
-            return File(_fraudCaseDetailService.ExportExcel(matchId, fraudCaseId, eventDate, template, IsShowSpecialCurrencies), "application/vnd.ms-excel", fileName);
+                return File(_fraudCaseDetailService.ExportExcel(matchId, fraudCaseId, eventDate, template, IsShowSpecialCurrencies), "application/vnd.ms-excel", fileName);
             }
         }
 
@@ -197,7 +268,7 @@ namespace Fanex.NAP.FS.Websites.Controllers
             return ExcelFile(content, fileName);
         }
 
-        public JsonResult GetEvidences()
+        public JsonResult GetListEvidences()
         {
             var data = _fraudCaseDetailService.GetListEvidences();
 
