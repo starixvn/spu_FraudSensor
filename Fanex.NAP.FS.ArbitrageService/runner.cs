@@ -166,10 +166,11 @@ namespace Fanex.NAP.FS.ArbitrageService
 
             tickets = arbitrageService.PreCondition<ArbitrageTicket>();
 
-#if DEBUG
             message = "===> Pre-Condition is executing. Ticket counter: " + tickets.Count();
+#if DEBUG
             Console.WriteLine(message);
 #endif
+            LogService.Info(message);
         }
 
         void Rule()
@@ -186,6 +187,7 @@ namespace Fanex.NAP.FS.ArbitrageService
 #if DEBUG
                 Console.WriteLine(message);
 #endif
+                LogService.Info(message);
 
                 Parallel.ForEach(ticketGroupBy, new ParallelOptions
                 {
