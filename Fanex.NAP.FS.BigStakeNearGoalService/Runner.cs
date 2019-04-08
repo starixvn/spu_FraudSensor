@@ -36,7 +36,7 @@ namespace Fanex.NAP.FS.BigStakeNearGoalService
 
         protected override void OnStart(string[] args)
         {
-            baseService.Start(OnTimedEvent);
+            baseService.Start(Execute);
         }
 
         protected override void OnStop()
@@ -44,7 +44,7 @@ namespace Fanex.NAP.FS.BigStakeNearGoalService
             baseService.Hold();
         }
 
-        private void OnTimedEvent(Object source, System.Timers.ElapsedEventArgs e)
+        private void Execute(Object source, System.Timers.ElapsedEventArgs e)
         {
             var exception = string.Empty;
             var status = true;
