@@ -188,7 +188,7 @@ namespace Fanex.NAP.FS.ArbitrageService
 
                 Parallel.ForEach(ticketGroupBy, new ParallelOptions
                 {
-                    MaxDegreeOfParallelism = 1
+                    MaxDegreeOfParallelism = 2
                 }, (g) =>
                 {
 
