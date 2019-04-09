@@ -120,7 +120,8 @@
             $(".group-action").controlgroup();
 
             $(".group-action button").click(e => $(e.target).next().selectmenu("open"));
-           
+
+            common.closeLoading();
         });
     }
 
@@ -331,11 +332,7 @@
             $("#DataTables_Table_0_info").text(`Displaying 1 to ${n} of ${n} item(s)`);
         }
 
-        ticketLoad = true;
-
-        if (ticketLoad && customerLoad) {
-            common.closeLoading();
-        }
+        common.closeLoading();
     }
 
     function renderArbitrageExcel(e) {
@@ -343,12 +340,23 @@
 
         var obj = e.data;
 
-        parameters.bettype = obj.BettypeName;
-        parameters.score = obj.Score;
-        parameters.handicap = obj.Handicap;
-        parameters.groupId = obj.GroupId;
+        evidenceCode = getEvidenceSelected();
 
-        common.downloadFile(url, parameters);
+        var criteria = {
+            liveStatus: $("#market").val(),
+            evidenceCodeList: evidenceCode,
+            currencyId: $("#currency").val(),
+            transDateFrom: $("#transDateFrom").val(),
+            transDateTo: $("#transDateTo").val(),
+            bettype: $("#scoreHDP").val(),
+            matchId: parameters.matchId,
+            eventDate: parameters.eventDate,
+            groupId: obj.GroupId,
+            score: obj.Score,
+            handicap: obj.Handicap
+        };
+            
+        common.downloadFile(url, criteria);
     }
 
     if (isArbitrage) {
@@ -477,35 +485,37 @@
 
     function loadArbitrages(criteria) {       
         var url = common.modifyRelativeUrl("/MatchMonitor/GetArbitrageTicketDetails");
-        
+
+        common.showLoading();
+
         $.ajax({
             type: 'POST',
             url: url,            
             data: criteria,          
             success: function (response) {                
                 if (response != null) {
-                    if (response.Download) {                       
+                    if (response.Download) {
+                        common.closeLoading();
                         window.location = '/MatchMonitor/DownloadFileCSV?fileGuid=' + response.FileGuid
                            + '&filename=' + response.FileName;
                     }
                     else {
                         renderArbitrageGrid(response.Content);
-                    }
-                }                   
+                    }                    
+                }
             },
             error: function (err) {
                 loadError(err);
             }
         });
+        
     };
 
     function loadError(error) {
         console.log(error);
     };
 
-    function loadGrids() {    
-        common.showLoading();
-
+    function loadGrids() {            
         evidenceCode = getEvidenceSelected();
 
         var criteria = {
@@ -522,8 +532,6 @@
         loadCustomerGrid(criteria);
 
         loadTicketGrid(criteria);
-
-        common.closeLoading();
     };
 
     function getEvidenceSelected()

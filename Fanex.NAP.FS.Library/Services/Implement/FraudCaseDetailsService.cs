@@ -624,11 +624,11 @@
             return wb.ToBytes();
         }
 
-        public byte[] ExportArbitrageExcel(int matchId, DateTime eventDate, bool isShowSpecialCurrencies, string templatePath, Func<ArbitrageGroupTicketList, bool> filter)
+        public byte[] ExportArbitrageExcel(GetArbitrageTicketCriteria criteria, IEnumerable<ScoreHDP> lstScoreHDP, string templatePath, int groupId, string score, decimal handicap)
         {
-            var legend = GetInfo(matchId, (int)FraudCaseId.Arbitrage, eventDate);
+            var legend = GetInfo(criteria.MatchId, (int)FraudCaseId.Arbitrage, criteria.EventDate);
 
-            var tickets = GetArbitrageTickets(matchId, eventDate, isShowSpecialCurrencies).Where(filter).SelectMany(obj => obj.Home.Concat(obj.Away));
+            var tickets = GetArbitrageTickets(criteria, lstScoreHDP).Where(c=>c.GroupId == groupId && c.Score == score && c.Handicap == handicap).SelectMany(obj => obj.Home.Concat(obj.Away));
 
             var wb =
                 ExcelUtilities.GetWorkbook(templatePath)

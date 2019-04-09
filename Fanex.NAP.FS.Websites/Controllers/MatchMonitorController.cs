@@ -248,15 +248,35 @@ namespace Fanex.NAP.FS.Websites.Controllers
             return ExcelFile(_fraudCaseDetailService.ExportToExcelIpTickets(ip, template, IsShowSpecialCurrencies), fileName);
         }
 
-        public ActionResult ExportArbitrageWithFilterExcel(int matchId, DateTime eventDate, string bettype, string score, double handicap, int groupId)
+        public ActionResult ExportArbitrageWithFilterExcel(int liveStatus, string evidenCodeList, int currencyId, DateTime transDateFrom, DateTime transDateTo, int betType, int matchId, DateTime eventDate, 
+                                                            int groupId, string score, decimal handicap)
         {
             var template = Server.MapPath("~/App_Data/Excel Template/MatchMonitor/FraudCaseDetail/arbitrage.xlsx");
 
             var fileName = string.Format("FraudCaseDetails_{0}", DateTime.Today.ToString("yyyyMMdd"));
 
-            var content = _fraudCaseDetailService
-                .ExportArbitrageExcel(matchId, eventDate, IsShowSpecialCurrencies, template, obj => obj.BettypeName == bettype && obj.Score == score && (double)obj.Handicap == handicap && obj.GroupId == groupId);
+            GetArbitrageTicketCriteria criteria = new GetArbitrageTicketCriteria
+            {
+                LiveStatus = liveStatus,
+                EvidenceCodeList = evidenCodeList,
+                CurrencyId = currencyId,
+                TransDateTo = transDateTo,
+                TransDateFrom = transDateFrom,
+                Bettype = betType,
+                MatchId = matchId,
+                EventDate = eventDate
+            };
 
+            IEnumerable<ScoreHDP> lstScoreHDP = null;
+            var objCache = HttpContext.Cache["ScoreHDP"];
+
+            if (objCache != null)
+            {
+                lstScoreHDP = objCache as IEnumerable<ScoreHDP>;
+            }
+
+            var content = _fraudCaseDetailService.ExportArbitrageExcel(criteria, lstScoreHDP, template, groupId, score, handicap);
+          
             return ExcelFile(content, fileName);
         }
 
