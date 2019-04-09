@@ -27,11 +27,13 @@
         protected override void FillData(IRow row, ArbitrageTicket data)
         {
             var idx = 0;
+            var fraudByIP = data.IsIPFraud ? "Yes" : "";
 
             row.GetCell(idx++).SetCellValue(data.Username);
             row.GetCell(idx++).SetCellValue(string.Join(",", data.Evidences));
             row.GetCell(idx++).SetCellValue(data.DangerousLevel);
             row.GetCell(idx++).SetCellValue(data.Currency);
+            row.GetCell(idx++).SetCellValue(fraudByIP);
             row.GetCell(idx++).SetCellValue(data.BetId.ToString());
             row.GetCell(idx++).SetCellValue(data.BetTeam == "h" ? "Home" : "Away");
             row.GetCell(idx++).SetCellValue(data.BettypeName);

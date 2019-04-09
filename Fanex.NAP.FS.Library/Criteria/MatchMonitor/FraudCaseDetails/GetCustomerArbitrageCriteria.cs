@@ -61,7 +61,9 @@
 
         public float Handicap { get; set; }
 
-        public int TotalScores { get; set; }
+        public int LiveHomeScore { get; set; }
+
+        public int LiveAwayScore { get; set; }
 
         public override string GetSettingKey()
         {

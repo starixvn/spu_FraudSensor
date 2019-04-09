@@ -117,7 +117,7 @@ namespace Fanex.NAP.FS.Websites.Controllers
             }
             var data = _fraudCaseDetailService.GetCustomerArbitrageDetails(criteria, lstScoreHDP);
 
-            return Json(data, JsonRequestBehavior.AllowGet);
+            return Json(data, JsonRequestBehavior.AllowGet);         
         }
 
         public ActionResult GetArbitrageTicketDetails(int matchId, DateTime eventDate)

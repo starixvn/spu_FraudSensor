@@ -62,7 +62,9 @@
 
         public float Handicap { get; set; }
 
-        public int TotalScores { get; set; }
+        public int LiveHomeScore { get; set; }
+
+        public int LiveAwayScore { get; set; }
 
         [SpParam(Ignored = true)]
         public int TotalTicket { get; set; }

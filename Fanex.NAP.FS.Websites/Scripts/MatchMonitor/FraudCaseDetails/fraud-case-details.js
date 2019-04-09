@@ -13,11 +13,7 @@
 
     var filter = {};
 
-    var totalTicket = 0;
-
-    var ticketLoad = false;
-
-    var customerLoad = false;
+    var totalTicket = 0;     
 
     from_date.datepicker({       
         changeMonth: true,
@@ -63,8 +59,6 @@
     }
 
     function loadTicketGrid(criteria) {
-        common.showLoading();
-
         if (isArbitrage) {
             loadArbitrages(criteria);
         }
@@ -88,20 +82,12 @@
 
                 totalTicket = n;
 
-                $(".ip-link").click(renderTicketByIp);
-
-                ticketLoad = true;
-
-                if (ticketLoad && customerLoad) {
-                    common.closeLoading();
-                }                
+                $(".ip-link").click(renderTicketByIp);                               
             });
         }        
     }
 
-    function loadCustomerGrid(criteria) {
-        common.showLoading();
-
+    function loadCustomerGrid(criteria) {       
         var url = common.modifyRelativeUrl("/MatchMonitor/GetFraudCaseCustomerDetails");
 
         $.post(url, criteria, function (json) {
@@ -134,12 +120,7 @@
             $(".group-action").controlgroup();
 
             $(".group-action button").click(e => $(e.target).next().selectmenu("open"));
-
-            customerLoad = true;
-
-            if (ticketLoad && customerLoad) {
-                common.closeLoading();
-            }
+           
         });
     }
 
@@ -397,7 +378,7 @@
                 { data: obj => common.makeWrapString((obj.Home.Evidences || []).join(", "), 18)},
                 { data: obj => obj.Home.DangerousLevel },
                 { data: obj => obj.Home.Currency },
-                { data: obj => obj.Home.BetId },
+                { data: obj => renderIPFraud(obj.Home) },
                 { data: obj => common.formatGridNumber(obj.Home.Odds) },
                 { data: obj => common.formatGridNumber((obj.Home.Stake || {}).Virtual) },
                 { data: obj => common.formatGridNumber((obj.Home.Stake || {}).ComPT) },
@@ -408,7 +389,7 @@
                 { data: obj => common.makeWrapString((obj.Away.Evidences || []).join(", "), 18) },
                 { data: obj => obj.Away.DangerousLevel },
                 { data: obj => obj.Away.Currency },
-                { data: obj => obj.Away.BetId },
+                { data: obj => renderIPFraud(obj.Away) },
                 { data: obj => common.formatGridNumber(obj.Away.Odds) },
                 { data: obj => common.formatGridNumber((obj.Away.Stake || {}).Virtual) },
                 { data: obj => common.formatGridNumber((obj.Away.Stake || {}).ComPT) },
@@ -485,6 +466,14 @@
             headerCallback: tr => $(":nth-child(11)", tr).removeClass("uppercase")
         });
     }
+    
+    function renderIPFraud(obj) {
+        var isIPFraud = obj.IsIPFraud;
+        if (isIPFraud == true) {           
+            return "<span style='background: #F33F69'>" + obj.BetId + "</span>";
+        }        
+        return obj.BetId;
+    };
 
     function loadArbitrages(criteria) {       
         var url = common.modifyRelativeUrl("/MatchMonitor/GetArbitrageTicketDetails");
@@ -493,20 +482,16 @@
             type: 'POST',
             url: url,            
             data: criteria,          
-            success: function (response) {
-                //close icon waiting
-                if (ticketLoad && customerLoad) {
-                    common.closeLoading();
-                }
+            success: function (response) {                
                 if (response != null) {
-                    if (response.Download) {
+                    if (response.Download) {                       
                         window.location = '/MatchMonitor/DownloadFileCSV?fileGuid=' + response.FileGuid
                            + '&filename=' + response.FileName;
                     }
                     else {
                         renderArbitrageGrid(response.Content);
                     }
-                }           
+                }                   
             },
             error: function (err) {
                 loadError(err);
@@ -518,7 +503,9 @@
         console.log(error);
     };
 
-    function loadGrids() {
+    function loadGrids() {    
+        common.showLoading();
+
         evidenceCode = getEvidenceSelected();
 
         var criteria = {
@@ -531,10 +518,12 @@
             matchId: parameters.matchId,
             eventDate: parameters.eventDate
         };
-
+        
         loadCustomerGrid(criteria);
 
-        loadTicketGrid(criteria);        
+        loadTicketGrid(criteria);
+
+        common.closeLoading();
     };
 
     function getEvidenceSelected()

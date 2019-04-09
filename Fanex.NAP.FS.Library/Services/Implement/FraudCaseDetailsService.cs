@@ -506,7 +506,7 @@
 
             Task.WaitAll(tsks);
             
-            criteria.TotalTicket = tsks.Count();
+            criteria.TotalTicket = rawData.Count();
 
             var evidences = tsks.SelectMany(t => t.Result);
 
@@ -678,12 +678,13 @@
             var info = GetInfo(matchId, (int)FraudCaseId.Arbitrage, eventDate);
 
             txt.AppendLine($"match: {info.Home} - vs - {info.Away}, date: {info.EventDate.ToString("MMM/dd/yyyy")}, HT/FT: {info.HTScore}/{info.FTScore}");
-            txt.AppendLine("member,evidence,dangerous level,currency,bet id, bet team, bet type, hdp, score, odds, v.stake, Com.Stake, Full. Stake, TransDate");
+            txt.AppendLine("member,evidence,dangerous level,currency, by ip, bet id, bet team, bet type, hdp, score, odds, v.stake, Com.Stake, Full. Stake, TransDate");
 
             foreach (var item in lstArbitrageTicket.SelectMany(obj => obj.Home.Concat(obj.Away)))
             {
+                var fraudByIP = item.IsIPFraud ? "Yes" : "";
                 txt.AppendLine($"{item.Username},{item.Evidences.Join(" /")},{item.DangerousLevel}," +
-                       $"{item.Currency},{item.BetId},{item.BetTeam},{item.BettypeName},{item.Handicap},'{item.Score}," +
+                       $"{item.Currency},{fraudByIP},{item.BetId},{item.BetTeam},{item.BettypeName},{item.Handicap},'{item.Score}," +
                        $"{item.Odds},{item.Stake.Virtual},{item.Stake.ComPT}," +
                        $"{item.Stake.Full},{item.TransDate.Replace(",", " -").Replace("<br/>", " ")}");
 
@@ -696,7 +697,8 @@
             if (criteria != null && criteria.Bettype == -1)
             {
                 criteria.Handicap = -1;
-                criteria.TotalScores = -1;
+                criteria.LiveHomeScore = -1;
+                criteria.LiveAwayScore = -1;
             }
             else
             {
@@ -706,7 +708,8 @@
                     if (objValue != null)
                     {
                         criteria.Handicap = objValue.Handicap;
-                        criteria.TotalScores = objValue.TotalScore;
+                        criteria.LiveHomeScore = objValue.LiveHomeScore;
+                        criteria.LiveAwayScore = objValue.LiveAwayScore;
                     }
                 }
             }
@@ -717,7 +720,8 @@
             if (criteria != null && criteria.Bettype == -1)
             {
                 criteria.Handicap = -1;
-                criteria.TotalScores = -1;
+                criteria.LiveHomeScore = -1;
+                criteria.LiveAwayScore = -1;
             }
             else
             {
@@ -727,7 +731,8 @@
                     if (objValue != null)
                     {
                         criteria.Handicap = objValue.Handicap;
-                        criteria.TotalScores = objValue.TotalScore;
+                        criteria.LiveHomeScore = objValue.LiveHomeScore;
+                        criteria.LiveAwayScore = objValue.LiveAwayScore;
                     }
                 }
             }
