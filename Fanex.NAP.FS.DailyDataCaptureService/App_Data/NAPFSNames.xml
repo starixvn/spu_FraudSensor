@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Functions>
-  <Function Name="Arbitrage">
+  <Function Name="DailyDataMonitoring">
     <Setting Key="FS_FraudCase_DailyDataMonitoring_Rule"
              SpName="FS_FraudCase_DailyDataMonitoring_Rule"
              DbName="DBFS.bodb_FraudSensor.bodbSPUNet" />

@@ -28,7 +28,7 @@ namespace Fanex.NAP.FS.ArbitrageService
         private bool isRunning = false;
 
         public Runner()
-        {            
+        {
             baseService = new MicroService(serviceName, FraudCaseId.Arbitrage);
             arbitrageService = new Service.ArbitrageService();
 
@@ -95,30 +95,31 @@ namespace Fanex.NAP.FS.ArbitrageService
 
             try
             {
-                var watch = System.Diagnostics.Stopwatch.StartNew();
-
-                var tsk = tickets.Select(t => t.CustId).Distinct().Chunk(500).Select(GroupCustomer).ToArray();
-
-                message = $"- Rule for match {matchId} is executing. Ticket counter: " + tsk.Count();
-
-#if DEBUG
-                Console.WriteLine(message);
-#endif                
-                Task.WaitAll(tsk);                               
-
-                var customers = tsk.SelectMany(t => t.Result);
-
-                watch.Stop();
-
-                message = $"- Rule for match {matchId} is executing. Customers counter: {customers.Count()}. Execute time: {watch.Elapsed.TotalSeconds} seconds";
-
-                LogService.Info(message);
-#if DEBUG
-                Console.WriteLine(message);
-#endif            
-                if(tickets.Any() && customers.Any())
+                if (tickets != null && tickets.Any())
                 {
-                   var watch2 = System.Diagnostics.Stopwatch.StartNew();
+                    var watch = System.Diagnostics.Stopwatch.StartNew();
+
+                    var tsk = tickets.Select(t => t.CustId).Distinct().Chunk(500).Select(GroupCustomer).ToArray();
+
+                    message = $"- Rule for match {matchId} is executing. Ticket counter: " + tsk.Count();
+
+#if DEBUG
+                    Console.WriteLine(message);
+#endif
+                    Task.WaitAll(tsk);
+
+                    var customers = tsk.SelectMany(t => t.Result);
+
+                    watch.Stop();
+
+                    message = $"- Rule for match {matchId} is executing. Customers counter: {customers.Count()}. Execute time: {watch.Elapsed.TotalSeconds} seconds";
+
+                    LogService.Info(message);
+#if DEBUG
+                    Console.WriteLine(message);
+#endif
+
+                    var watch2 = System.Diagnostics.Stopwatch.StartNew();
 
                     arbitrageService.MatchIds = tickets.ToXmlString();
                     arbitrageService.Associations = customers.ToXmlString();
@@ -135,22 +136,22 @@ namespace Fanex.NAP.FS.ArbitrageService
                 {
                     LogService.Error($"{projectName} - {serviceName} - MatchId: {matchId} - Exeption: tickets({tickets.Count()}) or customers({customers.Count()}) are null.");
                 }
-                
+
             }
             catch (Exception ex)
             {
                 var logMessage = new LogMessage(ex.Message)
                     .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
-                    .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();                    
+                    .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
 
                 LogService.Error($"{projectName} - {serviceName} - MatchId: {matchId} - GroupData Exeption: {logMessage}");
             }
 
-            
+
 #if DEBUG
             Console.WriteLine(message);
 #endif
-           /// LogService.Info(message);
+            /// LogService.Info(message);
         }
 
         private async Task<IEnumerable<ArbitrageCustomer>> GroupCustomer(IEnumerable<int> custids)
@@ -228,7 +229,7 @@ namespace Fanex.NAP.FS.ArbitrageService
 #if DEBUG
                     Console.WriteLine(message);
 #endif
-                   // LogService.Info(message);
+                    // LogService.Info(message);
                 });
             }
         }

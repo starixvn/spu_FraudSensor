@@ -70,6 +70,7 @@ namespace Fanex.NAP.FS.DailyDataCaptureService
 #if DEBUG
                     Console.WriteLine("=> Fraud Case is executed at " + DateTime.Now);
 #endif                   
+                    LogService.Info($"{projectName} - {serviceName} - Rule is executed.");
                 }
             }
             catch (Exception ex)
