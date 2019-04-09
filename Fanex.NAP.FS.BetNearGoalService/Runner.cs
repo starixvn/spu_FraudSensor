@@ -33,7 +33,7 @@
         {
             _matches = new List<Match>();
             _threads = new List<Task>();
-            baseService = new MicroService(serviceName, FraudCaseId.ScannedOfficeIP);
+            baseService = new MicroService(serviceName, FraudCaseId.BetsNearGoal);
             betNearGoalService = new BetsNearGoalService();
 
             InitializeComponent();

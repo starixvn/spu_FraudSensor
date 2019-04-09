@@ -1,18 +1,18 @@
-﻿using Fanex.Logging;
-using Fanex.Logging.Extensions;
-using Fanex.Logging.Extensions.Database;
-using Fanex.NAP.FS.Library.DTO;
-using Fanex.NAP.FS.Library.Models;
-using Fanex.NAP.FS.Model;
-using Fanex.NAP.FS.Service;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.ServiceProcess;
-using System.Threading.Tasks;
-
-namespace Fanex.NAP.FS.BigStakeNearGoalService
+﻿namespace Fanex.NAP.FS.BigStakeNearGoalService
 {
+    using Fanex.Logging;
+    using Fanex.Logging.Extensions;
+    using Fanex.Logging.Extensions.Database;
+    using Fanex.NAP.FS.Library.DTO;
+    using Fanex.NAP.FS.Library.Models;
+    using Fanex.NAP.FS.Model;
+    using Fanex.NAP.FS.Service;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.ServiceProcess;
+    using System.Threading.Tasks;
+
     public partial class Runner : ServiceBase
     {
         static string serviceName = "Big Stake Near Goal Service";
