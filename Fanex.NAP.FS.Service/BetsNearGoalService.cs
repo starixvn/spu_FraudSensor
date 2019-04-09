@@ -11,6 +11,8 @@ namespace Fanex.NAP.FS.Service
 {
     public class BetsNearGoalService : IExecutorService
     {
+        public string MatchIds { get; set; }
+
         public IEnumerable<Match> PreCondition<Match>()
         {
             var criteria = new BetsNearGoalPreconditionCriteria();
@@ -19,13 +21,13 @@ namespace Fanex.NAP.FS.Service
             {
                 return db.Query<Match>(criteria);
             }
-        }        
-
-        public void Rule(string matchIds)
+        }       
+  
+        public void Rule()
         {
             var criteria = new BetsNearGoalRuleCriteria()
             {
-               MatchIds = matchIds
+                MatchIds = this.MatchIds
             };
 
             using (var db = new ObjectDb(criteria.GetSettingKey(), 3600))
@@ -34,16 +36,6 @@ namespace Fanex.NAP.FS.Service
 
                 db.ExecuteNonQuery(param);
             }
-        }
-
-        public void Rule(string matchIds, string param1)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Rule()
-        {
-            throw new NotImplementedException();
         }
     }
 }

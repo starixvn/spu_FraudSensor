@@ -10,7 +10,11 @@
     using System.Threading.Tasks;
 
     public class FlaggedAccountService: IExecutorService
-    {      
+    {
+        public string MatchIds { get; set; }
+
+        public string FlaggedAccounts { get; set; }
+
         public IEnumerable<Match> PreCondition<Match>()
         {
             var criteria = new FlaggedAccountPreconditionCriteria();
@@ -19,14 +23,14 @@
             {
                 return db.Query<Match>(criteria);
             }
-        }
+        }               
 
-        public void Rule(string matchIds, string param1)
+        public void Rule()
         {
             var criteria = new FlaggedAccountRuleCriteria()
             {
-                MatchIds = matchIds,
-                FlaggedAccountsXML = param1
+                MatchIds = this.MatchIds,
+                FlaggedAccountsXML = this.FlaggedAccounts
             };
 
             using (var db = new ObjectDb(criteria.GetSettingKey()))
@@ -34,16 +38,6 @@
                 var param = criteria.GetSpParams();
                 db.ExecuteNonQuery(param);
             }
-        }
-
-        public void Rule(string matchIds)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Rule()
-        {
-            throw new NotImplementedException();
         }
     }
 }

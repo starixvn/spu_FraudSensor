@@ -132,8 +132,8 @@ namespace Fanex.NAP.FS.BigStakeNearGoalService
                 try
                 {
                     var matchIds = ((Match)m).MatchId.ToString();
-
-                    bigStakeNearGoalService.Rule(matchIds);
+                    bigStakeNearGoalService.MatchIds = matchIds;
+                    bigStakeNearGoalService.Rule();
                 }
                 catch (Exception ex)
                 {

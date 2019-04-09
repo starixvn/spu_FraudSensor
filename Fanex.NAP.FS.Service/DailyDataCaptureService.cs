@@ -13,17 +13,7 @@ namespace Fanex.NAP.FS.Service
         public IEnumerable<T> PreCondition<T>()
         {
             throw new NotImplementedException();
-        }
-
-        public void Rule(string matchIds, string param1)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Rule(string matchIds)
-        {
-            throw new NotImplementedException();
-        }
+        }        
 
         public void Rule()
         {

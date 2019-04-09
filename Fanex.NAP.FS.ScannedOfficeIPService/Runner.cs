@@ -126,7 +126,9 @@ namespace Fanex.NAP.FS.ScannedOfficeIPService
                 {
                     var ids = chunk.Select(m => m.MatchId);
 
-                    _tasks.Enqueue(Task.Run(() => scannedOfficeIpService.Rule(string.Join(",", ids))));
+                    scannedOfficeIpService.MatchIds = string.Join(",", ids);
+
+                    _tasks.Enqueue(Task.Run(() => scannedOfficeIpService.Rule()));
                 }
 
                 Task.WaitAll(_tasks.ToArray());

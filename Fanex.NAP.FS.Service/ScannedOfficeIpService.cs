@@ -11,6 +11,8 @@
 
     public class ScannedOfficeIpService : IExecutorService
     {
+        public string MatchIds { get; set; }
+
         public IEnumerable<Match> PreCondition<Match>()
         {
             var criteria = new OfficeIPPreconditionCriteria();
@@ -21,11 +23,11 @@
             }
         }        
 
-        public void Rule(string matchIds)
+        public void Rule()
         {
             var criteria = new OfficeIPRuleCriteria()
             {
-               MatchIds = matchIds
+               MatchIds = MatchIds
             };
 
             using (var db = new ObjectDb(criteria.GetSettingKey(), 3600))
@@ -34,16 +36,6 @@
 
                 db.ExecuteNonQuery(param);
             }
-        }
-
-        public void Rule(string matchIds, string param1)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Rule()
-        {
-            throw new NotImplementedException();
-        }
+        }       
     }
 }

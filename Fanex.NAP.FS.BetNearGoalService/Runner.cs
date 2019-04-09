@@ -144,7 +144,8 @@
             {
                 try
                 {
-                    betNearGoalService.Rule(((Match)m).MatchId.ToString());
+                    betNearGoalService.MatchIds = ((Match)m).MatchId.ToString();
+                    betNearGoalService.Rule();
 
                     _errorTimes = 0;
                 }

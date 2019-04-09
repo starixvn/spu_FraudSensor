@@ -11,6 +11,10 @@ namespace Fanex.NAP.FS.Service
 {
     public class ArbitrageService: IExecutorService
     {
+        public string MatchIds { get; set; }
+
+        public string Associations { get; set; }
+
         public IEnumerable<ArbitrageTicket> PreCondition<ArbitrageTicket>()
         {
             var criteria = new ArbitragePreconditionCriteria();
@@ -19,14 +23,14 @@ namespace Fanex.NAP.FS.Service
             {
                 return db.Query<ArbitrageTicket>(criteria);
             }
-        }        
-
-        public void Rule(string matchIds, string param1)
+        }       
+      
+        public void Rule()
         {
             var criteria = new ArbitrageRuleCriteria()
             {
-                Matches = matchIds,
-                Associations = param1
+                Matches = this.MatchIds,
+                Associations = this.Associations
             };
 
             using (var db = new ObjectDb(criteria.GetSettingKey(), 3600))
@@ -35,16 +39,6 @@ namespace Fanex.NAP.FS.Service
 
                 db.ExecuteNonQuery(param);
             }
-        }
-
-        public void Rule(string matchIds)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Rule()
-        {
-            throw new NotImplementedException();
         }
     }
 }

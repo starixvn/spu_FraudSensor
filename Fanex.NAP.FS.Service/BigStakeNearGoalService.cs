@@ -1,16 +1,13 @@
 ﻿using Fanex.Data;
 using Fanex.NAP.FS.Library.Criteria.FraudSensorTask;
-using Fanex.NAP.FS.Library.DTO;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Fanex.NAP.FS.Service
 {
-   public class BigStakeNearGoalService : IExecutorService
+    public class BigStakeNearGoalService : IExecutorService
     {
+        public string MatchIds { get; set; }
+
         public IEnumerable<Match> PreCondition<Match>()
         {
             var criteria = new BigStakeNearGoalPreconditionCriteria();
@@ -19,12 +16,13 @@ namespace Fanex.NAP.FS.Service
             {
                 return db.Query<Match>(criteria);
             }
-        }               
+        }
 
-        public void Rule(string matchIds)
+        public void Rule()
         {
-            var criteria = new BigStakeNearGoalRuleCriteria() {
-                MatchIds = matchIds
+            var criteria = new BigStakeNearGoalRuleCriteria()
+            {
+                MatchIds = this.MatchIds
             };
 
             using (var db = new ObjectDb(criteria.GetSettingKey()))
@@ -33,16 +31,6 @@ namespace Fanex.NAP.FS.Service
 
                 db.ExecuteNonQuery(param);
             }
-        }
-
-        public void Rule(string matchIds, string param1)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Rule()
-        {
-            throw new NotImplementedException();
         }
     }
 }

@@ -176,8 +176,10 @@ namespace Fanex.NAP.FS.FlaggedAccountService
             {
                 try
                 {
-                    var flaggedAccountsXml = XmlHelper.ToXmlString(_flaggedCustomers);
-                    flaggedAccountService.Rule(string.Join(",", ((List<Match>)m).Select(t => t.MatchId.ToString())), flaggedAccountsXml);
+                    flaggedAccountService.MatchIds = string.Join(",", ((List<Match>)m).Select(t => t.MatchId.ToString()));
+                    flaggedAccountService.FlaggedAccounts = XmlHelper.ToXmlString(_flaggedCustomers);
+
+                    flaggedAccountService.Rule();
 
                 }
                 catch (Exception ex)

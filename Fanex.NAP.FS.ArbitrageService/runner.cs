@@ -115,7 +115,10 @@ namespace Fanex.NAP.FS.ArbitrageService
 #endif            
                 if(tickets.Any() && customers.Any())
                 {
-                    arbitrageService.Rule(tickets.ToXmlString(), customers.ToXmlString());
+                    arbitrageService.MatchIds = tickets.ToXmlString();
+                    arbitrageService.Associations = customers.ToXmlString();
+
+                    arbitrageService.Rule();
                 }
                 else
                 {
