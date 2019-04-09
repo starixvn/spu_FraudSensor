@@ -9,7 +9,8 @@ ALTER PROCEDURE [dbo].[FS_Rpt_MatchMonitor_Details_Get_ByTicket_Arbitrage]
 	,	@TransDateTo				DATETIME = NULL
 	,	@Bettype					SMALLINT = -1 -- all scoreHDP
 	,	@Handicap					MONEY = -1 -- all scoreHDP
-	,	@TotalScores				INT = -1 -- all scoreHDP;
+	,	@LiveHomeScore				SMALLINT = -1 -- all scoreHDP;
+	,	@LiveAwayScore				SMALLINT = -1 -- all scoreHDP;
 AS
 /*
 	Created: 20180815@Long.Luu
@@ -105,7 +106,8 @@ BEGIN
 		INNER JOIN dbo.SuspiciousCustomer c WITH(NOLOCK) ON si.CustId = c.custid
 		CROSS APPLY dbo.SPU_StrSplit(si.transids, ',')
 	WHERE	si.MatchId = @MatchId
-		AND (@Bettype = -1 OR @Handicap = -1 OR @TotalScores = -1 OR (si.BetType = @Bettype AND si.Handicap = @Handicap AND si.TotalScores = @TotalScores)) -- ScoreHDP
+		AND (@Bettype = -1 OR @Handicap = -1 OR @LiveHomeScore = -1 OR @LiveAwayScore = -1 
+			OR (si.BetType = @Bettype AND si.Handicap = @Handicap AND si.LiveHomeScore = @LiveHomeScore AND si.LiveAwayScore = @LiveAwayScore)) -- ScoreHDP
 		AND (@CurrencyId = -1 OR c.CurrencyId = @CurrencyId)
 		AND (@IsShowSpecialCurrencies = 1 OR c.CurrencyId NOT IN (SELECT CurrencyId FROM dbo.SpecialCurrency WITH(NOLOCK)));
 			

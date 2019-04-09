@@ -1,7 +1,3 @@
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
 ALTER PROCEDURE [dbo].[FS_FraudCase_Arbitrage_PreCondition]
 AS
 /*
@@ -15,7 +11,9 @@ AS
 		- 20180926@LONG: Remove redundant fraud tickets
 		- 20190312@Casey.Huynh: Enhance Performance, define PRIMARY KEY in table [110060]
 		- 20190314@Casey.Huynh: Implement, scan for completed Match [110566]
-		- 20190408@Casey.Huynh: Update "Rowlock" to "Nolock" for table ArbitrageMatchScanning, Insert to ArbitrageMatchScoreHDP handicap=hdp1-hdp2 [111069]
+		- 20190408@Casey.Huynh: Update "Rowlock" to "Nolock" for table ArbitrageMatchScanning, Insert to ArbitrageMatchScoreHDP handicap=hdp1-hdp2 [111069]		
+		- 20190403@Long.Luu: Adding LiveHomeScore, LiveAwayScore for ArbitrageTicketDetails table [Redmine ID: 111069]
+
 	Param's Explanation (filtered by):  
 	
 */
@@ -99,7 +97,8 @@ BEGIN
 				ON	b.matchid = m.matchid
 	LEFT JOIN	dbo.ArbitrageMatchScoreHDP sh WITH(NOLOCK)
 				ON	b.matchid = sh.MatchId
-				AND b.livehomescore + b.LiveAwayScore = sh.TotalScores
+				AND b.livehomescore = sh.LiveHomeScore
+				AND b.liveawayscore = sh.LiveAwayScore
 				AND b.bettype = sh.BetType
 				AND b.hdp1 - b.hdp2 = sh.Handicap
 				AND sh.HasScanned = 1
