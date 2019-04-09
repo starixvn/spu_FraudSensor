@@ -84,7 +84,7 @@ BEGIN
 				AND l.isTest = 0
 				AND a.MatchId IS NULL;
 
-	--==2. INSERT:	Customer List that has not scanned completed by (MatchId, TotalScore, Bettype, Handicap, Custid)
+	--==2. INSERT:	Customer List that has not scanned completed
 	INSERT INTO #tmpCustomerList(MatchId, LiveHomeScore, LiveAwayScore, Bettype, Handicap, CustId)
 	SELECT		b.MatchId
 				, b.LiveHomeScore
