@@ -96,7 +96,6 @@ namespace Fanex.NAP.FS.ArbitrageService
 
             try
             {
-
                 var tsk = tickets.Select(t => t.CustId).Distinct().Chunk(500).Select(GroupCustomer).ToArray();
 
                 message = $"- Rule for match {matchId} is executing. Ticket counter: " + tsk.Count();
@@ -137,7 +136,7 @@ namespace Fanex.NAP.FS.ArbitrageService
 #if DEBUG
             Console.WriteLine(message);
 #endif
-            LogService.Info(message);
+           /// LogService.Info(message);
         }
 
         private async Task<IEnumerable<ArbitrageCustomer>> GroupCustomer(IEnumerable<int> custids)
@@ -215,7 +214,7 @@ namespace Fanex.NAP.FS.ArbitrageService
 #if DEBUG
                     Console.WriteLine(message);
 #endif
-                    LogService.Info(message);
+                   // LogService.Info(message);
                 });
             }
         }
