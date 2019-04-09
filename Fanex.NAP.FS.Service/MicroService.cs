@@ -1,23 +1,19 @@
-﻿using EasyNetQ;
-using EasyNetQ.Topology;
-using Fanex.Logging;
+﻿using Fanex.Logging;
 using Fanex.NAP.FS.Core;
 using Fanex.NAP.FS.Library.DTO;
 using Fanex.NAP.FS.Library.Models;
 using Fanex.NAP.FS.Model;
-using System;
-using System.Collections.Generic;
-using System.ServiceProcess;
-using System.Threading.Tasks;
-using System.Timers;
-using System.Linq;
-using System.Net.Http;
-using RestSharp;
-using ONEbook.UM.AspNetMVC.Configuration;
 using ONEbook.UM;
+using ONEbook.UM.AspNetMVC.Configuration;
 using ONEbook.UM.Helpers;
 using ONEbook.UM.Services;
+using RestSharp;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
+using System.Timers;
 
 namespace Fanex.NAP.FS.Service
 {
@@ -25,7 +21,7 @@ namespace Fanex.NAP.FS.Service
     {
         private static Queue.EasyNetQ _rabbitMQ;
         private static System.Timers.Timer _timer;
-        private static string _serviceName;        
+        private static string _serviceName;
         private static int _fraudCaseId;
         private static string _queueName;
 
@@ -36,7 +32,8 @@ namespace Fanex.NAP.FS.Service
 
         public FraudCase FraudCase
         {
-            get {
+            get
+            {
                 return _fraudCase;
             }
         }
@@ -48,11 +45,11 @@ namespace Fanex.NAP.FS.Service
                AppSetting.VirtualHost,
                AppSetting.PrefetchCount,
                AppSetting.UserName,
-               AppSetting.Password);                        
-            
+               AppSetting.Password);
+
             _queueName = Enum.GetName(typeof(FraudCaseId), fraudCaseId);
             _fraudCaseId = Convert.ToInt32(fraudCaseId);
-            _serviceName = serviceName;            
+            _serviceName = serviceName;
 
             _rabbitMQ
                .CreateBus()
@@ -103,7 +100,7 @@ namespace Fanex.NAP.FS.Service
                 Thread.Sleep(1000 * 10);
 
                 InvokeActionHandlerEvent(onTimedEvent);
-            }));            
+            }));
         }
 
         private void InvokeActionHandlerEvent(ElapsedEventHandler onTimedEvent)
@@ -111,7 +108,7 @@ namespace Fanex.NAP.FS.Service
             if (_fraudCase == null)
             {
                 _fraudCase = GetFraudCase(_fraudCaseId);
-            }                        
+            }
 
             onTimedEvent.Invoke(null, null);
         }
@@ -123,13 +120,17 @@ namespace Fanex.NAP.FS.Service
 
             LogService.Error($"{_serviceName} is stopped. Please contact with Admin.");
         }
-          
+
         public void Clean(IEnumerable<Match> matches, List<Task> threads)
         {
             if (matches != null && matches.Any())
             {
                 matches = Enumerable.Empty<Match>();
-                threads.Clear();
+
+                if (threads != null)
+                {
+                    threads.Clear();
+                }
             }
         }
 
@@ -144,7 +145,7 @@ namespace Fanex.NAP.FS.Service
             request.AddQueryParameter("timeout", model.Timeout.ToString());
             request.AddQueryParameter("isActive", model.IsActive.ToString());
             request.AddQueryParameter("message", model.Message);
-            
+
             try
             {
                 var result = client.Execute(request);
@@ -201,9 +202,9 @@ namespace Fanex.NAP.FS.Service
             catch (Exception ex)
             {
                 LogService.Error($"{projectName} - {_serviceName} - MessageHandler Exception: {ex.Message}");
-            }           
+            }
         }
-        
+
         private FraudCase GetFraudCase(int fraudCaseId)
         {
 #if DEBUG
@@ -230,7 +231,8 @@ namespace Fanex.NAP.FS.Service
 
             LogService.Info($"{projectName} - {_serviceName} - Fraud case is null. Please check again.");
 
-            return new FraudCase {
+            return new FraudCase
+            {
                 IsActive = false
             };
         }
@@ -251,9 +253,9 @@ namespace Fanex.NAP.FS.Service
 #endif
 
                         if (_fraudCase.IsActive && !_timer.Enabled)
-                        {                           
+                        {
                             _timer.Start();
-                        }                        
+                        }
 
                         break;
                     }
@@ -270,18 +272,18 @@ namespace Fanex.NAP.FS.Service
                         Console.WriteLine($"=> Updating - Fraud case name: {_fraudCase.FraudCaseName}, IsActive: {_fraudCase.IsActive}, IsTest: {_fraudCase.IsTest}, Interval: {_fraudCase.FraudCaseInterval}, Timer Enable: {_timer.Enabled}  ");
 #endif
                         if (_fraudCase.IsActive)
-                        { 
+                        {
                             _timer.Start();
                         }
 
                         break;
                     }
-                case Model.Action.Deactivating:                
+                case Model.Action.Deactivating:
                     {
 #if DEBUG
                         Console.WriteLine("-> Delete action is executing...");
 #endif
-                        _timer.Stop();                        
+                        _timer.Stop();
 
                         break;
                     }
@@ -306,7 +308,7 @@ namespace Fanex.NAP.FS.Service
                         break;
                     }
                 default:
-                    {                     
+                    {
                         break;
                     }
             }

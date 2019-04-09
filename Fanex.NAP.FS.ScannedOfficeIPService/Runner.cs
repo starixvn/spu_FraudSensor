@@ -112,7 +112,7 @@ namespace Fanex.NAP.FS.ScannedOfficeIPService
 
         void CleanResult()
         {
-            baseService.Clean(_matches, null);
+            _matches = null;
             _tasks.Clear();
         }
 
