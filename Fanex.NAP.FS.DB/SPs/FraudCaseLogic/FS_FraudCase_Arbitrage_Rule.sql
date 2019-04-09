@@ -445,12 +445,13 @@ BEGIN
 		DELETE		si
 		FROM		dbo.ArbitrageTicketDetails si WITH(ROWLOCK)
 					INNER JOIN #tmpFraudTickets ft WITH(NOLOCK) ON si.MatchId = ft.MatchId AND si.LiveHomeScore = ft.LiveHomeScore 
-					 AND si.LiveAwayScore = ft.LiveAwayScore AND si.BetType = ft.BetType	AND si.Handicap = ft.Handicap AND si.CustId = ft.CustId;
+					 AND si.LiveAwayScore = ft.LiveAwayScore AND si.BetType = ft.BetType AND si.Handicap = ft.Handicap AND si.CustId = ft.CustId;
 
 		-- Insert new records for table ArbitrageTicketDetails
-		INSERT INTO dbo.ArbitrageTicketDetails(CustId, MatchId, GroupId, BetType, Handicap, LiveHomeScore, LiveAwayScore, TransIds, TicketCounter, IsIPFraud, GraphDBGroupId)
+		INSERT INTO dbo.ArbitrageTicketDetails(CustId, MatchId, EventDate, GroupId, BetType, Handicap, LiveHomeScore, LiveAwayScore, TransIds, TicketCounter, IsIPFraud, GraphDBGroupId)
 		SELECT	[CustId]			= ft.CustId
 			,	[MatchId]			= ft.MatchId
+			,	[EventDate]			= ft.EventDate
 			,	[GroupId]			= ft.GroupId
 			,	[Bettype]			= ft.Bettype
 			,	[Handicap]			= ft.Handicap

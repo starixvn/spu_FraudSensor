@@ -6,22 +6,6 @@ Server:  bodb_FraudSensor
 Reviewer: Billy
 */ 
 
---- Clear Tables
-TRUNCATE TABLE [dbo].[ArbitrageTicketDetails];
-GO
-
-TRUNCATE TABLE [dbo].[ArbitrageMatchScanning];
-GO
-
-TRUNCATE TABLE [dbo].[ArbitrageSuspiciousInfo];
-GO
-
-DROP TABLE [dbo].[ArbitrageMatchScoreHDP];
-GO
-
-DELETE FROM [dbo].[ScannedMatch] WITH(ROWLOCK)
-WHERE FraudCaseId = 10;
-
 --- Table [ArbitrageTicketDetails]
 DROP INDEX NIX_ArbitrageTicketDetails_Bettype_Handicap_Totalscore 
     ON [dbo].[ArbitrageTicketDetails]
@@ -29,6 +13,10 @@ GO
 
 ALTER TABLE [dbo].[ArbitrageTicketDetails]
 DROP COLUMN TotalScores;
+GO
+
+ALTER TABLE [dbo].[ArbitrageTicketDetails]
+ADD EventDate				DATETIME NULL;
 GO
 
 CREATE NONCLUSTERED INDEX NIX_ArbitrageTicketDetails_Bettype_Handicap_LiveHomeAwayScore ON [dbo].[ArbitrageTicketDetails] (
@@ -39,7 +27,15 @@ CREATE NONCLUSTERED INDEX NIX_ArbitrageTicketDetails_Bettype_Handicap_LiveHomeAw
 ) ON IDX;
 GO
 
+CREATE NONCLUSTERED INDEX NIX_ArbitrageTicketDetails_EventDate ON [dbo].[ArbitrageTicketDetails] (
+		[EventDate]			ASC
+) ON IDX;
+GO
+
 --- Table [ArbitrageMatchScoreHDP]
+DROP TABLE [dbo].[ArbitrageMatchScoreHDP];
+GO
+
 CREATE TABLE [dbo].[ArbitrageMatchScoreHDP](
 	[MatchId]			[int] NOT NULL,
 	[BetType]			[int] NOT NULL,
