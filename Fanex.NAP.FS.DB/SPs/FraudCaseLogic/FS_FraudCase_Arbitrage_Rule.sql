@@ -467,7 +467,7 @@ BEGIN
 			,	[IsIPFraud]			= ft.IsIPFraud
 			,	[GraphDBGroupId]	= Min(ft.GroupId)
 		FROM		#tmpFraudTickets ft WITH (NOLOCK)
-		GROUP BY	ft.CustId, ft.MatchId, ft.GroupId, ft.Bettype, ft.Handicap, ft.LiveHomeScore, ft.LiveAwayScore, ft.IsIPFraud;		
+		GROUP BY	ft.CustId, ft.MatchId, ft.EventDate, ft.GroupId, ft.Bettype, ft.Handicap, ft.LiveHomeScore, ft.LiveAwayScore, ft.IsIPFraud;		
 
 		-- Update table SuspiciousInfo if existed
 		UPDATE si WITH (ROWLOCK, UPDLOCK)
