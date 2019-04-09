@@ -75,7 +75,8 @@ namespace Fanex.NAP.FS.ScannedOfficeIPService
                     isRunning = false;
 #if DEBUG
                     Console.WriteLine("=> Fraud Case is executed at " + DateTime.Now);
-#endif                   
+#endif
+                    LogService.Info($"{projectName} - {serviceName} - Rule is executed.");
                 }
             }
             catch (Exception ex)
