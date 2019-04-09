@@ -5,6 +5,9 @@
     using System;
     public class GetCustomerArbitrageCriteria : CriteriaBase
     {
+        private DateTime _transDateFrom;
+        private DateTime _transDateTo;
+
         public int MatchId { get; set; }
 
         public DateTime EventDate { get; set; }
@@ -18,9 +21,41 @@
 
         public int CurrencyId { get; set; }
 
-        public DateTime TransDateFrom { get; set; }
+        public DateTime TransDateFrom
+        {
+            get
+            {
+                DateTime minValue = new DateTime(1753, 1, 1);
+                DateTime maxValue = new DateTime(9999, 1, 1);
+                if (_transDateTo > minValue && _transDateTo < maxValue)
+                {
+                    return _transDateFrom;
+                }
+                return minValue;
+            }
+            set
+            {
+                _transDateFrom = value;
+            }
+        }
 
-        public DateTime TransDateTo { get; set; }
+        public DateTime TransDateTo
+        {
+            get
+            {
+                DateTime minValue = new DateTime(1753, 1, 1);
+                DateTime maxValue = new DateTime(9999, 1, 1);                
+                if (_transDateTo > minValue && _transDateTo < maxValue)
+                {
+                    return _transDateTo;
+                }
+                return maxValue;
+            }
+            set
+            {
+                _transDateTo = value;
+            }
+        }
 
         public int Bettype { get; set; }
 
