@@ -44,7 +44,7 @@ namespace Fanex.NAP.FS.Core
         {
             get
             {
-                return ConfigurationManager.AppSettings["Queue-Post"];
+                return ConfigurationManager.AppSettings["Queue-Port"];
             }
         }
 
