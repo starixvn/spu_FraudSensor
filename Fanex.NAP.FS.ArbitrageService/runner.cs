@@ -95,7 +95,7 @@ namespace Fanex.NAP.FS.ArbitrageService
 
             try
             {
-                var time1 = DateTime.Now;
+                var watch = System.Diagnostics.Stopwatch.StartNew();
 
                 var tsk = tickets.Select(t => t.CustId).Distinct().Chunk(500).Select(GroupCustomer).ToArray();
 
@@ -108,9 +108,9 @@ namespace Fanex.NAP.FS.ArbitrageService
 
                 var customers = tsk.SelectMany(t => t.Result);
 
-                var time2 = DateTime.Now;
+                watch.Stop();
 
-                message = $"- Rule for match {matchId} is executing. Customers counter: {customers.Count()}. Execute time: {(time1 - time2).TotalMinutes} ";
+                message = $"- Rule for match {matchId} is executing. Customers counter: {customers.Count()}. Execute time: {watch.Elapsed.TotalSeconds} ";
 
                 LogService.Info(message);
 #if DEBUG
@@ -118,16 +118,16 @@ namespace Fanex.NAP.FS.ArbitrageService
 #endif            
                 if(tickets.Any() && customers.Any())
                 {
-                    time1 = DateTime.Now;
+                    watch = System.Diagnostics.Stopwatch.StartNew();
 
                     arbitrageService.MatchIds = tickets.ToXmlString();
                     arbitrageService.Associations = customers.ToXmlString();
 
                     arbitrageService.Rule();
 
-                    time2 = DateTime.Now;
+                    watch.Stop();
 
-                    message = $"=> Rule for match {matchId} is executed. Execute time: {(time1 - time2).TotalMinutes} ";
+                    message = $"=> Rule for match {matchId} is executed. Execute time: {watch.Elapsed.TotalMinutes} ";
 
                     LogService.Info(message);
                 }
