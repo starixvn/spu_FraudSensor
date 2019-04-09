@@ -51,6 +51,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ArbitrageService.cs" />
+    <Compile Include="CheckBetService.cs" />
     <Compile Include="BigStakeNearGoalService.cs" />
     <Compile Include="DailyDataCaptureService.cs" />
     <Compile Include="FlaggedAccountService.cs" />

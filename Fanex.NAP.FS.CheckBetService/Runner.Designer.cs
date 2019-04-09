@@ -1,6 +1,6 @@
 ﻿namespace Fanex.NAP.FS.CheckBetService
 {
-    partial class Service1
+    partial class Runner
     {
         /// <summary> 
         /// Required designer variable.
