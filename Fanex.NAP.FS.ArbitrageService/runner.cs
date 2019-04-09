@@ -118,16 +118,16 @@ namespace Fanex.NAP.FS.ArbitrageService
 #endif            
                 if(tickets.Any() && customers.Any())
                 {
-                    watch = System.Diagnostics.Stopwatch.StartNew();
+                   var watch2 = System.Diagnostics.Stopwatch.StartNew();
 
                     arbitrageService.MatchIds = tickets.ToXmlString();
                     arbitrageService.Associations = customers.ToXmlString();
 
                     arbitrageService.Rule();
 
-                    watch.Stop();
+                    watch2.Stop();
 
-                    message = $"=> Rule for match {matchId} is executed. Execute time: {watch.Elapsed.TotalMinutes} ";
+                    message = $"=> Rule for match {matchId} is executed. Execute time: {watch2.Elapsed.TotalMinutes} ";
 
                     LogService.Info(message);
                 }
