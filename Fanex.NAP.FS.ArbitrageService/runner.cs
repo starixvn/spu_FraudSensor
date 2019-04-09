@@ -28,8 +28,7 @@ namespace Fanex.NAP.FS.ArbitrageService
         private bool isRunning = false;
 
         public Runner()
-        {
-
+        {            
             baseService = new MicroService(serviceName, FraudCaseId.Arbitrage);
             arbitrageService = new Service.ArbitrageService();
 
@@ -96,29 +95,41 @@ namespace Fanex.NAP.FS.ArbitrageService
 
             try
             {
+                var time1 = DateTime.Now;
+
                 var tsk = tickets.Select(t => t.CustId).Distinct().Chunk(500).Select(GroupCustomer).ToArray();
 
                 message = $"- Rule for match {matchId} is executing. Ticket counter: " + tsk.Count();
 
 #if DEBUG
                 Console.WriteLine(message);
-#endif
-
-                Task.WaitAll(tsk);
+#endif                
+                Task.WaitAll(tsk);                               
 
                 var customers = tsk.SelectMany(t => t.Result);
 
-                message = $"- Rule for match {matchId} is executing. Customers counter: " + customers.Count();
+                var time2 = DateTime.Now;
 
+                message = $"- Rule for match {matchId} is executing. Customers counter: {customers.Count()}. Execute time: {(time1 - time2).TotalMinutes} ";
+
+                LogService.Info(message);
 #if DEBUG
                 Console.WriteLine(message);
 #endif            
                 if(tickets.Any() && customers.Any())
                 {
+                    time1 = DateTime.Now;
+
                     arbitrageService.MatchIds = tickets.ToXmlString();
                     arbitrageService.Associations = customers.ToXmlString();
 
                     arbitrageService.Rule();
+
+                    time2 = DateTime.Now;
+
+                    message = $"=> Rule for match {matchId} is executed. Execute time: {(time1 - time2).TotalMinutes} ";
+
+                    LogService.Info(message);
                 }
                 else
                 {
@@ -135,7 +146,7 @@ namespace Fanex.NAP.FS.ArbitrageService
                 LogService.Error($"{projectName} - {serviceName} - MatchId: {matchId} - GroupData Exeption: {logMessage}");
             }
 
-            message = $"=> Rule for match {matchId} is executed.";
+            
 #if DEBUG
             Console.WriteLine(message);
 #endif

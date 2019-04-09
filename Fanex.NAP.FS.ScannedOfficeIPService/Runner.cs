@@ -55,7 +55,7 @@ namespace Fanex.NAP.FS.ScannedOfficeIPService
             var status = true;
 
             try
-            {
+            {                
                 Report(status, exception, "Fraud Case is executing at " + DateTime.Now);
 
                 var isUM = baseService.CheckUM();
