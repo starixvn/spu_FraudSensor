@@ -110,7 +110,7 @@ namespace Fanex.NAP.FS.ArbitrageService
 
                 watch.Stop();
 
-                message = $"- Rule for match {matchId} is executing. Customers counter: {customers.Count()}. Execute time: {watch.Elapsed.TotalSeconds} ";
+                message = $"- Rule for match {matchId} is executing. Customers counter: {customers.Count()}. Execute time: {watch.Elapsed.TotalSeconds} seconds";
 
                 LogService.Info(message);
 #if DEBUG
@@ -127,7 +127,7 @@ namespace Fanex.NAP.FS.ArbitrageService
 
                     watch2.Stop();
 
-                    message = $"=> Rule for match {matchId} is executed. Execute time: {watch2.Elapsed.TotalMinutes} ";
+                    message = $"=> Rule for match {matchId} is executed. Execute time: {watch2.Elapsed.TotalMinutes} minutes";
 
                     LogService.Info(message);
                 }
