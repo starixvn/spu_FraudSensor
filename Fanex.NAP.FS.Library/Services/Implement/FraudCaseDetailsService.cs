@@ -555,7 +555,7 @@
         }
 
         /// <summary>
-        /// Get list evidence from 5.1 to 7.1
+        /// Get list evidence from 5.1 to 7.10
         /// </summary>
         /// <returns></returns>
         public IEnumerable<Evidence> GetListEvidences()
@@ -582,6 +582,15 @@
             lstEvidences.Add(new Evidence { EvidenceCode = "6.9", EvidenceName = "6.9 - Licensee Monitoring Group" });
             lstEvidences.Add(new Evidence { EvidenceCode = "6.10", EvidenceName = "6.10 - Backup Group" });
             lstEvidences.Add(new Evidence { EvidenceCode = "7.1", EvidenceName = "7.1 - Abnormal - Snooker" });
+            lstEvidences.Add(new Evidence { EvidenceCode = "7.2", EvidenceName = "7.2 - Smart Punter All in one" });
+            lstEvidences.Add(new Evidence { EvidenceCode = "7.3", EvidenceName = "7.3 - Abnormal - Basketball" });
+            lstEvidences.Add(new Evidence { EvidenceCode = "7.4", EvidenceName = "7.4 - Abnormal - Baseball and Volleyball" });
+            lstEvidences.Add(new Evidence { EvidenceCode = "7.5", EvidenceName = "7.5 - Abnormal - Tennis" });
+            lstEvidences.Add(new Evidence { EvidenceCode = "7.6", EvidenceName = "7.6 - Abnormal - Muay Thai and Hedging Account" });
+            lstEvidences.Add(new Evidence { EvidenceCode = "7.7", EvidenceName = "7.7 - Abnormal - NFL,Dart and Ice-Hockey" });
+            lstEvidences.Add(new Evidence { EvidenceCode = "7.8", EvidenceName = "7.8 - Smart Punter - E-Sport" });
+            lstEvidences.Add(new Evidence { EvidenceCode = "7.9", EvidenceName = "7.9 - Abnormal - Motorsports and Cricket" });
+            lstEvidences.Add(new Evidence { EvidenceCode = "7.10", EvidenceName = "7.10 - Abnormal - Badminton" });
 
             return lstEvidences;
         }

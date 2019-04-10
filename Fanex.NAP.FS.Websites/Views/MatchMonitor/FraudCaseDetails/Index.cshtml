@@ -11,11 +11,6 @@
     <link href="~/Content/jquery-ui-timepicker-addon.min.css" rel="stylesheet" />
     <link href="~/Content/scss/MultipleSelect/jquery.multiselect.css" rel="stylesheet" />
     <style>
-
-        /*div.dataTables_wrapper {
-            width: 1870px;
-            margin: 0 auto;
-        }*/
         .ui-slider-handle.ui-corner-all.ui-state-default {
             background: #465262;
             width: 20px;
@@ -58,55 +53,60 @@
         <td class="info-value">@Model.HTScore / @Model.FTScore</td>
     </tr>
 </table>
-<div class="form-filter">
-    <div class="group width-160">
-        <label class="text">Market</label>
-        <div class="edit-field col_9">
-            <select class="control" id="market">
-                <option value="-1" selected>All</option>
-                <option value="0">Non-Live</option>
-                <option value="1">Live</option>
-            </select>
+
+@if((FraudCaseId)Model.FraudCaseId == FraudCaseId.Arbitrage)
+{
+    <div class="form-filter">
+        <div class="group width-160">
+            <label class="text">Market</label>
+            <div class="edit-field col_9">
+                <select class="control" id="market">
+                    <option value="-1" selected>All</option>
+                    <option value="0">Non-Live</option>
+                    <option value="1">Live</option>
+                </select>
+            </div>
         </div>
-    </div>
-    <div class="group width-160">
-        <label class="text">Currency</label>
-        <div class="edit-field col_9">
-            <select class="control" id="currency"></select>
+        <div class="group width-160">
+            <label class="text">Currency</label>
+            <div class="edit-field col_9">
+                <select class="control" id="currency"></select>
+            </div>
         </div>
-    </div>
-    <div class="group width-300">
-        <label class="text">Evidence</label>
-        <div class="edit-field col_9">
-            <select id="ddlEvidence" multiple="multiple">
-                @foreach (var item in (IEnumerable<Evidence>)ViewBag.EvidenceList)
+        <div class="group width-300">
+            <label class="text">Evidence</label>
+            <div class="edit-field col_9">
+                <select id="ddlEvidence" multiple="multiple">
+                    @foreach (var item in (IEnumerable<Evidence>)ViewBag.EvidenceList)
                 {
-                    <option value="@item.EvidenceCode">@item.EvidenceName</option>
-                }
-            </select>
+                        <option value="@item.EvidenceCode">@item.EvidenceName</option>
+                    }
+                </select>
+            </div>
         </div>
     </div>
-</div>
-<div class="form-filter">
-    <div class="group">
-        <label class="text">Trans Date</label>
-        <div class="edit-field col_9">
-            <input type="text" id="transDateFrom" class="form-control date-time-picker" value="@String.Format("{0:MMM dd, yyyy HH:mm:ss}", Model.EventDate)">
+    <div class="form-filter">
+        <div class="group">
+            <label class="text">Trans Date</label>
+            <div class="edit-field col_9">
+                <input type="text" id="transDateFrom" class="form-control date-time-picker" />
+            </div>
         </div>
-    </div>
-    <div class="group">
-        <div class="edit-field col_9">
-            <input type="text" id="transDateTo" class="form-control date-time-picker" value="@String.Format("{0:MMM dd, yyyy HH:mm:ss}", Model.EventDate)">
+        <div class="group">
+            <div class="edit-field col_9">
+                <input type="text" id="transDateTo" class="form-control date-time-picker" />
+            </div>
         </div>
-    </div>
-    <div class="group">
-        <label class="text">HDP/Score</label>
-        <div class="edit-field col_9">
-            <select class="control" id="scoreHDP"></select>
+        <div class="group">
+            <label class="text">Score/HDP</label>
+            <div class="edit-field col_9">
+                <select class="control" id="scoreHDP"></select>
+            </div>
         </div>
+        <button class="button -primary" id="generate">Generate</button>
     </div>
-    <button class="button -primary" id="generate">Generate</button>
-</div>
+}
+
 <div id="detailTabs">
     <ul>
         <li><a href="#ticket-tab" id="tickets">By Ticket</a></li>

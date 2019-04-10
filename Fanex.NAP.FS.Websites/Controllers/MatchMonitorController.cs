@@ -166,10 +166,19 @@ namespace Fanex.NAP.FS.Websites.Controllers
             return new EmptyResult();
         }
       
-        public ActionResult ExportExcelArbitrage(int liveStatus, string evidenCodeList, int currencyId, DateTime transDateFrom, DateTime transDateTo, int betType, int matchId, DateTime eventDate)
+        public ActionResult ExportExcelArbitrage(int liveStatus, string evidenCodeList, int currencyId, string strDateFrom, string strDateTo, int betType, int matchId, DateTime eventDate)
         {
-            var template = Server.MapPath("~/App_Data/Excel Template/MatchMonitor/FraudCaseDetail/arbitrage.xlsx");           
-
+            var template = Server.MapPath("~/App_Data/Excel Template/MatchMonitor/FraudCaseDetail/arbitrage.xlsx");            
+            DateTime transDateFrom = DateTime.MinValue;
+            DateTime transDateTo = DateTime.MinValue;
+            if (!string.IsNullOrEmpty(strDateFrom))
+            {
+                transDateFrom = DateTime.Parse(strDateFrom);
+            }
+            if (!string.IsNullOrEmpty(strDateTo))
+            {
+                transDateTo = DateTime.Parse(strDateTo);
+            }
             GetArbitrageTicketCriteria criteria = new GetArbitrageTicketCriteria
             {
                 LiveStatus = liveStatus,
@@ -199,20 +208,10 @@ namespace Fanex.NAP.FS.Websites.Controllers
 
         public ActionResult ExportExcelForDetail(int fraudCaseId, int matchId, DateTime eventDate)
         {
-            if (fraudCaseId == (int)FraudCaseId.Arbitrage)
-            {
-                var template = Server.MapPath("~/App_Data/Excel Template/MatchMonitor/FraudCaseDetail/arbitrage.xlsx");
+            var template = Server.MapPath("~/App_Data/Excel Template/MatchMonitor/FraudCaseDetail/template.xlsx");
 
-                var fileName = string.Format("FraudCaseDetails_{0}.xlsx", DateTime.Today.ToString("yyyyMMdd"));
-                return File(_fraudCaseDetailService.ExportArbitrageExcel(matchId, eventDate, IsShowSpecialCurrencies, template), "application/vnd.ms-excel", fileName);
-            }
-            else
-            {
-                var template = Server.MapPath("~/App_Data/Excel Template/MatchMonitor/FraudCaseDetail/template.xlsx");
-
-                var fileName = string.Format("FraudCaseDetails_{0}.xlsx", DateTime.Today.ToString("yyyyMMdd"));
-                return File(_fraudCaseDetailService.ExportExcel(matchId, fraudCaseId, eventDate, template, IsShowSpecialCurrencies), "application/vnd.ms-excel", fileName);
-            }
+            var fileName = string.Format("FraudCaseDetails_{0}.xlsx", DateTime.Today.ToString("yyyyMMdd"));
+            return File(_fraudCaseDetailService.ExportExcel(matchId, fraudCaseId, eventDate, template, IsShowSpecialCurrencies), "application/vnd.ms-excel", fileName);
         }
 
         [HttpPost]

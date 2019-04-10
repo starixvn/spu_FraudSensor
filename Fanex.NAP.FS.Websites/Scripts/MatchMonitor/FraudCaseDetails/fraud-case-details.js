@@ -29,8 +29,8 @@
     
     function handleMultipleSelect() {           
         $("#ddlEvidence").multiselect({
-            menuHeight: 300,
-            menuWidth: 300
+            menuHeight: 350,
+            menuWidth: 350
         });
     };
 
@@ -58,7 +58,74 @@
         })
     }
 
-    function loadTicketGrid(criteria) {
+    function loadTicketGrid() {
+        common.showLoading();
+
+        global_idx = 0;
+
+        var url = common.modifyRelativeUrl("/MatchMonitor/GetFraudCaseTicketDetails");
+
+        $.get(url, parameters, function (json) {
+            var table = ticket_grid.DataTable();
+
+            table.clear().rows.add(process_ticket_json(json)).draw();
+
+            var n = json.reduce((a, arr) => a + arr.data.length, 0);
+
+            $("#tickets").text(`By Tickets (${n})`);
+
+            if (n != 0) {
+                $("#DataTables_Table_0_info").text(`Displaying 1 to ${n} of ${n} item(s)`);
+            }
+
+            totalTicket = n;
+
+            $(".ip-link").click(renderTicketByIp);
+            common.closeLoading();
+        });
+    }
+
+    function loadCustomerGrid() {
+        common.showLoading();
+
+        var url = common.modifyRelativeUrl("/MatchMonitor/GetFraudCaseCustomerDetails");
+
+        $.get(url, parameters, function (json) {
+            customer_grid.DataTable().clear().rows.add(json).draw();
+
+            $("#customers").text(`By Customers (${json.length})`);
+
+            $(".action").selectmenu({
+                classes: {
+                    "ui-selectmenu-button": "ui-button-icon-only demo-splitbutton-select"
+                },
+                position: { my: "left top", at: "left bottom", collision: "flip" },
+                select: function () {
+                    var tr = $(this).parents("tr");
+
+                    var obj = customer_grid.DataTable().row(tr).data();
+
+                    if (this.value == "2") {
+                        renderAssociatedAccounts(obj);
+                    }
+                    else if (this.value == "1") {
+                        renderLast7DaysTickets(obj);
+                    }
+                    else {
+                        openSuspiciousHistoryLink(obj);
+                    }
+                },
+            });
+
+            $(".group-action").controlgroup();
+
+            $(".group-action button").click(e => $(e.target).next().selectmenu("open"));
+
+            common.closeLoading();
+        });
+    }
+
+    function loadTicketGridArbitrage(criteria) {
         if (isArbitrage) {
             loadArbitrages(criteria);
         }
@@ -87,7 +154,7 @@
         }        
     }
 
-    function loadCustomerGrid(criteria) {       
+    function loadCustomerGridArbitrage(criteria) {
         var url = common.modifyRelativeUrl("/MatchMonitor/GetFraudCaseCustomerDetails");
 
         $.post(url, criteria, function (json) {
@@ -187,22 +254,28 @@
     }
 
     function exportExcel() {
-        evidenceCode = getEvidenceSelected();
+        if (isArbitrage) {
+            evidenceCode = getEvidenceSelected();
 
-        var criteria = {
-            liveStatus: $("#market").val(),
-            evidenceCodeList: evidenceCode,
-            currencyId: $("#currency").val(),
-            transDateFrom: $("#transDateFrom").val(),
-            transDateTo: $("#transDateTo").val(),
-            bettype: $("#scoreHDP").val(),
-            matchId: parameters.matchId,
-            eventDate: parameters.eventDate
-        };
+            var criteria = {
+                liveStatus: $("#market").val(),
+                evidenceCodeList: evidenceCode,
+                currencyId: $("#currency").val(),
+                transDateFrom: $("#transDateFrom").val(),
+                transDateTo: $("#transDateTo").val(),
+                bettype: $("#scoreHDP").val(),
+                matchId: parameters.matchId,
+                eventDate: parameters.eventDate
+            };
 
-        var url = common.modifyRelativeUrl("/MatchMonitor/ExportExcelArbitrage");
+            var url = common.modifyRelativeUrl("/MatchMonitor/ExportExcelArbitrage");
 
-        common.downloadFile(url, criteria);
+            common.downloadFile(url, criteria);
+        } else {
+            var url = common.modifyRelativeUrl("/MatchMonitor/ExportExcelForDetail");
+
+            common.downloadFile(url, parameters);
+        }        
     }
 
     function removeMatchLeague() {
@@ -529,9 +602,9 @@
             eventDate: parameters.eventDate
         };
         
-        loadCustomerGrid(criteria);
+        loadCustomerGridArbitrage(criteria);
 
-        loadTicketGrid(criteria);
+        loadTicketGridArbitrage(criteria);
     };
 
     function getEvidenceSelected()
@@ -550,11 +623,17 @@
     }
 
     function init() {
-        getAllCurrency();
+        if (isArbitrage) {
+            getAllCurrency();
 
-        getScoreHDP();
+            getScoreHDP();
 
-        handleMultipleSelect();
+            handleMultipleSelect();
+        }
+        else {
+            loadTicketGrid();
+            loadCustomerGrid();
+        }
     }
 
     customer_grid.DataTable({
@@ -726,6 +805,7 @@
     });  
 
     init();
+    
 }
 
 $(fraud_case_details);
