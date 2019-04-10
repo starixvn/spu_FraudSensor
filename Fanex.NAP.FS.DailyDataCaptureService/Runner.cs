@@ -41,6 +41,7 @@ namespace Fanex.NAP.FS.DailyDataCaptureService
 
         protected override void OnStop()
         {
+            baseService.Hold();
         }
 
         private void Execute(Object source, System.Timers.ElapsedEventArgs e)
