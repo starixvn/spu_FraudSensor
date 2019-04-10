@@ -114,7 +114,7 @@ namespace Fanex.NAP.FS.ArbitrageService
 
                     message = $"- Rule for match {matchId} is executing. Customers counter: {customers.Count()}. Execute time: {watch.Elapsed.TotalSeconds} seconds";
 
-                    LogService.Info(message);
+                   // LogService.Info(message);
 #if DEBUG
                     Console.WriteLine(message);
 #endif
@@ -134,7 +134,7 @@ namespace Fanex.NAP.FS.ArbitrageService
                 }
                 else
                 {
-                    LogService.Error($"{projectName} - {serviceName} - MatchId: {matchId} - Exeption: tickets({tickets.Count()}) or customers({customers.Count()}) are null.");
+                    LogService.Error($"{projectName} - {serviceName} - MatchId: {matchId} - Exeption: tickets({tickets.Count()}) are null.");
                 }
 
             }
@@ -210,7 +210,7 @@ namespace Fanex.NAP.FS.ArbitrageService
 #if DEBUG
                 Console.WriteLine(message);
 #endif
-                LogService.Info(message);
+               // LogService.Info(message);
 
                 Parallel.ForEach(ticketGroupBy, new ParallelOptions
                 {
