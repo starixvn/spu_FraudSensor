@@ -28,9 +28,7 @@
             row.GetCell(cell_idx++).SetCellValue(customer.TotalStake);
             row.GetCell(cell_idx++).SetCellValue(customer.TotalWinLoss);
             row.GetCell(cell_idx++).SetCellValue(customer.Evidence);
-#pragma warning disable S1854 // ok here
             row.GetCell(cell_idx++).SetCellValue(customer.AssociatedAccounts);
-#pragma warning restore S1854 // ok here
         }
 
         protected override void FillLegend(IRow row, MatchFraudCaseInfo legend)

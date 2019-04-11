@@ -178,13 +178,35 @@ namespace Fanex.NAP.FS.Websites.Controllers
 
             IEnumerable<ScoreHDP> lstScoreHDP = null;
             var objCache = HttpContext.Cache["ScoreHDP"];
-
             if (objCache != null)
             {
                 lstScoreHDP = objCache as IEnumerable<ScoreHDP>;
             }
 
-            var content = _fraudCaseDetailService.ExportArbitrageExcel(criteria, lstScoreHDP, template);
+            #region fill data filter
+            string[] array = new string[6];
+
+            //get Market
+            array[0] = criteria.LiveStatus == -1 ? "All" : (criteria.LiveStatus == 0 ? "Non-Live" : "Live");
+
+            //get Currency
+            var obj = HttpContext.Cache["ListCurrency"];
+            if (obj != null)
+            {
+                IEnumerable<Currency> lstObject = obj as IEnumerable<Currency>;
+                Currency currency = lstObject.FirstOrDefault(c => c.CurrencyId == criteria.CurrencyId.ToString());
+                array[1] = currency != null ? currency.CurrencyName : "All";
+            }
+            //get Evidence name           
+            array[2] = criteria.EvidenceCodeList ?? string.Empty;
+            //From date, to date
+            array[3] = strDateFrom ?? string.Empty;
+            array[4] = strDateTo ?? string.Empty;
+            //get Score/HDP
+            array[5] = criteria.KeyName == "-1" ? "All" : criteria.KeyName;
+            #endregion fill data filter
+
+            var content = _fraudCaseDetailService.ExportArbitrageExcel(criteria, lstScoreHDP, template, array);
 
             var fileName = string.Format("FraudCaseDetails_{0}.xlsx", DateTime.Today.ToString("yyyyMMdd"));
 
@@ -277,6 +299,7 @@ namespace Fanex.NAP.FS.Websites.Controllers
         public JsonResult GetListEvidences()
         {
             var data = _fraudCaseDetailService.GetListEvidences();
+            HttpContext.Cache["ListEvidences"] = data;
 
             return Json(data, JsonRequestBehavior.AllowGet);
         }
@@ -284,6 +307,7 @@ namespace Fanex.NAP.FS.Websites.Controllers
         public JsonResult GetAllCurrency()
         {
             var data = _fraudCaseDetailService.GetAllCurrency();
+            HttpContext.Cache["ListCurrency"] = data;
 
             return Json(data, JsonRequestBehavior.AllowGet);
         }
@@ -291,7 +315,6 @@ namespace Fanex.NAP.FS.Websites.Controllers
         public JsonResult GetScoreHDP(int matchId, DateTime eventDate)
         {
             var data = _fraudCaseDetailService.GetScoreHDP(matchId, IsShowSpecialCurrencies);
-
             HttpContext.Cache["ScoreHDP"] = data;
 
             return Json(data, JsonRequestBehavior.AllowGet);

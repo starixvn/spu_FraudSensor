@@ -478,7 +478,7 @@
     }
 
     if (isArbitrage) {
-        ticket_grid.DataTable({
+        ticket_grid.DataTable({            
             ordering: false,
             paging: false,
             dom: "t<'pagination'<'page-size'lp>>",

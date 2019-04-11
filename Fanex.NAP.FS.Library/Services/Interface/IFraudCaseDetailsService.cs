@@ -45,7 +45,7 @@
       
         byte[] ExportArbitrageExcel(GetArbitrageTicketCriteria criteria, IEnumerable<ScoreHDP> lstScoreHDP, string templatePath, int groupId, string score, decimal handicap);
 
-        byte[] ExportArbitrageExcel(GetArbitrageTicketCriteria ticketCriteria, IEnumerable<ScoreHDP> lstScoreHDP, string templatePath);
+        byte[] ExportArbitrageExcel(GetArbitrageTicketCriteria ticketCriteria, IEnumerable<ScoreHDP> lstScoreHDP, string templatePath, string []array);
      
         string ExportArbitrageCsvFromList(int matchId, DateTime eventDate, IEnumerable<ArbitrageGroupTicketList> lstArbitrageTicket);        
     }

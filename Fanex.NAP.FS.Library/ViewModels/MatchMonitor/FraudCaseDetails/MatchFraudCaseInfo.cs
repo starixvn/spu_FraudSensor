@@ -25,5 +25,7 @@
         public dynamic Away { get; set; }
 
         public dynamic Home { get; set; }
+
+        public dynamic Filter { get; set; }
     }
 }

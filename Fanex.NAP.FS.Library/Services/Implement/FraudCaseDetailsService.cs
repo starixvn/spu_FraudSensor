@@ -165,11 +165,11 @@
                     return data;
                 }
 
-                if (criteria.EvidenceCodeList != null)
+                if (!string.IsNullOrEmpty(criteria.EvidenceCodeList))
                 {
                     custEvidence = custEvidence.Where(c => criteria.EvidenceCodeList.Contains(c.EvidenceCode));
                 }
-                data = HandleCustomerEvidence(custInfo, custEvidence, criteria.EvidenceCodeList == null);
+                data = HandleCustomerEvidence(custInfo, custEvidence, string.IsNullOrEmpty(criteria.EvidenceCodeList));
                 return data;
             }
         }
@@ -515,12 +515,12 @@
                 return data;
             }
 
-            if (criteria.EvidenceCodeList != null)
+            if (!string.IsNullOrEmpty(criteria.EvidenceCodeList))
             {
                 listEvi = listEvi.Where(c => criteria.EvidenceCodeList.Contains(c.EvidenceCode));
             }
 
-            data = HandleArbitrage(rawData, listEvi, criteria.EvidenceCodeList == null);
+            data = HandleArbitrage(rawData, listEvi, string.IsNullOrEmpty(criteria.EvidenceCodeList));
             criteria.TotalTicket = criteria.TotalTicket = data.Sum(c => c.Home.Count() + c.Away.Count());
             return data;
         }
@@ -708,7 +708,7 @@
             return wb.ToBytes();
         }
 
-        public byte[] ExportArbitrageExcel(GetArbitrageTicketCriteria ticketCriteria, IEnumerable<ScoreHDP> lstScoreHDP, string templatePath)
+        public byte[] ExportArbitrageExcel(GetArbitrageTicketCriteria ticketCriteria, IEnumerable<ScoreHDP> lstScoreHDP, string templatePath, string []array)
         {
             GetCustomerArbitrageCriteria customerCriteria = new GetCustomerArbitrageCriteria
             {
@@ -726,11 +726,12 @@
 
             var tickets = GetArbitrageTickets(ticketCriteria, lstScoreHDP).SelectMany(obj => obj.Home.Concat(obj.Away));
             var legend = GetInfo(ticketCriteria.MatchId, (int)FraudCaseId.Arbitrage, ticketCriteria.EventDate);
+            legend.Filter = array;
             var customers = GetCustomerArbitrageDetails(customerCriteria, lstScoreHDP);
 
             var wb =
                 ExcelUtilities.GetWorkbook(templatePath)
-                    .RenderSheet(new ArbitrageConfig(tickets.Count()), legend, tickets, null)
+                    .RenderSheet(new ArbitrageConfig(tickets.Count()), legend, tickets,null)
                     .RenderSheet(new CustomerDetailConfig(customers.Count()), legend, customers, null);
 
             return wb.ToBytes();
