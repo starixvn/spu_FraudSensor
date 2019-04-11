@@ -130,7 +130,8 @@ namespace Fanex.NAP.FS.Websites.Controllers
             {
                 lstScoreHDP = objCache as IEnumerable<ScoreHDP>;
             }
-           
+
+            criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
             var data = _fraudCaseDetailService.GetArbitrageTickets(criteria, lstScoreHDP);
             
             // check total the ticket which has more than 1000 tickets will download file CSV and inform for user

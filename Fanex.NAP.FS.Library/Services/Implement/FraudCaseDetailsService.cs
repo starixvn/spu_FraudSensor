@@ -139,6 +139,7 @@
 
         public IEnumerable<CustomerDetails> GetCustomerArbitrageDetails(GetCustomerArbitrageCriteria criteria, IEnumerable<ScoreHDP> lstScoreHDP)
         {
+            IEnumerable<CustomerDetails> data;
             FillCustomerArbitrageCriteria(criteria, lstScoreHDP);
 
             using (var db = new ObjectDb(criteria.GetSettingKey()))
@@ -156,22 +157,57 @@
                 {
                     custEvidence = GetEvidences(custInfo.Select(info => info.CustId));
                 }
-                
+
+                var otherEvidenceCode = AppSettings.Get("FPS_GET_OTHER_EVIDENCES");
+                if (criteria.EvidenceCodeList != null && criteria.EvidenceCodeList.Contains(otherEvidenceCode))
+                {
+                    data = HandleCustomerOtherEvidence(custInfo, custEvidence, criteria.EvidenceCodeList);
+                    return data;
+                }
+
                 if (criteria.EvidenceCodeList != null)
                 {
                     custEvidence = custEvidence.Where(c => criteria.EvidenceCodeList.Contains(c.EvidenceCode));
                 }
-                
-                var data = HandleCustomerOtherEvidence(custInfo, custEvidence, criteria.EvidenceCodeList == null);
-
+                data = HandleCustomerEvidence(custInfo, custEvidence, criteria.EvidenceCodeList == null);
                 return data;
             }
         }
 
-        private IEnumerable<CustomerDetails> HandleCustomerOtherEvidence(IEnumerable<CustInfo> custInfo, IEnumerable<CustomerEvidence> custEvidence, bool isAllEvidence)
+        private IEnumerable<CustomerDetails> HandleCustomerOtherEvidence(IEnumerable<CustInfo> custInfo, IEnumerable<CustomerEvidence> custEvidence, string lstEvidenceSelected)
+        {
+            var evidenceExtract = custEvidence.Where(c => !lstEvidenceSelected.Contains(c.EvidenceCode));
+            var lstEvidenceExtract = evidenceExtract.Select(c => (long)c.CustId).ToList();
+
+            Func<long, bool> conditionExtract = f => !lstEvidenceExtract.Contains(f);
+
+            var totalAssociation = GetTotalAssociations(custInfo.Select(i => i.CustId)).ToDictionary(o => o.CustId, o => o.TotalAssociation);
+
+            IEnumerable<CustomerDetails> data = custInfo
+                   .Where(c => conditionExtract(c.CustId))
+                   .GroupJoin(
+                   custEvidence,
+                   info => info.CustId,
+                   evid => evid.CustId,
+                   (info, evidence) => new CustomerDetails
+                   {
+                       CustId = info.CustId,
+                       Member = info.Username,
+                       TotalWinLoss = (double)info.TotalWinlost,
+                       TotalStake = (double)info.TotalStake,
+                       Tickets = info.NoOfTickets,
+                       Evidence = string.Join(", ", evidence.Select(e => e.EvidenceCode + "-" + e.EvidenceName)),
+                       AssociatedAccounts = totalAssociation.ContainsKey(info.CustId) ? totalAssociation[info.CustId] : 0,
+                       CurrencyName = info.CurrencyName
+                   }).OrderBy(c => c.Member);
+
+            return data;
+        }
+
+        private IEnumerable<CustomerDetails> HandleCustomerEvidence(IEnumerable<CustInfo> custInfo, IEnumerable<CustomerEvidence> custEvidence, bool isAllEvidence)
         {
             Func<long, bool> conditionExtract = f => 1.Equals(1);
-            if (isAllEvidence)
+            if (!isAllEvidence)
             {
                 var listEvidenceByCus = custEvidence.Select(c => (long)c.CustId).ToList();
                 conditionExtract = f => listEvidenceByCus.Contains(f);
@@ -491,7 +527,7 @@
 
         private IEnumerable<ArbitrageGroupTicketList> HandleArbitrageOtherEvidence(IEnumerable<TicketInfo> rawData, IEnumerable<CustomerEvidence> evidences, string lstEvidenceSelected)
         {
-            var evidenceDict = evidences.ToLookup(c => c.CustId, c => c.EvidenceName);
+            var evidenceDict = evidences.ToLookup(c => c.CustId, c => c.EvidenceCode + "-" + c.EvidenceName);
             var evidenceExtract = evidences.Where(c => !lstEvidenceSelected.Contains(c.EvidenceCode));
             var lstEvidenceExtract = evidenceExtract.Select(c => (long)c.CustId).ToList();
 
@@ -545,7 +581,7 @@
 
         private IEnumerable<ArbitrageGroupTicketList> HandleArbitrage(IEnumerable<TicketInfo> rawData, IEnumerable<CustomerEvidence> evidences, bool isAllEvidence)
         {
-            var evidenceDict = evidences.ToLookup(c => c.CustId, c => c.EvidenceName);
+            var evidenceDict = evidences.ToLookup(c => c.CustId, c => c.EvidenceCode + "-" + c.EvidenceName);
             var listEvidenceByCus = evidences.Select(c => (long)c.CustId).ToList();
 
             Func<long, bool> conditionExtract = f => 1.Equals(1);
@@ -574,7 +610,8 @@
                     },
                     BettypeName = CachedRef.GetBettypeName(t.BetTypeId),
                     Handicap = (double)(t.Handicap1 - t.Handicap2),
-                    Score = $"{t.LiveHomeScore} - {t.LiveAwayScore}"
+                    Score = $"{t.LiveHomeScore} - {t.LiveAwayScore}",
+                    IsIPFraud = t.IsIPFraud
                 })
                 .OrderBy(g => GetOrder(CachedRef.GetBettypeName(g.Key.Item1)))
                 .Select(g =>
