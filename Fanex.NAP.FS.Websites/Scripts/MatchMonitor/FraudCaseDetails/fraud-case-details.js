@@ -380,16 +380,19 @@
 
             arr.push(obj);
 
-            var n = Math.max(obj.Home.length, obj.Away.length);
+            if (obj.Home.length + obj.Away.length < 1000) {
 
-            for (var i = 0; i < n; i++) {
-                var a = {};
+                var n = Math.max(obj.Home.length, obj.Away.length);
 
-                a.Home = obj.Home[i] || {};
+                for (var i = 0; i < n; i++) {
+                    var a = {};
 
-                a.Away = obj.Away[i] || {};
+                    a.Home = obj.Home[i] || {};
 
-                arr.push(a);
+                    a.Away = obj.Away[i] || {};
+
+                    arr.push(a);
+                }
             }
 
             return arr;
@@ -439,6 +442,12 @@
             ordering: false,
             paging: false,
             dom: "t<'pagination'<'page-size'lp>>",
+            language: {
+                infoEmpty: "",
+                infoFiltered: "",
+                thousands: ",",
+                zeroRecords: "There's no data"
+            },
             language: common.language,
             scrollY: '57vh',
             scrollX: "1870px",
@@ -481,8 +490,8 @@
             ],
             createdRow: function (row, obj) {
                 if (obj.key) {
-                    var td = $(`<td colspan='21' class='group' style='cursor: initial'><span class="bage">${obj.BettypeName} ${obj.Handicap}</span> <span class="bage">${obj.Score}</span> <button class="button -export"><span class="icon-export-excel"></span></button></td>`);
-
+                    var td = (obj.Home.length + obj.Away.length > 1000) ? $(`<td colspan='21' class='group' style='cursor: initial'><span class="bage">${obj.BettypeName} ${obj.Handicap}</span> <span class="bage">${obj.Score}</span> <span class="bage" style="color:red;">Too much data. Export CSV file instead!</span> <button class="button -export"><span class="icon-export-excel"></span></button></td>`)
+                        : $(`<td colspan='21' class='group' style='cursor: initial'><span class="bage">${obj.BettypeName} ${obj.Handicap}</span> <span class="bage">${obj.Score}</span> <button class="button -export"><span class="icon-export-excel"></span></button></td>`);
                     $(".button.-export", td).click(obj, renderArbitrageExcel);
 
                     $(row).empty().html(td);
@@ -539,7 +548,7 @@
             columnDefs: [{ targets: "_all", defaultContent: "-" }],
             createdRow: function (row, obj) {
                 if (obj.key) {
-                    var td = $(`<td colspan='12' class='group'><span class='icon-chevron-up'></span> ${obj.value}</td>`);
+                    var td = $(`<td colspan='12' class='group'><span class='icon-chevron-up'></span> ${obj.value} </td>`);
 
                     $(row).empty().html(td).click(e => show_hide_bettype_items(e.target, obj.value));
                 } else {
@@ -590,7 +599,8 @@
         console.log(error);
     };
 
-    function loadGrids() {            
+    function loadGrids() {
+        detail_tabs.css('display', 'inline-block');
         evidenceCode = getEvidenceSelected();
 
         var criteria = {
@@ -626,6 +636,7 @@
 
     function init() {
         if (isArbitrage) {
+            detail_tabs.css('display', 'none');
             getAllCurrency();
 
             getScoreHDP();

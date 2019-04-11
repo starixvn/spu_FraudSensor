@@ -520,7 +520,8 @@
                     },
                     BettypeName = CachedRef.GetBettypeName(t.BetTypeId),
                     Handicap = (double)(t.Handicap1 - t.Handicap2),
-                    Score = $"{t.LiveHomeScore} - {t.LiveAwayScore}"
+                    Score = $"{t.LiveHomeScore} - {t.LiveAwayScore}",
+                    IsIPFraud = t.IsIPFraud
                 })
                     .OrderBy(g => GetOrder(CachedRef.GetBettypeName(g.Key.Item1)))
                     .Select(g =>

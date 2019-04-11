@@ -54,7 +54,7 @@
     </tr>
 </table>
 
-@if((FraudCaseId)Model.FraudCaseId == FraudCaseId.Arbitrage)
+@if ((FraudCaseId)Model.FraudCaseId == FraudCaseId.Arbitrage)
 {
     <div class="form-filter">
         <div class="group width-160">
@@ -78,7 +78,7 @@
             <div class="edit-field col_9">
                 <select id="ddlEvidence" multiple="multiple">
                     @foreach (var item in (IEnumerable<Evidence>)ViewBag.EvidenceList)
-                {
+                    {
                         <option value="@item.EvidenceCode">@item.EvidenceName</option>
                     }
                 </select>
