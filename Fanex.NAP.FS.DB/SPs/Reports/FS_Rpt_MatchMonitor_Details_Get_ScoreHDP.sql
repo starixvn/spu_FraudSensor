@@ -24,7 +24,12 @@ BEGIN
 	FROM dbo.ArbitrageTicketDetails si WITH(NOLOCK)
 		INNER JOIN dbo.SuspiciousCustomer c WITH(NOLOCK) ON si.CustId = c.custid
 	WHERE	si.MatchId = @MatchId
-		AND (@IsShowSpecialCurrencies = 1 OR c.CurrencyId NOT IN (SELECT CurrencyId FROM dbo.SpecialCurrency WITH(NOLOCK)));
+		AND (@IsShowSpecialCurrencies = 1 OR c.CurrencyId NOT IN (SELECT CurrencyId FROM dbo.SpecialCurrency WITH(NOLOCK)))
+	ORDER BY si.BetType
+		,	si.LiveHomeScore
+		,	si.LiveAwayScore
+		,	si.Handicap
+
 END;
 
 GO
