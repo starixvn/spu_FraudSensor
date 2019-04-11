@@ -71,7 +71,8 @@ namespace Fanex.NAP.FS.ArbitrageService
                     isRunning = false;
 #if DEBUG
                     Console.WriteLine("=> Fraud Case is executed at " + DateTime.Now);
-#endif                   
+#endif               
+                    LogService.Info($"{projectName} - {serviceName} - Fraudcase is executed.");
                 }
             }
             catch (Exception ex)
@@ -131,9 +132,7 @@ namespace Fanex.NAP.FS.ArbitrageService
 
                     message = $"=> Rule for match {matchId} is executed. Execute time: {watch2.Elapsed.TotalMinutes} minutes";
 
-                    //LogService.Info(message);
-
-                    LogService.Info($"{projectName} - {serviceName} - Rule is executed.");
+                    //LogService.Info(message);                    
                 }
                 else
                 {
