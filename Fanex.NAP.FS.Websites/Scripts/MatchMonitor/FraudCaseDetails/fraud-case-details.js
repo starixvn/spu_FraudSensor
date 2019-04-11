@@ -32,6 +32,8 @@
             menuHeight: 350,
             menuWidth: 350
         });
+
+
     };
 
     function getAllCurrency() {
@@ -612,8 +614,8 @@
         var arrEvidences = $("#ddlEvidence").multiselect("getChecked");
         var array = [];
 
-        for (var i = 0; i < arrEvidences.length; i++) {
-            array.push($(arrEvidences[i]).attr('value'));
+        for (var i = 0; i < arrEvidences.length; i++) {            
+            array.push($(arrEvidences[i]).attr('value'));            
         }
 
         if (arrEvidences != null && arrEvidences.length > 0) {

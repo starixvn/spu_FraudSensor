@@ -17,6 +17,9 @@
         [SpParam(Ignored = true)]
         public int FraudCaseId { get; set; }
 
+        [SpParam(Ignored = true)]
+        public string EvidenceCodeList { get; set; }
+
         public int LiveStatus { get; set; }
 
         public int CurrencyId { get; set; }

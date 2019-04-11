@@ -119,14 +119,7 @@ namespace Fanex.NAP.FS.Websites.Controllers
 
             return Json(data, JsonRequestBehavior.AllowGet);         
         }
-
-        public ActionResult GetArbitrageTicketDetails(int matchId, DateTime eventDate)
-        {
-            var data = _fraudCaseDetailService.GetArbitrageTickets(matchId, eventDate, IsShowSpecialCurrencies);
-                      
-            return Json(data);
-        }
-
+  
         [HttpPost]
         public ActionResult GetArbitrageTicketDetails(GetArbitrageTicketCriteria criteria)
         {
@@ -139,7 +132,7 @@ namespace Fanex.NAP.FS.Websites.Controllers
             }
            
             var data = _fraudCaseDetailService.GetArbitrageTickets(criteria, lstScoreHDP);
-
+            
             // check total the ticket which has more than 1000 tickets will download file CSV and inform for user
             if (criteria.TotalTicket >= 1000)
             {
