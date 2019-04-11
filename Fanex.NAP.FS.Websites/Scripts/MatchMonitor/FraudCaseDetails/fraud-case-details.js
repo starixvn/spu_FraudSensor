@@ -616,7 +616,7 @@
         
         var objAll = "-1";
         
-        if (criteria.bettype == objAll) {
+        if (criteria.KeyName == objAll) {
             var listHDPScore = getListHDPScore();                        
 
             listHDPScore = $.grep(listHDPScore, function (value) {
@@ -628,9 +628,7 @@
             totalTicket = 0;
 
             listHDPScore.forEach(function (item, index) {
-                criteria.bettype = item;
-                console.log(criteria.bettype);
-
+                criteria.KeyName = item;
                 $.ajax({
                     type: 'POST',
                     url: url,
