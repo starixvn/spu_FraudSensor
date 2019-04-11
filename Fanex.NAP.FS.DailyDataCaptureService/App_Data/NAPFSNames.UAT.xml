@@ -6,7 +6,7 @@
              DbName="DBFS.bodb_FraudSensor.bodbSPUNet" />
 
     <Setting Key="FS_FraudCase_GetById" 
-             SpName="FS_FraudCase_GetById" 
+             SpName="FS_FraudCase_GetById_xtest" 
              DbName="DBFS.bodb_FraudSensor.bodbSPUNet" />
   </Function>
  </Functions>

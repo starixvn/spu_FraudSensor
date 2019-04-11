@@ -81,7 +81,8 @@ namespace Fanex.NAP.FS.ArbitrageService
                 status = false;
 
                 var logMessage = new LogMessage(ex.Message)
-                    .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex)).ToString();
+                    .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
+                    .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
 
                 LogService.Error($"{projectName} - {serviceName} - Execute Exeption {logMessage}");
             }

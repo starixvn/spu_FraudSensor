@@ -16,10 +16,13 @@
         private MicroService baseService;
 
         static Service.CheckBetService checkBetService;
+        private bool isRunning = false;
 
         public Runner()
         {
             baseService = new MicroService(serviceName, FraudCaseId.CheckBet);
+            checkBetService = new CheckBetService();
+
             InitializeComponent();
         }
 
@@ -43,13 +46,19 @@
                 Report(status, exception, "Fraud Case is executing at " + DateTime.Now);
 
                 var isUM = baseService.CheckUM();
+
                 if (!isUM)
                 {
-
 #if DEBUG
                     Console.WriteLine("-> Fraud Case is executing at " + DateTime.Now);
 #endif
+                    if (isRunning) return;
+
+                    isRunning = true;
+
                     checkBetService.Rule();
+
+                    isRunning = false;
 #if DEBUG
                     Console.WriteLine("=> Fraud Case is executed at " + DateTime.Now);
 #endif
@@ -59,12 +68,13 @@
             {
                 exception = ex.Message;
                 status = false;
+                isRunning = false;
 
                 var logMessage = new LogMessage(ex.Message)
                     .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
                     .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
 
-                LogService.Error($"{projectName} - {serviceName} - OnTimeEvent Exeption {logMessage}");
+                LogService.Error($"{projectName} - {serviceName} - Execute Exeption {logMessage}");
             }
 
             Report(status, exception, "Fraud Case is executed at " + DateTime.Now);

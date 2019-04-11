@@ -26,8 +26,7 @@
         private IEnumerable<Match> _matches;
         private readonly List<Task> _threads;
         private MicroService baseService;
-        private bool isRunning = false;
-        int _errorTimes;
+        private bool isRunning = false;       
 
         public Runner()
         {
@@ -85,9 +84,10 @@
                 status = false;
 
                 var logMessage = new LogMessage(ex.Message)
-                    .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex)).ToString();
+                    .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
+                    .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
 
-                LogService.Error($"{projectName} - {serviceName} - OnTimeEvent Exeption {logMessage}");
+                LogService.Error($"{projectName} - {serviceName} - Execute Exeption {logMessage}");
             }
 
             Report(status, exception, "Fraud Case is executed at " + DateTime.Now);
@@ -110,7 +110,7 @@
 
         private void CleanResult()
         {
-
+            baseService.Clean(_matches, _threads);
         }
 
         private void Precondition()
@@ -145,20 +145,15 @@
                 try
                 {
                     betNearGoalService.MatchIds = ((Match)m).MatchId.ToString();
-                    betNearGoalService.Rule();
-
-                    _errorTimes = 0;
+                    betNearGoalService.Rule();                   
                 }
-                catch (Exception exception)
+                catch (Exception ex)
                 {
-                    var error = "<b>Error:</b> " + exception.Message +
-                              "<br><b>StackTrace:</b> " + exception.StackTrace;
-                    var message = string.Format("<b>Problem with FraudCaseId = {0}, MatchId = {1}</b><br><br>", FraudCaseId.FlaggedAccount, match.MatchId) + error;
+                    var logMessage = new LogMessage(ex.Message)
+                    .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
+                    .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
 
-                    if (_errorTimes++ < 10)
-                    {
-                        LogService.Error($"{projectName} - {serviceName} - OnTimeEvent Exeption {message}");
-                    }
+                    LogService.Error($"{projectName} - {serviceName} - ExecuteSingle Exeption {logMessage}");
                 }
             }, match);
 
