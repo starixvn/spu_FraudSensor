@@ -150,7 +150,7 @@
                 }
 
                 totalTicket = n;
-                $(".ip-link").click(renderTicketByIp);                               
+                $(".ip-link").click(renderTicketByIp);
             });
         }      
     }
@@ -391,25 +391,25 @@
 
                     arr.push(a);
                 }
-            }
-
+            }       
             return arr;
         }, []);
 
-        ticket_grid.DataTable().rows.add(data).draw();
+        ticket_grid.DataTable().rows.add(data).draw(false);
 
         var n = (json || []).reduce((total, obj) => total + Math.max(obj.Home.length, obj.Away.length), 0);
 
         var t = (json || []).reduce((total, obj) => total + obj.Home.length + obj.Away.length, 0);
         
         totalTicket = totalTicket + t;
-
         $("#tickets").text(`By Tickets (${totalTicket})`);
 
         if (n != 0) {
             $("#DataTables_Table_0_info").text(`Displaying 1 to ${n} of ${n} item(s)`);
-        }
+        }    
         common.closeLoading();
+
+        return totalTicket;
     };
 
     function renderArbitrageGrid(json) {
@@ -628,7 +628,8 @@
             totalTicket = 0;
 
             listHDPScore.forEach(function (item, index) {
-                criteria.KeyName = item;
+                criteria.keyName = item;
+
                 $.ajax({
                     type: 'POST',
                     url: url,
@@ -658,7 +659,7 @@
                     loadError(err);
                 }
             });
-        }        
+        }       
     };   
 
     function loadError(error) {
@@ -894,7 +895,7 @@
             { data: obj => obj.Status, width: "50px", className: "text-center uppercase" }
         ],
         headerCallback: tr => $("th", tr).removeClass("uppercase")
-    });    
+    });
 
     init();
 }
