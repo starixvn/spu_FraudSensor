@@ -58,6 +58,9 @@
             }
         }
 
+        [SpParam(Ignored = true)]
+        public string KeyName { get; set; }
+
         public int Bettype { get; set; }
 
         public float Handicap { get; set; }

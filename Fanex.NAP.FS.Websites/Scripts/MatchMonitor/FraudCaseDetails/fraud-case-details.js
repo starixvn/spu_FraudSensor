@@ -55,7 +55,7 @@
             $("#scoreHDP").append("<option value=-1>All</option>");
                      
             for (var i = 0; i < json.length; i++) {
-                $("#scoreHDP").append(`<option value='${json[i].BetType}'>${json[i].BetTypeName}</option>`);                
+                $("#scoreHDP").append(`<option value='${json[i].KeyName}'>${json[i].KeyName}</option>`);
             }
         })
     }
@@ -128,8 +128,8 @@
     }
 
     function loadTicketGridArbitrage(criteria) {
-        if (isArbitrage) {
-            loadArbitrages(criteria);
+        if (isArbitrage) {            
+            loadArbitrages(criteria);            
         }
         else {
             global_idx = 0;
@@ -264,7 +264,7 @@
                 currencyId: $("#currency").val(),
                 transDateFrom: $("#transDateFrom").val(),
                 transDateTo: $("#transDateTo").val(),
-                bettype: $("#scoreHDP").val(),
+                keyName: $("#scoreHDP").val(),
                 matchId: parameters.matchId,
                 eventDate: parameters.eventDate
             };
@@ -371,6 +371,47 @@
         window.open(common.modifyRelativeUrl(url));
     }
 
+    function generateArbitrageGridNext(json) {
+
+        var data = (json || []).reduce(function (arr, obj) {
+            obj.key = true;
+
+            arr.push(obj);
+
+            if (obj.Home.length + obj.Away.length < 1000) {
+
+                var n = Math.max(obj.Home.length, obj.Away.length);
+
+                for (var i = 0; i < n; i++) {
+                    var a = {};
+
+                    a.Home = obj.Home[i] || {};
+
+                    a.Away = obj.Away[i] || {};
+
+                    arr.push(a);
+                }
+            }
+
+            return arr;
+        }, []);
+
+        ticket_grid.DataTable().rows.add(data).draw();
+
+        var n = (json || []).reduce((total, obj) => total + Math.max(obj.Home.length, obj.Away.length), 0);
+
+        var t = (json || []).reduce((total, obj) => total + obj.Home.length + obj.Away.length, 0);
+        
+        totalTicket = totalTicket + t;
+
+        $("#tickets").text(`By Tickets (${totalTicket})`);
+
+        if (n != 0) {
+            $("#DataTables_Table_0_info").text(`Displaying 1 to ${n} of ${n} item(s)`);
+        }
+        common.closeLoading();
+    };
+
     function renderArbitrageGrid(json) {
         ticket_grid.DataTable().clear();
 
@@ -425,7 +466,7 @@
             currencyId: $("#currency").val(),
             transDateFrom: $("#transDateFrom").val(),
             transDateTo: $("#transDateTo").val(),
-            bettype: $("#scoreHDP").val(),
+            keyName: $("#scoreHDP").val(),
             matchId: parameters.matchId,
             eventDate: parameters.eventDate,
             groupId: obj.GroupId,
@@ -568,34 +609,59 @@
         }        
         return obj.BetId;
     };
-
-    function loadArbitrages(criteria) {       
-        var url = common.modifyRelativeUrl("/MatchMonitor/GetArbitrageTicketDetails");
-
+  
+    function loadArbitrages(criteria) {
+        var url = common.modifyRelativeUrl("/MatchMonitor/GetArbitrageTicketDetails");        
         common.showLoading();
-
-        $.ajax({
-            type: 'POST',
-            url: url,            
-            data: criteria,          
-            success: function (response) {                
-                if (response != null) {
-                    if (response.Download) {
-                        common.closeLoading();
-                        window.location = '/MatchMonitor/DownloadFileCSV?fileGuid=' + response.FileGuid
-                           + '&filename=' + response.FileName;
-                    }
-                    else {
-                        renderArbitrageGrid(response.Content);
-                    }                
-                }
-            },
-            error: function (err) {
-                loadError(err);
-            }
-        });
         
-    };
+        var objAll = "-1";
+        
+        if (criteria.bettype == objAll) {
+            var listHDPScore = getListHDPScore();                        
+
+            listHDPScore = $.grep(listHDPScore, function (value) {
+                return value != objAll;
+            });    
+            
+            //clear grid Arbitrage
+            ticket_grid.DataTable().clear();
+            totalTicket = 0;
+
+            listHDPScore.forEach(function (item, index) {
+                criteria.bettype = item;
+                console.log(criteria.bettype);
+
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: criteria,
+                    success: function (response) {
+                        if (response != null) {
+                            generateArbitrageGridNext(response.Content);
+                        }
+                    },
+                    error: function (err) {
+                        loadError(err);
+                    }
+                });
+            });
+        }
+        else {
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: criteria,
+                success: function (response) {
+                    if (response != null) {
+                        renderArbitrageGrid(response.Content);
+                    }
+                },
+                error: function (err) {
+                    loadError(err);
+                }
+            });
+        }        
+    };   
 
     function loadError(error) {
         console.log(error);
@@ -613,7 +679,7 @@
                 currencyId: $("#currency").val(),
                 transDateFrom: $("#transDateFrom").val(),
                 transDateTo: $("#transDateTo").val(),
-                bettype: $("#scoreHDP").val(),
+            	keyName: $("#scoreHDP").val(),
                 matchId: parameters.matchId,
                 eventDate: parameters.eventDate
             };
@@ -640,6 +706,16 @@
            var evidenceCode = array.join(",");
         }
         return evidenceCode;
+    }
+
+    function getListHDPScore()
+    {
+        var ddlArray = new Array();
+        var ddl = document.getElementById('scoreHDP');
+        for (i = 0; i < ddl.options.length; i++) {
+            ddlArray[i] = ddl.options[i].value;
+        }
+        return ddlArray;
     }
 
     function init() {
@@ -820,10 +896,9 @@
             { data: obj => obj.Status, width: "50px", className: "text-center uppercase" }
         ],
         headerCallback: tr => $("th", tr).removeClass("uppercase")
-    });  
+    });    
 
     init();
-    
 }
 
 $(fraud_case_details);

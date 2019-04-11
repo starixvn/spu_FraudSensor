@@ -639,7 +639,7 @@
         {
             string otherEvidenceCode = AppSettings.Get("FPS_GET_OTHER_EVIDENCES");
             List<Evidence> lstEvidences = new List<Evidence>();
-            lstEvidences.Add(new Evidence { EvidenceCode = "5.1", EvidenceName = "5.1 - Danger 10" });
+            lstEvidences.Add(new Evidence { EvidenceCode = "5.1", EvidenceName = "5.1 - VIP Smart Punter" });
             lstEvidences.Add(new Evidence { EvidenceCode = "5.2", EvidenceName = "5.2 - Smart Punter" });
             lstEvidences.Add(new Evidence { EvidenceCode = "5.3", EvidenceName = "5.3 - 8RM Accounts" });
             lstEvidences.Add(new Evidence { EvidenceCode = "5.4", EvidenceName = "5.4 - VIP Monitor Accounts" });
@@ -669,7 +669,7 @@
             lstEvidences.Add(new Evidence { EvidenceCode = "7.8", EvidenceName = "7.8 - Smart Punter - E-Sport" });
             lstEvidences.Add(new Evidence { EvidenceCode = "7.9", EvidenceName = "7.9 - Abnormal - Motorsports and Cricket" });
             lstEvidences.Add(new Evidence { EvidenceCode = "7.10", EvidenceName = "7.10 - Abnormal - Badminton" });
-            lstEvidences.Add(new Evidence { EvidenceCode = otherEvidenceCode, EvidenceName = "Other evidence" });
+            lstEvidences.Add(new Evidence { EvidenceCode = otherEvidenceCode, EvidenceName = "Others" });
 
             return lstEvidences;
         }
@@ -716,6 +716,7 @@
                 CurrencyId = ticketCriteria.CurrencyId,
                 TransDateFrom = ticketCriteria.TransDateFrom,
                 TransDateTo = ticketCriteria.TransDateTo,
+                KeyName = ticketCriteria.KeyName,
                 Bettype = ticketCriteria.Bettype,
                 MatchId = ticketCriteria.MatchId,
                 EventDate = ticketCriteria.EventDate
@@ -755,8 +756,9 @@
 
         private void FillCustomerArbitrageCriteria(GetCustomerArbitrageCriteria criteria, IEnumerable<ScoreHDP> lstScoreHDP)
         {
-            if (criteria != null && criteria.Bettype == -1)
+            if (criteria != null && criteria.KeyName == "-1")
             {
+                criteria.Bettype = -1;
                 criteria.Handicap = -1;
                 criteria.LiveHomeScore = -1;
                 criteria.LiveAwayScore = -1;
@@ -765,9 +767,10 @@
             {
                 if (lstScoreHDP != null)
                 {
-                    var objValue = lstScoreHDP.FirstOrDefault(c => c.BetType == criteria.Bettype);
+                    var objValue = lstScoreHDP.FirstOrDefault(c => c.KeyName == criteria.KeyName);
                     if (objValue != null)
                     {
+                        criteria.Bettype = objValue.BetType;
                         criteria.Handicap = objValue.Handicap;
                         criteria.LiveHomeScore = objValue.LiveHomeScore;
                         criteria.LiveAwayScore = objValue.LiveAwayScore;
@@ -778,8 +781,9 @@
 
         private void FillArbitrageTicketCriteria(GetArbitrageTicketCriteria criteria, IEnumerable<ScoreHDP> lstScoreHDP)
         {
-            if (criteria != null && criteria.Bettype == -1)
+            if (criteria != null && criteria.KeyName == "-1")
             {
+                criteria.Bettype = -1;
                 criteria.Handicap = -1;
                 criteria.LiveHomeScore = -1;
                 criteria.LiveAwayScore = -1;
@@ -788,9 +792,10 @@
             {
                 if (lstScoreHDP != null)
                 {
-                    var objValue = lstScoreHDP.FirstOrDefault(c => c.BetType == criteria.Bettype);
+                    var objValue = lstScoreHDP.FirstOrDefault(c => c.KeyName == criteria.KeyName);
                     if (objValue != null)
                     {
+                        criteria.Bettype = objValue.BetType;
                         criteria.Handicap = objValue.Handicap;
                         criteria.LiveHomeScore = objValue.LiveHomeScore;
                         criteria.LiveAwayScore = objValue.LiveAwayScore;

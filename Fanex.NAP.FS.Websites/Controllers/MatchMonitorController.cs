@@ -135,21 +135,7 @@ namespace Fanex.NAP.FS.Websites.Controllers
 
             criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
             var data = _fraudCaseDetailService.GetArbitrageTickets(criteria, lstScoreHDP);
-            
-            // check total the ticket which has more than 1000 tickets will download file CSV and inform for user
-            if (criteria.TotalTicket >= 1000)
-            {
-                // write a file CSV
-                var csvData = _fraudCaseDetailService.ExportArbitrageCsvFromList(criteria.MatchId, criteria.EventDate, data);
-                var csvFileName = string.Format("ArbitrageTicket_{0}.csv", DateTime.Now.ToString("yyyyMMdd"));
-
-                var encoded = Encoding.UTF8.GetBytes(csvData);
-                string handle = Guid.NewGuid().ToString();
-                TempData[handle] = encoded;
-                //write file
-                return new JsonResult { Data = new { Download = true,  FileGuid = handle, FileName = csvFileName } };
-            }
-            return new JsonResult { Data = new { Download = false, Content = data } };            
+            return new JsonResult { Data = new { Download = false, Content = data } };
         }
         
         public ActionResult DownloadFileCSV(string fileGuid, string fileName)
@@ -162,7 +148,7 @@ namespace Fanex.NAP.FS.Websites.Controllers
             return new EmptyResult();
         }
       
-        public ActionResult ExportExcelArbitrage(int liveStatus, string evidenCodeList, int currencyId, string strDateFrom, string strDateTo, int betType, int matchId, DateTime eventDate)
+        public ActionResult ExportExcelArbitrage(int liveStatus, string evidenCodeList, int currencyId, string strDateFrom, string strDateTo, string keyName, int matchId, DateTime eventDate)
         {
             var template = Server.MapPath("~/App_Data/Excel Template/MatchMonitor/FraudCaseDetail/arbitrage.xlsx");            
             DateTime transDateFrom = DateTime.MinValue;
@@ -184,7 +170,7 @@ namespace Fanex.NAP.FS.Websites.Controllers
                 CurrencyId = currencyId,
                 TransDateTo = transDateTo,
                 TransDateFrom = transDateFrom,
-                Bettype = betType,
+                KeyName = keyName,
                 MatchId = matchId,
                 EventDate = eventDate,
                 IsShowSpecialCurrencies = IsShowSpecialCurrencies
@@ -246,13 +232,22 @@ namespace Fanex.NAP.FS.Websites.Controllers
             return ExcelFile(_fraudCaseDetailService.ExportToExcelIpTickets(ip, template, IsShowSpecialCurrencies), fileName);
         }
 
-        public ActionResult ExportArbitrageWithFilterExcel(int liveStatus, string evidenCodeList, int currencyId, DateTime transDateFrom, DateTime transDateTo, int betType, int matchId, DateTime eventDate, 
+        public ActionResult ExportArbitrageWithFilterExcel(int liveStatus, string evidenCodeList, int currencyId, string strDateFrom, string strDateTo, string keyName, int matchId, DateTime eventDate, 
                                                             int groupId, string score, decimal handicap)
         {
             var template = Server.MapPath("~/App_Data/Excel Template/MatchMonitor/FraudCaseDetail/arbitrage.xlsx");
 
             var fileName = string.Format("FraudCaseDetails_{0}", DateTime.Today.ToString("yyyyMMdd"));
-
+            DateTime transDateFrom = DateTime.MinValue;
+            DateTime transDateTo = DateTime.MinValue;
+            if (!string.IsNullOrEmpty(strDateFrom))
+            {
+                transDateFrom = DateTime.Parse(strDateFrom);
+            }
+            if (!string.IsNullOrEmpty(strDateTo))
+            {
+                transDateTo = DateTime.Parse(strDateTo);
+            }
             GetArbitrageTicketCriteria criteria = new GetArbitrageTicketCriteria
             {
                 LiveStatus = liveStatus,
@@ -260,7 +255,7 @@ namespace Fanex.NAP.FS.Websites.Controllers
                 CurrencyId = currencyId,
                 TransDateTo = transDateTo,
                 TransDateFrom = transDateFrom,
-                Bettype = betType,
+                KeyName = keyName,
                 MatchId = matchId,
                 EventDate = eventDate,
                 IsShowSpecialCurrencies = IsShowSpecialCurrencies

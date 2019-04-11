@@ -60,6 +60,12 @@
             }
         }
 
+        [SpParam(Ignored = true)]
+        public string KeyName { get; set; }
+
+        [SpParam(Ignored = true)]
+        public string BetKey { get; set; }
+
         public int Bettype { get; set; }
 
         public float Handicap { get; set; }

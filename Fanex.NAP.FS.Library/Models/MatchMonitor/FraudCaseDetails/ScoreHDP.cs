@@ -1,20 +1,21 @@
 ﻿namespace Fanex.NAP.FS.Library.Models.MatchMonitor.FraudCaseDetails
 {
+    using Core.BaseClasses;
     using System;
     public class ScoreHDP
     {
-        public int BetType { get; set; }
-
-        public string BetTypeName
+        public string KeyName
         {
             get
             {
                 string name = string.Empty;
                 name = LiveHomeScore.ToString() + " - " + LiveAwayScore.ToString();
-                name += " Handicap " + Handicap;
+                name += " " + CachedRef.GetBettypeName(BetType) + " " + Handicap;
                 return name;
             }
-        }
+        }        
+
+        public int BetType { get; set; }
 
         public float Handicap { get; set; }
 
