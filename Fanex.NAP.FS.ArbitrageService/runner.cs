@@ -131,7 +131,9 @@ namespace Fanex.NAP.FS.ArbitrageService
 
                     message = $"=> Rule for match {matchId} is executed. Execute time: {watch2.Elapsed.TotalMinutes} minutes";
 
-                    LogService.Info(message);
+                    //LogService.Info(message);
+
+                    LogService.Info($"{projectName} - {serviceName} - Rule is executed.");
                 }
                 else
                 {
