@@ -714,12 +714,14 @@
             {
                 LiveStatus = ticketCriteria.LiveStatus,                
                 CurrencyId = ticketCriteria.CurrencyId,
+                EvidenceCodeList = ticketCriteria.EvidenceCodeList,
                 TransDateFrom = ticketCriteria.TransDateFrom,
                 TransDateTo = ticketCriteria.TransDateTo,
                 KeyName = ticketCriteria.KeyName,
                 Bettype = ticketCriteria.Bettype,
                 MatchId = ticketCriteria.MatchId,
-                EventDate = ticketCriteria.EventDate
+                EventDate = ticketCriteria.EventDate,
+                IsShowSpecialCurrencies = ticketCriteria.IsShowSpecialCurrencies
             };
 
             var tickets = GetArbitrageTickets(ticketCriteria, lstScoreHDP).SelectMany(obj => obj.Home.Concat(obj.Away));

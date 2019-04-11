@@ -616,7 +616,7 @@
         
         var objAll = "-1";
         
-        if (criteria.KeyName == objAll) {
+        if (criteria.keyName == objAll) {
             var listHDPScore = getListHDPScore();                        
 
             listHDPScore = $.grep(listHDPScore, function (value) {

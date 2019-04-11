@@ -148,7 +148,7 @@ namespace Fanex.NAP.FS.Websites.Controllers
             return new EmptyResult();
         }
       
-        public ActionResult ExportExcelArbitrage(int liveStatus, string evidenCodeList, int currencyId, string strDateFrom, string strDateTo, string keyName, int matchId, DateTime eventDate)
+        public ActionResult ExportExcelArbitrage(int liveStatus, string evidenceCodeList, int currencyId, string strDateFrom, string strDateTo, string keyName, int matchId, DateTime eventDate)
         {
             var template = Server.MapPath("~/App_Data/Excel Template/MatchMonitor/FraudCaseDetail/arbitrage.xlsx");            
             DateTime transDateFrom = DateTime.MinValue;
@@ -166,7 +166,7 @@ namespace Fanex.NAP.FS.Websites.Controllers
             GetArbitrageTicketCriteria criteria = new GetArbitrageTicketCriteria
             {
                 LiveStatus = liveStatus,
-                EvidenceCodeList = evidenCodeList,
+                EvidenceCodeList = evidenceCodeList,
                 CurrencyId = currencyId,
                 TransDateTo = transDateTo,
                 TransDateFrom = transDateFrom,
