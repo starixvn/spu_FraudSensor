@@ -115,6 +115,8 @@ namespace Fanex.NAP.FS.Websites.Controllers
             {
                 lstScoreHDP = objCache as IEnumerable<ScoreHDP>;
             }
+
+            criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
             var data = _fraudCaseDetailService.GetCustomerArbitrageDetails(criteria, lstScoreHDP);
 
             return Json(data, JsonRequestBehavior.AllowGet);         
@@ -169,10 +171,12 @@ namespace Fanex.NAP.FS.Websites.Controllers
             {
                 transDateFrom = DateTime.Parse(strDateFrom);
             }
+
             if (!string.IsNullOrEmpty(strDateTo))
             {
                 transDateTo = DateTime.Parse(strDateTo);
             }
+
             GetArbitrageTicketCriteria criteria = new GetArbitrageTicketCriteria
             {
                 LiveStatus = liveStatus,
@@ -182,7 +186,8 @@ namespace Fanex.NAP.FS.Websites.Controllers
                 TransDateFrom = transDateFrom,
                 Bettype = betType,
                 MatchId = matchId,
-                EventDate = eventDate
+                EventDate = eventDate,
+                IsShowSpecialCurrencies = IsShowSpecialCurrencies
             };
 
             IEnumerable<ScoreHDP> lstScoreHDP = null;
@@ -257,7 +262,8 @@ namespace Fanex.NAP.FS.Websites.Controllers
                 TransDateFrom = transDateFrom,
                 Bettype = betType,
                 MatchId = matchId,
-                EventDate = eventDate
+                EventDate = eventDate,
+                IsShowSpecialCurrencies = IsShowSpecialCurrencies
             };
 
             IEnumerable<ScoreHDP> lstScoreHDP = null;

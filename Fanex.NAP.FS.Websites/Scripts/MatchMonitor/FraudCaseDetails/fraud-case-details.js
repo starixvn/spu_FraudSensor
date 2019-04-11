@@ -140,7 +140,7 @@
                 var table = ticket_grid.DataTable();
 
                 table.clear().rows.add(process_ticket_json(json)).draw();
-
+                
                 var n = json.reduce((a, arr) => a + arr.data.length, 0);
 
                 $("#tickets").text(`By Tickets (${n})`);
@@ -150,10 +150,9 @@
                 }
 
                 totalTicket = n;
-
                 $(".ip-link").click(renderTicketByIp);                               
             });
-        }        
+        }      
     }
 
     function loadCustomerGridArbitrage(criteria) {
@@ -409,7 +408,7 @@
         if (n != 0) {
             $("#DataTables_Table_0_info").text(`Displaying 1 to ${n} of ${n} item(s)`);
         }
-
+        
         common.closeLoading();
     }
 
@@ -443,12 +442,14 @@
             paging: false,
             dom: "t<'pagination'<'page-size'lp>>",
             language: {
+                lengthMenu: "Page size _MENU_",
+                paginate: {
+                    previous: "Back"
+                },
+                info: "Displaying _START_ to _END_ of _TOTAL_ item(s)",
                 infoEmpty: "",
-                infoFiltered: "",
-                thousands: ",",
                 zeroRecords: "There's no data"
             },
-            language: common.language,
             scrollY: '57vh',
             scrollX: "1870px",
             scrollCollapse: true,
@@ -561,8 +562,9 @@
     
     function renderIPFraud(obj) {
         var isIPFraud = obj.IsIPFraud;
-        if (isIPFraud == true) {           
-            return "<span style='background: #F33F69'>" + obj.BetId + "</span>";
+        if (isIPFraud == true) {
+            
+            return "<div style='position: relative; width: 100%; height: 100%; background: #FFCCCA'>" + obj.BetId + "</div>";
         }        
         return obj.BetId;
     };
@@ -585,7 +587,7 @@
                     }
                     else {
                         renderArbitrageGrid(response.Content);
-                    }                    
+                    }                
                 }
             },
             error: function (err) {
@@ -600,23 +602,29 @@
     };
 
     function loadGrids() {
-        detail_tabs.css('display', 'inline-block');
         evidenceCode = getEvidenceSelected();
+        var transDateFrom = $("#transDateFrom").val();
+        var transDateTo = $("#transDateTo").val();
 
-        var criteria = {
-            liveStatus: $("#market").val(),
-            evidenceCodeList: evidenceCode,
-            currencyId: $("#currency").val(),
-            transDateFrom: $("#transDateFrom").val(),
-            transDateTo: $("#transDateTo").val(),
-            bettype: $("#scoreHDP").val(),
-            matchId: parameters.matchId,
-            eventDate: parameters.eventDate
-        };
-        
-        loadCustomerGridArbitrage(criteria);
+        if ((transDateFrom !== "" && transDateTo !== "") || (transDateFrom === "" && transDateTo === "")) {
+            var criteria = {
+                liveStatus: $("#market").val(),
+                evidenceCodeList: evidenceCode,
+                currencyId: $("#currency").val(),
+                transDateFrom: $("#transDateFrom").val(),
+                transDateTo: $("#transDateTo").val(),
+                bettype: $("#scoreHDP").val(),
+                matchId: parameters.matchId,
+                eventDate: parameters.eventDate
+            };
 
-        loadTicketGridArbitrage(criteria);
+            loadCustomerGridArbitrage(criteria);
+
+            loadTicketGridArbitrage(criteria);
+        }
+        else {
+            common.showError("You forgot to input value for Trans Date!");
+        }
     };
 
     function getEvidenceSelected()
@@ -636,11 +644,8 @@
 
     function init() {
         if (isArbitrage) {
-            detail_tabs.css('display', 'none');
             getAllCurrency();
-
             getScoreHDP();
-
             handleMultipleSelect();
         }
         else {
