@@ -43,7 +43,7 @@
 
         byte[] ExportToExcelIpTickets(string ip, string template, bool isShowSpecialCurrencies);
       
-        byte[] ExportArbitrageExcel(GetArbitrageTicketCriteria criteria, IEnumerable<ScoreHDP> lstScoreHDP, string templatePath, int groupId, string score, decimal handicap);
+        byte[] ExportArbitrageExcel(GetArbitrageTicketCriteria criteria, IEnumerable<ScoreHDP> lstScoreHDP, string templatePath, int groupId, string score, decimal handicap, string []array);
 
         byte[] ExportArbitrageExcel(GetArbitrageTicketCriteria ticketCriteria, IEnumerable<ScoreHDP> lstScoreHDP, string templatePath, string []array);
      

@@ -695,10 +695,10 @@
             return DataService.GetData<ScoreHDP>(criteria);
         }        
 
-        public byte[] ExportArbitrageExcel(GetArbitrageTicketCriteria criteria, IEnumerable<ScoreHDP> lstScoreHDP, string templatePath, int groupId, string score, decimal handicap)
+        public byte[] ExportArbitrageExcel(GetArbitrageTicketCriteria criteria, IEnumerable<ScoreHDP> lstScoreHDP, string templatePath, int groupId, string score, decimal handicap, string[] array)
         {
             var legend = GetInfo(criteria.MatchId, (int)FraudCaseId.Arbitrage, criteria.EventDate);
-
+            legend.Filter = array;
             var tickets = GetArbitrageTickets(criteria, lstScoreHDP).Where(c=>c.GroupId == groupId && c.Score == score && c.Handicap == handicap).SelectMany(obj => obj.Home.Concat(obj.Away));
 
             var wb =

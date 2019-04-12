@@ -291,7 +291,30 @@ namespace Fanex.NAP.FS.Websites.Controllers
                 lstScoreHDP = objCache as IEnumerable<ScoreHDP>;
             }
 
-            var content = _fraudCaseDetailService.ExportArbitrageExcel(criteria, lstScoreHDP, template, groupId, score, handicap);
+            #region fill data filter
+            string[] array = new string[6];
+
+            //get Market
+            array[0] = criteria.LiveStatus == -1 ? "All" : (criteria.LiveStatus == 0 ? "Non-Live" : "Live");
+
+            //get Currency
+            var obj = HttpContext.Cache["ListCurrency"];
+            if (obj != null)
+            {
+                IEnumerable<Currency> lstObject = obj as IEnumerable<Currency>;
+                Currency currency = lstObject.FirstOrDefault(c => c.CurrencyId == criteria.CurrencyId.ToString());
+                array[1] = currency != null ? currency.CurrencyName : "All";
+            }
+            //get Evidence name           
+            array[2] = criteria.EvidenceCodeList ?? string.Empty;
+            //From date, to date
+            array[3] = strDateFrom ?? string.Empty;
+            array[4] = strDateTo ?? string.Empty;
+            //get Score/HDP
+            array[5] = criteria.KeyName == "-1" ? "All" : criteria.KeyName;
+            #endregion fill data filter
+
+            var content = _fraudCaseDetailService.ExportArbitrageExcel(criteria, lstScoreHDP, template, groupId, score, handicap, array);
           
             return ExcelFile(content, fileName);
         }
