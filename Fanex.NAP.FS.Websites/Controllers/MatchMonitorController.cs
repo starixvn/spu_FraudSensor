@@ -173,11 +173,12 @@
             {
                 strCode = criteria.EvidenceCodeList;
                 strCode = strCode.Replace(otherEvidenceCode, "Others");
+                strCode = strCode.Replace(',', '/');
             }
             array[2] = strCode;
             //From date, to date
-            array[3] = strDateFrom ?? string.Empty;
-            array[4] = strDateTo ?? string.Empty;
+            array[3] = strDateFrom != null ? strDateFrom.Replace(',', '-') : string.Empty;
+            array[4] = strDateTo != null ? strDateTo.Replace(',', '-') : string.Empty;
             //get Score/HDP
             array[5] = criteria.KeyName == "-1" ? "All" : criteria.KeyName;
             #endregion fill data filter
@@ -185,7 +186,7 @@
             var content = _fraudCaseDetailService.ExportArbitrageCsv(criteria, lstScoreHDP, array);
             var encoded = Encoding.UTF8.GetBytes(content);
 
-            return File(encoded, "text/plain", "Arbitrage.csv");
+            return File(encoded, "text/plain", "FraudCaseDetails_" + DateTime.Today.ToString("yyyyMMdd") + ".csv");
         }
 
         public ActionResult ExportExcelForDetail(int fraudCaseId, int matchId, DateTime eventDate)
@@ -276,11 +277,12 @@
             {
                 strCode = criteria.EvidenceCodeList;
                 strCode = strCode.Replace(otherEvidenceCode, "Others");
+                strCode = strCode.Replace(',', '/');
             }
             array[2] = strCode;
             //From date, to date
-            array[3] = strDateFrom ?? string.Empty;
-            array[4] = strDateTo ?? string.Empty;
+            array[3] = strDateFrom != null ? strDateFrom.Replace(',', '-') : string.Empty;
+            array[4] = strDateTo != null ? strDateTo.Replace(',', '-') : string.Empty;
             //get Score/HDP
             array[5] = string.Empty;
             #endregion fill data filter
@@ -289,7 +291,7 @@
             var content = _fraudCaseDetailService.ExportArbitrageCsv(criteria, lstScoreHDP, groupId, score, handicap, array);
             var encoded = Encoding.UTF8.GetBytes(content);
 
-            return File(encoded, "text/plain", "Arbitrage_Group.csv");
+            return File(encoded, "text/plain", "FraudCaseDetails_" + DateTime.Today.ToString("yyyyMMdd") + ".csv");
         }
 
         public JsonResult GetListEvidences()

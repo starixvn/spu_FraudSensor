@@ -695,27 +695,7 @@
             };
 
             return DataService.GetData<ScoreHDP>(criteria);
-        }
-      
-        public string ExportArbitrageCsvFromList(int matchId, DateTime eventDate, IEnumerable<ArbitrageGroupTicketList> lstArbitrageTicket)
-        {
-            var txt = new StringBuilder();
-            var info = GetInfo(matchId, (int)FraudCaseId.Arbitrage, eventDate);
-
-            txt.AppendLine($"match: {info.Home} - vs - {info.Away}, date: {info.EventDate.ToString("MMM/dd/yyyy")}, HT/FT: {info.HTScore}/{info.FTScore}");
-            txt.AppendLine("member,evidence,dangerous level,currency, by ip, bet id, bet team, bet type, hdp, score, odds, v.stake, Com.Stake, Full. Stake, TransDate");
-
-            foreach (var item in lstArbitrageTicket.SelectMany(obj => obj.Home.Concat(obj.Away)))
-            {
-                var fraudByIP = item.IsIPFraud ? "Yes" : "";
-                txt.AppendLine($"{item.Username},{item.Evidences.Join(" /")},{item.DangerousLevel}," +
-                       $"{item.Currency},{fraudByIP},{item.BetId},{item.BetTeam},{item.BettypeName},{item.Handicap},'{item.Score}," +
-                       $"{item.Odds},{item.Stake.Virtual},{item.Stake.ComPT}," +
-                       $"{item.Stake.Full},{item.TransDate.Replace(",", " -").Replace("<br/>", " ")}");
-
-            }
-            return txt.ToString();
-        }
+        }          
 
         public string ExportArbitrageCsv(GetArbitrageTicketCriteria criteria, IEnumerable<ScoreHDP> lstScoreHDP, int groupId, string score, decimal handicap, string[] array)
         {
@@ -731,15 +711,15 @@
                 }
             }
             //append fraud case detail
-            txtResult.AppendLine($"match: {info.Home} - vs - {info.Away}, date: {info.EventDate.ToString("MMM/dd/yyyy")}, HT/FT: {info.HTScore}/{info.FTScore}");
+            txtResult.AppendLine($"Match: {info.Home} - vs - {info.Away}, Date: {info.EventDate.ToString("MMM dd, yyyy").Replace(",", " -")}, HT/FT: {info.HTScore}/{info.FTScore}");
             //appdend filter
             if (array != null && array.Length >= 6)
             {
-                txtResult.AppendLine($"market: {array[0]}, currency: {array[1]}, evidence: {array[2]}");
-                txtResult.AppendLine($"trans date from: {array[3]}, trans date to: {array[4]}, score/hdp: {array[5]}");
+                txtResult.AppendLine($"Market: {array[0]}, Currency: {array[1]}, Evidence: {array[2]}");
+                txtResult.AppendLine($"Trans Date From: {array[3]}, Trans Date To: {array[4]}, Score/HDP: {array[5]}");
             }
 
-            txtResult.AppendLine("member,evidence,dangerous level,currency, by ip, bet id, bet team, bet type, hdp, score, odds, v.stake, Com.Stake, Full. Stake, TransDate");
+            txtResult.AppendLine("Member,Evidence,Dangerous Level,Currency,By IP,Bet ID,Betteam,Bettype,HDP,Score,Odds,Virtual Stake,Com.PT Stake,Full Stake,TransDate");
 
             foreach (var item in lstArbitrageTicket)
             {
@@ -758,17 +738,17 @@
 
             var lstArbitrageTicket = GetArbitrageTickets(ticketCriteria, lstScoreHDP).SelectMany(obj => obj.Home.Concat(obj.Away));
             var info = GetInfo(ticketCriteria.MatchId, (int)FraudCaseId.Arbitrage, ticketCriteria.EventDate);
-                       
+
             //append fraud case detail
-            txtResult.AppendLine($"match: {info.Home} - vs - {info.Away}, date: {info.EventDate.ToString("MMM/dd/yyyy")}, HT/FT: {info.HTScore}/{info.FTScore}");
+            txtResult.AppendLine($"Match: {info.Home} - vs - {info.Away}, Date: {info.EventDate.ToString("MMM dd, yyyy").Replace(",", " -")}, HT/FT: {info.HTScore}/{info.FTScore}");
             //appdend filter
             if (array != null && array.Length >= 6)
             {
-                txtResult.AppendLine($"market: {array[0]}, currency: {array[1]}, evidence: {array[2]}");
-                txtResult.AppendLine($"trans date from: {array[3]}, trans date to: {array[4]}, score/hdp: {array[5]}");
+                txtResult.AppendLine($"Market: {array[0]}, Currency: {array[1]}, Evidence: {array[2]}");
+                txtResult.AppendLine($"Trans Date From: {array[3]}, Trans Date To: {array[4]}, Score/HDP: {array[5]}");
             }
 
-            txtResult.AppendLine("member,evidence,dangerous level,currency, by ip, bet id, bet team, bet type, hdp, score, odds, v.stake, Com.Stake, Full. Stake, TransDate");
+            txtResult.AppendLine("Member,Evidence,Dangerous Level,Currency,By IP,Bet ID,Betteam,Bettype,HDP,Score,Odds,Virtual Stake,Com.PT Stake,Full Stake,TransDate");
 
             foreach (var item in lstArbitrageTicket)
             {
