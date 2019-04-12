@@ -700,6 +700,14 @@
             var legend = GetInfo(criteria.MatchId, (int)FraudCaseId.Arbitrage, criteria.EventDate);
             legend.Filter = array;
             var tickets = GetArbitrageTickets(criteria, lstScoreHDP).Where(c=>c.GroupId == groupId && c.Score == score && c.Handicap == handicap).SelectMany(obj => obj.Home.Concat(obj.Away));
+            if (tickets != null)
+            {
+                List<string> lstBetType = tickets.Select(c => c.BettypeName).ToList();
+                if (lstBetType.Count > 0)
+                {
+                    array[5] = score + " " + lstBetType[0] + " " + handicap;
+                }
+            }
 
             var wb =
                 ExcelUtilities.GetWorkbook(templatePath)

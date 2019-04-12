@@ -1,11 +1,9 @@
-﻿#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
-
-namespace Fanex.NAP.FS.Websites.Controllers
+﻿namespace Fanex.NAP.FS.Websites.Controllers
 {
     using Core.Service.Impl;
     using Fanex.NAP.Core.Web.Attribute;
     using Fanex.NAP.FS.Library.Criteria.MatchMonitor;
-    using Fanex.NAP.FS.Library.Models;
+    using Library.Core.Helpers;
     using Library.Criteria.MatchMonitor.FraudCaseDetails;
     using Library.Models.MatchMonitor.FraudCaseDetails;
     using Library.Service;
@@ -197,8 +195,16 @@ namespace Fanex.NAP.FS.Websites.Controllers
                 Currency currency = lstObject.FirstOrDefault(c => c.CurrencyId == criteria.CurrencyId.ToString());
                 array[1] = currency != null ? currency.CurrencyName : "All";
             }
-            //get Evidence name           
-            array[2] = criteria.EvidenceCodeList ?? string.Empty;
+
+            //get Evidence name
+            string strCode = string.Empty;
+            var otherEvidenceCode = AppSettings.Get("FPS_GET_OTHER_EVIDENCES");
+            if (otherEvidenceCode != null && criteria.EvidenceCodeList != null)
+            {
+                strCode = criteria.EvidenceCodeList;
+                strCode = strCode.Replace(otherEvidenceCode, "Others");
+            }
+            array[2] = strCode;
             //From date, to date
             array[3] = strDateFrom ?? string.Empty;
             array[4] = strDateTo ?? string.Empty;
@@ -210,7 +216,7 @@ namespace Fanex.NAP.FS.Websites.Controllers
 
             var fileName = string.Format("FraudCaseDetails_{0}.xlsx", DateTime.Today.ToString("yyyyMMdd"));
 
-            return File(content, "application/vnd.ms-excel", fileName);            
+            return File(content, "application/vnd.ms-excel", fileName);
         }
 
         public ActionResult ExportExcelForDetail(int fraudCaseId, int matchId, DateTime eventDate)
@@ -260,6 +266,8 @@ namespace Fanex.NAP.FS.Websites.Controllers
             var template = Server.MapPath("~/App_Data/Excel Template/MatchMonitor/FraudCaseDetail/arbitrage.xlsx");
 
             var fileName = string.Format("FraudCaseDetails_{0}", DateTime.Today.ToString("yyyyMMdd"));
+
+            #region fill data filter
             DateTime transDateFrom = DateTime.MinValue;
             DateTime transDateTo = DateTime.MinValue;
             if (!string.IsNullOrEmpty(strDateFrom))
@@ -289,9 +297,7 @@ namespace Fanex.NAP.FS.Websites.Controllers
             if (objCache != null)
             {
                 lstScoreHDP = objCache as IEnumerable<ScoreHDP>;
-            }
-
-            #region fill data filter
+            }            
             string[] array = new string[6];
 
             //get Market
@@ -306,12 +312,19 @@ namespace Fanex.NAP.FS.Websites.Controllers
                 array[1] = currency != null ? currency.CurrencyName : "All";
             }
             //get Evidence name           
-            array[2] = criteria.EvidenceCodeList ?? string.Empty;
+            string strCode = string.Empty;
+            var otherEvidenceCode = AppSettings.Get("FPS_GET_OTHER_EVIDENCES");
+            if (otherEvidenceCode != null && criteria.EvidenceCodeList != null)
+            {
+                strCode = criteria.EvidenceCodeList;
+                strCode = strCode.Replace(otherEvidenceCode, "Others");
+            }
+            array[2] = strCode;
             //From date, to date
             array[3] = strDateFrom ?? string.Empty;
             array[4] = strDateTo ?? string.Empty;
             //get Score/HDP
-            array[5] = criteria.KeyName == "-1" ? "All" : criteria.KeyName;
+            array[5] = string.Empty;
             #endregion fill data filter
 
             var content = _fraudCaseDetailService.ExportArbitrageExcel(criteria, lstScoreHDP, template, groupId, score, handicap, array);

@@ -372,6 +372,7 @@
     }
 
     function generateArbitrageGridNext(json) {
+        $("#tickets").text(`By Tickets (...)`);
 
         var data = (json || []).reduce(function (arr, obj) {
             obj.key = true;
@@ -393,7 +394,7 @@
                 }
             }       
             return arr;
-        }, []);
+        }, []);               
 
         ticket_grid.DataTable().rows.add(data).draw(false);
 
@@ -617,7 +618,8 @@
         var objAll = "-1";
         
         if (criteria.keyName == objAll) {
-            var listHDPScore = getListHDPScore();                        
+           
+            var listHDPScore = getListHDPScore();
 
             listHDPScore = $.grep(listHDPScore, function (value) {
                 return value != objAll;

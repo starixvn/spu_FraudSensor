@@ -35,7 +35,7 @@
         {
             var cell1 = row.GetCell(0);
             var cell2 = row.GetCell(2);
-            var cell3 = row.GetCell(5);
+            var cell3 = row.GetCell(6);
             string[] arrFilter = legend.Filter;
 
             new XSSFRichTextString()
@@ -56,7 +56,7 @@
                 new XSSFRichTextString()
                     .WriteBold("Trans Date From: ").Write(arrFilter[3] + "\n")
                     .WriteBold("Trans Date To: ").Write(arrFilter[4] + "\n")
-                    .WriteBold("Scrore/HDP: ").Write(arrFilter[5] + "\n")
+                    .WriteBold("Score/HDP: ").Write(arrFilter[5] + "\n")
                     .SetValue(cell3);
             }
         }
