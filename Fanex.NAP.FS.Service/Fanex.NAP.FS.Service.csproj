@@ -54,6 +54,7 @@
     <Compile Include="CheckBetService.cs" />
     <Compile Include="BigStakeNearGoalService.cs" />
     <Compile Include="DailyDataCaptureService.cs" />
+    <Compile Include="DelayGoalService.cs" />
     <Compile Include="FlaggedAccountService.cs" />
     <Compile Include="FraudCaseService.cs" />
     <Compile Include="IExecutorService.cs" />

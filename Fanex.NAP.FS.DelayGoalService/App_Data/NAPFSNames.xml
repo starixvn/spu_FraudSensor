@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Functions>  
+  <Function Name="DelayGoal">
+    <Setting Key="FS_FraudCase_DelayGoal_PreCondition" SpName="FS_FraudCase_DelayGoal_PreCondition" 
+             DbName="DBFS.bodb_FraudSensor.bodbSPUNet" />
+    <Setting Key="FS_FraudCase_DelayGoal_Rule" SpName="FS_FraudCase_DelayGoal_Rule" 
+             DbName="DBFS.bodb_FraudSensor.bodbSPUNet" />
+    <Setting Key="FS_DelayGoalAccount_GetManualAccount" SpName="FS_DelayGoalAccount_GetManualAccount" 
+             DbName="DBFS.bodb_FraudSensor.bodbSPUNet" />
+    <Setting Key="FS_FraudCase_GetById" SpName="FS_FraudCase_GetById" 
+             DbName="DBFS.bodb_FraudSensor.bodbSPUNet" />
+  </Function>
+ </Functions>
