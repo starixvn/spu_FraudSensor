@@ -262,21 +262,21 @@
                 liveStatus: $("#market").val(),
                 evidenceCodeList: evidenceCode,
                 currencyId: $("#currency").val(),
-                transDateFrom: $("#transDateFrom").val(),
-                transDateTo: $("#transDateTo").val(),
+                strDateFrom: $("#transDateFrom").val(),
+                strDateTo: $("#transDateTo").val(),
                 keyName: $("#scoreHDP").val(),
                 matchId: parameters.matchId,
                 eventDate: parameters.eventDate
             };
 
-            var url = common.modifyRelativeUrl("/MatchMonitor/ExportExcelArbitrage");
+            var url = common.modifyRelativeUrl("/MatchMonitor/ExportCSVArbitrage");
 
             common.downloadFile(url, criteria);
         } else {
             var url = common.modifyRelativeUrl("/MatchMonitor/ExportExcelForDetail");
 
             common.downloadFile(url, parameters);
-        }        
+        }
     }
 
     function removeMatchLeague() {
@@ -454,8 +454,8 @@
         common.closeLoading();
     }
 
-    function renderArbitrageExcel(e) {
-        var url = common.modifyRelativeUrl("/MatchMonitor/ExportArbitrageWithFilterExcel");
+    function renderArbitrageCSV(e) {
+        var url = common.modifyRelativeUrl("/MatchMonitor/ExportArbitrageWithFilterCSV");
 
         var obj = e.data;
 
@@ -465,8 +465,8 @@
             liveStatus: $("#market").val(),
             evidenceCodeList: evidenceCode,
             currencyId: $("#currency").val(),
-            transDateFrom: $("#transDateFrom").val(),
-            transDateTo: $("#transDateTo").val(),
+            strDateFrom: $("#transDateFrom").val(),
+            strDateTo: $("#transDateTo").val(),
             keyName: $("#scoreHDP").val(),
             matchId: parameters.matchId,
             eventDate: parameters.eventDate,
@@ -537,7 +537,7 @@
                 if (obj.key) {
                     var td = (obj.Home.length + obj.Away.length > 1000) ? $(`<td colspan='21' class='group' style='cursor: initial'><span class="bage">${obj.BettypeName} ${obj.Handicap}</span> <span class="bage">${obj.Score}</span> <span class="bage" style="color:red;">Too much data. Export CSV file instead!</span> <button class="button -export"><span class="icon-export-excel"></span></button></td>`)
                         : $(`<td colspan='21' class='group' style='cursor: initial'><span class="bage">${obj.BettypeName} ${obj.Handicap}</span> <span class="bage">${obj.Score}</span> <button class="button -export"><span class="icon-export-excel"></span></button></td>`);
-                    $(".button.-export", td).click(obj, renderArbitrageExcel);
+                    $(".button.-export", td).click(obj, renderArbitrageCSV);
 
                     $(row).empty().html(td);
                 }
