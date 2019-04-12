@@ -106,31 +106,17 @@
         [HttpPost]
         public JsonResult GetFraudCaseCustomerDetails(GetCustomerArbitrageCriteria criteria)
         {
-            IEnumerable<ScoreHDP> lstScoreHDP = null;
-            var objCache = HttpContext.Cache["ScoreHDP"];
-
-            if (objCache != null)
-            {
-                lstScoreHDP = objCache as IEnumerable<ScoreHDP>;
-            }
-
+            IEnumerable<ScoreHDP> lstScoreHDP = _fraudCaseDetailService.GetScoreHDP(criteria.MatchId, IsShowSpecialCurrencies);
             criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
             var data = _fraudCaseDetailService.GetCustomerArbitrageDetails(criteria, lstScoreHDP);
 
-            return Json(data, JsonRequestBehavior.AllowGet);         
+            return Json(data, JsonRequestBehavior.AllowGet);
         }
   
         [HttpPost]
         public ActionResult GetArbitrageTicketDetails(GetArbitrageTicketCriteria criteria)
         {
-            IEnumerable<ScoreHDP> lstScoreHDP = null;
-            var objCache = HttpContext.Cache["ScoreHDP"];
-            
-            if (objCache != null)
-            {
-                lstScoreHDP = objCache as IEnumerable<ScoreHDP>;
-            }
-
+            IEnumerable<ScoreHDP> lstScoreHDP = _fraudCaseDetailService.GetScoreHDP(criteria.MatchId, IsShowSpecialCurrencies);
             criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
             var data = _fraudCaseDetailService.GetArbitrageTickets(criteria, lstScoreHDP);
             return new JsonResult { Data = new { Download = false, Content = data } };
@@ -174,12 +160,7 @@
                 IsShowSpecialCurrencies = IsShowSpecialCurrencies
             };
 
-            IEnumerable<ScoreHDP> lstScoreHDP = null;
-            var objCache = HttpContext.Cache["ScoreHDP"];
-            if (objCache != null)
-            {
-                lstScoreHDP = objCache as IEnumerable<ScoreHDP>;
-            }
+            IEnumerable<ScoreHDP> lstScoreHDP = _fraudCaseDetailService.GetScoreHDP(criteria.MatchId, IsShowSpecialCurrencies);
 
             #region fill data filter
             string[] array = new string[6];
@@ -260,7 +241,7 @@
             return ExcelFile(_fraudCaseDetailService.ExportToExcelIpTickets(ip, template, IsShowSpecialCurrencies), fileName);
         }
 
-        public ActionResult ExportArbitrageWithFilterExcel(int liveStatus, string evidenCodeList, int currencyId, string strDateFrom, string strDateTo, string keyName, int matchId, DateTime eventDate, 
+        public ActionResult ExportArbitrageWithFilterExcel(int liveStatus, string evidenceCodeList, int currencyId, string strDateFrom, string strDateTo, string keyName, int matchId, DateTime eventDate, 
                                                             int groupId, string score, decimal handicap)
         {
             var template = Server.MapPath("~/App_Data/Excel Template/MatchMonitor/FraudCaseDetail/arbitrage.xlsx");
@@ -281,7 +262,7 @@
             GetArbitrageTicketCriteria criteria = new GetArbitrageTicketCriteria
             {
                 LiveStatus = liveStatus,
-                EvidenceCodeList = evidenCodeList,
+                EvidenceCodeList = evidenceCodeList,
                 CurrencyId = currencyId,
                 TransDateTo = transDateTo,
                 TransDateFrom = transDateFrom,
@@ -290,14 +271,7 @@
                 EventDate = eventDate,
                 IsShowSpecialCurrencies = IsShowSpecialCurrencies
             };
-
-            IEnumerable<ScoreHDP> lstScoreHDP = null;
-            var objCache = HttpContext.Cache["ScoreHDP"];
-
-            if (objCache != null)
-            {
-                lstScoreHDP = objCache as IEnumerable<ScoreHDP>;
-            }            
+            
             string[] array = new string[6];
 
             //get Market
@@ -327,6 +301,7 @@
             array[5] = string.Empty;
             #endregion fill data filter
 
+            IEnumerable<ScoreHDP> lstScoreHDP = _fraudCaseDetailService.GetScoreHDP(criteria.MatchId, IsShowSpecialCurrencies);
             var content = _fraudCaseDetailService.ExportArbitrageExcel(criteria, lstScoreHDP, template, groupId, score, handicap, array);
           
             return ExcelFile(content, fileName);
@@ -351,11 +326,8 @@
         public JsonResult GetScoreHDP(int matchId, DateTime eventDate)
         {
             var data = _fraudCaseDetailService.GetScoreHDP(matchId, IsShowSpecialCurrencies);
-            HttpContext.Cache["ScoreHDP"] = data;
 
             return Json(data, JsonRequestBehavior.AllowGet);
         }
     }
 }
-
-#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
