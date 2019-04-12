@@ -30,5 +30,7 @@
                 return LiveHomeScore + LiveAwayScore;
             }
         }
+
+        public int TicketCount { get; set; }
     }
 }

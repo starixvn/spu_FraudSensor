@@ -37,7 +37,7 @@
 
         IEnumerable<Evidence> GetListEvidences();
 
-        IEnumerable<Currency> GetAllCurrency();
+        IEnumerable<Currency> GetAllCurrency(bool isShowSpecialCurrencies);
 
         IEnumerable<ScoreHDP> GetScoreHDP(int matchId, bool isShowSpecialCurrencies);
 

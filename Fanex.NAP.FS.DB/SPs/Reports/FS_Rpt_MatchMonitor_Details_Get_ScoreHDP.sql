@@ -14,17 +14,21 @@ AS
 	Param's Explanation:
 */
 BEGIN
-	SET NOCOUNT ON;
+	SET NOCOUNT ON;	
 	
-	
-	SELECT DISTINCT si.BetType
+	SELECT  si.BetType
 		,	si.Handicap
 		,	si.LiveHomeScore
 		,	si.LiveAwayScore
+		,	SUM(LEN(si.TransIds) - LEN(REPLACE(si.TransIds, ',', '')) + 1) AS TicketCount
 	FROM dbo.ArbitrageTicketDetails si WITH(NOLOCK)
 		INNER JOIN dbo.SuspiciousCustomer c WITH(NOLOCK) ON si.CustId = c.custid
 	WHERE	si.MatchId = @MatchId
 		AND (@IsShowSpecialCurrencies = 1 OR c.CurrencyId NOT IN (SELECT CurrencyId FROM dbo.SpecialCurrency WITH(NOLOCK)))
+	GROUP BY si.BetType
+		,	si.LiveHomeScore
+		,	si.LiveAwayScore
+		,	si.Handicap
 	ORDER BY si.BetType
 		,	si.LiveHomeScore
 		,	si.LiveAwayScore

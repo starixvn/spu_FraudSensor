@@ -482,6 +482,8 @@
         ticket_grid.DataTable({            
             ordering: false,
             paging: false,
+            lengthMenu: [1000],
+            pageLength: 1000,
             dom: "t<'pagination'<'page-size'lp>>",
             language: {
                 lengthMenu: "Page size _MENU_",
@@ -672,8 +674,21 @@
         evidenceCode = getEvidenceSelected();
         var transDateFrom = $("#transDateFrom").val();
         var transDateTo = $("#transDateTo").val();
+        var transDateFromParent = $("#transDateFrom").parent();
+        var transDateToParent = $("#transDateTo").parent();
 
-        if ((transDateFrom !== "" && transDateTo !== "") || (transDateFrom === "" && transDateTo === "")) {
+        if (transDateFrom !== "" && transDateTo === "") {
+            transDateFromParent.css({ 'border-color': '#666', 'border-style': 'solid', 'border-width': '1px' });
+            transDateToParent.css({'border-color': 'red', 'border-style': 'solid', 'border-width': '1px' });
+        }
+        else if (transDateFrom === "" && transDateTo !== "") {
+            transDateFromParent.css({ 'border-color': 'red', 'border-style': 'solid', 'border-width': '1px' });
+            transDateToParent.css({ 'border-color': '#666', 'border-style': 'solid', 'border-width': '1px' });
+        }
+        else {
+            transDateFromParent.css({ 'border-color': '#666', 'border-style': 'solid', 'border-width': '1px' });
+            transDateToParent.css({ 'border-color': '#666', 'border-style': 'solid', 'border-width': '1px' });
+
             var criteria = {
                 liveStatus: $("#market").val(),
                 evidenceCodeList: evidenceCode,
@@ -688,9 +703,6 @@
             loadCustomerGridArbitrage(criteria);
 
             loadTicketGridArbitrage(criteria);
-        }
-        else {
-            common.showError("You forgot to input value for Trans Date!");
         }
     };
 

@@ -317,7 +317,7 @@
 
         public JsonResult GetAllCurrency()
         {
-            var data = _fraudCaseDetailService.GetAllCurrency();
+            var data = _fraudCaseDetailService.GetAllCurrency(IsShowSpecialCurrencies);
             HttpContext.Cache["ListCurrency"] = data;
 
             return Json(data, JsonRequestBehavior.AllowGet);

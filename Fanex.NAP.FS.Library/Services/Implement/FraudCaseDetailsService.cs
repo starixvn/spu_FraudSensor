@@ -678,9 +678,11 @@
         /// Get all customer currency
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<Currency> GetAllCurrency()
+        public IEnumerable<Currency> GetAllCurrency(bool isShowSpecialCurrencies)
         {
             var criteria = new GetCurrencyCriteria();
+            criteria.IsShowSpecialCurrencies = isShowSpecialCurrencies;
+
             return DataService.GetData<Currency>(criteria);
         }
 
