@@ -119,20 +119,7 @@ namespace Fanex.NAP.FS.Service
             _timer.Dispose();
 
             LogService.Error($"{_serviceName} is stopped. Please contact with Admin.");
-        }
-
-        public void Clean(IEnumerable<Match> matches, List<Task> threads)
-        {
-            if (matches != null && matches.Any())
-            {
-                matches = Enumerable.Empty<Match>();
-
-                if (threads != null)
-                {
-                    threads.Clear();
-                }
-            }
-        }
+        }        
 
         public void Report(ReportModel model)
         {

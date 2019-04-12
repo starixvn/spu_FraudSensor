@@ -141,7 +141,15 @@ namespace Fanex.NAP.FS.FlaggedAccountService
 
         void CleanResult()
         {
-            baseService.Clean(_matches, _threads);
+            if (_matches != null && _matches.Any())
+            {
+                _matches = Enumerable.Empty<Match>();
+
+                if (_threads != null)
+                {
+                    _threads.Clear();
+                }
+            }
         }
 
         void Precondition()
