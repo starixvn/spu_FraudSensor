@@ -36,46 +36,15 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Dapper, Version=1.60.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Dapper.1.60.6\lib\net451\Dapper.dll</HintPath>
-    </Reference>
-    <Reference Include="Fanex.Data, Version=3.0.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Fanex.Data.3.0.2\lib\net461\Fanex.Data.dll</HintPath>
-    </Reference>
-    <Reference Include="Fanex.Data.ConnectionStringProvider20, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Fanex.Data.ConnectionStringProvider20.3.0.0\lib\net461\Fanex.Data.ConnectionStringProvider20.dll</HintPath>
-    </Reference>
-    <Reference Include="Fanex.Logging, Version=2.0.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Fanex.Logging.2.0.1\lib\net461\Fanex.Logging.dll</HintPath>
-    </Reference>
-    <Reference Include="Fanex.Logging.Extensions, Version=1.0.6.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Fanex.Logging.Extensions.1.0.6\lib\net461\Fanex.Logging.Extensions.dll</HintPath>
-    </Reference>
-    <Reference Include="Fanex.Logging.Extensions.Database, Version=1.0.5.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Fanex.Logging.Extensions.Database.1.0.5\lib\net461\Fanex.Logging.Extensions.Database.dll</HintPath>
-    </Reference>
-    <Reference Include="Fanex.Logging.Sentry.RavenClient, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Fanex.Logging.Sentry.RavenClient.1.0.1\lib\net461\Fanex.Logging.Sentry.RavenClient.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="SharpRaven, Version=2.4.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SharpRaven.2.4.0\lib\net45\SharpRaven.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Runtime.InteropServices.RuntimeInformation, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Runtime.InteropServices.RuntimeInformation.4.3.0\lib\net45\System.Runtime.InteropServices.RuntimeInformation.dll</HintPath>
-    </Reference>
     <Reference Include="System.Security" />
     <Reference Include="System.Transactions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
     <Reference Include="System.ServiceProcess" />
     <Reference Include="System.Xml" />
   </ItemGroup>
@@ -103,7 +72,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="App.config" />
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Fanex.NAP.FS.Core\Fanex.NAP.FS.Core.csproj">
@@ -136,6 +104,29 @@
     <Content Include="App_Data\NAPFSNames.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Dapper">
+      <Version>1.60.6</Version>
+    </PackageReference>
+    <PackageReference Include="Fanex.Data">
+      <Version>3.0.2</Version>
+    </PackageReference>
+    <PackageReference Include="Fanex.Data.ConnectionStringProvider20">
+      <Version>3.0.0</Version>
+    </PackageReference>
+    <PackageReference Include="Fanex.Logging.Extensions.Database">
+      <Version>1.0.5</Version>
+    </PackageReference>
+    <PackageReference Include="Fanex.Logging.Sentry.RavenClient">
+      <Version>1.0.1</Version>
+    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json">
+      <Version>12.0.1</Version>
+    </PackageReference>
+    <PackageReference Include="System.Net.Http">
+      <Version>4.3.4</Version>
+    </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
