@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
+using System.Linq;
 
 namespace Fanex.NAP.FS.Core
 {
@@ -184,6 +186,13 @@ namespace Fanex.NAP.FS.Core
             get
             {
                 return Convert.ToBoolean(ConfigurationManager.AppSettings["FraudCase.IsTest"].ToString());
+            }
+        }
+
+        public static List<int> IgnoreCase {
+            get
+            {                
+                return ConfigurationManager.AppSettings["Ignore-fraudcase"].Split(',').Select(Int32.Parse).ToList();
             }
         }
     }

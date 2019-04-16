@@ -72,6 +72,7 @@ namespace Fanex.NAP.FS.MainService
 #endif
 
             }
+
         }
 
         [HttpGet]
@@ -139,7 +140,7 @@ namespace Fanex.NAP.FS.MainService
                         fraudCase = fraudCaseService.GetByFraudCaseId(fcHealth.FraudCaseId, AppSetting.Environment);
                     }
 
-                    if (fraudCase.IsActive && period > fcHealth.TimeOut)
+                    if (!AppSetting.IgnoreCase.Contains(fraudCase.FraudCaseId) && fraudCase.IsActive && period > fcHealth.TimeOut)
                     {
                         try
                         {
