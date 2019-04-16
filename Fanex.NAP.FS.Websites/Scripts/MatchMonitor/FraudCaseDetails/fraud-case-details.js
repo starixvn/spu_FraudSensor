@@ -678,16 +678,16 @@
         var transDateToParent = $("#transDateTo").parent();
 
         if (transDateFrom !== "" && transDateTo === "") {
-            transDateFromParent.css({ 'border-color': '#666', 'border-style': 'solid', 'border-width': '1px' });
+            transDateFromParent.css({ 'border-color': '#666', 'border-style': 'solid', 'border-width': '0px' });
             transDateToParent.css({'border-color': 'red', 'border-style': 'solid', 'border-width': '1px' });
         }
         else if (transDateFrom === "" && transDateTo !== "") {
             transDateFromParent.css({ 'border-color': 'red', 'border-style': 'solid', 'border-width': '1px' });
-            transDateToParent.css({ 'border-color': '#666', 'border-style': 'solid', 'border-width': '1px' });
+            transDateToParent.css({ 'border-color': '#666', 'border-style': 'solid', 'border-width': '0px' });
         }
         else {
-            transDateFromParent.css({ 'border-color': '#666', 'border-style': 'solid', 'border-width': '1px' });
-            transDateToParent.css({ 'border-color': '#666', 'border-style': 'solid', 'border-width': '1px' });
+            transDateFromParent.css({ 'border-color': '#666', 'border-style': 'solid', 'border-width': '0px' });
+            transDateToParent.css({ 'border-color': '#666', 'border-style': 'solid', 'border-width': '0px' });
 
             var criteria = {
                 liveStatus: $("#market").val(),
