@@ -11,6 +11,7 @@ using Fanex.NAP.FS.Model;
 using Fanex.NAP.FS.Service;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.ServiceProcess;
 using System.Threading.Tasks;
@@ -94,9 +95,11 @@ namespace Fanex.NAP.FS.ArbitrageService
         private void GroupData(int matchId, IEnumerable<ArbitrageTicket> tickets)
         {
             var message = string.Empty;
+            var customers = new List<ArbitrageCustomer>();
 
             try
-            {
+            {               
+
                 if (tickets != null && tickets.Any())
                 {
                     var tsk = tickets.Select(t => t.CustId).Distinct().Chunk(500).Select(GroupCustomer).ToArray();
@@ -107,7 +110,7 @@ namespace Fanex.NAP.FS.ArbitrageService
 #endif
                     Task.WaitAll(tsk);
 
-                    var customers = tsk.SelectMany(t => t.Result);
+                     customers = tsk.SelectMany(t => t.Result).ToList();
 
                     if (customers != null && customers.Any())
                     {
@@ -139,13 +142,23 @@ namespace Fanex.NAP.FS.ArbitrageService
                     .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
 
                 LogService.Error($"{projectName} - {serviceName} - MatchId: {matchId} - GroupData Exeption: {logMessage}");
-            }
+                                
 
+                WriteLog("log-" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss") + ".log", tickets.Select(x => x.MatchId).Cast<string>());
+                WriteLog("log-" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss") + ".log", customers.Select(x => x.CustId).Cast<string>());
+            }
 
 #if DEBUG
             Console.WriteLine(message);
 #endif
             
+        }
+
+        private void WriteLog(string filename, IEnumerable<string> body)
+        {
+            var filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, filename);
+
+            File.WriteAllLines(filePath, body);
         }
 
         private async Task<IEnumerable<ArbitrageCustomer>> GroupCustomer(IEnumerable<int> custids)
