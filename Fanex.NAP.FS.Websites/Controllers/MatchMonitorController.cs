@@ -120,8 +120,24 @@
             criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
             var data = _fraudCaseDetailService.GetArbitrageTickets(criteria, lstScoreHDP);
             return new JsonResult { Data = new { Download = false, Content = data } };
-        }              
-            
+        }
+       
+        public ActionResult GetListArbitrageTickets(GetArbitrageTicketCriteria criteria)
+        {
+            criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
+            var data = _fraudCaseDetailService.GetListArbitrageTickets(criteria);
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public ActionResult GetArbitrageGroupsTicket(GetArbitrageTicketCriteria criteria)
+        {
+            IEnumerable<ScoreHDP> lstScoreHDP = _fraudCaseDetailService.GetScoreHDP(criteria.MatchId, IsShowSpecialCurrencies);
+            criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
+            var data = _fraudCaseDetailService.GetArbitrageTickets(criteria, lstScoreHDP);
+            return new JsonResult { Data = new { Content = data } };
+        }
+
         public ActionResult ExportCSVArbitrage(int liveStatus, string evidenceCodeList, int currencyId, string strDateFrom, string strDateTo, string keyName, int matchId, DateTime eventDate)
         {           
             DateTime transDateFrom = DateTime.MinValue;

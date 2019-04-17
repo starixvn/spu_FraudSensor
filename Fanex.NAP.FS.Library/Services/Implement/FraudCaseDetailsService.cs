@@ -525,6 +525,44 @@
             return data;
         }
 
+        public IEnumerable<ArbitrageGroupTicketList> GetListArbitrageTickets(GetArbitrageTicketCriteria criteria)
+        {
+            IEnumerable<ArbitrageGroupTicketList> data;
+            IEnumerable<ScoreHDP> lstScore = GetScoreHDP(criteria.MatchId, criteria.IsShowSpecialCurrencies);
+            FillArbitrageTicketCriteria(criteria, lstScore);           
+
+            var rawData = DataService.GetData<TicketInfo>(criteria);
+
+            var url = AppSettings.Get("FPS_WEBAPI_GET_CUSTOMER_EVIDENCE");
+
+            var tsks = rawData.Select(t => t.CustId).Distinct()
+                .Chunk(500)
+                .Select(q => ApiHelper.Post<IEnumerable<CustomerEvidence>>(url, new CustomerEvidenceList { CustIdList = string.Join(",", q), EvidenceCodeList = null }))
+                .ToArray();
+
+            Task.WaitAll(tsks);
+
+            var listEvi = tsks.SelectMany(t => t.Result);
+
+            var otherEvidenceCode = AppSettings.Get("FPS_GET_OTHER_EVIDENCES");
+
+            if (criteria.EvidenceCodeList != null && criteria.EvidenceCodeList.Contains(otherEvidenceCode))
+            {
+                data = HandleArbitrageOtherEvidence(rawData, listEvi, criteria.EvidenceCodeList);
+                criteria.TotalTicket = criteria.TotalTicket = data.Sum(c => c.Home.Count() + c.Away.Count());
+                return data;
+            }
+
+            if (!string.IsNullOrEmpty(criteria.EvidenceCodeList))
+            {
+                listEvi = listEvi.Where(c => criteria.EvidenceCodeList.Contains(c.EvidenceCode));
+            }
+
+            data = HandleArbitrage(rawData, listEvi, string.IsNullOrEmpty(criteria.EvidenceCodeList));
+            criteria.TotalTicket = criteria.TotalTicket = data.Sum(c => c.Home.Count() + c.Away.Count());
+            return data;
+        }
+
         private IEnumerable<ArbitrageGroupTicketList> HandleArbitrageOtherEvidence(IEnumerable<TicketInfo> rawData, IEnumerable<CustomerEvidence> evidences, string lstEvidenceSelected)
         {
             var evidenceDict = evidences.ToLookup(c => c.CustId, c => c.EvidenceCode + "-" + c.EvidenceName);

@@ -13,7 +13,8 @@
 
     var filter = {};
 
-    var totalTicket = 0;     
+    var totalTicket = 0;    
+    var arrGroupTicket = [];
 
     from_date.datepicker({       
         changeMonth: true,
@@ -129,7 +130,7 @@
 
     function loadTicketGridArbitrage(criteria) {
         if (isArbitrage) {            
-            loadArbitrages(criteria);            
+            loadArbitrageGroups(criteria);
         }
         else {
             global_idx = 0;
@@ -413,6 +414,89 @@
         return totalTicket;
     };
 
+    function renderArbitrageGroups(json) {
+        $("#tickets").text(`By Tickets (...)`);
+
+        var n = (json || []).reduce((total, obj) => total + Math.max(obj.Home.length, obj.Away.length), 0);
+
+        var t = (json || []).reduce((total, obj) => total + obj.Home.length + obj.Away.length, 0);
+
+        var data = (json || []).reduce(function (arr, obj) {
+            obj.key = true;
+            obj.Home = '';
+            obj.Away = '';
+            arr.push(obj);
+            arrGroupTicket.push(obj);
+
+            return arr;
+        }, []);      
+        ticket_grid.DataTable().rows.add(data).draw();        
+
+        totalTicket = t;
+        $("#tickets").text(`By Tickets (${totalTicket})`);
+
+        if (n != 0) {
+            $("#DataTables_Table_0_info").text(`Displaying 1 to ${n} of ${n} item(s)`);
+        }
+        common.closeLoading();
+
+        return totalTicket;
+    };
+
+    function renderArbitrageByGroup(json) {       
+        ticket_grid.DataTable().clear();
+
+        var n = (json || []).reduce((total, obj) => total + Math.max(obj.Home.length, obj.Away.length), 0);
+
+        var t = (json || []).reduce((total, obj) => total + obj.Home.length + obj.Away.length, 0);
+       
+        var keyName = "";
+        var data = (json || []).reduce(function (arr, obj) {
+            obj.key = true;
+            arr.push(obj);
+            keyName = obj.Score + " " + obj.BettypeName + " " + obj.Handicap;
+
+            if (obj.Home.length + obj.Away.length < 1000) {
+
+                var n = Math.max(obj.Home.length, obj.Away.length);
+
+                for (var i = 0; i < n; i++) {
+                    var a = {};
+
+                    a.Home = obj.Home[i] || {};
+
+                    a.Away = obj.Away[i] || {};
+
+                    arr.push(a);
+                }
+            }
+
+            return arr;
+        }, []);
+
+        //each list group
+        var dataGroup = [];
+        $.each(arrGroupTicket, function (index, value) {
+            var keyTemp = value.Score + " " + value.BettypeName + " " + value.Handicap;
+            if (keyName == keyTemp) {
+                var newArray = $.merge(dataGroup, data);
+                dataGroup = newArray;
+            }
+            else {
+                dataGroup.push(value);
+            }
+        });                       
+
+        ticket_grid.DataTable().rows.add(dataGroup).draw();      
+
+        if (n != 0) {
+            $("#DataTables_Table_0_info").text(`Displaying 1 to ${n} of ${n} item(s)`);
+        }
+        common.closeLoading();
+
+        return totalTicket;
+    };
+
     function renderArbitrageGrid(json) {
         ticket_grid.DataTable().clear();
 
@@ -452,7 +536,7 @@
         }
         
         common.closeLoading();
-    }
+    }    
 
     function renderArbitrageCSV(e) {
         var url = common.modifyRelativeUrl("/MatchMonitor/ExportArbitrageWithFilterCSV");
@@ -536,10 +620,12 @@
             createdRow: function (row, obj) {
                 if (obj.key) {
                     var td = (obj.Home.length + obj.Away.length > 1000) ? $(`<td colspan='21' class='group' style='cursor: initial'><span class="bage">${obj.BettypeName} ${obj.Handicap}</span> <span class="bage">${obj.Score}</span> <span class="bage" style="color:red;">Too much data. Export CSV file instead!</span> <button class="button -export"><span class="icon-export-excel"></span></button></td>`)
-                        : $(`<td colspan='21' class='group' style='cursor: initial'><span class="bage">${obj.BettypeName} ${obj.Handicap}</span> <span class="bage">${obj.Score}</span> <button class="button -export"><span class="icon-export-excel"></span></button></td>`);
+                        : $(`<td colspan='21' class='group' style='cursor: initial'><span class='icon-chevron-down'></span><span class="bage">${obj.BettypeName} ${obj.Handicap}</span> <span class="bage">${obj.Score}</span> <button class="button -export"><span class="icon-export-excel"></span></button></td>`);
                     $(".button.-export", td).click(obj, renderArbitrageCSV);
 
                     $(row).empty().html(td);
+                  
+                    //$(row).html(td).click(e => openCloseGroup(e.target, obj));
                 }
                 else if (obj.Home.Username == null) {
                     var td = $("<td colspan='10'></td>");
@@ -555,7 +641,7 @@
 
                     $(row).append(td);
                 }
-            },
+            }         
         });
     }
     else {
@@ -664,13 +750,104 @@
                 }
             });
         }       
-    };   
+    };
 
+    function loadArbitrageGroups(criteria) {
+        var url = common.modifyRelativeUrl("/MatchMonitor/GetArbitrageTicketDetails");
+        var urlGroup = common.modifyRelativeUrl("/MatchMonitor/GetArbitrageGroupsTicket");
+
+        common.showLoading();
+        ticket_grid.DataTable().clear();
+
+        //case all    
+        if (criteria.keyName == "-1") {
+            $.ajax({
+                type: 'POST',
+                url: urlGroup,
+                data: criteria,
+                success: function (response) {
+                    if (response != null) {
+                        renderArbitrageGroups(response.Content);
+                    }
+                },
+                error: function (err) {
+                    loadError(err);
+                }
+            });
+        }
+        else {
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: criteria,
+                success: function (response) {
+                    if (response != null) {
+                        renderArbitrageGrid(response.Content);
+                    }
+                },
+                error: function (err) {
+                    loadError(err);
+                }
+            });
+        }
+    };
+
+    $('#ticket-tab table tbody').on('click', 'tr', function () {
+        var table = ticket_grid.DataTable();
+        var index = table.row(this).index();
+        var data = table.row(this).data();
+
+        var span = $('td span:first', this);
+        if ($(span).is("span.icon-chevron-down")) {
+            $(span).removeClass("icon-chevron-down").addClass("icon-chevron-up");
+                        
+            var key = data.Score + " " + data.BettypeName + " " + data.Handicap;           
+        }
+        else if ($(span).is("span.icon-chevron-up")) {
+            $(span).removeClass("icon-chevron-up").addClass("icon-chevron-down");
+        }
+
+        collapseExpandGroup(data);
+    });
+
+    function collapseExpandGroup(obj) {
+        var url = common.modifyRelativeUrl("/MatchMonitor/GetListArbitrageTickets");
+        
+        evidenceCode = getEvidenceSelected();
+        var keyName = obj.Score + " " + obj.BettypeName + " " + obj.Handicap;
+
+        var criteria = {
+            liveStatus: $("#market").val(),
+            evidenceCodeList: evidenceCode,
+            currencyId: $("#currency").val(),
+            strDateFrom: $("#transDateFrom").val(),
+            strDateTo: $("#transDateTo").val(),
+            keyName: keyName,
+            matchId: parameters.matchId,
+            eventDate: parameters.eventDate
+        };        
+
+        $.ajax({
+            type: 'GET',
+            url: url,
+            data: criteria,
+            success: function (response) {
+                if (response != null) {                    
+                    renderArbitrageByGroup(response);
+                }
+            },
+            error: function (err) {
+                loadError(err);
+            }
+        });
+    };
+   
     function loadError(error) {
         console.log(error);
     };
 
     function loadGrids() {
+        arrCollapse = [];
         evidenceCode = getEvidenceSelected();
         var transDateFrom = $("#transDateFrom").val();
         var transDateTo = $("#transDateTo").val();

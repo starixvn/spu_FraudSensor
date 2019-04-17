@@ -35,6 +35,8 @@
 
         IEnumerable<ArbitrageGroupTicketList> GetArbitrageTickets(GetArbitrageTicketCriteria criteria, IEnumerable<ScoreHDP> lstScoreHDP);
 
+        IEnumerable<ArbitrageGroupTicketList> GetListArbitrageTickets(GetArbitrageTicketCriteria criteria);
+
         IEnumerable<Evidence> GetListEvidences();
 
         IEnumerable<Currency> GetAllCurrency(bool isShowSpecialCurrencies);
