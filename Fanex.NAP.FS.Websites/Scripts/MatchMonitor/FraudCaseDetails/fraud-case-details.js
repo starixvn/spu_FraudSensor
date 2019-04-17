@@ -619,8 +619,9 @@
             ],
             createdRow: function (row, obj) {
                 if (obj.key) {
-                    var td = (obj.Home.length + obj.Away.length > 1000) ? $(`<td colspan='21' class='group' style='cursor: initial'><span class="bage">${obj.BettypeName} ${obj.Handicap}</span> <span class="bage">${obj.Score}</span> <span class="bage" style="color:red;">Too much data. Export CSV file instead!</span> <button class="button -export"><span class="icon-export-excel"></span></button></td>`)
-                        : $(`<td colspan='21' class='group' style='cursor: initial'><span class='icon-chevron-down' style='cursor: pointer;'></span><span class='bage' style='cursor: pointer;'>${obj.BettypeName} ${obj.Handicap}</span> <span class='bage' style='cursor: pointer;'>${obj.Score}</span> <button class="button -export"><span class="icon-export-excel"></span></button></td>`);
+                    var totalTicket = obj.Home.length + obj.Away.length;
+                    var td = (totalTicket > 1000) ? $(`<td colspan='21' class='group' style='cursor: initial'><span class='icon-chevron-down'><span class='bage'>${obj.BettypeName} ${obj.Handicap}</span> <span class="bage">${obj.Score}</span> <span class="bage" style="color:red;">Too much data. Export CSV file instead!</span> <button class="button -export"><span class="icon-export-excel"></span></button></td>`)
+                        : $(`<td colspan='21' class='group' style='cursor: initial'><span class='icon-chevron-down' style='cursor: pointer;'></span><span class='bage' style='cursor: pointer;'>${obj.BettypeName} ${obj.Handicap}</span> <span class='bage' style='cursor: pointer;'>${obj.Score}</span> <span class='bage' style='cursor: pointer;'>${totalTicket}</span><button class="button -export"><span class="icon-export-excel"></span></button></td>`);
 
                     $(".button.-export", td).click(obj, renderArbitrageCSV);
 
@@ -795,8 +796,9 @@
         if (isArbitrage) {
             var table = ticket_grid.DataTable();
             var data = table.row(this).data();
-
-            collapseExpandGroup(data);
+            if (data.Home == "" && data.Away == "") {
+                collapseExpandGroup(data);
+            }            
         }        
     });
 
