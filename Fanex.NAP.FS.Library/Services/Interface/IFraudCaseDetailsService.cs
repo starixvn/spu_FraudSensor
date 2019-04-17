@@ -45,8 +45,8 @@
 
         byte[] ExportToExcelIpTickets(string ip, string template, bool isShowSpecialCurrencies);      
        
-        string ExportArbitrageCsv(GetArbitrageTicketCriteria criteria, IEnumerable<ScoreHDP> lstScoreHDP, int groupId, string score, decimal handicap, string[] array);
+        string ExportArbitrageTicketByGroupCsv(GetArbitrageTicketCriteria criteria, IEnumerable<ScoreHDP> lstScoreHDP, int groupId, string score, decimal handicap, string[] array);
 
-        string ExportArbitrageCsv(GetArbitrageTicketCriteria ticketCriteria, IEnumerable<ScoreHDP> lstScoreHDP, string[] array);
+        string ExportArbitrageTicketAllCsv(GetArbitrageTicketCriteria ticketCriteria, IEnumerable<ScoreHDP> lstScoreHDP, string[] array);
     }
 }

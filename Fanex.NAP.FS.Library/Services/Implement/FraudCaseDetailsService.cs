@@ -735,7 +735,7 @@
             return DataService.GetData<ScoreHDP>(criteria);
         }          
 
-        public string ExportArbitrageCsv(GetArbitrageTicketCriteria criteria, IEnumerable<ScoreHDP> lstScoreHDP, int groupId, string score, decimal handicap, string[] array)
+        public string ExportArbitrageTicketByGroupCsv(GetArbitrageTicketCriteria criteria, IEnumerable<ScoreHDP> lstScoreHDP, int groupId, string score, decimal handicap, string[] array)
         {
             var txtResult = new StringBuilder();
             var info = GetInfo(criteria.MatchId, (int)FraudCaseId.Arbitrage, criteria.EventDate);
@@ -770,7 +770,7 @@
             return txtResult.ToString();
         }
 
-        public string ExportArbitrageCsv(GetArbitrageTicketCriteria ticketCriteria, IEnumerable<ScoreHDP> lstScoreHDP, string[] array)
+        public string ExportArbitrageTicketAllCsv(GetArbitrageTicketCriteria ticketCriteria, IEnumerable<ScoreHDP> lstScoreHDP, string[] array)
         {
             var txtResult = new StringBuilder();          
 

@@ -277,7 +277,7 @@
                 eventDate: parameters.eventDate
             };
 
-            var url = common.modifyRelativeUrl("/MatchMonitor/ExportCSVArbitrage");
+            var url = common.modifyRelativeUrl("/MatchMonitor/ExportCSVArbitrageTicketAll");
 
             common.downloadFile(url, criteria);
         } else {
@@ -498,7 +498,7 @@
     }    
 
     function renderArbitrageCSV(e) {
-        var url = common.modifyRelativeUrl("/MatchMonitor/ExportArbitrageWithFilterCSV");
+        var url = common.modifyRelativeUrl("/MatchMonitor/ExportCSVArbitrageTicketByGroup");
 
         var obj = e.data;
 
