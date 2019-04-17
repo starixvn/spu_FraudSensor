@@ -163,9 +163,9 @@
             $("#customers").text(`By Customers (${json.length})`);
 
             if (json.length > 1000) {
-                json = null;
-                $(".dataTables_empty").text("Too much data. Export CSV file instead!").css("color", "red");
+                json = [];
                 customer_grid.DataTable().clear().rows.add(json).draw();
+                $(".dataTables_empty").text("Too much data. Export CSV file instead!").css("color", "red");
             }
             else {
                 customer_grid.DataTable().clear().rows.add(json).draw();
