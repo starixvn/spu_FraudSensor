@@ -201,34 +201,11 @@
             return File(_fraudCaseDetailService.ExportExcel(matchId, fraudCaseId, eventDate, template, IsShowSpecialCurrencies), "application/vnd.ms-excel", fileName);
         }
 
-        public ActionResult ExportCSVArbitrageTicketByGroup(int liveStatus, string evidenceCodeList, int currencyId, string strDateFrom, string strDateTo, string keyName, int matchId, DateTime eventDate, 
-                                                            int groupId, string score, decimal handicap)
+        public ActionResult ExportCSVArbitrageTicketByGroup(GetArbitrageTicketCriteria criteria, int groupId, string score, decimal handicap)
         {
-            DateTime transDateFrom = DateTime.MinValue;
-            DateTime transDateTo = DateTime.MinValue;
-            if (!string.IsNullOrEmpty(strDateFrom))
-            {
-                transDateFrom = DateTime.Parse(strDateFrom);
-            }
-            if (!string.IsNullOrEmpty(strDateTo))
-            {
-                transDateTo = DateTime.Parse(strDateTo);
-            }
-            GetArbitrageTicketCriteria criteria = new GetArbitrageTicketCriteria
-            {
-                LiveStatus = liveStatus,
-                EvidenceCodeList = evidenceCodeList,
-                CurrencyId = currencyId,
-                TransDateToString = strDateTo,
-                TransDateFromString = strDateFrom,
-                KeyName = keyName,
-                MatchId = matchId,
-                EventDate = eventDate,
-                IsShowSpecialCurrencies = IsShowSpecialCurrencies
-            };
-
             string[] filterInfo = GenerateFilterInfoForCsv(criteria);
 
+            criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
             IEnumerable<ScoreHDP> lstScoreHDP = _fraudCaseDetailService.GetScoreHDP(criteria.MatchId, IsShowSpecialCurrencies);
             var content = _fraudCaseDetailService.ExportArbitrageTicketByGroupCsv(criteria, lstScoreHDP, groupId, score, handicap, filterInfo);
             var encoded = Encoding.UTF8.GetBytes(content);

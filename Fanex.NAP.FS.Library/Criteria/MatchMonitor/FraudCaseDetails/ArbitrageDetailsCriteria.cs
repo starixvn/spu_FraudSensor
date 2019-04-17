@@ -26,7 +26,9 @@
         {
             get
             {
-                if (DateTime.TryParse(TransDateFromString, out DateTime minValue))
+                DateTime minValue;
+
+                if (DateTime.TryParse(TransDateFromString, out minValue))
                 {
                     return minValue;
                 }
@@ -42,7 +44,9 @@
         {
             get
             {
-                if (DateTime.TryParse(TransDateToString, out DateTime minValue))
+                DateTime minValue;
+
+                if (DateTime.TryParse(TransDateToString, out minValue))
                 {
                     return minValue;
                 }
