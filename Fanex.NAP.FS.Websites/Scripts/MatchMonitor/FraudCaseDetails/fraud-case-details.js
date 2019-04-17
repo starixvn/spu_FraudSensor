@@ -620,12 +620,11 @@
             createdRow: function (row, obj) {
                 if (obj.key) {
                     var td = (obj.Home.length + obj.Away.length > 1000) ? $(`<td colspan='21' class='group' style='cursor: initial'><span class="bage">${obj.BettypeName} ${obj.Handicap}</span> <span class="bage">${obj.Score}</span> <span class="bage" style="color:red;">Too much data. Export CSV file instead!</span> <button class="button -export"><span class="icon-export-excel"></span></button></td>`)
-                        : $(`<td colspan='21' class='group' style='cursor: initial'><span class='icon-chevron-down'></span><span class="bage">${obj.BettypeName} ${obj.Handicap}</span> <span class="bage">${obj.Score}</span> <button class="button -export"><span class="icon-export-excel"></span></button></td>`);
+                        : $(`<td colspan='21' class='group' style='cursor: initial'><span class='icon-chevron-down' style='cursor: pointer;'></span><span class='bage' style='cursor: pointer;'>${obj.BettypeName} ${obj.Handicap}</span> <span class='bage' style='cursor: pointer;'>${obj.Score}</span> <button class="button -export"><span class="icon-export-excel"></span></button></td>`);
+
                     $(".button.-export", td).click(obj, renderArbitrageCSV);
 
-                    $(row).empty().html(td);
-                  
-                    //$(row).html(td).click(e => openCloseGroup(e.target, obj));
+                    $(row).empty().html(td);                                      
                 }
                 else if (obj.Home.Username == null) {
                     var td = $("<td colspan='10'></td>");
@@ -796,15 +795,13 @@
         var table = ticket_grid.DataTable();
         var data = table.row(this).data();
 
-        var span = $('td span:first', this);
-        if ($(span).is("span.icon-chevron-down")) {
-            $(span).removeClass("icon-chevron-down").addClass("icon-chevron-up");
-                        
-            var key = data.Score + " " + data.BettypeName + " " + data.Handicap;           
-        }
-        else if ($(span).is("span.icon-chevron-up")) {
-            $(span).removeClass("icon-chevron-up").addClass("icon-chevron-down");
-        }
+        //var span = $('td span:first', this);
+        //if ($(span).is("span.icon-chevron-down")) {
+        //    $(span).removeClass("icon-chevron-down").addClass("icon-chevron-up");
+        //}
+        //else if ($(span).is("span.icon-chevron-up")) {
+        //    $(span).removeClass("icon-chevron-up").addClass("icon-chevron-down");
+        //}
 
         collapseExpandGroup(data);
     });
