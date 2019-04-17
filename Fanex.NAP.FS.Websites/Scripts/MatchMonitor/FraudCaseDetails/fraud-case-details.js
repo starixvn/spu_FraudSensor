@@ -757,11 +757,7 @@
         ticket_grid.DataTable().clear();
         groupExpand = "";       
 
-        ticket_grid.DataTable().rows.add(arrGroupTicket).draw();
-
-        if (n != 0) {
-            $("#DataTables_Table_0_info").text(`Displaying 1 to ${n} of ${n} item(s)`);
-        }
+        ticket_grid.DataTable().rows.add(arrGroupTicket).draw();      
     };
 
     function loadError(error) {
