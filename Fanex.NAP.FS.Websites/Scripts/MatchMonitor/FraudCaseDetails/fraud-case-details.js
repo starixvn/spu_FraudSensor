@@ -160,35 +160,42 @@
         var url = common.modifyRelativeUrl("/MatchMonitor/GetFraudCaseCustomerDetails");
 
         $.post(url, criteria, function (json) {
-            customer_grid.DataTable().clear().rows.add(json).draw();
-
             $("#customers").text(`By Customers (${json.length})`);
 
-            $(".action").selectmenu({
-                classes: {
-                    "ui-selectmenu-button": "ui-button-icon-only demo-splitbutton-select"
-                },
-                position: { my: "left top", at: "left bottom", collision: "flip" },
-                select: function () {
-                    var tr = $(this).parents("tr");
+            if (json.length > 1000) {
+                json = null;
+                $(".dataTables_empty").text("Too much data. Export CSV file instead!").css("color", "red");
+                customer_grid.DataTable().clear().rows.add(json).draw();
+            }
+            else {
+                customer_grid.DataTable().clear().rows.add(json).draw();
 
-                    var obj = customer_grid.DataTable().row(tr).data();
+                $(".action").selectmenu({
+                    classes: {
+                        "ui-selectmenu-button": "ui-button-icon-only demo-splitbutton-select"
+                    },
+                    position: { my: "left top", at: "left bottom", collision: "flip" },
+                    select: function () {
+                        var tr = $(this).parents("tr");
 
-                    if (this.value == "2") {
-                        renderAssociatedAccounts(obj);
-                    }
-                    else if (this.value == "1") {
-                        renderLast7DaysTickets(obj);
-                    }
-                    else {
-                        openSuspiciousHistoryLink(obj);
-                    }
-                },
-            });
+                        var obj = customer_grid.DataTable().row(tr).data();
 
-            $(".group-action").controlgroup();
+                        if (this.value == "2") {
+                            renderAssociatedAccounts(obj);
+                        }
+                        else if (this.value == "1") {
+                            renderLast7DaysTickets(obj);
+                        }
+                        else {
+                            openSuspiciousHistoryLink(obj);
+                        }
+                    },
+                });
 
-            $(".group-action button").click(e => $(e.target).next().selectmenu("open"));
+                $(".group-action").controlgroup();
+
+                $(".group-action button").click(e => $(e.target).next().selectmenu("open"));
+            }
 
             common.closeLoading();
         });
