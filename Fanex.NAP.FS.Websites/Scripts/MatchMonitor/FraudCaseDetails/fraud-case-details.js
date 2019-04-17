@@ -582,7 +582,7 @@
                     var totalTicket = obj.Home.length + obj.Away.length;
                     var td = "";
                     if (totalTicket > 1000) {
-                        td = $(`<td colspan='21' class='group' style='cursor: initial'><span class='icon-chevron-down'></span> <span class='bage'>${obj.BettypeName} ${obj.Handicap}</span> <span class="bage">${obj.Score}</span> <span class='bage'>Tickets: ${totalTicket}</span> <span class="bage" style="color:red;">Too much data. Export CSV file instead!</span> <button class="button -export"><span class="icon-export-excel"></span></button></td>`);
+                        td = $(`<td colspan='21' class='group' style='cursor: initial'><span class='icon-chevron-down'></span> <span class='bage'>${obj.BettypeName} ${obj.Handicap}</span> <span class="bage">${obj.Score}</span> <span class='bage'>Tickets: ${totalTicket}</span> <span class="bage muchdata" style="color:red;">Too much data. Export CSV file instead!</span> <button class="button -export"><span class="icon-export-excel"></span></button></td>`);
                     }
                     else {
                         var keyName = obj.Score + " " + obj.BettypeName + " " + obj.Handicap;
@@ -694,7 +694,14 @@
             if (groupExportCSV == 0) {
                 var table = ticket_grid.DataTable();
                 var data = table.row(this).data();
+
                 if (data.key == true) {
+                    var spanTicketMuch1000 = $('td .muchdata', this);
+
+                    if ($('td .muchdata', this).is("span.muchdata")) {
+                        return;
+                    }
+
                     var span = $('td span:first', this);
 
                     if ($(span).is("span.icon-chevron-down")) {
