@@ -668,9 +668,8 @@
         return obj.BetId;
     };   
 
-    function loadArbitrageGroups(criteria) {
-        var url = common.modifyRelativeUrl("/MatchMonitor/GetArbitrageTicketDetails");
-        var urlGroup = common.modifyRelativeUrl("/MatchMonitor/GetArbitrageGroupsTicket");
+    function loadArbitrageGroups(criteria) {       
+        var urlGroup = common.modifyRelativeUrl("/MatchMonitor/GetArbitrageTicketsGroupSummary");
 
         common.showLoading();
         ticket_grid.DataTable().clear();
