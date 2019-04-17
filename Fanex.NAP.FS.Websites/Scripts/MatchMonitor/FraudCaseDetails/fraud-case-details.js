@@ -792,18 +792,12 @@
     };
 
     $('#ticket-tab table tbody').on('click', 'tr', function () {
-        var table = ticket_grid.DataTable();
-        var data = table.row(this).data();
+        if (isArbitrage) {
+            var table = ticket_grid.DataTable();
+            var data = table.row(this).data();
 
-        //var span = $('td span:first', this);
-        //if ($(span).is("span.icon-chevron-down")) {
-        //    $(span).removeClass("icon-chevron-down").addClass("icon-chevron-up");
-        //}
-        //else if ($(span).is("span.icon-chevron-up")) {
-        //    $(span).removeClass("icon-chevron-up").addClass("icon-chevron-down");
-        //}
-
-        collapseExpandGroup(data);
+            collapseExpandGroup(data);
+        }        
     });
 
     function collapseExpandGroup(obj) {
