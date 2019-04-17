@@ -744,23 +744,23 @@
                 }
             }
             //append fraud case detail
-            txtResult.AppendLine($"Match: {info.Home} - vs - {info.Away}, Date: {info.EventDate.ToString("MMM dd, yyyy").Replace(",", " -")}, HT/FT: {info.HTScore}/{info.FTScore}");
+            txtResult.AppendLine($"\"Match: {info.Home} - vs - {info.Away}\", \"Date: {info.EventDate.ToString("MMM dd, yyyy").Replace(",", " -")}\", \"HT/FT: {info.HTScore}/{info.FTScore}\"");
             //appdend filter
             if (array != null && array.Length >= 6)
             {
-                txtResult.AppendLine($"Market: {array[0]}, Currency: {array[1]}, Evidence: {array[2]}");
-                txtResult.AppendLine($"Trans Date From: {array[3]}, Trans Date To: {array[4]}, Score/HDP: {array[5]}");
+                txtResult.AppendLine($"\"Market: {array[0]}\", \"Currency: {array[1]}\", \"Evidence: {array[2]}\"");
+                txtResult.AppendLine($"\"Trans Date From: {array[3]}\", \"Trans Date To: {array[4]}\", \"Score/HDP: {array[5]}\"");
             }
 
-            txtResult.AppendLine("Member,Evidence,Dangerous Level,Currency,By IP,Bet ID,Betteam,Bettype,HDP,Score,Odds,Virtual Stake,Com.PT Stake,Full Stake,TransDate");
+            txtResult.AppendLine("\"Member\",\"Evidence\",\"Dangerous Level\",\"Currency\",\"By IP\",\"Bet ID\",\"Betteam\",\"Bettype\",\"HDP\",\"Score\",\"Odds\",\"Virtual Stake\",\"Com.PT Stake\",\"Full Stake\",\"TransDate\"");
 
             foreach (var item in lstArbitrageTicket)
             {
-                var fraudByIP = item.IsIPFraud ? "Yes" : "";
-                txtResult.AppendLine($"{item.Username},{item.Evidences.Join(" /")},{item.DangerousLevel}," +
-                       $"{item.Currency},{fraudByIP},{item.BetId},{item.BetTeam},{item.BettypeName},{item.Handicap},'{item.Score}," +
-                       $"{item.Odds},{item.Stake.Virtual},{item.Stake.ComPT}," +
-                       $"{item.Stake.Full},{item.TransDate.Replace(",", " -").Replace("<br/>", " ")}");
+                var fraudByIP = item.IsIPFraud ? "\"Yes\"" : "";
+                txtResult.AppendLine($"\"{item.Username}\",\"{item.Evidences.Join(" /")}\",\"{item.DangerousLevel}\"," +
+                       $"\"{item.Currency}\",\"{fraudByIP}\",\"{item.BetId}\",\"{item.BetTeam}\",\"{item.BettypeName}\",\"{item.Handicap}\",\"{item.Score}\"," +
+                       $"\"{item.Odds}\",\"{item.Stake.Virtual}\",\"{item.Stake.ComPT}\"," +
+                       $"\"{item.Stake.Full}\",\"{item.TransDate.Replace(",", " -").Replace("<br/>", " ")}\"");
             }
             return txtResult.ToString();
         }
@@ -772,24 +772,24 @@
             var lstArbitrageTicket = GetArbitrageTickets(ticketCriteria, lstScoreHDP).SelectMany(obj => obj.Home.Concat(obj.Away));
             var info = GetInfo(ticketCriteria.MatchId, (int)FraudCaseId.Arbitrage, ticketCriteria.EventDate);
 
-            //append fraud case detail
-            txtResult.AppendLine($"Match: {info.Home} - vs - {info.Away}, Date: {info.EventDate.ToString("MMM dd, yyyy").Replace(",", " -")}, HT/FT: {info.HTScore}/{info.FTScore}");
+            //append fraud case detail            
+            txtResult.AppendLine($"\"Match: {info.Home} - vs - {info.Away}\", \"Date: {info.EventDate.ToString("MMM dd, yyyy").Replace(",", " -")}\", \"HT/FT: {info.HTScore}/{info.FTScore}\"");
             //appdend filter
             if (array != null && array.Length >= 6)
-            {
-                txtResult.AppendLine($"Market: {array[0]}, Currency: {array[1]}, Evidence: {array[2]}");
-                txtResult.AppendLine($"Trans Date From: {array[3]}, Trans Date To: {array[4]}, Score/HDP: {array[5]}");
+            {              
+                txtResult.AppendLine($"\"Market: {array[0]}\", \"Currency: {array[1]}\", \"Evidence: {array[2]}\"");
+                txtResult.AppendLine($"\"Trans Date From: {array[3]}\", \"Trans Date To: {array[4]}\", \"Score/HDP: {array[5]}\"");
             }
-
-            txtResult.AppendLine("Member,Evidence,Dangerous Level,Currency,By IP,Bet ID,Betteam,Bettype,HDP,Score,Odds,Virtual Stake,Com.PT Stake,Full Stake,TransDate");
+            
+            txtResult.AppendLine("\"Member\",\"Evidence\",\"Dangerous Level\",\"Currency\",\"By IP\",\"Bet ID\",\"Betteam\",\"Bettype\",\"HDP\",\"Score\",\"Odds\",\"Virtual Stake\",\"Com.PT Stake\",\"Full Stake\",\"TransDate\"");
 
             foreach (var item in lstArbitrageTicket)
             {
-                var fraudByIP = item.IsIPFraud ? "Yes" : "";
-                txtResult.AppendLine($"{item.Username},{item.Evidences.Join(" /")},{item.DangerousLevel}," +
-                       $"{item.Currency},{fraudByIP},{item.BetId},{item.BetTeam},{item.BettypeName},{item.Handicap},'{item.Score}," +
-                       $"{item.Odds},{item.Stake.Virtual},{item.Stake.ComPT}," +
-                       $"{item.Stake.Full},{item.TransDate.Replace(",", " -").Replace("<br/>", " ")}");
+                var fraudByIP = item.IsIPFraud ? "\"Yes\"" : "";
+                txtResult.AppendLine($"\"{item.Username}\",\"{item.Evidences.Join(" /")}\",\"{item.DangerousLevel}\"," +
+                       $"\"{item.Currency}\",\"{fraudByIP}\",\"{item.BetId}\",\"{item.BetTeam}\",\"{item.BettypeName}\",\"{item.Handicap}\",\"{item.Score}\"," +
+                       $"\"{item.Odds}\",\"{item.Stake.Virtual}\",\"{item.Stake.ComPT}\"," +
+                       $"\"{item.Stake.Full}\",\"{item.TransDate.Replace(",", " -").Replace("<br/>", " ")}\"");
             }
             return txtResult.ToString();
         }
@@ -802,20 +802,20 @@
             var info = GetInfo(criteria.MatchId, (int)FraudCaseId.Arbitrage, criteria.EventDate);
 
             //append fraud case detail
-            txtResult.AppendLine($"Match: {info.Home} - vs - {info.Away}, Date: {info.EventDate.ToString("MMM dd, yyyy").Replace(",", " -")}, HT/FT: {info.HTScore}/{info.FTScore}");
+            txtResult.AppendLine($"\"Match: {info.Home} - vs - {info.Away}\", \"Date: {info.EventDate.ToString("MMM dd, yyyy").Replace(",", " -")}\", \"HT/FT: {info.HTScore}/{info.FTScore}\"");
 
             //appdend filter
             if (array != null && array.Length >= 6)
             {
-                txtResult.AppendLine($"Market: {array[0]}, Currency: {array[1]}, Evidence: {array[2]}");
-                txtResult.AppendLine($"Trans Date From: {array[3]}, Trans Date To: {array[4]}, Score/HDP: {array[5]}");
+                txtResult.AppendLine($"\"Market: {array[0]}\", \"Currency: {array[1]}\", \"Evidence: {array[2]}\"");
+                txtResult.AppendLine($"\"Trans Date From: {array[3]}\", \"Trans Date To: {array[4]}\", \"Score/HDP: {array[5]}\"");
             }
 
-            txtResult.AppendLine("Member,Currency,#Tickets,Total Stake,Total Win Loss,Evidence, Associated Accounts");
+            txtResult.AppendLine("\"Member\",\"Currency\",\"#Tickets\",\"Total Stake\",\"Total Win Loss\",\"Evidence\", \"Associated Accounts\"");
 
             foreach (var item in arbitrageCustomers)
             {
-                txtResult.AppendLine($"{item.Member},{item.CurrencyName},{item.Tickets},{item.TotalStake},{item.TotalWinLoss},{item.Evidence},{item.AssociatedAccounts}");
+                txtResult.AppendLine($"\"{item.Member}\",\"{item.CurrencyName}\",\"{item.Tickets}\",\"{item.TotalStake}\",\"{item.TotalWinLoss}\",\"{item.Evidence}\",\"{item.AssociatedAccounts}\"");
             }
 
             return txtResult.ToString();

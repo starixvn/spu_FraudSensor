@@ -178,7 +178,7 @@
             var content = _fraudCaseDetailService.ExportArbitrageTicketAllCsv(criteria, lstScoreHDP, filterInfo);
             var encoded = Encoding.UTF8.GetBytes(content);
 
-            return File(encoded, "text/plain", "FraudCaseDetails_" + DateTime.Today.ToString("yyyyMMdd") + ".csv");
+            return File(encoded, "text/plain", "FraudCaseDetails_Tickets_" + DateTime.Today.ToString("yyyyMMdd") + ".csv");
         }
 
         public ActionResult ExportCSVArbitrageCustomers(GetArbitrageCustomerCriteria criteria)
@@ -190,7 +190,7 @@
             var content = _fraudCaseDetailService.ExportArbitrageCustomersCsv(criteria, lstScoreHDP, filterInfo);
             var encoded = Encoding.UTF8.GetBytes(content);
 
-            return File(encoded, "text/plain", "FraudCaseDetails_" + DateTime.Today.ToString("yyyyMMdd") + ".csv");
+            return File(encoded, "text/plain", "FraudCaseDetails_Customers_" + DateTime.Today.ToString("yyyyMMdd") + ".csv");
         }
 
         public ActionResult ExportExcelForDetail(int fraudCaseId, int matchId, DateTime eventDate)
@@ -210,7 +210,7 @@
             var content = _fraudCaseDetailService.ExportArbitrageTicketByGroupCsv(criteria, lstScoreHDP, groupId, score, handicap, filterInfo);
             var encoded = Encoding.UTF8.GetBytes(content);
 
-            return File(encoded, "text/plain", "FraudCaseDetails_" + DateTime.Today.ToString("yyyyMMdd") + ".csv");
+            return File(encoded, "text/plain", "FraudCaseDetails_Tickets_" + DateTime.Today.ToString("yyyyMMdd") + ".csv");
         }
 
         private string[] GenerateFilterInfoForCsv(ArbitrageDetailsCriteria criteria)
