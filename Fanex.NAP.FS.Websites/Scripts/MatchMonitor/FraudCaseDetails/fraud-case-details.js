@@ -794,7 +794,6 @@
 
     $('#ticket-tab table tbody').on('click', 'tr', function () {
         var table = ticket_grid.DataTable();
-        var index = table.row(this).index();
         var data = table.row(this).data();
 
         var span = $('td span:first', this);
@@ -811,6 +810,8 @@
     });
 
     function collapseExpandGroup(obj) {
+        common.showLoading();
+
         var url = common.modifyRelativeUrl("/MatchMonitor/GetListArbitrageTickets");
         
         evidenceCode = getEvidenceSelected();
@@ -825,7 +826,7 @@
             keyName: keyName,
             matchId: parameters.matchId,
             eventDate: parameters.eventDate
-        };        
+        };                
 
         $.ajax({
             type: 'GET',
