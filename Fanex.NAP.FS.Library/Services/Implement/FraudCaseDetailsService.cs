@@ -147,7 +147,7 @@
             {
                 var custInfo = query.Read<CustInfo>();
 
-                IEnumerable<CustomerEvidence> custEvidence = new CustomerEvidence[0];
+                IEnumerable<CustomerEvidence> custEvidence = GetEvidences(custInfo.Select(info => info.CustId));
 
                 var otherEvidenceCode = AppSettings.Get("FPS_GET_OTHER_EVIDENCES");
 
