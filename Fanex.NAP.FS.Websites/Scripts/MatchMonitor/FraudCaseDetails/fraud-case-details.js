@@ -16,6 +16,7 @@
     var totalTicket = 0;    
     var arrGroupTicket = [];   
     var groupExpand = "";
+    var groupExportCSV = 0;
 
     from_date.datepicker({       
         changeMonth: true,
@@ -130,7 +131,7 @@
     }
 
     function loadTicketGridArbitrage(criteria) {
-        if (isArbitrage) {            
+        if (isArbitrage) {
             loadArbitrageGroups(criteria);
         }
         else {
@@ -414,8 +415,7 @@
        
         var keyName = "";
         var data = (json || []).reduce(function (arr, obj) {
-            obj.key = true;
-            //arr.push(obj);
+            obj.key = true;          
             keyName = obj.Score + " " + obj.BettypeName + " " + obj.Handicap;
 
             if (obj.Home.length + obj.Away.length < 1000) {
@@ -497,6 +497,7 @@
     }    
 
     function renderArbitrageCSV(e) {
+        groupExportCSV = 1;
         var url = common.modifyRelativeUrl("/MatchMonitor/ExportCSVArbitrageTicketByGroup");
 
         var obj = e.data;
@@ -580,14 +581,14 @@
                     var totalTicket = obj.Home.length + obj.Away.length;
                     var td = "";
                     if (totalTicket > 1000) {
-                        td = $(`<td colspan='21' class='group' style='cursor: initial'><span class='icon-chevron-down'></span> <span class='bage'>${obj.BettypeName} ${obj.Handicap}</span> <span class="bage">${obj.Score}</span> <span class='bage'>${totalTicket}</span> <span class="bage" style="color:red;">Too much data. Export CSV file instead!</span> <button class="button -export"><span class="icon-export-excel"></span></button></td>`);
+                        td = $(`<td colspan='21' class='group' style='cursor: initial'><span class='icon-chevron-down'></span> <span class='bage'>${obj.BettypeName} ${obj.Handicap}</span> <span class="bage">${obj.Score}</span> <span class='bage'>Tickets: ${totalTicket}</span> <span class="bage" style="color:red;">Too much data. Export CSV file instead!</span> <button class="button -export"><span class="icon-export-excel"></span></button></td>`);
                     }
                     else {
                         var keyName = obj.Score + " " + obj.BettypeName + " " + obj.Handicap;
                         if (groupExpand == keyName) {
-                            td = $(`<td colspan='21' class='group' style='cursor: initial'><span class='icon-chevron-up' style='cursor: pointer;'></span><span class='bage' style='cursor: pointer;'>${obj.BettypeName} ${obj.Handicap}</span> <span class='bage' style='cursor: pointer;'>${obj.Score}</span> <span class='bage' style='cursor: pointer;'>${totalTicket}</span><button class="button -export"><span class="icon-export-excel"></span></button></td>`);
+                            td = $(`<td colspan='21' class='group' style='cursor: initial'><span class='icon-chevron-up' style='cursor: pointer;'></span><span class='bage' style='cursor: pointer;'>${obj.BettypeName} ${obj.Handicap}</span> <span class='bage' style='cursor: pointer;'>${obj.Score}</span> <span class='bage' style='cursor: pointer;'>Tickets: ${totalTicket}</span><button class="button -export"><span class="icon-export-excel"></span></button></td>`);
                         } else {
-                            td = $(`<td colspan='21' class='group' style='cursor: initial'><span class='icon-chevron-down' style='cursor: pointer;'></span><span class='bage' style='cursor: pointer;'>${obj.BettypeName} ${obj.Handicap}</span> <span class='bage' style='cursor: pointer;'>${obj.Score}</span> <span class='bage' style='cursor: pointer;'>${totalTicket}</span><button class="button -export"><span class="icon-export-excel"></span></button></td>`);
+                            td = $(`<td colspan='21' class='group' style='cursor: initial'><span class='icon-chevron-down' style='cursor: pointer;'></span><span class='bage' style='cursor: pointer;'>${obj.BettypeName} ${obj.Handicap}</span> <span class='bage' style='cursor: pointer;'>${obj.Score}</span> <span class='bage' style='cursor: pointer;'>Tickets: ${totalTicket}</span><button class="button -export"><span class="icon-export-excel"></span></button></td>`);
                         }
                     }                  
                     $(".button.-export", td).click(obj, renderArbitrageCSV);
@@ -673,55 +674,40 @@
         common.showLoading();
         ticket_grid.DataTable().clear();
 
-        //case all    
-        if (criteria.keyName == "-1") {
-            $.ajax({
-                type: 'POST',
-                url: urlGroup,
-                data: criteria,
-                success: function (response) {
-                    if (response != null) {
-                        renderArbitrageGroups(response.Content);
-                    }
-                },
-                error: function (err) {
-                    loadError(err);
+        $.ajax({
+            type: 'POST',
+            url: urlGroup,
+            data: criteria,
+            success: function (response) {
+                if (response != null) {
+                    renderArbitrageGroups(response.Content);
                 }
-            });
-        }
-        else {
-            $.ajax({
-                type: 'POST',
-                url: url,
-                data: criteria,
-                success: function (response) {
-                    if (response != null) {
-                        renderArbitrageGrid(response.Content);
-                    }
-                },
-                error: function (err) {
-                    loadError(err);
-                }
-            });
-        }
+            },
+            error: function (err) {
+                loadError(err);
+            }
+        });      
     };
 
     $('#ticket-tab table tbody').on('click', 'tr', function () {
         if (isArbitrage) {
-            var table = ticket_grid.DataTable();
-            var data = table.row(this).data();
-            if (data.key == true) {
-                var span = $('td span:first', this);
-                
-                if ($(span).is("span.icon-chevron-down")) {
-                    $(span).removeClass("icon-chevron-down").addClass("icon-chevron-up");
-                    expandGroup(data);
+            if (groupExportCSV == 0) {
+                var table = ticket_grid.DataTable();
+                var data = table.row(this).data();
+                if (data.key == true) {
+                    var span = $('td span:first', this);
+
+                    if ($(span).is("span.icon-chevron-down")) {
+                        $(span).removeClass("icon-chevron-down").addClass("icon-chevron-up");
+                        expandGroup(data);
+                    }
+                    else if ($(span).is("span.icon-chevron-up")) {
+                        $(span).removeClass("icon-chevron-up").addClass("icon-chevron-down");
+                        collapseGroup();
+                    }
                 }
-                else if ($(span).is("span.icon-chevron-up")) {
-                    $(span).removeClass("icon-chevron-up").addClass("icon-chevron-down");
-                    collapseGroup();
-                }                
             }
+            groupExportCSV = 0;
         }
     });
 
