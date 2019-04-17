@@ -512,6 +512,25 @@ BEGIN
 		WHERE si.MatchID IS NULL
 		GROUP BY ft.CustId, ft.MatchId, ft.EventDate;			
 		
+		-- Update table SuspiciousCustomer if existed
+		WITH rs AS
+		(
+			SELECT		CustId, Username
+			FROM		#tmpFraudTickets WITH(NOLOCK)
+			GROUP BY	custid, username 
+		)
+		UPDATE	sc WITH (ROWLOCK, UPDLOCK)
+		SET		sc.IsVerified = 0, sc.Username = rs.Username
+		FROM	dbo.SuspiciousCustomer AS sc
+				INNER JOIN rs ON sc.custid = rs.custid;
+		
+		-- Insert new records for table SuspiciousCustomer
+		INSERT INTO dbo.SuspiciousCustomer(Custid, IsDelinquent, IsHedge, IsDirty, IsVerified, Username, CurrencyId, CurrencyName)
+		SELECT DISTINCT ft.CustId, 0, 0, 0, 0, ft.Username, ft.CurrencyId,ft.CurrencyName
+		FROM #tmpFraudTickets ft WITH (NOLOCK)
+				LEFT JOIN dbo.SuspiciousCustomer sc WITH (NOLOCK) ON ft.CustId = sc.CustId
+		WHERE	sc.CustId IS NULL;
+
 	END;
 
 		-- Update table ScannedMatch if existed
@@ -536,26 +555,7 @@ BEGIN
 		FROM #tmpMatches m WITH(NOLOCK)
 			LEFT JOIN dbo.ScannedMatch sm WITH (NOLOCK)ON m.matchid = sm.matchid AND sm.FraudCaseId = @CurrentFraudCaseId
 		WHERE sm.Matchid IS NULL 
-			AND sm.FraudCaseId IS NULL;	
-
-		-- Update table SuspiciousCustomer if existed
-		WITH rs AS
-		(
-			SELECT		CustId, Username
-			FROM		#tmpFraudTickets WITH(NOLOCK)
-			GROUP BY	custid, username 
-		)
-		UPDATE	sc WITH (ROWLOCK, UPDLOCK)
-		SET		sc.IsVerified = 0, sc.Username = rs.Username
-		FROM	dbo.SuspiciousCustomer AS sc
-				INNER JOIN rs ON sc.custid = rs.custid;
-		
-		-- Insert new records for table SuspiciousCustomer
-		INSERT INTO dbo.SuspiciousCustomer(Custid, IsDelinquent, IsHedge, IsDirty, IsVerified, Username, CurrencyId, CurrencyName)
-		SELECT DISTINCT ft.CustId, 0, 0, 0, 0, ft.Username, ft.CurrencyId,ft.CurrencyName
-		FROM #tmpFraudTickets ft WITH (NOLOCK)
-				LEFT JOIN dbo.SuspiciousCustomer sc WITH (NOLOCK) ON ft.CustId = sc.CustId
-		WHERE	sc.CustId IS NULL;
+			AND sm.FraudCaseId IS NULL;
 
 	--Remove the XML documents
 	EXEC sp_xml_removedocument @idocMatch;
