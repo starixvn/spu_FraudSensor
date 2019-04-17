@@ -511,7 +511,7 @@
             if (criteria.EvidenceCodeList != null && criteria.EvidenceCodeList.Contains(otherEvidenceCode))
             {
                 data = HandleArbitrageOtherEvidence(rawData, listEvi, criteria.EvidenceCodeList);
-                criteria.TotalTicket = criteria.TotalTicket = data.Sum(c => c.Home.Count() + c.Away.Count());
+                criteria.TotalTicket = data.Sum(c => c.Home.Count() + c.Away.Count());
                 return data;
             }
 
@@ -521,7 +521,7 @@
             }
 
             data = HandleArbitrage(rawData, listEvi, string.IsNullOrEmpty(criteria.EvidenceCodeList));
-            criteria.TotalTicket = criteria.TotalTicket = data.Sum(c => c.Home.Count() + c.Away.Count());
+            criteria.TotalTicket = data.Sum(c => c.Home.Count() + c.Away.Count());
             return data;
         }
 
@@ -549,7 +549,7 @@
             if (criteria.EvidenceCodeList != null && criteria.EvidenceCodeList.Contains(otherEvidenceCode))
             {
                 data = HandleArbitrageOtherEvidence(rawData, listEvi, criteria.EvidenceCodeList);
-                criteria.TotalTicket = criteria.TotalTicket = data.Sum(c => c.Home.Count() + c.Away.Count());
+                criteria.TotalTicket = data.Sum(c => c.Home.Count() + c.Away.Count());
                 return data;
             }
 
@@ -559,7 +559,7 @@
             }
 
             data = HandleArbitrage(rawData, listEvi, string.IsNullOrEmpty(criteria.EvidenceCodeList));
-            criteria.TotalTicket = criteria.TotalTicket = data.Sum(c => c.Home.Count() + c.Away.Count());
+            criteria.TotalTicket = data.Sum(c => c.Home.Count() + c.Away.Count());
             return data;
         }
 
@@ -597,7 +597,7 @@
                     Score = $"{t.LiveHomeScore} - {t.LiveAwayScore}",
                     IsIPFraud = t.IsIPFraud
                 })
-                    .OrderBy(g => GetOrder(CachedRef.GetBettypeName(g.Key.Item1)))
+                   .OrderBy(g => g.Key.Item1).ThenBy(g => g.Key.Item3).ThenBy(g => g.Key.Item4).ThenBy(g => g.Key.Item2)
                     .Select(g =>
                     {
                         var tmp = g.OrderBy(t => t.RawTransDate).ThenBy(t => t.Username).ToList();
@@ -651,7 +651,7 @@
                     Score = $"{t.LiveHomeScore} - {t.LiveAwayScore}",
                     IsIPFraud = t.IsIPFraud
                 })
-                .OrderBy(g => GetOrder(CachedRef.GetBettypeName(g.Key.Item1)))
+                .OrderBy(g => g.Key.Item1).ThenBy(g=>g.Key.Item3).ThenBy(g=>g.Key.Item4).ThenBy(g => g.Key.Item2)
                 .Select(g =>
                 {
                     var tmp = g.OrderBy(t => t.RawTransDate).ThenBy(t => t.Username).ToList();
