@@ -14,7 +14,8 @@
     var filter = {};
 
     var totalTicket = 0;    
-    var arrGroupTicket = [];
+    var arrGroupTicket = [];   
+    var groupExpand = "";
 
     from_date.datepicker({       
         changeMonth: true,
@@ -414,7 +415,7 @@
         var keyName = "";
         var data = (json || []).reduce(function (arr, obj) {
             obj.key = true;
-            arr.push(obj);
+            //arr.push(obj);
             keyName = obj.Score + " " + obj.BettypeName + " " + obj.Handicap;
 
             if (obj.Home.length + obj.Away.length < 1000) {
@@ -434,18 +435,16 @@
 
             return arr;
         }, []);
-
+       
         //each list group
         var dataGroup = [];
         $.each(arrGroupTicket, function (index, value) {
             var keyTemp = value.Score + " " + value.BettypeName + " " + value.Handicap;
-            if (keyName == keyTemp) {
+            dataGroup.push(value);
+            if (keyName == keyTemp) {                
                 var newArray = $.merge(dataGroup, data);
                 dataGroup = newArray;
-            }
-            else {
-                dataGroup.push(value);
-            }
+            }           
         });
 
         ticket_grid.DataTable().rows.add(dataGroup).draw();
@@ -578,13 +577,22 @@
             ],
             createdRow: function (row, obj) {
                 if (obj.key) {
-                    var totalTicket = obj.Home.length + obj.Away.length;               
-                    var td = (totalTicket > 1000) ? $(`<td colspan='21' class='group' style='cursor: initial'><span class='icon-chevron-down'></span> <span class='bage'>${obj.BettypeName} ${obj.Handicap}</span> <span class="bage">${obj.Score}</span> <span class='bage'>${totalTicket}</span> <span class="bage" style="color:red;">Too much data. Export CSV file instead!</span> <button class="button -export"><span class="icon-export-excel"></span></button></td>`)
-                        : $(`<td colspan='21' class='group' style='cursor: initial'><span class='icon-chevron-down' style='cursor: pointer;'></span><span class='bage' style='cursor: pointer;'>${obj.BettypeName} ${obj.Handicap}</span> <span class='bage' style='cursor: pointer;'>${obj.Score}</span> <span class='bage' style='cursor: pointer;'>${totalTicket}</span><button class="button -export"><span class="icon-export-excel"></span></button></td>`);
-
+                    var totalTicket = obj.Home.length + obj.Away.length;
+                    var td = "";
+                    if (totalTicket > 1000) {
+                        td = $(`<td colspan='21' class='group' style='cursor: initial'><span class='icon-chevron-down'></span> <span class='bage'>${obj.BettypeName} ${obj.Handicap}</span> <span class="bage">${obj.Score}</span> <span class='bage'>${totalTicket}</span> <span class="bage" style="color:red;">Too much data. Export CSV file instead!</span> <button class="button -export"><span class="icon-export-excel"></span></button></td>`);
+                    }
+                    else {
+                        var keyName = obj.Score + " " + obj.BettypeName + " " + obj.Handicap;
+                        if (groupExpand == keyName) {
+                            td = $(`<td colspan='21' class='group' style='cursor: initial'><span class='icon-chevron-up' style='cursor: pointer;'></span><span class='bage' style='cursor: pointer;'>${obj.BettypeName} ${obj.Handicap}</span> <span class='bage' style='cursor: pointer;'>${obj.Score}</span> <span class='bage' style='cursor: pointer;'>${totalTicket}</span><button class="button -export"><span class="icon-export-excel"></span></button></td>`);
+                        } else {
+                            td = $(`<td colspan='21' class='group' style='cursor: initial'><span class='icon-chevron-down' style='cursor: pointer;'></span><span class='bage' style='cursor: pointer;'>${obj.BettypeName} ${obj.Handicap}</span> <span class='bage' style='cursor: pointer;'>${obj.Score}</span> <span class='bage' style='cursor: pointer;'>${totalTicket}</span><button class="button -export"><span class="icon-export-excel"></span></button></td>`);
+                        }
+                    }                  
                     $(".button.-export", td).click(obj, renderArbitrageCSV);
-
-                    $(row).empty().html(td);                                      
+                    $(row).empty().html(td);
+                    
                 }
                 else if (obj.Home.Username == null) {
                     var td = $("<td colspan='10'></td>");
@@ -599,7 +607,7 @@
                     $("td:gt(10)", row).remove();
 
                     $(row).append(td);
-                }
+                }              
             }         
         });
     }
@@ -702,20 +710,29 @@
         if (isArbitrage) {
             var table = ticket_grid.DataTable();
             var data = table.row(this).data();
-            console.log(data);
-            if (data.key == true){
-                collapseExpandGroup(data);
+            if (data.key == true) {
+                var span = $('td span:first', this);
+                
+                if ($(span).is("span.icon-chevron-down")) {
+                    $(span).removeClass("icon-chevron-down").addClass("icon-chevron-up");
+                    expandGroup(data);
+                }
+                else if ($(span).is("span.icon-chevron-up")) {
+                    $(span).removeClass("icon-chevron-up").addClass("icon-chevron-down");
+                    collapseGroup();
+                }                
             }
-        }        
+        }
     });
 
-    function collapseExpandGroup(obj) {
+    function expandGroup(obj) {
         common.showLoading();
 
         var url = common.modifyRelativeUrl("/MatchMonitor/GetListArbitrageTickets");
         
         evidenceCode = getEvidenceSelected();
         var keyName = obj.Score + " " + obj.BettypeName + " " + obj.Handicap;
+        groupExpand = keyName;
 
         var criteria = {
             liveStatus: $("#market").val(),
@@ -743,12 +760,24 @@
         });
     };
    
+    function collapseGroup() {
+        ticket_grid.DataTable().clear();
+        groupExpand = "";       
+
+        ticket_grid.DataTable().rows.add(arrGroupTicket).draw();
+
+        if (n != 0) {
+            $("#DataTables_Table_0_info").text(`Displaying 1 to ${n} of ${n} item(s)`);
+        }
+    };
+
     function loadError(error) {
         console.log(error);
     };
 
     function loadGrids() {
         arrGroupTicket = [];
+        groupExpand = "";
         evidenceCode = getEvidenceSelected();
         var transDateFrom = $("#transDateFrom").val();
         var transDateTo = $("#transDateTo").val();
