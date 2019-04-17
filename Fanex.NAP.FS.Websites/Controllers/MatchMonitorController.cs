@@ -42,6 +42,7 @@
             return View(_matchMonitorService.GetBalanceUpDate());
         }
 
+        #region Common
         [HttpPost]
         public ActionResult GetMatches(MatchGetAllCriteria criteria)
         {
@@ -76,143 +77,6 @@
             return File(_matchMonitorService.ExportExcel(criteria, templatePath), "application/vnd.ms-excel", fileName);
         }
 
-        public ActionResult GetFraudCaseDetails(int fraudCaseId, int matchId, DateTime eventDate, int violations)
-        {
-            var model = _fraudCaseDetailService.GetInfo(matchId, fraudCaseId, eventDate);
-
-            ViewBag.BUDate = _matchMonitorService.GetBalanceUpDate().BalanceUpDay;
-            ViewBag.EvidenceList = _fraudCaseDetailService.GetListEvidences();
-
-            return View("FraudCaseDetails/Index", model);
-        }
-
-        public ActionResult GetFraudCaseTicketDetails(int fraudCaseId, int matchId, DateTime eventDate)
-        {
-            var data =
-                _fraudCaseDetailService.GetTicketDetails(matchId, fraudCaseId, eventDate, IsShowSpecialCurrencies)
-                .GroupBy(t => t.Bettype)
-                .Select(g => new { key = g.Key, data = g.AsEnumerable() });
-
-            return Json(data, JsonRequestBehavior.AllowGet);
-        }
-
-        public ActionResult GetFraudCaseCustomerDetails(int fraudCaseId, int matchId, DateTime eventDate)
-        {
-            var data = _fraudCaseDetailService.GetCustomerDetails(matchId, fraudCaseId, eventDate, IsShowSpecialCurrencies);
-
-            return Json(data, JsonRequestBehavior.AllowGet);
-        }
-
-        [HttpPost]
-        public JsonResult GetFraudCaseCustomerDetails(GetCustomerArbitrageCriteria criteria)
-        {
-            IEnumerable<ScoreHDP> lstScoreHDP = _fraudCaseDetailService.GetScoreHDP(criteria.MatchId, IsShowSpecialCurrencies);
-            criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
-            var data = _fraudCaseDetailService.GetCustomerArbitrageDetails(criteria, lstScoreHDP);
-
-            return Json(data, JsonRequestBehavior.AllowGet);
-        }
-  
-        [HttpPost]
-        public ActionResult GetArbitrageTicketDetails(GetArbitrageTicketCriteria criteria)
-        {
-            IEnumerable<ScoreHDP> lstScoreHDP = _fraudCaseDetailService.GetScoreHDP(criteria.MatchId, IsShowSpecialCurrencies);
-            criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
-            var data = _fraudCaseDetailService.GetArbitrageTickets(criteria, lstScoreHDP);
-            return new JsonResult { Data = new { Download = false, Content = data } };
-        }
-       
-        public ActionResult GetListArbitrageTickets(GetArbitrageTicketCriteria criteria)
-        {
-            criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
-            var data = _fraudCaseDetailService.GetListArbitrageTickets(criteria);
-            return Json(data, JsonRequestBehavior.AllowGet);
-        }
-
-        [HttpPost]
-        public ActionResult GetArbitrageGroupsTicket(GetArbitrageTicketCriteria criteria)
-        {
-            IEnumerable<ScoreHDP> lstScoreHDP = _fraudCaseDetailService.GetScoreHDP(criteria.MatchId, IsShowSpecialCurrencies);
-            criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
-            var data = _fraudCaseDetailService.GetArbitrageTickets(criteria, lstScoreHDP);
-            return new JsonResult { Data = new { Content = data } };
-        }
-
-        public ActionResult ExportCSVArbitrageTicketAll(int liveStatus, string evidenceCodeList, int currencyId, string strDateFrom, string strDateTo, string keyName, int matchId, DateTime eventDate)
-        {           
-            DateTime transDateFrom = DateTime.MinValue;
-            DateTime transDateTo = DateTime.MinValue;
-            if (!string.IsNullOrEmpty(strDateFrom))
-            {
-                transDateFrom = DateTime.Parse(strDateFrom);
-            }
-
-            if (!string.IsNullOrEmpty(strDateTo))
-            {
-                transDateTo = DateTime.Parse(strDateTo);
-            }
-
-            GetArbitrageTicketCriteria criteria = new GetArbitrageTicketCriteria
-            {
-                LiveStatus = liveStatus,
-                EvidenceCodeList = evidenceCodeList,
-                CurrencyId = currencyId,
-                TransDateTo = transDateTo,
-                TransDateFrom = transDateFrom,
-                KeyName = keyName,
-                MatchId = matchId,
-                EventDate = eventDate,
-                IsShowSpecialCurrencies = IsShowSpecialCurrencies
-            };
-
-            IEnumerable<ScoreHDP> lstScoreHDP = _fraudCaseDetailService.GetScoreHDP(criteria.MatchId, IsShowSpecialCurrencies);
-
-            #region fill data filter
-            string[] array = new string[6];
-
-            //get Market
-            array[0] = criteria.LiveStatus == -1 ? "All" : (criteria.LiveStatus == 0 ? "Non-Live" : "Live");
-
-            //get Currency
-            var obj = HttpContext.Cache["ListCurrency"];
-            if (obj != null)
-            {
-                IEnumerable<Currency> lstObject = obj as IEnumerable<Currency>;
-                Currency currency = lstObject.FirstOrDefault(c => c.CurrencyId == criteria.CurrencyId.ToString());
-                array[1] = currency != null ? currency.CurrencyName : "All";
-            }
-
-            //get Evidence name
-            string strCode = string.Empty;
-            var otherEvidenceCode = AppSettings.Get("FPS_GET_OTHER_EVIDENCES");
-            if (otherEvidenceCode != null && criteria.EvidenceCodeList != null)
-            {
-                strCode = criteria.EvidenceCodeList;
-                strCode = strCode.Replace(otherEvidenceCode, "Others");
-                strCode = strCode.Replace(',', '/');
-            }
-            array[2] = strCode;
-            //From date, to date
-            array[3] = strDateFrom != null ? strDateFrom.Replace(',', '-') : string.Empty;
-            array[4] = strDateTo != null ? strDateTo.Replace(',', '-') : string.Empty;
-            //get Score/HDP
-            array[5] = criteria.KeyName == "-1" ? "All" : criteria.KeyName;
-            #endregion fill data filter
-
-            var content = _fraudCaseDetailService.ExportArbitrageTicketAllCsv(criteria, lstScoreHDP, array);
-            var encoded = Encoding.UTF8.GetBytes(content);
-
-            return File(encoded, "text/plain", "FraudCaseDetails_" + DateTime.Today.ToString("yyyyMMdd") + ".csv");
-        }
-
-        public ActionResult ExportExcelForDetail(int fraudCaseId, int matchId, DateTime eventDate)
-        {
-            var template = Server.MapPath("~/App_Data/Excel Template/MatchMonitor/FraudCaseDetail/template.xlsx");
-
-            var fileName = string.Format("FraudCaseDetails_{0}.xlsx", DateTime.Today.ToString("yyyyMMdd"));
-            return File(_fraudCaseDetailService.ExportExcel(matchId, fraudCaseId, eventDate, template, IsShowSpecialCurrencies), "application/vnd.ms-excel", fileName);
-        }
-
         [HttpPost]
         public ActionResult UpdateMatchNote(MatchNoteUpdateCriteria criteria)
         {
@@ -245,7 +109,107 @@
 
             return ExcelFile(_fraudCaseDetailService.ExportToExcelIpTickets(ip, template, IsShowSpecialCurrencies), fileName);
         }
-      
+
+        #endregion Common
+
+        #region Other Fraud Cases
+        public ActionResult GetFraudCaseDetails(int fraudCaseId, int matchId, DateTime eventDate, int violations)
+        {
+            var model = _fraudCaseDetailService.GetInfo(matchId, fraudCaseId, eventDate);
+
+            ViewBag.BUDate = _matchMonitorService.GetBalanceUpDate().BalanceUpDay;
+            ViewBag.EvidenceList = _fraudCaseDetailService.GetListEvidences();
+
+            return View("FraudCaseDetails/Index", model);
+        }
+
+        public ActionResult GetFraudCaseTicketDetails(int fraudCaseId, int matchId, DateTime eventDate)
+        {
+            var data =
+                _fraudCaseDetailService.GetTicketDetails(matchId, fraudCaseId, eventDate, IsShowSpecialCurrencies)
+                .GroupBy(t => t.Bettype)
+                .Select(g => new { key = g.Key, data = g.AsEnumerable() });
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult GetFraudCaseCustomerDetails(int fraudCaseId, int matchId, DateTime eventDate)
+        {
+            var data = _fraudCaseDetailService.GetCustomerDetails(matchId, fraudCaseId, eventDate, IsShowSpecialCurrencies);
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public JsonResult GetFraudCaseCustomerDetails(GetArbitrageCustomerCriteria criteria)
+        {
+            IEnumerable<ScoreHDP> lstScoreHDP = _fraudCaseDetailService.GetScoreHDP(criteria.MatchId, IsShowSpecialCurrencies);
+            criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
+            var data = _fraudCaseDetailService.GetCustomerArbitrageDetails(criteria, lstScoreHDP);
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        #endregion Other Fraud Cases
+
+        #region Arbitrage
+        [HttpPost]
+        public ActionResult GetArbitrageTicketDetails(GetArbitrageTicketCriteria criteria)
+        {
+            IEnumerable<ScoreHDP> lstScoreHDP = _fraudCaseDetailService.GetScoreHDP(criteria.MatchId, IsShowSpecialCurrencies);
+            criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
+            var data = _fraudCaseDetailService.GetArbitrageTickets(criteria, lstScoreHDP);
+            return new JsonResult { Data = new { Download = false, Content = data } };
+        }
+       
+        public ActionResult GetListArbitrageTickets(GetArbitrageTicketCriteria criteria)
+        {
+            criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
+            var data = _fraudCaseDetailService.GetListArbitrageTickets(criteria);
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public ActionResult GetArbitrageGroupsTicket(GetArbitrageTicketCriteria criteria)
+        {
+            IEnumerable<ScoreHDP> lstScoreHDP = _fraudCaseDetailService.GetScoreHDP(criteria.MatchId, IsShowSpecialCurrencies);
+            criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
+            var data = _fraudCaseDetailService.GetArbitrageTickets(criteria, lstScoreHDP);
+            return new JsonResult { Data = new { Content = data } };
+        }
+
+        public ActionResult ExportCSVArbitrageTickets(GetArbitrageTicketCriteria criteria)
+        {           
+            IEnumerable<ScoreHDP> lstScoreHDP = _fraudCaseDetailService.GetScoreHDP(criteria.MatchId, IsShowSpecialCurrencies);
+            criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
+
+            string[] filterInfo = GenerateFilterInfoForCsv(criteria);
+            var content = _fraudCaseDetailService.ExportArbitrageCsv(criteria, lstScoreHDP, filterInfo);
+            var encoded = Encoding.UTF8.GetBytes(content);
+
+            return File(encoded, "text/plain", "FraudCaseDetails_" + DateTime.Today.ToString("yyyyMMdd") + ".csv");
+        }
+
+        public ActionResult ExportCSVArbitrageCustomers(GetArbitrageCustomerCriteria criteria)
+        {
+            IEnumerable<ScoreHDP> lstScoreHDP = _fraudCaseDetailService.GetScoreHDP(criteria.MatchId, IsShowSpecialCurrencies);
+            criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
+
+            string[] filterInfo = GenerateFilterInfoForCsv(criteria);
+            var content = _fraudCaseDetailService.ExportArbitrageCustomersCsv(criteria, lstScoreHDP, filterInfo);
+            var encoded = Encoding.UTF8.GetBytes(content);
+
+            return File(encoded, "text/plain", "FraudCaseDetails_" + DateTime.Today.ToString("yyyyMMdd") + ".csv");
+        }
+
+        public ActionResult ExportExcelForDetail(int fraudCaseId, int matchId, DateTime eventDate)
+        {
+            var template = Server.MapPath("~/App_Data/Excel Template/MatchMonitor/FraudCaseDetail/template.xlsx");
+
+            var fileName = string.Format("FraudCaseDetails_{0}.xlsx", DateTime.Today.ToString("yyyyMMdd"));
+            return File(_fraudCaseDetailService.ExportExcel(matchId, fraudCaseId, eventDate, template, IsShowSpecialCurrencies), "application/vnd.ms-excel", fileName);
+        }
+
         public ActionResult ExportCSVArbitrageTicketByGroup(int liveStatus, string evidenceCodeList, int currencyId, string strDateFrom, string strDateTo, string keyName, int matchId, DateTime eventDate, 
                                                             int groupId, string score, decimal handicap)
         {
@@ -265,28 +229,40 @@
                 LiveStatus = liveStatus,
                 EvidenceCodeList = evidenceCodeList,
                 CurrencyId = currencyId,
-                TransDateTo = transDateTo,
-                TransDateFrom = transDateFrom,
+                TransDateToString = strDateTo,
+                TransDateFromString = strDateFrom,
                 KeyName = keyName,
                 MatchId = matchId,
                 EventDate = eventDate,
                 IsShowSpecialCurrencies = IsShowSpecialCurrencies
             };
-            
-            string[] array = new string[6];
 
-            //get Market
-            array[0] = criteria.LiveStatus == -1 ? "All" : (criteria.LiveStatus == 0 ? "Non-Live" : "Live");
+            string[] filterInfo = GenerateFilterInfoForCsv(criteria);
 
-            //get Currency
+            IEnumerable<ScoreHDP> lstScoreHDP = _fraudCaseDetailService.GetScoreHDP(criteria.MatchId, IsShowSpecialCurrencies);
+            var content = _fraudCaseDetailService.ExportArbitrageCsv(criteria, lstScoreHDP, groupId, score, handicap, filterInfo);
+            var encoded = Encoding.UTF8.GetBytes(content);
+
+            return File(encoded, "text/plain", "FraudCaseDetails_" + DateTime.Today.ToString("yyyyMMdd") + ".csv");
+        }
+
+        private string[] GenerateFilterInfoForCsv(ArbitrageDetailsCriteria criteria)
+        {
+            string[] filterInfo = new string[6];
+
+            // get Market
+            filterInfo[0] = criteria.LiveStatus == -1 ? "All" : (criteria.LiveStatus == 0 ? "Non-Live" : "Live");
+
+            // get Currency
             var obj = HttpContext.Cache["ListCurrency"];
             if (obj != null)
             {
                 IEnumerable<Currency> lstObject = obj as IEnumerable<Currency>;
                 Currency currency = lstObject.FirstOrDefault(c => c.CurrencyId == criteria.CurrencyId.ToString());
-                array[1] = currency != null ? currency.CurrencyName : "All";
+                filterInfo[1] = currency != null ? currency.CurrencyName : "All";
             }
-            //get Evidence name           
+
+            // get Evidence name
             string strCode = string.Empty;
             var otherEvidenceCode = AppSettings.Get("FPS_GET_OTHER_EVIDENCES");
             if (otherEvidenceCode != null && criteria.EvidenceCodeList != null)
@@ -295,19 +271,17 @@
                 strCode = strCode.Replace(otherEvidenceCode, "Others");
                 strCode = strCode.Replace(',', '/');
             }
-            array[2] = strCode;
-            //From date, to date
-            array[3] = strDateFrom != null ? strDateFrom.Replace(',', '-') : string.Empty;
-            array[4] = strDateTo != null ? strDateTo.Replace(',', '-') : string.Empty;
-            //get Score/HDP
-            array[5] = string.Empty;
-            #endregion fill data filter
 
-            IEnumerable<ScoreHDP> lstScoreHDP = _fraudCaseDetailService.GetScoreHDP(criteria.MatchId, IsShowSpecialCurrencies);
-            var content = _fraudCaseDetailService.ExportArbitrageTicketByGroupCsv(criteria, lstScoreHDP, groupId, score, handicap, array);
-            var encoded = Encoding.UTF8.GetBytes(content);
+            filterInfo[2] = strCode;
 
-            return File(encoded, "text/plain", "FraudCaseDetails_" + DateTime.Today.ToString("yyyyMMdd") + ".csv");
+            // From date, to date
+            filterInfo[3] = criteria.TransDateFromString != null ? criteria.TransDateFromString.Replace(',', '-') : string.Empty;
+            filterInfo[4] = criteria.TransDateToString != null ? criteria.TransDateToString.Replace(',', '-') : string.Empty;
+
+            // get Score/HDP
+            filterInfo[5] = criteria.KeyName == "-1" ? "All" : criteria.KeyName;
+
+            return filterInfo;
         }
 
         public JsonResult GetListEvidences()
@@ -332,5 +306,6 @@
 
             return Json(data, JsonRequestBehavior.AllowGet);
         }
+        #endregion Arbitrage
     }
 }

@@ -137,7 +137,7 @@
             }
         }
 
-        public IEnumerable<CustomerDetails> GetCustomerArbitrageDetails(GetCustomerArbitrageCriteria criteria, IEnumerable<ScoreHDP> lstScoreHDP)
+        public IEnumerable<CustomerDetails> GetCustomerArbitrageDetails(GetArbitrageCustomerCriteria criteria, IEnumerable<ScoreHDP> lstScoreHDP)
         {
             IEnumerable<CustomerDetails> data;
             FillCustomerArbitrageCriteria(criteria, lstScoreHDP);
@@ -147,21 +147,14 @@
             {
                 var custInfo = query.Read<CustInfo>();
 
-                IEnumerable<CustomerEvidence> custEvidence;
-
-                if (criteria.FraudCaseId == (int)FraudCaseId.Arbitrage)
-                {
-                    custEvidence = new CustomerEvidence[0];
-                }
-                else
-                {
-                    custEvidence = GetEvidences(custInfo.Select(info => info.CustId));
-                }
+                IEnumerable<CustomerEvidence> custEvidence = new CustomerEvidence[0];
 
                 var otherEvidenceCode = AppSettings.Get("FPS_GET_OTHER_EVIDENCES");
+
                 if (criteria.EvidenceCodeList != null && criteria.EvidenceCodeList.Contains(otherEvidenceCode))
                 {
                     data = HandleCustomerOtherEvidence(custInfo, custEvidence, criteria.EvidenceCodeList);
+
                     return data;
                 }
 
@@ -169,7 +162,9 @@
                 {
                     custEvidence = custEvidence.Where(c => criteria.EvidenceCodeList.Contains(c.EvidenceCode));
                 }
+
                 data = HandleCustomerEvidence(custInfo, custEvidence, string.IsNullOrEmpty(criteria.EvidenceCodeList));
+
                 return data;
             }
         }
@@ -799,7 +794,34 @@
             return txtResult.ToString();
         }
 
-        private void FillCustomerArbitrageCriteria(GetCustomerArbitrageCriteria criteria, IEnumerable<ScoreHDP> lstScoreHDP)
+        public string ExportArbitrageCustomersCsv(GetArbitrageCustomerCriteria criteria, IEnumerable<ScoreHDP> lstScoreHDP, string[] array)
+        {
+            var txtResult = new StringBuilder();
+
+            var arbitrageCustomers = GetCustomerArbitrageDetails(criteria, lstScoreHDP);
+            var info = GetInfo(criteria.MatchId, (int)FraudCaseId.Arbitrage, criteria.EventDate);
+
+            //append fraud case detail
+            txtResult.AppendLine($"Match: {info.Home} - vs - {info.Away}, Date: {info.EventDate.ToString("MMM dd, yyyy").Replace(",", " -")}, HT/FT: {info.HTScore}/{info.FTScore}");
+
+            //appdend filter
+            if (array != null && array.Length >= 6)
+            {
+                txtResult.AppendLine($"Market: {array[0]}, Currency: {array[1]}, Evidence: {array[2]}");
+                txtResult.AppendLine($"Trans Date From: {array[3]}, Trans Date To: {array[4]}, Score/HDP: {array[5]}");
+            }
+
+            txtResult.AppendLine("Member,Currency,#Tickets,Total Stake,Total Win Loss,Evidence, Associated Accounts");
+
+            foreach (var item in arbitrageCustomers)
+            {
+                txtResult.AppendLine($"{item.Member},{item.CurrencyName},{item.Tickets},{item.TotalStake},{item.TotalWinLoss},{item.Evidence},{item.AssociatedAccounts}");
+            }
+
+            return txtResult.ToString();
+        }
+
+        private void FillCustomerArbitrageCriteria(GetArbitrageCustomerCriteria criteria, IEnumerable<ScoreHDP> lstScoreHDP)
         {
             if (criteria != null && criteria.KeyName == "-1")
             {

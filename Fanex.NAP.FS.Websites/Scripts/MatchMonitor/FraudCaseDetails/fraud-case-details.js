@@ -35,8 +35,6 @@
             menuHeight: 350,
             menuWidth: 350
         });
-
-
     };
 
     function getAllCurrency() {
@@ -269,17 +267,20 @@
             evidenceCode = getEvidenceSelected();
 
             var criteria = {
-                liveStatus: $("#market").val(),
-                evidenceCodeList: evidenceCode,
-                currencyId: $("#currency").val(),
-                strDateFrom: $("#transDateFrom").val(),
-                strDateTo: $("#transDateTo").val(),
-                keyName: $("#scoreHDP").val(),
-                matchId: parameters.matchId,
-                eventDate: parameters.eventDate
+                LiveStatus: $("#market").val(),
+                EvidenceCodeList: evidenceCode,
+                CurrencyId: $("#currency").val(),
+                TransDateFromString: $("#transDateFrom").val(),
+                TransDateToString: $("#transDateTo").val(),
+                KeyName: $("#scoreHDP").val(),
+                MatchId: parameters.matchId,
+                EventDate: parameters.eventDate
             };
 
-            var url = common.modifyRelativeUrl("/MatchMonitor/ExportCSVArbitrageTicketAll");
+            var selectedTab = $("#detailTabs li[aria-selected=true]").attr("aria-controls");
+
+            var url = selectedTab === "customer-tab" ? common.modifyRelativeUrl("/MatchMonitor/ExportCSVArbitrageCustomers")
+                : common.modifyRelativeUrl("/MatchMonitor/ExportCSVArbitrageTickets");
 
             common.downloadFile(url, criteria);
         } else {
@@ -868,7 +869,7 @@
     detail_tabs.tabs({
         activate: (e, ui) => switchTab(ui)
     });
-
+    
     $("#generate").click(loadGrids);
 
     $(".-export").click(exportExcel);

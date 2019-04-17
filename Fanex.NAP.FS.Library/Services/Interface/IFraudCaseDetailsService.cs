@@ -31,7 +31,7 @@
 
         IEnumerable<TicketDetails> GetTicketFromIP(string ip, bool isShowSpecialCurrencies);
               
-        IEnumerable<CustomerDetails> GetCustomerArbitrageDetails(GetCustomerArbitrageCriteria criteria, IEnumerable<ScoreHDP> lstScoreHDP);
+        IEnumerable<CustomerDetails> GetCustomerArbitrageDetails(GetArbitrageCustomerCriteria criteria, IEnumerable<ScoreHDP> lstScoreHDP);
 
         IEnumerable<ArbitrageGroupTicketList> GetArbitrageTickets(GetArbitrageTicketCriteria criteria, IEnumerable<ScoreHDP> lstScoreHDP);
 
@@ -48,5 +48,7 @@
         string ExportArbitrageTicketByGroupCsv(GetArbitrageTicketCriteria criteria, IEnumerable<ScoreHDP> lstScoreHDP, int groupId, string score, decimal handicap, string[] array);
 
         string ExportArbitrageTicketAllCsv(GetArbitrageTicketCriteria ticketCriteria, IEnumerable<ScoreHDP> lstScoreHDP, string[] array);
+
+        string ExportArbitrageCustomersCsv(GetArbitrageCustomerCriteria criteria, IEnumerable<ScoreHDP> lstScoreHDP, string[] array);
     }
 }
