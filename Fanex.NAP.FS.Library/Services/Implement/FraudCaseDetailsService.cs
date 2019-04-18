@@ -137,10 +137,9 @@
             }
         }
 
-        public IEnumerable<CustomerDetails> GetCustomerArbitrageDetails(GetArbitrageCustomerCriteria criteria, IEnumerable<ScoreHDP> lstScoreHDP)
+        public IEnumerable<CustomerDetails> GetCustomerArbitrageDetails(GetArbitrageCustomerCriteria criteria)
         {
-            IEnumerable<CustomerDetails> data;
-            FillCustomerArbitrageCriteria(criteria, lstScoreHDP);
+            IEnumerable<CustomerDetails> data;            
 
             using (var db = new ObjectDb(criteria.GetSettingKey()))
             using (var query = db.QueryMultiple(criteria))
@@ -483,10 +482,9 @@
             return tsk.Where(t => t.Result != null).SelectMany(t => t.Result);
         }
 
-        public IEnumerable<ArbitrageGroupTicketList> GetArbitrageTickets(GetArbitrageTicketCriteria criteria, IEnumerable<ScoreHDP> lstScoreHDP)
+        public IEnumerable<ArbitrageGroupTicketList> GetArbitrageTickets(GetArbitrageTicketCriteria criteria)
         {
-            IEnumerable<ArbitrageGroupTicketList> data;
-            FillArbitrageTicketCriteria(criteria, lstScoreHDP);
+            IEnumerable<ArbitrageGroupTicketList> data;                       
 
             var rawData = DataService.GetData<TicketInfo>(criteria);
 
@@ -522,9 +520,7 @@
 
         public IEnumerable<ArbitrageGroupTicketList> GetListArbitrageTickets(GetArbitrageTicketCriteria criteria)
         {
-            IEnumerable<ArbitrageGroupTicketList> data;
-            IEnumerable<ScoreHDP> lstScore = GetScoreHDP(criteria.MatchId, criteria.IsShowSpecialCurrencies);
-            FillArbitrageTicketCriteria(criteria, lstScore);           
+            IEnumerable<ArbitrageGroupTicketList> data;          
 
             var rawData = DataService.GetData<TicketInfo>(criteria);
 
@@ -598,11 +594,14 @@
                         var tmp = g.OrderBy(t => t.RawTransDate).ThenBy(t => t.Username).ToList();
                         return new ArbitrageGroupTicketList
                         {
+                            BettypeId = g.Key.Item1,
                             BettypeName = CachedRef.GetBettypeName(g.Key.Item1),
                             Away = tmp.Where(t => t.BetTeam == "a"),
                             Home = tmp.Where(t => t.BetTeam == "h"),
                             Handicap = g.Key.Item2,
                             Score = $"{g.Key.Item3} - {g.Key.Item4}",
+                            LiveHomeScore = g.Key.Item3,
+                            LiveAwayScore = g.Key.Item4,
                             GroupId = g.Key.Item5
                         };
                     }).ToList();
@@ -640,9 +639,9 @@
                         ComPT = t.ComPTStake,
                         Virtual = t.VirtualStake,
                         Full = t.FullStake
-                    },
+                    },                   
                     BettypeName = CachedRef.GetBettypeName(t.BetTypeId),
-                    Handicap = (double)(t.Handicap1 - t.Handicap2),
+                    Handicap = (double)(t.Handicap1 - t.Handicap2),                  
                     Score = $"{t.LiveHomeScore} - {t.LiveAwayScore}",
                     IsIPFraud = t.IsIPFraud
                 })
@@ -652,11 +651,14 @@
                     var tmp = g.OrderBy(t => t.RawTransDate).ThenBy(t => t.Username).ToList();
                     return new ArbitrageGroupTicketList
                     {
+                        BettypeId = g.Key.Item1,
                         BettypeName = CachedRef.GetBettypeName(g.Key.Item1),
                         Away = tmp.Where(t => t.BetTeam == "a"),
                         Home = tmp.Where(t => t.BetTeam == "h"),
                         Handicap = g.Key.Item2,
                         Score = $"{g.Key.Item3} - {g.Key.Item4}",
+                        LiveHomeScore = g.Key.Item3,
+                        LiveAwayScore = g.Key.Item4,
                         GroupId = g.Key.Item5
                     };
                 }).ToList();
@@ -730,17 +732,17 @@
             return DataService.GetData<ScoreHDP>(criteria);
         }          
 
-        public string ExportArbitrageTicketByGroupCsv(GetArbitrageTicketCriteria criteria, IEnumerable<ScoreHDP> lstScoreHDP, int groupId, string score, decimal handicap, string[] array)
+        public string ExportArbitrageTicketByGroupCsv(GetArbitrageTicketCriteria criteria, int groupId, string score, string[] array)
         {
             var txtResult = new StringBuilder();
             var info = GetInfo(criteria.MatchId, (int)FraudCaseId.Arbitrage, criteria.EventDate);
-            var lstArbitrageTicket = GetArbitrageTickets(criteria, lstScoreHDP).Where(c => c.GroupId == groupId && c.Score == score && c.Handicap == handicap).SelectMany(obj => obj.Home.Concat(obj.Away));
+            var lstArbitrageTicket = GetArbitrageTickets(criteria).Where(c => c.GroupId == groupId && c.Score == score && c.Handicap == (decimal)criteria.Handicap).SelectMany(obj => obj.Home.Concat(obj.Away));
             if (lstArbitrageTicket != null)
             {
                 List<string> lstBetType = lstArbitrageTicket.Select(c => c.BettypeName).ToList();
                 if (lstBetType.Count > 0)
                 {
-                    array[5] = score + " " + lstBetType[0] + " " + handicap;
+                    array[5] = score + " " + lstBetType[0] + " " + criteria.Handicap;
                 }
             }
             //append fraud case detail
@@ -765,11 +767,11 @@
             return txtResult.ToString();
         }
 
-        public string ExportArbitrageTicketAllCsv(GetArbitrageTicketCriteria ticketCriteria, IEnumerable<ScoreHDP> lstScoreHDP, string[] array)
+        public string ExportArbitrageTicketAllCsv(GetArbitrageTicketCriteria ticketCriteria, string[] array)
         {
-            var txtResult = new StringBuilder();          
+            var txtResult = new StringBuilder();
 
-            var lstArbitrageTicket = GetArbitrageTickets(ticketCriteria, lstScoreHDP).SelectMany(obj => obj.Home.Concat(obj.Away));
+            var lstArbitrageTicket = GetArbitrageTickets(ticketCriteria).SelectMany(obj => obj.Home.Concat(obj.Away));
             var info = GetInfo(ticketCriteria.MatchId, (int)FraudCaseId.Arbitrage, ticketCriteria.EventDate);
 
             //append fraud case detail            
@@ -794,11 +796,11 @@
             return txtResult.ToString();
         }
 
-        public string ExportArbitrageCustomersCsv(GetArbitrageCustomerCriteria criteria, IEnumerable<ScoreHDP> lstScoreHDP, string[] array)
+        public string ExportArbitrageCustomersCsv(GetArbitrageCustomerCriteria criteria, string[] array)
         {
             var txtResult = new StringBuilder();
 
-            var arbitrageCustomers = GetCustomerArbitrageDetails(criteria, lstScoreHDP);
+            var arbitrageCustomers = GetCustomerArbitrageDetails(criteria);
             var info = GetInfo(criteria.MatchId, (int)FraudCaseId.Arbitrage, criteria.EventDate);
 
             //append fraud case detail
@@ -819,56 +821,7 @@
             }
 
             return txtResult.ToString();
-        }
-
-        private void FillCustomerArbitrageCriteria(GetArbitrageCustomerCriteria criteria, IEnumerable<ScoreHDP> lstScoreHDP)
-        {
-            if (criteria != null && criteria.KeyName == "-1")
-            {
-                criteria.Bettype = -1;
-                criteria.Handicap = -1;
-                criteria.LiveHomeScore = -1;
-                criteria.LiveAwayScore = -1;
-            }
-            else
-            {
-                if (lstScoreHDP != null)
-                {
-                    var objValue = lstScoreHDP.FirstOrDefault(c => c.KeyName == criteria.KeyName);
-                    if (objValue != null)
-                    {
-                        criteria.Bettype = objValue.BetType;
-                        criteria.Handicap = objValue.Handicap;
-                        criteria.LiveHomeScore = objValue.LiveHomeScore;
-                        criteria.LiveAwayScore = objValue.LiveAwayScore;
-                    }
-                }
-            }
-        }
-
-        private void FillArbitrageTicketCriteria(GetArbitrageTicketCriteria criteria, IEnumerable<ScoreHDP> lstScoreHDP)
-        {
-            if (criteria != null && criteria.KeyName == "-1")
-            {
-                criteria.Bettype = -1;
-                criteria.Handicap = -1;
-                criteria.LiveHomeScore = -1;
-                criteria.LiveAwayScore = -1;
-            }
-            else
-            {
-                if (lstScoreHDP != null)
-                {
-                    var objValue = lstScoreHDP.FirstOrDefault(c => c.KeyName == criteria.KeyName);
-                    if (objValue != null)
-                    {
-                        criteria.Bettype = objValue.BetType;
-                        criteria.Handicap = objValue.Handicap;
-                        criteria.LiveHomeScore = objValue.LiveHomeScore;
-                        criteria.LiveAwayScore = objValue.LiveAwayScore;
-                    }
-                }
-            }
-        }
+        }       
+       
     }
 }

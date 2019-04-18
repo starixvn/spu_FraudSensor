@@ -13,7 +13,15 @@
                 name += " " + CachedRef.GetBettypeName(BetType) + " " + Handicap;
                 return name;
             }
-        }        
+        }
+
+        public string KeyValue
+        {
+            get
+            {
+                return BetType + ";" + LiveHomeScore.ToString() + ";" + LiveAwayScore.ToString() + ";" + Handicap;
+            }
+        }
 
         public int BetType { get; set; }
 

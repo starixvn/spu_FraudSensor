@@ -17,6 +17,7 @@
     var arrGroupTicket = [];   
     var groupExpand = "";
     var groupExportCSV = 0;
+    var savedCriteria = null;
 
     from_date.datepicker({       
         changeMonth: true,
@@ -50,13 +51,13 @@
     };
 
     function getScoreHDP() {
-        var url = common.modifyRelativeUrl("/MatchMonitor/GetScoreHDP");        
+        var url = common.modifyRelativeUrl("/MatchMonitor/GetScoreHDP");
 
         $.get(url, parameters, function (json) {
             $("#scoreHDP").append("<option value=-1>All</option>");
                      
             for (var i = 0; i < json.length; i++) {
-                $("#scoreHDP").append(`<option value='${json[i].KeyName}'>${json[i].KeyName}</option>`);
+                $("#scoreHDP").append(`<option value='${json[i].KeyValue}'>${json[i].KeyName}</option>`);
             }
         })
     }
@@ -264,18 +265,24 @@
 
     function exportExcel() {
         if (isArbitrage) {
-            evidenceCode = getEvidenceSelected();
+            var criteria = {};
 
-            var criteria = {
-                LiveStatus: $("#market").val(),
-                EvidenceCodeList: evidenceCode,
-                CurrencyId: $("#currency").val(),
-                TransDateFromString: $("#transDateFrom").val(),
-                TransDateToString: $("#transDateTo").val(),
-                KeyName: $("#scoreHDP").val(),
-                MatchId: parameters.matchId,
-                EventDate: parameters.eventDate
-            };
+            if (savedCriteria == null) {
+                evidenceCode = getEvidenceSelected();
+
+                var criteria = {
+                    LiveStatus: $("#market").val(),
+                    EvidenceCodeList: evidenceCode,
+                    CurrencyId: $("#currency").val(),
+                    TransDateFromString: $("#transDateFrom").val(),
+                    TransDateToString: $("#transDateTo").val(),
+                    KeyName: $("#scoreHDP").val(),
+                    MatchId: parameters.matchId,
+                    EventDate: parameters.eventDate
+                };
+            } else {
+                criteria = Object.assign({}, savedCriteria);
+            }            
 
             var selectedTab = $("#detailTabs li[aria-selected=true]").attr("aria-controls");
 
@@ -396,8 +403,7 @@
 
             return arr;
         }, []);      
-        ticket_grid.DataTable().rows.add(data).draw();        
-
+        ticket_grid.DataTable().rows.add(data).draw();
         totalTicket = t;
         $("#tickets").text(`By Tickets (${totalTicket})`);
 
@@ -502,22 +508,39 @@
         var url = common.modifyRelativeUrl("/MatchMonitor/ExportCSVArbitrageTicketByGroup");
 
         var obj = e.data;
+        var keyName = obj.Score + " " + obj.BettypeName + " " + obj.Handicap;
 
-        evidenceCode = getEvidenceSelected();
+        var criteria = {};
 
-        var criteria = {
-            liveStatus: $("#market").val(),
-            evidenceCodeList: evidenceCode,
-            currencyId: $("#currency").val(),
-            transDateFromString: $("#transDateFrom").val(),
-            transDateToString: $("#transDateTo").val(),
-            keyName: $("#scoreHDP").val(),
-            matchId: parameters.matchId,
-            eventDate: parameters.eventDate,
-            groupId: obj.GroupId,
-            score: obj.Score,
-            handicap: obj.Handicap
-        };
+        if (savedCriteria == null) {
+            evidenceCode = getEvidenceSelected();
+
+            var criteria = {
+                liveStatus: $("#market").val(),
+                evidenceCodeList: evidenceCode,
+                currencyId: $("#currency").val(),
+                transDateFromString: $("#transDateFrom").val(),
+                transDateToString: $("#transDateTo").val(),
+                keyName: $("#scoreHDP").val(),
+                matchId: parameters.matchId,
+                eventDate: parameters.eventDate,
+                groupId: obj.GroupId,
+                bettype: obj.BettypeId,
+                score: obj.Score,
+                liveHomeScore: obj.LiveHomeScore,
+                liveAwayScore: obj.LiveAwayScore,
+                handicap: obj.Handicap
+            };
+        } else {
+            criteria = Object.assign({}, savedCriteria);
+            criteria.keyName = keyName;
+            criteria.groupId = obj.GroupId;
+            criteria.bettype = obj.BettypeId;
+            criteria.score = obj.Score;
+            criteria.liveHomeScore = obj.LiveHomeScore;
+            criteria.liveAwayScore = obj.LiveAwayScore;
+            criteria.handicap = obj.Handicap;
+        }
             
         common.downloadFile(url, criteria);
     }
@@ -721,22 +744,36 @@
     function expandGroup(obj) {
         common.showLoading();
 
-        var url = common.modifyRelativeUrl("/MatchMonitor/GetListArbitrageTickets");
-        
-        evidenceCode = getEvidenceSelected();
+        var url = common.modifyRelativeUrl("/MatchMonitor/GetListArbitrageTickets");                
         var keyName = obj.Score + " " + obj.BettypeName + " " + obj.Handicap;
         groupExpand = keyName;
+        
+        var criteria = {};
 
-        var criteria = {
-            liveStatus: $("#market").val(),
-            evidenceCodeList: evidenceCode,
-            currencyId: $("#currency").val(),
-            strDateFrom: $("#transDateFrom").val(),
-            strDateTo: $("#transDateTo").val(),
-            keyName: keyName,
-            matchId: parameters.matchId,
-            eventDate: parameters.eventDate
-        };                
+        if (savedCriteria == null) {
+            evidenceCode = getEvidenceSelected();
+            var criteria = {
+                liveStatus: $("#market").val(),
+                evidenceCodeList: evidenceCode,
+                currencyId: $("#currency").val(),
+                strDateFrom: $("#transDateFrom").val(),
+                strDateTo: $("#transDateTo").val(),
+                keyName: keyName,
+                bettype: obj.BettypeId,
+                handicap: obj.Handicap,
+                liveHomeScore: obj.LiveHomeScore,
+                liveAwayScore: obj.LiveAwayScore,
+                matchId: parameters.matchId,
+                eventDate: parameters.eventDate
+            };
+        } else {
+            criteria = Object.assign({}, savedCriteria);
+            criteria.keyName = keyName;
+            criteria.bettype = obj.BettypeId;
+            criteria.handicap = obj.Handicap;
+            criteria.liveHomeScore = obj.LiveHomeScore;
+            criteria.liveAwayScore = obj.LiveAwayScore;
+        }
 
         $.ajax({
             type: 'GET',
@@ -785,16 +822,40 @@
             transDateFromParent.css({ 'border-color': '#666', 'border-style': 'solid', 'border-width': '0px' });
             transDateToParent.css({ 'border-color': '#666', 'border-style': 'solid', 'border-width': '0px' });
 
+            var bettype = 0;            
+            var liveHomeScore = 0;
+            var liveAwayScore = 0;
+            var handicap = 0;
+            var valBet = $("#scoreHDP").val();
+            
+            if (valBet == "-1") {
+                bettype = "-1";
+                liveHomeScore = "-1";
+                liveAwayScore = "-1";
+                handicap = "-1";
+            } else if (valBet != "") {
+                var arrBet = valBet.split(';');
+                bettype = arrBet[0];
+                liveHomeScore = arrBet[1];
+                liveAwayScore = arrBet[2];
+                handicap = arrBet[3];
+            }
             var criteria = {
                 liveStatus: $("#market").val(),
                 evidenceCodeList: evidenceCode,
                 currencyId: $("#currency").val(),
                 transDateFrom: $("#transDateFrom").val(),
                 transDateTo: $("#transDateTo").val(),
-            	keyName: $("#scoreHDP").val(),
+                keyName: $("#scoreHDP").val(),
+                bettype: bettype,
+                liveHomeScore: liveHomeScore,
+                liveAwayScore: liveAwayScore,
+                handicap:handicap,
                 matchId: parameters.matchId,
                 eventDate: parameters.eventDate
             };
+
+            savedCriteria = criteria;
 
             loadCustomerGridArbitrage(criteria);
 

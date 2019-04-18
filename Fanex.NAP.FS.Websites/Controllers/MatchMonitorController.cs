@@ -140,19 +140,9 @@
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
-        [HttpPost]
-        public JsonResult GetFraudCaseCustomerDetails(GetArbitrageCustomerCriteria criteria)
-        {
-            IEnumerable<ScoreHDP> lstScoreHDP = _fraudCaseDetailService.GetScoreHDP(criteria.MatchId, IsShowSpecialCurrencies);
-            criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
-            var data = _fraudCaseDetailService.GetCustomerArbitrageDetails(criteria, lstScoreHDP);
-
-            return Json(data, JsonRequestBehavior.AllowGet);
-        }
-
         #endregion Other Fraud Cases
 
-        #region Arbitrage       
+        #region Arbitrage
         public ActionResult GetListArbitrageTickets(GetArbitrageTicketCriteria criteria)
         {
             criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
@@ -163,31 +153,37 @@
         [HttpPost]
         public ActionResult GetArbitrageTicketsGroupSummary(GetArbitrageTicketCriteria criteria)
         {
-            IEnumerable<ScoreHDP> lstScoreHDP = _fraudCaseDetailService.GetScoreHDP(criteria.MatchId, IsShowSpecialCurrencies);
             criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
-            var data = _fraudCaseDetailService.GetArbitrageTickets(criteria, lstScoreHDP);
+            var data = _fraudCaseDetailService.GetArbitrageTickets(criteria);
             return new JsonResult { Data = new { Content = data } };
         }
 
         public ActionResult ExportCSVArbitrageTickets(GetArbitrageTicketCriteria criteria)
-        {           
-            IEnumerable<ScoreHDP> lstScoreHDP = _fraudCaseDetailService.GetScoreHDP(criteria.MatchId, IsShowSpecialCurrencies);
+        {
             criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
 
             string[] filterInfo = GenerateFilterInfoForCsv(criteria);
-            var content = _fraudCaseDetailService.ExportArbitrageTicketAllCsv(criteria, lstScoreHDP, filterInfo);
+            var content = _fraudCaseDetailService.ExportArbitrageTicketAllCsv(criteria, filterInfo);
             var encoded = Encoding.UTF8.GetBytes(content);
 
             return File(encoded, "text/plain", "FraudCaseDetails_Tickets_" + DateTime.Today.ToString("yyyyMMdd") + ".csv");
         }
 
+        [HttpPost]
+        public JsonResult GetFraudCaseCustomerDetails(GetArbitrageCustomerCriteria criteria)
+        {
+            criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
+            var data = _fraudCaseDetailService.GetCustomerArbitrageDetails(criteria);
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
         public ActionResult ExportCSVArbitrageCustomers(GetArbitrageCustomerCriteria criteria)
         {
-            IEnumerable<ScoreHDP> lstScoreHDP = _fraudCaseDetailService.GetScoreHDP(criteria.MatchId, IsShowSpecialCurrencies);
             criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
 
             string[] filterInfo = GenerateFilterInfoForCsv(criteria);
-            var content = _fraudCaseDetailService.ExportArbitrageCustomersCsv(criteria, lstScoreHDP, filterInfo);
+            var content = _fraudCaseDetailService.ExportArbitrageCustomersCsv(criteria, filterInfo);
             var encoded = Encoding.UTF8.GetBytes(content);
 
             return File(encoded, "text/plain", "FraudCaseDetails_Customers_" + DateTime.Today.ToString("yyyyMMdd") + ".csv");
@@ -206,8 +202,7 @@
             string[] filterInfo = GenerateFilterInfoForCsv(criteria);
 
             criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
-            IEnumerable<ScoreHDP> lstScoreHDP = _fraudCaseDetailService.GetScoreHDP(criteria.MatchId, IsShowSpecialCurrencies);
-            var content = _fraudCaseDetailService.ExportArbitrageTicketByGroupCsv(criteria, lstScoreHDP, groupId, score, handicap, filterInfo);
+            var content = _fraudCaseDetailService.ExportArbitrageTicketByGroupCsv(criteria, groupId, score, filterInfo);
             var encoded = Encoding.UTF8.GetBytes(content);
 
             return File(encoded, "text/plain", "FraudCaseDetails_Tickets_" + DateTime.Today.ToString("yyyyMMdd") + ".csv");
