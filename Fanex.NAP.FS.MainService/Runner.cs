@@ -5,14 +5,12 @@
     using Fanex.NAP.FS.Core;
     using Fanex.NAP.FS.Library.Models;
     using Fanex.NAP.FS.Model;
+    using Fanex.NAP.FS.Service;
     using Microsoft.Owin.Hosting;
     using System;
     using System.Net;
     using System.Net.Sockets;
     using System.ServiceProcess;
-    using Fanex.LetstalkService.Client;
-    using Fanex.LetstalkService.Core.Models;
-    using Fanex.LetstalkService.Core.Services;
 
     public partial class Runner : ServiceBase
     {
@@ -21,6 +19,7 @@
         private string projectName = "Fraud Sensor Service";
 
         private static Queue.EasyNetQ _rabbitMQ;
+        private readonly LetstalkService letstalkService;
 
         public Runner()
         {
@@ -35,6 +34,8 @@
             _rabbitMQ
                 .CreateBus()
                 .DeclareExchange(AppSetting.Exchange);
+
+            letstalkService = new LetstalkService();
         }
 
         protected override void OnStart(string[] args)
@@ -52,8 +53,10 @@
        
                 _server = WebApp.Start<Startup>(startOptions);
 
-                LogService.Info($"{projectName} - Main service is started.");
-                CallLetstalk();
+                LogService.Info($"{projectName} - Main service has been started.");
+
+                letstalkService.Info(projectName, "Main service has been started");
+
             }
             catch (Exception ex)
             {
@@ -66,7 +69,8 @@
             _rabbitMQ.Dispose();
             _server.Dispose();
 
-            LogService.Info($"{projectName} - Main service is stopped.");
+            LogService.Info($"{projectName} - Main service has been stopped.");
+            letstalkService.Info(projectName, "Main service has been stopped");
         }
 
         protected override void OnShutdown()
@@ -74,7 +78,8 @@
             _rabbitMQ.Dispose();
             _server.Dispose();
 
-            LogService.Info($"{projectName} - Main service is shutted down.");
+            LogService.Info($"{projectName} - Main service has been shut down.");
+            letstalkService.Info(projectName, "Main service has been shut down");
         }
 
         private void GetFraudCase()
@@ -103,7 +108,7 @@
                                 Action = Model.Action.Activating,
                                 Id = fraudCase.FraudCaseId,
                                 Name = fraudCase.FraudCaseName,
-                                Message = "Message is sent at" + DateTime.Now
+                                Message = "Message has been sent at" + DateTime.Now
                             }, new MessageProperties { DeliveryMode = 2, Priority = 9 });
 
                             var log = $"{projectName} - Load Fraud Case - Queue: {_rabbitMQ.QueueName}, RoutingKey: {_rabbitMQ.RoutingKey}, Exchange: {_rabbitMQ.ExchangeName}";
@@ -112,8 +117,6 @@
 #if DEBUG
                             Console.WriteLine(log);
 #endif
-
-                            //LogService.Info(log);
                         }
                     }
                 }
@@ -132,23 +135,6 @@
             }
 
             return "localhost";
-        }
-
-        private void CallLetstalk()
-        {
-            LetstalkModel messsage = new LetstalkModel()
-            {
-                TargetName = "SPU-FS-SIT",
-                Subject = "Harvey Test",
-                Content = "Clip Tram Anh 4p",
-                Group = "10004451",
-                LetstalkAttachments = new System.Collections.Generic.List<LetstalkAttachment>()
-            };
-
-            ApplicationSettingServiceImp letstalkApi = new ApplicationSettingServiceImp();
-            WebApiClientServiceImp a = new WebApiClientServiceImp(letstalkApi);
-            LetstalkClientServiceImp letstalkService = new LetstalkClientServiceImp(a);
-            letstalkService.SendMessage(messsage);
         }
     }
 }

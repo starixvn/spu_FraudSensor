@@ -88,7 +88,7 @@ namespace Fanex.NAP.FS.Core
             {
                 return ConfigurationManager.AppSettings["Queue-Exchange"];
             }
-        }        
+        }
 
         public static string FanexLogCategory
         {
@@ -189,11 +189,15 @@ namespace Fanex.NAP.FS.Core
             }
         }
 
-        public static List<int> IgnoreCase {
+        public static List<int> IgnoreCase
+        {
             get
-            {                
+            {
                 return ConfigurationManager.AppSettings["Ignore-fraudcase"].Split(',').Select(Int32.Parse).ToList();
             }
         }
+
+        public static string LetstalkTarget => ConfigurationManager.AppSettings["Letstalk-Target"];
+        public static string LetstalkGroup => ConfigurationManager.AppSettings["Letstalk-Group"];
     }
 }
