@@ -95,11 +95,10 @@ namespace Fanex.NAP.FS.ArbitrageService
         private void GroupData(int matchId, IEnumerable<ArbitrageTicket> tickets)
         {
             var message = string.Empty;
-            var customers = new List<ArbitrageCustomer>();
+            var customers = Enumerable.Empty<ArbitrageCustomer>();
 
             try
             {
-
                 if (tickets != null && tickets.Any())
                 {
                     var tsk = tickets.Select(t => t.CustId).Distinct().Chunk(500).Select(GroupCustomer).ToArray();
@@ -112,7 +111,7 @@ namespace Fanex.NAP.FS.ArbitrageService
 
                     if (tsk != null && tsk.Any())
                     {
-                        customers = tsk.SelectMany(t => t.Result).ToList();
+                        customers = tsk.SelectMany(t => t.Result);
 
                         if (customers != null && customers.Any())
                         {
