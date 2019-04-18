@@ -159,7 +159,7 @@ namespace Fanex.NAP.FS.ArbitrageService
 
         private void WriteLog(string filename, IEnumerable<string> body)
         {
-            var filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "/Log/" + filename);
+            var filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, filename);
 
             File.WriteAllLines(filePath, body);
         }

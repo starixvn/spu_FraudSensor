@@ -117,7 +117,7 @@ namespace Fanex.NAP.FS.FlaggedAccountService
                     .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
                     .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
 
-                LogService.Error($"{projectName} - {serviceName} - OnTimeEvent Exeption {logMessage}");
+                LogService.Error($"{projectName} - {serviceName} - Execute Exeption {logMessage}");
             }
 
             Report(status, exception, "Fraud Case is executed at " + DateTime.Now);
