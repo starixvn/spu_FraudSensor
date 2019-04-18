@@ -15,6 +15,7 @@ AS
 		- 20180926@LONG: Remove redundant fraud tickets
 		- 20190312@Casey.Huynh: Enhance Performance, define PRIMARY KEY in table [110060]
 		- 20190314@Casey.Huynh: Implement, scan for completed Match [110566]
+		- 20190404@Casey.Huynh: Implement, not scan Match if it has no ticket in bettran tables [111454]
 
 	Param's Explanation (filtered by):  
 	
@@ -61,15 +62,17 @@ BEGIN
 	);	
 	--======UPDATE Match Complete Status
 	UPDATE		ams
-	SET			ams.IsMatchCompleted = 1, ams.CapturedDate = @CurrentTime
+	SET			ams.IsMatchCompleted = 1
+				, ams.CapturedDate = @CurrentTime
 	FROM		dbo.ArbitrageMatchScanning	ams WITH(ROWLOCK)
 	INNER JOIN	bodb02.dbo.match m WITH(NOLOCK)
-				ON	ams.MatchId = m.matchid
+				ON ams.MatchId = m.matchid
 	WHERE		m.eventstatus = 'Completed'
 				AND ams.IsMatchCompleted = 0;
-
+	
 	--==INSERT:	NEW MATCH
-	INSERT INTO dbo.ArbitrageMatchScanning(MatchId, IsMatchCompleted, IsScanCompleted, CapturedDate)
+	;WITH newMatch AS
+	(
 	SELECT		m.Matchid
 				, (CASE WHEN m.eventstatus = 'Completed' THEN 1 ELSE 0 END) AS IsMatchCompleted
 				, 0 AS IsScanCompleted
@@ -84,7 +87,17 @@ BEGIN
 				AND m.MatchCode	NOT LIKE '%hedge%'
 				AND m.kickofftime <= @CurrentTime	
 				AND l.isTest = 0
-				AND a.MatchId IS NULL;
+				AND a.MatchId IS NULL
+	)
+	INSERT INTO dbo.ArbitrageMatchScanning(MatchId, IsMatchCompleted, IsScanCompleted, CapturedDate)
+	SELECT		nm.matchid
+				, nm.IsMatchCompleted
+				, nm.IsScanCompleted
+				, nm.CapturedDate		
+	FROM		newMatch nm WITH(NOLOCK)
+	WHERE		EXISTS (SELECT TOP(1) Matchid
+						FROM	bodb02.dbo.bettrans b WITH(NOLOCK)
+						WHERE	b.matchid = nm.Matchid);
 
 	--==2. INSERT:	Customer List that has not scanned completed by (MatchId, TotalScore, Bettype, Handicap, Custid)
 	INSERT INTO #tmpCustomerList(MatchId, LiveHomeScore, LiveAwayScore, Bettype, Handicap, CustId)
@@ -107,10 +120,15 @@ BEGIN
 				AND b.bettype IN (1, 3, 7, 8)
 				AND b.Currency NOT IN (20, 27, 28)
 				AND	sh.MatchId IS NULL -- HDC IS NOT SCANNED				
-	GROUP BY	b.MatchId, b.livehomescore, b.liveawayscore, b.betType, b.hdp1, b.hdp2, b.CustId;
+	GROUP BY	b.MatchId
+				, b.livehomescore
+				, b.liveawayscore
+				, b.betType
+				, b.hdp1
+				, b.hdp2
+				, b.CustId;
 
 	--==3. UPDATE: COMPLETED MATCHED IF MATCH.EVENTSTATUS IS COMPLETED AND ALL BETTYPE (1,3,5,7,8) IS SCANNED
-
 	UPDATE		sh
 	SET			sh.HasScanned = 1, sh.UpdatedDate = @CurrentTime
 	FROM		dbo.ArbitrageMatchScoreHDP sh WITH(ROWLOCK)

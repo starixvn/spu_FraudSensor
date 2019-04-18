@@ -23,7 +23,7 @@ AS
 		- 20190225@Long.Luu:	Scanning for completed matches during UM time [Redmine ID: #106820]
 		- 20190320@Casey.Huynh: Enhance Performance, Remove #tmpChangedMatch redundant table [110060]
 		- 20190329@Casey.Huynh: Implement Completed Match when the score is rejected: move code update table MatchScore completed Status to sp rule [111079]
-		- 20190329@Casey.Huynh: Implement, not scan Match if it has no ticket in bettran table [111454]
+		- 20190404@Casey.Huynh: Implement, not scan Match if it has no ticket in bettran tables [111454]
 	Param's Explanation (filtered by):  
 */
 BEGIN
