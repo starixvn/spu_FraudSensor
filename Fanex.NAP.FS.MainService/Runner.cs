@@ -1,16 +1,19 @@
-﻿using EasyNetQ;
-using Fanex.Logging;
-using Fanex.NAP.FS.Core;
-using Fanex.NAP.FS.Library.Models;
-using Fanex.NAP.FS.Model;
-using Microsoft.Owin.Hosting;
-using System;
-using System.Net;
-using System.Net.Sockets;
-using System.ServiceProcess;
-
-namespace Fanex.NAP.FS.MainService
+﻿namespace Fanex.NAP.FS.MainService
 {
+    using EasyNetQ;
+    using Fanex.Logging;
+    using Fanex.NAP.FS.Core;
+    using Fanex.NAP.FS.Library.Models;
+    using Fanex.NAP.FS.Model;
+    using Microsoft.Owin.Hosting;
+    using System;
+    using System.Net;
+    using System.Net.Sockets;
+    using System.ServiceProcess;
+    using Fanex.LetstalkService.Client;
+    using Fanex.LetstalkService.Core.Models;
+    using Fanex.LetstalkService.Core.Services;
+
     public partial class Runner : ServiceBase
     {
         private IDisposable _server = null;
@@ -50,6 +53,7 @@ namespace Fanex.NAP.FS.MainService
                 _server = WebApp.Start<Startup>(startOptions);
 
                 LogService.Info($"{projectName} - Main service is started.");
+                CallLetstalk();
             }
             catch (Exception ex)
             {
@@ -128,6 +132,23 @@ namespace Fanex.NAP.FS.MainService
             }
 
             return "localhost";
+        }
+
+        private void CallLetstalk()
+        {
+            LetstalkModel messsage = new LetstalkModel()
+            {
+                TargetName = "SPU-FS-SIT",
+                Subject = "Harvey Test",
+                Content = "Clip Tram Anh 4p",
+                Group = "10004451",
+                LetstalkAttachments = new System.Collections.Generic.List<LetstalkAttachment>()
+            };
+
+            ApplicationSettingServiceImp letstalkApi = new ApplicationSettingServiceImp();
+            WebApiClientServiceImp a = new WebApiClientServiceImp(letstalkApi);
+            LetstalkClientServiceImp letstalkService = new LetstalkClientServiceImp(a);
+            letstalkService.SendMessage(messsage);
         }
     }
 }
