@@ -758,7 +758,7 @@
 
             foreach (var item in lstArbitrageTicket)
             {
-                var fraudByIP = item.IsIPFraud ? "\"Yes\"" : "";
+                var fraudByIP = item.IsIPFraud ? "Yes" : "";
                 txtResult.AppendLine($"\"{item.Username}\",\"{item.Evidences.Join(" /")}\",\"{item.DangerousLevel}\"," +
                        $"\"{item.Currency}\",\"{fraudByIP}\",\"{item.BetId}\",\"{item.BetTeam}\",\"{item.BettypeName}\",\"{item.Handicap}\",\"{item.Score}\"," +
                        $"\"{item.Odds}\",\"{item.Stake.Virtual}\",\"{item.Stake.ComPT}\"," +
@@ -787,7 +787,7 @@
 
             foreach (var item in lstArbitrageTicket)
             {
-                var fraudByIP = item.IsIPFraud ? "\"Yes\"" : "";
+                var fraudByIP = item.IsIPFraud ? "Yes" : "";
                 txtResult.AppendLine($"\"{item.Username}\",\"{item.Evidences.Join(" /")}\",\"{item.DangerousLevel}\"," +
                        $"\"{item.Currency}\",\"{fraudByIP}\",\"{item.BetId}\",\"{item.BetTeam}\",\"{item.BettypeName}\",\"{item.Handicap}\",\"{item.Score}\"," +
                        $"\"{item.Odds}\",\"{item.Stake.Virtual}\",\"{item.Stake.ComPT}\"," +
