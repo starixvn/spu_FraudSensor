@@ -46,7 +46,7 @@
     }
 
     button.ui-multiselect.ui-widget.ui-state-default.ui-corner-all {
-        width: 305px !important;
+        width: 345px !important;
     }
 
     </style>
@@ -70,7 +70,7 @@
 @if ((FraudCaseId)Model.FraudCaseId == FraudCaseId.Arbitrage)
 {
     <div class="form-filter">
-        <div class="group width-160" style="width: 120px;">
+        <div class="group width-160" style="width: 130px;">
             <label class="text">Market</label>
             <div class="edit-field col_9">
                 <select class="control" id="market">
@@ -80,15 +80,15 @@
                 </select>
             </div>
         </div>
-        <div class="group width-160" style="width:120px;">
+        <div class="group width-160" style="width:130px;">
             <label class="text">Currency</label>
             <div class="edit-field col_9">
                 <select class="control" id="currency"></select>
             </div>
         </div>
-        <div class="group" style="width:325px;">
+        <div class="group" style="width:335px;">
             <label class="text">Evidence</label>
-            <div class="edit-field col_9" style="width:325px;">
+            <div class="edit-field col_9">
                 <select id="ddlEvidence" multiple="multiple">
                     @foreach (var item in (IEnumerable<Evidence>)ViewBag.EvidenceList)
                     {
@@ -110,13 +110,14 @@
                 <input type="text" id="transDateTo" class="form-control date-time-picker" />
             </div>
         </div>
-        <div class="group" style="width:190px;">
+        <div class="group" style="width:235px;">
             <label class="text">Score/HDP</label>
-            <div class="edit-field col_9">
+            <div class="edit-field col_9" style="width: 225px;">
                 <select class="control" id="scoreHDP"></select>
             </div>
         </div>
         <button class="button -primary" id="generate">Generate</button>
+        
     </div>
 }
 
