@@ -269,6 +269,25 @@
 
             if (savedCriteria == null) {
                 evidenceCode = getEvidenceSelected();
+                
+                var bettype = 0;
+                var liveHomeScore = 0;
+                var liveAwayScore = 0;
+                var handicap = 0;
+                var valBet = $("#scoreHDP").val();
+
+                if (valBet == "-1") {
+                    bettype = "-1";
+                    liveHomeScore = "-1";
+                    liveAwayScore = "-1";
+                    handicap = "-1";
+                } else if (valBet != "") {
+                    var arrBet = valBet.split(';');
+                    bettype = arrBet[0];
+                    liveHomeScore = arrBet[1];
+                    liveAwayScore = arrBet[2];
+                    handicap = arrBet[3];
+                }                
 
                 var criteria = {
                     LiveStatus: $("#market").val(),
@@ -276,7 +295,11 @@
                     CurrencyId: $("#currency").val(),
                     TransDateFromString: $("#transDateFrom").val(),
                     TransDateToString: $("#transDateTo").val(),
-                    KeyName: $("#scoreHDP").val(),
+                    KeyName: $("#scoreHDP option:selected").text(),
+                    bettype: bettype,
+                    liveHomeScore: liveHomeScore,
+                    liveAwayScore: liveAwayScore,
+                    handicap: handicap,
                     MatchId: parameters.matchId,
                     EventDate: parameters.eventDate
                 };
@@ -521,7 +544,7 @@
                 currencyId: $("#currency").val(),
                 transDateFromString: $("#transDateFrom").val(),
                 transDateToString: $("#transDateTo").val(),
-                keyName: $("#scoreHDP").val(),
+                keyName: $("#scoreHDP option:selected").text(),
                 matchId: parameters.matchId,
                 eventDate: parameters.eventDate,
                 groupId: obj.GroupId,
@@ -756,8 +779,8 @@
                 liveStatus: $("#market").val(),
                 evidenceCodeList: evidenceCode,
                 currencyId: $("#currency").val(),
-                strDateFrom: $("#transDateFrom").val(),
-                strDateTo: $("#transDateTo").val(),
+                transDateFromString: $("#transDateFrom").val(),
+                transDateToString: $("#transDateTo").val(),
                 keyName: keyName,
                 bettype: obj.BettypeId,
                 handicap: obj.Handicap,
@@ -844,9 +867,9 @@
                 liveStatus: $("#market").val(),
                 evidenceCodeList: evidenceCode,
                 currencyId: $("#currency").val(),
-                transDateFrom: $("#transDateFrom").val(),
-                transDateTo: $("#transDateTo").val(),
-                keyName: $("#scoreHDP").val(),
+                transDateFromString: $("#transDateFrom").val(),
+                transDateToString: $("#transDateTo").val(),
+                keyName: $("#scoreHDP option:selected").text(),
                 bettype: bettype,
                 liveHomeScore: liveHomeScore,
                 liveAwayScore: liveAwayScore,

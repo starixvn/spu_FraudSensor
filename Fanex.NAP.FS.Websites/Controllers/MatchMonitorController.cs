@@ -241,7 +241,7 @@
             filterInfo[4] = criteria.TransDateToString != null ? criteria.TransDateToString.Replace(',', '-') : string.Empty;
 
             // get Score/HDP
-            filterInfo[5] = criteria.KeyName == "-1" ? "All" : criteria.KeyName;
+            filterInfo[5] = criteria.KeyName;
 
             return filterInfo;
         }
