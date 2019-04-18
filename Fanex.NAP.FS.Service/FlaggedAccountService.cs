@@ -36,6 +36,7 @@
             using (var db = new ObjectDb(criteria.GetSettingKey()))
             {
                 var param = criteria.GetSpParams();
+
                 db.ExecuteNonQuery(param);
             }
         }

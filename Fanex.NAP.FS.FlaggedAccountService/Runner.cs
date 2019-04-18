@@ -93,6 +93,7 @@ namespace Fanex.NAP.FS.FlaggedAccountService
 #if DEBUG
                     Console.WriteLine("-> Fraud Case is executing at " + DateTime.Now);
 #endif
+                    LogService.Info($"{projectName} - {serviceName} - Fraudcase is begining for executing.");
 
                     isRunning = true;
 
@@ -182,9 +183,10 @@ namespace Fanex.NAP.FS.FlaggedAccountService
         private Task ExecuteMultiple(List<Match> matches)
         {
             var thread = Task.Factory.StartNew(m =>
-            {
+            {               
                 try
                 {
+                  
                     flaggedAccountService.MatchIds = string.Join(",", ((List<Match>)m).Select(t => t.MatchId.ToString()));
                     flaggedAccountService.FlaggedAccounts = XmlHelper.ToXmlString(_flaggedCustomers);
 
@@ -198,6 +200,8 @@ namespace Fanex.NAP.FS.FlaggedAccountService
                     .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
 
                     LogService.Error($"{projectName} - {serviceName} - ExecuteMultiple Exeption {logMessage}");
+
+                    Ultilities.WriteLog("log-MatchId-" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss") + ".log", ((List<Match>)m).Select(x=>x.MatchId.ToString()));
                 }
             }, matches);
 
