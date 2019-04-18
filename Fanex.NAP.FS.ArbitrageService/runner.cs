@@ -98,35 +98,38 @@ namespace Fanex.NAP.FS.ArbitrageService
             var customers = new List<ArbitrageCustomer>();
 
             try
-            {               
+            {
 
                 if (tickets != null && tickets.Any())
                 {
                     var tsk = tickets.Select(t => t.CustId).Distinct().Chunk(500).Select(GroupCustomer).ToArray();
-                                       
+
 #if DEBUG
                     message = $"- Rule for match {matchId} is executing. Ticket counter: " + tsk.Count();
                     Console.WriteLine(message);
 #endif
                     Task.WaitAll(tsk);
 
-                     customers = tsk.SelectMany(t => t.Result).ToList();
-
-                    if (customers != null && customers.Any())
+                    if (tsk != null && tsk.Any())
                     {
+                        customers = tsk.SelectMany(t => t.Result).ToList();
+
+                        if (customers != null && customers.Any())
+                        {
 #if DEBUG
-                        message = $"- Rule for match {matchId} is executing. Customers counter: {customers.Count()}.";
-                        Console.WriteLine(message);
+                            message = $"- Rule for match {matchId} is executing. Customers counter: {customers.Count()}.";
+                            Console.WriteLine(message);
 #endif
 
-                        arbitrageService.MatchIds = tickets.ToXmlString();
-                        arbitrageService.Associations = customers.ToXmlString();
+                            arbitrageService.MatchIds = tickets.ToXmlString();
+                            arbitrageService.Associations = customers.ToXmlString();
 
-                        arbitrageService.Rule();
-                    }
-                    else
-                    {
-                        LogService.Error($"{projectName} - {serviceName} - MatchId: {matchId} - Exeption: Associations({customers.Count()}) is null.");
+                            arbitrageService.Rule();
+                        }
+                        else
+                        {
+                            LogService.Error($"{projectName} - {serviceName} - MatchId: {matchId} - Exeption: Associations({customers.Count()}) is null.");
+                        }
                     }
                 }
                 else
@@ -142,21 +145,21 @@ namespace Fanex.NAP.FS.ArbitrageService
                     .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
 
                 LogService.Error($"{projectName} - {serviceName} - MatchId: {matchId} - GroupData Exeption: {logMessage}");
-                                
 
-                WriteLog("log-" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss") + ".log", tickets.Select(x => x.MatchId).Cast<string>());
-                WriteLog("log-" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss") + ".log", customers.Select(x => x.CustId).Cast<string>());
+
+                WriteLog("log-MatchId-" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss") + ".log", tickets.Select(x => x.MatchId.ToString()));
+                WriteLog("log-CustId-" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss") + ".log", customers.Select(x => x.CustId.ToString()));
             }
 
 #if DEBUG
             Console.WriteLine(message);
 #endif
-            
+
         }
 
         private void WriteLog(string filename, IEnumerable<string> body)
         {
-            var filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, filename);
+            var filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "/Log/" + filename);
 
             File.WriteAllLines(filePath, body);
         }
