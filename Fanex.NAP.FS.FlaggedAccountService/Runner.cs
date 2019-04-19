@@ -201,7 +201,7 @@ namespace Fanex.NAP.FS.FlaggedAccountService
 
                     LogService.Error($"{projectName} - {serviceName} - ExecuteMultiple Exeption {logMessage}");
 
-                    Ultilities.WriteLog("log-MatchId-" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss") + ".log", _matches.Select(x=>x.MatchId.ToString()));
+                    Ultilities.WriteLog("log-MatchId-" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss") + ".log", matches.Select(x=>x.MatchId.ToString()));
                 }
             }, matches);
 
