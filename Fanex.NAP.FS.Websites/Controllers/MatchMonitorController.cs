@@ -155,7 +155,7 @@
         {
             criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
             var data = _fraudCaseDetailService.GetArbitrageTickets(criteria);
-            return new JsonResult { Data = new { Content = data } };
+            return new JsonResult { Data = new { Content = data }, MaxJsonLength = Int32.MaxValue };
         }
 
         public ActionResult ExportCSVArbitrageTickets(GetArbitrageTicketCriteria criteria)
