@@ -1,26 +1,29 @@
 ﻿using Fanex.Logging;
 using System.Web.Http;
-using System.Threading;
-using System.Collections.Generic;
-using System.Linq;
-using System.Diagnostics;
-using System;
-using EasyNetQ;
-using Fanex.NAP.FS.Model;
-using Fanex.NAP.FS.Library.Models;
-using Fanex.NAP.FS.Core;
-using System.Threading.Tasks;
-using Fanex.NAP.FS.Library.DTO;
-
 namespace Fanex.NAP.FS.MainService
 {
+    using System.Threading;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Diagnostics;
+    using System;
+    using EasyNetQ;
+    using Fanex.NAP.FS.Model;
+    using Fanex.NAP.FS.Library.Models;
+    using Fanex.NAP.FS.Core;
+    using System.Threading.Tasks;
+    using Fanex.NAP.FS.Library.DTO;
+
     public class HealthCheckController : ApiController
     {
         private static List<FraudCaseHealth> lstFCHealth;
         private static Queue.EasyNetQ _rabbitMQ;
+        private static readonly Service.LetstalkService letstalkService;
+        static int maximumLetstalkConfig = 5;
 
         static HealthCheckController()
         {
+            letstalkService = new Service.LetstalkService();
             lstFCHealth = new List<FraudCaseHealth>();
             _rabbitMQ = new Queue.EasyNetQ(AppSetting.Host + ":" + AppSetting.Post,
                 AppSetting.VirtualHost,
@@ -50,7 +53,8 @@ namespace Fanex.NAP.FS.MainService
                     IsLive = true,
                     TimeOut = timeout,
                     IsActive = isActive,
-                    LastTimeSignal = DateTime.Now
+                    LastTimeSignal = DateTime.Now,
+                    LetstalkCurrentTimes = 1
                 };
 
                 lstFCHealth.Add(fraudcase);
@@ -60,6 +64,7 @@ namespace Fanex.NAP.FS.MainService
                 fcHealth.IsActive = isActive;
                 fcHealth.TimeOut = timeout;
                 fcHealth.LastTimeSignal = DateTime.Now;
+                fcHealth.LetstalkCurrentTimes = 1;
             }
 
             if (!status)
@@ -157,11 +162,21 @@ namespace Fanex.NAP.FS.MainService
 
                         var errorMessage = $"Health check - Service name: {fraudCaseName} - Do not receive heart beat in " + (int)period + " seconds";
                         LogService.Error(errorMessage);
+                        SendMessageToLetstalk(fcHealth.LetstalkCurrentTimes,errorMessage);
+                        fcHealth.LetstalkCurrentTimes += 1;
                     }
                 });
 
                 await Task.Delay(65000);
             } while (true);
+        }
+
+        private static void SendMessageToLetstalk(int currentTimes, string message)
+        {
+            if (currentTimes <= maximumLetstalkConfig)
+            {
+                letstalkService.Error(message);
+            }
         }
     }
 }
