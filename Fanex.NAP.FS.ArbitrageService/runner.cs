@@ -94,8 +94,7 @@ namespace Fanex.NAP.FS.ArbitrageService
 
         private void GroupData(int matchId, IEnumerable<ArbitrageTicket> tickets)
         {
-            var message = string.Empty;
-            var customers = Enumerable.Empty<ArbitrageCustomer>();
+            var message = string.Empty;            
 
             try
             {
@@ -111,9 +110,9 @@ namespace Fanex.NAP.FS.ArbitrageService
 
                     if (tsk != null && tsk.Any())
                     {
-                        customers = tsk.SelectMany(t => t.Result);
+                       var customers = tsk.SelectMany(t => t.Result);
 
-                        if (customers != null && customers.Any())
+                        if (customers != Enumerable.Empty<ArbitrageCustomer>())
                         {
 #if DEBUG
                             message = $"- Rule for match {matchId} is executing. Customers counter: {customers.Count()}.";
@@ -143,11 +142,7 @@ namespace Fanex.NAP.FS.ArbitrageService
                     .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
                     .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
 
-                LogService.Error($"{projectName} - {serviceName} - MatchId: {matchId} - GroupData Exeption: {logMessage}");
-
-
-                WriteLog("log-MatchId-" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss") + ".log", tickets.Select(x => x.MatchId.ToString()));
-                WriteLog("log-CustId-" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss") + ".log", customers.Select(x => x.CustId.ToString()));
+                LogService.Error($"{projectName} - {serviceName} - MatchId: {matchId} - GroupData Exeption: {logMessage}");                                                
             }
 
 #if DEBUG
