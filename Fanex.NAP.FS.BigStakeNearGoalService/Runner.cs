@@ -86,7 +86,7 @@
                     .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
                     .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
 
-                LogService.Error($"{projectName} - {serviceName} - OnTimeEvent Exeption {logMessage}");
+                LogService.Error($"{projectName} - {serviceName} - Execute Exeption {logMessage}");
             }
 
             Report(status, exception, "Fraud Case is executed at " + DateTime.Now);
@@ -149,18 +149,39 @@
             return thread;
         }
 
+        private void Execute(Match match)
+        {
+            try
+            {
+                var matchIds = ((Match)match).MatchId.ToString();
+                bigStakeNearGoalService.MatchIds = matchIds;
+                bigStakeNearGoalService.Rule();
+            }
+            catch (Exception ex)
+            {
+                var logMessage = new LogMessage(ex.Message)
+                .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
+                .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
+
+                LogService.Error($"{projectName} - {serviceName} - ExecuteSingle Exeption {logMessage}");
+            }
+
+        }
+
         private void ExecuteBySaparatedThreads()
         {
             if (_matches != null)
             {
                 foreach (var match in _matches)
                 {
-                    var thread = ExecuteSingle(match);
+                    // var thread = ExecuteSingle(match);
 
-                    _threads.Add(thread);
+                    // _threads.Add(thread);
+
+                    Execute(match);
                 }
 
-                Task.WaitAll(_threads.ToArray());
+                //Task.WaitAll(_threads.ToArray());
             }
         }
     }
