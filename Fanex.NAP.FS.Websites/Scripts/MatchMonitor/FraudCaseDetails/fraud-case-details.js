@@ -425,7 +425,8 @@
             arrGroupTicket.push(obj);
 
             return arr;
-        }, []);      
+        }, []);        
+
         ticket_grid.DataTable().rows.add(data).draw();
         totalTicket = t;
         $("#tickets").text(`By Tickets (${totalTicket})`);
@@ -441,13 +442,13 @@
 
         var n = (json || []).reduce((total, obj) => total + Math.max(obj.Home.length, obj.Away.length), 0);
 
-        var t = (json || []).reduce((total, obj) => total + obj.Home.length + obj.Away.length, 0);
-       
+        var t = (json || []).reduce((total, obj) => total + obj.Home.length + obj.Away.length, 0);        
+
         var keyName = "";
         var data = (json || []).reduce(function (arr, obj) {
             obj.key = true;          
-            keyName = obj.Score + " " + obj.BettypeName + " " + obj.Handicap;
-
+            keyName = obj.Score + " " + obj.BettypeName + " " + obj.Handicap + " " + obj.GroupId;
+            
             if (obj.Home.length + obj.Away.length < 1000) {
 
                 var n = Math.max(obj.Home.length, obj.Away.length);
@@ -465,11 +466,13 @@
 
             return arr;
         }, []);
-       
+        
+        console.log(data);
+
         //each list group
         var dataGroup = [];
         $.each(arrGroupTicket, function (index, value) {
-            var keyTemp = value.Score + " " + value.BettypeName + " " + value.Handicap;
+            var keyTemp = value.Score + " " + value.BettypeName + " " + value.Handicap + " " + value.GroupId;
             dataGroup.push(value);
             if (keyName == keyTemp) {                
                 var newArray = $.merge(dataGroup, data);
@@ -631,7 +634,7 @@
                         td = $(`<td colspan='21' class='group' style='cursor: initial'><span class='icon-chevron-down'></span> <span class='bage'>${obj.BettypeName} ${obj.Handicap}</span> <span class="bage">${obj.Score}</span> <span class='bage'>Tickets: ${totalTicket}</span> <span class="bage muchdata" style="color:red;">Too much data. Export CSV file instead!</span> <button class="button -export"><span class="icon-export-excel"></span></button></td>`);
                     }
                     else {
-                        var keyName = obj.Score + " " + obj.BettypeName + " " + obj.Handicap;
+                        var keyName = obj.Score + " " + obj.BettypeName + " " + obj.Handicap + " " + obj.GroupId;
                         if (groupExpand == keyName) {
                             td = $(`<td colspan='21' class='group' style='cursor: initial'><span class='icon-chevron-up' style='cursor: pointer;'></span><span class='bage' style='cursor: pointer;'>${obj.BettypeName} ${obj.Handicap}</span> <span class='bage' style='cursor: pointer;'>${obj.Score}</span> <span class='bage' style='cursor: pointer;'>Tickets: ${totalTicket}</span><button class="button -export"><span class="icon-export-excel"></span></button></td>`);
                         } else {
@@ -768,7 +771,7 @@
         common.showLoading();
 
         var url = common.modifyRelativeUrl("/MatchMonitor/GetListArbitrageTickets");                
-        var keyName = obj.Score + " " + obj.BettypeName + " " + obj.Handicap;
+        var keyName = obj.Score + " " + obj.BettypeName + " " + obj.Handicap + " " + obj.GroupId;
         groupExpand = keyName;
         
         var criteria = {};
@@ -786,6 +789,7 @@
                 handicap: obj.Handicap,
                 liveHomeScore: obj.LiveHomeScore,
                 liveAwayScore: obj.LiveAwayScore,
+                groupId: obj.GroupId,
                 matchId: parameters.matchId,
                 eventDate: parameters.eventDate
             };
@@ -796,6 +800,7 @@
             criteria.handicap = obj.Handicap;
             criteria.liveHomeScore = obj.LiveHomeScore;
             criteria.liveAwayScore = obj.LiveAwayScore;
+            criteria.groupId = obj.GroupId;
         }
 
         $.ajax({

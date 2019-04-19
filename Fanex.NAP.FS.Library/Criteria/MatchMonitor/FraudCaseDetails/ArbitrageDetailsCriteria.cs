@@ -67,8 +67,10 @@
         public int LiveAwayScore { get; set; }
 
         [SpParam(Ignored = true)]
-        public int TotalTicket { get; set; }
+        public int GroupId { get; set; }
 
+        [SpParam(Ignored = true)]
+        public int TotalTicket { get; set; }
 
         public override string GetSettingKey()
         {

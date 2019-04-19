@@ -539,7 +539,7 @@
 
             if (criteria.EvidenceCodeList != null && criteria.EvidenceCodeList.Contains(otherEvidenceCode))
             {
-                data = HandleArbitrageOtherEvidence(rawData, listEvi, criteria.EvidenceCodeList);
+                data = HandleArbitrageOtherEvidence(rawData, listEvi, criteria.EvidenceCodeList).Where(g=>g.GroupId == criteria.GroupId);
                 criteria.TotalTicket = data.Sum(c => c.Home.Count() + c.Away.Count());
                 return data;
             }
@@ -549,7 +549,7 @@
                 listEvi = listEvi.Where(c => criteria.EvidenceCodeList.Contains(c.EvidenceCode));
             }
 
-            data = HandleArbitrage(rawData, listEvi, string.IsNullOrEmpty(criteria.EvidenceCodeList));
+            data = HandleArbitrage(rawData, listEvi, string.IsNullOrEmpty(criteria.EvidenceCodeList)).Where(g => g.GroupId == criteria.GroupId);
             criteria.TotalTicket = data.Sum(c => c.Home.Count() + c.Away.Count());
             return data;
         }
