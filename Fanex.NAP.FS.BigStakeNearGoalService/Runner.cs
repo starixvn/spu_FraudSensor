@@ -11,6 +11,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.ServiceProcess;
+    using System.Threading;
     using System.Threading.Tasks;
 
     public partial class Runner : ServiceBase
@@ -182,6 +183,8 @@
                 }
 
                 //Task.WaitAll(_threads.ToArray());
+
+                Thread.Sleep(TimeSpan.FromSeconds(2));
             }
         }
     }

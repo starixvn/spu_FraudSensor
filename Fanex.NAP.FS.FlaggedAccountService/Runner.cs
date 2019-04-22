@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.ServiceProcess;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Fanex.NAP.FS.FlaggedAccountService
@@ -171,12 +172,36 @@ namespace Fanex.NAP.FS.FlaggedAccountService
 
                 foreach (var matches in matchChunks)
                 {
-                    var thread = ExecuteMultiple(matches.ToList());
+                    //var thread = ExecuteMultiple(matches.ToList());
 
-                    _threads.Add(thread);
+                    //_threads.Add(thread);
+                    ExecuteMatches(matches.ToList());
                 }
 
-                Task.WaitAll(_threads.ToArray());
+                Thread.Sleep(TimeSpan.FromSeconds(2));
+
+                //Task.WaitAll(_threads.ToArray());
+            }
+        }
+
+        private void ExecuteMatches(List<Match> matches)
+        {
+            try
+            {
+
+                flaggedAccountService.MatchIds = string.Join(",", ((List<Match>)matches).Select(t => t.MatchId.ToString()));
+                flaggedAccountService.FlaggedAccounts = XmlHelper.ToXmlString(_flaggedCustomers);
+
+                flaggedAccountService.Rule();
+
+            }
+            catch (Exception ex)
+            {
+                var logMessage = new LogMessage(ex.Message)
+                .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
+                .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
+
+                LogService.Error($"{projectName} - {serviceName} - ExecuteMultiple Exeption {logMessage}");               
             }
         }
 
