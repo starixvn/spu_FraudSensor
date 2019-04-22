@@ -479,6 +479,8 @@
 
             Task.WaitAll(tsk);
 
+            Logging.LogService.Info(tsk.Where(t => t.Result != null).SelectMany(t => t.Result).ToString());
+
             return tsk.Where(t => t.Result != null).SelectMany(t => t.Result);
         }
 
