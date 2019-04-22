@@ -1,11 +1,11 @@
 ﻿namespace Fanex.NAP.FS.Library.Service
 {
+    using Criteria.MatchMonitor.FraudCaseDetails;    
     using Fanex.NAP.FS.Library.DTO;
     using Fanex.NAP.FS.Library.Models.MatchMonitor.FraudCaseDetails;
     using Fanex.NAP.FS.Library.ViewModels.MatchMonitor.FraudCaseDetails;
     using System;
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
+    using System.Collections.Generic;    
 
     public interface IFraudCaseDetailsService
     {
@@ -30,15 +30,25 @@
         IEnumerable<CustomerAssociation> GetAssociations(int custId);
 
         IEnumerable<TicketDetails> GetTicketFromIP(string ip, bool isShowSpecialCurrencies);
+              
+        IEnumerable<CustomerDetails> GetArbitrageCustomerDetails(GetArbitrageCustomerCriteria criteria);
+
+        IEnumerable<ArbitrageGroupTicketList> GetArbitrageTickets(GetArbitrageTicketCriteria criteria);
+
+        IEnumerable<ArbitrageGroupTicketList> GetListArbitrageTickets(GetArbitrageTicketCriteria criteria);
+
+        IEnumerable<Evidence> GetListEvidences();
+
+        IEnumerable<Currency> GetAllCurrency(bool isShowSpecialCurrencies);
+
+        IEnumerable<ScoreHDP> GetScoreHDP(int matchId, bool isShowSpecialCurrencies);
         
-        IEnumerable<ArbitrageGroupTicketList> GetArbitrageTickets(int matchId, DateTime eventDate, bool isShowSpecialCurrencies);
+        byte[] ExportToExcelIpTickets(string ip, string template, bool isShowSpecialCurrencies);      
+       
+        string ExportArbitrageTicketByGroupCsv(GetArbitrageTicketCriteria criteria, int groupId, string score, string[] array);
 
-        byte[] ExportToExcelIpTickets(string ip, string template, bool isShowSpecialCurrencies);
+        string ExportArbitrageTicketAllCsv(GetArbitrageTicketCriteria ticketCriteria, string[] array);
 
-        byte[] ExportArbitrageExcel(int matchId, DateTime eventDate, bool isShowSpecialCurrencies, string templatePath);
-
-        byte[] ExportArbitrageExcel(int matchId, DateTime eventDate, bool isShowSpecialCurrencies, string templatePath, Func<ArbitrageGroupTicketList, bool> filter);
-
-        string ExportArbitrageCsv(int matchId, DateTime eventDate, bool isShowSpecialCurrencies);
+        string ExportArbitrageCustomersCsv(GetArbitrageCustomerCriteria criteria, string[] array);
     }
 }

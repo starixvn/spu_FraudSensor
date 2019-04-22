@@ -30,5 +30,7 @@
         public double Handicap { get; set; }
 
         public string Score { get; set; }
+
+        public bool IsIPFraud { get; set; }
     }
 }

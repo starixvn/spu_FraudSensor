@@ -8,6 +8,7 @@
     using Fanex.NAP.FS.Library.Models;
     using Fanex.NAP.FS.Library.Services.Implement;
     using Fanex.NAP.FS.Library.Services.Interface;
+    using Queue;
     using Library.Core.Helpers.Xml;
     using Library.Criteria.FraudCase.DelayedGoal;
     using Library.DTO;
@@ -18,25 +19,36 @@
     using System.Linq;
     using System.Web.Mvc;
     using ViewModels.FraudCase;
+    using Model;
+    using EasyNetQ;
+    using Library.Core.Utilities;
 
     [NapAuth(FunctionKey = FSFunctionKeys.FraudCase, Policy = Core.Business.Constant.Policy.Read)]
     public class FraudCaseController : ConfigurationsController
     {
         private readonly string FPS_WEBAPI_GET_ASSOCIATION_ACCOUNT = ConfigurationManager.AppSettings["FPS_WEBAPI_GET_ASSOCIATION_ACCOUNT"];
-
         private readonly IDelayGoalAccountService _delayGoalAccountService;
-
         private readonly IFraudCaseService _fraudCaseService;
-
         private readonly IOfficeIPService _ipService;
-
         private readonly INotificationRecipientService _recipientService = new NotificationRecipientService();
+        private static EasyNetQ _rabbitMQ;
+        private static int envConfig = int.Parse(ConfigurationManager.AppSettings["Environment"]);
 
         public FraudCaseController()
         {
             _delayGoalAccountService = new DelayGoalAccountService();
             _fraudCaseService = new FraudCaseService();
             _ipService = new OfficeIPService();
+
+            _rabbitMQ = new EasyNetQ(ConfigSettings.RabbitMQ_Host() + ":" + ConfigSettings.RabbitMQ_Port(),
+                ConfigSettings.RabbitMQ_VirtualHost(),
+                Convert.ToInt32(ConfigSettings.RabbitMQ_PrefetchCount()),
+                ConfigSettings.RabbitMQ_Username(),
+                ConfigSettings.RabbitMQ_Password());
+
+            _rabbitMQ
+                .CreateBus()
+                .DeclareExchange(ConfigSettings.RabbitMQ_Exchange());
 
             ViewBag.IsHost = UserService.IsHavingPermission(CurrentSession.UserId, int.Parse(AppSettings.Get("SiteId")), FSFunctionKeys.FraudCase, Core.Business.Constant.Policy.Host);
         }
@@ -45,8 +57,8 @@
         {
             var fraudCaseViewModel = new FraudCaseViewModel();
             fraudCaseViewModel.FraudCaseInfo = Library.Models.FraudCase.FraudCase.GetFraudCase(FraudCaseId.BSNG);
-            fraudCaseViewModel.FraudCaseList = _fraudCaseService.Get(null, null, int.Parse(ConfigurationManager.AppSettings["Environment"]));
-            fraudCaseViewModel.FraudCaseInfo.IsActive = _fraudCaseService.CheckActiveFraudCase(FraudCaseId.BSNG);
+            fraudCaseViewModel.FraudCaseList = _fraudCaseService.Get(null, null, envConfig);
+            fraudCaseViewModel.FraudCaseInfo.IsActive = _fraudCaseService.CheckActiveFraudCase(FraudCaseId.BSNG, envConfig);
 
             return View(fraudCaseViewModel);
         }
@@ -58,7 +70,7 @@
             var fraudCaseViewModel = new FraudCaseViewModel();
             fraudCaseViewModel.FraudCaseInfo = Library.Models.FraudCase.FraudCase.GetFraudCase(caseid);
             fraudCaseViewModel.FraudCaseList = _fraudCaseService.Get(null, null, int.Parse(ConfigurationManager.AppSettings["Environment"]));
-            fraudCaseViewModel.FraudCaseInfo.IsActive = _fraudCaseService.CheckActiveFraudCase(caseid);
+            fraudCaseViewModel.FraudCaseInfo.IsActive = _fraudCaseService.CheckActiveFraudCase(caseid, envConfig);
 
             return View(fraudCaseViewModel);
         }
@@ -67,9 +79,35 @@
         public ActionResult ChangeCaseStatus(int fraudCaseId, bool isActive)
         {
             _fraudCaseService.ChangeFraudCaseStatus((FraudCaseId)fraudCaseId, CurrentSession.UserId);
+            if (fraudCaseId == (int)FraudCaseId.BSNG || fraudCaseId == (int)FraudCaseId.Arbitrage || fraudCaseId == (int)FraudCaseId.FlaggedAccount)
+            {
+                var fraudCaseName = Enum.GetName(typeof(FraudCaseId), fraudCaseId);
+                if (!string.IsNullOrWhiteSpace(fraudCaseName))
+                {
+                    _rabbitMQ
+                        .DeclareQueue(fraudCaseName)
+                        .DeclareRoutingKey(fraudCaseName)
+                        .Bind();
 
-            var sender = SendingMessageFactory.GetSender(isActive ? SendingType.Activating : SendingType.Deactivating);
-            sender.Send(fraudCaseId);
+                    if (!string.IsNullOrWhiteSpace(_rabbitMQ.QueueName))
+                    {
+                        var message = new Message<FraudCaseMessage>(new FraudCaseMessage
+                        {
+                            Action = isActive ? Model.Action.Activating : Model.Action.Deactivating,
+                            Id = fraudCaseId,
+                            Name = fraudCaseName,
+                            Message = "Message is sent at" + DateTime.Now
+                        }, new MessageProperties { DeliveryMode = 2, Priority = 9 });
+
+                        _rabbitMQ.AdvanceBus.PublishAsync(_rabbitMQ.Exchange, _rabbitMQ.RoutingKey, false, message);
+                    }
+                }
+            }
+            else
+            {
+                var sender = SendingMessageFactory.GetSender(isActive ? SendingType.Activating : SendingType.Deactivating);
+                sender.Send(fraudCaseId);
+            }
 
             return Json(new object());
         }

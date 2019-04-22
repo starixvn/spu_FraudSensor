@@ -23,5 +23,7 @@
         public int DangerLevel { get; set; }
 
         public int GroupId { get; set; }
+
+        public bool IsIPFraud { get; set; }
     }
 }

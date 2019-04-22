@@ -1,17 +1,19 @@
-﻿#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
-
-namespace Fanex.NAP.FS.Websites.Controllers
+﻿namespace Fanex.NAP.FS.Websites.Controllers
 {
     using Core.Service.Impl;
     using Fanex.NAP.Core.Web.Attribute;
     using Fanex.NAP.FS.Library.Criteria.MatchMonitor;
-    using Fanex.NAP.FS.Library.Models;
+    using Library.Core.Helpers;
+    using Library.Criteria.MatchMonitor.FraudCaseDetails;
+    using Library.Models.MatchMonitor.FraudCaseDetails;
     using Library.Service;
     using Service;
     using Service.MatchMonitor;
     using System;
+    using System.Collections.Generic;
     using System.Configuration;
     using System.Linq;
+    using System.Net;
     using System.Text;
     using System.Web.Mvc;
 
@@ -40,6 +42,7 @@ namespace Fanex.NAP.FS.Websites.Controllers
             return View(_matchMonitorService.GetBalanceUpDate());
         }
 
+        #region Common
         [HttpPost]
         public ActionResult GetMatches(MatchGetAllCriteria criteria)
         {
@@ -72,66 +75,6 @@ namespace Fanex.NAP.FS.Websites.Controllers
             var fileName = "MatchMonitor_" + DateTime.Now.ToString("yyyyMMdd") + ".xlsx";
 
             return File(_matchMonitorService.ExportExcel(criteria, templatePath), "application/vnd.ms-excel", fileName);
-        }
-
-        public ActionResult GetFraudCaseDetails(int fraudCaseId, int matchId, DateTime eventDate, int violations)
-        {
-            if (fraudCaseId == (int)FraudCaseId.Arbitrage && violations > 1000)
-            {
-                var content = _fraudCaseDetailService.ExportArbitrageCsv(matchId, eventDate, IsShowSpecialCurrencies);
-
-                var encoded = Encoding.UTF8.GetBytes(content);
-
-                return File(encoded, "text/plain", "Arbitrage.csv");
-            }
-
-            var model = _fraudCaseDetailService.GetInfo(matchId, fraudCaseId, eventDate);
-
-            ViewBag.BUDate = _matchMonitorService.GetBalanceUpDate().BalanceUpDay;
-
-            return View("FraudCaseDetails/Index", model);
-        }
-
-        public ActionResult GetFraudCaseTicketDetails(int fraudCaseId, int matchId, DateTime eventDate)
-        {
-            var data =
-                _fraudCaseDetailService.GetTicketDetails(matchId, fraudCaseId, eventDate, IsShowSpecialCurrencies)
-                .GroupBy(t => t.Bettype)
-                .Select(g => new { key = g.Key, data = g.AsEnumerable() });
-
-            return Json(data, JsonRequestBehavior.AllowGet);
-        }
-
-        public ActionResult GetFraudCaseCustomerDetails(int fraudCaseId, int matchId, DateTime eventDate)
-        {
-            var data = _fraudCaseDetailService.GetCustomerDetails(matchId, fraudCaseId, eventDate, IsShowSpecialCurrencies);
-
-            return Json(data, JsonRequestBehavior.AllowGet);
-        }
-
-        public ActionResult GetArbitrageTicketDetails(int matchId, DateTime eventDate)
-        {
-            var data = _fraudCaseDetailService.GetArbitrageTickets(matchId, eventDate, IsShowSpecialCurrencies);
-
-            return Json(data);
-        }
-
-        public ActionResult ExportExcelForDetail(int fraudCaseId, int matchId, DateTime eventDate)
-        {
-            if (fraudCaseId == (int)FraudCaseId.Arbitrage)
-            {
-                var template = Server.MapPath("~/App_Data/Excel Template/MatchMonitor/FraudCaseDetail/arbitrage.xlsx");
-
-                var fileName = string.Format("FraudCaseDetails_{0}.xlsx", DateTime.Today.ToString("yyyyMMdd"));
-                return File(_fraudCaseDetailService.ExportArbitrageExcel(matchId, eventDate, IsShowSpecialCurrencies, template), "application/vnd.ms-excel", fileName);
-            }
-            else
-            {
-                var template = Server.MapPath("~/App_Data/Excel Template/MatchMonitor/FraudCaseDetail/template.xlsx");
-
-                var fileName = string.Format("FraudCaseDetails_{0}.xlsx", DateTime.Today.ToString("yyyyMMdd"));
-            return File(_fraudCaseDetailService.ExportExcel(matchId, fraudCaseId, eventDate, template, IsShowSpecialCurrencies), "application/vnd.ms-excel", fileName);
-            }
         }
 
         [HttpPost]
@@ -167,18 +110,164 @@ namespace Fanex.NAP.FS.Websites.Controllers
             return ExcelFile(_fraudCaseDetailService.ExportToExcelIpTickets(ip, template, IsShowSpecialCurrencies), fileName);
         }
 
-        public ActionResult ExportArbitrageWithFilterExcel(int matchId, DateTime eventDate, string bettype, string score, double handicap, int groupId)
+        #endregion Common
+
+        #region Other Fraud Cases
+        public ActionResult GetFraudCaseDetails(int fraudCaseId, int matchId, DateTime eventDate, int violations)
         {
-            var template = Server.MapPath("~/App_Data/Excel Template/MatchMonitor/FraudCaseDetail/arbitrage.xlsx");
+            var model = _fraudCaseDetailService.GetInfo(matchId, fraudCaseId, eventDate);
 
-            var fileName = string.Format("FraudCaseDetails_{0}", DateTime.Today.ToString("yyyyMMdd"));
+            ViewBag.BUDate = _matchMonitorService.GetBalanceUpDate().BalanceUpDay;
+            ViewBag.EvidenceList = _fraudCaseDetailService.GetListEvidences();
 
-            var content = _fraudCaseDetailService
-                .ExportArbitrageExcel(matchId, eventDate, IsShowSpecialCurrencies, template, obj => obj.BettypeName == bettype && obj.Score == score && (double)obj.Handicap == handicap && obj.GroupId == groupId);
-
-            return ExcelFile(content, fileName);
+            return View("FraudCaseDetails/Index", model);
         }
+
+        public ActionResult GetFraudCaseTicketDetails(int fraudCaseId, int matchId, DateTime eventDate)
+        {
+            var data =
+                _fraudCaseDetailService.GetTicketDetails(matchId, fraudCaseId, eventDate, IsShowSpecialCurrencies)
+                .GroupBy(t => t.Bettype)
+                .Select(g => new { key = g.Key, data = g.AsEnumerable() });
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult GetFraudCaseCustomerDetails(int fraudCaseId, int matchId, DateTime eventDate)
+        {
+            var data = _fraudCaseDetailService.GetCustomerDetails(matchId, fraudCaseId, eventDate, IsShowSpecialCurrencies);
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        #endregion Other Fraud Cases
+
+        #region Arbitrage
+        public ActionResult GetListArbitrageTickets(GetArbitrageTicketCriteria criteria)
+        {
+            criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
+            var data = _fraudCaseDetailService.GetListArbitrageTickets(criteria);
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public ActionResult GetArbitrageTicketsGroupSummary(GetArbitrageTicketCriteria criteria)
+        {
+            criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
+            var data = _fraudCaseDetailService.GetArbitrageTickets(criteria);
+            return new JsonResult { Data = new { Content = data }, MaxJsonLength = Int32.MaxValue };
+        }
+
+        public ActionResult ExportCSVArbitrageTickets(GetArbitrageTicketCriteria criteria)
+        {
+            criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
+
+            string[] filterInfo = GenerateFilterInfoForCsv(criteria);
+            var content = _fraudCaseDetailService.ExportArbitrageTicketAllCsv(criteria, filterInfo);
+            var encoded = Encoding.UTF8.GetBytes(content);
+
+            return File(encoded, "text/plain", "FraudCaseDetails_Tickets_" + DateTime.Today.ToString("yyyyMMdd") + ".csv");
+        }
+
+        [HttpPost]
+        public JsonResult GetFraudCaseArbitrageCustomerDetails(GetArbitrageCustomerCriteria criteria)
+        {
+            criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
+            var data = _fraudCaseDetailService.GetArbitrageCustomerDetails(criteria);
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult ExportCSVArbitrageCustomers(GetArbitrageCustomerCriteria criteria)
+        {
+            criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
+
+            string[] filterInfo = GenerateFilterInfoForCsv(criteria);
+            var content = _fraudCaseDetailService.ExportArbitrageCustomersCsv(criteria, filterInfo);
+            var encoded = Encoding.UTF8.GetBytes(content);
+
+            return File(encoded, "text/plain", "FraudCaseDetails_Customers_" + DateTime.Today.ToString("yyyyMMdd") + ".csv");
+        }
+
+        public ActionResult ExportExcelForDetail(int fraudCaseId, int matchId, DateTime eventDate)
+        {
+            var template = Server.MapPath("~/App_Data/Excel Template/MatchMonitor/FraudCaseDetail/template.xlsx");
+
+            var fileName = string.Format("FraudCaseDetails_{0}.xlsx", DateTime.Today.ToString("yyyyMMdd"));
+            return File(_fraudCaseDetailService.ExportExcel(matchId, fraudCaseId, eventDate, template, IsShowSpecialCurrencies), "application/vnd.ms-excel", fileName);
+        }
+
+        public ActionResult ExportCSVArbitrageTicketByGroup(GetArbitrageTicketCriteria criteria, int groupId, string score, decimal handicap)
+        {
+            string[] filterInfo = GenerateFilterInfoForCsv(criteria);
+
+            criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
+            var content = _fraudCaseDetailService.ExportArbitrageTicketByGroupCsv(criteria, groupId, score, filterInfo);
+            var encoded = Encoding.UTF8.GetBytes(content);
+
+            return File(encoded, "text/plain", "FraudCaseDetails_Tickets_" + DateTime.Today.ToString("yyyyMMdd") + ".csv");
+        }
+
+        private string[] GenerateFilterInfoForCsv(ArbitrageDetailsCriteria criteria)
+        {
+            string[] filterInfo = new string[6];
+
+            // get Market
+            filterInfo[0] = criteria.LiveStatus == -1 ? "All" : (criteria.LiveStatus == 0 ? "Non-Live" : "Live");
+
+            // get Currency
+            var obj = HttpContext.Cache["ListCurrency"];
+            if (obj != null)
+            {
+                IEnumerable<Currency> lstObject = obj as IEnumerable<Currency>;
+                Currency currency = lstObject.FirstOrDefault(c => c.CurrencyId == criteria.CurrencyId.ToString());
+                filterInfo[1] = currency != null ? currency.CurrencyName : "All";
+            }
+
+            // get Evidence name
+            string strCode = string.Empty;
+            var otherEvidenceCode = AppSettings.Get("FPS_GET_OTHER_EVIDENCES");
+            if (otherEvidenceCode != null && criteria.EvidenceCodeList != null)
+            {
+                strCode = criteria.EvidenceCodeList;
+                strCode = strCode.Replace(otherEvidenceCode, "Others");
+                strCode = strCode.Replace(',', '/');
+            }
+
+            filterInfo[2] = strCode;
+
+            // From date, to date
+            filterInfo[3] = criteria.TransDateFromString != null ? criteria.TransDateFromString.Replace(',', '-') : string.Empty;
+            filterInfo[4] = criteria.TransDateToString != null ? criteria.TransDateToString.Replace(',', '-') : string.Empty;
+
+            // get Score/HDP
+            filterInfo[5] = criteria.KeyName;
+
+            return filterInfo;
+        }
+
+        public JsonResult GetListEvidences()
+        {
+            var data = _fraudCaseDetailService.GetListEvidences();
+            HttpContext.Cache["ListEvidences"] = data;
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult GetAllCurrency()
+        {
+            var data = _fraudCaseDetailService.GetAllCurrency(IsShowSpecialCurrencies);
+            HttpContext.Cache["ListCurrency"] = data;
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult GetScoreHDP(int matchId, DateTime eventDate)
+        {
+            var data = _fraudCaseDetailService.GetScoreHDP(matchId, IsShowSpecialCurrencies);
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+        #endregion Arbitrage
     }
 }
-
-#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
