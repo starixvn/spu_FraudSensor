@@ -27,7 +27,7 @@
         private readonly IEnumerable<FlaggedCustomer> _flaggedCustomers;
 
         private new const string ServiceName = "Flagged Account Service";
-        static string _projectName = "Fraud Sensor Service";
+        private const string ProjectName = "Fraud Sensor Service";
 
         private IEnumerable<Match> _matches;
         private readonly List<Task> _threads;
@@ -94,7 +94,7 @@
 #if DEBUG
                     Console.WriteLine("-> Fraud Case is executing at " + DateTime.Now);
 #endif
-                    LogService.Info($"{_projectName} - {ServiceName} - Fraudcase is begining for executing.");
+                    LogService.Info($"{ProjectName} - {ServiceName} - Fraudcase is begining for executing.");
 
                     _isRunning = true;
 
@@ -106,7 +106,7 @@
 #if DEBUG
                     Console.WriteLine("=> Fraud Case is executed at " + DateTime.Now);
 #endif
-                    LogService.Info($"{_projectName} - {ServiceName} - Fraudcase is executed.");
+                    LogService.Info($"{ProjectName} - {ServiceName} - Fraudcase is executed.");
                 }
             }
             catch (Exception ex)
@@ -119,7 +119,7 @@
                     .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
                     .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
 
-                LogService.Error($"{_projectName} - {ServiceName} - Execute Exeption {logMessage}");
+                LogService.Error($"{ProjectName} - {ServiceName} - Execute Exeption {logMessage}");
             }
 
             Report(status, exception, "Fraud Case is executed at " + DateTime.Now);
@@ -151,20 +151,20 @@
 
         private void Precondition()
         {
-            LogService.Info($"{_projectName} - {ServiceName} - Precondition is executing.");
+            LogService.Info($"{ProjectName} - {ServiceName} - Precondition is executing.");
 
             _matches = FlaggedAccountService.PreCondition<Match>();
 
-            LogService.Info($"{_projectName} - {ServiceName} - Precondition is executed.");
+            LogService.Info($"{ProjectName} - {ServiceName} - Precondition is executed.");
         }
 
         private void Rule()
         {
-            LogService.Info($"{_projectName} - {ServiceName} - Rule is executing.");
+            LogService.Info($"{ProjectName} - {ServiceName} - Rule is executing.");
 
             ExecuteBySeparatedThreads();
 
-            LogService.Info($"{_projectName} - {ServiceName} - Rule is executed.");
+            LogService.Info($"{ProjectName} - {ServiceName} - Rule is executed.");
         }
 
         private void ExecuteBySeparatedThreads()
@@ -202,7 +202,7 @@
                 .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
                 .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
 
-                LogService.Error($"{_projectName} - {ServiceName} - ExecuteMultiple Exeption {logMessage}");               
+                LogService.Error($"{ProjectName} - {ServiceName} - ExecuteMultiple Exeption {logMessage}");               
             }
         }
 
@@ -225,7 +225,7 @@
                     .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
                     .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
 
-                    LogService.Error($"{_projectName} - {ServiceName} - ExecuteMultiple Exeption {logMessage}");
+                    LogService.Error($"{ProjectName} - {ServiceName} - ExecuteMultiple Exeption {logMessage}");
 
                     Ultilities.WriteLog("log-MatchId-" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss") + ".log", matches.Select(x=>x.MatchId.ToString()));
                 }

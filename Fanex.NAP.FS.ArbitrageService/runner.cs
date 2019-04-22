@@ -14,9 +14,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.ServiceProcess;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 
+// ReSharper disable once IdentifierTypo
 namespace Fanex.NAP.FS.ArbitrageService
 {
     public partial class Runner : ServiceBase
@@ -61,9 +63,7 @@ namespace Fanex.NAP.FS.ArbitrageService
                 if (!isUm)
                 {
                     if (_isRunning) return;
-#if DEBUG
-                    Console.WriteLine("-> Fraud Case is executing at " + DateTime.Now);
-#endif
+
                     _isRunning = true;
 
                     CleanResult();
@@ -71,9 +71,7 @@ namespace Fanex.NAP.FS.ArbitrageService
                     Rule();
 
                     _isRunning = false;
-#if DEBUG
-                    Console.WriteLine("=> Fraud Case is executed at " + DateTime.Now);
-#endif
+
                     LogService.Info($"{ProjectName} - {ServiceName} - Fraudcase is executed.");
                 }
             }
@@ -95,7 +93,6 @@ namespace Fanex.NAP.FS.ArbitrageService
 
         private void GroupData(int matchId, IEnumerable<ArbitrageTicket> tickets)
         {
-            var message = string.Empty;
 
             try
             {
@@ -105,10 +102,6 @@ namespace Fanex.NAP.FS.ArbitrageService
                     // ReSharper disable once PossibleMultipleEnumeration
                     var tsk = tickets.Select(t => t.CustId).Distinct().Chunk(500).Select(GroupCustomer).ToArray();
 
-#if DEBUG
-                    message = $"- Rule for match {matchId} is executing. Ticket counter: " + tsk.Count();
-                    Console.WriteLine(message);
-#endif
                     Task.WaitAll(tsk);
 
                     if (tsk.Any())
@@ -117,12 +110,6 @@ namespace Fanex.NAP.FS.ArbitrageService
 
                         if (customers != Enumerable.Empty<ArbitrageCustomer>())
                         {
-#if DEBUG
-                            message =
-                                $"- Rule for match {matchId} is executing. Customers counter: {customers.Count()}.";
-                            Console.WriteLine(message);
-#endif
-
                             _arbitrageService.MatchIds = tickets.ToXmlString();
                             _arbitrageService.Associations = customers.ToXmlString();
 
@@ -150,17 +137,6 @@ namespace Fanex.NAP.FS.ArbitrageService
                 LogService.Error(
                     $"{ProjectName} - {ServiceName} - MatchId: {matchId} - GroupData Exeption: {logMessage}");
             }
-
-#if DEBUG
-            Console.WriteLine(message);
-#endif
-        }
-
-        private void WriteLog(string filename, IEnumerable<string> body)
-        {
-            var filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, filename);
-
-            File.WriteAllLines(filePath, body);
         }
 
         private async Task<IEnumerable<ArbitrageCustomer>> GroupCustomer(IEnumerable<int> custids)
@@ -195,53 +171,44 @@ namespace Fanex.NAP.FS.ArbitrageService
 
         private void Precondition()
         {
-            var message = string.Empty;
+            LogService.Info($"{ProjectName} - {ServiceName} - Precondition is executing.");
 
             _tickets = _arbitrageService.PreCondition<ArbitrageTicket>();
 
-            message = "===> Pre-Condition is executing. Ticket counter: " + _tickets.Count();
-#if DEBUG
-            Console.WriteLine(message);
-#endif
+            LogService.Info($"{ProjectName} - {ServiceName} - Precondition is executed.");
         }
 
         private void Rule()
         {
+            LogService.Info($"{ProjectName} - {ServiceName} - Rule is executing.");
+
+
             XmlHelper.RegisterType<ArbitrageTicket>();
             XmlHelper.RegisterType<ArbitrageCustomer>();
 
             if (_tickets == null || !_tickets.Any()) return;
+
             var ticketGroupBy = _tickets.GroupBy(t => t.MatchId);
 
-            var message = "===> Rule funtion is executing. Ticket Group By Per Match counter: " +
-                          ticketGroupBy.Count();
-
-#if DEBUG
-            Console.WriteLine(message);
-#endif
-            // LogService.Info(message);
-
-            Parallel.ForEach(ticketGroupBy, new ParallelOptions
+            foreach (var ticket in ticketGroupBy)
             {
-                MaxDegreeOfParallelism = 1
-            }, g =>
-            {
-#if DEBUG
-                message = $"===> Match Id: {g.Key} - Ticket counter: {g.Count()} - Executing";
-                Console.WriteLine(message);
-#endif
+                GroupData(ticket.Key, ticket);
+            }
 
-                GroupData(g.Key, g);
+            Thread.Sleep(TimeSpan.FromSeconds(2));
 
-                message = $"===> Match Id: {g.Key} - Ticket counter: {g.Count()} - Executed";
-#if DEBUG
-                Console.WriteLine(message);
-#endif
-                // LogService.Info(message);
-            });
+            LogService.Info($"{ProjectName} - {ServiceName} - Rule is executed.");
+
+            //Parallel.ForEach(ticketGroupBy, new ParallelOptions
+            //{
+            //    MaxDegreeOfParallelism = 1
+            //}, g =>
+            //{
+            //    GroupData(g.Key, g);
+            //});
         }
 
-        private void CleanResult()
+        private static void CleanResult()
         {
         }
     }
