@@ -388,7 +388,8 @@
 
         private IEnumerable<CustomerDetails> HandleArbitrageCustomerOtherEvidence(IEnumerable<CustInfo> custInfo, IEnumerable<CustomerEvidence> custEvidence, string lstEvidenceSelected)
         {
-            var evidenceExtract = custEvidence.Where(c => !lstEvidenceSelected.Contains(c.EvidenceCode));
+            var distinctedCustEvidence = custEvidence.Distinct();
+            var evidenceExtract = distinctedCustEvidence.Where(c => !lstEvidenceSelected.Contains(c.EvidenceCode));
             var lstEvidenceExtract = evidenceExtract.Select(c => (long)c.CustId).ToList();
             var totalAssociation = GetTotalAssociations(custInfo.Select(i => i.CustId)).ToDictionary(o => o.CustId, o => o.TotalAssociation);
             Func<long, bool> conditionExtract = f => !lstEvidenceExtract.Contains(f);
@@ -396,7 +397,7 @@
             IEnumerable<CustomerDetails> custDetails = custInfo
                    .Where(c => conditionExtract(c.CustId))
                    .GroupJoin(
-                   custEvidence,
+                   distinctedCustEvidence,
                    info => info.CustId,
                    evid => evid.CustId,
                    (info, evidence) => new CustomerDetails
@@ -416,11 +417,12 @@
 
         private IEnumerable<CustomerDetails> HandleArbitrageCustomerEvidence(IEnumerable<CustInfo> custInfo, IEnumerable<CustomerEvidence> custEvidence, bool isAllEvidence)
         {
+            var distinctedCustEvidence = custEvidence.Distinct();
             Func<long, bool> conditionExtract = f => 1.Equals(1);
 
             if (!isAllEvidence)
             {
-                var listEvidenceByCus = custEvidence.Select(c => (long)c.CustId).ToList();
+                var listEvidenceByCus = distinctedCustEvidence.Select(c => (long)c.CustId).ToList();
                 conditionExtract = f => listEvidenceByCus.Contains(f);
             }
 
@@ -429,7 +431,7 @@
             IEnumerable<CustomerDetails> custDetails = custInfo
                    .Where(c => conditionExtract(c.CustId))
                    .GroupJoin(
-                   custEvidence,
+                   distinctedCustEvidence,
                    info => info.CustId,
                    evid => evid.CustId,
                    (info, evidence) => new CustomerDetails
@@ -453,7 +455,7 @@
 
             var tsk = custIds.Distinct().Chunk(500).Select(a => new CustomerEvidenceList
             {
-                CustIdList = string.Join(",", custIds)
+                CustIdList = string.Join(",", a)
             }).Select(p => ApiHelper.Post<IEnumerable<CustomerEvidence>>(url, p)).ToArray();
 
             Task.WaitAll(tsk);
