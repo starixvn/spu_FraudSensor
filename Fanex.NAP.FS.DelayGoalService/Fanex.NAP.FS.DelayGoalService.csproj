@@ -62,7 +62,7 @@
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
-    <Content Include="Fanex.NAP.FS.DelayGoalService.exe.PROD.config">
+    <Content Include="Fanex.NAP.FS.DelayGoalService.exe.PRO.config">
       <DependentUpon>App.config</DependentUpon>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
