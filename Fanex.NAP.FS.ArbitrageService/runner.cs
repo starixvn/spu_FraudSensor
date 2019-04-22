@@ -22,6 +22,7 @@ namespace Fanex.NAP.FS.ArbitrageService
     public partial class Runner : ServiceBase
     {
         private const string ProjectName = "Fraud Sensor Service";
+        private new const string ServiceName = "Arbitrage Service";
 
         private static Service.ArbitrageService _arbitrageService;
         private readonly MicroService _baseService;
@@ -30,7 +31,7 @@ namespace Fanex.NAP.FS.ArbitrageService
 
         public Runner()
         {
-            _baseService = new MicroService(base.ServiceName, FraudCaseId.Arbitrage);
+            _baseService = new MicroService(ServiceName, FraudCaseId.Arbitrage);
             _arbitrageService = new Service.ArbitrageService();
 
             InitializeComponent();
@@ -73,7 +74,7 @@ namespace Fanex.NAP.FS.ArbitrageService
 #if DEBUG
                     Console.WriteLine("=> Fraud Case is executed at " + DateTime.Now);
 #endif
-                    LogService.Info($"{ProjectName} - {base.ServiceName} - Fraudcase is executed.");
+                    LogService.Info($"{ProjectName} - {ServiceName} - Fraudcase is executed.");
                 }
             }
             catch (Exception ex)
@@ -86,7 +87,7 @@ namespace Fanex.NAP.FS.ArbitrageService
                     .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
                     .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
 
-                LogService.Error($"{ProjectName} - {base.ServiceName} - Execute Exeption {logMessage}");
+                LogService.Error($"{ProjectName} - {ServiceName} - Execute Exeption {logMessage}");
             }
 
             Report(status, exception, "Fraud Case is executed at " + DateTime.Now);
@@ -130,14 +131,14 @@ namespace Fanex.NAP.FS.ArbitrageService
                         else
                         {
                             LogService.Error(
-                                $"{ProjectName} - {base.ServiceName} - MatchId: {matchId} - Exeption: Associations({customers.Count()}) is null.");
+                                $"{ProjectName} - {ServiceName} - MatchId: {matchId} - Exeption: Associations({customers.Count()}) is null.");
                         }
                     }
                 }
                 else
                 {
                     LogService.Error(
-                        $"{ProjectName} - {base.ServiceName} - MatchId: {matchId} - Exeption: MatchIds({tickets.Count()}) is null.");
+                        $"{ProjectName} - {ServiceName} - MatchId: {matchId} - Exeption: MatchIds({tickets.Count()}) is null.");
                 }
             }
             catch (Exception ex)
@@ -147,7 +148,7 @@ namespace Fanex.NAP.FS.ArbitrageService
                     .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
 
                 LogService.Error(
-                    $"{ProjectName} - {base.ServiceName} - MatchId: {matchId} - GroupData Exeption: {logMessage}");
+                    $"{ProjectName} - {ServiceName} - MatchId: {matchId} - GroupData Exeption: {logMessage}");
             }
 
 #if DEBUG
@@ -171,7 +172,7 @@ namespace Fanex.NAP.FS.ArbitrageService
             catch (Exception ex)
             {
                 LogService.Error(
-                    $"{ProjectName} - {base.ServiceName} - GroupCustomer Exception: Cannot get Group Customer from Web API - Exception: {ex.Message}");
+                    $"{ProjectName} - {ServiceName} - GroupCustomer Exception: Cannot get Group Customer from Web API - Exception: {ex.Message}");
 
                 return Enumerable.Empty<ArbitrageCustomer>();
             }
@@ -181,7 +182,7 @@ namespace Fanex.NAP.FS.ArbitrageService
         {
             var model = new ReportModel
             {
-                ServiceName = base.ServiceName,
+                ServiceName = ServiceName,
                 Exception = exception,
                 Status = status,
                 Timeout = _baseService.FraudCase.FraudCaseInterval,

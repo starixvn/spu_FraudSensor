@@ -151,12 +151,20 @@
 
         private void Precondition()
         {
+            LogService.Info($"{_projectName} - {ServiceName} - Precondition is executing.");
+
             _matches = FlaggedAccountService.PreCondition<Match>();
+
+            LogService.Info($"{_projectName} - {ServiceName} - Precondition is executed.");
         }
 
         private void Rule()
         {
+            LogService.Info($"{_projectName} - {ServiceName} - Rule is executing.");
+
             ExecuteBySeparatedThreads();
+
+            LogService.Info($"{_projectName} - {ServiceName} - Rule is executed.");
         }
 
         private void ExecuteBySeparatedThreads()
