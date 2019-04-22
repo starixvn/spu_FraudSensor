@@ -1,25 +1,57 @@
 ﻿@using Fanex.NAP.FS.Library.Models;
+@using Fanex.NAP.FS.Library.Models.MatchMonitor.FraudCaseDetails;
 @model Fanex.NAP.FS.Library.ViewModels.MatchMonitor.FraudCaseDetails.MatchFraudCaseInfo
-
 @{
     ViewBag.Title = "FRAUD CASE DETAILS";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
 @section styles{
     @Styles.Render("~/fraud-case-styles")
     @Styles.Render("~/Contents/CoreBetList")
-
+    <link href="~/Content/jquery-ui-timepicker-addon.min.css" rel="stylesheet" />
+    <link href="~/Content/scss/MultipleSelect/jquery.multiselect.css" rel="stylesheet" />
     <style>
-        /*div.dataTables_wrapper {
-            width: 1870px;
-            margin: 0 auto;
-        }*/
+    .ui-slider-handle.ui-corner-all.ui-state-default {
+        background: #465262;
+        width: 20px;
+        height: 20px;
+        cursor:pointer;
+    }
+
+    .ui-slider.ui-corner-all.ui-slider-horizontal.ui-widget.ui-widget-content{
+        height:5px;
+    }
+
+    .ui_tpicker_hour, .ui_tpicker_minute, .ui_tpicker_second {
+        margin-bottom: 15px !important;
+    }
+
+    .ui-state-active {
+        border: 1px solid #465262;
+        background: #465262;
+        font-weight: normal;
+        color: #fff;
+    }
+
+    .ui-datepicker.ui-widget-content .ui-state-default.ui-state-hover {
+        background-color: none !important;
+    }
+
+    button.ui-datepicker-close.ui-state-default.ui-priority-primary.ui-corner-all.ui-state-hover{
+        background:none;
+    }
+
+    button.ui-datepicker-current.ui-state-default.ui-priority-secondary.ui-corner-all {
+        background: none;
+    }
+
+    button.ui-multiselect.ui-widget.ui-state-default.ui-corner-all {
+        width: 345px !important;
+    }
+
     </style>
 }
-
 <h1 class="title">@ViewBag.Title</h1>
-
 <table class="fraud-case-details">
     <tr>
         <td class="info-name">Event</td>
@@ -35,20 +67,74 @@
     </tr>
 </table>
 
+@if ((FraudCaseId)Model.FraudCaseId == FraudCaseId.Arbitrage)
+{
+    <div class="form-filter">
+        <div class="group width-160" style="width: 130px;">
+            <label class="text">Market</label>
+            <div class="edit-field col_9">
+                <select class="control" id="market">
+                    <option value="-1" selected>All</option>
+                    <option value="0">Non-Live</option>
+                    <option value="1">Live</option>
+                </select>
+            </div>
+        </div>
+        <div class="group width-160" style="width:130px;">
+            <label class="text">Currency</label>
+            <div class="edit-field col_9">
+                <select class="control" id="currency"></select>
+            </div>
+        </div>
+        <div class="group" style="width:335px;">
+            <label class="text">Evidence</label>
+            <div class="edit-field col_9">
+                <select id="ddlEvidence" multiple="multiple">
+                    @foreach (var item in (IEnumerable<Evidence>)ViewBag.EvidenceList)
+                    {
+                        <option value="@item.EvidenceCode">@item.EvidenceName</option>
+                    }
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="form-filter">
+        <div class="group" style="width:190px;">
+            <label class="text">Trans Date</label>
+            <div class="edit-field col_9">
+                <input type="text" id="transDateFrom" class="form-control date-time-picker" />
+            </div>
+        </div>
+        <div class="group" style="width:190px;">
+            <div class="edit-field col_9">
+                <input type="text" id="transDateTo" class="form-control date-time-picker" />
+            </div>
+        </div>
+        <div class="group" style="width:235px;">
+            <label class="text">Score/HDP</label>
+            <div class="edit-field col_9" style="width: 225px;">
+                <select class="control" id="scoreHDP"></select>
+            </div>
+        </div>
+        <button class="button -primary" id="generate">Generate</button>
+        
+    </div>
+}
+
 <div id="detailTabs">
     <ul>
         <li><a href="#ticket-tab" id="tickets">By Ticket</a></li>
         <li><a href="#customer-tab" id="customers">By Customers</a></li>
     </ul>
-
     <button class="button -export export-in-tabs"><span class="icon-export-excel"></span>Export</button>
-
     @Html.Partial("FraudCaseDetails/TicketDetails", Model)
-
     @Html.Partial("FraudCaseDetails/CustomerDetails")
 </div>
-
 @section scripts{
+    @Scripts.Render("~/bundles/jqueryval")
+    <script src="~/Scripts/jquery-ui-1.12.1.min.js"></script>
+    <script src="~/Scripts/jquery-ui-timepicker-addon.min.js"></script>
+    <script src="~/Scripts/MultipleSelect/jquery.multiselect.js"></script>
     <script>
         var parameters =
             {
@@ -59,8 +145,26 @@
 
         var bu_date = "@ViewBag.BUDate.ToString("MMM dd, yyyy")";
 
-        var isArbitrage = @(Convert.ToInt32((FraudCaseId)Model.FraudCaseId == FraudCaseId.Arbitrage))
-    </script>
+        var isArbitrage = @(Convert.ToInt32((FraudCaseId)Model.FraudCaseId == FraudCaseId.Arbitrage));
 
+        //datetime picker
+        $(".date-time-picker").datetimepicker({
+            dateFormat: 'M dd, yy',
+            timeFormat: 'HH:mm:ss',
+            stepHour: 1,
+            stepMinute: 1,
+            stepSecond: 1
+        });
+
+        jQuery.validator.methods.date = function (value, element) {
+            var isChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
+            if (isChrome) {
+                var d = new Date();
+                return this.optional(element) || !/Invalid|NaN/.test(new Date(d.toLocaleDateString(value)));
+            } else {
+                return this.optional(element) || !/Invalid|NaN/.test(new Date(value));
+            }
+        };
+    </script>
     @Scripts.Render("~/scripts/match-monitor/fraud-case-details")
 }

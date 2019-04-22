@@ -6,56 +6,90 @@
         ticket_last_7_days = $("#tickets-last-7-days"),
         ticket_by_ip = $("#ticket-by-ip");
 
+    var from_date = $("#transDateFrom");
+    var to_date = $("#transDateTo");
+
     var global_idx = 0;
 
     var filter = {};
 
-    var totalTicket = 0;
+    var totalTicket = 0;    
+    var arrGroupTicket = [];   
+    var groupExpand = "";
+    var groupExportCSV = 0;
+    var savedCriteria = null;
 
-    var ticketLoad = false;
+    from_date.datepicker({       
+        changeMonth: true,
+        changeYear: true,
+        firstDay: 1,
+        minDate: moment(`${moment().year() - 1}/${moment().subtract(10, "months").month()}/1`, "M dd, yy").toDate()
+    }).datepicker("setDate", to_date.datepicker("getDate")).change(restrictToDate);
+   
+    function restrictToDate() {
+        var from_val = from_date.datepicker("getDate");
+        to_date.datepicker("option", "minDate", from_val);
+    };
+    
+    function handleMultipleSelect() {           
+        $("#ddlEvidence").multiselect({
+            menuHeight: 350,
+            menuWidth: 350
+        });
+    };
 
-    var customerLoad = false;
+    function getAllCurrency() {
+        var url = common.modifyRelativeUrl("/MatchMonitor/GetAllCurrency");        
 
-    function load_ticket_grid() {
-        common.showLoading();
+        $.get(url, {}, function (json) {
+            $("#currency").append("<option value=-1>All</option>");
 
-        if (isArbitrage) {
-            var url = common.modifyRelativeUrl("/MatchMonitor/GetArbitrageTicketDetails");
+            for (var i = 0; i < json.length; i++) {
+                $("#currency").append(`<option value='${json[i].CurrencyId}'>${json[i].CurrencyName}</option>`)
+            }
+        })
+    };
 
-            $.get(url, parameters, renderArbitrageGrid);
-        }
-        else {
-            global_idx = 0;
+    function getScoreHDP() {
+        var url = common.modifyRelativeUrl("/MatchMonitor/GetScoreHDP");
 
-            var url = common.modifyRelativeUrl("/MatchMonitor/GetFraudCaseTicketDetails");
-
-            $.get(url, parameters, function (json) {
-                var table = ticket_grid.DataTable();
-
-                table.clear().rows.add(process_ticket_json(json)).draw();
-
-                var n = json.reduce((a, arr) => a + arr.data.length, 0);
-
-                $("#tickets").text(`By Tickets (${n})`);
-
-                if (n != 0) {
-                    $("#DataTables_Table_0_info").text(`Displaying 1 to ${n} of ${n} item(s)`);
-                }
-
-                totalTicket = n;
-
-                $(".ip-link").click(renderTicketByIp);
-
-                ticketLoad = true;
-
-                if (ticketLoad && customerLoad) {
-                    common.closeLoading();
-                }
-            });
-        }
+        $.get(url, parameters, function (json) {
+            $("#scoreHDP").append("<option value=-1>All</option>");
+                     
+            for (var i = 0; i < json.length; i++) {
+                $("#scoreHDP").append(`<option value='${json[i].KeyValue}'>${json[i].KeyName}</option>`);
+            }
+        })
     }
 
-    function load_customer_grid() {
+    function loadTicketGrid() {
+        common.showLoading();
+
+        global_idx = 0;
+
+        var url = common.modifyRelativeUrl("/MatchMonitor/GetFraudCaseTicketDetails");
+
+        $.get(url, parameters, function (json) {
+            var table = ticket_grid.DataTable();
+
+            table.clear().rows.add(process_ticket_json(json)).draw();
+
+            var n = json.reduce((a, arr) => a + arr.data.length, 0);
+
+            $("#tickets").text(`By Tickets (${n})`);
+
+            if (n != 0) {
+                $("#DataTables_Table_0_info").text(`Displaying 1 to ${n} of ${n} item(s)`);
+            }
+
+            totalTicket = n;
+
+            $(".ip-link").click(renderTicketByIp);
+            common.closeLoading();
+        });
+    }
+
+    function loadCustomerGrid() {
         common.showLoading();
 
         var url = common.modifyRelativeUrl("/MatchMonitor/GetFraudCaseCustomerDetails");
@@ -91,11 +125,80 @@
 
             $(".group-action button").click(e => $(e.target).next().selectmenu("open"));
 
-            customerLoad = true;
+            common.closeLoading();
+        });
+    }
 
-            if (ticketLoad && customerLoad) {
-                common.closeLoading();
+    function loadTicketGridArbitrage(criteria) {
+        if (isArbitrage) {
+            loadArbitrageGroups(criteria);
+        }
+        else {
+            global_idx = 0;
+
+            var url = common.modifyRelativeUrl("/MatchMonitor/GetFraudCaseTicketDetails");
+
+            $.get(url, parameters, function (json) {
+                var table = ticket_grid.DataTable();
+
+                table.clear().rows.add(process_ticket_json(json)).draw();
+                
+                var n = json.reduce((a, arr) => a + arr.data.length, 0);
+
+                $("#tickets").text(`By Tickets (${n})`);
+
+                if (n != 0) {
+                    $("#DataTables_Table_0_info").text(`Displaying 1 to ${n} of ${n} item(s)`);
+                }
+
+                totalTicket = n;
+                $(".ip-link").click(renderTicketByIp);
+            });
+        }      
+    }
+
+    function loadCustomerGridArbitrage(criteria) {
+        var url = common.modifyRelativeUrl("/MatchMonitor/GetFraudCaseArbitrageCustomerDetails");
+
+        $.post(url, criteria, function (json) {
+            $("#customers").text(`By Customers (${json.length})`);
+
+            if (json.length > 1000) {
+                json = [];
+                customer_grid.DataTable().clear().rows.add(json).draw();
+                $(".dataTables_empty").text("Too much data. Export CSV file instead!").css("color", "red");
             }
+            else {
+                customer_grid.DataTable().clear().rows.add(json).draw();
+
+                $(".action").selectmenu({
+                    classes: {
+                        "ui-selectmenu-button": "ui-button-icon-only demo-splitbutton-select"
+                    },
+                    position: { my: "left top", at: "left bottom", collision: "flip" },
+                    select: function () {
+                        var tr = $(this).parents("tr");
+
+                        var obj = customer_grid.DataTable().row(tr).data();
+
+                        if (this.value == "2") {
+                            renderAssociatedAccounts(obj);
+                        }
+                        else if (this.value == "1") {
+                            renderLast7DaysTickets(obj);
+                        }
+                        else {
+                            openSuspiciousHistoryLink(obj);
+                        }
+                    },
+                });
+
+                $(".group-action").controlgroup();
+
+                $(".group-action button").click(e => $(e.target).next().selectmenu("open"));
+            }
+
+            common.closeLoading();
         });
     }
 
@@ -161,9 +264,60 @@
     }
 
     function exportExcel() {
-        var url = common.modifyRelativeUrl("/MatchMonitor/ExportExcelForDetail");
+        if (isArbitrage) {
+            var criteria = {};
 
-        common.downloadFile(url, parameters);
+            if (savedCriteria == null) {
+                evidenceCode = getEvidenceSelected();
+                
+                var bettype = 0;
+                var liveHomeScore = 0;
+                var liveAwayScore = 0;
+                var handicap = 0;
+                var valBet = $("#scoreHDP").val();
+
+                if (valBet == "-1") {
+                    bettype = "-1";
+                    liveHomeScore = "-1";
+                    liveAwayScore = "-1";
+                    handicap = "-1";
+                } else if (valBet != "") {
+                    var arrBet = valBet.split(';');
+                    bettype = arrBet[0];
+                    liveHomeScore = arrBet[1];
+                    liveAwayScore = arrBet[2];
+                    handicap = arrBet[3];
+                }                
+
+                var criteria = {
+                    LiveStatus: $("#market").val(),
+                    EvidenceCodeList: evidenceCode,
+                    CurrencyId: $("#currency").val(),
+                    TransDateFromString: $("#transDateFrom").val(),
+                    TransDateToString: $("#transDateTo").val(),
+                    KeyName: $("#scoreHDP option:selected").text(),
+                    bettype: bettype,
+                    liveHomeScore: liveHomeScore,
+                    liveAwayScore: liveAwayScore,
+                    handicap: handicap,
+                    MatchId: parameters.matchId,
+                    EventDate: parameters.eventDate
+                };
+            } else {
+                criteria = Object.assign({}, savedCriteria);
+            }            
+
+            var selectedTab = $("#detailTabs li[aria-selected=true]").attr("aria-controls");
+
+            var url = selectedTab === "customer-tab" ? common.modifyRelativeUrl("/MatchMonitor/ExportCSVArbitrageCustomers")
+                : common.modifyRelativeUrl("/MatchMonitor/ExportCSVArbitrageTickets");
+
+            common.downloadFile(url, criteria);
+        } else {
+            var url = common.modifyRelativeUrl("/MatchMonitor/ExportExcelForDetail");
+
+            common.downloadFile(url, parameters);
+        }
     }
 
     function removeMatchLeague() {
@@ -257,66 +411,182 @@
 
         window.open(common.modifyRelativeUrl(url));
     }
-
-    function renderArbitrageGrid(json) {
-        var data = (json || []).reduce(function (arr, obj) {
-            obj.key = true;
-
-            arr.push(obj);
-
-            var n = Math.max(obj.Home.length, obj.Away.length);
-
-            for (var i = 0; i < n; i++) {
-                var a = {};
-
-                a.Home = obj.Home[i] || {};
-
-                a.Away = obj.Away[i] || {};
-
-                arr.push(a);
-            }
-
-            return arr;
-        }, []);
-
-        ticket_grid.DataTable().rows.add(data).draw();
+   
+    function renderArbitrageGroups(json) {
+        $("#tickets").text(`By Tickets (...)`);
 
         var n = (json || []).reduce((total, obj) => total + Math.max(obj.Home.length, obj.Away.length), 0);
 
         var t = (json || []).reduce((total, obj) => total + obj.Home.length + obj.Away.length, 0);
 
+        var data = (json || []).reduce(function (arr, obj) {
+            obj.key = true;      
+            arr.push(obj);
+            arrGroupTicket.push(obj);
+
+            return arr;
+        }, []);        
+
+        ticket_grid.DataTable().rows.add(data).draw();
+        totalTicket = t;
+        $("#tickets").text(`By Tickets (${totalTicket})`);
+
+        if (n != 0) {
+            $("#DataTables_Table_0_info").text(`Displaying 1 to ${n} of ${n} item(s)`);
+        }
+        common.closeLoading();      
+    };
+
+    function renderArbitrageTicketDetailByGroup(json) {       
+        ticket_grid.DataTable().clear();
+
+        var n = (json || []).reduce((total, obj) => total + Math.max(obj.Home.length, obj.Away.length), 0);
+
+        var t = (json || []).reduce((total, obj) => total + obj.Home.length + obj.Away.length, 0);        
+
+        var keyName = "";
+        var data = (json || []).reduce(function (arr, obj) {
+            obj.key = true;          
+            keyName = obj.Score + " " + obj.BettypeName + " " + obj.Handicap + " " + obj.GroupId;
+            
+            if (obj.Home.length + obj.Away.length < 1000) {
+
+                var n = Math.max(obj.Home.length, obj.Away.length);
+
+                for (var i = 0; i < n; i++) {
+                    var a = {};
+
+                    a.Home = obj.Home[i] || {};
+
+                    a.Away = obj.Away[i] || {};
+
+                    arr.push(a);
+                }
+            }
+
+            return arr;
+        }, []);
+        
+        console.log(data);
+
+        //each list group
+        var dataGroup = [];
+        $.each(arrGroupTicket, function (index, value) {
+            var keyTemp = value.Score + " " + value.BettypeName + " " + value.Handicap + " " + value.GroupId;
+            dataGroup.push(value);
+            if (keyName == keyTemp) {                
+                var newArray = $.merge(dataGroup, data);
+                dataGroup = newArray;
+            }           
+        });
+
+        ticket_grid.DataTable().rows.add(dataGroup).draw();
+
+        if (n != 0) {
+            $("#DataTables_Table_0_info").text(`Displaying 1 to ${n} of ${n} item(s)`);
+        }
+        common.closeLoading();     
+    };
+
+    function renderArbitrageGrid(json) {
+        ticket_grid.DataTable().clear();
+
+        var data = (json || []).reduce(function (arr, obj) {
+            obj.key = true;
+
+            arr.push(obj);
+
+            if (obj.Home.length + obj.Away.length < 1000) {
+
+                var n = Math.max(obj.Home.length, obj.Away.length);
+
+                for (var i = 0; i < n; i++) {
+                    var a = {};
+
+                    a.Home = obj.Home[i] || {};
+
+                    a.Away = obj.Away[i] || {};
+
+                    arr.push(a);
+                }
+            }
+
+            return arr;
+        }, []);
+
+        var n = (json || []).reduce((total, obj) => total + Math.max(obj.Home.length, obj.Away.length), 0);
+
+        var t = (json || []).reduce((total, obj) => total + obj.Home.length + obj.Away.length, 0);
+
+        ticket_grid.DataTable().rows.add(data).draw();
+  
         $("#tickets").text(`By Tickets (${t})`);
 
         if (n != 0) {
             $("#DataTables_Table_0_info").text(`Displaying 1 to ${n} of ${n} item(s)`);
         }
+        
+        common.closeLoading();
+    }    
 
-        ticketLoad = true;
-
-        if (ticketLoad && customerLoad) {
-            common.closeLoading();
-        }
-    }
-
-    function renderArbitrageExcel(e) {
-        var url = common.modifyRelativeUrl("/MatchMonitor/ExportArbitrageWithFilterExcel");
+    function renderArbitrageCSV(e) {
+        groupExportCSV = 1;
+        var url = common.modifyRelativeUrl("/MatchMonitor/ExportCSVArbitrageTicketByGroup");
 
         var obj = e.data;
+        var keyName = obj.Score + " " + obj.BettypeName + " " + obj.Handicap;
 
-        parameters.bettype = obj.BettypeName;
-        parameters.score = obj.Score;
-        parameters.handicap = obj.Handicap;
-        parameters.groupId = obj.GroupId;
+        var criteria = {};
 
-        common.downloadFile(url, parameters);
+        if (savedCriteria == null) {
+            evidenceCode = getEvidenceSelected();
+
+            var criteria = {
+                liveStatus: $("#market").val(),
+                evidenceCodeList: evidenceCode,
+                currencyId: $("#currency").val(),
+                transDateFromString: $("#transDateFrom").val(),
+                transDateToString: $("#transDateTo").val(),
+                keyName: $("#scoreHDP option:selected").text(),
+                matchId: parameters.matchId,
+                eventDate: parameters.eventDate,
+                groupId: obj.GroupId,
+                bettype: obj.BettypeId,
+                score: obj.Score,
+                liveHomeScore: obj.LiveHomeScore,
+                liveAwayScore: obj.LiveAwayScore,
+                handicap: obj.Handicap
+            };
+        } else {
+            criteria = Object.assign({}, savedCriteria);
+            criteria.keyName = keyName;
+            criteria.groupId = obj.GroupId;
+            criteria.bettype = obj.BettypeId;
+            criteria.score = obj.Score;
+            criteria.liveHomeScore = obj.LiveHomeScore;
+            criteria.liveAwayScore = obj.LiveAwayScore;
+            criteria.handicap = obj.Handicap;
+        }
+            
+        common.downloadFile(url, criteria);
     }
 
     if (isArbitrage) {
-        ticket_grid.DataTable({
+        ticket_grid.DataTable({            
             ordering: false,
             paging: false,
+            lengthMenu: [1000],
+            pageLength: 1000,
             dom: "t<'pagination'<'page-size'lp>>",
-            language: common.language,
+            language: {
+                lengthMenu: "Page size _MENU_",
+                paginate: {
+                    previous: "Back"
+                },
+                info: "Displaying _START_ to _END_ of _TOTAL_ item(s)",
+                infoEmpty: "",
+                zeroRecords: "There's no data"
+            },
             scrollY: '57vh',
             scrollX: "1870px",
             scrollCollapse: true,
@@ -338,7 +608,7 @@
                 { data: obj => common.makeWrapString((obj.Home.Evidences || []).join(", "), 18)},
                 { data: obj => obj.Home.DangerousLevel },
                 { data: obj => obj.Home.Currency },
-                { data: obj => obj.Home.BetId },
+                { data: obj => renderIPFraud(obj.Home) },
                 { data: obj => common.formatGridNumber(obj.Home.Odds) },
                 { data: obj => common.formatGridNumber((obj.Home.Stake || {}).Virtual) },
                 { data: obj => common.formatGridNumber((obj.Home.Stake || {}).ComPT) },
@@ -349,7 +619,7 @@
                 { data: obj => common.makeWrapString((obj.Away.Evidences || []).join(", "), 18) },
                 { data: obj => obj.Away.DangerousLevel },
                 { data: obj => obj.Away.Currency },
-                { data: obj => obj.Away.BetId },
+                { data: obj => renderIPFraud(obj.Away) },
                 { data: obj => common.formatGridNumber(obj.Away.Odds) },
                 { data: obj => common.formatGridNumber((obj.Away.Stake || {}).Virtual) },
                 { data: obj => common.formatGridNumber((obj.Away.Stake || {}).ComPT) },
@@ -358,11 +628,22 @@
             ],
             createdRow: function (row, obj) {
                 if (obj.key) {
-                    var td = $(`<td colspan='21' class='group' style='cursor: initial'><span class="bage">${obj.BettypeName} ${obj.Handicap}</span> <span class="bage">${obj.Score}</span> <button class="button -export"><span class="icon-export-excel"></span></button></td>`);
-
-                    $(".button.-export", td).click(obj, renderArbitrageExcel);
-
+                    var totalTicket = obj.Home.length + obj.Away.length;
+                    var td = "";
+                    if (totalTicket > 1000) {
+                        td = $(`<td colspan='21' class='group' style='cursor: initial'><span class='icon-chevron-down'></span> <span class='bage'>${obj.BettypeName} ${obj.Handicap}</span> <span class="bage">${obj.Score}</span> <span class='bage'>Tickets: ${totalTicket}</span> <span class="bage muchdata" style="color:red;">Too much data. Export CSV file instead!</span> <button class="button -export"><span class="icon-export-excel"></span></button></td>`);
+                    }
+                    else {
+                        var keyName = obj.Score + " " + obj.BettypeName + " " + obj.Handicap + " " + obj.GroupId;
+                        if (groupExpand == keyName) {
+                            td = $(`<td colspan='21' class='group' style='cursor: initial'><span class='icon-chevron-up' style='cursor: pointer;'></span><span class='bage' style='cursor: pointer;'>${obj.BettypeName} ${obj.Handicap}</span> <span class='bage' style='cursor: pointer;'>${obj.Score}</span> <span class='bage' style='cursor: pointer;'>Tickets: ${totalTicket}</span><button class="button -export"><span class="icon-export-excel"></span></button></td>`);
+                        } else {
+                            td = $(`<td colspan='21' class='group' style='cursor: initial'><span class='icon-chevron-down' style='cursor: pointer;'></span><span class='bage' style='cursor: pointer;'>${obj.BettypeName} ${obj.Handicap}</span> <span class='bage' style='cursor: pointer;'>${obj.Score}</span> <span class='bage' style='cursor: pointer;'>Tickets: ${totalTicket}</span><button class="button -export"><span class="icon-export-excel"></span></button></td>`);
+                        }
+                    }                  
+                    $(".button.-export", td).click(obj, renderArbitrageCSV);
                     $(row).empty().html(td);
+                    
                 }
                 else if (obj.Home.Username == null) {
                     var td = $("<td colspan='10'></td>");
@@ -377,8 +658,8 @@
                     $("td:gt(10)", row).remove();
 
                     $(row).append(td);
-                }
-            },
+                }              
+            }         
         });
     }
     else {
@@ -416,7 +697,7 @@
             columnDefs: [{ targets: "_all", defaultContent: "-" }],
             createdRow: function (row, obj) {
                 if (obj.key) {
-                    var td = $(`<td colspan='12' class='group'><span class='icon-chevron-up'></span> ${obj.value}</td>`);
+                    var td = $(`<td colspan='12' class='group'><span class='icon-chevron-up'></span> ${obj.value} </td>`);
 
                     $(row).empty().html(td).click(e => show_hide_bettype_items(e.target, obj.value));
                 } else {
@@ -425,6 +706,226 @@
             },
             headerCallback: tr => $(":nth-child(11)", tr).removeClass("uppercase")
         });
+    }
+    
+    function renderIPFraud(obj) {
+        var isIPFraud = obj.IsIPFraud;
+        if (isIPFraud == true) {
+            
+            return "<div style='position: relative; width: 100%; height: 100%; background: #FFCCCA'>" + obj.BetId + "</div>";
+        }        
+        return obj.BetId;
+    };   
+
+    function loadArbitrageGroups(criteria) {       
+        var urlGroup = common.modifyRelativeUrl("/MatchMonitor/GetArbitrageTicketsGroupSummary");
+
+        common.showLoading();
+        ticket_grid.DataTable().clear();
+
+        $.ajax({
+            type: 'POST',
+            url: urlGroup,
+            data: criteria,
+            success: function (response) {
+                if (response != null) {
+                    renderArbitrageGroups(response.Content);
+                }
+            },
+            error: function (err) {
+                loadError(err);
+            }
+        });      
+    };
+
+    $('#ticket-tab table tbody').on('click', 'tr', function () {
+        if (isArbitrage) {
+            if (groupExportCSV == 0) {
+                var table = ticket_grid.DataTable();
+                var data = table.row(this).data();
+
+                if (data.key == true) {
+                    var spanTicketMuch1000 = $('td .muchdata', this);
+
+                    if ($('td .muchdata', this).is("span.muchdata")) {
+                        return;
+                    }
+
+                    var span = $('td span:first', this);
+
+                    if ($(span).is("span.icon-chevron-down")) {
+                        $(span).removeClass("icon-chevron-down").addClass("icon-chevron-up");
+                        expandGroup(data);
+                    }
+                    else if ($(span).is("span.icon-chevron-up")) {
+                        $(span).removeClass("icon-chevron-up").addClass("icon-chevron-down");
+                        collapseGroup();
+                    }
+                }
+            }
+            groupExportCSV = 0;
+        }
+    });
+
+    function expandGroup(obj) {
+        common.showLoading();
+
+        var url = common.modifyRelativeUrl("/MatchMonitor/GetListArbitrageTickets");                
+        var keyName = obj.Score + " " + obj.BettypeName + " " + obj.Handicap + " " + obj.GroupId;
+        groupExpand = keyName;
+        
+        var criteria = {};
+
+        if (savedCriteria == null) {
+            evidenceCode = getEvidenceSelected();
+            var criteria = {
+                liveStatus: $("#market").val(),
+                evidenceCodeList: evidenceCode,
+                currencyId: $("#currency").val(),
+                transDateFromString: $("#transDateFrom").val(),
+                transDateToString: $("#transDateTo").val(),
+                keyName: keyName,
+                bettype: obj.BettypeId,
+                handicap: obj.Handicap,
+                liveHomeScore: obj.LiveHomeScore,
+                liveAwayScore: obj.LiveAwayScore,
+                groupId: obj.GroupId,
+                matchId: parameters.matchId,
+                eventDate: parameters.eventDate
+            };
+        } else {
+            criteria = Object.assign({}, savedCriteria);
+            criteria.keyName = keyName;
+            criteria.bettype = obj.BettypeId;
+            criteria.handicap = obj.Handicap;
+            criteria.liveHomeScore = obj.LiveHomeScore;
+            criteria.liveAwayScore = obj.LiveAwayScore;
+            criteria.groupId = obj.GroupId;
+        }
+
+        $.ajax({
+            type: 'GET',
+            url: url,
+            data: criteria,
+            success: function (response) {
+                if (response != null) {
+                    renderArbitrageTicketDetailByGroup(response);
+                }
+            },
+            error: function (err) {
+                loadError(err);
+            }
+        });
+    };
+   
+    function collapseGroup() {
+        ticket_grid.DataTable().clear();
+        groupExpand = "";       
+
+        ticket_grid.DataTable().rows.add(arrGroupTicket).draw();      
+    };
+
+    function loadError(error) {
+        console.log(error);
+    };
+
+    function loadGrids() {
+        arrGroupTicket = [];
+        groupExpand = "";
+        evidenceCode = getEvidenceSelected();
+        var transDateFrom = $("#transDateFrom").val();
+        var transDateTo = $("#transDateTo").val();
+        var transDateFromParent = $("#transDateFrom").parent();
+        var transDateToParent = $("#transDateTo").parent();
+
+        if (transDateFrom !== "" && transDateTo === "") {
+            transDateFromParent.css({ 'border-color': '#666', 'border-style': 'solid', 'border-width': '0px' });
+            transDateToParent.css({'border-color': 'red', 'border-style': 'solid', 'border-width': '1px' });
+        }
+        else if (transDateFrom === "" && transDateTo !== "") {
+            transDateFromParent.css({ 'border-color': 'red', 'border-style': 'solid', 'border-width': '1px' });
+            transDateToParent.css({ 'border-color': '#666', 'border-style': 'solid', 'border-width': '0px' });
+        }
+        else {
+            transDateFromParent.css({ 'border-color': '#666', 'border-style': 'solid', 'border-width': '0px' });
+            transDateToParent.css({ 'border-color': '#666', 'border-style': 'solid', 'border-width': '0px' });
+
+            var bettype = 0;            
+            var liveHomeScore = 0;
+            var liveAwayScore = 0;
+            var handicap = 0;
+            var valBet = $("#scoreHDP").val();
+            
+            if (valBet == "-1") {
+                bettype = "-1";
+                liveHomeScore = "-1";
+                liveAwayScore = "-1";
+                handicap = "-1";
+            } else if (valBet != "") {
+                var arrBet = valBet.split(';');
+                bettype = arrBet[0];
+                liveHomeScore = arrBet[1];
+                liveAwayScore = arrBet[2];
+                handicap = arrBet[3];
+            }
+            var criteria = {
+                liveStatus: $("#market").val(),
+                evidenceCodeList: evidenceCode,
+                currencyId: $("#currency").val(),
+                transDateFromString: $("#transDateFrom").val(),
+                transDateToString: $("#transDateTo").val(),
+                keyName: $("#scoreHDP option:selected").text(),
+                bettype: bettype,
+                liveHomeScore: liveHomeScore,
+                liveAwayScore: liveAwayScore,
+                handicap:handicap,
+                matchId: parameters.matchId,
+                eventDate: parameters.eventDate
+            };
+
+            savedCriteria = criteria;
+
+            loadCustomerGridArbitrage(criteria);
+
+            loadTicketGridArbitrage(criteria);
+        }
+    };
+
+    function getEvidenceSelected()
+    {
+        var arrEvidences = $("#ddlEvidence").multiselect("getChecked");
+        var array = [];
+
+        for (var i = 0; i < arrEvidences.length; i++) {            
+            array.push($(arrEvidences[i]).attr('value'));            
+        }
+
+        if (arrEvidences != null && arrEvidences.length > 0) {
+           var evidenceCode = array.join(",");
+        }
+        return evidenceCode;
+    }
+
+    function getListHDPScore()
+    {
+        var ddlArray = new Array();
+        var ddl = document.getElementById('scoreHDP');
+        for (i = 0; i < ddl.options.length; i++) {
+            ddlArray[i] = ddl.options[i].value;
+        }
+        return ddlArray;
+    }
+
+    function init() {
+        if (isArbitrage) {
+            getAllCurrency();
+            getScoreHDP();
+            handleMultipleSelect();
+        }
+        else {
+            loadTicketGrid();
+            loadCustomerGrid();
+        }
     }
 
     customer_grid.DataTable({
@@ -454,15 +955,13 @@
             { data: obj => obj.AssociatedAccounts, className: "text-right", width: "50px" },
             { defaultContent: renderCustomerAction(), className: "has-icon text-center", width: "70px" }
         ]
-    });
-
-    load_ticket_grid();
-
-    load_customer_grid();
+    });   
 
     detail_tabs.tabs({
         activate: (e, ui) => switchTab(ui)
     });
+    
+    $("#generate").click(loadGrids);
 
     $(".-export").click(exportExcel);
 
@@ -596,6 +1095,8 @@
         ],
         headerCallback: tr => $("th", tr).removeClass("uppercase")
     });
+
+    init();
 }
 
 $(fraud_case_details);

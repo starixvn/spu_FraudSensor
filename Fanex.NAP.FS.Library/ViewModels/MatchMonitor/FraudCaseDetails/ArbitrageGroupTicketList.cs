@@ -8,9 +8,15 @@
 
         public IEnumerable<ArbitrageTicket> Away { get; set; }
 
+        public int BettypeId { get; set; }
+
         public string BettypeName { get; set; }
 
         public string Score { get; set; }
+
+        public int LiveAwayScore { get; set; }
+
+        public int LiveHomeScore { get; set; }
 
         public decimal Handicap { get; set; }
 

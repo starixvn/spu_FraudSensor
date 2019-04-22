@@ -22,6 +22,7 @@
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
+    using Data.Repository;
 
     public class FraudCaseDetailsService : IFraudCaseDetailsService
     {
@@ -134,6 +135,98 @@
                         CurrencyName = info.CurrencyName
                     }).OrderBy(c => c.Member);
             }
+        }
+
+        public IEnumerable<CustomerDetails> GetArbitrageCustomerDetails(GetArbitrageCustomerCriteria criteria)
+        {
+            IEnumerable<CustomerDetails> data;            
+
+            using (var db = new ObjectDb(criteria.GetSettingKey()))
+            using (var query = db.QueryMultiple(criteria))
+            {
+                var custInfo = query.Read<CustInfo>();
+
+                IEnumerable<CustomerEvidence> custEvidence = GetEvidences(custInfo.Select(info => info.CustId));
+
+                var otherEvidenceCode = AppSettings.Get("FPS_GET_OTHER_EVIDENCES");
+
+                if (criteria.EvidenceCodeList != null && criteria.EvidenceCodeList.Contains(otherEvidenceCode))
+                {
+                    data = HandleCustomerOtherEvidence(custInfo, custEvidence, criteria.EvidenceCodeList);
+
+                    return data;
+                }
+
+                if (!string.IsNullOrEmpty(criteria.EvidenceCodeList))
+                {
+                    custEvidence = custEvidence.Where(c => criteria.EvidenceCodeList.Contains(c.EvidenceCode));
+                }
+
+                data = HandleCustomerEvidence(custInfo, custEvidence, string.IsNullOrEmpty(criteria.EvidenceCodeList));
+
+                return data;
+            }
+        }
+
+        private IEnumerable<CustomerDetails> HandleCustomerOtherEvidence(IEnumerable<CustInfo> custInfo, IEnumerable<CustomerEvidence> custEvidence, string lstEvidenceSelected)
+        {
+            var evidenceExtract = custEvidence.Where(c => !lstEvidenceSelected.Contains(c.EvidenceCode));
+            var lstEvidenceExtract = evidenceExtract.Select(c => (long)c.CustId).ToList();
+
+            Func<long, bool> conditionExtract = f => !lstEvidenceExtract.Contains(f);
+
+            var totalAssociation = GetTotalAssociations(custInfo.Select(i => i.CustId)).ToDictionary(o => o.CustId, o => o.TotalAssociation);
+
+            IEnumerable<CustomerDetails> data = custInfo
+                   .Where(c => conditionExtract(c.CustId))
+                   .GroupJoin(
+                   custEvidence,
+                   info => info.CustId,
+                   evid => evid.CustId,
+                   (info, evidence) => new CustomerDetails
+                   {
+                       CustId = info.CustId,
+                       Member = info.Username,
+                       TotalWinLoss = (double)info.TotalWinlost,
+                       TotalStake = (double)info.TotalStake,
+                       Tickets = info.NoOfTickets,
+                       Evidence = string.Join(", ", evidence.Select(e => e.EvidenceCode + "-" + e.EvidenceName)),
+                       AssociatedAccounts = totalAssociation.ContainsKey(info.CustId) ? totalAssociation[info.CustId] : 0,
+                       CurrencyName = info.CurrencyName
+                   }).OrderBy(c => c.Member);
+
+            return data;
+        }
+
+        private IEnumerable<CustomerDetails> HandleCustomerEvidence(IEnumerable<CustInfo> custInfo, IEnumerable<CustomerEvidence> custEvidence, bool isAllEvidence)
+        {
+            Func<long, bool> conditionExtract = f => 1.Equals(1);
+            if (!isAllEvidence)
+            {
+                var listEvidenceByCus = custEvidence.Select(c => (long)c.CustId).ToList();
+                conditionExtract = f => listEvidenceByCus.Contains(f);
+            }
+            var totalAssociation = GetTotalAssociations(custInfo.Select(i => i.CustId)).ToDictionary(o => o.CustId, o => o.TotalAssociation);
+
+            IEnumerable<CustomerDetails> data = custInfo
+                   .Where(c => conditionExtract(c.CustId))
+                   .GroupJoin(
+                   custEvidence,
+                   info => info.CustId,
+                   evid => evid.CustId,
+                   (info, evidence) => new CustomerDetails
+                   {
+                       CustId = info.CustId,
+                       Member = info.Username,
+                       TotalWinLoss = (double)info.TotalWinlost,
+                       TotalStake = (double)info.TotalStake,
+                       Tickets = info.NoOfTickets,
+                       Evidence = string.Join(", ", evidence.Select(e => e.EvidenceCode + "-" + e.EvidenceName)),
+                       AssociatedAccounts = totalAssociation.ContainsKey(info.CustId) ? totalAssociation[info.CustId] : 0,
+                       CurrencyName = info.CurrencyName
+                   }).OrderBy(c => c.Member);
+
+            return data;
         }
 
         public byte[] ExportExcel(int matchId, int fraudCaseId, DateTime eventDate, string templatePath, bool isShowSpecialCurrencies)
@@ -386,30 +479,96 @@
 
             Task.WaitAll(tsk);
 
+            Logging.LogService.Info(tsk.Where(t => t.Result != null).SelectMany(t => t.Result).ToString());
+
             return tsk.Where(t => t.Result != null).SelectMany(t => t.Result);
         }
 
-        public IEnumerable<ArbitrageGroupTicketList> GetArbitrageTickets(int matchId, DateTime eventDate, bool isShowSpecialCurrencies)
+        public IEnumerable<ArbitrageGroupTicketList> GetArbitrageTickets(GetArbitrageTicketCriteria criteria)
         {
-            var rawData = DataService.GetData<TicketInfo>(new GetArbitrageTicketCriteria { MatchId = matchId, EventDate = eventDate, IsShowSpecialCurrencies = isShowSpecialCurrencies });
+            IEnumerable<ArbitrageGroupTicketList> data;                       
+
+            var rawData = DataService.GetData<TicketInfo>(criteria);
 
             var url = AppSettings.Get("FPS_WEBAPI_GET_CUSTOMER_EVIDENCE");
 
-            var tsks =
-                rawData.Select(t => t.CustId).Distinct()
+            var tsks = rawData.Select(t => t.CustId).Distinct()
                 .Chunk(500)
-                .Select(q => ApiHelper.Post<IEnumerable<CustomerEvidence>>(url, new CustomerEvidenceList { CustIdList = string.Join(",", q) }))
+                .Select(q => ApiHelper.Post<IEnumerable<CustomerEvidence>>(url, new CustomerEvidenceList { CustIdList = string.Join(",", q), EvidenceCodeList = null }))
                 .ToArray();
 
             Task.WaitAll(tsks);
 
-            var evidences = tsks.SelectMany(t => t.Result);
+            var listEvi = tsks.SelectMany(t => t.Result);
 
-            var evidenceDict = evidences.ToLookup(c => c.CustId, c => c.EvidenceName);
+            var otherEvidenceCode = AppSettings.Get("FPS_GET_OTHER_EVIDENCES");
 
-            var data =
-                rawData
+            if (criteria.EvidenceCodeList != null && criteria.EvidenceCodeList.Contains(otherEvidenceCode))
+            {
+                data = HandleArbitrageOtherEvidence(rawData, listEvi, criteria.EvidenceCodeList);
+                criteria.TotalTicket = data.Sum(c => c.Home.Count() + c.Away.Count());
+                return data;
+            }
+
+            if (!string.IsNullOrEmpty(criteria.EvidenceCodeList))
+            {
+                listEvi = listEvi.Where(c => criteria.EvidenceCodeList.Contains(c.EvidenceCode));
+            }
+
+            data = HandleArbitrage(rawData, listEvi, string.IsNullOrEmpty(criteria.EvidenceCodeList));
+            criteria.TotalTicket = data.Sum(c => c.Home.Count() + c.Away.Count());
+            return data;
+        }
+
+        public IEnumerable<ArbitrageGroupTicketList> GetListArbitrageTickets(GetArbitrageTicketCriteria criteria)
+        {
+            IEnumerable<ArbitrageGroupTicketList> data;          
+
+            var rawData = DataService.GetData<TicketInfo>(criteria);
+
+            var url = AppSettings.Get("FPS_WEBAPI_GET_CUSTOMER_EVIDENCE");
+
+            var tsks = rawData.Select(t => t.CustId).Distinct()
+                .Chunk(500)
+                .Select(q => ApiHelper.Post<IEnumerable<CustomerEvidence>>(url, new CustomerEvidenceList { CustIdList = string.Join(",", q), EvidenceCodeList = null }))
+                .ToArray();
+
+            Task.WaitAll(tsks);
+
+            var listEvi = tsks.SelectMany(t => t.Result);
+
+            var otherEvidenceCode = AppSettings.Get("FPS_GET_OTHER_EVIDENCES");
+
+            if (criteria.EvidenceCodeList != null && criteria.EvidenceCodeList.Contains(otherEvidenceCode))
+            {
+                data = HandleArbitrageOtherEvidence(rawData, listEvi, criteria.EvidenceCodeList).Where(g=>g.GroupId == criteria.GroupId);
+                criteria.TotalTicket = data.Sum(c => c.Home.Count() + c.Away.Count());
+                return data;
+            }
+
+            if (!string.IsNullOrEmpty(criteria.EvidenceCodeList))
+            {
+                listEvi = listEvi.Where(c => criteria.EvidenceCodeList.Contains(c.EvidenceCode));
+            }
+
+            data = HandleArbitrage(rawData, listEvi, string.IsNullOrEmpty(criteria.EvidenceCodeList)).Where(g => g.GroupId == criteria.GroupId);
+            criteria.TotalTicket = data.Sum(c => c.Home.Count() + c.Away.Count());
+            return data;
+        }
+
+        private IEnumerable<ArbitrageGroupTicketList> HandleArbitrageOtherEvidence(IEnumerable<TicketInfo> rawData, IEnumerable<CustomerEvidence> evidences, string lstEvidenceSelected)
+        {
+            var evidenceDict = evidences.ToLookup(c => c.CustId, c => c.EvidenceCode + "-" + c.EvidenceName);
+            var evidenceExtract = evidences.Where(c => !lstEvidenceSelected.Contains(c.EvidenceCode));
+            var lstEvidenceExtract = evidenceExtract.Select(c => (long)c.CustId).ToList();
+
+            Func<long, bool> conditionExtract = f => !lstEvidenceExtract.Contains(f);
+
+            #region Data have the customer ticked evidence          
+
+            var data = rawData
                 .AsParallel()
+                .Where(c => conditionExtract(c.CustId))
                 .GroupBy(t => Tuple.Create(t.BetTypeId, t.Handicap1 - t.Handicap2, t.LiveHomeScore, t.LiveAwayScore, t.GroupId), t => new ArbitrageTicket
                 {
                     BetId = t.TransId,
@@ -428,20 +587,80 @@
                     },
                     BettypeName = CachedRef.GetBettypeName(t.BetTypeId),
                     Handicap = (double)(t.Handicap1 - t.Handicap2),
-                    Score = $"{t.LiveHomeScore} - {t.LiveAwayScore}"
+                    Score = $"{t.LiveHomeScore} - {t.LiveAwayScore}",
+                    IsIPFraud = t.IsIPFraud
                 })
-                .OrderBy(g => GetOrder(CachedRef.GetBettypeName(g.Key.Item1)))
+                   .OrderBy(g => g.Key.Item1).ThenBy(g => g.Key.Item3).ThenBy(g => g.Key.Item4).ThenBy(g => g.Key.Item2)
+                    .Select(g =>
+                    {
+                        var tmp = g.OrderBy(t => t.RawTransDate).ThenBy(t => t.Username).ToList();
+                        return new ArbitrageGroupTicketList
+                        {
+                            BettypeId = g.Key.Item1,
+                            BettypeName = CachedRef.GetBettypeName(g.Key.Item1),
+                            Away = tmp.Where(t => t.BetTeam == "a"),
+                            Home = tmp.Where(t => t.BetTeam == "h"),
+                            Handicap = g.Key.Item2,
+                            Score = $"{g.Key.Item3} - {g.Key.Item4}",
+                            LiveHomeScore = g.Key.Item3,
+                            LiveAwayScore = g.Key.Item4,
+                            GroupId = g.Key.Item5
+                        };
+                    }).ToList();
+
+            #endregion Data have the customer ticked evidence
+
+            return data;
+        }
+
+        private IEnumerable<ArbitrageGroupTicketList> HandleArbitrage(IEnumerable<TicketInfo> rawData, IEnumerable<CustomerEvidence> evidences, bool isAllEvidence)
+        {
+            var evidenceDict = evidences.ToLookup(c => c.CustId, c => c.EvidenceCode + "-" + c.EvidenceName);
+            var listEvidenceByCus = evidences.Select(c => (long)c.CustId).ToList();
+
+            Func<long, bool> conditionExtract = f => 1.Equals(1);
+            if (!isAllEvidence)
+            {
+                conditionExtract = f => listEvidenceByCus.Contains(f);
+            }
+            var data = rawData
+                .AsParallel()
+                .Where(c => conditionExtract(c.CustId))
+                .GroupBy(t => Tuple.Create(t.BetTypeId, t.Handicap1 - t.Handicap2, t.LiveHomeScore, t.LiveAwayScore, t.GroupId), t => new ArbitrageTicket
+                {
+                    BetId = t.TransId,
+                    Currency = t.CurrencyName,
+                    DangerousLevel = t.DangerLevel,
+                    Evidences = evidenceDict[(int)t.CustId],
+                    Odds = t.Odds,
+                    RawTransDate = t.TransDate,
+                    Username = t.UserName,
+                    BetTeam = t.BetTeam,
+                    Stake = new ArbitrageStake
+                    {
+                        ComPT = t.ComPTStake,
+                        Virtual = t.VirtualStake,
+                        Full = t.FullStake
+                    },                   
+                    BettypeName = CachedRef.GetBettypeName(t.BetTypeId),
+                    Handicap = (double)(t.Handicap1 - t.Handicap2),                  
+                    Score = $"{t.LiveHomeScore} - {t.LiveAwayScore}",
+                    IsIPFraud = t.IsIPFraud
+                })
+                .OrderBy(g => g.Key.Item1).ThenBy(g=>g.Key.Item3).ThenBy(g=>g.Key.Item4).ThenBy(g => g.Key.Item2)
                 .Select(g =>
                 {
                     var tmp = g.OrderBy(t => t.RawTransDate).ThenBy(t => t.Username).ToList();
-
                     return new ArbitrageGroupTicketList
                     {
+                        BettypeId = g.Key.Item1,
                         BettypeName = CachedRef.GetBettypeName(g.Key.Item1),
                         Away = tmp.Where(t => t.BetTeam == "a"),
                         Home = tmp.Where(t => t.BetTeam == "h"),
                         Handicap = g.Key.Item2,
                         Score = $"{g.Key.Item3} - {g.Key.Item4}",
+                        LiveHomeScore = g.Key.Item3,
+                        LiveAwayScore = g.Key.Item4,
                         GroupId = g.Key.Item5
                     };
                 }).ToList();
@@ -449,55 +668,164 @@
             return data;
         }
 
-        public byte[] ExportArbitrageExcel(int matchId, DateTime eventDate, bool isShowSpecialCurrencies, string templatePath)
+        /// <summary>
+        /// Get list evidence from 5.1 to 7.10 and add a item "Other evidence"
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<Evidence> GetListEvidences()
         {
-            var fraudCaseId = (int)FraudCaseId.Arbitrage;
+            string otherEvidenceCode = AppSettings.Get("FPS_GET_OTHER_EVIDENCES");
+            List<Evidence> lstEvidences = new List<Evidence>();
+            lstEvidences.Add(new Evidence { EvidenceCode = "5.1", EvidenceName = "5.1 - VIP Smart Punter" });
+            lstEvidences.Add(new Evidence { EvidenceCode = "5.2", EvidenceName = "5.2 - Smart Punter" });
+            lstEvidences.Add(new Evidence { EvidenceCode = "5.3", EvidenceName = "5.3 - 8RM Accounts" });
+            lstEvidences.Add(new Evidence { EvidenceCode = "5.4", EvidenceName = "5.4 - VIP Monitor Accounts" });
+            lstEvidences.Add(new Evidence { EvidenceCode = "5.5", EvidenceName = "5.5 - Danger 5" });
+            lstEvidences.Add(new Evidence { EvidenceCode = "5.6", EvidenceName = "5.6 - Danger 6" });
+            lstEvidences.Add(new Evidence { EvidenceCode = "5.7", EvidenceName = "5.7 - Danger 7" });
+            lstEvidences.Add(new Evidence { EvidenceCode = "5.8", EvidenceName = "5.8 - Danger 8" });
+            lstEvidences.Add(new Evidence { EvidenceCode = "5.9", EvidenceName = "5.9 - Danger 9" });
+            lstEvidences.Add(new Evidence { EvidenceCode = "5.10", EvidenceName = "5.10 - Danger 10" });
+            lstEvidences.Add(new Evidence { EvidenceCode = "6.1", EvidenceName = "6.1 - MBC Abnormal Group 1" });
+            lstEvidences.Add(new Evidence { EvidenceCode = "6.2", EvidenceName = "6.2 - Abnormal Betting - Other Bettype" });
+            lstEvidences.Add(new Evidence { EvidenceCode = "6.3", EvidenceName = "6.3 - Goal Delay - Provider" });
+            lstEvidences.Add(new Evidence { EvidenceCode = "6.4", EvidenceName = "6.4 - MBC Abnormal Group 2" });
+            lstEvidences.Add(new Evidence { EvidenceCode = "6.5", EvidenceName = "6.5 - Licensee Abnormal Betting  1" });
+            lstEvidences.Add(new Evidence { EvidenceCode = "6.6", EvidenceName = "6.6 - Hedging Group" });
+            lstEvidences.Add(new Evidence { EvidenceCode = "6.7", EvidenceName = "6.7 - Licensee Fixed Game & Goal Delay" });
+            lstEvidences.Add(new Evidence { EvidenceCode = "6.8", EvidenceName = "6.8 - Licensee Both Side Betting" });
+            lstEvidences.Add(new Evidence { EvidenceCode = "6.9", EvidenceName = "6.9 - Licensee Monitoring Group" });
+            lstEvidences.Add(new Evidence { EvidenceCode = "6.10", EvidenceName = "6.10 - Backup Group" });
+            lstEvidences.Add(new Evidence { EvidenceCode = "7.1", EvidenceName = "7.1 - Abnormal - Snooker" });
+            lstEvidences.Add(new Evidence { EvidenceCode = "7.2", EvidenceName = "7.2 - Smart Punter All in one" });
+            lstEvidences.Add(new Evidence { EvidenceCode = "7.3", EvidenceName = "7.3 - Abnormal - Basketball" });
+            lstEvidences.Add(new Evidence { EvidenceCode = "7.4", EvidenceName = "7.4 - Abnormal - Baseball and Volleyball" });
+            lstEvidences.Add(new Evidence { EvidenceCode = "7.5", EvidenceName = "7.5 - Abnormal - Tennis" });
+            lstEvidences.Add(new Evidence { EvidenceCode = "7.6", EvidenceName = "7.6 - Abnormal - Muay Thai and Hedging Account" });
+            lstEvidences.Add(new Evidence { EvidenceCode = "7.7", EvidenceName = "7.7 - Abnormal - NFL,Dart and Ice-Hockey" });
+            lstEvidences.Add(new Evidence { EvidenceCode = "7.8", EvidenceName = "7.8 - Smart Punter - E-Sport" });
+            lstEvidences.Add(new Evidence { EvidenceCode = "7.9", EvidenceName = "7.9 - Abnormal - Motorsports and Cricket" });
+            lstEvidences.Add(new Evidence { EvidenceCode = "7.10", EvidenceName = "7.10 - Abnormal - Badminton" });
+            lstEvidences.Add(new Evidence { EvidenceCode = otherEvidenceCode, EvidenceName = "Others" });
 
-            var legend = GetInfo(matchId, (int)FraudCaseId.Arbitrage, eventDate);
-
-            var tickets = GetArbitrageTickets(matchId, eventDate, isShowSpecialCurrencies).SelectMany(obj => obj.Home.Concat(obj.Away));
-            var customers = Enumerable.Empty<CustomerDetails>();
-
-            var wb =
-                ExcelUtilities.GetWorkbook(templatePath)
-                    .RenderSheet(new ArbitrageConfig(tickets.Count()), legend, tickets, null)
-                    .RenderSheet(new CustomerDetailConfig(0), legend, customers, null);
-
-            return wb.ToBytes();
+            return lstEvidences;
         }
 
-        public byte[] ExportArbitrageExcel(int matchId, DateTime eventDate, bool isShowSpecialCurrencies, string templatePath, Func<ArbitrageGroupTicketList, bool> filter)
+        /// <summary>
+        /// Get all customer currency
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<Currency> GetAllCurrency(bool isShowSpecialCurrencies)
         {
-            var legend = GetInfo(matchId, (int)FraudCaseId.Arbitrage, eventDate);
+            var criteria = new GetCurrencyCriteria();
+            criteria.IsShowSpecialCurrencies = isShowSpecialCurrencies;
 
-            var tickets = GetArbitrageTickets(matchId, eventDate, isShowSpecialCurrencies).Where(filter).SelectMany(obj => obj.Home.Concat(obj.Away));
-
-            var wb =
-                ExcelUtilities.GetWorkbook(templatePath)
-                    .RenderSheet(new ArbitrageConfig(tickets.Count(), true), legend, tickets, null);
-
-            return wb.ToBytes();
+            return DataService.GetData<Currency>(criteria);
         }
 
-        public string ExportArbitrageCsv(int matchId, DateTime eventDate, bool isShowSpecialCurrencies)
+        public IEnumerable<ScoreHDP> GetScoreHDP(int matchId, bool isShowSpecialCurrencies)
         {
-            var tickets = GetArbitrageTickets(matchId, eventDate, isShowSpecialCurrencies).SelectMany(obj => obj.Home.Concat(obj.Away));
-            var info = GetInfo(matchId, (int)FraudCaseId.Arbitrage, eventDate);
-
-            var txt = new StringBuilder();
-
-            txt.AppendLine($"match: {info.Home} - vs - {info.Away}, date: {info.EventDate.ToString("MMM/dd/yyyy")}, HT/FT: {info.HTScore}/{info.FTScore}");
-            txt.AppendLine("member,evidence,dangerous level,currency,bet id, bet team, bet type, hdp, score, odds, v.stake, Com.Stake, Full. Stake, TransDate");
-
-            foreach (var item in tickets)
+            var criteria = new GetScoreHDPCriteria
             {
-                txt.AppendLine($"{item.Username},{item.Evidences.Join(" /")},{item.DangerousLevel}," +
-                    $"{item.Currency},{item.BetId},{item.BetTeam},{item.BettypeName},{item.Handicap},'{item.Score}," +
-                    $"{item.Odds},{item.Stake.Virtual},{item.Stake.ComPT}," +
-                    $"{item.Stake.Full},{item.TransDate.Replace(",", " -").Replace("<br/>", " ")}");
+                MatchId = matchId,
+                IsShowSpecialCurrencies = isShowSpecialCurrencies
+            };
+
+            return DataService.GetData<ScoreHDP>(criteria);
+        }          
+
+        public string ExportArbitrageTicketByGroupCsv(GetArbitrageTicketCriteria criteria, int groupId, string score, string[] array)
+        {
+            var txtResult = new StringBuilder();
+            var info = GetInfo(criteria.MatchId, (int)FraudCaseId.Arbitrage, criteria.EventDate);
+            var lstArbitrageTicket = GetArbitrageTickets(criteria).Where(c => c.GroupId == groupId && c.Score == score && c.Handicap == (decimal)criteria.Handicap).SelectMany(obj => obj.Home.Concat(obj.Away));
+            if (lstArbitrageTicket != null)
+            {
+                List<string> lstBetType = lstArbitrageTicket.Select(c => c.BettypeName).ToList();
+                if (lstBetType.Count > 0)
+                {
+                    array[5] = score + " " + lstBetType[0] + " " + criteria.Handicap;
+                }
+            }
+            //append fraud case detail
+            txtResult.AppendLine($"\"Match: {info.Home} - vs - {info.Away}\", \"Date: {info.EventDate.ToString("MMM dd, yyyy").Replace(",", " -")}\", \"Fraud Case: { info.FraudCase }\" , \"HT/FT: {info.HTScore}/{info.FTScore}\"");
+            //appdend filter
+            if (array != null && array.Length >= 6)
+            {
+                txtResult.AppendLine($"\"Market: {array[0]}\", \"Currency: {array[1]}\", \"Evidence: {array[2]}\"");
+                txtResult.AppendLine($"\"Trans Date From: {array[3]}\", \"Trans Date To: {array[4]}\", \"Score/HDP: {array[5]}\"");
             }
 
-            return txt.ToString();
+            txtResult.AppendLine("\"Member\",\"Evidence\",\"Dangerous Level\",\"Currency\",\"By IP\",\"Bet ID\",\"Betteam\",\"Bettype\",\"HDP\",\"Score\",\"Odds\",\"Virtual Stake\",\"Com.PT Stake\",\"Full Stake\",\"TransDate\"");
+
+            foreach (var item in lstArbitrageTicket)
+            {
+                var fraudByIP = item.IsIPFraud ? "Yes" : "";
+                txtResult.AppendLine($"\"{item.Username}\",\"{item.Evidences.Join(" /")}\",\"{item.DangerousLevel}\"," +
+                       $"\"{item.Currency}\",\"{fraudByIP}\",\"{item.BetId}\",\"{item.BetTeam}\",\"{item.BettypeName}\",\"{item.Handicap}\",\"{item.Score}\"," +
+                       $"\"{item.Odds}\",\"{item.Stake.Virtual}\",\"{item.Stake.ComPT}\"," +
+                       $"\"{item.Stake.Full}\",\"{item.TransDate.Replace(",", " -").Replace("<br/>", " ")}\"");
+            }
+            return txtResult.ToString();
         }
+
+        public string ExportArbitrageTicketAllCsv(GetArbitrageTicketCriteria ticketCriteria, string[] array)
+        {
+            var txtResult = new StringBuilder();
+
+            var lstArbitrageTicket = GetArbitrageTickets(ticketCriteria).SelectMany(obj => obj.Home.Concat(obj.Away));
+            var info = GetInfo(ticketCriteria.MatchId, (int)FraudCaseId.Arbitrage, ticketCriteria.EventDate);
+
+            //append fraud case detail            
+            txtResult.AppendLine($"\"Match: {info.Home} - vs - {info.Away}\", \"Date: {info.EventDate.ToString("MMM dd, yyyy").Replace(",", " -")}\", \"Fraud Case: { info.FraudCase } \" , \"HT/FT: {info.HTScore}/{info.FTScore}\"");
+            //appdend filter
+            if (array != null && array.Length >= 6)
+            {              
+                txtResult.AppendLine($"\"Market: {array[0]}\", \"Currency: {array[1]}\", \"Evidence: {array[2]}\"");
+                txtResult.AppendLine($"\"Trans Date From: {array[3]}\", \"Trans Date To: {array[4]}\", \"Score/HDP: {array[5]}\"");
+            }
+            
+            txtResult.AppendLine("\"Member\",\"Evidence\",\"Dangerous Level\",\"Currency\",\"By IP\",\"Bet ID\",\"Betteam\",\"Bettype\",\"HDP\",\"Score\",\"Odds\",\"Virtual Stake\",\"Com.PT Stake\",\"Full Stake\",\"TransDate\"");
+
+            foreach (var item in lstArbitrageTicket)
+            {
+                var fraudByIP = item.IsIPFraud ? "Yes" : "";
+                txtResult.AppendLine($"\"{item.Username}\",\"{item.Evidences.Join(" /")}\",\"{item.DangerousLevel}\"," +
+                       $"\"{item.Currency}\",\"{fraudByIP}\",\"{item.BetId}\",\"{item.BetTeam}\",\"{item.BettypeName}\",\"{item.Handicap}\",\"{item.Score}\"," +
+                       $"\"{item.Odds}\",\"{item.Stake.Virtual}\",\"{item.Stake.ComPT}\"," +
+                       $"\"{item.Stake.Full}\",\"{item.TransDate.Replace(",", " -").Replace("<br/>", " ")}\"");
+            }
+            return txtResult.ToString();
+        }
+
+        public string ExportArbitrageCustomersCsv(GetArbitrageCustomerCriteria criteria, string[] array)
+        {
+            var txtResult = new StringBuilder();
+
+            var arbitrageCustomers = GetArbitrageCustomerDetails(criteria);
+            var info = GetInfo(criteria.MatchId, (int)FraudCaseId.Arbitrage, criteria.EventDate);
+
+            //append fraud case detail
+            txtResult.AppendLine($"\"Match: {info.Home} - vs - {info.Away}\", \"Date: {info.EventDate.ToString("MMM dd, yyyy").Replace(",", " -")}\", \"Fraud Case: { info.FraudCase } \" , \"HT/FT: {info.HTScore}/{info.FTScore}\"");
+
+            //appdend filter
+            if (array != null && array.Length >= 6)
+            {
+                txtResult.AppendLine($"\"Market: {array[0]}\", \"Currency: {array[1]}\", \"Evidence: {array[2]}\"");
+                txtResult.AppendLine($"\"Trans Date From: {array[3]}\", \"Trans Date To: {array[4]}\", \"Score/HDP: {array[5]}\"");
+            }
+
+            txtResult.AppendLine("\"#\",\"Member\",\"Currency\",\"#Tickets\",\"Total Stake\",\"Total Win Loss\",\"Evidence\", \"Associated Accounts\"");
+
+            int stt = 1;
+            foreach (var item in arbitrageCustomers)
+            {
+                txtResult.AppendLine($"\"{stt}\",\"{item.Member}\",\"{item.CurrencyName}\",\"{item.Tickets}\",\"{item.TotalStake}\",\"{item.TotalWinLoss}\",\"{item.Evidence}\",\"{item.AssociatedAccounts}\"");
+                stt += 1;
+            }
+
+            return txtResult.ToString();
+        }       
+       
     }
 }

@@ -10,7 +10,7 @@
 
         IEnumerable<FraudCase> Get(int? isInternal, int? isActive, int environment);
 
-        bool CheckActiveFraudCase(FraudCaseId id);
+        bool CheckActiveFraudCase(FraudCaseId id, int envConfig);
 
         void ChangeFraudCaseStatus(FraudCaseId id, int userId);
 

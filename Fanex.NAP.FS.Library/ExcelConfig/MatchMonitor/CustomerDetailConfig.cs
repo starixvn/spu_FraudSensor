@@ -28,14 +28,15 @@
             row.GetCell(cell_idx++).SetCellValue(customer.TotalStake);
             row.GetCell(cell_idx++).SetCellValue(customer.TotalWinLoss);
             row.GetCell(cell_idx++).SetCellValue(customer.Evidence);
-#pragma warning disable S1854 // ok here
             row.GetCell(cell_idx++).SetCellValue(customer.AssociatedAccounts);
-#pragma warning restore S1854 // ok here
         }
 
         protected override void FillLegend(IRow row, MatchFraudCaseInfo legend)
         {
             var cell1 = row.GetCell(0);
+            var cell2 = row.GetCell(2);
+            var cell3 = row.GetCell(6);
+            string[] arrFilter = legend.Filter;
 
             new XSSFRichTextString()
                 .WriteBold("Event: ").Write(string.Format("{0} - vs - {1}\n", legend.Home as string, legend.Away as string))
@@ -43,6 +44,21 @@
                 .WriteBold("Fraud Case: ").Write(legend.FraudCase + "\n")
                 .WriteBold("HT/FT Score: ").Write(legend.HTScore + " / " + legend.FTScore + "\n")
                 .SetValue(cell1);
+
+            if (arrFilter != null && arrFilter.Length >= 6)
+            {
+                new XSSFRichTextString()
+                   .WriteBold("Market: ").Write(arrFilter[0] + "\n")
+                   .WriteBold("Currency: ").Write(arrFilter[1] + "\n")
+                   .WriteBold("Evidence Code List: ").Write(arrFilter[2] + "\n")
+                   .SetValue(cell2);
+
+                new XSSFRichTextString()
+                    .WriteBold("Trans Date From: ").Write(arrFilter[3] + "\n")
+                    .WriteBold("Trans Date To: ").Write(arrFilter[4] + "\n")
+                    .WriteBold("Score/HDP: ").Write(arrFilter[5] + "\n")
+                    .SetValue(cell3);
+            }
         }
     }
 }
