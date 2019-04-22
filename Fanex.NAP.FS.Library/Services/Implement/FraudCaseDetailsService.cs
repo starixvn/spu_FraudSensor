@@ -208,7 +208,8 @@
             }
             var totalAssociation = GetTotalAssociations(custInfo.Select(i => i.CustId)).ToDictionary(o => o.CustId, o => o.TotalAssociation);
 
-            foreach(var b in custEvidence)
+            Logging.LogService.Info("Arbitrage duplication checking");
+            foreach (var b in custEvidence)
             {
                 var dupCount = custEvidence.Select(c => c.CustId == b.CustId && c.EvidenceCode == b.EvidenceCode).ToList();
                 if (dupCount.Count() > 1)
