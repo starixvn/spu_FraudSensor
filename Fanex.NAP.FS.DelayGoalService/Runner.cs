@@ -17,7 +17,7 @@
     public partial class Runner : ServiceBase
     {
         private new const string ServiceName = "Delay Goal Service";
-        static string _projectName = "Fraud Sensor Service";
+        private const string ProjectName = "Fraud Sensor Service";
         private static Service.DelayGoalService _delayGoalService;
         private readonly MicroService _baseService;
         private bool _isRunning = false;
@@ -53,7 +53,7 @@
 
             try
             {
-                Report(status, exception, "Fraud Case is executing at " + DateTime.Now);
+                Report(true, exception, "Fraud Case is executing at " + DateTime.Now);
 
                 var isUm = _baseService.CheckUM();
                 if (!isUm)
@@ -75,7 +75,7 @@
 #if DEBUG
                     Console.WriteLine("=> Fraud Case is executed at " + DateTime.Now);
 #endif
-                    LogService.Info($"{_projectName} - {ServiceName} - Fraudcase is executed.");
+                    LogService.Info($"{ProjectName} - {ServiceName} - Fraudcase is executed.");
                 }
             }
             catch (Exception ex)
@@ -88,7 +88,7 @@
                     .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
                     .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
 
-                LogService.Error($"{_projectName} - {ServiceName} - OnTimeEvent Exeption {logMessage}");
+                LogService.Error($"{ProjectName} - {ServiceName} - OnTimeEvent Exeption {logMessage}");
             }
 
             Report(status, exception, "Fraud Case is executed at " + DateTime.Now);
@@ -157,7 +157,7 @@
                     .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
                     .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
 
-                    LogService.Error($"{_projectName} - {ServiceName} - Execute Exeption {logMessage}");
+                    LogService.Error($"{ProjectName} - {ServiceName} - Execute Exeption {logMessage}");
                 }
             }, matches);
 
