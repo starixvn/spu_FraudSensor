@@ -197,7 +197,6 @@ namespace Fanex.NAP.FS.ArbitrageService
 #if DEBUG
             Console.WriteLine(message);
 #endif
-            LogService.Info(message);
         }
 
         void Rule()
