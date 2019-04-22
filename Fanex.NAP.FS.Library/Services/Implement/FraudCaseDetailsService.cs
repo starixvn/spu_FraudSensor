@@ -207,7 +207,7 @@
                 conditionExtract = f => listEvidenceByCus.Contains(f);
             }
             var totalAssociation = GetTotalAssociations(custInfo.Select(i => i.CustId)).ToDictionary(o => o.CustId, o => o.TotalAssociation);
-
+            /*
             Logging.LogService.Info("Arbitrage duplication checking");
             foreach (var b in custEvidence)
             {
@@ -216,7 +216,7 @@
                 {
                     Logging.LogService.Info("Arbitrage duplication " + dupCount.Count()  + ": CustId:" + b.CustId + " & Evidencode:" + b.EvidenceCode);
                 }
-            }
+            }*/
             
             IEnumerable<CustomerDetails> data = custInfo
                    .Where(c => conditionExtract(c.CustId))
@@ -488,6 +488,16 @@
             }).Select(p => ApiHelper.Post<IEnumerable<CustomerEvidence>>(url, p)).ToArray();
 
             Task.WaitAll(tsk);
+            
+            var result = tsk.Where(t => t.Result != null).SelectMany(t => t.Result);
+            foreach (var b in result)
+            {
+                var dupCount = result.Where(c => c.CustId == b.CustId && c.EvidenceCode == b.EvidenceCode).ToList();
+                if (dupCount.Count() > 1)
+                {
+                    Logging.LogService.Info("Arbitrage duplication " + dupCount.Count() + ": CustId:" + b.CustId + " & Evidencode:" + b.EvidenceCode);
+                }
+            }
 
             return tsk.Where(t => t.Result != null).SelectMany(t => t.Result);
         }

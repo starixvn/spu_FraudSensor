@@ -42,7 +42,7 @@
 
             try
             {
-                Report(status:true, exception, "Fraud Case is executing at " + DateTime.Now);
+                Report(true, exception, "Fraud Case is executing at " + DateTime.Now);
 
                 var isUm = _baseService.CheckUM();
 
