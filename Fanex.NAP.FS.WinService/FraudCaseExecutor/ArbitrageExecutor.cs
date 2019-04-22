@@ -21,8 +21,6 @@
 
         public ArbitrageExecutor(FraudCase fraudCase) : base(fraudCase)
         {
-            var message = "Arbitrage is activating";
-            SendMailInform(message, message);
         }
 
         protected override void ExecutePrecondition()
@@ -35,6 +33,8 @@
 
         protected override void ExecuteRule()
         {
+            var message = "Arbitrage is processing rule";
+            SendMailInform(message, message);
             XmlHelper.RegisterType<ArbitrageTicket>();
             XmlHelper.RegisterType<ArbitrageCustomer>();
 
@@ -42,6 +42,7 @@
             {
                 GroupData(g.Key, g);
             }
+            SendMailInform("Arbitrage is DONE for processing rule", "Arbitrage is DONE for processing rule");
         }
 
         protected override void TakeNextAction()

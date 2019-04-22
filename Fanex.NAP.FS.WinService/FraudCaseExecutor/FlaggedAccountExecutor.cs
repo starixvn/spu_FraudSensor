@@ -37,7 +37,15 @@
                 EvidenceCodeList = string.Empty
             };
 
-            _flaggedCustomers = ApiHelper.Post<CustomerEvidenceList, IEnumerable<FlaggedCustomer>>(FPS_WEBAPI_GET_CUSTOMER_EVIDENCE, param, 2, 82).Result;
+            try
+            {
+                _flaggedCustomers = ApiHelper.Post<IEnumerable<FlaggedCustomer>>(FPS_WEBAPI_GET_CUSTOMER_EVIDENCE, param).Result;
+            }
+            catch (Exception e)
+            {
+                var message = "Flagged Accounts initializing gets error: " + e.Message;
+                SendMailInform(message, message);
+            }
         }
 
         protected override void ClearOldResult()

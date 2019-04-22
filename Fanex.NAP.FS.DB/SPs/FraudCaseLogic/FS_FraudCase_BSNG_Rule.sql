@@ -17,6 +17,7 @@ AS
 		- 20190219@Long: Store more info (Currency & Username) for table SuspiciousCutomers [Redmine ID: 107858]
 		- 20190319@Casey.Huynh: Enhance Performance table #tmpFraudTickets [110060]
 		- 20190320@Casey.Huynh: Enhance Performance, define PRIMARY KEY in table [110060]
+		- 20190329@Casey.Huynh: Implement Completed Match when the score is rejected: Add code update table MatchScore completed Status to sp rule [111079]
 	Param's Explanation (filtered by):
 */
 BEGIN
@@ -101,15 +102,15 @@ BEGIN
 	-------GET MATCH-----
 	--------------------------------------------------
 	INSERT INTO #tmpMatches(MatchId)
-	SELECT val FROM dbo.SPU_StrSplit(@MatchIds, ',');
-	
+	SELECT val FROM dbo.SPU_StrSplit(@MatchIds, ',');	
 	
 	--- Get Current Score of Match -- Only Scan for Score less than currentScore
-	UPDATE	ms
-	SET		ms.CurrentScore = m.livehomescore + liveawayscore, ms.EventDate = m.eventdate, ms.EventStatus = m.eventstatus
-	FROM	#tmpMatches ms WITH(ROWLOCK)
-			INNER JOIN bodb02.dbo.Match m WITH (NOLOCK) ON ms.MatchId = m.MatchId; 
-	
+	UPDATE		ms
+	SET			ms.CurrentScore = m.livehomescore + liveawayscore
+				, ms.EventDate = m.eventdate
+				, ms.EventStatus = m.eventstatus
+	FROM		#tmpMatches ms WITH(ROWLOCK)
+	INNER JOIN	bodb02.dbo.Match m WITH (NOLOCK) ON ms.MatchId = m.MatchId; 	
 	
 	--- GET THE LAST REJECT TIME OF PREVIOUS SCORE	
 	
@@ -122,14 +123,17 @@ BEGIN
 			, MAX(transid) AS [TransId]
 			, MAX(TransDate) AS [DeleteTime]	
 			, 0	
-	FROM	bodb02.dbo.bettrans b WITH(NOLOCK)
-			INNER JOIN #tmpBettype bt WITH(NOLOCK) ON b.bettype = bt.Bettype
-			INNER JOIN #tmpMatches ms WITH(NOLOCK) ON b.matchid = ms.MatchId
-			LEFT JOIN dbo.BSNGScanInfo si WITH(NOLOCK) ON si.MatchId = ms.MatchId AND si.livehomescore = b.livehomescore AND si.LiveAwayScore = b.liveawayscore
-	WHERE	b.liveindicator = 1
-			AND b.statusID = 101
-			AND (b.livehomescore + b.liveawayscore) < ms.CurrentScore
-			AND si.MatchId IS NULL
+	FROM		bodb02.dbo.bettrans b WITH(NOLOCK)
+				INNER JOIN #tmpBettype bt WITH(NOLOCK) ON b.bettype = bt.Bettype
+				INNER JOIN #tmpMatches ms WITH(NOLOCK) ON b.matchid = ms.MatchId
+	LEFT JOIN	dbo.BSNGScanInfo si WITH(NOLOCK) 
+				ON si.MatchId = ms.MatchId
+				AND si.livehomescore = b.livehomescore
+				AND si.LiveAwayScore = b.liveawayscore
+	WHERE		b.liveindicator = 1
+				AND b.statusID = 101
+				AND (b.livehomescore + b.liveawayscore) < ms.CurrentScore
+				AND si.MatchId IS NULL
 	GROUP BY	ms.MatchId
 				, ms.EventDate
 				, ms.EventStatus
@@ -290,9 +294,25 @@ BEGIN
 								FROM dbo.SuspiciousCustomer sc WITH (NOLOCK));
 	END;
 	
+	--- UPDATE SCANNING STATUS: BSNGScanInfo 
 	UPDATE si
 	SET		si.HasScanned = 1, si.ScannedDate = @ScannedDate
 	FROM	dbo.BSNGScanInfo si WITH(ROWLOCK)
 			INNER JOIN #tmpMatches tm WITH(NOLOCK) ON si.MatchId = tm.matchid
 	WHERE	si.HasScanned = 0;	
+
+	--- UPDATE SCANNING STATUS: MatchScore, FOR COMPLETED MATCH
+	UPDATE		ms 
+	SET			ms.HasScanned = 1
+				, ms.EventStatus = 'Completed'
+				, ms.UpdatedDate = @ScannedDate
+				, ms.TotalScores = m.CurrentScore
+	FROM		dbo.MatchScore ms WITH (ROWLOCK, UPDLOCK)
+	INNER JOIN	#tmpMatches m WITH (NOLOCK)
+				ON ms.MatchId = m.MatchId
+	WHERE		ms.HasScanned = 0
+				AND m.EventStatus = 'Completed';
 END;
+
+GO
+/*<info serverAlias="DBFS-bodb_FraudSensor" executers="bodbSPUNet" isFunction="0" isNested="0"></info>*/
