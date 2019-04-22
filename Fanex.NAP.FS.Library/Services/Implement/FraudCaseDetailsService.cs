@@ -208,6 +208,15 @@
             }
             var totalAssociation = GetTotalAssociations(custInfo.Select(i => i.CustId)).ToDictionary(o => o.CustId, o => o.TotalAssociation);
 
+            foreach(var b in custEvidence)
+            {
+                var dupCount = custEvidence.Select(c => c.CustId == b.CustId && c.EvidenceCode == b.EvidenceCode).ToList();
+                if (dupCount.Count() > 1)
+                {
+                    Logging.LogService.Info("Arbitrage duplication " + dupCount.Count()  + ": CustId:" + b.CustId + " & Evidencode:" + b.EvidenceCode);
+                }
+            }
+            
             IEnumerable<CustomerDetails> data = custInfo
                    .Where(c => conditionExtract(c.CustId))
                    .GroupJoin(
@@ -478,8 +487,6 @@
             }).Select(p => ApiHelper.Post<IEnumerable<CustomerEvidence>>(url, p)).ToArray();
 
             Task.WaitAll(tsk);
-
-            Logging.LogService.Info(tsk.Where(t => t.Result != null).SelectMany(t => t.Result).ToString());
 
             return tsk.Where(t => t.Result != null).SelectMany(t => t.Result);
         }
