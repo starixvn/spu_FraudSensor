@@ -2,6 +2,7 @@
 {
     using Logging;
     using MailDelivery.Client;
+    using System;
     using System.Configuration;
     using System.ServiceProcess;
     using System.Threading;
@@ -20,6 +21,11 @@
             _fraudCaseLoader = fraudCaseLoader ?? new FraudCaseLoader();
 
             _receivingMessageHandler = receivingMessageHandler ?? new ReceivingMessageHandler();
+
+            if (AppSettings.Environment != "1")
+            {
+                MailClientHandler.Start();
+            }
 
             InitializeComponent();
         }
@@ -59,9 +65,7 @@
                 Logger.Log.Info("SPU FS 2 Service Started");
 
                 if (AppSettings.Environment != "1")
-                {
-                    MailClientHandler.Start();
-
+                {                   
                     var queue = new MessageQueueReceiver();
                     queue.Clear();
                 }
@@ -107,9 +111,9 @@
 
                     MailClientHandler.SendFunctionMail(newMail);
                 }
-                catch
+                catch(Exception ex)
                 {
-                    ////ignore comment
+                    Logger.Log.Error(ex.Message, ex);
                 }
             });
         }

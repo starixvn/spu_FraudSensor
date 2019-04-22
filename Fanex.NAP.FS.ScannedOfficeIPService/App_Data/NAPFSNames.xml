@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Functions>
+  <Function Name="OfficeIP">
+    <Setting Key="FS_FraudCase_OfficeIP_PreCondition"
+             SpName="FS_FraudCase_OfficeIP_PreCondition"
+             DbName="DBFS.bodb_FraudSensor.bodbSPUNet"/>
+
+    <Setting Key="FS_FraudCase_OfficeIP_Rule"
+         SpName="FS_FraudCase_OfficeIP_Rule"
+         DbName="DBFS.bodb_FraudSensor.bodbSPUNet"/>
+    
+    <Setting Key="FS_FraudCase_GetById"
+             SpName="FS_FraudCase_GetById"
+             DbName="DBFS.bodb_FraudSensor.bodbSPUNet" />
+  </Function>
+ </Functions>

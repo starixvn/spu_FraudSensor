@@ -42,7 +42,7 @@
                     _tasks.Enqueue(Task.Run(() => DataService.Execute(new OfficeIPRuleCriteria { MatchIds = string.Join(",", ids) })));
                 }
 
-                Task.WaitAll(_tasks.ToArray());
+                Task.WaitAll(_tasks.ToArray()); 
 
                 foreach (var item in _tasks.Where(t => t.IsFaulted))
                 {
