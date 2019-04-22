@@ -1,46 +1,47 @@
-﻿using Fanex.Logging;
-using Fanex.Logging.Extensions;
-using Fanex.Logging.Extensions.Database;
-using Fanex.NAP.FS.Core;
-using Fanex.NAP.FS.Library.Core.Helpers.Api;
-using Fanex.NAP.FS.Library.Core.Helpers.Xml;
-using Fanex.NAP.FS.Library.Core.Utilities;
-using Fanex.NAP.FS.Library.DTO;
-using Fanex.NAP.FS.Library.Models;
-using Fanex.NAP.FS.Library.Models.FraudCase.FlaggedAccount;
-using Fanex.NAP.FS.Model;
-using Fanex.NAP.FS.Service;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.ServiceProcess;
-using System.Threading.Tasks;
-
-namespace Fanex.NAP.FS.FlaggedAccountService
+﻿namespace Fanex.NAP.FS.FlaggedAccountService
 {
+    using Fanex.Logging;
+    using Fanex.Logging.Extensions;
+    using Fanex.Logging.Extensions.Database;
+    using Fanex.NAP.FS.Core;
+    using Fanex.NAP.FS.Library.Core.Helpers.Api;
+    using Fanex.NAP.FS.Library.Core.Helpers.Xml;
+    using Fanex.NAP.FS.Library.Core.Utilities;
+    using Fanex.NAP.FS.Library.DTO;
+    using Fanex.NAP.FS.Library.Models;
+    using Fanex.NAP.FS.Library.Models.FraudCase.FlaggedAccount;
+    using Fanex.NAP.FS.Model;
+    using Fanex.NAP.FS.Service;
+    using System;
+    using System.Collections.Generic;
+    using System.Data;
+    using System.Linq;
+    using System.ServiceProcess;
+    using System.Threading;
+    using System.Threading.Tasks;
+
     public partial class Runner : ServiceBase
     {
         private const int ChunkSize = 100;
-        protected readonly Service.FlaggedAccountService flaggedAccountService;
+        protected readonly Service.FlaggedAccountService FlaggedAccountService;
         private readonly IEnumerable<FlaggedCustomer> _flaggedCustomers;
 
-        static string serviceName = "Flagged Account Service";
-        static string projectName = "Fraud Sensor Service";
+        private new const string ServiceName = "Flagged Account Service";
+        static string _projectName = "Fraud Sensor Service";
 
         private IEnumerable<Match> _matches;
         private readonly List<Task> _threads;
-        private MicroService baseService;
+        private readonly MicroService _baseService;
 
-        private bool isRunning = false;
+        private bool _isRunning = false;
 
         public Runner()
         {
             _matches = new List<Match>();
             _threads = new List<Task>();
             _flaggedCustomers = new List<FlaggedCustomer>();
-            baseService = new MicroService(serviceName, FraudCaseId.FlaggedAccount);
-            flaggedAccountService = new Service.FlaggedAccountService();
+            _baseService = new MicroService(ServiceName, FraudCaseId.FlaggedAccount);
+            FlaggedAccountService = new Service.FlaggedAccountService();
 
             var param = new CustomerEvidenceList
             {
@@ -56,7 +57,7 @@ namespace Fanex.NAP.FS.FlaggedAccountService
             {
                 var error = "<b>Error:</b> " + exception.Message +
                               "<br><b>StackTrace:</b> " + exception.StackTrace;
-                var message = string.Format("<b>Problem with FraudCaseId = {0}, FraudCaseName = {1}</b><br><br>", FraudCaseId.FlaggedAccount, serviceName) + error;
+                var message = string.Format("<b>Problem with FraudCaseId = {0}, FraudCaseName = {1}</b><br><br>", FraudCaseId.FlaggedAccount, ServiceName) + error;
 
                 LogService.Error(message);
             }
@@ -67,15 +68,15 @@ namespace Fanex.NAP.FS.FlaggedAccountService
 
         protected override void OnStart(string[] args)
         {
-            baseService.Start(Execute);
+            _baseService.Start(Execute);
         }
 
         protected override void OnStop()
         {
-            baseService.Hold();
+            _baseService.Hold();
         }
 
-        private void Execute(Object source, System.Timers.ElapsedEventArgs e)
+        private void Execute(object source, System.Timers.ElapsedEventArgs e)
         {
             var exception = string.Empty;
             var status = true;
@@ -83,34 +84,34 @@ namespace Fanex.NAP.FS.FlaggedAccountService
 
             try
             {
-                Report(status, exception, "Fraud Case is executing at " + DateTime.Now);
+                Report(true, exception, "Fraud Case is executing at " + DateTime.Now);
 
-                var isUM = baseService.CheckUM();                
+                var isUm = _baseService.CheckUM();                
 
-                if (!isUM)
+                if (!isUm)
                 {
-                    if (isRunning) return;
+                    if (_isRunning) return;
 #if DEBUG
                     Console.WriteLine("-> Fraud Case is executing at " + DateTime.Now);
 #endif
-                    LogService.Info($"{projectName} - {serviceName} - Fraudcase is begining for executing.");
+                    LogService.Info($"{_projectName} - {ServiceName} - Fraudcase is begining for executing.");
 
-                    isRunning = true;
+                    _isRunning = true;
 
                     CleanResult();
                     Precondition();
                     Rule();
 
-                    isRunning = false;
+                    _isRunning = false;
 #if DEBUG
                     Console.WriteLine("=> Fraud Case is executed at " + DateTime.Now);
 #endif
-                    LogService.Info($"{projectName} - {serviceName} - Fraudcase is executed.");
+                    LogService.Info($"{_projectName} - {ServiceName} - Fraudcase is executed.");
                 }
             }
             catch (Exception ex)
             {
-                isRunning = false;
+                _isRunning = false;
                 exception = ex.Message;
                 status = false;
 
@@ -118,65 +119,82 @@ namespace Fanex.NAP.FS.FlaggedAccountService
                     .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
                     .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
 
-                LogService.Error($"{projectName} - {serviceName} - Execute Exeption {logMessage}");
+                LogService.Error($"{_projectName} - {ServiceName} - Execute Exeption {logMessage}");
             }
 
             Report(status, exception, "Fraud Case is executed at " + DateTime.Now);
         }
 
-        void Report(bool status, string exception, string message)
+        private void Report(bool status, string exception, string message)
         {
             var model = new ReportModel()
             {
 
-                ServiceName = serviceName,
+                ServiceName = ServiceName,
                 Exception = exception,                
                 Status = status,
-                Timeout = baseService.FraudCase.FraudCaseInterval,
-                IsActive = baseService.FraudCase.IsActive,
+                Timeout = _baseService.FraudCase.FraudCaseInterval,
+                IsActive = _baseService.FraudCase.IsActive,
                 Message = message
             };
 
-            baseService.Report(model);
+            _baseService.Report(model);
         }
 
-        void CleanResult()
+        private void CleanResult()
         {
-            if (_matches != null && _matches.Any())
-            {
-                _matches = Enumerable.Empty<Match>();
+            if (_matches == null || !_matches.Any()) return;
+            _matches = Enumerable.Empty<Match>();
 
-                if (_threads != null)
-                {
-                    _threads.Clear();
-                }
+            _threads?.Clear();
+        }
+
+        private void Precondition()
+        {
+            _matches = FlaggedAccountService.PreCondition<Match>();
+        }
+
+        private void Rule()
+        {
+            ExecuteBySeparatedThreads();
+        }
+
+        private void ExecuteBySeparatedThreads()
+        {
+            if (_matches == null) return;
+            var matchChunks = _matches.Chunk(ChunkSize);
+
+            foreach (var matches in matchChunks)
+            {
+                //var thread = ExecuteMultiple(matches.ToList());
+
+                //_threads.Add(thread);
+                ExecuteMatches(matches.ToList());
             }
+
+            Thread.Sleep(TimeSpan.FromSeconds(2));
+
+            //Task.WaitAll(_threads.ToArray());
         }
 
-        void Precondition()
+        private void ExecuteMatches(List<Match> matches)
         {
-            _matches = flaggedAccountService.PreCondition<Match>();
-        }
-
-        void Rule()
-        {
-            ExecuteBySaparatedThreads();
-        }
-
-        private void ExecuteBySaparatedThreads()
-        {
-            if (_matches != null)
+            try
             {
-                var matchChunks = _matches.Chunk(ChunkSize);
 
-                foreach (var matches in matchChunks)
-                {
-                    var thread = ExecuteMultiple(matches.ToList());
+                FlaggedAccountService.MatchIds = string.Join(",", ((List<Match>)matches).Select(t => t.MatchId.ToString()));
+                FlaggedAccountService.FlaggedAccounts = XmlHelper.ToXmlString(_flaggedCustomers);
 
-                    _threads.Add(thread);
-                }
+                FlaggedAccountService.Rule();
 
-                Task.WaitAll(_threads.ToArray());
+            }
+            catch (Exception ex)
+            {
+                var logMessage = new LogMessage(ex.Message)
+                .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
+                .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
+
+                LogService.Error($"{_projectName} - {ServiceName} - ExecuteMultiple Exeption {logMessage}");               
             }
         }
 
@@ -187,10 +205,10 @@ namespace Fanex.NAP.FS.FlaggedAccountService
                 try
                 {
                   
-                    flaggedAccountService.MatchIds = string.Join(",", ((List<Match>)m).Select(t => t.MatchId.ToString()));
-                    flaggedAccountService.FlaggedAccounts = XmlHelper.ToXmlString(_flaggedCustomers);
+                    FlaggedAccountService.MatchIds = string.Join(",", ((List<Match>)m).Select(t => t.MatchId.ToString()));
+                    FlaggedAccountService.FlaggedAccounts = XmlHelper.ToXmlString(_flaggedCustomers);
 
-                    flaggedAccountService.Rule();
+                    FlaggedAccountService.Rule();
 
                 }
                 catch (Exception ex)
@@ -199,7 +217,7 @@ namespace Fanex.NAP.FS.FlaggedAccountService
                     .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
                     .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
 
-                    LogService.Error($"{projectName} - {serviceName} - ExecuteMultiple Exeption {logMessage}");
+                    LogService.Error($"{_projectName} - {ServiceName} - ExecuteMultiple Exeption {logMessage}");
 
                     Ultilities.WriteLog("log-MatchId-" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss") + ".log", matches.Select(x=>x.MatchId.ToString()));
                 }

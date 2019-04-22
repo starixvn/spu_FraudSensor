@@ -11,89 +11,88 @@
 
     public partial class Runner : ServiceBase
     {
-        static string serviceName = "Check Bet";
-        static string projectName = "Fraud Sensor Service";
-        private MicroService baseService;
+        private const string ProjectName = "Fraud Sensor Service";
+        private readonly MicroService _baseService;
 
-        static Service.CheckBetService checkBetService;
-        private bool isRunning = false;
+        private static Service.CheckBetService _checkBetService;
+        private bool _isRunning = false;
 
         public Runner()
         {
-            baseService = new MicroService(serviceName, FraudCaseId.CheckBet);
-            checkBetService = new CheckBetService();
+            _baseService = new MicroService(base.ServiceName, FraudCaseId.CheckBet);
+            _checkBetService = new CheckBetService();
 
             InitializeComponent();
         }
 
         protected override void OnStart(string[] args)
         {
-            baseService.Start(Execute);
+            _baseService.Start(Execute);
         }
 
         protected override void OnStop()
         {
-            baseService.Hold();
+            _baseService.Hold();
         }
 
-        private void Execute(Object source, System.Timers.ElapsedEventArgs e)
+        private void Execute(object source, System.Timers.ElapsedEventArgs e)
         {
             var exception = string.Empty;
             var status = true;
 
             try
             {
-                Report(status, exception, "Fraud Case is executing at " + DateTime.Now);
+                Report(status:true, exception, "Fraud Case is executing at " + DateTime.Now);
 
-                var isUM = baseService.CheckUM();
+                var isUm = _baseService.CheckUM();
 
-                if (!isUM)
+                if (!isUm)
                 {
 #if DEBUG
                     Console.WriteLine("-> Fraud Case is executing at " + DateTime.Now);
 #endif
-                    if (isRunning) return;
+                    if (_isRunning) return;
 
-                    isRunning = true;
+                    _isRunning = true;
 
-                    checkBetService.Rule();
+                    _checkBetService.Rule();
 
-                    isRunning = false;
+                    _isRunning = false;
 #if DEBUG
                     Console.WriteLine("=> Fraud Case is executed at " + DateTime.Now);
 #endif
-                    LogService.Info($"{projectName} - {serviceName} - Fraudcase is executed.");
+                    LogService.Info($"{ProjectName} - {base.ServiceName} - Fraudcase is executed.");
                 }
             }
             catch (Exception ex)
             {
                 exception = ex.Message;
                 status = false;
-                isRunning = false;
+                _isRunning = false;
 
                 var logMessage = new LogMessage(ex.Message)
                     .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
                     .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
 
-                LogService.Error($"{projectName} - {serviceName} - Execute Exeption {logMessage}");
+                LogService.Error($"{ProjectName} - {base.ServiceName} - Execute Exeption {logMessage}");
             }
 
             Report(status, exception, "Fraud Case is executed at " + DateTime.Now);
         }
 
-        void Report(bool status, string exception, string message)
+        private void Report(bool status, string exception, string message)
         {
             var model = new ReportModel()
             {
-                ServiceName = serviceName,
+                ServiceName = ServiceName,
                 Exception = exception,
                 Status = status,
-                IsActive = baseService.FraudCase.IsActive,
-                Timeout = baseService.FraudCase.FraudCaseInterval,
+                IsActive = _baseService.FraudCase.IsActive,
+                Timeout = _baseService.FraudCase.FraudCaseInterval,
                 Message = message
             };
 
-            baseService.Report(model);
+            _baseService.Report(model);
         }
     }
 }

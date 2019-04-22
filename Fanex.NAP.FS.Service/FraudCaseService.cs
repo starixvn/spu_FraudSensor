@@ -1,16 +1,12 @@
-﻿using Fanex.Data;
-using Fanex.NAP.FS.Core;
-using Fanex.NAP.FS.Library.Criteria;
-using Fanex.NAP.FS.Library.DTO;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Fanex.NAP.FS.Service
+﻿namespace Fanex.NAP.FS.Service
 {
-   public class FraudCaseService
+    using Fanex.Data;
+    using Fanex.NAP.FS.Core;
+    using Fanex.NAP.FS.Library.Criteria;
+    using Fanex.NAP.FS.Library.DTO;
+    using System.Collections.Generic;
+
+    public class FraudCaseService
     {
         public IEnumerable<FraudCase> Get(int? isInternal, int? isActive, int environment)
         {

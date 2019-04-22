@@ -1,8 +1,5 @@
 ﻿using EasyNetQ;
 using EasyNetQ.Topology;
-using System;
-using System.Threading.Tasks;
-using System.Collections.Generic;
 
 namespace Fanex.NAP.FS.Queue
 {
@@ -45,13 +42,8 @@ namespace Fanex.NAP.FS.Queue
 
         public EasyNetQ CreateBus()
         {
-            var connectionString = string.Format(
-               "host={0};virtualHost={1};prefetchcount={2};username={3};password={4}",
-               this.Host,
-               this.VirtualHost,
-               this.PrefetchCount,
-               this.Username,
-               this.Password);
+            var connectionString =
+                $"host={this.Host};virtualHost={this.VirtualHost};prefetchcount={this.PrefetchCount};username={this.Username};password={this.Password}";
 
             if(Bus == null)
             {
@@ -68,16 +60,14 @@ namespace Fanex.NAP.FS.Queue
 
         public EasyNetQ DeclareExchange(string exchangeName)
         {
-            if (!string.IsNullOrWhiteSpace(exchangeName))
-            {
-                Exchange = AdvanceBus.ExchangeDeclare(exchangeName, ExchangeType.Direct);
+            if (string.IsNullOrWhiteSpace(exchangeName)) return this;
+            Exchange = AdvanceBus.ExchangeDeclare(exchangeName, ExchangeType.Direct);
 
-                if(Exchange != null)
-                { 
-                    this.ExchangeName = Exchange.Name;
-                }
-            }             
-            
+            if(Exchange != null)
+            { 
+                this.ExchangeName = Exchange.Name;
+            }
+
             return this;
         }
 
@@ -90,16 +80,14 @@ namespace Fanex.NAP.FS.Queue
 
         public EasyNetQ DeclareQueue(string queueName)
         {
-            if(!string.IsNullOrWhiteSpace(queueName))
-            {
-                this.Queue = AdvanceBus.QueueDeclare(queueName);
+            if (string.IsNullOrWhiteSpace(queueName)) return this;
+            this.Queue = AdvanceBus.QueueDeclare(queueName);
 
-                if(this.Queue != null)
-                {
-                    this.QueueName = this.Queue.Name;
-                }
+            if(this.Queue != null)
+            {
+                this.QueueName = this.Queue.Name;
             }
-            
+
             return this;
         }
 

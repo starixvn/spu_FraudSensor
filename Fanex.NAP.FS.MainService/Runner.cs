@@ -16,26 +16,26 @@
     {
         private IDisposable _server = null;
 
-        private string projectName = "Fraud Sensor Service";
+        private const string ProjectName = "Fraud Sensor Service";
 
-        private static Queue.EasyNetQ _rabbitMQ;
-        private readonly LetstalkService letstalkService;
+        private static Queue.EasyNetQ _rabbitMq;
+        private readonly LetstalkService _letstalkService;
 
         public Runner()
         {
             InitializeComponent();
 
-            _rabbitMQ = new Queue.EasyNetQ(AppSetting.Host + ":" + AppSetting.Post,
+            _rabbitMq = new Queue.EasyNetQ(AppSetting.Host + ":" + AppSetting.Post,
                 AppSetting.VirtualHost,
                 AppSetting.PrefetchCount,
                 AppSetting.UserName,
                 AppSetting.Password);
 
-            _rabbitMQ
+            _rabbitMq
                 .CreateBus()
                 .DeclareExchange(AppSetting.Exchange);
 
-            letstalkService = new LetstalkService();
+            _letstalkService = new LetstalkService();
         }
 
         protected override void OnStart(string[] args)
@@ -44,42 +44,42 @@
             {
                 GetFraudCase();
 
-                var localIp = GetLocalIPAddress();
+                var localIp = GetLocalIpAddress();
 
                 var startOptions = new StartOptions();
-                startOptions.Urls.Add(string.Format("http://{0}:{1}", localIp, AppSetting.HeartBeatPort));
-                startOptions.Urls.Add(string.Format("http://{0}:{1}", "localhost", AppSetting.HeartBeatPort));
-                startOptions.Urls.Add(string.Format("http://{0}:{1}", "127.0.0.1", AppSetting.HeartBeatPort));
+                startOptions.Urls.Add($"http://{localIp}:{AppSetting.HeartBeatPort}");
+                startOptions.Urls.Add($"http://localhost:{AppSetting.HeartBeatPort}");
+                startOptions.Urls.Add($"http://127.0.0.1:{AppSetting.HeartBeatPort}");
        
                 _server = WebApp.Start<Startup>(startOptions);
 
-                LogService.Info($"{projectName} - Main service has been started.");
+                LogService.Info($"{ProjectName} - Main service has been started.");
 
-                letstalkService.Info(projectName, "Main service has been started");
+                _letstalkService.Info(ProjectName, "Main service has been started");
 
             }
             catch (Exception ex)
             {
-                LogService.Error($"{projectName} - Main Service - Load Fraud Case - Exception: {ex.Message}");
+                LogService.Error($"{ProjectName} - Main Service - Load Fraud Case - Exception: {ex.Message}");
             }
         }
 
         protected override void OnStop()
         {
-            _rabbitMQ.Dispose();
+            _rabbitMq.Dispose();
             _server.Dispose();
 
-            LogService.Info($"{projectName} - Main service has been stopped.");
-            letstalkService.Info(projectName, "Main service has been stopped");
+            LogService.Info($"{ProjectName} - Main service has been stopped.");
+            _letstalkService.Info(ProjectName, "Main service has been stopped");
         }
 
         protected override void OnShutdown()
         {
-            _rabbitMQ.Dispose();
+            _rabbitMq.Dispose();
             _server.Dispose();
 
-            LogService.Info($"{projectName} - Main service has been shut down.");
-            letstalkService.Info(projectName, "Main service has been shut down");
+            LogService.Info($"{ProjectName} - Main service has been shut down.");
+            _letstalkService.Info(ProjectName, "Main service has been shut down");
         }
 
         private void GetFraudCase()
@@ -90,40 +90,34 @@
 
             foreach (var fraudCase in fraudCases)
             {
-                if (fraudCase.IsActive)
+                if (!fraudCase.IsActive) continue;
+                var fraudCaseName = Enum.GetName(typeof(FraudCaseId), fraudCase.FraudCaseId);
+
+                if (string.IsNullOrWhiteSpace(fraudCaseName)) continue;
+                _rabbitMq
+                    .DeclareQueue(fraudCaseName)
+                    .DeclareRoutingKey(fraudCaseName)
+                    .Bind();
+
+                if (string.IsNullOrWhiteSpace(_rabbitMq.QueueName)) continue;
+                var message = new Message<FraudCaseMessage>(new FraudCaseMessage
                 {
-                    var fraudCaseName = Enum.GetName(typeof(FraudCaseId), fraudCase.FraudCaseId);
+                    Action = Model.Action.Activating,
+                    Id = fraudCase.FraudCaseId,
+                    Name = fraudCase.FraudCaseName,
+                    Message = "Message has been sent at" + DateTime.Now
+                }, new MessageProperties { DeliveryMode = 2, Priority = 9 });
 
-                    if (!string.IsNullOrWhiteSpace(fraudCaseName))
-                    {
-                        _rabbitMQ
-                            .DeclareQueue(fraudCaseName)
-                            .DeclareRoutingKey(fraudCaseName)
-                            .Bind();
+                var log = $"{ProjectName} - Load Fraud Case - Queue: {_rabbitMq.QueueName}, RoutingKey: {_rabbitMq.RoutingKey}, Exchange: {_rabbitMq.ExchangeName}";
 
-                        if (!string.IsNullOrWhiteSpace(_rabbitMQ.QueueName))
-                        {
-                            var message = new Message<FraudCaseMessage>(new FraudCaseMessage
-                            {
-                                Action = Model.Action.Activating,
-                                Id = fraudCase.FraudCaseId,
-                                Name = fraudCase.FraudCaseName,
-                                Message = "Message has been sent at" + DateTime.Now
-                            }, new MessageProperties { DeliveryMode = 2, Priority = 9 });
-
-                            var log = $"{projectName} - Load Fraud Case - Queue: {_rabbitMQ.QueueName}, RoutingKey: {_rabbitMQ.RoutingKey}, Exchange: {_rabbitMQ.ExchangeName}";
-
-                            _rabbitMQ.AdvanceBus.PublishAsync(_rabbitMQ.Exchange, _rabbitMQ.RoutingKey, false, message);
+                _rabbitMq.AdvanceBus.PublishAsync(_rabbitMq.Exchange, _rabbitMq.RoutingKey, false, message);
 #if DEBUG
-                            Console.WriteLine(log);
+                Console.WriteLine(log);
 #endif
-                        }
-                    }
-                }
             }
         }
 
-        private string GetLocalIPAddress()
+        private static string GetLocalIpAddress()
         {
             var host = Dns.GetHostEntry(Dns.GetHostName());
             foreach (var ip in host.AddressList)

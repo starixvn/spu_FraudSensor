@@ -1,15 +1,11 @@
-﻿using Fanex.LetstalkService.Client;
-using Fanex.LetstalkService.Core.Models;
-using Fanex.LetstalkService.Core.Services;
-using Fanex.NAP.FS.Core;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Fanex.NAP.FS.Service
+﻿namespace Fanex.NAP.FS.Service
 {
+    using Fanex.LetstalkService.Client;
+    using Fanex.LetstalkService.Core.Models;
+    using Fanex.LetstalkService.Core.Services;
+    using Fanex.NAP.FS.Core;
+    using System.Collections.Generic;
+
     public class LetstalkService
     {
         private LetstalkClientService letstalkService;

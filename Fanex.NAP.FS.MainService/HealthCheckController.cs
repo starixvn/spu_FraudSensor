@@ -1,37 +1,36 @@
-﻿using Fanex.Logging;
-using System.Web.Http;
-namespace Fanex.NAP.FS.MainService
+﻿namespace Fanex.NAP.FS.MainService
 {
-    using System.Threading;
+    using EasyNetQ;
+    using Fanex.Logging;
+    using Fanex.NAP.FS.Core;
+    using Fanex.NAP.FS.Library.DTO;
+    using Fanex.NAP.FS.Library.Models;
+    using Fanex.NAP.FS.Model;
+    using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Diagnostics;
-    using System;
-    using EasyNetQ;
-    using Fanex.NAP.FS.Model;
-    using Fanex.NAP.FS.Library.Models;
-    using Fanex.NAP.FS.Core;
+    using System.Threading;
     using System.Threading.Tasks;
-    using Fanex.NAP.FS.Library.DTO;
+    using System.Web.Http;
 
     public class HealthCheckController : ApiController
     {
-        private static List<FraudCaseHealth> lstFCHealth;
-        private static Queue.EasyNetQ _rabbitMQ;
-        private static readonly Service.LetstalkService letstalkService;
-        static int maximumLetstalkConfig = 5;
+        private static readonly List<FraudCaseHealth> LstFcHealth;
+        private static readonly Queue.EasyNetQ RabbitMq;
+        private static readonly Service.LetstalkService LetstalkService;
+        private const int MaximumLetstalkConfig = 5;
 
         static HealthCheckController()
         {
-            letstalkService = new Service.LetstalkService();
-            lstFCHealth = new List<FraudCaseHealth>();
-            _rabbitMQ = new Queue.EasyNetQ(AppSetting.Host + ":" + AppSetting.Post,
+            LetstalkService = new Service.LetstalkService();
+            LstFcHealth = new List<FraudCaseHealth>();
+            RabbitMq = new Queue.EasyNetQ(AppSetting.Host + ":" + AppSetting.Post,
                 AppSetting.VirtualHost,
                 AppSetting.PrefetchCount,
                 AppSetting.UserName,
                 AppSetting.Password);
 
-            _rabbitMQ
+            RabbitMq
                 .CreateBus()
                 .DeclareExchange(AppSetting.Exchange);
 
@@ -44,7 +43,7 @@ namespace Fanex.NAP.FS.MainService
         {
             var fraudCaseName = Enum.GetName(typeof(FraudCaseId), fraudcaseid);
 
-            var fcHealth = lstFCHealth.Where(f => f.FraudCaseId == fraudcaseid).FirstOrDefault();
+            var fcHealth = LstFcHealth.Where(f => f.FraudCaseId == fraudcaseid).FirstOrDefault();
             if (fcHealth == null)
             {
                 var fraudcase = new FraudCaseHealth()
@@ -57,7 +56,7 @@ namespace Fanex.NAP.FS.MainService
                     LetstalkCurrentTimes = 1
                 };
 
-                lstFCHealth.Add(fraudcase);
+                LstFcHealth.Add(fraudcase);
             }
             else
             {
@@ -67,16 +66,13 @@ namespace Fanex.NAP.FS.MainService
                 fcHealth.LetstalkCurrentTimes = 1;
             }
 
-            if (!status)
-            {
-                var bodyMessage = $"Service name: {fraudCaseName} - Status: {status} - Message: {message} - Exception: {exception}";
+            if (status) return;
+            var bodyMessage = $"Service name: {fraudCaseName} - Status: {status} - Message: {message} - Exception: {exception}";
 #if DEBUG
-                System.Console.WriteLine(bodyMessage);
+            System.Console.WriteLine(bodyMessage);
 #else
                 LogService.Error(bodyMessage);
 #endif
-
-            }
 
         }
 
@@ -90,32 +86,27 @@ namespace Fanex.NAP.FS.MainService
         {
             var fraudCaseService = new Service.FraudCaseService();
 
-            if (!string.IsNullOrWhiteSpace(fraudCase.FraudCaseName))
+            if (string.IsNullOrWhiteSpace(fraudCase.FraudCaseName)) return;
+            RabbitMq
+                .DeclareQueue(fraudCase.FraudCaseName)
+                .DeclareRoutingKey(fraudCase.FraudCaseName)
+                .Bind();
+
+            if (string.IsNullOrWhiteSpace(RabbitMq.QueueName)) return;
+            var message = new Message<FraudCaseMessage>(new FraudCaseMessage
             {
-                _rabbitMQ
-                    .DeclareQueue(fraudCase.FraudCaseName)
-                    .DeclareRoutingKey(fraudCase.FraudCaseName)
-                    .Bind();
+                Action = Model.Action.Retry,
+                Id = fraudCase.FraudCaseId,
+                Name = fraudCase.FraudCaseName,
+                Message = "Message is sent at" + DateTime.Now
+            }, new MessageProperties { DeliveryMode = 2, Priority = 9 });
 
-                if (!string.IsNullOrWhiteSpace(_rabbitMQ.QueueName))
-                {
-                    var message = new Message<FraudCaseMessage>(new FraudCaseMessage
-                    {
-                        Action = Model.Action.Retry,
-                        Id = fraudCase.FraudCaseId,
-                        Name = fraudCase.FraudCaseName,
-                        Message = "Message is sent at" + DateTime.Now
-                    }, new MessageProperties { DeliveryMode = 2, Priority = 9 });
+            var log = $"Reload Fraud Case - Queue: {RabbitMq.QueueName}, RoutingKey: {RabbitMq.RoutingKey}, Exchange: {RabbitMq.ExchangeName}";
 
-                    var log = $"Reload Fraud Case - Queue: {_rabbitMQ.QueueName}, RoutingKey: {_rabbitMQ.RoutingKey}, Exchange: {_rabbitMQ.ExchangeName}";
-
-                    _rabbitMQ.AdvanceBus.PublishAsync(_rabbitMQ.Exchange, _rabbitMQ.RoutingKey, false, message);
+            RabbitMq.AdvanceBus.PublishAsync(RabbitMq.Exchange, RabbitMq.RoutingKey, false, message);
 #if DEBUG
-                    Console.WriteLine(log);
+            Console.WriteLine(log);
 #endif
-                }
-
-            }
         }
 
         private static async void CheckFraudCaseStatus()
@@ -123,7 +114,7 @@ namespace Fanex.NAP.FS.MainService
             do
             {
                 var startTime = DateTime.Now;
-                Parallel.ForEach(lstFCHealth, fcHealth =>
+                Parallel.ForEach(LstFcHealth, fcHealth =>
                 {
                     var fraudCaseService = new Service.FraudCaseService();
                     var timeout = fcHealth.TimeOut;
@@ -137,7 +128,7 @@ namespace Fanex.NAP.FS.MainService
                         {
                             FraudCaseId = fcHealth.FraudCaseId,
                             FraudCaseName = fraudCaseName,
-                            IsActive = lstFCHealth.Where(f => f.FraudCaseId == fcHealth.FraudCaseId).FirstOrDefault().IsActive
+                            IsActive = LstFcHealth.Where(f => f.FraudCaseId == fcHealth.FraudCaseId).FirstOrDefault().IsActive
                         };
                     }
                     else
@@ -173,9 +164,9 @@ namespace Fanex.NAP.FS.MainService
 
         private static void SendMessageToLetstalk(int currentTimes, string message)
         {
-            if (currentTimes <= maximumLetstalkConfig)
+            if (currentTimes <= MaximumLetstalkConfig)
             {
-                letstalkService.Error(message);
+                LetstalkService.Error(message);
             }
         }
     }
