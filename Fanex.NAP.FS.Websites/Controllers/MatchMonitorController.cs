@@ -170,10 +170,10 @@
         }
 
         [HttpPost]
-        public JsonResult GetFraudCaseCustomerDetails(GetArbitrageCustomerCriteria criteria)
+        public JsonResult GetFraudCaseArbitrageCustomerDetails(GetArbitrageCustomerCriteria criteria)
         {
             criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
-            var data = _fraudCaseDetailService.GetCustomerArbitrageDetails(criteria);
+            var data = _fraudCaseDetailService.GetArbitrageCustomerDetails(criteria);
 
             return Json(data, JsonRequestBehavior.AllowGet);
         }

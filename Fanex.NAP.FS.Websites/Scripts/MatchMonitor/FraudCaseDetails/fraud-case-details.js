@@ -158,7 +158,7 @@
     }
 
     function loadCustomerGridArbitrage(criteria) {
-        var url = common.modifyRelativeUrl("/MatchMonitor/GetFraudCaseCustomerDetails");
+        var url = common.modifyRelativeUrl("/MatchMonitor/GetFraudCaseArbitrageCustomerDetails");
 
         $.post(url, criteria, function (json) {
             $("#customers").text(`By Customers (${json.length})`);

@@ -137,7 +137,7 @@
             }
         }
 
-        public IEnumerable<CustomerDetails> GetCustomerArbitrageDetails(GetArbitrageCustomerCriteria criteria)
+        public IEnumerable<CustomerDetails> GetArbitrageCustomerDetails(GetArbitrageCustomerCriteria criteria)
         {
             IEnumerable<CustomerDetails> data;            
 
@@ -802,7 +802,7 @@
         {
             var txtResult = new StringBuilder();
 
-            var arbitrageCustomers = GetCustomerArbitrageDetails(criteria);
+            var arbitrageCustomers = GetArbitrageCustomerDetails(criteria);
             var info = GetInfo(criteria.MatchId, (int)FraudCaseId.Arbitrage, criteria.EventDate);
 
             //append fraud case detail
