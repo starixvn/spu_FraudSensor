@@ -1,14 +1,9 @@
-﻿using Fanex.Data;
-using Fanex.NAP.FS.Library.Criteria.FraudSensorTask;
-using Fanex.NAP.FS.Library.DTO;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Fanex.NAP.FS.Service
+﻿namespace Fanex.NAP.FS.Service
 {
+    using Fanex.Data;
+    using Fanex.NAP.FS.Library.Criteria.FraudSensorTask;
+    using System.Collections.Generic;
+
     public class BetsNearGoalService : IExecutorService
     {
         public string MatchIds { get; set; }

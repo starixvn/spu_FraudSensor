@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Fanex.NAP.FS.Model
+﻿namespace Fanex.NAP.FS.Model
 {
     public enum Environment
     {
         Local = 1,
+        // ReSharper disable once InconsistentNaming
         UAT = 2,
         Production = 3
     }

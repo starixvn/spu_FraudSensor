@@ -1,86 +1,81 @@
 ﻿namespace Fanex.NAP.FS.BetNearGoalService
 {
-    using Fanex.NAP.FS.Service;
-    using Fanex.NAP.FS.Library.Models;
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel;
-    using System.Data;
-    using System.Diagnostics;
-    using System.Linq;
-    using System.ServiceProcess;
-    using System.Text;
-    using System.Threading.Tasks;
-    using Fanex.NAP.FS.Model;
     using Fanex.Logging;
     using Fanex.Logging.Extensions;
     using Fanex.Logging.Extensions.Database;
     using Fanex.NAP.FS.Library.DTO;
+    using Fanex.NAP.FS.Library.Models;
+    using Fanex.NAP.FS.Model;
+    using Fanex.NAP.FS.Service;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.ServiceProcess;
+    using System.Threading.Tasks;
 
     public partial class Runner : ServiceBase
     {
-        static string serviceName = "Bets Near Goal Service";
-        static string projectName = "Fraud Sensor Service";
-        static BetsNearGoalService betNearGoalService;
+        private const string ProjectName = "Fraud Sensor Service";
+        private static BetsNearGoalService _betNearGoalService;
 
         private IEnumerable<Match> _matches;
         private readonly List<Task> _threads;
-        private MicroService baseService;
-        private bool isRunning = false;       
+        private readonly MicroService _baseService;
+        private bool _isRunning = false;       
 
         public Runner()
         {
             _matches = new List<Match>();
             _threads = new List<Task>();
-            baseService = new MicroService(serviceName, FraudCaseId.BetsNearGoal);
-            betNearGoalService = new BetsNearGoalService();
+            _baseService = new MicroService(base.ServiceName, FraudCaseId.BetsNearGoal);
+            _betNearGoalService = new BetsNearGoalService();
 
             InitializeComponent();
         }
 
         protected override void OnStart(string[] args)
         {
-            baseService.Start(Execute);
+            _baseService.Start(Execute);
         }
 
         protected override void OnStop()
         {
-            baseService.Hold();
+            _baseService.Hold();
         }
 
-        private void Execute(Object source, System.Timers.ElapsedEventArgs e)
+        private void Execute(object source, System.Timers.ElapsedEventArgs e)
         {
             var exception = string.Empty;
             var status = true;
 
             try
             {
-                Report(status, exception, "Fraud Case is executing at " + DateTime.Now);
+                Report(true, exception, "Fraud Case is executing at " + DateTime.Now);
 
-                var isUM = baseService.CheckUM();
+                var isUm = _baseService.CheckUM();
 
-                if (!isUM)
+                if (!isUm)
                 {
-                    if (isRunning) return;
+                    if (_isRunning) return;
 #if DEBUG
                     Console.WriteLine("-> Fraud Case is executing at " + DateTime.Now);
 #endif
-                    isRunning = true;
+                    _isRunning = true;
 
                     CleanResult();
                     Precondition();
                     Rule();
 
-                    isRunning = false;
+                    _isRunning = false;
 #if DEBUG
                     Console.WriteLine("=> Fraud Case is executed at " + DateTime.Now);
 #endif                   
-                    LogService.Info($"{projectName} - {serviceName} - Fraudcase is executed.");
+                    LogService.Info($"{ProjectName} - {base.ServiceName} - Fraudcase is executed.");
                 }
             }
             catch (Exception ex)
             {
-                isRunning = false;
+                _isRunning = false;
                 exception = ex.Message;
                 status = false;
 
@@ -88,63 +83,56 @@
                     .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
                     .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
 
-                LogService.Error($"{projectName} - {serviceName} - Execute Exeption {logMessage}");
+                LogService.Error($"{ProjectName} - {base.ServiceName} - Execute Exeption {logMessage}");
             }
 
             Report(status, exception, "Fraud Case is executed at " + DateTime.Now);
         }
 
-        void Report(bool status, string exception, string message)
+        private void Report(bool status, string exception, string message)
         {
             var model = new ReportModel()
             {
-                ServiceName = serviceName,
+                ServiceName = base.ServiceName,
                 Exception = exception,
                 Status = status,
-                Timeout = baseService.FraudCase.FraudCaseInterval,
-                IsActive = baseService.FraudCase.IsActive,
+                Timeout = _baseService.FraudCase.FraudCaseInterval,
+                IsActive = _baseService.FraudCase.IsActive,
                 Message = message
             };
 
-            baseService.Report(model);
+            _baseService.Report(model);
         }
 
         private void CleanResult()
         {
-            if (_matches != null && _matches.Any())
-            {
-                _matches = Enumerable.Empty<Match>();
+            if (_matches == null || !_matches.Any()) return;
+            _matches = Enumerable.Empty<Match>();
 
-                if (_threads != null)
-                {
-                    _threads.Clear();
-                }
-            }
+            _threads?.Clear();
         }
 
         private void Precondition()
         {
-            _matches = betNearGoalService.PreCondition<Match>();
+            _matches = _betNearGoalService.PreCondition<Match>();
         }
 
         private void Rule()
         {
-            ExecuteBySaparatedThreads();
+            ExecuteBySeparatedThreads();
         }
 
-        private void ExecuteBySaparatedThreads()
+        private void ExecuteBySeparatedThreads()
         {
-            if (_matches != null)
+            if (_matches == null) return;
+            foreach (var match in _matches)
             {
-                foreach (var match in _matches)
-                {
-                    var thread = ExecuteSingle(match);
+                var thread = ExecuteSingle(match);
 
-                    _threads.Add(thread);
-                }
-
-                Task.WaitAll(_threads.ToArray());
+                _threads.Add(thread);
             }
+
+            Task.WaitAll(_threads.ToArray());
         }
 
         private Task ExecuteSingle(Match match)
@@ -153,8 +141,8 @@
             {
                 try
                 {
-                    betNearGoalService.MatchIds = ((Match)m).MatchId.ToString();
-                    betNearGoalService.Rule();                   
+                    _betNearGoalService.MatchIds = ((Match)m).MatchId.ToString();
+                    _betNearGoalService.Rule();                   
                 }
                 catch (Exception ex)
                 {
@@ -162,7 +150,7 @@
                     .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
                     .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
 
-                    LogService.Error($"{projectName} - {serviceName} - ExecuteSingle Exeption {logMessage}");
+                    LogService.Error($"{ProjectName} - {base.ServiceName} - ExecuteSingle Exeption {logMessage}");
                 }
             }, match);
 

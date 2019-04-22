@@ -1,22 +1,19 @@
-﻿using Fanex.Logging;
-using Fanex.NAP.FS.Core;
-using Fanex.NAP.FS.Library.DTO;
-using Fanex.NAP.FS.Library.Models;
-using Fanex.NAP.FS.Model;
-using ONEbook.UM;
-using ONEbook.UM.AspNetMVC.Configuration;
-using ONEbook.UM.Helpers;
-using ONEbook.UM.Services;
-using RestSharp;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Timers;
-
-namespace Fanex.NAP.FS.Service
+﻿namespace Fanex.NAP.FS.Service
 {
+    using Fanex.Logging;
+    using Fanex.NAP.FS.Core;
+    using Fanex.NAP.FS.Library.DTO;
+    using Fanex.NAP.FS.Library.Models;
+    using Fanex.NAP.FS.Model;
+    using ONEbook.UM;
+    using ONEbook.UM.AspNetMVC.Configuration;
+    using ONEbook.UM.Helpers;
+    using ONEbook.UM.Services;
+    using RestSharp;
+    using System;
+    using System.Threading;
+    using System.Timers;
+
     public class MicroService
     {
         private static Queue.EasyNetQ _rabbitMQ;

@@ -16,115 +16,112 @@
 
     public partial class Runner : ServiceBase
     {
-        static string serviceName = "Big Stake Near Goal Service";
-        static string projectName = "Fraud Sensor Service";
+        private const string ProjectName = "Fraud Sensor Service";
 
-        static Service.BigStakeNearGoalService bigStakeNearGoalService;
+        private static Service.BigStakeNearGoalService _bigStakeNearGoalService;
         private IEnumerable<Match> _matches;
-        private readonly List<Task> _threads;
-        private MicroService baseService;
-        private bool isRunning = false;
+        public readonly List<Task> Threads;
+        private readonly MicroService _baseService;
+        private bool _isRunning = false;
 
         public Runner()
         {
             _matches = new List<Match>();
-            _threads = new List<Task>();
-            bigStakeNearGoalService = new Service.BigStakeNearGoalService();
-            baseService = new MicroService(serviceName, FraudCaseId.BSNG);
+            Threads = new List<Task>();
+            _bigStakeNearGoalService = new Service.BigStakeNearGoalService();
+            _baseService = new MicroService(base.ServiceName, FraudCaseId.BSNG);
 
             InitializeComponent();
         }
 
         protected override void OnStart(string[] args)
         {
-            baseService.Start(Execute);
+            _baseService.Start(Execute);
         }
 
         protected override void OnStop()
         {
-            baseService.Hold();
+            _baseService.Hold();
         }
 
-        private void Execute(Object source, System.Timers.ElapsedEventArgs e)
+        private void Execute(object source, System.Timers.ElapsedEventArgs e)
         {
             var exception = string.Empty;
             var status = true;
             
             try
             {
-                Report(status, exception, "Fraud Case is executing at " + DateTime.Now);
+                Report(true, exception, "Fraud Case is executing at " + DateTime.Now);
 
-                var isUM = baseService.CheckUM();
-                if (!isUM)
+                var isUm = _baseService.CheckUM();
+                if (!isUm)
                 {
 
 #if DEBUG
                     Console.WriteLine("-> Fraud Case is executing at " + DateTime.Now);
 #endif
-                    if (isRunning) return;
+                    if (_isRunning) return;
 
-                    isRunning = true;
+                    _isRunning = true;
 
                     CleanResult();
                     Precondition();
                     Rule();
 
-                    isRunning = false;
+                    _isRunning = false;
 
 #if DEBUG
                     Console.WriteLine("=> Fraud Case is executed at " + DateTime.Now);
 #endif
-                    LogService.Info($"{projectName} - {serviceName} - Fraudcase is executed.");
+                    LogService.Info($"{ProjectName} - {ServiceName} - Fraudcase is executed.");
                 }
             }
             catch (Exception ex)
             {
                 exception = ex.Message;
                 status = false;
-                isRunning = false;
+                _isRunning = false;
 
                 var logMessage = new LogMessage(ex.Message)
                     .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
                     .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
 
-                LogService.Error($"{projectName} - {serviceName} - Execute Exeption {logMessage}");
+                LogService.Error($"{ProjectName} - {ServiceName} - Execute Exeption {logMessage}");
             }
 
             Report(status, exception, "Fraud Case is executed at " + DateTime.Now);
         }
 
-        void Precondition()
+        private void Precondition()
         {
-            _matches = bigStakeNearGoalService.PreCondition<Match>();
+            _matches = _bigStakeNearGoalService.PreCondition<Match>();
         }
 
-        void Rule()
+        private void Rule()
         {
-            ExecuteBySaparatedThreads();
+            ExecuteBySeparatedThreads();
         }
 
-        void CleanResult()
+        private void CleanResult()
         {
-            if (_matches != null && _matches.Any())
-            {
-                _matches = Enumerable.Empty<Match>();
-                _threads.Clear();
-            }
+            if (_matches == null || !_matches.Any()) return;
+            _matches = Enumerable.Empty<Match>();
+            Threads.Clear();
         }
 
-        void Report(bool status, string exception, string message)
+        private void Report(bool status, string exception, string message)
         {
             var model = new ReportModel()
             {
-                ServiceName = serviceName,
+                ServiceName = ServiceName,
                 Exception = exception,                
                 Status = status,
-                IsActive = baseService.FraudCase.IsActive,
-                Timeout = baseService.FraudCase.FraudCaseInterval,
+                IsActive = _baseService.FraudCase.IsActive,
+                Timeout = _baseService.FraudCase.FraudCaseInterval,
                 Message  = message
             };
 
-            baseService.Report(model);
+            _baseService.Report(model);
         }
 
         private Task ExecuteSingle(Match match)
@@ -134,8 +131,8 @@
                 try
                 {
                     var matchIds = ((Match)m).MatchId.ToString();
-                    bigStakeNearGoalService.MatchIds = matchIds;
-                    bigStakeNearGoalService.Rule();
+                    _bigStakeNearGoalService.MatchIds = matchIds;
+                    _bigStakeNearGoalService.Rule();
                 }
                 catch (Exception ex)
                 {
@@ -143,7 +140,7 @@
                     .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
                     .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
 
-                    LogService.Error($"{projectName} - {serviceName} - ExecuteSingle Exeption {logMessage}");
+                    LogService.Error($"{ProjectName} - {ServiceName} - ExecuteSingle Exeption {logMessage}");
                 }
             }, match);
 
@@ -155,8 +152,8 @@
             try
             {
                 var matchIds = ((Match)match).MatchId.ToString();
-                bigStakeNearGoalService.MatchIds = matchIds;
-                bigStakeNearGoalService.Rule();
+                _bigStakeNearGoalService.MatchIds = matchIds;
+                _bigStakeNearGoalService.Rule();
             }
             catch (Exception ex)
             {
@@ -164,28 +161,26 @@
                 .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
                 .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
 
-                LogService.Error($"{projectName} - {serviceName} - ExecuteSingle Exeption {logMessage}");
+                LogService.Error($"{ProjectName} - {ServiceName} - ExecuteSingle Exeption {logMessage}");
             }
 
         }
 
-        private void ExecuteBySaparatedThreads()
+        private void ExecuteBySeparatedThreads()
         {
-            if (_matches != null)
+            if (_matches == null) return;
+            foreach (var match in _matches)
             {
-                foreach (var match in _matches)
-                {
-                    // var thread = ExecuteSingle(match);
+                // var thread = ExecuteSingle(match);
 
-                    // _threads.Add(thread);
+                // _threads.Add(thread);
 
-                    Execute(match);
-                }
-
-                //Task.WaitAll(_threads.ToArray());
-
-                Thread.Sleep(TimeSpan.FromSeconds(2));
+                Execute(match);
             }
+
+            //Task.WaitAll(_threads.ToArray());
+
+            Thread.Sleep(TimeSpan.FromSeconds(2));
         }
     }
 }

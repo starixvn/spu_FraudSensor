@@ -1,122 +1,121 @@
-﻿using Fanex.Logging;
-using Fanex.Logging.Extensions;
-using Fanex.Logging.Extensions.Database;
-using Fanex.NAP.FS.Library.Models;
-using Fanex.NAP.FS.Model;
-using Fanex.NAP.FS.Service;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Diagnostics;
-using System.Linq;
-using System.ServiceProcess;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Fanex.NAP.FS.DailyDataCaptureService
+﻿namespace Fanex.NAP.FS.DailyDataCaptureService
 {
+    using Fanex.Logging;
+    using Fanex.Logging.Extensions;
+    using Fanex.Logging.Extensions.Database;
+    using Fanex.NAP.FS.Library.Models;
+    using Fanex.NAP.FS.Model;
+    using Fanex.NAP.FS.Service;
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel;
+    using System.Data;
+    using System.Diagnostics;
+    using System.Linq;
+    using System.ServiceProcess;
+    using System.Text;
+    using System.Threading.Tasks;
+
     public partial class Runner : ServiceBase
     {
-        static string serviceName = "Daily Data Capture Service";
-        static string projectName = "Fraud Sensor Service";
+        private const string ProjectName = "Fraud Sensor Service";
 
-        static Service.DailyDataCaptureService dailyDataCaptureService;
-        private MicroService baseService;
-        
-        private bool isRunning = false;
+        static Service.DailyDataCaptureService _dailyDataCaptureService;
+        private readonly MicroService _baseService;
+
+        private bool _isRunning = false;
 
         public Runner()
         {
-            baseService = new MicroService(serviceName, FraudCaseId.DailyDataCapture);
-            dailyDataCaptureService = new Service.DailyDataCaptureService();
+            _baseService = new MicroService(base.ServiceName, FraudCaseId.DailyDataCapture);
+            _dailyDataCaptureService = new Service.DailyDataCaptureService();
 
             InitializeComponent();
         }
 
         protected override void OnStart(string[] args)
         {
-            baseService.Start(Execute);
+            _baseService.Start(Execute);
         }
 
         protected override void OnStop()
         {
-            baseService.Hold();
+            _baseService.Hold();
         }
 
-        private void Execute(Object source, System.Timers.ElapsedEventArgs e)
+        private void Execute(object source, System.Timers.ElapsedEventArgs e)
         {
             var exception = string.Empty;
             var status = true;
 
             try
             {
-                Report(status, exception, "Fraud Case is executing at " + DateTime.Now);
+                Report(true, exception, "Fraud Case is executing at " + DateTime.Now);
 
-                var isUM = baseService.CheckUM();
+                var isUm = _baseService.CheckUM();
 
-                if (!isUM)
+                if (!isUm)
                 {
-                    if (isRunning) return;
+                    if (_isRunning) return;
 #if DEBUG
                     Console.WriteLine("-> Fraud Case is executing at " + DateTime.Now);
 #endif
-                    isRunning = true;
+                    _isRunning = true;
 
                     CleanResult();
                     Precondition();
                     Rule();
 
-                    isRunning = false;
+                    _isRunning = false;
 #if DEBUG
                     Console.WriteLine("=> Fraud Case is executed at " + DateTime.Now);
 #endif                   
-                    LogService.Info($"{projectName} - {serviceName} - Fraudcase is executed.");
+                    LogService.Info($"{ProjectName} - {base.ServiceName} - Fraudcase is executed.");
                 }
             }
             catch (Exception ex)
             {
-                isRunning = false;
+                _isRunning = false;
                 exception = ex.Message;
                 status = false;
 
                 var logMessage = new LogMessage(ex.Message)
                     .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex)).ToString();
 
-                LogService.Error($"{projectName} - {serviceName} - Execute Exeption {logMessage}");
+                LogService.Error($"{ProjectName} - {base.ServiceName} - Execute Exeption {logMessage}");
             }
 
             Report(status, exception, "Fraud Case is executed at " + DateTime.Now);
         }
 
-        void Report(bool status, string exception, string message)
+       private void Report(bool status, string exception, string message)
         {
             var model = new ReportModel()
             {
-                ServiceName = serviceName,
+                ServiceName = base.ServiceName,
                 Exception = exception,
                 Status = status,
-                Timeout = baseService.FraudCase.FraudCaseInterval,
-                IsActive = baseService.FraudCase.IsActive,
+                Timeout = _baseService.FraudCase.FraudCaseInterval,
+                IsActive = _baseService.FraudCase.IsActive,
                 Message = message
             };
 
-            baseService.Report(model);
+            _baseService.Report(model);
         }
 
-        void CleanResult()
+       private static void CleanResult()
         {
 
         }
 
-        void Precondition()
+       private static void Precondition()
         {
 
         }
 
-        void Rule()
+       private static void Rule()
         {
-            dailyDataCaptureService.Rule();
+            _dailyDataCaptureService.Rule();
         }
     }
 }

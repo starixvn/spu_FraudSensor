@@ -6,36 +6,33 @@ using Fanex.NAP.FS.Core;
 using SharpRaven;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using System.ServiceProcess;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Fanex.NAP.FS.ArbitrageService
 {
-    static class Program
+    internal static class Program
     {
         /// <summary>
-        /// The main entry point for the application.
+        ///     The main entry point for the application.
         /// </summary>
         public static void Main(string[] args)
         {
             DbSettingProviderManager
-                   .StartNewSession()
-                   .Use(new ConnectionStringProvider20())
-                   .UseDefaultDbSettingProvider(AppSetting.AppData, false)
-                   .Run();
+                .StartNewSession()
+                .Use(new ConnectionStringProvider20())
+                .UseDefaultDbSettingProvider(AppSetting.AppData, false)
+                .Run();
 
             LogManager
-                     .SetDefaultLogCategory(AppSetting.FanexLogCategory)
-                     .Use(new List<ILogEngine>
-                     {
-                         new SentryLogging(new SentryEngineOptions
-                         {
-                             Dsn = new Dsn(AppSetting.SentryLogging)
-                         })
-                     });
+                .SetDefaultLogCategory(AppSetting.FanexLogCategory)
+                .Use(new List<ILogEngine>
+                {
+                    new SentryLogging(new SentryEngineOptions
+                    {
+                        Dsn = new Dsn(AppSetting.SentryLogging)
+                    })
+                });
 
             ServiceBase[] ServicesToRun;
             ServicesToRun = new ServiceBase[]
@@ -50,21 +47,15 @@ namespace Fanex.NAP.FS.ArbitrageService
                 const BindingFlags Flags = BindingFlags.Instance | BindingFlags.NonPublic;
                 var method = type.GetMethod("OnStart", Flags);
 
-                foreach (var service in ServicesToRun)
-                {
-                    method.Invoke(service, new object[] { args });
-                }
+                foreach (var service in ServicesToRun) method.Invoke(service, new object[] {args});
 
                 Console.WriteLine("Press any key to exit!");
                 Console.ReadLine();
 
-                foreach (var service in ServicesToRun)
-                {
-                    service.Stop();
-                }
+                foreach (var service in ServicesToRun) service.Stop();
             }
             else
-            { 
+            {
                 ServiceBase.Run(ServicesToRun);
             }
         }
