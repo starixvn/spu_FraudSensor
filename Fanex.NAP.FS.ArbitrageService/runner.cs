@@ -103,7 +103,6 @@ namespace Fanex.NAP.FS.ArbitrageService
                         .Distinct()
                         .Chunk(500)
                         .Select(custIds => GroupCustomer(custIds))
-                        .Where(x => x.IsCompleted)
                         .ToArray();
 
                     Task.WaitAll(tsk);
