@@ -92,22 +92,22 @@ namespace Fanex.NAP.FS.ArbitrageService
 
         private void GroupData(int matchId, IEnumerable<ArbitrageTicket> tickets)
         {
-            try
+            // ReSharper disable once PossibleMultipleEnumeration
+            if (tickets != null && tickets.Any())
             {
                 // ReSharper disable once PossibleMultipleEnumeration
-                if (tickets != null && tickets.Any())
+                var tsk = tickets
+                    .Select(t => t.CustId)
+                    .Distinct()
+                    .Chunk(500)
+                    .Select(GroupCustomer)
+                    .ToArray();
+
+                Task.WaitAll(tsk);
+
+                if (tsk.Any())
                 {
-                    // ReSharper disable once PossibleMultipleEnumeration
-                    var tsk = tickets
-                        .Select(t => t.CustId)
-                        .Distinct()
-                        .Chunk(500)
-                        .Select(custIds => GroupCustomer(custIds))
-                        .ToArray();
-
-                    Task.WaitAll(tsk);
-
-                    if (tsk.Any())
+                    try
                     {
                         LogService.Info($"{ProjectName} - {ServiceName} - Rule is executing.");
 
@@ -120,22 +120,24 @@ namespace Fanex.NAP.FS.ArbitrageService
 
                         LogService.Info($"{ProjectName} - {ServiceName} - Rule is executed.");
                     }
-                }
-                else
-                {
-                    LogService.Error(
-                        $"{ProjectName} - {ServiceName} - MatchId: {matchId} - Exeption: MatchIds({tickets.Count()}) is null.");
-                }
-            }
-            catch (Exception ex)
-            {
-                var logMessage = new LogMessage(ex.Message)
-                    .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
-                    .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
+                    catch (Exception ex)
+                    {
+                        var logMessage = new LogMessage(ex.Message)
+                            .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
+                            .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
 
-                LogService.Error(
-                    $"{ProjectName} - {ServiceName} - MatchId: {matchId} - GroupData Exeption: {logMessage}");
+                        LogService.Error(
+                            $"{ProjectName} - {ServiceName} - MatchId: {matchId} - GroupData Exeption: {logMessage}");
+                    }
+                }
             }
+            else
+            {
+                LogService.Error(
+                    $"{ProjectName} - {ServiceName} - MatchId: {matchId} - Exeption: MatchIds({tickets.Count()}) is null.");
+            }
+
+            
         }
 
         private async Task<IEnumerable<ArbitrageCustomer>> GroupCustomer(IEnumerable<int> custids)
