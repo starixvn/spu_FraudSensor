@@ -11,6 +11,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.ServiceProcess;
+    using System.Threading;
     using System.Threading.Tasks;
 
     public partial class Runner : ServiceBase
@@ -107,19 +108,28 @@
         private void CleanResult()
         {
             if (_matches == null || !_matches.Any()) return;
+
             _matches = Enumerable.Empty<Match>();
 
-            _threads?.Clear();
+            //_threads?.Clear();
         }
 
         private void Precondition()
         {
+            LogService.Info($"{ProjectName} - {ServiceName} - Precondition is executing.");
+
             _matches = _betNearGoalService.PreCondition<Match>();
+
+            LogService.Info($"{ProjectName} - {ServiceName} - Precondition is executed.");
         }
 
         private void Rule()
         {
+            LogService.Info($"{ProjectName} - {ServiceName} - Rule is executing.");
+
             ExecuteBySeparatedThreads();
+
+            LogService.Info($"{ProjectName} - {ServiceName} - Rule is executed.");
         }
 
         private void ExecuteBySeparatedThreads()
@@ -127,12 +137,32 @@
             if (_matches == null) return;
             foreach (var match in _matches)
             {
-                var thread = ExecuteSingle(match);
+               // var thread = ExecuteSingle(match);
 
-                _threads.Add(thread);
+               // _threads.Add(thread);
+               ExecuteSingleMatch(match);
             }
 
-            Task.WaitAll(_threads.ToArray());
+            Thread.Sleep(TimeSpan.FromSeconds(2));
+
+            // Task.WaitAll(_threads.ToArray());
+        }
+
+        private void ExecuteSingleMatch(Match match)
+        {
+            try
+            {
+                _betNearGoalService.MatchIds = match.MatchId.ToString();
+                _betNearGoalService.Rule();
+            }
+            catch (Exception ex)
+            {
+                var logMessage = new LogMessage(ex.Message)
+                    .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
+                    .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
+
+                LogService.Error($"{ProjectName} - {base.ServiceName} - ExecuteSingle Exeption {logMessage}");
+            }
         }
 
         private Task ExecuteSingle(Match match)

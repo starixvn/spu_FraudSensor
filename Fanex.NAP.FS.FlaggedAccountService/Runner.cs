@@ -146,7 +146,7 @@
             if (_matches == null || !_matches.Any()) return;
             _matches = Enumerable.Empty<Match>();
 
-            _threads?.Clear();
+            //_threads?.Clear();
         }
 
         private void Precondition()
