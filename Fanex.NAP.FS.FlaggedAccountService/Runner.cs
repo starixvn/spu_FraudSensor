@@ -91,10 +91,6 @@
                 if (!isUm)
                 {
                     if (_isRunning) return;
-#if DEBUG
-                    Console.WriteLine("-> Fraud Case is executing at " + DateTime.Now);
-#endif
-                    LogService.Info($"{ProjectName} - {ServiceName} - Fraudcase is begining for executing.");
 
                     _isRunning = true;
 
@@ -103,10 +99,7 @@
                     Rule();
 
                     _isRunning = false;
-#if DEBUG
-                    Console.WriteLine("=> Fraud Case is executed at " + DateTime.Now);
-#endif
-                    LogService.Info($"{ProjectName} - {ServiceName} - Fraudcase is executed.");
+
                 }
             }
             catch (Exception ex)

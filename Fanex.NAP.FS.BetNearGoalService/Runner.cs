@@ -17,6 +17,8 @@
     public partial class Runner : ServiceBase
     {
         private const string ProjectName = "Fraud Sensor Service";
+        private new const string ServiceName = "Bet Near Goal Service";
+
         private static BetsNearGoalService _betNearGoalService;
 
         private IEnumerable<Match> _matches;
@@ -28,7 +30,7 @@
         {
             _matches = new List<Match>();
             _threads = new List<Task>();
-            _baseService = new MicroService(base.ServiceName, FraudCaseId.BetsNearGoal);
+            _baseService = new MicroService(ServiceName, FraudCaseId.BetsNearGoal);
             _betNearGoalService = new BetsNearGoalService();
 
             InitializeComponent();
@@ -58,9 +60,7 @@
                 if (!isUm)
                 {
                     if (_isRunning) return;
-#if DEBUG
-                    Console.WriteLine("-> Fraud Case is executing at " + DateTime.Now);
-#endif
+
                     _isRunning = true;
 
                     CleanResult();
@@ -68,10 +68,6 @@
                     Rule();
 
                     _isRunning = false;
-#if DEBUG
-                    Console.WriteLine("=> Fraud Case is executed at " + DateTime.Now);
-#endif                   
-                    LogService.Info($"{ProjectName} - {base.ServiceName} - Fraudcase is executed.");
                 }
             }
             catch (Exception ex)
@@ -84,7 +80,7 @@
                     .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
                     .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
 
-                LogService.Error($"{ProjectName} - {base.ServiceName} - Execute Exeption {logMessage}");
+                LogService.Error($"{ProjectName} - {ServiceName} - Execute Exeption {logMessage}");
             }
 
             Report(status, exception, "Fraud Case is executed at " + DateTime.Now);
@@ -161,7 +157,7 @@
                     .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
                     .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
 
-                LogService.Error($"{ProjectName} - {base.ServiceName} - ExecuteSingle Exeption {logMessage}");
+                LogService.Error($"{ProjectName} - {ServiceName} - ExecuteSingle Exeption {logMessage}");
             }
         }
 
@@ -180,7 +176,7 @@
                     .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
                     .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
 
-                    LogService.Error($"{ProjectName} - {base.ServiceName} - ExecuteSingle Exeption {logMessage}");
+                    LogService.Error($"{ProjectName} - {ServiceName} - ExecuteSingle Exeption {logMessage}");
                 }
             }, match);
 

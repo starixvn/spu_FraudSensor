@@ -17,6 +17,7 @@
     public partial class Runner : ServiceBase
     {
         private const string ProjectName = "Fraud Sensor Service";
+        private new const string ServiceName = "Big Stake Near Goal Service";
 
         private static Service.BigStakeNearGoalService _bigStakeNearGoalService;
         private IEnumerable<Match> _matches;
@@ -29,7 +30,7 @@
             _matches = new List<Match>();
             Threads = new List<Task>();
             _bigStakeNearGoalService = new Service.BigStakeNearGoalService();
-            _baseService = new MicroService(base.ServiceName, FraudCaseId.BSNG);
+            _baseService = new MicroService(ServiceName, FraudCaseId.BSNG);
 
             InitializeComponent();
         }
@@ -57,9 +58,6 @@
                 if (!isUm)
                 {
 
-#if DEBUG
-                    Console.WriteLine("-> Fraud Case is executing at " + DateTime.Now);
-#endif
                     if (_isRunning) return;
 
                     _isRunning = true;
@@ -69,11 +67,6 @@
                     Rule();
 
                     _isRunning = false;
-
-#if DEBUG
-                    Console.WriteLine("=> Fraud Case is executed at " + DateTime.Now);
-#endif
-                    LogService.Info($"{ProjectName} - {ServiceName} - Fraudcase is executed.");
                 }
             }
             catch (Exception ex)
