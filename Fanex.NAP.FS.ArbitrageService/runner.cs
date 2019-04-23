@@ -71,8 +71,7 @@ namespace Fanex.NAP.FS.ArbitrageService
                     Rule();
 
                     _isRunning = false;
-
-                    LogService.Info($"{ProjectName} - {ServiceName} - Fraudcase is executed.");
+                    
                 }
             }
             catch (Exception ex)
