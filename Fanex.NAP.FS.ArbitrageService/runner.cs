@@ -104,27 +104,23 @@ namespace Fanex.NAP.FS.ArbitrageService
                         .Distinct()
                         .Chunk(500)
                         .Select(custIds => GroupCustomer(custIds))
-                        .Where(x => x.IsCompleted && x.Result.Any())
+                        .Where(x => x.IsCompleted)
                         .ToArray();
 
                     Task.WaitAll(tsk);
 
                     if (tsk.Any())
                     {
+                        LogService.Info($"{ProjectName} - {ServiceName} - Rule is executing.");
+
                         var customers = tsk.SelectMany(t => t.Result);
 
-                        if (customers != Enumerable.Empty<ArbitrageCustomer>())
-                        {
-                            _arbitrageService.MatchIds = tickets.ToXmlString();
-                            _arbitrageService.Associations = customers.ToXmlString();
+                        _arbitrageService.MatchIds = tickets.ToXmlString();
+                        _arbitrageService.Associations = customers.ToXmlString();
 
-                            _arbitrageService.Rule();
-                        }
-                        else
-                        {
-                            LogService.Error(
-                                $"{ProjectName} - {ServiceName} - MatchId: {matchId} - Exeption: Associations({customers.Count()}) is null.");
-                        }
+                        _arbitrageService.Rule();
+
+                        LogService.Info($"{ProjectName} - {ServiceName} - Rule is executed.");
                     }
                 }
                 else
@@ -185,8 +181,6 @@ namespace Fanex.NAP.FS.ArbitrageService
 
         private void Rule()
         {
-            LogService.Info($"{ProjectName} - {ServiceName} - Rule is executing.");
-
 
             XmlHelper.RegisterType<ArbitrageTicket>();
             XmlHelper.RegisterType<ArbitrageCustomer>();
@@ -201,16 +195,6 @@ namespace Fanex.NAP.FS.ArbitrageService
             }
 
             Thread.Sleep(TimeSpan.FromSeconds(2));
-
-            LogService.Info($"{ProjectName} - {ServiceName} - Rule is executed.");
-
-            //Parallel.ForEach(ticketGroupBy, new ParallelOptions
-            //{
-            //    MaxDegreeOfParallelism = 1
-            //}, g =>
-            //{
-            //    GroupData(g.Key, g);
-            //});
         }
 
         private static void CleanResult()
