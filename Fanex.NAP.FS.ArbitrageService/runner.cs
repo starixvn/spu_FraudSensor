@@ -93,14 +93,19 @@ namespace Fanex.NAP.FS.ArbitrageService
 
         private void GroupData(int matchId, IEnumerable<ArbitrageTicket> tickets)
         {
-
             try
             {
                 // ReSharper disable once PossibleMultipleEnumeration
                 if (tickets != null && tickets.Any())
                 {
                     // ReSharper disable once PossibleMultipleEnumeration
-                    var tsk = tickets.Select(t => t.CustId).Distinct().Chunk(500).Select(GroupCustomer).ToArray();
+                    var tsk = tickets
+                        .Select(t => t.CustId)
+                        .Distinct()
+                        .Chunk(500)
+                        .Select(custIds => GroupCustomer(custIds))
+                        .Where(x => x.IsCompleted && x.Result.Any())
+                        .ToArray();
 
                     Task.WaitAll(tsk);
 
