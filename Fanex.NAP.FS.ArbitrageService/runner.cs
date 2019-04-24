@@ -95,23 +95,32 @@ namespace Fanex.NAP.FS.ArbitrageService
             // ReSharper disable once PossibleMultipleEnumeration
             if (tickets != null && tickets.Any())
             {
-                // ReSharper disable once PossibleMultipleEnumeration
-                var tsk = tickets
+                var arbitrageTicket = tickets
                     .Select(t => t.CustId)
-                    .Distinct()
-                    .Chunk(500)
-                    .Select(GroupCustomer)
-                    .ToArray();
+                    .Distinct();
 
-                Task.WaitAll(tsk);
+                var arbitrageCustomers = arbitrageTicket.Chunk(500);
 
-                if (tsk.Any())
+                var taskCustomers = new List<Task<IEnumerable<ArbitrageCustomer>>>();
+
+                foreach (var arbitrageCustomer in arbitrageCustomers)
+                {
+                   var taskCustomer = GroupCustomer(arbitrageCustomer);
+
+                   taskCustomers.Add(taskCustomer);
+
+                   Thread.Sleep(TimeSpan.FromSeconds(10));
+                }
+
+                Task.WaitAll(taskCustomers.ToArray());
+
+                if (!taskCustomers.Any()) return;
                 {
                     try
                     {
                         LogService.Info($"{ProjectName} - {ServiceName} - Rule is executing.");
 
-                        var customers = tsk.SelectMany(t => t.Result);
+                        var customers = taskCustomers.SelectMany(t => t.Result);
 
                         _arbitrageService.MatchIds = tickets.ToXmlString();
                         _arbitrageService.Associations = customers.ToXmlString();
@@ -136,8 +145,6 @@ namespace Fanex.NAP.FS.ArbitrageService
                 LogService.Error(
                     $"{ProjectName} - {ServiceName} - MatchId: {matchId} - Exeption: MatchIds({tickets.Count()}) is null.");
             }
-
-            
         }
 
         private async Task<IEnumerable<ArbitrageCustomer>> GroupCustomer(IEnumerable<int> custids)
