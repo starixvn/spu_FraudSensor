@@ -62,8 +62,6 @@ namespace Fanex.NAP.FS.Library.Core.Helpers.Api
 
                     byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
-                    web.Timeout = TimeSpan.FromMinutes(5);
-
                     var response = await web.PostAsync(url, byteContent).ConfigureAwait(false);
 
                     if (!response.IsSuccessStatusCode)

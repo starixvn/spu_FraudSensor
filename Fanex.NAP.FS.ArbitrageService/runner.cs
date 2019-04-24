@@ -114,30 +114,27 @@ namespace Fanex.NAP.FS.ArbitrageService
 
                 Task.WaitAll(taskCustomers.ToArray());
 
-                if (!taskCustomers.Any()) return;
+                try
                 {
-                    try
-                    {
-                        LogService.Info($"{ProjectName} - {ServiceName} - Rule is executing.");
+                    LogService.Info($"{ProjectName} - {ServiceName} - Rule is executing.");
 
-                        var customers = taskCustomers.SelectMany(t => t.Result);
+                    var customers = taskCustomers.SelectMany(t => t.Result);
 
-                        _arbitrageService.MatchIds = tickets.ToXmlString();
-                        _arbitrageService.Associations = customers.ToXmlString();
+                    _arbitrageService.MatchIds = tickets.ToXmlString();
+                    _arbitrageService.Associations = customers.ToXmlString();
 
-                        _arbitrageService.Rule();
+                    _arbitrageService.Rule();
 
-                        LogService.Info($"{ProjectName} - {ServiceName} - Rule is executed.");
-                    }
-                    catch (Exception ex)
-                    {
-                        var logMessage = new LogMessage(ex.Message)
-                            .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
-                            .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
+                    LogService.Info($"{ProjectName} - {ServiceName} - Rule is executed.");
+                }
+                catch (Exception ex)
+                {
+                    var logMessage = new LogMessage(ex.Message)
+                        .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
+                        .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
 
-                        LogService.Error(
-                            $"{ProjectName} - {ServiceName} - MatchId: {matchId} - GroupData Exeption: {logMessage}");
-                    }
+                    LogService.Error(
+                        $"{ProjectName} - {ServiceName} - MatchId: {matchId} - GroupData Exeption: {logMessage}");
                 }
             }
             else
