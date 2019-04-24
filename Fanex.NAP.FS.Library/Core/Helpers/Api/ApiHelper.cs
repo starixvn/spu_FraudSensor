@@ -62,7 +62,7 @@ namespace Fanex.NAP.FS.Library.Core.Helpers.Api
 
                     byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
-                    web.Timeout = TimeSpan.FromMinutes(30);
+                    web.Timeout = TimeSpan.FromMinutes(5);
 
                     var response = await web.PostAsync(url, byteContent).ConfigureAwait(false);
 
@@ -77,7 +77,7 @@ namespace Fanex.NAP.FS.Library.Core.Helpers.Api
                 }
                 catch (Exception ex)
                 {
-                    throw ex;
+                    LogService.Error(ex.Message, ex);
 
                     return default(TResult);
                 }

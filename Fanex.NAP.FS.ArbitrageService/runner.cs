@@ -28,7 +28,7 @@ namespace Fanex.NAP.FS.ArbitrageService
 
         private static Service.ArbitrageService _arbitrageService;
         private readonly MicroService _baseService;
-        private bool _isRunning;
+        private bool _isRunning = false;
         private IEnumerable<ArbitrageTicket> _tickets;
 
         public Runner()
@@ -50,7 +50,7 @@ namespace Fanex.NAP.FS.ArbitrageService
         }
 
         private void Execute(object source, ElapsedEventArgs e)
-        {
+      {
             var exception = string.Empty;
             var status = true;
 
@@ -65,13 +65,13 @@ namespace Fanex.NAP.FS.ArbitrageService
                     if (_isRunning) return;
 
                     _isRunning = true;
-
-                    CleanResult();
+                    
                     Precondition();
                     Rule();
 
                     _isRunning = false;
-                    
+
+                    Thread.Sleep(TimeSpan.FromSeconds(2));
                 }
             }
             catch (Exception ex)
@@ -109,7 +109,7 @@ namespace Fanex.NAP.FS.ArbitrageService
 
                    taskCustomers.Add(taskCustomer);
 
-                   Thread.Sleep(TimeSpan.FromSeconds(10));
+                   Thread.Sleep(TimeSpan.FromSeconds(5));
                 }
 
                 Task.WaitAll(taskCustomers.ToArray());
@@ -200,12 +200,6 @@ namespace Fanex.NAP.FS.ArbitrageService
             {
                 GroupData(ticket.Key, ticket);
             }
-
-            Thread.Sleep(TimeSpan.FromSeconds(2));
-        }
-
-        private static void CleanResult()
-        {
         }
     }
 }
