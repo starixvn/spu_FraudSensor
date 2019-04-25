@@ -1,4 +1,6 @@
-﻿namespace Fanex.NAP.FS.ScannedOfficeIPService
+﻿using System.Threading;
+
+namespace Fanex.NAP.FS.ScannedOfficeIPService
 {
     using Fanex.Logging;
     using Fanex.Logging.Extensions;
@@ -24,14 +26,12 @@
         private readonly MicroService _baseService;
         private bool _isRunning = false;
         private IEnumerable<Match> _matches;
-        private readonly Queue<Task> _tasks;
 
         public Runner()
         {
             _baseService = new MicroService(ServiceName, FraudCaseId.ScannedOfficeIP);
             _scannedOfficeIpService = new ScannedOfficeIpService();
             _matches = new List<Match>();
-            _tasks = new Queue<Task>();
 
             InitializeComponent();
         }
@@ -60,9 +60,7 @@
                 if (!isUm)
                 {
                     if (_isRunning) return;
-#if DEBUG
-                    Console.WriteLine("-> Fraud Case is executing at " + DateTime.Now);
-#endif
+
                     _isRunning = true;
 
                     CleanResult();
@@ -70,10 +68,6 @@
                     Rule();
 
                     _isRunning = false;
-#if DEBUG
-                    Console.WriteLine("=> Fraud Case is executed at " + DateTime.Now);
-#endif
-                    LogService.Info($"{ProjectName} - {ServiceName} - Fraudcase is executed.");
                 }
             }
             catch (Exception ex)
@@ -110,11 +104,12 @@
         private void CleanResult()
         {
             _matches = null;
-            _tasks.Clear();
         }
 
         private void Precondition() {
             _matches = _scannedOfficeIpService.PreCondition<Match>();
+
+            LogService.Info($"{ProjectName} - {ServiceName} - Precondition is executed.");
         }
 
         private void Rule()
@@ -126,15 +121,12 @@
 
                 _scannedOfficeIpService.MatchIds = string.Join(",", ids);
 
-                _tasks.Enqueue(Task.Run(() => _scannedOfficeIpService.Rule()));
+                _scannedOfficeIpService.Rule();
             }
 
-            Task.WaitAll(_tasks.ToArray());
+            Thread.Sleep(TimeSpan.FromSeconds(2));
 
-            foreach (var item in _tasks.Where(t => t.IsFaulted))
-            {
-                LogService.Error($"{ProjectName} - {ServiceName} - Rule Exception: {item.Exception.Message}, {item.Exception}");
-            }
+            LogService.Info($"{ProjectName} - {ServiceName} - Rule is executed.");
         }
     }
 }
