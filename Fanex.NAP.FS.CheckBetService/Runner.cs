@@ -12,6 +12,7 @@
     public partial class Runner : ServiceBase
     {
         private const string ProjectName = "Fraud Sensor Service";
+        private new const string ServiceName = "Check Bet Service";
         private readonly MicroService _baseService;
 
         private static Service.CheckBetService _checkBetService;
@@ -19,7 +20,7 @@
 
         public Runner()
         {
-            _baseService = new MicroService(base.ServiceName, FraudCaseId.CheckBet);
+            _baseService = new MicroService(ServiceName, FraudCaseId.CheckBet);
             _checkBetService = new CheckBetService();
 
             InitializeComponent();
@@ -48,9 +49,6 @@
 
                 if (!isUm)
                 {
-#if DEBUG
-                    Console.WriteLine("-> Fraud Case is executing at " + DateTime.Now);
-#endif
                     if (_isRunning) return;
 
                     _isRunning = true;
@@ -58,10 +56,6 @@
                     _checkBetService.Rule();
 
                     _isRunning = false;
-#if DEBUG
-                    Console.WriteLine("=> Fraud Case is executed at " + DateTime.Now);
-#endif
-                    LogService.Info($"{ProjectName} - {base.ServiceName} - Fraudcase is executed.");
                 }
             }
             catch (Exception ex)
@@ -74,7 +68,7 @@
                     .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
                     .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
 
-                LogService.Error($"{ProjectName} - {base.ServiceName} - Execute Exeption {logMessage}");
+                LogService.Error($"{ProjectName} - {ServiceName} - Execute Exeption {logMessage}");
             }
 
             Report(status, exception, "Fraud Case is executed at " + DateTime.Now);

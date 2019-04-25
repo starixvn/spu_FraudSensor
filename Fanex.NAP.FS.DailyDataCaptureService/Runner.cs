@@ -19,6 +19,7 @@
     public partial class Runner : ServiceBase
     {
         private const string ProjectName = "Fraud Sensor Service";
+        private new const string ServiceName = "Daily Data Capture Service";
 
         static Service.DailyDataCaptureService _dailyDataCaptureService;
         private readonly MicroService _baseService;
@@ -27,7 +28,7 @@
 
         public Runner()
         {
-            _baseService = new MicroService(base.ServiceName, FraudCaseId.DailyDataCapture);
+            _baseService = new MicroService(ServiceName, FraudCaseId.DailyDataCapture);
             _dailyDataCaptureService = new Service.DailyDataCaptureService();
 
             InitializeComponent();
@@ -57,20 +58,12 @@
                 if (!isUm)
                 {
                     if (_isRunning) return;
-#if DEBUG
-                    Console.WriteLine("-> Fraud Case is executing at " + DateTime.Now);
-#endif
+
                     _isRunning = true;
 
-                    CleanResult();
-                    Precondition();
                     Rule();
 
                     _isRunning = false;
-#if DEBUG
-                    Console.WriteLine("=> Fraud Case is executed at " + DateTime.Now);
-#endif                   
-                    LogService.Info($"{ProjectName} - {base.ServiceName} - Fraudcase is executed.");
                 }
             }
             catch (Exception ex)
@@ -82,7 +75,7 @@
                 var logMessage = new LogMessage(ex.Message)
                     .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex)).ToString();
 
-                LogService.Error($"{ProjectName} - {base.ServiceName} - Execute Exeption {logMessage}");
+                LogService.Error($"{ProjectName} - {ServiceName} - Execute Exeption {logMessage}");
             }
 
             Report(status, exception, "Fraud Case is executed at " + DateTime.Now);
@@ -101,16 +94,6 @@
             };
 
             _baseService.Report(model);
-        }
-
-       private static void CleanResult()
-        {
-
-        }
-
-       private static void Precondition()
-        {
-
         }
 
        private static void Rule()

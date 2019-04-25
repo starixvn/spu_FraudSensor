@@ -58,10 +58,6 @@
                 var isUm = _baseService.CheckUM();
                 if (!isUm)
                 {
-
-#if DEBUG
-                    Console.WriteLine("-> Fraud Case is executing at " + DateTime.Now);
-#endif
                     if (_isRunning) return;
 
                     _isRunning = true;
@@ -71,11 +67,6 @@
                     Rule();
 
                     _isRunning = false;
-
-#if DEBUG
-                    Console.WriteLine("=> Fraud Case is executed at " + DateTime.Now);
-#endif
-                    LogService.Info($"{ProjectName} - {ServiceName} - Fraudcase is executed.");
                 }
             }
             catch (Exception ex)
