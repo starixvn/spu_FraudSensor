@@ -98,9 +98,12 @@
             var fraudCaseService = new Service.FraudCaseService();
 
             if (string.IsNullOrWhiteSpace(fraudCase.FraudCaseName)) return;
+
+            var fraudCaseName = Enum.GetName(typeof(FraudCaseId), fraudCase.FraudCaseId);
+
             RabbitMq
-                .DeclareQueue(fraudCase.FraudCaseName)
-                .DeclareRoutingKey(fraudCase.FraudCaseName)
+                .DeclareQueue(fraudCaseName)
+                .DeclareRoutingKey(fraudCaseName)
                 .Bind();
 
             if (string.IsNullOrWhiteSpace(RabbitMq.QueueName)) return;

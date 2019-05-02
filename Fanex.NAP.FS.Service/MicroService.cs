@@ -276,7 +276,7 @@
                             _timer.Start();
                         }
 
-                        LogService.Info($"Fraud case {fraudCaseMessage.ServiceName} is RETRYED...");
+                        LogService.Info($"Fraud case {fraudCaseMessage.ServiceName} is RETRIED...");
 
                         break;
                     }
