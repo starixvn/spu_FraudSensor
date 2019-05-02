@@ -99,7 +99,7 @@ namespace Fanex.NAP.FS.ArbitrageService
                     .Select(t => t.CustId)
                     .Distinct();
 
-                var arbitrageCustomers = arbitrageTicket.Chunk(500);
+                var arbitrageCustomers = arbitrageTicket.Chunk(10000);
 
                 var taskCustomers = new List<Task<IEnumerable<ArbitrageCustomer>>>();
 
@@ -109,23 +109,19 @@ namespace Fanex.NAP.FS.ArbitrageService
 
                    taskCustomers.Add(taskCustomer);
 
-                   Thread.Sleep(TimeSpan.FromSeconds(5));
+                   Thread.Sleep(TimeSpan.FromSeconds(1));
                 }
 
                 Task.WaitAll(taskCustomers.ToArray());
 
                 try
                 {
-                    LogService.Info($"{ProjectName} - {ServiceName} - Rule is executing.");
-
                     var customers = taskCustomers.SelectMany(t => t.Result);
 
                     _arbitrageService.MatchIds = tickets.ToXmlString();
                     _arbitrageService.Associations = customers.ToXmlString();
 
                     _arbitrageService.Rule();
-
-                    LogService.Info($"{ProjectName} - {ServiceName} - Rule is executed.");
                 }
                 catch (Exception ex)
                 {
@@ -185,6 +181,7 @@ namespace Fanex.NAP.FS.ArbitrageService
 
         private void Rule()
         {
+            LogService.Info($"{ProjectName} - {ServiceName} - Rule is executing.");
 
             XmlHelper.RegisterType<ArbitrageTicket>();
             XmlHelper.RegisterType<ArbitrageCustomer>();
@@ -197,6 +194,8 @@ namespace Fanex.NAP.FS.ArbitrageService
             {
                 GroupData(ticket.Key, ticket);
             }
+
+            LogService.Info($"{ProjectName} - {ServiceName} - Rule is executed.");
         }
     }
 }
