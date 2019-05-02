@@ -47,10 +47,23 @@
 
         private void SendMessage(string subject, string content)
         {
+            var env = string.Empty;
+            switch (AppSetting.Environment)
+            {
+                case 3:
+                    env = "PRO";
+                    break;
+                case 2:
+                    env = "UAT";
+                    break;
+                default:
+                    env = "LOCAL";
+                    break;
+            }
             LetstalkModel messsage = new LetstalkModel()
             {
                 TargetName = AppSetting.LetstalkTarget,
-                Subject = subject,
+                Subject = subject + " - " + env,
                 Content = content,
                 Group = AppSetting.LetstalkGroup,
                 LetstalkAttachments = new List<LetstalkAttachment>()

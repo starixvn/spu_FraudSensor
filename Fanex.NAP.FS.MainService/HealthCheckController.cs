@@ -149,8 +149,6 @@
                             LogService.Error($"Health check - Error occurs: {ex.Message}");
                         }
 
-                        period = (DateTime.Now - fcHealth.LastTimeSignal).TotalSeconds;
-
                         var errorMessage = $"Health check - Service name: {fraudCaseName} - Do not receive heart beat in " + (int)period + " seconds";
                         LogService.Error(errorMessage);
                         SendMessageToLetstalk(fcHealth.LetstalkCurrentTimes,errorMessage);
