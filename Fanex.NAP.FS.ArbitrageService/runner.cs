@@ -99,7 +99,7 @@ namespace Fanex.NAP.FS.ArbitrageService
                     .Select(t => t.CustId)
                     .Distinct();
 
-                var arbitrageCustomers = arbitrageTicket.Chunk(10000);
+                var arbitrageCustomers = arbitrageTicket.Chunk(1000);
 
                 var taskCustomers = new List<Task<IEnumerable<ArbitrageCustomer>>>();
 
