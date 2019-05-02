@@ -82,6 +82,17 @@
             return "I'm here. Everything is ok now. (Nhìn cái gì!! OK rồi =.=')";
         }
 
+        [HttpGet]
+        public string Restart(int fraudCaseId)
+        {
+            var fraudCaseService = new Service.FraudCaseService();
+            var fraudCase = fraudCaseService.GetByFraudCaseId(fraudCaseId, AppSetting.Environment);
+
+            RetryFraudCaseService(fraudCase);
+
+            return "Restart service is succesully";
+        }
+
         private static void RetryFraudCaseService(FraudCase fraudCase)
         {
             var fraudCaseService = new Service.FraudCaseService();

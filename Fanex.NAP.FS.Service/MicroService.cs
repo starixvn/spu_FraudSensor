@@ -227,67 +227,56 @@
             {
                 case Model.Action.Activating:
                     {
-#if DEBUG
-                        Console.WriteLine("-> Add action is executing...");
-#endif
-                        _fraudCase = GetFraudCase(fraudCaseMessage.Id);
+                        
 
-#if DEBUG
-                        Console.WriteLine($"=> Activing - Fraud case name: {_fraudCase.FraudCaseName}, IsActive: {_fraudCase.IsActive}, IsTest: {_fraudCase.IsTest}, Interval: {_fraudCase.FraudCaseInterval}, Timer Enable: {_timer.Enabled} ");
-#endif
+                        _fraudCase = GetFraudCase(fraudCaseMessage.Id);
 
                         if (_fraudCase.IsActive && !_timer.Enabled)
                         {
                             _timer.Start();
                         }
+
+                        LogService.Info($"Fraud case {fraudCaseMessage.ServiceName} is ACTIVED...");
 
                         break;
                     }
                 case Model.Action.Updating:
                     {
-#if DEBUG
-                        Console.WriteLine("-> Update action is executing...");
-#endif
                         _timer.Stop();
 
                         _fraudCase = GetFraudCase(fraudCaseMessage.Id);
 
-#if DEBUG
-                        Console.WriteLine($"=> Updating - Fraud case name: {_fraudCase.FraudCaseName}, IsActive: {_fraudCase.IsActive}, IsTest: {_fraudCase.IsTest}, Interval: {_fraudCase.FraudCaseInterval}, Timer Enable: {_timer.Enabled}  ");
-#endif
                         if (_fraudCase.IsActive)
                         {
                             _timer.Start();
                         }
 
+                        LogService.Info($"Fraud case {fraudCaseMessage.ServiceName} is UPDATED...");
+
                         break;
                     }
                 case Model.Action.Deactivating:
                     {
-#if DEBUG
-                        Console.WriteLine("-> Delete action is executing...");
-#endif
+
                         _timer.Stop();
+
+                        LogService.Info($"Fraud case {fraudCaseMessage.ServiceName} is DEACTIVED...");
 
                         break;
                     }
                 case Model.Action.Retry:
                     {
-#if DEBUG
-                        Console.WriteLine("-> Retry action is executing...");
-#endif
+
                         _timer.Stop();
 
                         _fraudCase = GetFraudCase(fraudCaseMessage.Id);
-
-#if DEBUG
-                        Console.WriteLine($"=> Retry - Fraud case name: {_fraudCase.FraudCaseName}, IsActive: {_fraudCase.IsActive}, IsTest: {_fraudCase.IsTest}, Interval: {_fraudCase.FraudCaseInterval}, Timer Enable: {_timer.Enabled}  ");
-#endif
 
                         if (_fraudCase.IsActive && !_timer.Enabled)
                         {
                             _timer.Start();
                         }
+
+                        LogService.Info($"Fraud case {fraudCaseMessage.ServiceName} is RETRYED...");
 
                         break;
                     }
