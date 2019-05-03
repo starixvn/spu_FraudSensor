@@ -110,7 +110,7 @@ namespace Fanex.NAP.FS.ArbitrageService
                    Thread.Sleep(TimeSpan.FromSeconds(1));
                 }
 
-                Task.WaitAll(taskCustomers.ToArray());
+                Task.WaitAll(taskCustomers.ToArray(), 900000);
 
                 try
                 {
