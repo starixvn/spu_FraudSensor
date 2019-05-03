@@ -52,7 +52,6 @@ namespace Fanex.NAP.FS.ArbitrageService
         private void Execute(object source, ElapsedEventArgs e)
       {
             var exception = string.Empty;
-            var status = true;
 
             try
             {
@@ -78,16 +77,15 @@ namespace Fanex.NAP.FS.ArbitrageService
             {
                 _isRunning = false;
                 exception = ex.Message;
-                status = false;
 
                 var logMessage = new LogMessage(ex.Message)
                     .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
                     .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
 
                 LogService.Error($"{ProjectName} - {ServiceName} - Execute Exeption {logMessage}");
-            }
 
-            Report(status, exception, "Fraud Case is executed at " + DateTime.Now);
+                Report(false, exception, "Fraud Case is executed at " + DateTime.Now);
+            }
         }
 
         private void GroupData(int matchId, IEnumerable<ArbitrageTicket> tickets)
@@ -99,7 +97,7 @@ namespace Fanex.NAP.FS.ArbitrageService
                     .Select(t => t.CustId)
                     .Distinct();
 
-                var arbitrageCustomers = arbitrageTicket.Chunk(1000);
+                var arbitrageCustomers = arbitrageTicket.Chunk(500);
 
                 var taskCustomers = new List<Task<IEnumerable<ArbitrageCustomer>>>();
 

@@ -227,8 +227,6 @@
             {
                 case Model.Action.Activating:
                     {
-                        
-
                         _fraudCase = GetFraudCase(fraudCaseMessage.Id);
 
                         if (_fraudCase.IsActive && !_timer.Enabled)

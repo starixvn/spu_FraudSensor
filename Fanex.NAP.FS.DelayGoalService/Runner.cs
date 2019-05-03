@@ -49,8 +49,7 @@
         private void Execute(object source, System.Timers.ElapsedEventArgs e)
         {
             var exception = string.Empty;
-            var status = true;
-
+           
             try
             {
                 Report(true, exception, "Fraud Case is executing at " + DateTime.Now);
@@ -72,7 +71,7 @@
             catch (Exception ex)
             {
                 exception = ex.Message;
-                status = false;
+                
                 _isRunning = false;
 
                 var logMessage = new LogMessage(ex.Message)
@@ -80,9 +79,11 @@
                     .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
 
                 LogService.Error($"{ProjectName} - {ServiceName} - OnTimeEvent Exeption {logMessage}");
+
+                Report(false, exception, "Fraud Case is executed at " + DateTime.Now);
             }
 
-            Report(status, exception, "Fraud Case is executed at " + DateTime.Now);
+            
         }
 
         private void Precondition()

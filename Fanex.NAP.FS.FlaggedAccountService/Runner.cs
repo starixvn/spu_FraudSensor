@@ -79,9 +79,7 @@
         private void Execute(object source, System.Timers.ElapsedEventArgs e)
         {
             var exception = string.Empty;
-            var status = true;
-            
-
+     
             try
             {
                 Report(true, exception, "Fraud Case is executing at " + DateTime.Now);
@@ -106,16 +104,15 @@
             {
                 _isRunning = false;
                 exception = ex.Message;
-                status = false;
-
+                
                 var logMessage = new LogMessage(ex.Message)
                     .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
                     .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
 
                 LogService.Error($"{ProjectName} - {ServiceName} - Execute Exeption {logMessage}");
-            }
 
-            Report(status, exception, "Fraud Case is executed at " + DateTime.Now);
+                Report(false, exception, "Fraud Case is executed at " + DateTime.Now);
+            }
         }
 
         private void Report(bool status, string exception, string message)
