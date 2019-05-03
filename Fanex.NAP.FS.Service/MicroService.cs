@@ -35,6 +35,8 @@
             }
         }
 
+        public ElapsedEventHandler ExecutingActionHandler { get; set; }
+
         public MicroService(string serviceName, FraudCaseId fraudCaseId)
         {
             fraudCaseService = new FraudCaseService();
@@ -65,6 +67,8 @@
             _timer.Elapsed += onTimedEvent;
             _timer.AutoReset = true;
 
+            ExecutingActionHandler = onTimedEvent;
+
             if (!string.IsNullOrWhiteSpace(_queueName))
             {
                 try
@@ -91,12 +95,15 @@
             {
                 LogService.Error($"{projectName} - {_serviceName} - Start Exception: {_queueName} is empty.");
             }
+        }
 
+        private void ExecuteNow()
+        {
             ThreadPool.QueueUserWorkItem(new WaitCallback((_) =>
             {
                 Thread.Sleep(1000 * 10);
 
-                InvokeActionHandlerEvent(onTimedEvent);
+                InvokeActionHandlerEvent(ExecutingActionHandler);
             }));
         }
 
@@ -171,6 +178,7 @@
             _rabbitMQ.AdvanceBus.Consume(_rabbitMQ.Queue, x => x.Add<FraudCaseMessage>((message, info) =>
             {
                 fraudCaseMessage = message.Body;
+
                 handler(fraudCaseMessage);
             }));
 
@@ -225,30 +233,16 @@
                         if (_fraudCase.IsActive && !_timer.Enabled)
                         {
                             _timer.Start();
+
+                            ExecuteNow();
                         }
 
                         LogService.Info($"Fraud case {fraudCaseMessage.ServiceName} is ACTIVED...");
 
                         break;
                     }
-                case Model.Action.Updating:
-                    {
-                        _timer.Stop();
-
-                        _fraudCase = GetFraudCase(fraudCaseMessage.Id);
-
-                        if (_fraudCase.IsActive)
-                        {
-                            _timer.Start();
-                        }
-
-                        LogService.Info($"Fraud case {fraudCaseMessage.ServiceName} is UPDATED...");
-
-                        break;
-                    }
                 case Model.Action.Deactivating:
                     {
-
                         _timer.Stop();
 
                         LogService.Info($"Fraud case {fraudCaseMessage.ServiceName} is DEACTIVED...");
@@ -262,6 +256,8 @@
                         if (_fraudCase != null && _fraudCase.IsActive && !_timer.Enabled)
                         {
                             _timer.Start();
+
+                            ExecuteNow();
                         }
 
                         LogService.Info($"Fraud case {fraudCaseMessage.ServiceName} is RETRIED...");

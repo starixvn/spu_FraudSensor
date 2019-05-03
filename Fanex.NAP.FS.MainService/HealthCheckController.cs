@@ -67,12 +67,10 @@
             }
 
             if (status) return;
+
             var bodyMessage = $"Service name: {fraudCaseName} - Status: {status} - Message: {message} - Exception: {exception}";
-#if DEBUG
-            System.Console.WriteLine(bodyMessage);
-#else
-                LogService.Error(bodyMessage);
-#endif
+
+            LogService.Error(bodyMessage);
 
         }
 
@@ -90,7 +88,7 @@
 
             RetryFraudCaseService(fraudCase);
 
-            return "Restart service is succesully";
+            return "Restart service is successfully";
         }
 
         private static void RetryFraudCaseService(FraudCase fraudCase)
@@ -115,12 +113,7 @@
                 Message = "Message is sent at" + DateTime.Now
             }, new MessageProperties { DeliveryMode = 2, Priority = 9 });
 
-            var log = $"Reload Fraud Case - Queue: {RabbitMq.QueueName}, RoutingKey: {RabbitMq.RoutingKey}, Exchange: {RabbitMq.ExchangeName}";
-
             RabbitMq.AdvanceBus.PublishAsync(RabbitMq.Exchange, RabbitMq.RoutingKey, false, message);
-#if DEBUG
-            Console.WriteLine(log);
-#endif
         }
 
         private static async void CheckFraudCaseStatus()
