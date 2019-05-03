@@ -191,9 +191,6 @@
 
         private FraudCase GetFraudCase(int fraudCaseId)
         {
-#if DEBUG
-            Console.WriteLine("-> Get fraud case action is executing...");
-#endif
             var isUatTest = AppSetting.Environment == 2 ? true : false;
             var fraudCase = fraudCaseService.GetFraudCaseFromConfig();
 
@@ -206,14 +203,10 @@
             {
                 _timer.Interval = fraudCase.FraudCaseInterval * 1000;
 
-#if DEBUG
-                Console.WriteLine($"=> Fraud case name: {fraudCase.FraudCaseName}, IsActive: {fraudCase.IsActive}, IsTest: {fraudCase.IsTest}, Interval: {fraudCase.FraudCaseInterval} ");
-#endif
-
                 return fraudCase;
             }
 
-            LogService.Info($"{projectName} - {_serviceName} - Fraud case is null. Please check again.");
+            LogService.Error($"{projectName} - {_serviceName} - Fraud case is null. Please check again.");
 
             return new FraudCase
             {
@@ -264,12 +257,9 @@
                     }
                 case Model.Action.Retry:
                     {
-
                         _timer.Stop();
 
-                        _fraudCase = GetFraudCase(fraudCaseMessage.Id);
-
-                        if (_fraudCase.IsActive && !_timer.Enabled)
+                        if (_fraudCase != null && _fraudCase.IsActive && !_timer.Enabled)
                         {
                             _timer.Start();
                         }
