@@ -79,34 +79,26 @@
         public ActionResult ChangeCaseStatus(int fraudCaseId, bool isActive)
         {
             _fraudCaseService.ChangeFraudCaseStatus((FraudCaseId)fraudCaseId, CurrentSession.UserId);
-            if (fraudCaseId == (int)FraudCaseId.BSNG || fraudCaseId == (int)FraudCaseId.Arbitrage || fraudCaseId == (int)FraudCaseId.FlaggedAccount)
+            var fraudCaseName = Enum.GetName(typeof(FraudCaseId), fraudCaseId);
+            if (!string.IsNullOrWhiteSpace(fraudCaseName))
             {
-                var fraudCaseName = Enum.GetName(typeof(FraudCaseId), fraudCaseId);
-                if (!string.IsNullOrWhiteSpace(fraudCaseName))
+                _rabbitMQ
+                    .DeclareQueue(fraudCaseName)
+                    .DeclareRoutingKey(fraudCaseName)
+                    .Bind();
+
+                if (!string.IsNullOrWhiteSpace(_rabbitMQ.QueueName))
                 {
-                    _rabbitMQ
-                        .DeclareQueue(fraudCaseName)
-                        .DeclareRoutingKey(fraudCaseName)
-                        .Bind();
-
-                    if (!string.IsNullOrWhiteSpace(_rabbitMQ.QueueName))
+                    var message = new Message<FraudCaseMessage>(new FraudCaseMessage
                     {
-                        var message = new Message<FraudCaseMessage>(new FraudCaseMessage
-                        {
-                            Action = isActive ? Model.Action.Activating : Model.Action.Deactivating,
-                            Id = fraudCaseId,
-                            Name = fraudCaseName,
-                            Message = "Message is sent at" + DateTime.Now
-                        }, new MessageProperties { DeliveryMode = 2, Priority = 9 });
+                        Action = isActive ? Model.Action.Activating : Model.Action.Deactivating,
+                        Id = fraudCaseId,
+                        Name = fraudCaseName,
+                        Message = "Message is sent at" + DateTime.Now
+                    }, new MessageProperties { DeliveryMode = 2, Priority = 9 });
 
-                        _rabbitMQ.AdvanceBus.PublishAsync(_rabbitMQ.Exchange, _rabbitMQ.RoutingKey, false, message);
-                    }
+                    _rabbitMQ.AdvanceBus.PublishAsync(_rabbitMQ.Exchange, _rabbitMQ.RoutingKey, false, message);
                 }
-            }
-            else
-            {
-                var sender = SendingMessageFactory.GetSender(isActive ? SendingType.Activating : SendingType.Deactivating);
-                sender.Send(fraudCaseId);
             }
 
             return Json(new object());
