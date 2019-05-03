@@ -15,7 +15,8 @@
 
     public class HealthCheckController : ApiController
     {
-        private static readonly List<FraudCaseHealth> LstFcHealth;
+        private static List<FraudCaseHealth> lstFcHealth;
+        private static List<Thread> lstThreadManager;
         private static readonly Queue.EasyNetQ RabbitMq;
         private static readonly Service.LetstalkService LetstalkService;
         private const int MaximumLetstalkConfig = 5;
@@ -23,7 +24,8 @@
         static HealthCheckController()
         {
             LetstalkService = new Service.LetstalkService();
-            LstFcHealth = new List<FraudCaseHealth>();
+            lstFcHealth = new List<FraudCaseHealth>();
+            lstThreadManager = new List<Thread>();
             RabbitMq = new Queue.EasyNetQ(AppSetting.Host + ":" + AppSetting.Post,
                 AppSetting.VirtualHost,
                 AppSetting.PrefetchCount,
@@ -43,7 +45,7 @@
         {
             var fraudCaseName = Enum.GetName(typeof(FraudCaseId), fraudcaseid);
 
-            var fcHealth = LstFcHealth.Where(f => f.FraudCaseId == fraudcaseid).FirstOrDefault();
+            var fcHealth = lstFcHealth.Where(f => f.FraudCaseId == fraudcaseid).FirstOrDefault();
             if (fcHealth == null)
             {
                 var fraudcase = new FraudCaseHealth()
@@ -56,7 +58,7 @@
                     LetstalkCurrentTimes = 1
                 };
 
-                LstFcHealth.Add(fraudcase);
+                lstFcHealth.Add(fraudcase);
             }
             else
             {
@@ -120,50 +122,67 @@
         {
             do
             {
-                var startTime = DateTime.Now;
-                Parallel.ForEach(LstFcHealth, fcHealth =>
+                foreach (var fcHealth in lstFcHealth)
                 {
-                    var fraudCaseService = new Service.FraudCaseService();
-                    var timeout = fcHealth.TimeOut;
-                    var period = (DateTime.Now - fcHealth.LastTimeSignal).TotalSeconds;
-                    var fraudCaseName = Enum.GetName(typeof(FraudCaseId), fcHealth.FraudCaseId);
-                    FraudCase fraudCase = null;
-
-                    if (AppSetting.Environment == 2)
+                    var thread = lstThreadManager.Where(t => t.Name == fcHealth.FraudCaseId.ToString()).FirstOrDefault();
+                    if (thread == null)
                     {
-                        fraudCase = new FraudCase()
-                        {
-                            FraudCaseId = fcHealth.FraudCaseId,
-                            FraudCaseName = fraudCaseName,
-                            IsActive = LstFcHealth.Where(f => f.FraudCaseId == fcHealth.FraudCaseId).FirstOrDefault().IsActive
-                        };
-                    }
-                    else
-                    {
-                        fraudCase = fraudCaseService.GetByFraudCaseId(fcHealth.FraudCaseId, AppSetting.Environment);
-                    }
 
-                    if (!AppSetting.IgnoreCase.Contains(fraudCase.FraudCaseId) && fraudCase.IsActive && period > fcHealth.TimeOut)
-                    {
-                        try
-                        {
-                            RetryFraudCaseService(fraudCase);
-                            var notifyMessage = $"Health check - Service name: {fraudCaseName} - Retry service";
-                            LogService.Error(notifyMessage);
-                        }
-                        catch (Exception ex)
-                        {
-                            LogService.Error($"Health check - Error occurs: {ex.Message}");
-                        }
-
-                        var errorMessage = $"Health check - Service name: {fraudCaseName} - Do not receive heart beat in " + (int)period + " seconds";
-                        LogService.Error(errorMessage);
-                        SendMessageToLetstalk(fcHealth.LetstalkCurrentTimes,errorMessage);
-                        fcHealth.LetstalkCurrentTimes += 1;
+                        Thread newThread = new Thread(() => CheckFC(fcHealth));
+                        newThread.Name = fcHealth.FraudCaseId.ToString();
+                        lstThreadManager.Add(newThread);
+                        newThread.Start();
                     }
-                });
+                }
 
                 await Task.Delay(65000);
+            } while (true);
+        }
+
+        private static void CheckFC(FraudCaseHealth fcHealth)
+        {
+            do
+            {
+                var fraudCaseService = new Service.FraudCaseService();
+                var timeout = fcHealth.TimeOut;
+                var period = (DateTime.Now - fcHealth.LastTimeSignal).TotalSeconds;
+                var fraudCaseName = Enum.GetName(typeof(FraudCaseId), fcHealth.FraudCaseId);
+                FraudCase fraudCase = null;
+
+                if (AppSetting.Environment == 2)
+                {
+                    fraudCase = new FraudCase()
+                    {
+                        FraudCaseId = fcHealth.FraudCaseId,
+                        FraudCaseName = fraudCaseName,
+                        IsActive = lstFcHealth.Where(f => f.FraudCaseId == fcHealth.FraudCaseId).FirstOrDefault().IsActive
+                    };
+                }
+                else
+                {
+                    fraudCase = fraudCaseService.GetByFraudCaseId(fcHealth.FraudCaseId, AppSetting.Environment);
+                }
+
+                if (!AppSetting.IgnoreCase.Contains(fraudCase.FraudCaseId) && fraudCase.IsActive && period > fcHealth.TimeOut)
+                {
+                    try
+                    {
+                        RetryFraudCaseService(fraudCase);
+                        var notifyMessage = $"Health check - Service name: {fraudCaseName} - Retry service";
+                        LogService.Error(notifyMessage);
+                    }
+                    catch (Exception ex)
+                    {
+                        LogService.Error($"Health check - Error occurs: {ex.Message}");
+                    }
+
+                    var errorMessage = $"Health check - Service name: {fraudCaseName} - Do not receive heart beat in " + (int)period + " seconds";
+                    LogService.Error(errorMessage);
+                    SendMessageToLetstalk(fcHealth.LetstalkCurrentTimes, errorMessage);
+                    fcHealth.LetstalkCurrentTimes += 1;
+                }
+
+                Thread.Sleep(fcHealth.TimeOut * 1000);
             } while (true);
         }
 
