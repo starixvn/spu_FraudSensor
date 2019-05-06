@@ -52,33 +52,24 @@ namespace Fanex.NAP.FS.Library.Core.Helpers.Api
         {
             using (var web = new HttpClient())
             {
-                try
+                var content = JsonConvert.SerializeObject(param);
+
+                var buffer = Encoding.UTF8.GetBytes(content);
+
+                var byteContent = new ByteArrayContent(buffer);
+
+                byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
+                var response = await web.PostAsync(url, byteContent).ConfigureAwait(false);
+
+                if (!response.IsSuccessStatusCode)
                 {
-                    var content = JsonConvert.SerializeObject(param);
-
-                    var buffer = Encoding.UTF8.GetBytes(content);
-
-                    var byteContent = new ByteArrayContent(buffer);
-
-                    byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-
-                    var response = await web.PostAsync(url, byteContent).ConfigureAwait(false);
-
-                    if (!response.IsSuccessStatusCode)
-                    {
-                        throw new Exception(await response.Content.ReadAsStringAsync().ConfigureAwait(false));
-                    }
-
-                    var result = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-
-                    return JsonConvert.DeserializeObject<TResult>(result);
+                    throw new Exception(await response.Content.ReadAsStringAsync().ConfigureAwait(false));
                 }
-                catch (Exception ex)
-                {
-                    LogService.Error(ex.Message, ex);
 
-                    return default(TResult);
-                }
+                var result = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+
+                return JsonConvert.DeserializeObject<TResult>(result);
             }
         }
 

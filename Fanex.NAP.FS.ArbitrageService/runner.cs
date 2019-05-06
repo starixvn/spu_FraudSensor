@@ -116,6 +116,11 @@ namespace Fanex.NAP.FS.ArbitrageService
                 {
                     var customers = taskCustomers.SelectMany(t => t.Result);
 
+                    if (tickets == null)
+                        LogService.Error($"{ProjectName} - {ServiceName} - tickets is null");
+                    if (customers == null)
+                        LogService.Error($"{ProjectName} - {ServiceName} - customers is null");
+
                     _arbitrageService.MatchIds = tickets.ToXmlString();
                     _arbitrageService.Associations = customers.ToXmlString();
 
@@ -146,8 +151,12 @@ namespace Fanex.NAP.FS.ArbitrageService
             }
             catch (Exception ex)
             {
+                var logMessage = new LogMessage(ex.Message)
+                        .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
+                        .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
+
                 LogService.Error(
-                    $"{ProjectName} - {ServiceName} - GroupCustomer Exception: Cannot get Group Customer from Web API - Exception: {ex.Message}");
+                    $"{ProjectName} - {ServiceName} - GroupCustomer Exception: Cannot get Group Customer from Web API - Exception: {logMessage}");
 
                 return Enumerable.Empty<ArbitrageCustomer>();
             }
