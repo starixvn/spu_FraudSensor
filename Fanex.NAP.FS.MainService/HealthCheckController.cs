@@ -182,7 +182,7 @@
                     fcHealth.LetstalkCurrentTimes += 1;
                 }
 
-                Thread.Sleep(fcHealth.TimeOut * 1000);
+                Thread.Sleep(Convert.ToInt32(fcHealth.TimeOut * 1.1 * 1000));
             } while (true);
         }
 
