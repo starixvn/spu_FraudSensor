@@ -52,7 +52,7 @@ namespace Fanex.NAP.FS.ArbitrageService
         }
 
         private void Execute(object source, ElapsedEventArgs e)
-      {
+        {
             var exception = string.Empty;
 
             try
@@ -66,7 +66,7 @@ namespace Fanex.NAP.FS.ArbitrageService
                     if (_isRunning) return;
 
                     _isRunning = true;
-                    
+
                     Precondition();
                     Rule();
 
@@ -98,20 +98,6 @@ namespace Fanex.NAP.FS.ArbitrageService
                 .Distinct();
 
             var arbitrageCustomers = arbitrageTicket.Chunk(500);
-
-            //var taskCustomers = new List<Task<IEnumerable<ArbitrageCustomer>>>();
-
-            //foreach (var arbitrageCustomer in arbitrageCustomers)
-            //{
-            //   var taskCustomer = GroupCustomer(arbitrageCustomer);
-
-            //   taskCustomers.Add(taskCustomer);
-
-            //   Thread.Sleep(TimeSpan.FromSeconds(1));
-            //}
-
-            //Task.WaitAll(taskCustomers.ToArray());
-
             var customerGroup = new List<IEnumerable<ArbitrageCustomer>>();
 
             foreach (var arbitrageCustomer in arbitrageCustomers)
@@ -121,24 +107,35 @@ namespace Fanex.NAP.FS.ArbitrageService
                 if (!customers.Any()) continue;
 
                 customerGroup.Add(customers);
-
-                Thread.Sleep(TimeSpan.FromSeconds(1));
             }
 
 
             try
             {
                 // var customers = taskCustomers.SelectMany(t => t.Result);
-                if(tickets.Any() && customerGroup.Any())
+                if (tickets.Any() && customerGroup.Any())
                 {
-                    LogService.Info($"{ProjectName} - {ServiceName} - GroupData(rule) is executing.");
+                    var innerMessage = new Dictionary<string, object>();
+                    innerMessage.Add("MatchID: ", matchId);
+                    innerMessage.Add("Start time: ", DateTime.Now);
+
+                    var logMessage = new LogMessage($"{ProjectName} - {ServiceName} - GroupData(rule) is executing.")
+                                                        .AddSection("Data Info", innerMessage);
+
+                    LogService.Info(logMessage.ToString());
 
                     _arbitrageService.MatchIds = tickets.ToXmlString();
                     _arbitrageService.Associations = customerGroup.ToXmlString();
 
                     _arbitrageService.Rule();
 
-                    LogService.Info($"{ProjectName} - {ServiceName} - GroupData(rule) is executed.");
+                    innerMessage = new Dictionary<string, object>();
+                    innerMessage.Add("MatchID", matchId);
+                    innerMessage.Add("End time: ", DateTime.Now);
+                    logMessage = new LogMessage($"{ProjectName} - {ServiceName} - GroupData(rule) is executed.")
+                                                        .AddSection("Data Info", innerMessage);
+
+                    LogService.Info(logMessage.ToString());
                 }
             }
             catch (Exception ex)
@@ -159,7 +156,7 @@ namespace Fanex.NAP.FS.ArbitrageService
             try
             {
                 result = DbSessionFactory.Execute<ArbitrageCustomer>("GroupCustomer", new { CustIdList = custids }).Data;
-                
+
                 LogService.Info($"{ProjectName} - {ServiceName} - Group Customer on Graph DB is executed.");
             }
             catch (Exception ex)
