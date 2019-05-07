@@ -125,6 +125,7 @@ namespace Fanex.NAP.FS.ArbitrageService
                 Thread.Sleep(TimeSpan.FromSeconds(1));
             }
 
+
             try
             {
                 // var customers = taskCustomers.SelectMany(t => t.Result);
