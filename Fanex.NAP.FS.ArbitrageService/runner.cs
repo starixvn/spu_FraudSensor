@@ -1,4 +1,5 @@
-﻿using Fanex.Logging;
+﻿using Fanex.Graph.Data;
+using Fanex.Logging;
 using Fanex.Logging.Extensions;
 using Fanex.Logging.Extensions.Database;
 using Fanex.NAP.FS.Core;
@@ -17,6 +18,7 @@ using System.ServiceProcess;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
+
 
 // ReSharper disable once IdentifierTypo
 namespace Fanex.NAP.FS.ArbitrageService
@@ -91,56 +93,69 @@ namespace Fanex.NAP.FS.ArbitrageService
         private void GroupData(int matchId, IEnumerable<ArbitrageTicket> tickets)
         {
             // ReSharper disable once PossibleMultipleEnumeration
-            if (tickets != null && tickets.Any())
+            var arbitrageTicket = tickets
+                .Select(t => t.CustId)
+                .Distinct();
+
+            var arbitrageCustomers = arbitrageTicket.Chunk(500);
+
+            //var taskCustomers = new List<Task<IEnumerable<ArbitrageCustomer>>>();
+
+            //foreach (var arbitrageCustomer in arbitrageCustomers)
+            //{
+            //   var taskCustomer = GroupCustomer(arbitrageCustomer);
+
+            //   taskCustomers.Add(taskCustomer);
+
+            //   Thread.Sleep(TimeSpan.FromSeconds(1));
+            //}
+
+            //Task.WaitAll(taskCustomers.ToArray());
+
+            var customerGroup = new List<IEnumerable<ArbitrageCustomer>>();
+
+            foreach (var arbitrageCustomer in arbitrageCustomers)
             {
-                var arbitrageTicket = tickets
-                    .Select(t => t.CustId)
-                    .Distinct();
+                var customers = GroupCustomerFromDB(arbitrageCustomer).ToList();
 
-                var arbitrageCustomers = arbitrageTicket.Chunk(500);
+                if (!customers.Any()) continue;
 
-                var taskCustomers = new List<Task<IEnumerable<ArbitrageCustomer>>>();
+                customerGroup.Add(customers);
 
-                foreach (var arbitrageCustomer in arbitrageCustomers)
-                {
-                   var taskCustomer = GroupCustomer(arbitrageCustomer);
+                Thread.Sleep(TimeSpan.FromSeconds(1));
+            }
 
-                   taskCustomers.Add(taskCustomer);
-
-                   Thread.Sleep(TimeSpan.FromSeconds(1));
-                }
-
-                Task.WaitAll(taskCustomers.ToArray());
-
-                try
-                {
-                    var customers = taskCustomers.SelectMany(t => t.Result);
-
-                    if (tickets == null)
-                        LogService.Error($"{ProjectName} - {ServiceName} - tickets is null");
-                    if (customers == null)
-                        LogService.Error($"{ProjectName} - {ServiceName} - customers is null");
-
+            try
+            {
+                // var customers = taskCustomers.SelectMany(t => t.Result);
+                if(tickets.Any() && customerGroup.Any())
+                { 
                     _arbitrageService.MatchIds = tickets.ToXmlString();
-                    _arbitrageService.Associations = customers.ToXmlString();
+                    _arbitrageService.Associations = customerGroup.ToXmlString();
 
                     _arbitrageService.Rule();
                 }
-                catch (Exception ex)
-                {
-                    var logMessage = new LogMessage(ex.Message)
-                        .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
-                        .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
-
-                    LogService.Error(
-                        $"{ProjectName} - {ServiceName} - MatchId: {matchId} - GroupData Exeption: {logMessage}");
-                }
             }
-            else
+            catch (Exception ex)
             {
+                var logMessage = new LogMessage(ex.Message)
+                    .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
+                    .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
+
                 LogService.Error(
-                    $"{ProjectName} - {ServiceName} - MatchId: {matchId} - Exeption: MatchIds({tickets.Count()}) is null.");
+                    $"{ProjectName} - {ServiceName} - MatchId: {matchId} - GroupData Exeption: {logMessage}");
             }
+        }
+
+        private IEnumerable<ArbitrageCustomer> GroupCustomerFromDB(IEnumerable<int> custids)
+        {
+            IEnumerable<ArbitrageCustomer> result = null;
+
+            result = DbSessionFactory.Execute<ArbitrageCustomer>("GroupCustomer", new { CustIdList = custids }).Data;
+
+            LogService.Info($"{ProjectName} - {ServiceName} - Group Customer on Graph DB is executed.");
+
+            return result;
         }
 
         private async Task<IEnumerable<ArbitrageCustomer>> GroupCustomer(IEnumerable<int> custids)
