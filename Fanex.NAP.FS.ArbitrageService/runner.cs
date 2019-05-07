@@ -151,9 +151,20 @@ namespace Fanex.NAP.FS.ArbitrageService
         {
             IEnumerable<ArbitrageCustomer> result = null;
 
-            result = DbSessionFactory.Execute<ArbitrageCustomer>("GroupCustomer", new { CustIdList = custids }).Data;
+            try
+            {
+                result = DbSessionFactory.Execute<ArbitrageCustomer>("GroupCustomer", new { CustIdList = custids }).Data;
+                
+                LogService.Info($"{ProjectName} - {ServiceName} - Group Customer on Graph DB is executed.");
+            }
+            catch (Exception ex)
+            {
+                var logMessage = new LogMessage(ex.Message)
+                    .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
 
-            LogService.Info($"{ProjectName} - {ServiceName} - Group Customer on Graph DB is executed.");
+                LogService.Error(
+                    $"{ProjectName} - {ServiceName} - - GroupCustomer Exeption: {logMessage}");
+            }
 
             return result;
         }
