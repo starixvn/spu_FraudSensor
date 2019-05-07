@@ -116,7 +116,7 @@ namespace Fanex.NAP.FS.ArbitrageService
 
             foreach (var arbitrageCustomer in arbitrageCustomers)
             {
-                var customers = GroupCustomerFromDB(arbitrageCustomer).ToList();
+                var customers = GroupCustomerFromDB(arbitrageCustomer);
 
                 if (!customers.Any()) continue;
 
@@ -129,11 +129,15 @@ namespace Fanex.NAP.FS.ArbitrageService
             {
                 // var customers = taskCustomers.SelectMany(t => t.Result);
                 if(tickets.Any() && customerGroup.Any())
-                { 
+                {
+                    LogService.Info($"{ProjectName} - {ServiceName} - GroupData(rule) is executing.");
+
                     _arbitrageService.MatchIds = tickets.ToXmlString();
                     _arbitrageService.Associations = customerGroup.ToXmlString();
 
                     _arbitrageService.Rule();
+
+                    LogService.Info($"{ProjectName} - {ServiceName} - GroupData(rule) is executed.");
                 }
             }
             catch (Exception ex)
