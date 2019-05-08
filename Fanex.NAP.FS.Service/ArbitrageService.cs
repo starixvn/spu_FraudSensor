@@ -28,7 +28,7 @@
                 Associations = this.Associations
             };
 
-            using (var db = new ObjectDb(criteria.GetSettingKey(), 3600))
+            using (var db = new ObjectDb(criteria.GetSettingKey()))
             {
                 var param = criteria.GetSpParams();
 

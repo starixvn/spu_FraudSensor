@@ -92,6 +92,11 @@ namespace Fanex.NAP.FS.ArbitrageService
 
         private void GroupData(int matchId, IEnumerable<ArbitrageTicket> tickets)
         {
+            var debugMessage = new LogMessage($"{ProjectName} - {ServiceName} - GroupData(rule) is executing.");
+            var innerMessage = new Dictionary<string, object>();
+            innerMessage.Add("MatchID: ", matchId);
+            innerMessage.Add("Start time: ", DateTime.Now);
+
             // ReSharper disable once PossibleMultipleEnumeration
             var arbitrageTicket = tickets
                 .Select(t => t.CustId)
@@ -108,34 +113,23 @@ namespace Fanex.NAP.FS.ArbitrageService
 
                 customerGroup.Add(customers);
             }
-
+            innerMessage.Add("Get data from GraphDB successfully: ", DateTime.Now);
+            innerMessage.Add("\t tickets: ", tickets.Count());
+            innerMessage.Add("\t customerGroup: ", customerGroup.Count());
 
             try
             {
                 // var customers = taskCustomers.SelectMany(t => t.Result);
                 if (tickets.Any() && customerGroup.Any())
                 {
-                    var innerMessage = new Dictionary<string, object>();
-                    innerMessage.Add("MatchID: ", matchId);
-                    innerMessage.Add("Start time: ", DateTime.Now);
-
-                    var logMessage = new LogMessage($"{ProjectName} - {ServiceName} - GroupData(rule) is executing.")
-                                                        .AddSection("Data Info", innerMessage);
-
-                    LogService.Info(logMessage.ToString());
-
                     _arbitrageService.MatchIds = tickets.ToXmlString();
                     _arbitrageService.Associations = customerGroup.ToXmlString();
+                    innerMessage.Add("Convert to XML successfuly: ", DateTime.Now);
 
                     _arbitrageService.Rule();
-
-                    innerMessage = new Dictionary<string, object>();
-                    innerMessage.Add("MatchID", matchId);
-                    innerMessage.Add("End time: ", DateTime.Now);
-                    logMessage = new LogMessage($"{ProjectName} - {ServiceName} - GroupData(rule) is executed.")
-                                                        .AddSection("Data Info", innerMessage);
-
-                    LogService.Info(logMessage.ToString());
+                    innerMessage.Add("Run rule successfuly: ", DateTime.Now);
+                    debugMessage.AddSection("Data Info", innerMessage);
+                    LogService.Info(debugMessage.ToString());
                 }
             }
             catch (Exception ex)
