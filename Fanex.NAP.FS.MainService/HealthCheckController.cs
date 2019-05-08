@@ -36,7 +36,7 @@
                 .CreateBus()
                 .DeclareExchange(AppSetting.Exchange);
 
-            var thread = new Thread(CheckFraudCaseStatus);
+            var thread = new Thread(InitThreadsForCheckHealth);
             thread.Start();
         }
 
@@ -118,7 +118,7 @@
             RabbitMq.AdvanceBus.PublishAsync(RabbitMq.Exchange, RabbitMq.RoutingKey, false, message);
         }
 
-        private static async void CheckFraudCaseStatus()
+        private static async void InitThreadsForCheckHealth()
         {
             do
             {
@@ -135,7 +135,7 @@
                     }
                 }
 
-                await Task.Delay(65000);
+                await Task.Delay(30000);
             } while (true);
         }
 

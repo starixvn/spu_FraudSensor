@@ -92,12 +92,12 @@ namespace Fanex.NAP.FS.ArbitrageService
 
         private void GroupData(int matchId, IEnumerable<ArbitrageTicket> tickets)
         {
-            var debugMessage = new LogMessage($"{ProjectName} - {ServiceName} - GroupData(rule) is executing.");
+            var startTime = DateTime.Now;
+            var debugMessage = new LogMessage($"{ProjectName} - {ServiceName} - GroupData(rule) for big match is executing.");
             var innerMessage = new Dictionary<string, object>();
             innerMessage.Add("MatchID: ", matchId);
             innerMessage.Add("Start time: ", DateTime.Now);
 
-            // ReSharper disable once PossibleMultipleEnumeration
             var arbitrageTicket = tickets
                 .Select(t => t.CustId)
                 .Distinct();
@@ -119,7 +119,6 @@ namespace Fanex.NAP.FS.ArbitrageService
 
             try
             {
-                // var customers = taskCustomers.SelectMany(t => t.Result);
                 if (tickets.Any() && customerGroup.Any())
                 {
                     _arbitrageService.MatchIds = tickets.ToXmlString();
@@ -128,8 +127,11 @@ namespace Fanex.NAP.FS.ArbitrageService
 
                     _arbitrageService.Rule();
                     innerMessage.Add("Run rule successfuly: ", DateTime.Now);
-                    debugMessage.AddSection("Data Info", innerMessage);
-                    LogService.Info(debugMessage.ToString());
+                    if ((DateTime.Now - startTime).TotalSeconds > 30)
+                    {
+                        debugMessage.AddSection("Data Info", innerMessage);
+                        LogService.Info(debugMessage.ToString());
+                    }
                 }
             }
             catch (Exception ex)
