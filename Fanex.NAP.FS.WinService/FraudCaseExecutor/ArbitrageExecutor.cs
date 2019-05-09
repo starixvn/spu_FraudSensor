@@ -55,6 +55,8 @@
 
         private static void GroupData(int matchId, IEnumerable<ArbitrageTicket> tickets)
         {
+            LogService.Info("Tickets count: " + tickets.Count().ToString() + "; Tickets: " + tickets.ToXmlString());
+
             var tsk = tickets.Select(t => t.CustId).Distinct().Chunk(500).Select(GroupCustomer).ToArray();
 
             Task.WaitAll(tsk);
@@ -66,6 +68,8 @@
                 Matches = tickets.ToXmlString(),
                 Associations = customers.ToXmlString()
             };
+
+            LogService.Info("Customer count: " + customers.Count().ToString() + "; After grouping: " + customers.ToXmlString());
 
             try
             {
