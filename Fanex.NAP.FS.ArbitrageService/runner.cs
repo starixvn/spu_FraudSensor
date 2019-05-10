@@ -153,7 +153,15 @@ namespace Fanex.NAP.FS.ArbitrageService
             {
                 result = DbSessionFactory.Execute<ArbitrageCustomer>("GroupCustomer", new { CustIdList = custids }).Data;
 
-                LogService.Info($"{ProjectName} - {ServiceName} - Group Customer on Graph DB is executed.");
+                if (!result.Any())
+                {
+                    LogService.Info($"{ProjectName} - {ServiceName} - Group Customer on Graph DB is executed. Result is null.");
+                }
+                else
+                {
+                    LogService.Info($"{ProjectName} - {ServiceName} - Group Customer on Graph DB is executed.");
+                }
+                
             }
             catch (Exception ex)
             {
