@@ -92,6 +92,7 @@ namespace Fanex.NAP.FS.ArbitrageService
 
         private void GroupData(int matchId, IEnumerable<ArbitrageTicket> tickets)
         {
+            var isError = false;
             var startTime = DateTime.Now;
             var debugMessage = new LogMessage($"{ProjectName} - {ServiceName} - GroupData(rule) for big match is executing.");
             var innerMessage = new Dictionary<string, object>();
@@ -141,12 +142,25 @@ namespace Fanex.NAP.FS.ArbitrageService
             }
             catch (Exception ex)
             {
+                isError = true;
                 var logMessage = new LogMessage(ex.Message)
                     .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
                     .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
 
                 LogService.Error(
                     $"{ProjectName} - {ServiceName} - MatchId: {matchId} - GroupData Exeption: {logMessage}");
+            }
+            finally
+            {
+                if (isError)
+                {
+                    var innerMessage2 = new Dictionary<string, object>();
+                    innerMessage2.Add("tickets: ", tickets.Count());
+                    innerMessage2.Add("customerGroup: ", customerGroup.Count());
+                    var logMessage = new LogMessage($"{ProjectName} - {ServiceName} - MatchId: {matchId} - GroupData Exeption").AddSection("Data info",innerMessage2);
+
+                    LogService.Error(logMessage.ToString());
+                }
             }
         }
 
