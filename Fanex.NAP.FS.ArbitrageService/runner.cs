@@ -103,7 +103,7 @@ namespace Fanex.NAP.FS.ArbitrageService
                 .Distinct();
 
             var arbitrageCustomers = arbitrageTicket.Chunk(500);
-            var customerGroup = new List<IEnumerable<ArbitrageCustomer>>();
+            var customerGroup = new List<ArbitrageCustomer>();
 
             foreach (var arbitrageCustomer in arbitrageCustomers)
             {
@@ -111,7 +111,7 @@ namespace Fanex.NAP.FS.ArbitrageService
 
                 if (!customers.Any()) continue;
 
-                customerGroup.Add(customers);
+                customerGroup.AddRange(customers);
             }
             innerMessage.Add("Get data from GraphDB successfully: ", DateTime.Now);
             innerMessage.Add("\t tickets: ", tickets.Count());
@@ -124,7 +124,7 @@ namespace Fanex.NAP.FS.ArbitrageService
                     _arbitrageService.MatchIds = tickets.ToXmlString();
                     _arbitrageService.Associations = customerGroup.ToXmlString();
                     innerMessage.Add("Convert to XML successfuly: ", DateTime.Now);
-
+                    
                     _arbitrageService.Rule();
                     innerMessage.Add("Run rule successfuly: ", DateTime.Now);
                     if ((DateTime.Now - startTime).TotalSeconds > 30)

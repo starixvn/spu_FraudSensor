@@ -12,5 +12,12 @@
 
             File.WriteAllLines(filePath, body);
         }
+
+        public static void WriteLog(string filename, string body)
+        {
+            var filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, filename);
+
+            File.WriteAllText(filePath, body);
+        }
     }
 }
