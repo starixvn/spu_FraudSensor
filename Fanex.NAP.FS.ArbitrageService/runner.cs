@@ -224,10 +224,11 @@ namespace Fanex.NAP.FS.ArbitrageService
 
             var ticketGroupBy = _tickets.GroupBy(t => t.MatchId);
 
-            foreach (var ticket in ticketGroupBy)
+            var options = new ParallelOptions() { MaxDegreeOfParallelism = 2 };
+            Parallel.ForEach(ticketGroupBy, options, (ticket) =>
             {
                 GroupData(ticket.Key, ticket);
-            }
+            });
 
             LogService.Info($"{ProjectName} - {ServiceName} - Rule is executed.");
         }

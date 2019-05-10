@@ -127,7 +127,6 @@
                     var thread = lstThreadManager.Where(t => t.Name == fcHealth.FraudCaseId.ToString()).FirstOrDefault();
                     if (thread == null)
                     {
-
                         Thread newThread = new Thread(() => CheckFC(fcHealth));
                         newThread.Name = fcHealth.FraudCaseId.ToString();
                         lstThreadManager.Add(newThread);
@@ -145,7 +144,7 @@
             {
                 var fraudCaseService = new Service.FraudCaseService();
                 var timeout = fcHealth.TimeOut;
-                var period = (DateTime.Now - fcHealth.LastTimeSignal).TotalSeconds;
+                var period = Convert.ToInt32((DateTime.Now - fcHealth.LastTimeSignal).TotalSeconds + 5);
                 var fraudCaseName = Enum.GetName(typeof(FraudCaseId), fcHealth.FraudCaseId);
                 FraudCase fraudCase = null;
 
