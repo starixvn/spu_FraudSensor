@@ -129,11 +129,6 @@ namespace Fanex.NAP.FS.ArbitrageService
                     _arbitrageService.Associations = customerGroup.ToXmlString();
                     innerMessage.Add("Convert to XML successfuly: ", DateTime.Now);
 
-                    if (matchId == 29993959)
-                    {
-                        Ultilities.WriteLog("testARB", "MatchIds: " + _arbitrageService.MatchIds + "\n Associations: " + _arbitrageService.Associations);
-                    }
-                    
                     _arbitrageService.Rule();
 
                     innerMessage.Add("Run rule successfuly: ", DateTime.Now);
@@ -162,16 +157,6 @@ namespace Fanex.NAP.FS.ArbitrageService
             try
             {
                 result = DbSessionFactory.Execute<ArbitrageCustomer>("GroupCustomer", new { CustIdList = custids }).Data;
-
-                if (!result.Any())
-                {
-                    LogService.Info($"{ProjectName} - {ServiceName} - Group Customer on Graph DB is executed. Result is null.");
-                }
-                else
-                {
-                    LogService.Info($"{ProjectName} - {ServiceName} - Group Customer on Graph DB is executed. Result({custids.Count()} - {result.Count()})");
-                }
-                
             }
             catch (Exception ex)
             {
