@@ -15,7 +15,8 @@
 
     <Setting Key="FS_FraudCase_Arbitrage_Rule"
              SpName="FS_FraudCase_Arbitrage_Rule"
-             DbName="DBFS.bodb_FraudSensor.bodbSPUNet" />
+             DbName="DBFS.bodb_FraudSensor.bodbSPUNet"
+             TimeOut="3600"/>
 
     <Setting Key="FS_FraudCase_GetById"
              SpName="FS_FraudCase_GetById"
