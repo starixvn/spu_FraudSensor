@@ -105,14 +105,26 @@ namespace Fanex.NAP.FS.ArbitrageService
             var arbitrageCustomers = arbitrageTicket.Chunk(500);
             var customerGroup = new List<ArbitrageCustomer>();
 
-            foreach (var arbitrageCustomer in arbitrageCustomers)
+            Parallel.ForEach(arbitrageCustomers, (currentCustomer) =>
             {
-                var customers = GroupCustomerFromDB(arbitrageCustomer);
+                var customers = GroupCustomerFromDB(currentCustomer);
 
-                if (!customers.Any()) continue;
+                if (customers.Any())
+                { 
+                    customerGroup.AddRange(customers);
+                }
 
-                customerGroup.AddRange(customers);
-            }
+                Thread.Sleep(10);
+            });
+
+            //foreach (var arbitrageCustomer in arbitrageCustomers)
+            //{
+            //    var customers = GroupCustomerFromDB(arbitrageCustomer);
+
+            //    if (!customers.Any()) continue;
+
+            //    customerGroup.AddRange(customers);
+            //}
             innerMessage.Add("Get data from GraphDB successfully: ", DateTime.Now);
             innerMessage.Add("\t tickets: ", tickets.Count());
             innerMessage.Add("\t customerGroup: ", customerGroup.Count());
