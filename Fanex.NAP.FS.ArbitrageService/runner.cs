@@ -159,7 +159,7 @@ namespace Fanex.NAP.FS.ArbitrageService
                 }
                 else
                 {
-                    LogService.Info($"{ProjectName} - {ServiceName} - Group Customer on Graph DB is executed. Result({result.Count()})");
+                    LogService.Info($"{ProjectName} - {ServiceName} - Group Customer on Graph DB is executed. Result({custids.Count()} - {result.Count()})");
                 }
                 
             }
