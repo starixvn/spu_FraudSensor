@@ -39,6 +39,8 @@ namespace Fanex.NAP.FS.ArbitrageService
             _arbitrageService = new Service.ArbitrageService();
 
             InitializeComponent();
+
+
         }
 
         protected override void OnStart(string[] args)
@@ -105,7 +107,7 @@ namespace Fanex.NAP.FS.ArbitrageService
 
             var arbitrageCustomers = arbitrageTicket.Chunk(500);
             var customerGroup = new List<ArbitrageCustomer>();
-            var lockMe = new Object();
+            var lockMe = new object();
 
             Parallel.ForEach(arbitrageCustomers, (currentCustomer) =>
             {
@@ -130,8 +132,9 @@ namespace Fanex.NAP.FS.ArbitrageService
             {
                 if (tickets.Any() && customerGroup.Any())
                 {
-                    _arbitrageService.MatchIds = tickets.ToXmlString();
-                    _arbitrageService.Associations = customerGroup.ToXmlString();
+                    _arbitrageService.MatchIds = Ultilities.XMLConvert(tickets.ToList());
+                    _arbitrageService.Associations = Ultilities.XMLConvert(customerGroup);
+
                     innerMessage.Add("Convert to XML successfuly: ", DateTime.Now);
 
                     _arbitrageService.Rule();

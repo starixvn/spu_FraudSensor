@@ -3,6 +3,8 @@
     using System;
     using System.Collections.Generic;
     using System.IO;
+    using System.Xml;
+    using System.Xml.Serialization;
 
     public static class Ultilities
     {
@@ -18,6 +20,27 @@
             var filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, filename);
 
             File.WriteAllText(filePath, body);
+        }
+
+        public static string XMLConvert(object data)
+        {
+            var emptyNamespaces = new XmlSerializerNamespaces(new[] { XmlQualifiedName.Empty });
+
+            var settings = new XmlWriterSettings();
+            settings.Indent = true;
+            settings.OmitXmlDeclaration = true;
+
+            var serializer = new XmlSerializer(data.GetType(),new XmlRootAttribute("Root"));
+
+            using (var stringWriter = new System.IO.StringWriter())
+            {
+                using (var writer = XmlWriter.Create(stringWriter, settings))
+                {
+                    serializer.Serialize(writer, data, emptyNamespaces);
+
+                    return stringWriter.ToString();
+                }
+            }
         }
     }
 }
