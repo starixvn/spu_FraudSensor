@@ -116,7 +116,7 @@ namespace Fanex.NAP.FS.ArbitrageService
             return customerGroup;
         }
 
-        private void ExecuteGroupCustomer(int matchId, List<ArbitrageCustomer> customerGroup, List<ArbitrageTicket> tickets,out bool isError)
+        private void ExecuteGroupCustomer(int matchId, List<ArbitrageCustomer> customerGroup, List<ArbitrageTicket> tickets, out bool isError)
         {
             isError = false;
 
@@ -128,6 +128,7 @@ namespace Fanex.NAP.FS.ArbitrageService
                     _arbitrageService.Associations = Ultilities.XMLConvert(customerGroup);
                     
                     isError = true;
+                    LogService.Info($"_arbitrageService.Rule() is executing with match {matchId} ");
                     _arbitrageService.Rule();
                     isError = false;
                 }
