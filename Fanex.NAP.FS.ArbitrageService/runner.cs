@@ -92,26 +92,15 @@ namespace Fanex.NAP.FS.ArbitrageService
             }
         }
 
-        private void GroupData(int matchId, IEnumerable<ArbitrageTicket> tickets, out bool isError)
+        private List<ArbitrageCustomer> GroupCustomer(List<int> custIds)
         {
-            isError = false;
-            var startTime = DateTime.Now;
-            var debugMessage = new LogMessage($"{ProjectName} - {ServiceName} - GroupData(rule) for big match is executing.");
-            var innerMessage = new Dictionary<string, object>();
-            innerMessage.Add("MatchID: ", matchId);
-            innerMessage.Add("Start time: ", DateTime.Now);
-
-            var arbitrageTicket = tickets
-                .Select(t => t.CustId)
-                .Distinct();
-
-            var arbitrageCustomers = arbitrageTicket.Chunk(500);
+            var arbitrageCustomers = custIds.Chunk(500);
             var customerGroup = new List<ArbitrageCustomer>();
             var lockMe = new object();
 
             Parallel.ForEach(arbitrageCustomers, (currentCustomer) =>
             {
-                var customers = GroupCustomerFromDB(currentCustomer);
+                var customers = GetGroupCustomer(currentCustomer);
 
                 if (customers.Any())
                 {
@@ -124,29 +113,23 @@ namespace Fanex.NAP.FS.ArbitrageService
                 Thread.Sleep(10);
             });
 
-            innerMessage.Add("Get data from GraphDB successfully: ", DateTime.Now);
-            innerMessage.Add("\t tickets: ", tickets.Count());
-            innerMessage.Add("\t customerGroup: ", customerGroup.Count());
+            return customerGroup;
+        }
+
+        private void ExecuteGroupCustomer(int matchId, List<ArbitrageCustomer> customerGroup, List<ArbitrageTicket> tickets,out bool isError)
+        {
+            isError = false;
 
             try
             {
                 if (tickets.Any() && customerGroup.Any())
                 {
-                    _arbitrageService.MatchIds = Ultilities.XMLConvert(tickets.ToList());
+                    _arbitrageService.MatchIds = Ultilities.XMLConvert(tickets);
                     _arbitrageService.Associations = Ultilities.XMLConvert(customerGroup);
-
-                    innerMessage.Add("Convert to XML successfuly: ", DateTime.Now);
-
+                    
                     isError = true;
                     _arbitrageService.Rule();
                     isError = false;
-
-                    innerMessage.Add("Run rule successfuly: ", DateTime.Now);
-                    if ((DateTime.Now - startTime).TotalSeconds > 60)
-                    {
-                        debugMessage.AddSection("Data Info", innerMessage);
-                        LogService.Info(debugMessage.ToString());
-                    }
                 }
             }
             catch (Exception ex)
@@ -160,13 +143,13 @@ namespace Fanex.NAP.FS.ArbitrageService
             }
         }
 
-        private IEnumerable<ArbitrageCustomer> GroupCustomerFromDB(IEnumerable<int> custids)
+        private IEnumerable<ArbitrageCustomer> GetGroupCustomer(IEnumerable<int> custIds)
         {
             IEnumerable<ArbitrageCustomer> result = null;
 
             try
             {
-                result = DbSessionFactory.Execute<ArbitrageCustomer>("GroupCustomer", new { CustIdList = custids }).Data;
+                result = DbSessionFactory.Execute<ArbitrageCustomer>("GroupCustomer", new { CustIdList = custIds }).Data;
             }
             catch (Exception ex)
             {
@@ -207,10 +190,7 @@ namespace Fanex.NAP.FS.ArbitrageService
         private void Rule()
         {
             LogService.Info($"{ProjectName} - {ServiceName} - Rule is executing.");
-
-            XmlHelper.RegisterType<ArbitrageTicket>();
-            XmlHelper.RegisterType<ArbitrageCustomer>();
-
+            
             if (_tickets == null || !_tickets.Any()) return;
 
             var ticketGroupBy = _tickets
@@ -220,22 +200,22 @@ namespace Fanex.NAP.FS.ArbitrageService
                     MatchId = x.Key,
                     ArbitrageTicketList = x.ToList()
                 }).ToList();
-
-            var debugMessage = string.Empty;
-            debugMessage = "ticketGroupBy: ";
-            foreach (var ticket in ticketGroupBy)
-            {
-                debugMessage += ticket.MatchId + "("+ ticket.ArbitrageTicketList.Count() + "), ";
-            }
-
-            LogService.Info(debugMessage);
+            
             var options = new ParallelOptions() { MaxDegreeOfParallelism = 2 };
 
             Parallel.ForEach(ticketGroupBy, options, (ticket) =>
             {
                 var isError = false;
 
-                GroupData(ticket.MatchId, ticket.ArbitrageTicketList, out isError);
+                var custIds = ticket.ArbitrageTicketList
+                    .Select(t => t.CustId)
+                    .Distinct()
+                    .ToList();
+
+                var groupCustomer = GroupCustomer(custIds);
+
+                ExecuteGroupCustomer(ticket.MatchId, groupCustomer, ticket.ArbitrageTicketList, out isError);
+
                 if (isError)
                 {
                     LogService.Info("GroupData(ticket.Key, ticket) - " + ticket.MatchId + " - " + ticket.ArbitrageTicketList.Count());
