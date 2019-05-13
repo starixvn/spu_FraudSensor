@@ -115,9 +115,9 @@ namespace Fanex.NAP.FS.ArbitrageService
             return customerGroup;
         }
 
-        private void ExecuteGroupCustomer(int matchId, List<ArbitrageCustomer> customerGroup, List<ArbitrageTicket> tickets, out bool isError)
+        private void ExecuteGroupCustomer(int matchId, List<ArbitrageCustomer> customerGroup, List<ArbitrageTicket> tickets)
         {
-            isError = false;
+           
 
             try
             {
@@ -125,11 +125,8 @@ namespace Fanex.NAP.FS.ArbitrageService
                 {
                     _arbitrageService.MatchIds = Ultilities.XMLConvert(tickets);
                     _arbitrageService.Associations = Ultilities.XMLConvert(customerGroup);
-
-                    isError = true;
-                    LogService.Info($"_arbitrageService.Rule() is executing with match {matchId} ");
+                    
                     _arbitrageService.Rule();
-                    isError = false;
                 }
             }
             catch (Exception ex)
@@ -203,15 +200,14 @@ namespace Fanex.NAP.FS.ArbitrageService
                     ArbitrageTicketList = x.ToList()
                 }).ToList();
 
-            
+
             var tasks = new List<Task>();
+            int matchId = 0;
 
             foreach (var ticket in ticketGroupBy)
             {
                 var task = new Task(() =>
                 {
-                    var isError = false;
-
                     var custIds = ticket.ArbitrageTicketList
                         .Select(t => t.CustId)
                         .Distinct()
@@ -219,18 +215,22 @@ namespace Fanex.NAP.FS.ArbitrageService
 
                     var groupCustomer = GroupCustomer(custIds);
 
-                ExecuteGroupCustomer(ticket.MatchId, groupCustomer, ticket.ArbitrageTicketList, out isError);
-
-                    if (isError)
+                    if (matchId != ticket.MatchId)
                     {
-                        LogService.Info("GroupData(ticket.Key, ticket) - " + ticket.MatchId + " - " + ticket.ArbitrageTicketList.Count());
+                        matchId = ticket.MatchId;
+
+                        ExecuteGroupCustomer(ticket.MatchId, groupCustomer, ticket.ArbitrageTicketList);
+                    }
+                    else
+                    {
+                        LogService.Info("Same Match Id - GroupData(ticket.Key, ticket) - " + ticket.MatchId + " - " + matchId + " is the same match");
                     }
                 });
 
                 task.Start();
                 tasks.Add(task);
 
-                if (tasks.Count >= 2) 
+                if (tasks.Count >= 2)
                 {
                     Task.WaitAll(tasks.ToArray());
 
