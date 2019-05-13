@@ -116,7 +116,7 @@ namespace Fanex.NAP.FS.ArbitrageService
                 if (customers.Any())
                 {
                     lock (lockMe)
-                    { 
+                    {
                         customerGroup.AddRange(customers);
                     }
                 }
@@ -180,25 +180,6 @@ namespace Fanex.NAP.FS.ArbitrageService
             return result;
         }
 
-        private async Task<IEnumerable<ArbitrageCustomer>> GroupCustomer(IEnumerable<int> custids)
-        {
-            try
-            {
-                return await ApiHelper.Post<IEnumerable<ArbitrageCustomer>>(AppSetting.GroupCustomerPath, custids);
-            }
-            catch (Exception ex)
-            {
-                var logMessage = new LogMessage(ex.Message)
-                        .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
-                        .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
-
-                LogService.Error(
-                    $"{ProjectName} - {ServiceName} - GroupCustomer Exception: Cannot get Group Customer from Web API - Exception: {logMessage}");
-
-                return Enumerable.Empty<ArbitrageCustomer>();
-            }
-        }
-
         private void Report(bool status, string exception, string message)
         {
             var model = new ReportModel
@@ -232,24 +213,32 @@ namespace Fanex.NAP.FS.ArbitrageService
 
             if (_tickets == null || !_tickets.Any()) return;
 
-            var ticketGroupBy = _tickets.GroupBy(t => t.MatchId);
+            var ticketGroupBy = _tickets
+                .GroupBy(t => t.MatchId)
+                .Select(x => new
+                {
+                    MatchId = x.Key,
+                    ArbitrageTicketList = x.ToList()
+                }).ToList();
 
             var debugMessage = string.Empty;
             debugMessage = "ticketGroupBy: ";
             foreach (var ticket in ticketGroupBy)
             {
-                debugMessage += ticket.Key + ", ";
+                debugMessage += ticket.MatchId + "("+ ticket.ArbitrageTicketList.Count() + "), ";
             }
 
             LogService.Info(debugMessage);
             var options = new ParallelOptions() { MaxDegreeOfParallelism = 2 };
+
             Parallel.ForEach(ticketGroupBy, options, (ticket) =>
             {
                 var isError = false;
-                GroupData(ticket.Key, ticket, out isError);
+
+                GroupData(ticket.MatchId, ticket.ArbitrageTicketList, out isError);
                 if (isError)
                 {
-                    LogService.Info("GroupData(ticket.Key, ticket) - " + ticket.Key + " - " + ticket.Count());
+                    LogService.Info("GroupData(ticket.Key, ticket) - " + ticket.MatchId + " - " + ticket.ArbitrageTicketList.Count());
                 }
             });
 
