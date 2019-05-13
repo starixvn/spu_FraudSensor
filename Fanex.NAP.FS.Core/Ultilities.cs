@@ -26,9 +26,7 @@
         {
             var emptyNamespaces = new XmlSerializerNamespaces(new[] { XmlQualifiedName.Empty });
 
-            var settings = new XmlWriterSettings();
-            settings.Indent = true;
-            settings.OmitXmlDeclaration = true;
+            var settings = new XmlWriterSettings {Indent = true, OmitXmlDeclaration = true};
 
             var serializer = new XmlSerializer(data.GetType(),new XmlRootAttribute("Root"));
 
