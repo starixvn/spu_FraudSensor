@@ -39,8 +39,6 @@ namespace Fanex.NAP.FS.ArbitrageService
             _arbitrageService = new Service.ArbitrageService();
 
             InitializeComponent();
-
-
         }
 
         protected override void OnStart(string[] args)
@@ -126,7 +124,7 @@ namespace Fanex.NAP.FS.ArbitrageService
                 {
                     _arbitrageService.MatchIds = Ultilities.XMLConvert(tickets);
                     _arbitrageService.Associations = Ultilities.XMLConvert(customerGroup);
-                    
+
                     isError = true;
                     LogService.Info($"_arbitrageService.Rule() is executing with match {matchId} ");
                     _arbitrageService.Rule();
@@ -191,7 +189,9 @@ namespace Fanex.NAP.FS.ArbitrageService
         private void Rule()
         {
             LogService.Info($"{ProjectName} - {ServiceName} - Rule is executing.");
-            
+
+            var lockMe = new object();
+
             if (_tickets == null || !_tickets.Any()) return;
 
             var ticketGroupBy = _tickets
@@ -201,8 +201,8 @@ namespace Fanex.NAP.FS.ArbitrageService
                     MatchId = x.Key,
                     ArbitrageTicketList = x.ToList()
                 }).ToList();
-            
-            var options = new ParallelOptions() { MaxDegreeOfParallelism = 1 };
+
+            var options = new ParallelOptions() { MaxDegreeOfParallelism = 2 };
 
             Parallel.ForEach(ticketGroupBy, options, (ticket) =>
             {
@@ -216,6 +216,7 @@ namespace Fanex.NAP.FS.ArbitrageService
                 var groupCustomer = GroupCustomer(custIds);
 
                 ExecuteGroupCustomer(ticket.MatchId, groupCustomer, ticket.ArbitrageTicketList, out isError);
+
 
                 if (isError)
                 {
