@@ -115,16 +115,14 @@ namespace Fanex.NAP.FS.ArbitrageService
             return customerGroup;
         }
 
-        private void ExecuteGroupCustomer(int matchId, List<ArbitrageCustomer> customerGroup, List<ArbitrageTicket> tickets)
+        private void ExecuteGroupCustomer(int matchId, List<ArbitrageCustomer> associations, List<ArbitrageTicket> matchIds)
         {
-           
-
             try
             {
-                if (tickets.Any() && customerGroup.Any())
+                if (matchIds.Any() && associations.Any())
                 {
-                    _arbitrageService.MatchIds = Ultilities.XMLConvert(tickets);
-                    _arbitrageService.Associations = Ultilities.XMLConvert(customerGroup);
+                    _arbitrageService.MatchIds = Ultilities.XMLConvert(matchIds);
+                    _arbitrageService.Associations = Ultilities.XMLConvert(associations);
                     
                     _arbitrageService.Rule();
                 }
@@ -229,6 +227,7 @@ namespace Fanex.NAP.FS.ArbitrageService
 
                 task.Start();
                 tasks.Add(task);
+                Task.Delay(20);
 
                 if (tasks.Count >= 2)
                 {
