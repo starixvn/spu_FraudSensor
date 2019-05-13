@@ -12,6 +12,7 @@ using Fanex.NAP.FS.Model;
 using Fanex.NAP.FS.Service;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.ServiceProcess;
@@ -202,27 +203,65 @@ namespace Fanex.NAP.FS.ArbitrageService
                     ArbitrageTicketList = x.ToList()
                 }).ToList();
 
-            var options = new ParallelOptions() { MaxDegreeOfParallelism = 2 };
+            
+            var tasks = new List<Task>();
 
-            Parallel.ForEach(ticketGroupBy, options, (ticket) =>
+            foreach (var ticket in ticketGroupBy)
             {
-                var isError = false;
+                var task = new Task(() =>
+                {
+                    var isError = false;
 
-                var custIds = ticket.ArbitrageTicketList
-                    .Select(t => t.CustId)
-                    .Distinct()
-                    .ToList();
+                    var custIds = ticket.ArbitrageTicketList
+                        .Select(t => t.CustId)
+                        .Distinct()
+                        .ToList();
 
-                var groupCustomer = GroupCustomer(custIds);
+                    var groupCustomer = GroupCustomer(custIds);
 
                 ExecuteGroupCustomer(ticket.MatchId, groupCustomer, ticket.ArbitrageTicketList, out isError);
 
+                    if (isError)
+                    {
+                        LogService.Info("GroupData(ticket.Key, ticket) - " + ticket.MatchId + " - " + ticket.ArbitrageTicketList.Count());
+                    }
+                });
 
-                if (isError)
+                task.Start();
+                tasks.Add(task);
+
+                if (tasks.Count >= 2) 
                 {
-                    LogService.Info("GroupData(ticket.Key, ticket) - " + ticket.MatchId + " - " + ticket.ArbitrageTicketList.Count());
+                    Task.WaitAll(tasks.ToArray());
+
+                    tasks.Clear();
                 }
-            });
+            }
+
+
+            //var options = new ParallelOptions() { MaxDegreeOfParallelism = 2 };
+
+            //Parallel.ForEach(ticketGroupBy, options, ticket =>
+            //{
+            //    var isError = false;
+
+            //    var custIds = ticket.ArbitrageTicketList
+            //        .Select(t => t.CustId)
+            //        .Distinct()
+            //        .ToList();
+
+            //    var groupCustomer = GroupCustomer(custIds);
+
+            //    lock (lockMe)
+            //    {
+            //        ExecuteGroupCustomer(ticket.MatchId, groupCustomer, ticket.ArbitrageTicketList, out isError);
+            //    }
+
+            //    if (isError)
+            //    {
+            //        LogService.Info("GroupData(ticket.Key, ticket) - " + ticket.MatchId + " - " + ticket.ArbitrageTicketList.Count());
+            //    }
+            //});
 
             LogService.Info($"{ProjectName} - {ServiceName} - Rule is executed.");
         }
