@@ -198,69 +198,22 @@ namespace Fanex.NAP.FS.ArbitrageService
                     ArbitrageTicketList = x.ToList()
                 }).ToList();
 
+            var options = new ParallelOptions() { MaxDegreeOfParallelism = 2 };
 
-            var tasks = new List<Task>();
-            int matchId = 0;
-
-            foreach (var ticket in ticketGroupBy)
+            Parallel.ForEach(ticketGroupBy, options, ticket =>
             {
-                var task = new Task(() =>
+                var custIds = ticket.ArbitrageTicketList
+                    .Select(t => t.CustId)
+                    .Distinct()
+                    .ToList();
+
+                var groupCustomer = GroupCustomer(custIds);
+
+                lock (lockMe)
                 {
-                    var custIds = ticket.ArbitrageTicketList
-                        .Select(t => t.CustId)
-                        .Distinct()
-                        .ToList();
-
-                    var groupCustomer = GroupCustomer(custIds);
-
-                    if (matchId != ticket.MatchId)
-                    {
-                        matchId = ticket.MatchId;
-
-                        ExecuteGroupCustomer(ticket.MatchId, groupCustomer, ticket.ArbitrageTicketList);
-                    }
-                    else
-                    {
-                        LogService.Info("Same Match Id - GroupData(ticket.Key, ticket) - " + ticket.MatchId + " - " + matchId + " is the same match");
-                    }
-                });
-
-                task.Start();
-                tasks.Add(task);
-                Task.Delay(20);
-
-                if (tasks.Count >= 2)
-                {
-                    Task.WaitAll(tasks.ToArray());
-
-                    tasks.Clear();
+                    ExecuteGroupCustomer(ticket.MatchId, groupCustomer, ticket.ArbitrageTicketList);
                 }
-            }
-
-
-            //var options = new ParallelOptions() { MaxDegreeOfParallelism = 2 };
-
-            //Parallel.ForEach(ticketGroupBy, options, ticket =>
-            //{
-            //    var isError = false;
-
-            //    var custIds = ticket.ArbitrageTicketList
-            //        .Select(t => t.CustId)
-            //        .Distinct()
-            //        .ToList();
-
-            //    var groupCustomer = GroupCustomer(custIds);
-
-            //    lock (lockMe)
-            //    {
-            //        ExecuteGroupCustomer(ticket.MatchId, groupCustomer, ticket.ArbitrageTicketList, out isError);
-            //    }
-
-            //    if (isError)
-            //    {
-            //        LogService.Info("GroupData(ticket.Key, ticket) - " + ticket.MatchId + " - " + ticket.ArbitrageTicketList.Count());
-            //    }
-            //});
+            });
 
             LogService.Info($"{ProjectName} - {ServiceName} - Rule is executed.");
         }
