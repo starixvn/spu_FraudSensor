@@ -50,7 +50,7 @@
                 startOptions.Urls.Add($"http://{localIp}:{AppSetting.HeartBeatPort}");
                 startOptions.Urls.Add($"http://localhost:{AppSetting.HeartBeatPort}");
                 startOptions.Urls.Add($"http://127.0.0.1:{AppSetting.HeartBeatPort}");
-       
+
                 _server = WebApp.Start<Startup>(startOptions);
 
                 LogService.Info($"{ProjectName} - Main service has been started.");

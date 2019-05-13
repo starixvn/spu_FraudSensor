@@ -92,9 +92,9 @@ namespace Fanex.NAP.FS.ArbitrageService
             }
         }
 
-        private void GroupData(int matchId, IEnumerable<ArbitrageTicket> tickets)
+        private void GroupData(int matchId, IEnumerable<ArbitrageTicket> tickets, out bool isError)
         {
-            var isError = false;
+            isError = false;
             var startTime = DateTime.Now;
             var debugMessage = new LogMessage($"{ProjectName} - {ServiceName} - GroupData(rule) for big match is executing.");
             var innerMessage = new Dictionary<string, object>();
@@ -137,10 +137,12 @@ namespace Fanex.NAP.FS.ArbitrageService
 
                     innerMessage.Add("Convert to XML successfuly: ", DateTime.Now);
 
+                    isError = true;
                     _arbitrageService.Rule();
+                    isError = false;
 
                     innerMessage.Add("Run rule successfuly: ", DateTime.Now);
-                    if ((DateTime.Now - startTime).TotalSeconds > 30)
+                    if ((DateTime.Now - startTime).TotalSeconds > 60)
                     {
                         debugMessage.AddSection("Data Info", innerMessage);
                         LogService.Info(debugMessage.ToString());
@@ -149,25 +151,12 @@ namespace Fanex.NAP.FS.ArbitrageService
             }
             catch (Exception ex)
             {
-                isError = true;
                 var logMessage = new LogMessage(ex.Message)
                     .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
                     .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
 
                 LogService.Error(
                     $"{ProjectName} - {ServiceName} - MatchId: {matchId} - GroupData Exeption: {logMessage}");
-            }
-            finally
-            {
-                if (isError)
-                {
-                    var innerMessage2 = new Dictionary<string, object>();
-                    innerMessage2.Add("tickets: ", tickets.Count());
-                    innerMessage2.Add("customerGroup: ", customerGroup.Count());
-                    var logMessage = new LogMessage($"{ProjectName} - {ServiceName} - MatchId: {matchId} - GroupData Exeption").AddSection("Data info",innerMessage2);
-
-                    LogService.Error(logMessage.ToString());
-                }
             }
         }
 
@@ -245,10 +234,23 @@ namespace Fanex.NAP.FS.ArbitrageService
 
             var ticketGroupBy = _tickets.GroupBy(t => t.MatchId);
 
+            var debugMessage = string.Empty;
+            debugMessage = "ticketGroupBy: ";
+            foreach (var ticket in ticketGroupBy)
+            {
+                debugMessage += ticket.Key + ", ";
+            }
+
+            LogService.Info(debugMessage);
             var options = new ParallelOptions() { MaxDegreeOfParallelism = 2 };
             Parallel.ForEach(ticketGroupBy, options, (ticket) =>
             {
-                GroupData(ticket.Key, ticket);
+                var isError = false;
+                GroupData(ticket.Key, ticket, out isError);
+                if (isError)
+                {
+                    LogService.Info("GroupData(ticket.Key, ticket) - " + ticket.Key + " - " + ticket.Count());
+                }
             });
 
             LogService.Info($"{ProjectName} - {ServiceName} - Rule is executed.");

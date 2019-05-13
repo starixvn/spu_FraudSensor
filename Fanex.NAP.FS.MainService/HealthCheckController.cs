@@ -144,7 +144,7 @@
             {
                 var fraudCaseService = new Service.FraudCaseService();
                 var timeout = fcHealth.TimeOut;
-                var period = Convert.ToInt32((DateTime.Now - fcHealth.LastTimeSignal).TotalSeconds + 5);
+                var period = (DateTime.Now - fcHealth.LastTimeSignal).TotalSeconds;
                 var fraudCaseName = Enum.GetName(typeof(FraudCaseId), fcHealth.FraudCaseId);
                 FraudCase fraudCase = null;
 
@@ -162,7 +162,7 @@
                     fraudCase = fraudCaseService.GetByFraudCaseId(fcHealth.FraudCaseId, AppSetting.Environment);
                 }
 
-                if (!AppSetting.IgnoreCase.Contains(fraudCase.FraudCaseId) && fraudCase.IsActive && period > fcHealth.TimeOut)
+                if (!AppSetting.IgnoreCase.Contains(fraudCase.FraudCaseId) && fraudCase.IsActive && ((period - fcHealth.TimeOut) > 300))
                 {
                     try
                     {
@@ -181,7 +181,7 @@
                     fcHealth.LetstalkCurrentTimes += 1;
                 }
 
-                Thread.Sleep(Convert.ToInt32(fcHealth.TimeOut * 1.1 * 1000));
+                Thread.Sleep(Convert.ToInt32(fcHealth.TimeOut * 1000));
             } while (true);
         }
 
