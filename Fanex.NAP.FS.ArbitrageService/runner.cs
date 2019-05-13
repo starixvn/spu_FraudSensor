@@ -105,14 +105,18 @@ namespace Fanex.NAP.FS.ArbitrageService
 
             var arbitrageCustomers = arbitrageTicket.Chunk(500);
             var customerGroup = new List<ArbitrageCustomer>();
-            
+            var lockMe = new Object();
+
             Parallel.ForEach(arbitrageCustomers, (currentCustomer) =>
             {
                 var customers = GroupCustomerFromDB(currentCustomer);
 
                 if (customers.Any())
-                { 
-                    customerGroup.AddRange(customers);
+                {
+                    lock (lockMe)
+                    { 
+                        customerGroup.AddRange(customers);
+                    }
                 }
 
                 Thread.Sleep(10);
