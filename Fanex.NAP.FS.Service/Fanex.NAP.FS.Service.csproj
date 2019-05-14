@@ -49,6 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ArbitrageRuleCommand.cs" />
     <Compile Include="ArbitrageService.cs" />
     <Compile Include="CheckBetService.cs" />
     <Compile Include="BigStakeNearGoalService.cs" />
