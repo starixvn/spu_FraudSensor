@@ -117,9 +117,9 @@ namespace Fanex.NAP.FS.ScannedOfficeIPService
             {
                 var ids = chunk.Select(m => m.MatchId);
 
-                _scannedOfficeIpService.MatchIds = string.Join(",", ids);
+                var matchIds = string.Join(",", ids);
 
-                _scannedOfficeIpService.Rule();
+                _scannedOfficeIpService.Rule(matchIds);
             }
 
             Thread.Sleep(TimeSpan.FromSeconds(2));

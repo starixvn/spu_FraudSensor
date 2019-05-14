@@ -51,14 +51,21 @@
   <ItemGroup>
     <Compile Include="ArbitrageRuleCommand.cs" />
     <Compile Include="ArbitrageService.cs" />
+    <Compile Include="BetsNearGoalRuleCommand.cs" />
+    <Compile Include="BigStakeNearGoalRuleCommand.cs" />
+    <Compile Include="CheckBetRuleCommand.cs" />
     <Compile Include="CheckBetService.cs" />
     <Compile Include="BigStakeNearGoalService.cs" />
+    <Compile Include="DailyDataCaptureRuleCommand.cs" />
     <Compile Include="DailyDataCaptureService.cs" />
+    <Compile Include="DelayGoalRuleCommand.cs" />
     <Compile Include="DelayGoalService.cs" />
+    <Compile Include="FlaggedAccountRuleCommand.cs" />
     <Compile Include="FlaggedAccountService.cs" />
     <Compile Include="FraudCaseService.cs" />
     <Compile Include="LetstalkService.cs" />
     <Compile Include="MicroService.cs" />
+    <Compile Include="OfficeIPRuleCommand.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="BetsNearGoalService.cs" />
     <Compile Include="ScannedOfficeIpService.cs" />

@@ -146,8 +146,7 @@
         {
             try
             {
-                _betNearGoalService.MatchIds = match.MatchId.ToString();
-                _betNearGoalService.Rule();
+                _betNearGoalService.Rule(match.MatchId.ToString());
             }
             catch (Exception ex)
             {
@@ -165,8 +164,8 @@
             {
                 try
                 {
-                    _betNearGoalService.MatchIds = ((Match)m).MatchId.ToString();
-                    _betNearGoalService.Rule();                   
+                    var matchIds = ((Match)m).MatchId.ToString();
+                    _betNearGoalService.Rule(matchIds);                   
                 }
                 catch (Exception ex)
                 {

@@ -1,4 +1,6 @@
-﻿namespace Fanex.NAP.FS.Service
+﻿using Fanex.Data.Repository;
+
+namespace Fanex.NAP.FS.Service
 {
     using Fanex.Data;
     using Fanex.NAP.FS.Library.Criteria.FraudSensorTask;
@@ -7,21 +9,12 @@
 
     public class DailyDataCaptureService
     {
-        public IEnumerable<T> PreCondition<T>()
-        {
-            throw new NotImplementedException();
-        }        
-
         public void Rule()
         {
-            var criteria = new DailyDataCaptureRuleCriteria();            
+            var repository = new DynamicRepository();
+            var criteria = new DailyDataCaptureRuleCommand();
 
-            using (var db = new ObjectDb(criteria.GetSettingKey()))
-            {
-                var param = criteria.GetSpParams();
-
-                db.ExecuteNonQuery(param);
-            }
+            repository.Execute(criteria);
         }
     }
 }

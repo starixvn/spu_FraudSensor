@@ -1,4 +1,6 @@
-﻿namespace Fanex.NAP.FS.Service
+﻿using Fanex.Data.Repository;
+
+namespace Fanex.NAP.FS.Service
 {
     using Fanex.Data;
     using Fanex.NAP.FS.Library.Criteria.FraudSensorTask;
@@ -6,23 +8,12 @@
 
     public class CheckBetService
     {
-        public string MatchIds { get; set; }
-
-        public IEnumerable<Match> PreCondition<Match>()
-        {
-            return null;
-        }
-  
         public void Rule()
         {
-            var criteria = new CheckBetRuleCriteria();
+            var repository = new DynamicRepository();
+            var criteria = new CheckBetRuleCommand();
 
-            using (var db = new ObjectDb(criteria.GetSettingKey(), 3600))
-            {
-                var param = criteria.GetSpParams();
-
-                db.ExecuteNonQuery(param);
-            }
+            repository.Execute(criteria);
         }
     }
 }

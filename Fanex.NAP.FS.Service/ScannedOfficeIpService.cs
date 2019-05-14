@@ -1,13 +1,14 @@
-﻿namespace Fanex.NAP.FS.Service
+﻿
+
+namespace Fanex.NAP.FS.Service
 {
     using Fanex.Data;
+    using Fanex.Data.Repository;
     using Fanex.NAP.FS.Library.Criteria.FraudSensorTask;
     using System.Collections.Generic;
 
     public class ScannedOfficeIpService
     {
-        public string MatchIds { get; set; }
-
         public IEnumerable<Match> PreCondition<Match>()
         {
             var criteria = new OfficeIPPreconditionCriteria();
@@ -18,19 +19,16 @@
             }
         }        
 
-        public void Rule()
+        public void Rule(string matchIds)
         {
-            var criteria = new OfficeIPRuleCriteria()
+            var repository = new DynamicRepository();
+
+            var criteria = new OfficeIPRuleCommand()
             {
-               MatchIds = MatchIds
+               MatchIds = matchIds
             };
 
-            using (var db = new ObjectDb(criteria.GetSettingKey(), 3600))
-            {
-                var param = criteria.GetSpParams();
-
-                db.ExecuteNonQuery(param);
-            }
+            repository.Execute(criteria);
         }       
     }
 }

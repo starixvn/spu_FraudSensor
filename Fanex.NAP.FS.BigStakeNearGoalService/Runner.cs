@@ -131,8 +131,8 @@
                 try
                 {
                     var matchIds = ((Match)m).MatchId.ToString();
-                    _bigStakeNearGoalService.MatchIds = matchIds;
-                    _bigStakeNearGoalService.Rule();
+                    
+                    _bigStakeNearGoalService.Rule(matchIds);
                 }
                 catch (Exception ex)
                 {
@@ -152,8 +152,8 @@
             try
             {
                 var matchIds = ((Match)match).MatchId.ToString();
-                _bigStakeNearGoalService.MatchIds = matchIds;
-                _bigStakeNearGoalService.Rule();
+                
+                _bigStakeNearGoalService.Rule(matchIds);
             }
             catch (Exception ex)
             {

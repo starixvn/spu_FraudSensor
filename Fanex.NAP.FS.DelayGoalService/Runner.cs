@@ -140,8 +140,8 @@
             {
                 try
                 {
-                    _delayGoalService.MatchIds = string.Join(",", ((List<Match>)m).Select(t => t.MatchId.ToString()));
-                    _delayGoalService.Rule();
+                    var matchIds = string.Join(",", ((List<Match>)m).Select(t => t.MatchId.ToString()));
+                    _delayGoalService.Rule(matchIds);
                 }
                 catch (Exception ex)
                 {

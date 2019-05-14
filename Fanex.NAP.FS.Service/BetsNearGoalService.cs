@@ -1,13 +1,12 @@
 ﻿namespace Fanex.NAP.FS.Service
 {
     using Fanex.Data;
+    using Fanex.Data.Repository;
     using Fanex.NAP.FS.Library.Criteria.FraudSensorTask;
     using System.Collections.Generic;
 
     public class BetsNearGoalService
     {
-        public string MatchIds { get; set; }
-
         public IEnumerable<Match> PreCondition<Match>()
         {
             var criteria = new BetsNearGoalPreconditionCriteria();
@@ -18,19 +17,16 @@
             }
         }       
   
-        public void Rule()
+        public void Rule(string matchIds)
         {
-            var criteria = new BetsNearGoalRuleCriteria()
+            var repository = new DynamicRepository();
+
+            var criteria = new BetsNearGoalRuleCommand()
             {
-                MatchIds = this.MatchIds
+                MatchIds = matchIds
             };
 
-            using (var db = new ObjectDb(criteria.GetSettingKey(), 3600))
-            {
-                var param = criteria.GetSpParams();
-
-                db.ExecuteNonQuery(param);
-            }
+            repository.Execute(criteria);
         }
     }
 }

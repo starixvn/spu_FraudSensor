@@ -180,10 +180,10 @@
             try
             {
 
-                FlaggedAccountService.MatchIds = string.Join(",", ((List<Match>)matches).Select(t => t.MatchId.ToString()));
-                FlaggedAccountService.FlaggedAccounts = XmlHelper.ToXmlString(_flaggedCustomers);
+                var matchIds = string.Join(",", ((List<Match>)matches).Select(t => t.MatchId.ToString()));
+                var flaggedAccounts = XmlHelper.ToXmlString(_flaggedCustomers);
 
-                FlaggedAccountService.Rule();
+                FlaggedAccountService.Rule(matchIds, flaggedAccounts);
 
             }
             catch (Exception ex)
@@ -203,10 +203,10 @@
                 try
                 {
                   
-                    FlaggedAccountService.MatchIds = string.Join(",", ((List<Match>)m).Select(t => t.MatchId.ToString()));
-                    FlaggedAccountService.FlaggedAccounts = XmlHelper.ToXmlString(_flaggedCustomers);
+                    var matchIds = string.Join(",", ((List<Match>)m).Select(t => t.MatchId.ToString()));
+                    var flaggedAccounts = XmlHelper.ToXmlString(_flaggedCustomers);
 
-                    FlaggedAccountService.Rule();
+                    FlaggedAccountService.Rule(matchIds, flaggedAccounts);
 
                 }
                 catch (Exception ex)

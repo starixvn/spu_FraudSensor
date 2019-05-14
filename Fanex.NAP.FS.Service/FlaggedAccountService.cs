@@ -1,4 +1,6 @@
-﻿namespace Fanex.NAP.FS.Service
+﻿using Fanex.Data.Repository;
+
+namespace Fanex.NAP.FS.Service
 {
     using Fanex.Data;
     using Fanex.NAP.FS.Library.Criteria.FraudSensorTask;
@@ -6,10 +8,6 @@
 
     public class FlaggedAccountService
     {
-        public string MatchIds { get; set; }
-
-        public string FlaggedAccounts { get; set; }
-
         public IEnumerable<Match> PreCondition<Match>()
         {
             var criteria = new FlaggedAccountPreconditionCriteria();
@@ -20,20 +18,17 @@
             }
         }               
 
-        public void Rule()
+        public void Rule(string matchIds, string flaggedAccounts)
         {
-            var criteria = new FlaggedAccountRuleCriteria()
+            var repository = new DynamicRepository();
+
+            var criteria = new FlaggedAccountRuleCommand()
             {
-                MatchIds = this.MatchIds,
-                FlaggedAccountsXML = this.FlaggedAccounts
+                MatchIds = matchIds,
+                FlaggedAccountsXML = flaggedAccounts
             };
 
-            using (var db = new ObjectDb(criteria.GetSettingKey()))
-            {
-                var param = criteria.GetSpParams();
-
-                db.ExecuteNonQuery(param);
-            }
+            repository.Execute(criteria);
         }
     }
 }

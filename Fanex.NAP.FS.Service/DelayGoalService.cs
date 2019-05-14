@@ -1,4 +1,6 @@
-﻿namespace Fanex.NAP.FS.Service
+﻿using Fanex.Data.Repository;
+
+namespace Fanex.NAP.FS.Service
 {
     using Fanex.Data;
     using Fanex.NAP.FS.Library.Criteria.FraudSensorTask;
@@ -6,8 +8,6 @@
 
     public class DelayGoalService
     {
-        public string MatchIds { get; set; }
-
         public IEnumerable<Match> PreCondition<Match>()
         {
             var criteria = new DelayGoalPreconditionCriteria();
@@ -18,19 +18,15 @@
             }
         }
 
-        public void Rule()
+        public void Rule(string matchIds)
         {
-            var criteria = new DelayGoalRuleCriteria()
+            var repository = new DynamicRepository();
+            var criteria = new DelayGoalRuleCommand()
             {
-                MatchIds = this.MatchIds
+                MatchIds = matchIds
             };
 
-            using (var db = new ObjectDb(criteria.GetSettingKey()))
-            {
-                var param = criteria.GetSpParams();
-
-                db.ExecuteNonQuery(param);
-            }
+            repository.Execute(criteria);
         }
     }
 }
