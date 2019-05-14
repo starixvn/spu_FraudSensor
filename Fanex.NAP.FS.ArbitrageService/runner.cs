@@ -121,10 +121,10 @@ namespace Fanex.NAP.FS.ArbitrageService
             {
                 if (matchIds.Any() && associations.Any())
                 {
-                    _arbitrageService.MatchIds = Ultilities.XMLConvert(matchIds);
-                    _arbitrageService.Associations = Ultilities.XMLConvert(associations);
+                    var xmlMatchIds = Ultilities.XMLConvert(matchIds);
+                    var xmlAssociations = Ultilities.XMLConvert(associations);
                     
-                    _arbitrageService.Rule();
+                    _arbitrageService.Rule(xmlMatchIds, xmlAssociations);
                 }
             }
             catch (Exception ex)

@@ -4,7 +4,7 @@
     using Fanex.NAP.FS.Library.Criteria.FraudSensorTask;
     using System.Collections.Generic;
 
-    public class FlaggedAccountService: IExecutorService
+    public class FlaggedAccountService
     {
         public string MatchIds { get; set; }
 

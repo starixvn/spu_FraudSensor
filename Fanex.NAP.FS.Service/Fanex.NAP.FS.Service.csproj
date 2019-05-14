@@ -57,7 +57,6 @@
     <Compile Include="DelayGoalService.cs" />
     <Compile Include="FlaggedAccountService.cs" />
     <Compile Include="FraudCaseService.cs" />
-    <Compile Include="IExecutorService.cs" />
     <Compile Include="LetstalkService.cs" />
     <Compile Include="MicroService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

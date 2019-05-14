@@ -4,7 +4,7 @@
     using Fanex.NAP.FS.Library.Criteria.FraudSensorTask;
     using System.Collections.Generic;
 
-    public class BetsNearGoalService : IExecutorService
+    public class BetsNearGoalService
     {
         public string MatchIds { get; set; }
 

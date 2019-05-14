@@ -5,7 +5,7 @@
     using System;
     using System.Collections.Generic;
 
-    public class DailyDataCaptureService : IExecutorService
+    public class DailyDataCaptureService
     {
         public IEnumerable<T> PreCondition<T>()
         {

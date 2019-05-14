@@ -5,12 +5,8 @@
     using Fanex.NAP.FS.Library.Criteria.FraudSensorTask;
     using System.Collections.Generic;
 
-    public class ArbitrageService: IExecutorService
+    public class ArbitrageService
     {
-        public string MatchIds { get; set; }
-
-        public string Associations { get; set; }
-
         public IEnumerable<ArbitrageTicket> PreCondition<ArbitrageTicket>()
         {
             var criteria = new ArbitragePreconditionCriteria();
@@ -21,14 +17,14 @@
             }
         }       
       
-        public void Rule()
+        public void Rule(string matchIds, string associations)
         {
             var repository = new DynamicRepository();
             
             var criteria = new ArbitrageRuleCommand()
             {
-                Matches = this.MatchIds,
-                Associations = this.Associations
+                Matches = matchIds,
+                Associations = associations
             };
 
             repository.Execute(criteria);

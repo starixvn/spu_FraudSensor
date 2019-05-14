@@ -4,7 +4,7 @@
     using Fanex.NAP.FS.Library.Criteria.FraudSensorTask;
     using System.Collections.Generic;
 
-    public class ScannedOfficeIpService : IExecutorService
+    public class ScannedOfficeIpService
     {
         public string MatchIds { get; set; }
 

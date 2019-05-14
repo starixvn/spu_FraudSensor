@@ -4,7 +4,7 @@
     using Fanex.NAP.FS.Library.Criteria.FraudSensorTask;
     using System.Collections.Generic;
 
-    public class BigStakeNearGoalService : IExecutorService
+    public class BigStakeNearGoalService
     {
         public string MatchIds { get; set; }
 
