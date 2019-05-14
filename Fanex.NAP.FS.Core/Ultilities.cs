@@ -19,7 +19,7 @@
         {
             var filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, filename);
 
-            File.WriteAllText(filePath, body);
+            File.AppendAllText(filePath, body);
         }
 
         public static string XMLConvert(object data)

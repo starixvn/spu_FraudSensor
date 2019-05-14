@@ -209,10 +209,7 @@ namespace Fanex.NAP.FS.ArbitrageService
 
                 var groupCustomer = GroupCustomer(custIds);
 
-                lock (lockMe)
-                {
-                    ExecuteGroupCustomer(ticket.MatchId, groupCustomer, ticket.ArbitrageTicketList);
-                }
+                ExecuteGroupCustomer(ticket.MatchId, groupCustomer, ticket.ArbitrageTicketList);
             });
 
             LogService.Info($"{ProjectName} - {ServiceName} - Rule is executed.");

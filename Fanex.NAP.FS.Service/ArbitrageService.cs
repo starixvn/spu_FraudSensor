@@ -1,6 +1,7 @@
 ﻿namespace Fanex.NAP.FS.Service
 {
     using Fanex.Data;
+    using Fanex.Data.Repository;
     using Fanex.NAP.FS.Library.Criteria.FraudSensorTask;
     using System.Collections.Generic;
 
@@ -22,18 +23,15 @@
       
         public void Rule()
         {
-            var criteria = new ArbitrageRuleCriteria()
+            var repository = new DynamicRepository();
+            
+            var criteria = new ArbitrageRuleCommand()
             {
                 Matches = this.MatchIds,
                 Associations = this.Associations
             };
 
-            using (var db = new ObjectDb(criteria.GetSettingKey()))
-            {
-                var param = criteria.GetSpParams();
-
-                db.ExecuteNonQuery(param);
-            }
+            repository.Execute(criteria);
         }
     }
 }
