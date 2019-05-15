@@ -97,7 +97,9 @@
         columnDefs: [
             { targets: "_all", defaultContent: "-" },
             { targets: [-2, 1, 2], className: "text-center"},
-            { targets: [5, 8], className: "text-right" },           
+            { targets: [5, 8], className: "text-right" },
+            //{ targets: [0, 3, 4, 6, 7, 9, 10], className: "text-right" },
+            { targets: [11], className: "col-note" },
             { targets: [0], width: "6%" },
             { targets: [1], width: "6%" },
             { targets: [2], width: "5%" },          
@@ -108,7 +110,8 @@
             { targets: [7], width: "10%" },
             { targets: [8], width: "8%" },
             { targets: [9], width: "8%" },
-            { targets: [10], width: "9%" }
+            { targets: [10], width: "10%" },
+            { targets: [11], width: "15%" }
         ],
         columns: [
             { data: obj => obj.BetId },
@@ -121,20 +124,46 @@
             { data: obj => render_history(obj.Choice, false, true) },
             { data: obj => render_history(obj.PoistionTaking) },
             { data: obj => render_history(obj.Status, false, true) },
-            { data: obj => obj.Creator },
-            { data: renderNote, createdCell: (cell, _, row) => $(".icon-note", cell).click(() => renderNoteEdit(cell, row)) }
+            { data: obj => obj.Creator },            
+            {
+                data: renderNote, createdCell: (cell, _, row) => {
+                    $(".icon-note", cell).click(() => renderNoteEdit(cell, row));
+                    $(".note-ellipsis", cell).click(() => expandNote(cell, row))
+                }
+            }
         ]
     });
 
-    function renderNote(obj) {
-        var result = "Không chỉ riêng mình Zombieload mà trên thực tế có không ít những lỗi bảo mật nghiêm trọng, ";
+    function renderNote(row) {
+        var noteOriginal = "Không chỉ riêng mình Zombieload mà trên thực tế có không ít những lỗi bảo mật nghiêm trọng, ";
             //+ "lợi dụng quá trình CPU chạy những process mà người sử dụng “có thể” sẽ cần (quá trình thực hành suy đoán - speculative execution)";
 
-        return "<div class='container-note'>"
-            + '<textarea class="input-note-content hide" rows="5">' + result + '</textarea>'
-            + '<div class="note-content" id="note-content">' + result + '</div>'
+        var noteWrap = wrapString(noteOriginal, 80);
+
+        return '<div class="container-note">'
+            + '<textarea class="input-note-content hide" rows="5">' + noteOriginal + '</textarea>'
+            + '<div class="note-content" id="note-content">' + noteWrap + '</div>'
             + '<div class="icon-note-text icon-note" id="icon"></div>'
-            + "</div>";
+            + '</div>';
+    }
+
+    function wrapString(str, maxLength) {
+        if (str == null) {
+            return str;
+        } 
+
+        if (str.length > maxLength) {
+            return str.substring(0, maxLength - 3) + '<span class="note-ellipsis"> ... </span>';
+        }
+
+        return str;
+    }
+
+    function expandNote(cell) {
+        var inputNoteContent = $(cell).find('.input-note-content');
+        var noteContent = $(cell).find("#note-content");
+        
+        $(noteContent).html($(inputNoteContent).val());
     }
 
     function renderNoteEdit(cell, row) {
@@ -142,38 +171,50 @@
         var noteContent = $(cell).find("#note-content");
         var noteIcon = $(cell).find("#icon");
 
+        var noteContentOld = $(noteContent).text();
+
         if ($(inputNoteContent).hasClass('hide')) {
             $(inputNoteContent).removeClass('hide').focus().select();
             $(noteContent).addClass('hide');
 
-            var updated;
+            // Change icon
+            $(noteIcon).removeClass('icon-note-text').addClass('icon-note-save');
+
+            var updated;        
             var noteContentNew;
             // Handle key up event
             $(inputNoteContent).keyup(function (event) {
-                noteContentNew = $(this).val();
+                noteContentNew = $(this).val();               
             });
 
             $(noteIcon).click(function () {
                 if ($(inputNoteContent).hasClass('submit') && !updated) {
-                    // Update note to database
-                    var url = "/CheckBetReport/UpdateNote";
+                    if (typeof (noteContentNew) === 'undefined') {
+                        $(inputNoteContent).addClass('hide').removeClass('submit');
+                        $(noteContent).removeClass('hide');
 
-                    $.get(url, { Note: noteContentNew }, function (result) {
+                    } else if (noteContentOld !== noteContentNew) {
+                        // Update note to database
+                        var url = "/CheckBetReport/UpdateNote";
 
-                        if (result.ErrorCode == 0) {
-                            // Render new note content
-                            $(noteContent).text(noteContentNew);
+                        $.get(url, { Note: noteContentNew }, function (result) {
+                            if (result.ErrorCode == 0) {
+                                // Render new note content
+                                $(noteContent).text(noteContentNew);
 
-                            $(inputNoteContent).addClass('hide').removeClass('submit');
-                            $(noteContent).removeClass('hide');
+                                $(inputNoteContent).addClass('hide').removeClass('submit');
+                                $(noteContent).removeClass('hide');
 
-                            common.showSuccess('Note updated!');
-                        } else {
-                            common.showError('Note fail!');
-                        }
+                                common.showSuccess('Note updated!');
+                            } else {
+                                common.showError('Note fail!');
+                            }
 
-                        updated = true;
-                    });
+                            updated = true;
+                        });
+                    }   
+                    // Change icon
+                    $(noteIcon).removeClass('icon-note-save').addClass('icon-note-text');
                 }
             });
         } else {
