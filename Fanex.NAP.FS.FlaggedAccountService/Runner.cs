@@ -135,14 +135,10 @@
         {
             if (_matches == null || !_matches.Any()) return;
             _matches = Enumerable.Empty<Match>();
-
-            //_threads?.Clear();
         }
 
         private void Precondition()
         {
-            LogService.Info($"{ProjectName} - {ServiceName} - Precondition is executing.");
-
             _matches = FlaggedAccountService.PreCondition<Match>();
 
             LogService.Info($"{ProjectName} - {ServiceName} - Precondition is executed.");
@@ -150,8 +146,6 @@
 
         private void Rule()
         {
-            LogService.Info($"{ProjectName} - {ServiceName} - Rule is executing.");
-
             ExecuteBySeparatedThreads();
 
             LogService.Info($"{ProjectName} - {ServiceName} - Rule is executed.");
@@ -164,15 +158,10 @@
 
             foreach (var matches in matchChunks)
             {
-                //var thread = ExecuteMultiple(matches.ToList());
-
-                //_threads.Add(thread);
                 ExecuteMatches(matches.ToList());
             }
 
             Thread.Sleep(TimeSpan.FromSeconds(2));
-
-            //Task.WaitAll(_threads.ToArray());
         }
 
         private void ExecuteMatches(List<Match> matches)
@@ -194,35 +183,6 @@
 
                 LogService.Error($"{ProjectName} - {ServiceName} - ExecuteMultiple Exeption {logMessage}");               
             }
-        }
-
-        private Task ExecuteMultiple(List<Match> matches)
-        {
-            var thread = Task.Factory.StartNew(m =>
-            {               
-                try
-                {
-                  
-                    var matchIds = string.Join(",", ((List<Match>)m).Select(t => t.MatchId.ToString()));
-                    var flaggedAccounts = XmlHelper.ToXmlString(_flaggedCustomers);
-
-                    FlaggedAccountService.Rule(matchIds, flaggedAccounts);
-
-                }
-                catch (Exception ex)
-                {
-                    var logMessage = new LogMessage(ex.Message)
-                    .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
-                    .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
-
-                    LogService.Error($"{ProjectName} - {ServiceName} - ExecuteMultiple Exeption {logMessage}");
-
-                    Ultilities.WriteLog("log-MatchId-" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss") + ".log", matches.Select(x=>x.MatchId.ToString()));
-                }
-            }, matches);
-
-            return thread;
-
         }
     }
 }

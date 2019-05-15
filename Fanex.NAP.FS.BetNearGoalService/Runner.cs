@@ -24,7 +24,7 @@
         private IEnumerable<Match> _matches;
         private readonly List<Task> _threads;
         private readonly MicroService _baseService;
-        private bool _isRunning = false;       
+        private bool _isRunning = false;
 
         public Runner()
         {
@@ -104,14 +104,10 @@
             if (_matches == null || !_matches.Any()) return;
 
             _matches = Enumerable.Empty<Match>();
-
-            //_threads?.Clear();
         }
 
         private void Precondition()
         {
-            LogService.Info($"{ProjectName} - {ServiceName} - Precondition is executing.");
-
             _matches = _betNearGoalService.PreCondition<Match>();
 
             LogService.Info($"{ProjectName} - {ServiceName} - Precondition is executed.");
@@ -119,8 +115,6 @@
 
         private void Rule()
         {
-            LogService.Info($"{ProjectName} - {ServiceName} - Rule is executing.");
-
             ExecuteBySeparatedThreads();
 
             LogService.Info($"{ProjectName} - {ServiceName} - Rule is executed.");
@@ -131,15 +125,11 @@
             if (_matches == null) return;
             foreach (var match in _matches)
             {
-               // var thread = ExecuteSingle(match);
-
-               // _threads.Add(thread);
-               ExecuteSingleMatch(match);
+                
+                ExecuteSingleMatch(match);
             }
 
             Thread.Sleep(TimeSpan.FromSeconds(2));
-
-            // Task.WaitAll(_threads.ToArray());
         }
 
         private void ExecuteSingleMatch(Match match)
@@ -165,7 +155,7 @@
                 try
                 {
                     var matchIds = ((Match)m).MatchId.ToString();
-                    _betNearGoalService.Rule(matchIds);                   
+                    _betNearGoalService.Rule(matchIds);
                 }
                 catch (Exception ex)
                 {

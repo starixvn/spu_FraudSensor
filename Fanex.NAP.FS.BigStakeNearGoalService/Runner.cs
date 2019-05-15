@@ -85,8 +85,6 @@
 
         private void Precondition()
         {
-            LogService.Info($"{ProjectName} - {ServiceName} - Precondition is executing.");
-
             _matches = _bigStakeNearGoalService.PreCondition<Match>();
 
             LogService.Info($"{ProjectName} - {ServiceName} - Precondition is executed.");
@@ -94,8 +92,6 @@
 
         private void Rule()
         {
-            LogService.Info($"{ProjectName} - {ServiceName} - Rule is executing.");
-
             ExecuteBySeparatedThreads();
 
             LogService.Info($"{ProjectName} - {ServiceName} - Rule is executed.");
@@ -106,7 +102,6 @@
             if (_matches == null || !_matches.Any()) return;
 
             _matches = Enumerable.Empty<Match>();
-           // Threads.Clear();
         }
 
         private void Report(bool status, string exception, string message)

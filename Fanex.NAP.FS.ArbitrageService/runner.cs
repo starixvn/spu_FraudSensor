@@ -175,8 +175,6 @@ namespace Fanex.NAP.FS.ArbitrageService
 
         private void Precondition()
         {
-            LogService.Info($"{ProjectName} - {ServiceName} - Precondition is executing.");
-
             _tickets = _arbitrageService.PreCondition<ArbitrageTicket>();
 
             LogService.Info($"{ProjectName} - {ServiceName} - Precondition is executed.");
@@ -184,10 +182,6 @@ namespace Fanex.NAP.FS.ArbitrageService
 
         private void Rule()
         {
-            LogService.Info($"{ProjectName} - {ServiceName} - Rule is executing.");
-
-            var lockMe = new object();
-
             if (_tickets == null || !_tickets.Any()) return;
 
             var ticketGroupBy = _tickets
