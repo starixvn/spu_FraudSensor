@@ -3,6 +3,14 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+@section styles{
+    <style>
+        .table .container-note .note-content {
+            word-wrap: normal !important;
+            word-break: break-word;
+        }
+    </style>
+}
 <h1 class="title">CHECK BET REPORT</h1>
 
 <div class="form-filter">
@@ -35,6 +43,7 @@
             <th>Total PT <br /> Old/<span class="new-value">New</span></th>
             <th>Status <br /> Old/<span class="new-value">New</span></th>
             <th>Creator</th>
+            <th>Note</th>
         </tr>
     </thead>
     <tbody></tbody>
