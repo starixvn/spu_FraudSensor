@@ -20,7 +20,7 @@
         private static readonly Queue.EasyNetQ RabbitMq;
         private static readonly Service.LetstalkService LetstalkService;
         private const int MaximumLetstalkConfig = 5;
-
+        private static bool IsOkNow = true;
         static HealthCheckController()
         {
             LetstalkService = new Service.LetstalkService();
@@ -154,7 +154,7 @@
                     {
                         FraudCaseId = fcHealth.FraudCaseId,
                         FraudCaseName = fraudCaseName,
-                        IsActive = lstFcHealth.Where(f => f.FraudCaseId == fcHealth.FraudCaseId).FirstOrDefault().IsActive
+                        IsActive = lstFcHealth.FirstOrDefault(f => f.FraudCaseId == fcHealth.FraudCaseId).IsActive
                     };
                 }
                 else
@@ -162,26 +162,56 @@
                     fraudCase = fraudCaseService.GetByFraudCaseId(fcHealth.FraudCaseId, AppSetting.Environment);
                 }
 
-                if (!AppSetting.IgnoreCase.Contains(fraudCase.FraudCaseId) && fraudCase.IsActive && ((period - fcHealth.TimeOut) > 300))
+                if (!AppSetting.IgnoreCase.Contains(fraudCase.FraudCaseId) && fraudCase.IsActive)
                 {
-                    try
+                    if ((period - fcHealth.TimeOut) > 900)
                     {
-                        RetryFraudCaseService(fraudCase);
-                        var notifyMessage = $"Health check - Service name: {fraudCaseName} - Retry service";
-                        LogService.Error(notifyMessage);
-                    }
-                    catch (Exception ex)
-                    {
-                        LogService.Error($"Health check - Error occurs: {ex.Message}");
-                    }
+                        var errorMessage = $"Service name: {fraudCaseName} - Do not receive THE SIGNAL in " + (int)period + " seconds. ";
 
-                    var errorMessage = $"Health check - Service name: {fraudCaseName} - Do not receive heart beat in " + (int)period + " seconds";
-                    LogService.Error(errorMessage);
-                    SendMessageToLetstalk(fcHealth.LetstalkCurrentTimes, errorMessage);
-                    fcHealth.LetstalkCurrentTimes += 1;
+                        switch (fcHealth.LetstalkCurrentTimes)
+                        {
+                            case 1:
+                            case 2:
+                                {
+                                    errorMessage += $"The service is retrying...";
+                                    break;
+                                }
+
+                            case 3:
+                            case 4:
+                                {
+                                    errorMessage += $"Please contact with Admin. The service is retrying({fcHealth.LetstalkCurrentTimes} times.)";
+                                    break;
+                                }
+                            case 5:
+                                {
+                                    errorMessage += $"Please contact with Admin. THE SERVICE IS DEATH :(.";
+                                    break;
+                                }
+
+                        }
+
+                        SendMessageToLetstalk(fcHealth.LetstalkCurrentTimes, errorMessage);
+
+                        fcHealth.LetstalkCurrentTimes += 1;
+
+                        RetryFraudCaseService(fraudCase);
+
+                        IsOkNow = false;
+                    }
+                    else
+                    {
+                        if (!IsOkNow)
+                        {
+                            SendMessageToLetstalk(fcHealth.LetstalkCurrentTimes, $"Service name: {fraudCaseName} is OK now :).");
+
+                            IsOkNow = true;
+                        }
+                    }
                 }
 
                 Thread.Sleep(Convert.ToInt32(fcHealth.TimeOut * 1000));
+
             } while (true);
         }
 
