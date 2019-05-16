@@ -4,7 +4,7 @@
         ticket_table = $("#ticket-table");
 
     var noteMaxLength = 500;
-    var noteLengthCollapse = 100;
+    var noteLengthCollapse = 180;
     var changeNote = false;
 
     function restrict_from_date() {
@@ -151,8 +151,20 @@
             return '-';
         } 
 
-        if (str.length > maxLength) {                  
-            return str.substring(0, maxLength - 3) + '<span class="note-ellipsis" title="click to see whole note"> ... </span>';
+        var newStr = '';        
+        var breaksStr = str.split('\n');
+        console.log('\n'.length);
+        for (var i = 0; i < breaksStr.length; i++) {
+
+            if (i == 4) {
+                newStr = newStr + breaksStr[i];
+                return newStr.substring(0, maxLength - (i * 2) - 3) + '<span class="note-ellipsis" title="click to see whole note"> ... </span>';
+            }
+
+            newStr = newStr + breaksStr[i] + "\n";
+            if (newStr.length > maxLength) {
+                return newStr.substring(0, maxLength - (i * 2) - 3) + '<span class="note-ellipsis" title="click to see whole note"> ... </span>';
+            } 
         }
 
         return str;
