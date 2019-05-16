@@ -3,6 +3,9 @@
         to_date = $("#to-date"),
         ticket_table = $("#ticket-table");
 
+    var noteMaxLength = 500;
+    var noteLengthCollapse = 100;
+
     function restrict_from_date() {
         var to_val = to_date.datepicker("getDate");
 
@@ -25,7 +28,7 @@
 
         common.showLoading();
 
-        $.get(url, { fromDate: from_date.val(), toDate: to_date.val() }, function (json) {
+        $.get(url, { fromDate: from_date.val(), toDate: to_date.val() }, function (json) {            
             ticket_table.DataTable().clear().rows.add(json).draw();
             ticket_table.DataTable().columns.adjust();
             common.closeLoading();
@@ -126,14 +129,14 @@
             {
                 data: renderNote, createdCell: (cell, _, row) => {
                     $(".icon-note", cell).click(() => renderNoteEdit(cell, row));
-                    $(".note-ellipsis", cell).click(() => expandNote(cell))
+                    $(".note-ellipsis", cell).click(() => expandNote(cell, row));
                 }
             }
         ]
     });    
 
     function renderNote(row) {
-        var noteWrap = wrapString(row.Note, 100);
+        var noteWrap = wrapString(row.Note, noteLengthCollapse);
 
         return '<div class="container-note">'
             + '<textarea class="input-note-content hide" rows="5">' + (row.Note != null ? row.Note : '') + '</textarea>'
@@ -143,22 +146,50 @@
     }
 
     function wrapString(str, maxLength) {
-        if (str == null) {
-            return '';
+        if (str == null || str == '') {
+            return '-';
         } 
 
-        if (str.length > maxLength) {
+        if (str.length > maxLength) {                  
             return str.substring(0, maxLength - 3) + '<span class="note-ellipsis" title="click to see whole note"> ... </span>';
         }
 
         return str;
     }
 
+    function splitString(inputNote, str, maxLength) {       
+        if (str != null && str.length > maxLength) {
+
+            var strSplited = str.substring(0, maxLength);
+
+            $(inputNote).val(strSplited);
+
+            return strSplited;
+        }
+
+        return str;
+    }
+
     function expandNote(cell) {
-        var inputNoteContent = $(cell).find('.input-note-content');
-        var noteContent = $(cell).find("#note-content");
-        
-        $(noteContent).html($(inputNoteContent).val());
+        var noteExpand = $(cell).find('.input-note-content').val();
+
+        var noteExpand = noteExpand + "  " + '<span class="note-collapse icon-chevron-up" title="click to collapse up"></span>';
+
+        $(cell).find("#note-content").html(noteExpand);
+
+        $(".note-collapse", cell).click(() => collapseNote(cell));
+
+        ticket_table.DataTable().columns.adjust();
+    }
+
+    function collapseNote(cell) {
+        var noteCollapse = $(cell).find('.input-note-content').val();
+        noteCollapse = wrapString(noteCollapse, noteLengthCollapse);
+
+        $(cell).find("#note-content").html(noteCollapse);
+
+        $(".note-ellipsis", cell).click(() => expandNote(cell));
+
         ticket_table.DataTable().columns.adjust();
     }
 
@@ -180,7 +211,7 @@
             var noteContentNew;
             // Handle key up event
             $(inputNoteContent).keyup(function (event) {
-                noteContentNew = $(this).val();               
+                noteContentNew = $(this).val();
             });
 
             $(noteIcon).click(function () {
@@ -192,17 +223,20 @@
                     } else if (noteContentOld !== noteContentNew) {
                         // Update note to database
                         var url = "/CheckBetReport/UpdateNote";
+                        noteContentNew = splitString(inputNoteContent, noteContentNew, noteMaxLength);
 
                         $.get(url, { Note: noteContentNew, TransId: row.BetId }, function (result) {
                             if (result.ErrorCode == 0) {
                                 // Render new note content
-                                var noteWrap = wrapString(noteContentNew, 100);
+                                var noteWrap = wrapString(noteContentNew, noteLengthCollapse);
                                 $(noteContent).html(noteWrap);
-                                $(".note-ellipsis", cell).click(() => expandNote(cell));                               
+                                $(".note-ellipsis", cell).click(() => expandNote(cell));
 
                                 common.showSuccess('Note updated!');
 
                             } else {
+                                console.log(result.ErrorCode);
+                                
                                 common.showError('Note fail!');
                             }
                             $(inputNoteContent).addClass('hide').removeClass('submit');
