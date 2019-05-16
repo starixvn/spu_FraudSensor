@@ -27,6 +27,7 @@
 
         $.get(url, { fromDate: from_date.val(), toDate: to_date.val() }, function (json) {
             ticket_table.DataTable().clear().rows.add(json).draw();
+            ticket_table.DataTable().columns.adjust();
             common.closeLoading();
         });
     }
@@ -92,14 +93,12 @@
         dom: "t<'pagination'<'page-size'lp>i>",
         language: common.language(),
         scrollY: "61vh",
-        scrollX: false,
         scrollCollapse: true,
         columnDefs: [
             { targets: "_all", defaultContent: "-" },
             { targets: [-2, 1, 2], className: "text-center"},
-            { targets: [5, 8], className: "text-right" },
-            //{ targets: [0, 3, 4, 6, 7, 9, 10], className: "text-right" },
-            { targets: [11], className: "col-note" },
+            { targets: [5, 8], className: "text-right" },       
+            { targets: [11], className: "col-note" },            
             { targets: [0], width: "6%" },
             { targets: [1], width: "6%" },
             { targets: [2], width: "5%" },          
@@ -110,8 +109,7 @@
             { targets: [7], width: "10%" },
             { targets: [8], width: "8%" },
             { targets: [9], width: "8%" },
-            { targets: [10], width: "10%" },
-            { targets: [11], width: "15%" }
+            { targets: [10], width: "9%" }            
         ],
         columns: [
             { data: obj => obj.BetId },
@@ -128,20 +126,17 @@
             {
                 data: renderNote, createdCell: (cell, _, row) => {
                     $(".icon-note", cell).click(() => renderNoteEdit(cell, row));
-                    $(".note-ellipsis", cell).click(() => expandNote(cell, row))
+                    $(".note-ellipsis", cell).click(() => expandNote(cell))
                 }
             }
         ]
-    });
+    });    
 
     function renderNote(row) {
-        var noteOriginal = "Không chỉ riêng mình Zombieload mà trên thực tế có không ít những lỗi bảo mật nghiêm trọng, ";
-            //+ "lợi dụng quá trình CPU chạy những process mà người sử dụng “có thể” sẽ cần (quá trình thực hành suy đoán - speculative execution)";
-
-        var noteWrap = wrapString(noteOriginal, 80);
+        var noteWrap = wrapString(row.Note, 100);
 
         return '<div class="container-note">'
-            + '<textarea class="input-note-content hide" rows="5">' + noteOriginal + '</textarea>'
+            + '<textarea class="input-note-content hide" rows="5">' + (row.Note != null ? row.Note : '') + '</textarea>'
             + '<div class="note-content" id="note-content">' + noteWrap + '</div>'
             + '<div class="icon-note-text icon-note" id="icon"></div>'
             + '</div>';
@@ -149,11 +144,11 @@
 
     function wrapString(str, maxLength) {
         if (str == null) {
-            return str;
+            return '';
         } 
 
         if (str.length > maxLength) {
-            return str.substring(0, maxLength - 3) + '<span class="note-ellipsis"> ... </span>';
+            return str.substring(0, maxLength - 3) + '<span class="note-ellipsis" title="click to see whole note"> ... </span>';
         }
 
         return str;
@@ -164,6 +159,7 @@
         var noteContent = $(cell).find("#note-content");
         
         $(noteContent).html($(inputNoteContent).val());
+        ticket_table.DataTable().columns.adjust();
     }
 
     function renderNoteEdit(cell, row) {
@@ -197,18 +193,20 @@
                         // Update note to database
                         var url = "/CheckBetReport/UpdateNote";
 
-                        $.get(url, { Note: noteContentNew }, function (result) {
+                        $.get(url, { Note: noteContentNew, TransId: row.BetId }, function (result) {
                             if (result.ErrorCode == 0) {
                                 // Render new note content
-                                $(noteContent).text(noteContentNew);
-
-                                $(inputNoteContent).addClass('hide').removeClass('submit');
-                                $(noteContent).removeClass('hide');
+                                var noteWrap = wrapString(noteContentNew, 100);
+                                $(noteContent).html(noteWrap);
+                                $(".note-ellipsis", cell).click(() => expandNote(cell));                               
 
                                 common.showSuccess('Note updated!');
+
                             } else {
                                 common.showError('Note fail!');
                             }
+                            $(inputNoteContent).addClass('hide').removeClass('submit');
+                            $(noteContent).removeClass('hide');
 
                             updated = true;
                         });

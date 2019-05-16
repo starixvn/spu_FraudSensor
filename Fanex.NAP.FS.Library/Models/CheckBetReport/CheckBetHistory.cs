@@ -73,5 +73,7 @@
         public string ExtraInfo { get; set; }
         public object WalletType { get; set; }
         public string Race { get; set; }
+
+        public string Note { get; set; }
     }
 }

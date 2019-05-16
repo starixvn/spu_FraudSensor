@@ -86,6 +86,9 @@
   <Function Name="CheckBetReport">
     <Setting Key="FS_Rpt_CheckBet_Get" SpName="FS_Rpt_CheckBet_Get_xtest" DbName="DBFS.bodb_FraudSensor.bodbSPUNet" />
   </Function>
+  <Function Name="CheckBetReport">
+    <Setting Key="FS_Rpt_CheckBetNote_Update" SpName="FS_Rpt_CheckBetNote_Update_xtest" DbName="DBFS.bodb_FraudSensor.bodbSPUNet" />
+  </Function>
   <Function Name="CustomerMonitor">
     <Setting Key="FS_Rpt_CustomerMonitor_Get" SpName="FS_Rpt_CustomerMonitor_Get_xtest" DbName="DBFS.bodb_FraudSensor.bodbSPUNet" />
   </Function>

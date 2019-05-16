@@ -34,7 +34,8 @@ namespace Fanex.NAP.FS.Library.ExcelConfig.CheckBetReport
             row.GetCell(idx++).SetCellValue(RenderString(data.Choice));
             row.GetCell(idx++).SetCellValue(RenderDouble(data.PoistionTaking));
             row.GetCell(idx++).SetCellValue(RenderString(data.Status));
-            row.GetCell(idx).SetCellValue(data.Creator);
+            row.GetCell(idx++).SetCellValue(data.Creator);
+            row.GetCell(idx).SetCellValue(data.Note);
         }
 
         protected override void FillLegend(IRow row, CheckBetReportGetCriteria legend)

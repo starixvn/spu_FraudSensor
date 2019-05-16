@@ -126,7 +126,8 @@ namespace Fanex.NAP.FS.Library.Services.Implement
                     Old = history.OldStatus?.ToUpper()
                 },
                 TransDate = history.TransDate.ToString("MMM dd, yyyy HH:mm:ss"),
-                Username = history.Username
+                Username = history.Username,
+                Note = history.Note
             };
         }
 

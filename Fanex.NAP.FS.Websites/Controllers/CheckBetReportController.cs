@@ -33,12 +33,9 @@
 
         public ActionResult UpdateNote(CheckBetReportUpdateNoteCriteria criteria)
         {
-            //criteria.UserId = CurrentSession.UserId;
-
-            //return Json(_service.UpdateNote(criteria));
-
-            // result for test
-            return Json(new Library.Models.DBResult { ErrorCode = 0 });
+            criteria.UserId = CurrentSession.UserId;
+         
+            return Json(_service.UpdateNote(criteria));
         }
 
         public ActionResult GenerateExcel(CheckBetReportGetCriteria criteria)
