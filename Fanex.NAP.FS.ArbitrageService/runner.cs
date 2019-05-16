@@ -93,26 +93,43 @@ namespace Fanex.NAP.FS.ArbitrageService
 
         private List<ArbitrageCustomer> GroupCustomer(List<int> custIds)
         {
+            //var arbitrageCustomers = custIds.Chunk(500);
+            //var customerGroup = new List<ArbitrageCustomer>();
+            //var lockMe = new object();
+
+            //Parallel.ForEach(arbitrageCustomers, (currentCustomer) =>
+            //{
+            //    var customers = GetGroupCustomer(currentCustomer);
+
+            //    if (customers.Any())
+            //    {
+            //        lock (lockMe)
+            //        {
+            //            customerGroup.AddRange(customers);
+            //        }
+            //    }
+
+            //    Thread.Sleep(10);
+            //});
+
+            //return customerGroup;
+
             var arbitrageCustomers = custIds.Chunk(500);
-            var customerGroup = new List<ArbitrageCustomer>();
-            var lockMe = new object();
 
-            Parallel.ForEach(arbitrageCustomers, (currentCustomer) =>
+            var taskCustomers = new List<Task<IEnumerable<ArbitrageCustomer>>>();
+
+            foreach (var arbitrageCustomer in arbitrageCustomers)
             {
-                var customers = GetGroupCustomer(currentCustomer);
+                var taskCustomer = GroupCustomer(arbitrageCustomer);
 
-                if (customers.Any())
-                {
-                    lock (lockMe)
-                    {
-                        customerGroup.AddRange(customers);
-                    }
-                }
+                taskCustomers.Add(taskCustomer);
 
-                Thread.Sleep(10);
-            });
+                Thread.Sleep(TimeSpan.FromSeconds(1));
+            }
 
-            return customerGroup;
+            Task.WaitAll(taskCustomers.ToArray());
+
+            return taskCustomers.SelectMany(t => t.Result).ToList();
         }
 
         private void ExecuteGroupCustomer(int matchId, List<ArbitrageCustomer> associations, List<ArbitrageTicket> matchIds)
@@ -156,6 +173,25 @@ namespace Fanex.NAP.FS.ArbitrageService
             }
 
             return result;
+        }
+
+        private async Task<IEnumerable<ArbitrageCustomer>> GroupCustomer(IEnumerable<int> custids)
+        {
+            try
+            {
+                return await ApiHelper.Post<IEnumerable<ArbitrageCustomer>>(AppSetting.GroupCustomerPath, custids);
+            }
+            catch (Exception ex)
+            {
+                var logMessage = new LogMessage(ex.Message)
+                    .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
+                    .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
+
+                LogService.Error(
+                    $"{ProjectName} - {ServiceName} - GroupCustomer Exception: Cannot get Group Customer from Web API - Exception: {logMessage}");
+
+                return Enumerable.Empty<ArbitrageCustomer>();
+            }
         }
 
         private void Report(bool status, string exception, string message)
