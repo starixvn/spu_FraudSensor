@@ -34,6 +34,8 @@ namespace Fanex.NAP.FS.Library.Services.Implement
 
         public DBResult UpdateNote(CheckBetReportUpdateNoteCriteria criteria)
         {
+            criteria.Note = criteria.Note == null ? "" : criteria.Note;
+
             return DataService.UpdateData(criteria, "CheckBet");
         }
 

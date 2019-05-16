@@ -5,6 +5,7 @@
 
     var noteMaxLength = 500;
     var noteLengthCollapse = 100;
+    var changeNote = false;
 
     function restrict_from_date() {
         var to_val = to_date.datepicker("getDate");
@@ -129,7 +130,7 @@
             {
                 data: renderNote, createdCell: (cell, _, row) => {
                     $(".icon-note", cell).click(() => renderNoteEdit(cell, row));
-                    $(".note-ellipsis", cell).click(() => expandNote(cell, row));
+                    $(".note-ellipsis", cell).click(() => expandNote(cell));
                 }
             }
         ]
@@ -197,62 +198,54 @@
         var inputNoteContent = $(cell).find('.input-note-content');
         var noteContent = $(cell).find("#note-content");
         var noteIcon = $(cell).find("#icon");
-
-        var noteContentOld = $(noteContent).text();
-
+      
         if ($(inputNoteContent).hasClass('hide')) {
             $(inputNoteContent).removeClass('hide').focus().select();
-            $(noteContent).addClass('hide');
-
-            // Change icon
+            $(noteContent).addClass('hide'); 
             $(noteIcon).removeClass('icon-note-text').addClass('icon-note-save');
 
-            var updated;        
-            var noteContentNew;
-            // Handle key up event
-            $(inputNoteContent).keyup(function (event) {
-                noteContentNew = $(this).val();
+            $(inputNoteContent).keyup(function () {
+                changeNote = true;
             });
 
-            $(noteIcon).click(function () {
-                if ($(inputNoteContent).hasClass('submit') && !updated) {
-                    if (typeof (noteContentNew) === 'undefined') {
-                        $(inputNoteContent).addClass('hide').removeClass('submit');
-                        $(noteContent).removeClass('hide');
-
-                    } else if (noteContentOld !== noteContentNew) {
-                        // Update note to database
-                        var url = "/CheckBetReport/UpdateNote";
-                        noteContentNew = splitString(inputNoteContent, noteContentNew, noteMaxLength);
-
-                        $.get(url, { Note: noteContentNew, TransId: row.BetId }, function (result) {
-                            if (result.ErrorCode == 0) {
-                                // Render new note content
-                                var noteWrap = wrapString(noteContentNew, noteLengthCollapse);
-                                $(noteContent).html(noteWrap);
-                                $(".note-ellipsis", cell).click(() => expandNote(cell));
-
-                                common.showSuccess('Note updated!');
-
-                            } else {
-                                console.log(result.ErrorCode);
-                                
-                                common.showError('Note fail!');
-                            }
-                            $(inputNoteContent).addClass('hide').removeClass('submit');
-                            $(noteContent).removeClass('hide');
-
-                            updated = true;
-                        });
-                    }   
-                    // Change icon
-                    $(noteIcon).removeClass('icon-note-save').addClass('icon-note-text');
-                }
-            });
-        } else {
-            $(inputNoteContent).addClass('submit');
-            updated = false;
+        } else if ($(noteIcon).hasClass('icon-note-save')){
+            saveNote(cell, row);
         }
+    }
+
+    function saveNote(cell, row) {
+
+        var inputContent = $(cell).find('.input-note-content');        
+        var content = $(cell).find("#note-content");
+        var noteNew = $(inputContent).val();
+
+        if (changeNote) {            
+            var url = "/CheckBetReport/UpdateNote";
+            noteNew = splitString(inputContent, noteNew, noteMaxLength);
+
+            $.get(url, { Note: noteNew, TransId: row.BetId }, function (result) {
+                if (result.ErrorCode == 0) {
+                    // wrap text on Note
+                    var noteWrap = wrapString(noteNew, noteLengthCollapse);
+                    $(content).html(noteWrap);
+
+                    $(".note-ellipsis", cell).click(() => expandNote(cell));
+
+                    common.showSuccess('Note updated!');
+
+                } else {
+                    console.log(result.ErrorCode);
+
+                    common.showError('Note fail!');
+                }               
+            });
+        }
+
+        changeNote = false;
+        $(inputContent).addClass('hide');
+        $(content).removeClass('hide');
+        
+        $(cell).find("#icon").removeClass('icon-note-save').addClass('icon-note-text');       
     }
 
     $("#generate").click(generate_report);

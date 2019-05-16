@@ -9,7 +9,7 @@
         public int UserId { get; set; }
 
         public string Note { get; set; }
-      
+
         public override string GetSettingKey() => "FS_Rpt_CheckBetNote_Update";
 
         public override bool IsValid() => true;
