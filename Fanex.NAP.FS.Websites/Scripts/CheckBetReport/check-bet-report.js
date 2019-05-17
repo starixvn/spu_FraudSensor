@@ -4,8 +4,7 @@
         ticket_table = $("#ticket-table");
 
     var noteMaxLength = 500;
-    var noteLengthCollapse = 180;
-    var changeNote = false;
+    var noteLengthCollapse = 180;    
 
     function restrict_from_date() {
         var to_val = to_date.datepicker("getDate");
@@ -216,8 +215,8 @@
             $(noteContent).addClass('hide'); 
             $(noteIcon).removeClass('icon-note-text').addClass('icon-note-save');
 
-            $(inputNoteContent).keyup(function () {
-                changeNote = true;
+            $(inputNoteContent).keyup(function () {               
+                $(inputNoteContent).addClass('change');
             });
 
         } else if ($(noteIcon).hasClass('icon-note-save')){
@@ -229,9 +228,9 @@
 
         var inputContent = $(cell).find('.input-note-content');        
         var content = $(cell).find("#note-content");
-        var noteNew = $(inputContent).val();
+        var noteNew = $(inputContent).val().trim();        
 
-        if (changeNote) {            
+        if ($(inputContent).hasClass('change')) {
             var url = "/CheckBetReport/UpdateNote";
             noteNew = splitString(inputContent, noteNew, noteMaxLength);
 
@@ -253,8 +252,7 @@
             });
         }
 
-        changeNote = false;
-        $(inputContent).addClass('hide');
+        $(inputContent).removeClass('change').addClass('hide');
         $(content).removeClass('hide');
         
         $(cell).find("#icon").removeClass('icon-note-save').addClass('icon-note-text');       
