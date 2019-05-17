@@ -146,13 +146,14 @@
     }
 
     function wrapString(str, maxLength) {
+
         if (str == null || str == '') {
             return '-';
         } 
 
         var newStr = '';        
         var breaksStr = str.split('\n');
-        console.log('\n'.length);
+      
         for (var i = 0; i < breaksStr.length; i++) {
 
             if (i == 4) {
