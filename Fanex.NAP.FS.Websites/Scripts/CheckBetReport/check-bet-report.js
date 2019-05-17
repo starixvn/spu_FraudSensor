@@ -183,6 +183,13 @@
         return str;
     }
 
+    function replaceSpecialCharacter(str) {
+        if (str != null) {
+            return str.replace(/&/g, "&amp;").replace(/>/g, "&gt;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
+        }
+        return str;
+    }
+
     function expandNote(cell) {
         var noteExpand = $(cell).find('.input-note-content').val();
 
@@ -229,7 +236,8 @@
 
         var inputContent = $(cell).find('.input-note-content');        
         var content = $(cell).find("#note-content");
-        var noteNew = $(inputContent).val().trim();        
+        var noteNew = $(inputContent).val().trim(); 
+        noteNew = replaceSpecialCharacter(noteNew);
 
         if ($(inputContent).hasClass('change')) {
             var url = "/CheckBetReport/UpdateNote";
