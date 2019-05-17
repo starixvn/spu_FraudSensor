@@ -240,7 +240,7 @@
         noteNew = replaceSpecialCharacter(noteNew);
 
         if ($(inputContent).hasClass('change')) {
-            var url = "/CheckBetReport/UpdateNote";
+            var url = common.modifyRelativeUrl("/CheckBetReport/UpdateNote");
             noteNew = splitString(inputContent, noteNew, noteMaxLength);
 
             $.get(url, { Note: noteNew, TransId: row.BetId }, function (result) {
