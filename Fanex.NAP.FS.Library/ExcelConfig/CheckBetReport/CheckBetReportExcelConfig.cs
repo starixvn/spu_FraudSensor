@@ -35,7 +35,7 @@ namespace Fanex.NAP.FS.Library.ExcelConfig.CheckBetReport
             row.GetCell(idx++).SetCellValue(RenderDouble(data.PoistionTaking));
             row.GetCell(idx++).SetCellValue(RenderString(data.Status));
             row.GetCell(idx++).SetCellValue(data.Creator);
-            row.GetCell(idx).SetCellValue(data.Note);
+            row.GetCell(idx).SetCellValue(RenderSpecialCharacter(data.Note));
         }
 
         protected override void FillLegend(IRow row, CheckBetReportGetCriteria legend)
@@ -70,6 +70,15 @@ namespace Fanex.NAP.FS.Library.ExcelConfig.CheckBetReport
             return ExcelUtilities.GetXSSF()
                 .Write($"{history.Old ?? "-"}\n")
                 .WriteWithFont(history.New ?? "-", new XSSFFont { Color = IndexedColors.Coral.Index });
+        }
+
+        private string RenderSpecialCharacter(string charSpecial)
+        {
+            if (!string.IsNullOrEmpty(charSpecial))
+            {
+                return charSpecial.Replace("&amp;", "&").Replace("&gt;", ">").Replace("&lt;", "<");
+            }
+            return charSpecial;
         }
 
         protected override void CleanupTemplate(ISheet sheet)

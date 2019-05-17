@@ -185,7 +185,7 @@
 
     function replaceSpecialCharacter(str) {
         if (str != null) {
-            return str.replace(/&/g, "&amp;").replace(/>/g, "&gt;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
+            return str.replace(/&/g, "&amp;").replace(/>/g, "&gt;").replace(/</g, "&lt;");
         }
         return str;
     }
