@@ -72,6 +72,7 @@ namespace Fanex.NAP.FS.ArbitrageService
                     Rule();
 
                     _isRunning = false;
+                    _tickets = null;
 
                     Thread.Sleep(TimeSpan.FromSeconds(2));
                 }
