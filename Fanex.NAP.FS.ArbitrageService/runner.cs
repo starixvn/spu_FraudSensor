@@ -94,27 +94,6 @@ namespace Fanex.NAP.FS.ArbitrageService
 
         private List<ArbitrageCustomer> GroupCustomer(List<int> custIds)
         {
-            //var arbitrageCustomers = custIds.Chunk(500);
-            //var customerGroup = new List<ArbitrageCustomer>();
-            //var lockMe = new object();
-
-            //Parallel.ForEach(arbitrageCustomers, (currentCustomer) =>
-            //{
-            //    var customers = GetGroupCustomer(currentCustomer);
-
-            //    if (customers.Any())
-            //    {
-            //        lock (lockMe)
-            //        {
-            //            customerGroup.AddRange(customers);
-            //        }
-            //    }
-
-            //    Thread.Sleep(10);
-            //});
-
-            //return customerGroup;
-
             var arbitrageCustomers = custIds.Chunk(500);
 
             var taskCustomers = new List<Task<IEnumerable<ArbitrageCustomer>>>();
@@ -143,6 +122,8 @@ namespace Fanex.NAP.FS.ArbitrageService
                     var xmlAssociations = Ultilities.XMLConvert(associations);
                     
                     _arbitrageService.Rule(xmlMatchIds, xmlAssociations);
+                    xmlMatchIds = null;
+                    xmlAssociations = null;
                 }
             }
             catch (Exception ex)
@@ -213,8 +194,6 @@ namespace Fanex.NAP.FS.ArbitrageService
         private void Precondition()
         {
             _tickets = _arbitrageService.PreCondition<ArbitrageTicket>();
-
-            LogService.Info($"{ProjectName} - {ServiceName} - Precondition is executed.");
         }
 
         private void Rule()
@@ -242,8 +221,6 @@ namespace Fanex.NAP.FS.ArbitrageService
 
                 ExecuteGroupCustomer(ticket.MatchId, groupCustomer, ticket.ArbitrageTicketList);
             });
-
-            LogService.Info($"{ProjectName} - {ServiceName} - Rule is executed.");
         }
     }
 }
