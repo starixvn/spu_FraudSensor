@@ -9,6 +9,7 @@ namespace Fanex.NAP.FS.Library.Services.Implement
     using Fanex.NAP.FS.Library.Core.BaseClasses;
     using Fanex.NAP.FS.Library.Core.Helpers;
     using Fanex.NAP.FS.Library.Criteria.CheckBetReport;
+    using Fanex.NAP.FS.Library.Models;
     using Fanex.NAP.FS.Library.Models.CheckBetReport;
     using Fanex.NAP.FS.Library.Services.Interface;
     using Fanex.NAP.FS.Library.ViewModels.CheckBetReport;
@@ -29,6 +30,13 @@ namespace Fanex.NAP.FS.Library.Services.Implement
             return data
                 .Select(d => GetTicket(d))
                 .OrderBy(t => t.Username).ThenBy(t => t.BetId);
+        }
+
+        public DBResult UpdateNote(CheckBetReportUpdateNoteCriteria criteria)
+        {
+            criteria.Note = criteria.Note == null ? "" : criteria.Note;
+
+            return DataService.UpdateData(criteria, "CheckBet");
         }
 
         private CheckBetTicket GetTicket(CheckBetHistory history)
@@ -120,7 +128,8 @@ namespace Fanex.NAP.FS.Library.Services.Implement
                     Old = history.OldStatus?.ToUpper()
                 },
                 TransDate = history.TransDate.ToString("MMM dd, yyyy HH:mm:ss"),
-                Username = history.Username
+                Username = history.Username,
+                Note = history.Note
             };
         }
 
