@@ -69,7 +69,7 @@
 
     $([date_type, fraud_case, is_verified, classification]).select2({
         minimumResultsForSearch: -1
-    });        
+    });
 
     $(".-primary").click(get_customers);
 
@@ -95,7 +95,26 @@
         }
     })
 
+    function containSpecialCharacter(obj) {
+        if (obj != null && obj.length > 0) {
+            var regex = new RegExp("^[a-zA-Z0-9$ ]*$");
+            if (!regex.test(obj)) {
+
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     function get_customers() {
+        var specialCharacter = containSpecialCharacter($("#member").val());
+
+        if (specialCharacter) {
+            alert("There is a special character in the Member input. Please correct!");
+            return;
+        }
+
         var dto = {
             Username: $("#member").val(),
             FromDate: from.val(),
@@ -116,62 +135,62 @@
 
         table = customer_table.DataTable({
             destroy: true,
-            serverSide: true, 
+            serverSide: true,
             processing: false,
             stateSave: false,
-                ajax: {
-                    url: urlAction,
-                    data: dto,
-                    type: "POST",
-                    beforeSend: function () {
-                        common.showLoading();
-                    },
-                    complete: function () {
-                        common.closeLoading(); 
-                        
-                    }
-                },                
-                ordering: false,
-                searching: false,
-                lengthMenu: [10, 20, 50, 100, 500],
-                pageLength: 50,
-                scrollY: "70vh",
-                scrollCollapse: true,
-                dom: "t<'pagination'<'page-size'lp>i>",
-                language: {
-                    lengthMenu: "Page size _MENU_",
-                    paginate: {
-                        previous: "Back"
-                    },
-                    info: "Displaying _START_ to _END_ of _TOTAL_ item(s)",
-                    infoEmpty: "",
-                    zeroRecords: "There's no data",
-                    processing: 'Loading...'
+            ajax: {
+                url: urlAction,
+                data: dto,
+                type: "POST",
+                beforeSend: function () {
+                    common.showLoading();
                 },
-                columns: [                    
-                    { data: obj => obj.Counter, className: "text-center", width: "40px" },
-                    { data: build_classification, className: "has-icon text-center list-icon", width: "120px" },
-                    { data: build_note, className: "has-icon text-center", width: "90px" },
-                    { data: obj => obj.IsVerified ? '<span class="icon-approval"></span>' : null, className: "has-icon text-center", width: "90px" },
-                    { data: obj => `<a href="${common.modifyRelativeUrl(`/SuspiciousCustomerDetails?custId=${obj.CustId}&from=${from.val()}&to=${to.val()}&custname=${obj.Username}`)}" target='_blank'>${obj.Username}</a>`, width: "300px" },
-                    { data: obj => obj.TotalViolation },
-                    { data: obj => obj.ViolatedCases },
-                    { data: obj => obj.BetCount },
-                    { data: obj => obj.Assignee }
-                ],
-                columnDefs: [
-                    { defaultContent: "-", targets: "_all" },
-                    { targets: [-2, -3, -4], className: "text-right", width: "120px" }
-                    ]
+                complete: function () {
+                    common.closeLoading();
+
                 }
+            },
+            ordering: false,
+            searching: false,
+            lengthMenu: [10, 20, 50, 100, 500],
+            pageLength: 50,
+            scrollY: "70vh",
+            scrollCollapse: true,
+            dom: "t<'pagination'<'page-size'lp>i>",
+            language: {
+                lengthMenu: "Page size _MENU_",
+                paginate: {
+                    previous: "Back"
+                },
+                info: "Displaying _START_ to _END_ of _TOTAL_ item(s)",
+                infoEmpty: "",
+                zeroRecords: "There's no data",
+                processing: 'Loading...'
+            },
+            columns: [
+                { data: obj => obj.Counter, className: "text-center", width: "40px" },
+                { data: build_classification, className: "has-icon text-center list-icon", width: "120px" },
+                { data: build_note, className: "has-icon text-center", width: "90px" },
+                { data: obj => obj.IsVerified ? '<span class="icon-approval"></span>' : null, className: "has-icon text-center", width: "90px" },
+                { data: obj => `<a href="${common.modifyRelativeUrl(`/SuspiciousCustomerDetails?custId=${obj.CustId}&from=${from.val()}&to=${to.val()}&custname=${obj.Username}`)}" target='_blank'>${obj.Username}</a>`, width: "300px" },
+                { data: obj => obj.TotalViolation },
+                { data: obj => obj.ViolatedCases },
+                { data: obj => obj.BetCount },
+                { data: obj => obj.Assignee }
+            ],
+            columnDefs: [
+                { defaultContent: "-", targets: "_all" },
+                { targets: [-2, -3, -4], className: "text-right", width: "120px" }
+            ]
+        }
         );
-               
-        table.on('click','span.icon-note-text', function(event) {
-            create_popup(event, this);            
+
+        table.on('click', 'span.icon-note-text', function (event) {
+            create_popup(event, this);
         });
 
         $("#customer_grid").show();
-                    
+
     }
 
     function get_fraud_case() {
@@ -295,6 +314,15 @@
         var dto = {};
 
         if (saved_dto == null) {
+
+            var specialCharacter = containSpecialCharacter($("#member").val());
+
+            if (specialCharacter) {
+                alert("There is a special character in the Member input. Please correct!");
+
+                return;
+            }
+
             dto = {
                 Username: $("#member").val(),
                 FromDate: from.val(),
@@ -322,7 +350,7 @@
     function create_popup(e, data) {
         var url = common.modifyRelativeUrl("/SuspiciousCustomer/GetSuspiciousCustomerNote");
         var custid = $(data).attr("custid");
-        var username = $(data).attr("username");       
+        var username = $(data).attr("username");
 
         $.get(url, { custId: custid }, function (json) {
             $("table", note_popup).DataTable().clear().rows.add(json).draw();
