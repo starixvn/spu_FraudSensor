@@ -24,6 +24,7 @@
 
         protected FraudCase _fraudCase;
         protected FraudCaseService fraudCaseService;
+        protected MaintenanceService maintenanceService;
 
         private readonly string projectName = "Fraud Sensor Service";
 
@@ -56,6 +57,15 @@
                .DeclareQueue(_queueName)
                .DeclareRoutingKey(_queueName)
                .Bind();
+
+            var umConfig = new UMClientConfiguration();
+
+            UMClientManager
+                .UseConfig(umConfig)
+                .UseRestClient(new ONEbook.UM.Transport.RestClient(umConfig))
+                .UseHttpContext(new HttpContextHelper());
+
+            maintenanceService = new MaintenanceService();
         }
 
         public void Start(ElapsedEventHandler onTimedEvent)
@@ -157,15 +167,7 @@
 
         public bool CheckUM()
         {
-            var umConfig = new UMClientConfiguration();
-            UMClientManager
-                .UseConfig(umConfig)
-                .UseRestClient(new ONEbook.UM.Transport.RestClient(umConfig))
-                .UseHttpContext(new HttpContextHelper());
-
-            var maintenanceService = new MaintenanceService();
-            var isUM = maintenanceService.IsUnderMaintenance().Result;
-            return isUM;
+            return maintenanceService.IsUnderMaintenance().Result;
         }
 
         private FraudCaseMessage GetMessage(Action<FraudCaseMessage> handler)

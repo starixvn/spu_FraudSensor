@@ -4,21 +4,21 @@ using Fanex.Logging.Extensions;
 using Fanex.Logging.Extensions.Database;
 using Fanex.NAP.FS.Core;
 using Fanex.NAP.FS.Library.Core.Helpers.Api;
-using Fanex.NAP.FS.Library.Core.Helpers.Xml;
 using Fanex.NAP.FS.Library.Core.Utilities;
 using Fanex.NAP.FS.Library.Models;
 using Fanex.NAP.FS.Library.Models.FraudCaseTask;
 using Fanex.NAP.FS.Model;
 using Fanex.NAP.FS.Service;
+using Neo4j.Driver.V1;
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.IO;
 using System.Linq;
 using System.ServiceProcess;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 
 // ReSharper disable once IdentifierTypo
@@ -29,15 +29,20 @@ namespace Fanex.NAP.FS.ArbitrageService
         private const string ProjectName = "Fraud Sensor Service";
         private new const string ServiceName = "Arbitrage Service";
 
-        private static Service.ArbitrageService _arbitrageService;
+        private readonly Service.ArbitrageService _arbitrageService;
         private readonly MicroService _baseService;
         private bool _isRunning = false;
-        private IEnumerable<ArbitrageTicket> _tickets;
+       // private readonly IDriver _driver;
 
         public Runner()
         {
             _baseService = new MicroService(ServiceName, FraudCaseId.Arbitrage);
             _arbitrageService = new Service.ArbitrageService();
+
+            //_driver = GraphDatabase.Driver("bolt://10.18.200.70:7687", AuthTokens.Basic("neo4j", "1234aa"), new Config()
+            //{
+            //    EncryptionLevel = EncryptionLevel.None
+            //});
 
             InitializeComponent();
         }
@@ -68,12 +73,11 @@ namespace Fanex.NAP.FS.ArbitrageService
 
                     _isRunning = true;
 
-                    Precondition();
-                    Rule();
+                    var tickets = Precondition();
+
+                    Rule(tickets);
 
                     _isRunning = false;
-
-                    Thread.Sleep(TimeSpan.FromSeconds(2));
                 }
             }
             catch (Exception ex)
@@ -91,25 +95,35 @@ namespace Fanex.NAP.FS.ArbitrageService
             }
         }
 
+
+
         private List<ArbitrageCustomer> GroupCustomer(List<int> custIds)
         {
             //var arbitrageCustomers = custIds.Chunk(500);
             //var customerGroup = new List<ArbitrageCustomer>();
             //var lockMe = new object();
+            //foreach (var currentCustomer in arbitrageCustomers)
+            //{
+            //    //var customers2 = GetGroupCustomer(currentCustomer);
+            //    var customers = GetCustomerGroupFromGraphDB(currentCustomer);
+
+            //    if (customers != null && customers.Any())
+            //    {
+            //        customerGroup.AddRange(customers);
+            //    }
+            //}
 
             //Parallel.ForEach(arbitrageCustomers, (currentCustomer) =>
             //{
             //    var customers = GetGroupCustomer(currentCustomer);
 
-            //    if (customers.Any())
+            //    if (customers != null && customers.Any())
             //    {
             //        lock (lockMe)
             //        {
             //            customerGroup.AddRange(customers);
             //        }
             //    }
-
-            //    Thread.Sleep(10);
             //});
 
             //return customerGroup;
@@ -140,7 +154,7 @@ namespace Fanex.NAP.FS.ArbitrageService
                 {
                     var xmlMatchIds = Ultilities.XMLConvertByIsolatedStorage(matchIds, $"{matchId}.xml");
                     var xmlAssociations = Ultilities.XMLConvertByIsolatedStorage(associations, $"association{matchId}.xml");
-                    
+
                     _arbitrageService.Rule(xmlMatchIds, xmlAssociations);
                 }
             }
@@ -205,22 +219,25 @@ namespace Fanex.NAP.FS.ArbitrageService
                 IsActive = _baseService.FraudCase.IsActive,
                 Message = message
             };
-
+#if !DEBUG
             _baseService.Report(model);
+#endif
         }
 
-        private void Precondition()
+        private List<ArbitrageTicket> Precondition()
         {
-            _tickets = _arbitrageService.PreCondition<ArbitrageTicket>();
+            var tickets = _arbitrageService.PreCondition<ArbitrageTicket>().ToList();
 
             LogService.Info($"{ProjectName} - {ServiceName} - Precondition is executed.");
+
+            return tickets;
         }
 
-        private void Rule()
+        private void Rule(IReadOnlyCollection<ArbitrageTicket> tickets)
         {
-            if (_tickets == null || !_tickets.Any()) return;
+            if (tickets == null || !tickets.Any()) return;
 
-            var ticketGroupBy = _tickets
+            var ticketGroupBy = tickets
                 .GroupBy(t => t.MatchId)
                 .Select(x => new
                 {
@@ -244,5 +261,25 @@ namespace Fanex.NAP.FS.ArbitrageService
 
             LogService.Info($"{ProjectName} - {ServiceName} - Rule is executed.");
         }
+
+        //private List<ArbitrageCustomer> GetCustomerGroupFromGraphDB(IEnumerable<int> custIds)
+        //{
+        //    using (var session = _driver.Session())
+        //    {
+        //        return session.ReadTransaction(tx =>
+        //        {
+        //            var result = tx.Run("MATCH (c:Customer)-[:BELONG_TO]->(g:Group)" +
+        //                                " WHERE c.CustId IN $CustIdList" +
+        //                                " RETURN DISTINCT c.CustId AS CustId, g.GroupId AS GroupId",
+        //                new { CustIdList = custIds });
+
+        //            return result.Select(record => new ArbitrageCustomer()
+        //            {
+        //                CustId = record.Values["CustId"].As<Int32>(),
+        //                GroupId = record.Values["GroupId"].As<Int32>()
+        //            }).ToList();
+        //        });
+        //    }
+        //}
     }
 }
