@@ -9,7 +9,6 @@ using Fanex.NAP.FS.Library.Models;
 using Fanex.NAP.FS.Library.Models.FraudCaseTask;
 using Fanex.NAP.FS.Model;
 using Fanex.NAP.FS.Service;
-using Neo4j.Driver.V1;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,8 +16,6 @@ using System.ServiceProcess;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 
 // ReSharper disable once IdentifierTypo
@@ -99,19 +96,21 @@ namespace Fanex.NAP.FS.ArbitrageService
 
         private List<ArbitrageCustomer> GroupCustomer(List<int> custIds)
         {
-            //var arbitrageCustomers = custIds.Chunk(500);
-            //var customerGroup = new List<ArbitrageCustomer>();
+            var arbitrageCustomers = custIds.Chunk2(500);
+            var customerGroup = new List<ArbitrageCustomer>();
             //var lockMe = new object();
-            //foreach (var currentCustomer in arbitrageCustomers)
-            //{
-            //    //var customers2 = GetGroupCustomer(currentCustomer);
-            //    var customers = GetCustomerGroupFromGraphDB(currentCustomer);
+            foreach (var currentCustomer in arbitrageCustomers)
+            {
+                //var customers2 = GetGroupCustomer(currentCustomer);
+                var customers = GetGroupCustomer(currentCustomer);
 
-            //    if (customers != null && customers.Any())
-            //    {
-            //        customerGroup.AddRange(customers);
-            //    }
-            //}
+                if (customers != null && customers.Any())
+                {
+                    customerGroup.AddRange(customers);
+                }
+
+                Thread.Sleep(10);
+            }
 
             //Parallel.ForEach(arbitrageCustomers, (currentCustomer) =>
             //{
@@ -126,28 +125,29 @@ namespace Fanex.NAP.FS.ArbitrageService
             //    }
             //});
 
-            //return customerGroup;
+            return customerGroup;
 
-            var arbitrageCustomers = custIds.Chunk(500).ToList();
+            //var arbitrageCustomers = custIds.Chunk(500).ToList();
 
-            var taskCustomers = new List<Task<IEnumerable<ArbitrageCustomer>>>();
+            //var taskCustomers = new List<Task<IEnumerable<ArbitrageCustomer>>>();
 
-            foreach (var arbitrageCustomer in arbitrageCustomers)
-            {
-                var taskCustomer = GroupCustomer(arbitrageCustomer);
+            //foreach (var arbitrageCustomer in arbitrageCustomers)
+            //{
+            //    var taskCustomer = GroupCustomer(arbitrageCustomer);
 
-                taskCustomers.Add(taskCustomer);
+            //    taskCustomers.Add(taskCustomer);
 
-                taskCustomer = null;
+            //    taskCustomer = null;
 
-                Thread.Sleep(TimeSpan.FromSeconds(1));
-            }
 
-            arbitrageCustomers = null;
+            //    Thread.Sleep(10);
+            //}
 
-            Task.WaitAll(taskCustomers.ToArray());
+            //arbitrageCustomers = null;
 
-            return taskCustomers.SelectMany(t => t.Result).ToList();
+            //Task.WaitAll(taskCustomers.ToArray());
+
+            //return taskCustomers.SelectMany(t => t.Result).ToList();
         }
 
         private void ExecuteGroupCustomer(int matchId, List<ArbitrageCustomer> associations, List<ArbitrageTicket> matchIds)
@@ -247,9 +247,9 @@ namespace Fanex.NAP.FS.ArbitrageService
                     ArbitrageTicketList = x.ToList()
                 }).ToList();
 
-            var options = new ParallelOptions() { MaxDegreeOfParallelism = 2 };
+           // var options = new ParallelOptions() { MaxDegreeOfParallelism = 2 };
 
-            Parallel.ForEach(ticketGroupBy, options, ticket =>
+            foreach (var ticket in ticketGroupBy)
             {
                 var custIds = ticket.ArbitrageTicketList
                     .Select(t => t.CustId)
@@ -259,7 +259,21 @@ namespace Fanex.NAP.FS.ArbitrageService
                 var groupCustomer = GroupCustomer(custIds);
 
                 ExecuteGroupCustomer(ticket.MatchId, groupCustomer, ticket.ArbitrageTicketList);
-            });
+
+                Thread.Sleep(10);
+            }
+
+            //Parallel.ForEach(ticketGroupBy, options, ticket =>
+            //{
+            //    var custIds = ticket.ArbitrageTicketList
+            //        .Select(t => t.CustId)
+            //        .Distinct()
+            //        .ToList();
+
+            //    var groupCustomer = GroupCustomer(custIds);
+
+            //    ExecuteGroupCustomer(ticket.MatchId, groupCustomer, ticket.ArbitrageTicketList);
+            //});
 
             ticketGroupBy = null;
 
