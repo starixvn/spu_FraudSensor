@@ -128,7 +128,7 @@ namespace Fanex.NAP.FS.ArbitrageService
 
             //return customerGroup;
 
-            var arbitrageCustomers = custIds.Chunk(500);
+            var arbitrageCustomers = custIds.Chunk(500).ToList();
 
             var taskCustomers = new List<Task<IEnumerable<ArbitrageCustomer>>>();
 
@@ -138,8 +138,12 @@ namespace Fanex.NAP.FS.ArbitrageService
 
                 taskCustomers.Add(taskCustomer);
 
+                taskCustomer = null;
+
                 Thread.Sleep(TimeSpan.FromSeconds(1));
             }
+
+            arbitrageCustomers = null;
 
             Task.WaitAll(taskCustomers.ToArray());
 
@@ -152,8 +156,8 @@ namespace Fanex.NAP.FS.ArbitrageService
             {
                 if (matchIds.Any() && associations.Any())
                 {
-                    var xmlMatchIds = Ultilities.XMLConvertByIsolatedStorage(matchIds, $"{matchId}.xml");
-                    var xmlAssociations = Ultilities.XMLConvertByIsolatedStorage(associations, $"association{matchId}.xml");
+                    var xmlMatchIds = Ultilities.XmlConvertByIsolatedStorage(matchIds, $"{matchId}.xml");
+                    var xmlAssociations = Ultilities.XmlConvertByIsolatedStorage(associations, $"association{matchId}.xml");
 
                     _arbitrageService.Rule(xmlMatchIds, xmlAssociations);
                 }
@@ -226,11 +230,9 @@ namespace Fanex.NAP.FS.ArbitrageService
 
         private List<ArbitrageTicket> Precondition()
         {
-            var tickets = _arbitrageService.PreCondition<ArbitrageTicket>().ToList();
-
             LogService.Info($"{ProjectName} - {ServiceName} - Precondition is executed.");
 
-            return tickets;
+            return _arbitrageService.PreCondition<ArbitrageTicket>().ToList();
         }
 
         private void Rule(IReadOnlyCollection<ArbitrageTicket> tickets)
@@ -258,6 +260,8 @@ namespace Fanex.NAP.FS.ArbitrageService
 
                 ExecuteGroupCustomer(ticket.MatchId, groupCustomer, ticket.ArbitrageTicketList);
             });
+
+            ticketGroupBy = null;
 
             LogService.Info($"{ProjectName} - {ServiceName} - Rule is executed.");
         }

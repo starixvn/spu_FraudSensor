@@ -1,4 +1,5 @@
 ﻿using System.IO.IsolatedStorage;
+using System.Linq;
 
 namespace Fanex.NAP.FS.Core
 {
@@ -43,31 +44,42 @@ namespace Fanex.NAP.FS.Core
             }
         }
 
-        public static string XMLConvertByIsolatedStorage(object data, string xmlFileName)
+        public static string XmlConvertByIsolatedStorage(object data, string xmlFileName)
         {
-            var emptyNamespaces = new XmlSerializerNamespaces(new[] { XmlQualifiedName.Empty });
+            string result;
 
             using (var isoStore = IsolatedStorageFile.GetStore(IsolatedStorageScope.User | IsolatedStorageScope.Domain | IsolatedStorageScope.Assembly, null, null))
             {
                 using (var isoStream = new IsolatedStorageFileStream(xmlFileName, FileMode.Create, isoStore))
                 {
                     var serializer = new XmlSerializer(data.GetType(), new XmlRootAttribute("Root"));
-
                     var settings = new XmlWriterSettings { Indent = true, OmitXmlDeclaration = true };
+                    var emptyNamespaces = new XmlSerializerNamespaces(new[] { XmlQualifiedName.Empty });
 
                     using (var writer = XmlWriter.Create(isoStream, settings))
                     {
                         serializer.Serialize(writer, data, emptyNamespaces);
 
                         writer.Flush();
+                        writer.Close();
                     }
-                }
 
-                using (var reader = new StreamReader(isoStore.OpenFile(xmlFileName, FileMode.Open)))
-                {
-                    return reader.ReadToEnd();
+                    isoStream.Close();
+                }
+                using (var streamData = isoStore.OpenFile(xmlFileName, FileMode.Open))
+                { 
+                    using (var reader = new StreamReader(streamData))
+                    {
+                        result = reader.ReadToEnd();
+                        reader.Close();
+                    }
+
+                    streamData.Close();
+                    isoStore.DeleteFile(xmlFileName);
                 }
             }
+
+            return result;
         }
 
     }
