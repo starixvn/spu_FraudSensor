@@ -10,11 +10,9 @@
         public IEnumerable<ArbitrageTicket> PreCondition<ArbitrageTicket>()
         {
             var criteria = new ArbitragePreconditionCriteria();
+            var repository = new DynamicRepository();
 
-            using (var db = new ObjectDb(criteria.GetSettingKey()))
-            {
-                return db.Query<ArbitrageTicket>(criteria);
-            }
+            return repository.Fetch<ArbitrageTicket>(criteria);
         }       
       
         public void Rule(string matchIds, string associations)
