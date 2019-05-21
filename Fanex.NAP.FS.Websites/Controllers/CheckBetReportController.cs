@@ -31,6 +31,13 @@
             return Json(_service.Generate(criteria));
         }
 
+        public ActionResult UpdateNote(CheckBetReportUpdateNoteCriteria criteria)
+        {
+            criteria.UserId = CurrentSession.UserId;
+         
+            return Json(_service.UpdateNote(criteria));
+        }
+
         public ActionResult GenerateExcel(CheckBetReportGetCriteria criteria)
         {
             criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;

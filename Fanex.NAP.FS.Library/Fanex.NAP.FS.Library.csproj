@@ -220,6 +220,7 @@
     <Compile Include="Criteria\Api\FlaggedAccountDeleteCriteria.cs" />
     <Compile Include="Criteria\Api\FlaggedAccountInsertCriteria.cs" />
     <Compile Include="Criteria\CheckBetReport\CheckBetReportGetCriteria.cs" />
+    <Compile Include="Criteria\CheckBetReport\CheckBetReportUpdateNoteCriteria.cs" />
     <Compile Include="Criteria\CustomerMonitor\CustomerDetails\GetCustomerTicketsCriteria.cs" />
     <Compile Include="Criteria\CustomerMonitor\CustomerGetCriteria.cs" />
     <Compile Include="Criteria\CustomerMonitor\UpdateNoteCriteria.cs" />

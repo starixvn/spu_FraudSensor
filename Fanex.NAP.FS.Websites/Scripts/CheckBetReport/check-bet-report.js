@@ -3,6 +3,9 @@
         to_date = $("#to-date"),
         ticket_table = $("#ticket-table");
 
+    var noteMaxLength = 500;
+    var noteLengthCollapse = 180;    
+
     function restrict_from_date() {
         var to_val = to_date.datepicker("getDate");
 
@@ -25,8 +28,9 @@
 
         common.showLoading();
 
-        $.get(url, { fromDate: from_date.val(), toDate: to_date.val() }, function (json) {
+        $.get(url, { fromDate: from_date.val(), toDate: to_date.val() }, function (json) {            
             ticket_table.DataTable().clear().rows.add(json).draw();
+            ticket_table.DataTable().columns.adjust();
             common.closeLoading();
         });
     }
@@ -91,16 +95,24 @@
         paging: false,
         dom: "t<'pagination'<'page-size'lp>i>",
         language: common.language(),
-        scrollY: '65vh',
+        scrollY: "61vh",
         scrollCollapse: true,
         columnDefs: [
             { targets: "_all", defaultContent: "-" },
             { targets: [-2, 1, 2], className: "text-center"},
-            { targets: [5, 8], className: "text-right" },
-            { targets: [0], width: "5%" },
-            { targets: [-2, 2], width: "4%" },
-            { targets: [1, 5, 6, 8], width: "6%" },
-            { targets: [-1, 3, 4], width: "10%" }
+            { targets: [5, 8], className: "text-right" },       
+            { targets: [11], className: "col-note" },            
+            { targets: [0], width: "6%" },
+            { targets: [1], width: "6%" },
+            { targets: [2], width: "5%" },          
+            { targets: [3], width: "7%" },
+            { targets: [4], width: "9%" },
+            { targets: [5], width: "8%" },
+            { targets: [6], width: "8%" },
+            { targets: [7], width: "10%" },
+            { targets: [8], width: "8%" },
+            { targets: [9], width: "8%" },
+            { targets: [10], width: "9%" }            
         ],
         columns: [
             { data: obj => obj.BetId },
@@ -113,9 +125,147 @@
             { data: obj => render_history(obj.Choice, false, true) },
             { data: obj => render_history(obj.PoistionTaking) },
             { data: obj => render_history(obj.Status, false, true) },
-            { data: obj => obj.Creator },
+            { data: obj => obj.Creator },            
+            {
+                data: renderNote, createdCell: (cell, _, row) => {
+                    $(".icon-note", cell).click(() => renderNoteEdit(cell, row));
+                    $(".note-ellipsis", cell).click(() => expandNote(cell));
+                }
+            }
         ]
-    });
+    });    
+
+    function renderNote(row) {
+        var noteWrap = wrapString(row.Note, noteLengthCollapse);
+
+        return '<div class="container-note">'
+            + '<textarea class="input-note-content hide" rows="5">' + (row.Note != null ? row.Note : '') + '</textarea>'
+            + '<div class="note-content" id="note-content">' + noteWrap + '</div>'
+            + '<div class="icon-note-text icon-note" id="icon"></div>'
+            + '</div>';
+    }
+
+    function wrapString(str, maxLength) {
+
+        if (str == null || str == '') {
+            return '-';
+        } 
+
+        var newStr = '';        
+        var breaksStr = str.split('\n');
+      
+        for (var i = 0; i < breaksStr.length; i++) {
+
+            if (i == 4) {
+                newStr = newStr + breaksStr[i];
+                return newStr.substring(0, maxLength - (i * 2) - 3) + '<span class="note-ellipsis" title="click to see whole note"> ... </span>';
+            }
+
+            newStr = newStr + breaksStr[i] + "\n";
+            if (newStr.length > maxLength) {
+                return newStr.substring(0, maxLength - (i * 2) - 3) + '<span class="note-ellipsis" title="click to see whole note"> ... </span>';
+            } 
+        }
+
+        return str;
+    }
+
+    function splitString(inputNote, str, maxLength) {       
+        if (str != null && str.length > maxLength) {
+
+            var strSplited = str.substring(0, maxLength);
+
+            $(inputNote).val(strSplited);
+
+            return strSplited;
+        }
+
+        return str;
+    }
+
+    function replaceSpecialCharacter(str) {
+        if (str != null) {
+            return str.replace(/&/g, "&amp;").replace(/>/g, "&gt;").replace(/</g, "&lt;");
+        }
+        return str;
+    }
+
+    function expandNote(cell) {
+        var noteExpand = $(cell).find('.input-note-content').val();
+
+        var noteExpand = noteExpand + "  " + '<span class="note-collapse icon-chevron-up" title="click to collapse up"></span>';
+
+        $(cell).find("#note-content").html(noteExpand);
+
+        $(".note-collapse", cell).click(() => collapseNote(cell));
+
+        ticket_table.DataTable().columns.adjust();
+    }
+
+    function collapseNote(cell) {
+        var noteCollapse = $(cell).find('.input-note-content').val();
+        noteCollapse = wrapString(noteCollapse, noteLengthCollapse);
+
+        $(cell).find("#note-content").html(noteCollapse);
+
+        $(".note-ellipsis", cell).click(() => expandNote(cell));
+
+        ticket_table.DataTable().columns.adjust();
+    }
+
+    function renderNoteEdit(cell, row) {
+        var inputNoteContent = $(cell).find('.input-note-content');
+        var noteContent = $(cell).find("#note-content");
+        var noteIcon = $(cell).find("#icon");
+      
+        if ($(inputNoteContent).hasClass('hide')) {
+            $(inputNoteContent).removeClass('hide').focus().select();
+            $(noteContent).addClass('hide'); 
+            $(noteIcon).removeClass('icon-note-text').addClass('icon-note-save');
+
+            $(inputNoteContent).keyup(function () {               
+                $(inputNoteContent).addClass('change');
+            });
+
+        } else if ($(noteIcon).hasClass('icon-note-save')){
+            saveNote(cell, row);
+        }
+    }
+
+    function saveNote(cell, row) {
+
+        var inputContent = $(cell).find('.input-note-content');        
+        var content = $(cell).find("#note-content");
+        var noteNew = $(inputContent).val().trim(); 
+        noteNew = replaceSpecialCharacter(noteNew);
+
+        if ($(inputContent).hasClass('change')) {
+            var url = common.modifyRelativeUrl("/CheckBetReport/UpdateNote");
+            noteNew = splitString(inputContent, noteNew, noteMaxLength);
+
+            $.get(url, { Note: noteNew, TransId: row.BetId }, function (result) {
+                if (result.ErrorCode == 0) {
+                    // wrap text on Note
+                    var noteWrap = wrapString(noteNew, noteLengthCollapse);
+                    $(content).html(noteWrap);
+
+                    $(".note-ellipsis", cell).click(() => expandNote(cell));
+
+                    common.showSuccess('Note updated!');
+
+                } else {
+                    console.log(result.ErrorCode);
+
+                    common.showError('Note fail!');
+                }               
+            });
+        }
+
+        $(inputContent).removeClass('change').addClass('hide');
+        $(content).removeClass('hide');
+        
+        $(cell).find("#icon").removeClass('icon-note-save').addClass('icon-note-text');       
+    }
 
     $("#generate").click(generate_report);
 

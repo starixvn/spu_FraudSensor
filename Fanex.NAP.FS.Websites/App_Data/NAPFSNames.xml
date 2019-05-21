@@ -245,7 +245,10 @@
     <Setting Key="FS_Rpt_CheckBet_Get"
              SpName="FS_Rpt_CheckBet_Get"
              DbName="DBFS.bodb_FraudSensor.bodbSPUNet"/>
-  </Function>
+    <Setting Key="FS_Rpt_CheckBetNote_Update"
+             SpName="FS_Rpt_CheckBetNote_Update"
+             DbName="DBFS.bodb_FraudSensor.bodbSPUNet" />
+  </Function>  
 
   <Function Name="CustomerMonitor">
     <Setting Key="FS_Rpt_CustomerMonitor_Get"
