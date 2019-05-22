@@ -24,51 +24,5 @@ namespace Fanex.NAP.FS.Core
             File.AppendAllText(filePath, body);
         }
 
-        public static string XMLConvert(object data)
-        {
-            var emptyNamespaces = new XmlSerializerNamespaces(new[] { XmlQualifiedName.Empty });
-
-            var settings = new XmlWriterSettings {Indent = true, OmitXmlDeclaration = true};
-
-            var serializer = new XmlSerializer(data.GetType(),new XmlRootAttribute("Root"));
-
-            using (var stringWriter = new System.IO.StringWriter())
-            {
-                using (var writer = XmlWriter.Create(stringWriter, settings))
-                {
-                    serializer.Serialize(writer, data, emptyNamespaces);
-
-                    return stringWriter.ToString();
-                }
-            }
-        }
-
-        public static string XMLConvertByIsolatedStorage(object data, string xmlFileName)
-        {
-            var emptyNamespaces = new XmlSerializerNamespaces(new[] { XmlQualifiedName.Empty });
-
-            using (var isoStore = IsolatedStorageFile.GetStore(IsolatedStorageScope.User | IsolatedStorageScope.Domain | IsolatedStorageScope.Assembly, null, null))
-            {
-                using (var isoStream = new IsolatedStorageFileStream(xmlFileName, FileMode.Create, isoStore))
-                {
-                    var serializer = new XmlSerializer(data.GetType(), new XmlRootAttribute("Root"));
-
-                    var settings = new XmlWriterSettings { Indent = true, OmitXmlDeclaration = true };
-
-                    using (var writer = XmlWriter.Create(isoStream, settings))
-                    {
-                        serializer.Serialize(writer, data, emptyNamespaces);
-
-                        writer.Flush();
-                    }
-                }
-
-                using (var reader = new StreamReader(isoStore.OpenFile(xmlFileName, FileMode.Open)))
-                {
-                    return reader.ReadToEnd();
-                }
-            }
-        }
-
     }
 }

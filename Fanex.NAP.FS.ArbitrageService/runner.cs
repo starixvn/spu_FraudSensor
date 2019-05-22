@@ -118,8 +118,9 @@ namespace Fanex.NAP.FS.ArbitrageService
             {
                 if (matchIds.Any() && associations.Any())
                 {
-                    var xmlMatchIds = Ultilities.XMLConvertByIsolatedStorage(matchIds, $"{matchId}.xml");
-                    var xmlAssociations = Ultilities.XMLConvertByIsolatedStorage(associations, $"association{matchId}.xml");
+                    XmlConvertor convertor = new XmlConvertor();
+                    var xmlMatchIds = convertor.XmlConvertByIsolatedStorage(matchIds, $"{matchId}.xml");
+                    var xmlAssociations = convertor.XmlConvertByIsolatedStorage(associations, $"association{matchId}.xml");
                     
                     _arbitrageService.Rule(xmlMatchIds, xmlAssociations);
                     xmlMatchIds = null;

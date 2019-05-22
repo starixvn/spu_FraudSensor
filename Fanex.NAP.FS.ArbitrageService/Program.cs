@@ -57,7 +57,7 @@ namespace Fanex.NAP.FS.ArbitrageService
                 const BindingFlags Flags = BindingFlags.Instance | BindingFlags.NonPublic;
                 var method = type.GetMethod("OnStart", Flags);
 
-                foreach (var service in ServicesToRun) method.Invoke(service, new object[] {args});
+                foreach (var service in ServicesToRun) method.Invoke(service, new object[] { args });
 
                 Console.WriteLine("Press any key to exit!");
                 Console.ReadLine();

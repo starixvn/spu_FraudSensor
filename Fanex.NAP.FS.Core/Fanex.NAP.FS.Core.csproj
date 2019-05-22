@@ -45,6 +45,7 @@
     <Compile Include="AppSetting.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Ultilities.cs" />
+    <Compile Include="XmlConvertor.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Fanex.NAP.FS.Model\Fanex.NAP.FS.Model.csproj">
