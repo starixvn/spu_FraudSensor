@@ -28,7 +28,7 @@
             row.GetCell(7).SetCellValue(WriteFraudCase(data.FraudCases.ContainsKey("6") ? data.FraudCases["6"] : null));
             row.GetCell(8).SetCellValue(WriteFraudCase(data.FraudCases.ContainsKey("8") ? data.FraudCases["8"] : null));
             row.GetCell(9).SetCellValue(WriteFraudCase(data.FraudCases.ContainsKey("10") ? data.FraudCases["10"] : null));
-            row.GetCell(10).SetCellValue(data.Notes ?? "-");
+            row.GetCell(10).SetCellValue(data.Notes != null ? ReplaceSpecialCharacter(data.Notes) : "-");
         }
 
         private static IRichTextString WriteEvent(Event e)
@@ -122,6 +122,15 @@
         {
             legend.Append(prop + ": ", new XSSFFont { IsBold = true });
             legend.Append(value + "\n");
+        }
+
+        private static string ReplaceSpecialCharacter(string obj)
+        {
+            if (!string.IsNullOrEmpty(obj))
+            {
+                return obj.Replace("&amp;", "&").Replace("&gt;", ">").Replace("&lt;", "<");
+            }
+            return obj;
         }
     }
 }

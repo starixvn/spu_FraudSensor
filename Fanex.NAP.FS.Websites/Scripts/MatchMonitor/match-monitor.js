@@ -268,6 +268,10 @@ function renderNoteEdit(cell, row) {
         $(noteContent).addClass('hide');
         $(noteIcon).removeClass('icon-note-text').addClass('icon-note-save').attr('title', 'save');
 
+        $(inputNoteContent).mouseout(function () { 
+            match_table.DataTable().columns.adjust();
+        });
+
         $(inputNoteContent).keyup(function () {
             $(inputNoteContent).addClass('change');
         });
@@ -278,10 +282,11 @@ function renderNoteEdit(cell, row) {
 }
 
 function saveNote(cell, row) {
+
     var inputContent = $(cell).find('.input-note-content');
     var content = $(cell).find("#note-content");
     var noteNew = $(inputContent).val().trim();
-    noteNew = replaceSpecialCharacter(noteNew);
+    noteNew = replaceSpecialCharacter(noteNew);    
 
     if ($(inputContent).hasClass('change')) {
         var url = common.modifyRelativeUrl("/MatchMonitor/UpdateMatchNote");     
@@ -304,12 +309,13 @@ function saveNote(cell, row) {
                 common.showError('Note fail!');
             }
         });
-    }
+    }   
 
     $(inputContent).removeClass('change').addClass('hide');
     $(content).removeClass('hide');
 
-    $(cell).find("#icon").removeClass('icon-note-save').addClass('icon-note-text').attr('title', 'edit');
+    match_table.DataTable().columns.adjust();
+    $(cell).find("#icon").removeClass('icon-note-save').addClass('icon-note-text').attr('title', 'edit');    
 }
 
 function load_grid() {

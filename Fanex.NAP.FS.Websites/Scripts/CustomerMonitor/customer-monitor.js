@@ -191,6 +191,10 @@
             $(noteContent).addClass('hide');
             $(noteIcon).removeClass('icon-note-text').addClass('icon-note-save').attr('title', 'save');
 
+            $(inputNoteContent).mouseout(function () {
+                customer_grid.DataTable().columns.adjust();
+            });
+
             $(inputNoteContent).keyup(function () {
                 $(inputNoteContent).addClass('change');
             });
@@ -231,6 +235,7 @@
         $(inputContent).removeClass('change').addClass('hide');
         $(content).removeClass('hide');
 
+        customer_grid.DataTable().columns.adjust();
         $(cell).find("#icon").removeClass('icon-note-save').addClass('icon-note-text').attr('title', 'edit');
     }
 
