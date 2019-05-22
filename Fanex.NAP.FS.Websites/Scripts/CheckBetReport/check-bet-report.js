@@ -95,13 +95,15 @@
         paging: false,
         dom: "t<'pagination'<'page-size'lp>i>",
         language: common.language(),
-        scrollY: "61vh",
+        scrollY: "61vh",        
+        scrollX: true,
         scrollCollapse: true,
         columnDefs: [
             { targets: "_all", defaultContent: "-" },
             { targets: [-2, 1, 2], className: "text-center"},
             { targets: [5, 8], className: "text-right" },       
-            { targets: [11], className: "col-note" },            
+            { targets: [11], className: "col-note" },    
+            { targets: [-2], width: "1%" },
             { targets: [0], width: "6%" },
             { targets: [1], width: "6%" },
             { targets: [2], width: "5%" },          
@@ -112,7 +114,7 @@
             { targets: [7], width: "10%" },
             { targets: [8], width: "8%" },
             { targets: [9], width: "8%" },
-            { targets: [10], width: "9%" }            
+            { targets: [10], width: "9%" }           
         ],
         columns: [
             { data: obj => obj.BetId },

@@ -6,6 +6,9 @@
         date_type = $("#date_type"),
         timeout_holder = null;
 
+    var noteMaxLength = 500;
+    var noteLengthCollapse = 180;    
+
     customer_grid.DataTable({
         dom: "t<'pagination'<'page-size'lp>i>",
         language: {
@@ -35,7 +38,12 @@
             { data: (row, type, set, meta) => meta.row + 1 },
             { data: row => row.Username },
             { data: row => renderViolation(row) },
-            { data: renderNote, createdCell: (cell, _, row) => $(".icon-note", cell).click(() => renderNotePopup(row)) }    
+            {
+                data: renderNote, createdCell: (cell, _, row) => {
+                    $(".icon-note", cell).click(() => renderNoteEdit(cell, row));
+                    $(".note-ellipsis", cell).click(() => expandNote(cell));
+                }
+            }    
         ],
         headerCallback: function (thread) {
             $("th", thread).eq(2).attr("title", "[Ticket Count] / [Violation Count] / [Match Count]");
@@ -58,7 +66,9 @@
     });
 
     gen_btn.click(gen_data);
+
     date_type.select2();
+
     $("#refresh_btn").click(gen_data);
 
     from_date.change(restrict_to_date);
@@ -71,7 +81,6 @@
 
     $("#export").click(export_excel);
        
-
     function renderViolation(obj) {
         fromDate = moment(from_date.val()).format("MMM D, YYYY");
         toDate = moment(to_date.val()).format("MMM D, YYYY");
@@ -79,6 +88,7 @@
             ${obj.TicketCount}/${obj.ViolationCount}/${obj.MatchCount}
         </a>`;
     }
+
     function gen_data(full = true) {
         from = moment(from_date.val());
         to = moment(to_date.val());
@@ -93,23 +103,136 @@
         });
     }
 
-    function renderNote(obj) {
-        var result = obj.Note;
+    function renderNote(row) {
+        var noteWrap = wrapString(row.Note, noteLengthCollapse);
 
-        if (result == null) {
-            result = "";
-        }
-        else if (result == "-") {
-            result = "-" + new Array(42).join(" ");
-        }
-        else if (result.length > 145) {
-            result = common.makeWrapString(result, 142);
+        return '<div class="container-note">'
+            + '<textarea class="input-note-content hide" rows="5">' + (row.Note != null ? row.Note : '') + '</textarea>'
+            + '<div class="note-content" id="note-content">' + noteWrap + '</div>'
+            + '<div class="icon-note-text icon-note" id="icon" title="edit"></div>'
+            + '</div>';
+    }
+
+    function wrapString(str, maxLength) {
+
+        if (str == null || str == '') {
+            return '-';
         }
 
-        return "<div class='container-note'>"
-            + '<div class="note-content">' + result + '</div>'
-            + '<div class="icon-note-text icon-note"></div>'
-            + "</div>";
+        var newStr = '';
+        var breaksStr = str.split('\n');
+
+        for (var i = 0; i < breaksStr.length; i++) {
+
+            if (i == 4) {
+                newStr = newStr + breaksStr[i];
+                return newStr.substring(0, maxLength - (i * 2) - 3) + '<span class="note-ellipsis" title="click to see whole note"> ... </span>';
+            }
+
+            newStr = newStr + breaksStr[i] + "\n";
+            if (newStr.length > maxLength) {
+                return newStr.substring(0, maxLength - (i * 2) - 3) + '<span class="note-ellipsis" title="click to see whole note"> ... </span>';
+            }
+        }
+
+        return str;
+    }
+
+    function splitString(inputNote, str, maxLength) {
+        if (str != null && str.length > maxLength) {
+
+            var strSplited = str.substring(0, maxLength);
+
+            $(inputNote).val(strSplited);
+
+            return strSplited;
+        }
+
+        return str;
+    }
+
+    function replaceSpecialCharacter(str) {
+        if (str != null) {
+            return str.replace(/&/g, "&amp;").replace(/>/g, "&gt;").replace(/</g, "&lt;");
+        }
+        return str;
+    }
+
+    function expandNote(cell) {
+        var noteExpand = $(cell).find('.input-note-content').val();
+
+        var noteExpand = noteExpand + "  " + '<span class="note-collapse icon-chevron-up" title="click to collapse up"></span>';
+
+        $(cell).find("#note-content").html(noteExpand);
+
+        $(".note-collapse", cell).click(() => collapseNote(cell));
+
+        customer_grid.DataTable().columns.adjust();
+    }
+
+    function collapseNote(cell) {
+        var noteCollapse = $(cell).find('.input-note-content').val();
+        noteCollapse = wrapString(noteCollapse, noteLengthCollapse);
+
+        $(cell).find("#note-content").html(noteCollapse);
+
+        $(".note-ellipsis", cell).click(() => expandNote(cell));
+
+        customer_grid.DataTable().columns.adjust();
+    }
+
+    function renderNoteEdit(cell, row) {
+        var inputNoteContent = $(cell).find('.input-note-content');
+        var noteContent = $(cell).find("#note-content");
+        var noteIcon = $(cell).find("#icon");
+
+        if ($(inputNoteContent).hasClass('hide')) {
+            $(inputNoteContent).removeClass('hide').focus().select();
+            $(noteContent).addClass('hide');
+            $(noteIcon).removeClass('icon-note-text').addClass('icon-note-save');
+            $(noteIcon).attr('title', 'save');
+
+            $(inputNoteContent).keyup(function () {
+                $(inputNoteContent).addClass('change');
+            });
+
+        } else if ($(noteIcon).hasClass('icon-note-save')) {
+            saveNote(cell, row);
+        }
+    }
+
+    function saveNote(cell, row) {    
+        var inputContent = $(cell).find('.input-note-content');
+        var content = $(cell).find("#note-content");
+        var noteNew = $(inputContent).val().trim();
+        noteNew = replaceSpecialCharacter(noteNew);
+
+        if ($(inputContent).hasClass('change')) {
+            var url = common.modifyRelativeUrl("/CustomerMonitor/UpdateNote");
+            noteNew = splitString(inputContent, noteNew, noteMaxLength);
+
+            $.post(url, { Notes: noteNew }, function (result) {
+                if (result.ErrorCode == 0) {
+                    // wrap text on Note
+                    var noteWrap = wrapString(noteNew, noteLengthCollapse);
+                    $(content).html(noteWrap);
+
+                    $(".note-ellipsis", cell).click(() => expandNote(cell));
+
+                    common.showSuccess('Note updated!');
+
+                } else {
+                    console.log(result.ErrorCode);
+
+                    common.showError('Note fail!');
+                }
+            });
+        }
+
+        $(inputContent).removeClass('change').addClass('hide');
+        $(content).removeClass('hide');
+
+        $(cell).find("#icon").removeClass('icon-note-save').addClass('icon-note-text').attr('title', 'edit');
     }
 
     function renderNotePopup(row) {
