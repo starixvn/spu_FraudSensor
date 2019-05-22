@@ -214,7 +214,7 @@
             var url = common.modifyRelativeUrl("/CustomerMonitor/UpdateNote");
             noteNew = splitString(inputContent, noteNew, noteMaxLength);
 
-            $.post(url, { Notes: noteNew }, function (result) {
+            $.post(url, { Notes: noteNew, CustId: row.CustId }, function (result) {
                 if (result.ErrorCode == 0) {
                     // wrap text on Note
                     var noteWrap = wrapString(noteNew, noteLengthCollapse);
