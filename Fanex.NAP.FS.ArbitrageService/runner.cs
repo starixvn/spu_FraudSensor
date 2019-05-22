@@ -96,21 +96,21 @@ namespace Fanex.NAP.FS.ArbitrageService
 
         private List<ArbitrageCustomer> GroupCustomer(List<int> custIds)
         {
-            var arbitrageCustomers = custIds.Chunk2(500);
-            var customerGroup = new List<ArbitrageCustomer>();
-            //var lockMe = new object();
-            foreach (var currentCustomer in arbitrageCustomers)
-            {
-                //var customers2 = GetGroupCustomer(currentCustomer);
-                var customers = GetGroupCustomer(currentCustomer);
+            //var arbitrageCustomers = custIds.Chunk2(500);
+            //var customerGroup = new List<ArbitrageCustomer>();
+            ////var lockMe = new object();
+            //foreach (var currentCustomer in arbitrageCustomers)
+            //{
+            //    //var customers2 = GetGroupCustomer(currentCustomer);
+            //    var customers = GetGroupCustomer(currentCustomer);
 
-                if (customers != null && customers.Any())
-                {
-                    customerGroup.AddRange(customers);
-                }
+            //    if (customers != null && customers.Any())
+            //    {
+            //        customerGroup.AddRange(customers);
+            //    }
 
-                Thread.Sleep(10);
-            }
+            //    Thread.Sleep(10);
+            //}
 
             //Parallel.ForEach(arbitrageCustomers, (currentCustomer) =>
             //{
@@ -125,29 +125,28 @@ namespace Fanex.NAP.FS.ArbitrageService
             //    }
             //});
 
-            return customerGroup;
+            // return customerGroup;
 
-            //var arbitrageCustomers = custIds.Chunk(500).ToList();
+            var arbitrageCustomers = custIds.Chunk(500).ToList();
 
-            //var taskCustomers = new List<Task<IEnumerable<ArbitrageCustomer>>>();
+            var taskCustomers = new List<Task<IEnumerable<ArbitrageCustomer>>>();
 
-            //foreach (var arbitrageCustomer in arbitrageCustomers)
-            //{
-            //    var taskCustomer = GroupCustomer(arbitrageCustomer);
+            foreach (var arbitrageCustomer in arbitrageCustomers)
+            {
+                var taskCustomer = GroupCustomer(arbitrageCustomer);
 
-            //    taskCustomers.Add(taskCustomer);
+                taskCustomers.Add(taskCustomer);
 
-            //    taskCustomer = null;
+                taskCustomer = null;
 
+                Thread.Sleep(10);
+            }
 
-            //    Thread.Sleep(10);
-            //}
+            arbitrageCustomers = null;
 
-            //arbitrageCustomers = null;
+            Task.WaitAll(taskCustomers.ToArray());
 
-            //Task.WaitAll(taskCustomers.ToArray());
-
-            //return taskCustomers.SelectMany(t => t.Result).ToList();
+            return taskCustomers.SelectMany(t => t.Result).ToList();
         }
 
         private void ExecuteGroupCustomer(int matchId, List<ArbitrageCustomer> associations, List<ArbitrageTicket> matchIds)
