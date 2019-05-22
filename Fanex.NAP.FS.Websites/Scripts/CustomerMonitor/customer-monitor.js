@@ -189,8 +189,7 @@
         if ($(inputNoteContent).hasClass('hide')) {
             $(inputNoteContent).removeClass('hide').focus().select();
             $(noteContent).addClass('hide');
-            $(noteIcon).removeClass('icon-note-text').addClass('icon-note-save');
-            $(noteIcon).attr('title', 'save');
+            $(noteIcon).removeClass('icon-note-text').addClass('icon-note-save').attr('title', 'save');
 
             $(inputNoteContent).keyup(function () {
                 $(inputNoteContent).addClass('change');
@@ -233,35 +232,6 @@
         $(content).removeClass('hide');
 
         $(cell).find("#icon").removeClass('icon-note-save').addClass('icon-note-text').attr('title', 'edit');
-    }
-
-    function renderNotePopup(row) {
-        $("textarea", "#match-note-popup").val(row.Note == null ? "" : row.Note);
-
-        function updateNote(popup) {
-            var note = $("textarea", popup).val();
-
-            if (note != null && note != "") {
-                var url = "/CustomerMonitor/UpdateNote";
-
-                $.post(url, { CustId: row.CustId, Notes: note }, function (result) {
-                    if (result.ErrorCode == 0) {
-                        $(popup).dialog("close");
-                        gen_data(false);
-                        common.showSuccess("Note updated!");
-                    }
-                });
-            }         
-        }
-
-        $("#match-note-popup").clone().dialog({
-            modal: true,
-            resizable: false,
-            buttons: [
-                { text: "Submit", class: "button -primary", click: function () { updateNote(this) } }
-            ],
-            width: 625
-        });
     }
 
     function startCountingDown($target, originalVal, val) {

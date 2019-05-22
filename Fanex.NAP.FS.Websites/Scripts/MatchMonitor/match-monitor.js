@@ -1,6 +1,10 @@
 ﻿var timeout_holder = null;
+var match_table = $("#match_grid table");
+var noteMaxLength = 500;
+var noteLengthCollapse = 180; 
 
-function load_page_events() {
+function load_page_events() {       
+
     $("#generate, #refresh_btn").click(load_grid);
 
     $("#league").select2();
@@ -53,7 +57,12 @@ function load_page_events() {
                 { data: row => renderFraudCase(row, 6), className: "has-icon text-center", width: "80px" },
                 { data: row => renderFraudCase(row, 8), className: "has-icon text-center", width: "70px" },
                 { data: row => renderFraudCase(row, 10), className: "has-icon text-center", width: "50px" },
-                { data: renderNote, className: "col-note", width: "270px" }
+                {
+                    data: renderNote, className: "col-note", width: "300px", createdCell: (cell, _, row) => {
+                        $(".icon-note", cell).click(() => renderNoteEdit(cell, row));
+                        $(".note-ellipsis", cell).click(() => expandNote(cell));
+                    }
+                }
             ],
             dom: "t<'pagination'<'page-size'lp>i>",
             language: {
@@ -171,20 +180,136 @@ function renderFraudCase(obj, selector) {
         </a>`;
 }
 
-function renderNote(obj) {
-    var result = obj.Notes;
+function renderNote(row) {
+    var noteWrap = wrapString(row.Notes, noteLengthCollapse);
 
-    if (result == "-") {
-        result = "-" + new Array(42).join(" ");
-    }
-    else if (result.length > 40) {
-        result = result.substring(0, 27) + "...";
+    return '<div class="container-note">'
+        + '<textarea class="input-note-content hide" rows="5">' + (row.Notes != '-' ? row.Notes : '') + '</textarea>'
+        + '<div class="note-content" id="note-content">' + noteWrap + '</div>'
+        + '<div class="icon-note-text icon-note" id="icon"></div>'
+        + '</div>';
+}
+
+function wrapString(str, maxLength) {
+
+    if (str == null || str == '') {
+        return '-';
     }
 
-    return "<div class='container-note'>"
-        + '<div class="note-content">' + result + '</div>'
-        + '<div class="icon-note-text icon-note"></div>'
-        + "</div>";
+    var newStr = '';
+    var breaksStr = str.split('\n');
+
+    for (var i = 0; i < breaksStr.length; i++) {
+
+        if (i == 5) {
+            newStr = newStr + breaksStr[i];
+            return newStr.substring(0, maxLength - (i * 2) - 3) + '<span class="note-ellipsis" title="click to see whole note"> ... </span>';
+        }
+
+        newStr = newStr + breaksStr[i] + "\n";
+        if (newStr.length > maxLength) {
+            return newStr.substring(0, maxLength - (i * 2) - 3) + '<span class="note-ellipsis" title="click to see whole note"> ... </span>';
+        }
+    }
+
+    return str;
+}
+
+function splitString(inputNote, str, maxLength) {
+    if (str != null && str.length > maxLength) {
+
+        var strSplited = str.substring(0, maxLength);
+
+        $(inputNote).val(strSplited);
+
+        return strSplited;
+    }
+
+    return str;
+}
+
+function replaceSpecialCharacter(str) {
+    if (str != null) {
+        return str.replace(/&/g, "&amp;").replace(/>/g, "&gt;").replace(/</g, "&lt;");
+    }
+    return str;
+}
+
+function expandNote(cell) {
+    var noteExpand = $(cell).find('.input-note-content').val();
+
+    var noteExpand = noteExpand + "  " + '<span class="note-collapse icon-chevron-up" title="click to collapse up"></span>';
+
+    $(cell).find("#note-content").html(noteExpand);
+
+    $(".note-collapse", cell).click(() => collapseNote(cell));
+
+    match_table.DataTable().columns.adjust();
+}
+
+function collapseNote(cell) {
+    var noteCollapse = $(cell).find('.input-note-content').val();
+    noteCollapse = wrapString(noteCollapse, noteLengthCollapse);
+
+    $(cell).find("#note-content").html(noteCollapse);
+
+    $(".note-ellipsis", cell).click(() => expandNote(cell));
+
+    match_table.DataTable().columns.adjust();
+}
+
+function renderNoteEdit(cell, row) {
+    var inputNoteContent = $(cell).find('.input-note-content');
+    var noteContent = $(cell).find("#note-content");
+    var noteIcon = $(cell).find("#icon");
+
+    if ($(inputNoteContent).hasClass('hide')) {
+        $(inputNoteContent).removeClass('hide').focus().select();
+        $(noteContent).addClass('hide');
+        $(noteIcon).removeClass('icon-note-text').addClass('icon-note-save').attr('title', 'save');
+
+        $(inputNoteContent).keyup(function () {
+            $(inputNoteContent).addClass('change');
+        });
+
+    } else if ($(noteIcon).hasClass('icon-note-save')) {
+        saveNote(cell, row);
+    }
+}
+
+function saveNote(cell, row) {
+    var inputContent = $(cell).find('.input-note-content');
+    var content = $(cell).find("#note-content");
+    var noteNew = $(inputContent).val().trim();
+    noteNew = replaceSpecialCharacter(noteNew);
+
+    if ($(inputContent).hasClass('change')) {
+        var url = common.modifyRelativeUrl("/MatchMonitor/UpdateMatchNote");     
+
+        noteNew = splitString(inputContent, noteNew, noteMaxLength);
+
+        $.post(url, { Notes: noteNew, MatchId: row.MatchId }, function (result) {
+            if (result.ErrorCode == 0) {
+                // wrap text on Note
+                var noteWrap = wrapString(noteNew, noteLengthCollapse);
+                $(content).html(noteWrap);
+
+                $(".note-ellipsis", cell).click(() => expandNote(cell));
+
+                common.showSuccess('Note updated!');
+
+            } else {
+                console.log(result.ErrorCode);
+
+                common.showError('Note fail!');
+            }
+        });
+    }
+
+    $(inputContent).removeClass('change').addClass('hide');
+    $(content).removeClass('hide');
+
+    $(cell).find("#icon").removeClass('icon-note-save').addClass('icon-note-text').attr('title', 'edit');
 }
 
 function load_grid() {
@@ -205,10 +330,12 @@ function load_grid() {
 function attachGridEvent(json) {
     $("#match_grid table").DataTable().clear().rows.add(json.data).draw();
 
-    $(".verified-checkbox").change(updateVerification);
-    $(".icon-note").click(renderNotePopup);
+    $(".verified-checkbox").change(updateVerification);    
+
     common.closeLoading();
+
     $("#refresh_interval").change();
+
     $("#event_date").datepicker("hide");
 
     //$("span .number").click(e => $(e.target).parent().find("a").click());
@@ -337,42 +464,5 @@ function exportExcel() {
     common.downloadFile(url, dto);
 }
 
-function updateNote(popup, row) {
-    var notes = $("textarea", popup).val();
-
-    if (common.hasSpecialCharacter(notes)) {
-        common.showError("Invalid input");
-        return;
-    }
-
-    var dto = {
-        MatchId: row.MatchId,
-        Notes: notes
-    }
-
-    var url = common.modifyRelativeUrl("/MatchMonitor/UpdateMatchNote");
-
-    $.post(url, dto, function () {
-        $(popup).dialog("close");
-        load_grid();
-    });
-}
-
-function renderNotePopup() {
-    var row = $("table").DataTable().row($(this).parents("tr").first()).data();
-
-    $("#refresh_interval").val("--").change();
-
-    $("textarea", "#match-note-popup").val(row.Notes == "-" ? "" : row.Notes);
-
-    $("#match-note-popup").clone().dialog({
-        modal: true,
-        resizable: false,
-        buttons: [
-            { text: "Submit", class: "button -primary", click: function () { updateNote(this, row) } }
-        ],
-        width: 625
-    });
-}
 
 $(load_page_events);

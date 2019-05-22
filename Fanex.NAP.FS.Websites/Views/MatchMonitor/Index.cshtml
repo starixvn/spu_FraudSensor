@@ -6,6 +6,36 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+@section styles{
+    <style>
+        .table .container-note .note-content {
+            word-wrap: normal !important;
+            word-break: break-word;
+            white-space: pre-line;
+            min-width: 140px;
+        }
+
+        .input-note-content {
+            resize: vertical;
+        }
+
+        .icon-note-save:before {
+            content: "\e927";
+        }
+
+        .note-ellipsis {
+            cursor: pointer;
+            color: mediumblue;
+        }
+
+        .note-collapse {
+            cursor: pointer;
+            color: mediumblue;
+        }     
+
+    </style>
+}
+
 <h1 class="title">Match Monitor</h1>
 <div class="form-filter">
     <div class="group calendar">

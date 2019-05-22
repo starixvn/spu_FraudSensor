@@ -223,7 +223,7 @@
         if ($(inputNoteContent).hasClass('hide')) {
             $(inputNoteContent).removeClass('hide').focus().select();
             $(noteContent).addClass('hide'); 
-            $(noteIcon).removeClass('icon-note-text').addClass('icon-note-save');
+            $(noteIcon).removeClass('icon-note-text').addClass('icon-note-save').attr('title', 'save');
 
             $(inputNoteContent).keyup(function () {               
                 $(inputNoteContent).addClass('change');
@@ -266,7 +266,7 @@
         $(inputContent).removeClass('change').addClass('hide');
         $(content).removeClass('hide');
         
-        $(cell).find("#icon").removeClass('icon-note-save').addClass('icon-note-text');       
+        $(cell).find("#icon").removeClass('icon-note-save').addClass('icon-note-text').attr('title', 'edit');
     }
 
     $("#generate").click(generate_report);
