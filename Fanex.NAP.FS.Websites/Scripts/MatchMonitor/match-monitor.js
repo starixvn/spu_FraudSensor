@@ -274,7 +274,7 @@ function renderNoteEdit(cell, row) {
 
     if ($(inputNoteContent).hasClass('hide')) {
         $(inputNoteContent).removeClass('hide').focus().select();
-        $(noteContent).addClass('hide');
+        $(noteContent).addClass('hide').hide();        
         $(noteIcon).removeClass('icon-note-text').addClass('icon-note-save').attr('title', 'save');
 
         $(inputNoteContent).mouseout(function () { 
@@ -321,7 +321,7 @@ function saveNote(cell, row) {
     }   
 
     $(inputContent).removeClass('change').addClass('hide');
-    $(content).removeClass('hide');
+    $(content).removeClass('hide').show();    
 
     match_table.DataTable().columns.adjust();
     $(cell).find("#icon").removeClass('icon-note-save').addClass('icon-note-text').attr('title', 'edit');    

@@ -145,11 +145,11 @@
     function renderNote(row) {       
         var noteWrap = wrapString(row.Note, noteLengthCollapse);
 
-        return '<div class="container-note">'
+        return '<div class="outer-container"><div class="container-note">'
             + '<textarea class="input-note-content hide" rows="5">' + (row.Note != null ? row.Note : '') + '</textarea>'
             + '<div class="note-content" id="note-content">' + noteWrap + '</div>'
             + '<div class="icon-note-text icon-note" id="icon"></div>'
-            + '</div>';
+            + '</div></div>';
     }
 
     function wrapString(str, maxLength) {
@@ -227,7 +227,7 @@
       
         if ($(inputNoteContent).hasClass('hide')) {
             $(inputNoteContent).removeClass('hide').focus().select();
-            $(noteContent).addClass('hide'); 
+            $(noteContent).addClass('hide').hide();            
             $(noteIcon).removeClass('icon-note-text').addClass('icon-note-save').attr('title', 'save');
 
             $(inputNoteContent).mouseout(function () {
@@ -273,7 +273,7 @@
         }
 
         $(inputContent).removeClass('change').addClass('hide');
-        $(content).removeClass('hide');
+        $(content).removeClass('hide').show();
 
         ticket_table.DataTable().columns.adjust();
         $(cell).find("#icon").removeClass('icon-note-save').addClass('icon-note-text').attr('title', 'edit');
