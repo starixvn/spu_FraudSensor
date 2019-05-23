@@ -458,17 +458,28 @@ function mappingFraudCase(fraudCase = "") {
 }
 
 function exportExcel() {
-    var url = "matchmonitor/ExportExcel";
+    var url = common.modifyRelativeUrl("/Matchmonitor/GenerateExcel");
+    var urlDownload = common.modifyRelativeUrl("/Matchmonitor/DownloadExcel");
     var dto = {};
 
     dto.EventDate = $("#event_date").val();
     dto.IsVerified = $("#is_verified").val();
     dto.MatchStatus = $("#match_status").val();
-    dto.LeagueIds = $("#league").val();
+    dto.LeagueIds = $("#league").val();    
     dto.IsMainMarket = $("#is_main_market:checked").length > 0;
-
-    common.downloadFile(url, dto);
+ 
+    $.ajax({
+        cache: false,
+        type: 'POST',
+        url: url,
+        data: dto,
+        success: function (data) {         
+            window.location = urlDownload + '?fileId=' + data.FileId + '&fileName=' + data.FileName;
+        },
+        error: function (err) {
+            console.log(err);
+        }
+    });
 }
-
 
 $(load_page_events);
