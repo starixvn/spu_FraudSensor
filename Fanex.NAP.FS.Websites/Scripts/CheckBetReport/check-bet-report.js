@@ -134,10 +134,20 @@
                     $(".note-ellipsis", cell).click(() => expandNote(cell));
                 }
             }
-        ]
+        ],
+        rowCallback: function (cell, row, index) {            
+            var noteContent = $(cell).find("#note-content");
+            var widthWindow = $(window).width();
+            console.log(widthWindow);
+
+            if (widthWindow < 1670) {
+                $(noteContent).css('min-height', '96px');
+            }
+
+        }
     });    
 
-    function renderNote(row) {
+    function renderNote(row) {       
         var noteWrap = wrapString(row.Note, noteLengthCollapse);
 
         return '<div class="container-note">'
@@ -226,7 +236,7 @@
             $(noteIcon).removeClass('icon-note-text').addClass('icon-note-save').attr('title', 'save');
 
             $(inputNoteContent).mouseout(function () {
-                match_table.DataTable().columns.adjust();
+                ticket_table.DataTable().columns.adjust();
             });
 
             $(inputNoteContent).keyup(function () {               
@@ -272,13 +282,13 @@
 
         ticket_table.DataTable().columns.adjust();
         $(cell).find("#icon").removeClass('icon-note-save').addClass('icon-note-text').attr('title', 'edit');
-    }
+    }    
 
     $("#generate").click(generate_report);
 
     $("#export").click(generate_excel);
 
-    $(".icon-calendar-text").click(e => $(e.target).prev().focus());
+    $(".icon-calendar-text").click(e => $(e.target).prev().focus());       
 
     generate_report();
 }
