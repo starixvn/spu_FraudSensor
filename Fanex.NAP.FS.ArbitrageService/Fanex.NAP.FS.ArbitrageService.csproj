@@ -52,10 +52,6 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Fanex.Graph.Data, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Lib\Fanex.Graph.Data.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
@@ -71,9 +67,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Neo4j\Neo4jCommandBuilder.cs" />
-    <Compile Include="Neo4j\Neo4jDriverFactory.cs" />
-    <Compile Include="Neo4j\Neo4jExecutor.cs" />
     <Compile Include="Runner.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -84,9 +77,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Lib\Fanex.Graph.Data.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <None Include="App.config" />
     <Content Include="App_Data\NAPFSNames.UAT.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

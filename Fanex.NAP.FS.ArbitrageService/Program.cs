@@ -1,9 +1,7 @@
 ﻿using Fanex.Data;
 using Fanex.Data.ConnectionStringProvider20;
-using Fanex.Graph.Data;
 using Fanex.Logging;
 using Fanex.Logging.Sentry.RavenClient;
-using Fanex.NAP.FS.ArbitrageService.Neo4j;
 using Fanex.NAP.FS.Core;
 using SharpRaven;
 using System;
@@ -25,15 +23,7 @@ namespace Fanex.NAP.FS.ArbitrageService
                 .Use(new ConnectionStringProvider20())
                 .UseDefaultDbSettingProvider(AppSetting.AppData, false)
                 .Run();
-
-            //DbSessionFactory.Init()
-            //    .RegisterConfigs("DB.MiddleService")
-            //    .RegisterXmlFile(AppSetting.AppData)
-            //    .RegisterDriverFactory(new Neo4jDriverFactory())
-            //    .RegisterCommandBuilder(new Neo4jCommandBuilder("~/App_Data/scripts"))
-            //    .RegisterCommandExecutor(new Neo4jExecutor())
-            //    .Run();
-
+           
             LogManager
                 .SetDefaultLogCategory(AppSetting.FanexLogCategory)
                 .Use(new List<ILogEngine>

@@ -1,5 +1,4 @@
-﻿using Fanex.Graph.Data;
-using Fanex.Logging;
+﻿using Fanex.Logging;
 using Fanex.Logging.Extensions;
 using Fanex.Logging.Extensions.Database;
 using Fanex.NAP.FS.Core;
@@ -29,17 +28,11 @@ namespace Fanex.NAP.FS.ArbitrageService
         private readonly Service.ArbitrageService _arbitrageService;
         private readonly MicroService _baseService;
         private bool _isRunning = false;
-       // private readonly IDriver _driver;
 
         public Runner()
         {
             _baseService = new MicroService(ServiceName, FraudCaseId.Arbitrage);
             _arbitrageService = new Service.ArbitrageService();
-
-            //_driver = GraphDatabase.Driver("bolt://10.18.200.70:7687", AuthTokens.Basic("neo4j", "1234aa"), new Config()
-            //{
-            //    EncryptionLevel = EncryptionLevel.None
-            //});
 
             InitializeComponent();
         }
@@ -96,38 +89,7 @@ namespace Fanex.NAP.FS.ArbitrageService
 
         private List<ArbitrageCustomer> GroupCustomer(List<int> custIds)
         {
-            //var arbitrageCustomers = custIds.Chunk2(500);
-            //var customerGroup = new List<ArbitrageCustomer>();
-            ////var lockMe = new object();
-            //foreach (var currentCustomer in arbitrageCustomers)
-            //{
-            //    //var customers2 = GetGroupCustomer(currentCustomer);
-            //    var customers = GetGroupCustomer(currentCustomer);
-
-            //    if (customers != null && customers.Any())
-            //    {
-            //        customerGroup.AddRange(customers);
-            //    }
-
-            //    Thread.Sleep(10);
-            //}
-
-            //Parallel.ForEach(arbitrageCustomers, (currentCustomer) =>
-            //{
-            //    var customers = GetGroupCustomer(currentCustomer);
-
-            //    if (customers != null && customers.Any())
-            //    {
-            //        lock (lockMe)
-            //        {
-            //            customerGroup.AddRange(customers);
-            //        }
-            //    }
-            //});
-
-            // return customerGroup;
-
-            var arbitrageCustomers = custIds.Chunk(500).ToList();
+            var arbitrageCustomers = custIds.Chunk2(500).ToList();
 
             var taskCustomers = new List<Task<IEnumerable<ArbitrageCustomer>>>();
 
@@ -170,26 +132,6 @@ namespace Fanex.NAP.FS.ArbitrageService
                 LogService.Error(
                     $"{ProjectName} - {ServiceName} - MatchId: {matchId} - GroupData Exeption: {logMessage}");
             }
-        }
-
-        private IEnumerable<ArbitrageCustomer> GetGroupCustomer(IEnumerable<int> custIds)
-        {
-            IEnumerable<ArbitrageCustomer> result = null;
-
-            try
-            {
-                result = DbSessionFactory.Execute<ArbitrageCustomer>("GroupCustomer", new { CustIdList = custIds }).Data;
-            }
-            catch (Exception ex)
-            {
-                var logMessage = new LogMessage(ex.Message)
-                    .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
-
-                LogService.Error(
-                    $"{ProjectName} - {ServiceName} - - GroupCustomer Exeption: {logMessage}");
-            }
-
-            return result;
         }
 
         private async Task<IEnumerable<ArbitrageCustomer>> GroupCustomer(IEnumerable<int> custids)
@@ -246,8 +188,6 @@ namespace Fanex.NAP.FS.ArbitrageService
                     ArbitrageTicketList = x.ToList()
                 }).ToList();
 
-           // var options = new ParallelOptions() { MaxDegreeOfParallelism = 2 };
-
             foreach (var ticket in ticketGroupBy)
             {
                 var custIds = ticket.ArbitrageTicketList
@@ -262,41 +202,9 @@ namespace Fanex.NAP.FS.ArbitrageService
                 Thread.Sleep(10);
             }
 
-            //Parallel.ForEach(ticketGroupBy, options, ticket =>
-            //{
-            //    var custIds = ticket.ArbitrageTicketList
-            //        .Select(t => t.CustId)
-            //        .Distinct()
-            //        .ToList();
-
-            //    var groupCustomer = GroupCustomer(custIds);
-
-            //    ExecuteGroupCustomer(ticket.MatchId, groupCustomer, ticket.ArbitrageTicketList);
-            //});
-
             ticketGroupBy = null;
 
             LogService.Info($"{ProjectName} - {ServiceName} - Rule is executed.");
         }
-
-        //private List<ArbitrageCustomer> GetCustomerGroupFromGraphDB(IEnumerable<int> custIds)
-        //{
-        //    using (var session = _driver.Session())
-        //    {
-        //        return session.ReadTransaction(tx =>
-        //        {
-        //            var result = tx.Run("MATCH (c:Customer)-[:BELONG_TO]->(g:Group)" +
-        //                                " WHERE c.CustId IN $CustIdList" +
-        //                                " RETURN DISTINCT c.CustId AS CustId, g.GroupId AS GroupId",
-        //                new { CustIdList = custIds });
-
-        //            return result.Select(record => new ArbitrageCustomer()
-        //            {
-        //                CustId = record.Values["CustId"].As<Int32>(),
-        //                GroupId = record.Values["GroupId"].As<Int32>()
-        //            }).ToList();
-        //        });
-        //    }
-        //}
     }
 }
