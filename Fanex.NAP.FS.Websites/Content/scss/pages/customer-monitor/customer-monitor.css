@@ -48,6 +48,7 @@
     white-space: pre-line;
     min-width: 140px;
     padding: 5px 8px;
+    min-height: 40px;
 }
 
 .input-note-content {

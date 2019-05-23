@@ -64,6 +64,13 @@ function load_page_events() {
                     }
                 }
             ],
+            rowCallback: function (cell) {
+                if ($(window).width() < 1000) {
+                    $(cell).find("#note-content").css('min-height', '158px');                    
+                } else if ($(window).width() < 1310) {
+                    $(cell).find("#note-content").css('min-height', '78px');
+                }
+            },
             dom: "t<'pagination'<'page-size'lp>i>",
             language: {
                 lengthMenu: "Page size _MENU_",

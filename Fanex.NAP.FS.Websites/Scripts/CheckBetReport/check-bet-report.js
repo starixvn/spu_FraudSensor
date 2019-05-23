@@ -136,16 +136,11 @@
             }
         ],
         rowCallback: function (cell, row, index) {            
-            var noteContent = $(cell).find("#note-content");
-            var widthWindow = $(window).width();
-            console.log(widthWindow);
-
-            if (widthWindow < 1670) {
-                $(noteContent).css('min-height', '96px');
+            if ($(window).width() < 1670) {
+                $(cell).find("#note-content").css('min-height', '96px');
             }
-
         }
-    });    
+    });
 
     function renderNote(row) {       
         var noteWrap = wrapString(row.Note, noteLengthCollapse);

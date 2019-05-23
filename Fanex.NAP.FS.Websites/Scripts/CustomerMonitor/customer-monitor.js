@@ -47,7 +47,7 @@
         ],
         headerCallback: function (thread) {
             $("th", thread).eq(2).attr("title", "[Ticket Count] / [Violation Count] / [Match Count]");
-        }
+        }        
     });
 
     from_date.datepicker({
