@@ -65,9 +65,11 @@ function load_page_events() {
                 }
             ],
             rowCallback: function (cell) {
-                if ($(window).width() < 1000) {
-                    $(cell).find("#note-content").css('min-height', '158px');                    
-                } else if ($(window).width() < 1310) {
+                if ($(window).width() < 1085) {
+                    $(cell).find("#note-content").css('min-height', '158px');
+                } else if ($(window).width() < 1200) {
+                    $(cell).find("#note-content").css('min-height', '140px');
+                } else if ($(window).width() < 1366) {
                     $(cell).find("#note-content").css('min-height', '78px');
                 }
             },
