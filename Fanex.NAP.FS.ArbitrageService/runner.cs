@@ -3,6 +3,7 @@ using Fanex.Logging.Extensions;
 using Fanex.Logging.Extensions.Database;
 using Fanex.NAP.FS.Core;
 using Fanex.NAP.FS.Library.Core.Helpers.Api;
+using Fanex.NAP.FS.Library.Core.Helpers.Xml;
 using Fanex.NAP.FS.Library.Core.Utilities;
 using Fanex.NAP.FS.Library.Models;
 using Fanex.NAP.FS.Library.Models.FraudCaseTask;
@@ -117,8 +118,8 @@ namespace Fanex.NAP.FS.ArbitrageService
             {
                 if (matchIds.Any() && associations.Any())
                 {
-                    var xmlMatchIds = Ultilities.XmlConvertByIsolatedStorage(matchIds, $"{matchId}.xml");
-                    var xmlAssociations = Ultilities.XmlConvertByIsolatedStorage(associations, $"association{matchId}.xml");
+                    var xmlMatchIds = matchIds.ToXmlString();
+                    var xmlAssociations = associations.ToXmlString();
 
                     _arbitrageService.Rule(xmlMatchIds, xmlAssociations);
                 }
