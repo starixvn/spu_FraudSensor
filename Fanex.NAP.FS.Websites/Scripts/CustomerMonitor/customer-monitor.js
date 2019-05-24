@@ -191,7 +191,7 @@
             $(inputNoteContent).removeClass('hide').focus().select();
 
             // adjust height input Note
-            $(inputNoteContent).height(heightNote);
+            $(inputNoteContent).height(heightNote + 6);
 
             $(noteContent).addClass('hide').hide();
             $(noteIcon).removeClass('icon-note-text').addClass('icon-note-save').attr('title', 'save');
