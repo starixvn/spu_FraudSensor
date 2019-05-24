@@ -480,20 +480,21 @@ function exportExcel() {
     dto.IsVerified = $("#is_verified").val();
     dto.MatchStatus = $("#match_status").val();
     dto.LeagueIds = $("#league").val();
-    dto.IsMainMarket = $("#is_main_market:checked").length > 0;
+    dto.IsMainMarket = $("#is_main_market:checked").length > 0;    
 
-    $.ajax({
-        cache: false,
+    $.ajax({      
         type: 'POST',
         url: url,
         data: dto,
-        success: function (data) {
-            window.location = urlDownload + '?fileId=' + data.FileId + '&fileName=' + data.FileName;
+        global: false,
+        crossDomain: true,
+        success: function (data) {            
+            common.downloadFile(urlDownload, { fileId: data.FileId, fileName: data.FileName });            
         },
-        error: function (err) {
-            console.log(err);
+        error: function (xhr, status, error) {           
+            console.log('data of ' + xhr.responseText);
         }
-    });
+    });    
 }
 
 $(load_page_events);

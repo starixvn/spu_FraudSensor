@@ -67,7 +67,7 @@
             return Json(_matchMonitorService.VerifyMatch(criteria));
         }
      
-        [HttpPost]
+        [HttpPost]        
         public ActionResult GenerateExcel(MatchGetAllCriteria criteria)
         {
             criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
@@ -81,12 +81,9 @@
 
             TempData[fileId] = content;
 
-            return new JsonResult
-            {
-                Data = new { FileId = fileId, FileName = fileName }
-            };
+            return new JsonResult { JsonRequestBehavior = JsonRequestBehavior.AllowGet, Data = new { FileId = fileId, FileName = fileName } };
         }
-
+        
         public ActionResult DownloadExcel(string fileId, string fileName)
         {
             if (TempData[fileId] != null)
