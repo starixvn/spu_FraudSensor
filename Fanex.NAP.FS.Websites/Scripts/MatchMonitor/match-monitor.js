@@ -52,25 +52,25 @@ function load_page_events() {
                 { data: row => row.VerifiedBy, width: "100px" },
                 { data: renderEvent },
                 { data: row => row.Score, className: "text-center", width: "60px" },
-                { data: row => row.Status, className: "text-center", width: "70px" },
+                { data: row => row.Status, className: "text-center", width: "80px" },
                 { data: row => renderFraudCase(row, 1), className: "has-icon text-center", width: "70px" },
                 { data: row => renderFraudCase(row, 6), className: "has-icon text-center", width: "80px" },
                 { data: row => renderFraudCase(row, 8), className: "has-icon text-center", width: "70px" },
                 { data: row => renderFraudCase(row, 10), className: "has-icon text-center", width: "50px" },
                 {
-                    data: renderNote, className: "col-note", width: "300px", createdCell: (cell, _, row) => {
+                    data: renderNote, className: "col-note", width: "310px", createdCell: (cell, _, row) => {
                         $(".icon-note", cell).click(() => renderNoteEdit(cell, row));
                         $(".note-ellipsis", cell).click(() => expandNote(cell));
                     }
                 }
             ],
-            rowCallback: function (cell) {
+            rowCallback: function (cell, data) {
                 if ($(window).width() < 1085) {
-                    $(cell).find("#note-content").css('min-height', '158px');
+                    $(cell).find("#note-content").css('min-height', '200px');
                 } else if ($(window).width() < 1200) {
-                    $(cell).find("#note-content").css('min-height', '140px');
+                    $(cell).find("#note-content").css('min-height', '195px');
                 } else if ($(window).width() < 1366) {
-                    $(cell).find("#note-content").css('min-height', '78px');
+                    $(cell).find("#note-content").css('min-height', '120px');
                 }
             },
             dom: "t<'pagination'<'page-size'lp>i>",
@@ -155,11 +155,11 @@ function renderVerifyCheckBox(obj) {
         + "<span></span></label>";
 }
 
-function renderEvent(obj) {
-    return "<span class='team-home'>" + obj.Event.HomeName + "</span>"
+function renderEvent(obj) {   
+    return "<div class='col-event'><span class='team-home'>" + obj.Event.HomeName + "</span>"
         + " - vs - "
         + "<span class='team-away'>" + obj.Event.AwayName + "</span>"
-        + "<div class='league-name'>" + obj.Event.LeagueName + "</div>";
+        + "<div class='league-name'>" + obj.Event.LeagueName + "</div></div>";
 }
 
 function renderFraudCase(obj, selector) {
@@ -344,11 +344,11 @@ function load_grid() {
         return;
     }
 
-    $.post(url, dto, attachGridEvent)
+    $.post(url, dto, attachGridEvent);
 }
 
 function attachGridEvent(json) {
-    $("#match_grid table").DataTable().clear().rows.add(json.data).draw();
+    $("#match_grid table").DataTable().clear().rows.add(json.data).draw();    
 
     $(".verified-checkbox").change(updateVerification);    
 
@@ -358,6 +358,7 @@ function attachGridEvent(json) {
 
     $("#event_date").datepicker("hide");
 
+    match_table.DataTable().columns.adjust();
     //$("span .number").click(e => $(e.target).parent().find("a").click());
 }
 
