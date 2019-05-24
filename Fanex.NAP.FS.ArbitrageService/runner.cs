@@ -86,8 +86,6 @@ namespace Fanex.NAP.FS.ArbitrageService
             }
         }
 
-
-
         private List<ArbitrageCustomer> GroupCustomer(List<int> custIds)
         {
             var arbitrageCustomers = custIds.Chunk(500).ToList();
@@ -100,12 +98,8 @@ namespace Fanex.NAP.FS.ArbitrageService
 
                 taskCustomers.Add(taskCustomer);
 
-                taskCustomer = null;
-
                 Thread.Sleep(10);
             }
-
-            arbitrageCustomers = null;
 
             Task.WaitAll(taskCustomers.ToArray());
 
@@ -201,9 +195,9 @@ namespace Fanex.NAP.FS.ArbitrageService
                 var groupCustomer = GroupCustomer(custIds);
 
                 ExecuteGroupCustomer(ticket.MatchId, groupCustomer, ticket.ArbitrageTicketList);
-            });
 
-            ticketGroupBy = null;
+                Thread.Sleep(10);
+            });
 
             LogService.Info($"{ProjectName} - {ServiceName} - Rule is executed.");
         }
