@@ -224,9 +224,13 @@
         var inputNoteContent = $(cell).find('.input-note-content');
         var noteContent = $(cell).find("#note-content");
         var noteIcon = $(cell).find("#icon");
-      
+        var heightNote = $(noteContent).height();
+
         if ($(inputNoteContent).hasClass('hide')) {
             $(inputNoteContent).removeClass('hide').focus().select();
+            // adjust height input Note
+            $(inputNoteContent).height(heightNote);
+
             $(noteContent).addClass('hide').hide();            
             $(noteIcon).removeClass('icon-note-text').addClass('icon-note-save').attr('title', 'save');
 
