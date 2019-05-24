@@ -3,6 +3,7 @@ using Fanex.Logging.Extensions;
 using Fanex.Logging.Extensions.Database;
 using Fanex.NAP.FS.Core;
 using Fanex.NAP.FS.Library.Core.Helpers.Api;
+using Fanex.NAP.FS.Library.Core.Helpers.Xml;
 using Fanex.NAP.FS.Library.Core.Utilities;
 using Fanex.NAP.FS.Library.Models;
 using Fanex.NAP.FS.Library.Models.FraudCaseTask;
@@ -89,7 +90,7 @@ namespace Fanex.NAP.FS.ArbitrageService
 
         private List<ArbitrageCustomer> GroupCustomer(List<int> custIds)
         {
-            var arbitrageCustomers = custIds.Chunk2(500).ToList();
+            var arbitrageCustomers = custIds.Chunk(500).ToList();
 
             var taskCustomers = new List<Task<IEnumerable<ArbitrageCustomer>>>();
 
@@ -117,8 +118,8 @@ namespace Fanex.NAP.FS.ArbitrageService
             {
                 if (matchIds.Any() && associations.Any())
                 {
-                    var xmlMatchIds = Ultilities.XmlConvertByIsolatedStorage(matchIds, $"{matchId}.xml");
-                    var xmlAssociations = Ultilities.XmlConvertByIsolatedStorage(associations, $"association{matchId}.xml");
+                    var xmlMatchIds = matchIds.ToXmlString();
+                    var xmlAssociations = associations.ToXmlString();
 
                     _arbitrageService.Rule(xmlMatchIds, xmlAssociations);
                 }
@@ -188,7 +189,9 @@ namespace Fanex.NAP.FS.ArbitrageService
                     ArbitrageTicketList = x.ToList()
                 }).ToList();
 
-            foreach (var ticket in ticketGroupBy)
+            var options = new ParallelOptions() { MaxDegreeOfParallelism = 2 };
+
+            Parallel.ForEach(ticketGroupBy, options, ticket =>
             {
                 var custIds = ticket.ArbitrageTicketList
                     .Select(t => t.CustId)
@@ -198,9 +201,7 @@ namespace Fanex.NAP.FS.ArbitrageService
                 var groupCustomer = GroupCustomer(custIds);
 
                 ExecuteGroupCustomer(ticket.MatchId, groupCustomer, ticket.ArbitrageTicketList);
-
-                Thread.Sleep(10);
-            }
+            });
 
             ticketGroupBy = null;
 
