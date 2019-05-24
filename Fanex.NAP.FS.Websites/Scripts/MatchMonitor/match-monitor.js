@@ -1,9 +1,9 @@
 ﻿var timeout_holder = null;
 var match_table = $("#match_grid table");
 var noteMaxLength = 500;
-var noteLengthCollapse = 180; 
+var noteLengthCollapse = 180;
 
-function load_page_events() {       
+function load_page_events() {
 
     $("#generate, #refresh_btn").click(load_grid);
 
@@ -52,25 +52,25 @@ function load_page_events() {
                 { data: row => row.VerifiedBy, width: "100px" },
                 { data: renderEvent },
                 { data: row => row.Score, className: "text-center", width: "60px" },
-                { data: row => row.Status, className: "text-center", width: "80px" },
+                { data: row => row.Status, className: "text-center", width: "70px" },
                 { data: row => renderFraudCase(row, 1), className: "has-icon text-center", width: "70px" },
                 { data: row => renderFraudCase(row, 6), className: "has-icon text-center", width: "80px" },
                 { data: row => renderFraudCase(row, 8), className: "has-icon text-center", width: "70px" },
                 { data: row => renderFraudCase(row, 10), className: "has-icon text-center", width: "50px" },
                 {
-                    data: renderNote, className: "col-note", width: "310px", createdCell: (cell, _, row) => {
+                    data: renderNote, className: "col-note", width: "300px", createdCell: (cell, _, row) => {
                         $(".icon-note", cell).click(() => renderNoteEdit(cell, row));
                         $(".note-ellipsis", cell).click(() => expandNote(cell));
                     }
                 }
             ],
-            rowCallback: function (cell, data) {
+            rowCallback: function (cell) {
                 if ($(window).width() < 1085) {
-                    $(cell).find("#note-content").css('min-height', '200px');
+                    $(cell).find("#note-content").css('min-height', '158px');
                 } else if ($(window).width() < 1200) {
-                    $(cell).find("#note-content").css('min-height', '195px');
+                    $(cell).find("#note-content").css('min-height', '140px');
                 } else if ($(window).width() < 1366) {
-                    $(cell).find("#note-content").css('min-height', '120px');
+                    $(cell).find("#note-content").css('min-height', '78px');
                 }
             },
             dom: "t<'pagination'<'page-size'lp>i>",
@@ -155,11 +155,11 @@ function renderVerifyCheckBox(obj) {
         + "<span></span></label>";
 }
 
-function renderEvent(obj) {   
-    return "<div class='col-event'><span class='team-home'>" + obj.Event.HomeName + "</span>"
+function renderEvent(obj) {
+    return "<span class='team-home'>" + obj.Event.HomeName + "</span>"
         + " - vs - "
         + "<span class='team-away'>" + obj.Event.AwayName + "</span>"
-        + "<div class='league-name'>" + obj.Event.LeagueName + "</div></div>";
+        + "<div class='league-name'>" + obj.Event.LeagueName + "</div>";
 }
 
 function renderFraudCase(obj, selector) {
@@ -274,15 +274,15 @@ function renderNoteEdit(cell, row) {
     var heightNote = $(noteContent).height();
 
     if ($(inputNoteContent).hasClass('hide')) {
-        $(inputNoteContent).removeClass('hide').focus().select();       
+        $(inputNoteContent).removeClass('hide').focus().select();
 
         // adjust height input Note
         $(inputNoteContent).height(heightNote);
 
-        $(noteContent).addClass('hide').hide();        
+        $(noteContent).addClass('hide').hide();
         $(noteIcon).removeClass('icon-note-text').addClass('icon-note-save').attr('title', 'save');
 
-        $(inputNoteContent).mouseout(function () { 
+        $(inputNoteContent).mouseout(function () {
             match_table.DataTable().columns.adjust();
         });
 
@@ -300,10 +300,10 @@ function saveNote(cell, row) {
     var inputContent = $(cell).find('.input-note-content');
     var content = $(cell).find("#note-content");
     var noteNew = $(inputContent).val().trim();
-    noteNew = replaceSpecialCharacter(noteNew);    
+    noteNew = replaceSpecialCharacter(noteNew);
 
     if ($(inputContent).hasClass('change')) {
-        var url = common.modifyRelativeUrl("/MatchMonitor/UpdateMatchNote");     
+        var url = common.modifyRelativeUrl("/MatchMonitor/UpdateMatchNote");
 
         noteNew = splitString(inputContent, noteNew, noteMaxLength);
 
@@ -323,13 +323,13 @@ function saveNote(cell, row) {
                 common.showError('Note fail!');
             }
         });
-    }   
+    }
 
     $(inputContent).removeClass('change').addClass('hide');
-    $(content).removeClass('hide').show();    
+    $(content).removeClass('hide').show();
 
     match_table.DataTable().columns.adjust();
-    $(cell).find("#icon").removeClass('icon-note-save').addClass('icon-note-text').attr('title', 'edit');    
+    $(cell).find("#icon").removeClass('icon-note-save').addClass('icon-note-text').attr('title', 'edit');
 }
 
 function load_grid() {
@@ -344,13 +344,13 @@ function load_grid() {
         return;
     }
 
-    $.post(url, dto, attachGridEvent);
+    $.post(url, dto, attachGridEvent)
 }
 
 function attachGridEvent(json) {
-    $("#match_grid table").DataTable().clear().rows.add(json.data).draw();    
+    $("#match_grid table").DataTable().clear().rows.add(json.data).draw();
 
-    $(".verified-checkbox").change(updateVerification);    
+    $(".verified-checkbox").change(updateVerification);
 
     common.closeLoading();
 
@@ -358,7 +358,6 @@ function attachGridEvent(json) {
 
     $("#event_date").datepicker("hide");
 
-    match_table.DataTable().columns.adjust();
     //$("span .number").click(e => $(e.target).parent().find("a").click());
 }
 
@@ -378,10 +377,10 @@ function renderViolations(violation = 1) {
 function getLeague() {
     var url = "matchmonitor/getleagues";
     var dto =
-    {
-        EventDate: $("#event_date").val(),
-        SportId: $("#sport").val()
-    };
+        {
+            EventDate: $("#event_date").val(),
+            SportId: $("#sport").val()
+        };
 
     $.post(url, dto, renderLeagueDropdown);
 }
@@ -442,10 +441,10 @@ function updateVerification() {
     var $target = $(this);
 
     var dto =
-    {
-        MatchId: $target.attr("data-match-id"),
-        IsVerified: $target.is(":checked")
-    };
+        {
+            MatchId: $target.attr("data-match-id"),
+            IsVerified: $target.is(":checked")
+        };
 
     $.post("matchmonitor/VerifyMatch", dto, function () {
         if (!dto.IsVerified) {
@@ -480,15 +479,15 @@ function exportExcel() {
     dto.EventDate = $("#event_date").val();
     dto.IsVerified = $("#is_verified").val();
     dto.MatchStatus = $("#match_status").val();
-    dto.LeagueIds = $("#league").val();    
+    dto.LeagueIds = $("#league").val();
     dto.IsMainMarket = $("#is_main_market:checked").length > 0;
- 
+
     $.ajax({
         cache: false,
         type: 'POST',
         url: url,
         data: dto,
-        success: function (data) {         
+        success: function (data) {
             window.location = urlDownload + '?fileId=' + data.FileId + '&fileName=' + data.FileName;
         },
         error: function (err) {
