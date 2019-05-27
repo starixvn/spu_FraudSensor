@@ -3,11 +3,12 @@
     using Fanex.Data;
     using Fanex.Data.Repository;
     using Fanex.NAP.FS.Library.Criteria.FraudSensorTask;
+    using Fanex.NAP.FS.Library.Models.FraudCaseTask;
     using System.Collections.Generic;
 
     public class ArbitrageService
     {
-        public IEnumerable<T> PreCondition<T>()
+        public IEnumerable<ArbitrageTicket> PreCondition<T>()
         {
             var criteria = new ArbitragePreconditionCriteria();
             var repository = new DynamicRepository();

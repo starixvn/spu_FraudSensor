@@ -23,14 +23,6 @@ namespace Fanex.NAP.FS.ArbitrageService
                 .Use(new ConnectionStringProvider20())
                 .UseDefaultDbSettingProvider(AppSetting.AppData, false)
                 .Run();
-           
-            //DbSessionFactory.Init()
-            //    .RegisterConfigs("DB.MiddleService")
-            //    .RegisterXmlFile(AppSetting.AppData)
-            //    .RegisterDriverFactory(new Neo4jDriverFactory())
-            //    .RegisterCommandBuilder(new Neo4jCommandBuilder("~/App_Data/scripts"))
-            //    .RegisterCommandExecutor(new Neo4jExecutor())
-            //    .Run();
 
             LogManager
                 .SetDefaultLogCategory(AppSetting.FanexLogCategory)
@@ -55,7 +47,7 @@ namespace Fanex.NAP.FS.ArbitrageService
                 const BindingFlags Flags = BindingFlags.Instance | BindingFlags.NonPublic;
                 var method = type.GetMethod("OnStart", Flags);
 
-                foreach (var service in ServicesToRun) method.Invoke(service, new object[] {args});
+                foreach (var service in ServicesToRun) method.Invoke(service, new object[] { args });
 
                 Console.WriteLine("Press any key to exit!");
                 Console.ReadLine();
