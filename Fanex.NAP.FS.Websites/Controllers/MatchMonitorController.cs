@@ -165,7 +165,7 @@
 
         #region Arbitrage
         public ActionResult GetListArbitrageTickets(GetArbitrageTicketCriteria criteria)
-        {
+        {            
             criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
             var data = _fraudCaseDetailService.GetListArbitrageTickets(criteria);
             return Json(data, JsonRequestBehavior.AllowGet);
@@ -290,5 +290,10 @@
             return Json(data, JsonRequestBehavior.AllowGet);
         }
         #endregion Arbitrage
+
+        #region Test
+
+        #endregion
+
     }
 }
