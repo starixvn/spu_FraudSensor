@@ -9,6 +9,15 @@
             word-wrap: normal !important;
             word-break: break-word;
             white-space: pre-line;
+            min-width: 140px;
+            min-height: 56px;
+            padding: 8px;   
+            display: grid;
+            align-items: center;
+        }
+
+        .input-note-content {
+            resize: vertical;
         }
 
         .icon-note-save:before {
@@ -23,6 +32,10 @@
         .note-collapse {
             cursor: pointer;
             color: mediumblue;
+        }
+
+        .col-note {
+            overflow: auto;
         }
 
     </style>

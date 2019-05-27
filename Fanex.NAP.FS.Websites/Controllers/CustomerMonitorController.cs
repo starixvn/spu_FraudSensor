@@ -36,7 +36,7 @@
         public ActionResult GetCustomers(CustomerGetCriteria criteria)
         {
             criteria.IsShowSpecialCurrencies = isSpecialCurrency;
-            criteria.Environment = int.Parse(ConfigurationManager.AppSettings["Environment"]);
+            criteria.Environment = int.Parse(ConfigurationManager.AppSettings["Environment"]);            
 
             return Json(_customerMonitorService.GetCustomers(criteria));
         }

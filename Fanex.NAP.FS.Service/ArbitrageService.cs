@@ -12,7 +12,7 @@
             var criteria = new ArbitragePreconditionCriteria();
             var repository = new DynamicRepository();
 
-            return repository.Fetch<T>(criteria);
+            return repository.Fetch<ArbitrageTicket>(criteria);
         }       
       
         public void Rule(string matchIds, string associations)

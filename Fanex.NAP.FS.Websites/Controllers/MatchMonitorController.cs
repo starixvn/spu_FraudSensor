@@ -66,15 +66,36 @@
 
             return Json(_matchMonitorService.VerifyMatch(criteria));
         }
-
-        public ActionResult ExportExcel(MatchGetAllCriteria criteria)
+     
+        [HttpPost]        
+        public ActionResult GenerateExcel(MatchGetAllCriteria criteria)
         {
             criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
             var templatePath = Server.MapPath("~/App_Data/Excel Template/MatchMonitor/template.xlsx");
 
             var fileName = "MatchMonitor_" + DateTime.Now.ToString("yyyyMMdd") + ".xlsx";
 
-            return File(_matchMonitorService.ExportExcel(criteria, templatePath), "application/vnd.ms-excel", fileName);
+            var content = _matchMonitorService.ExportExcel(criteria, templatePath);
+
+            string fileId = Guid.NewGuid().ToString();
+
+            TempData[fileId] = content;
+
+            return new JsonResult { JsonRequestBehavior = JsonRequestBehavior.AllowGet, Data = new { FileId = fileId, FileName = fileName } };
+        }
+        
+        public ActionResult DownloadExcel(string fileId, string fileName)
+        {
+            if (TempData[fileId] != null)
+            {
+                byte[] content = TempData[fileId] as byte[];
+
+                TempData[fileId] = null;
+
+                return File(content, "application/vnd.ms-excel", fileName);
+            }
+
+            return new EmptyResult();
         }
 
         [HttpPost]

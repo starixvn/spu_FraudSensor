@@ -95,13 +95,15 @@
         paging: false,
         dom: "t<'pagination'<'page-size'lp>i>",
         language: common.language(),
-        scrollY: "61vh",
+        scrollY: "61vh",        
+        scrollX: true,
         scrollCollapse: true,
         columnDefs: [
             { targets: "_all", defaultContent: "-" },
             { targets: [-2, 1, 2], className: "text-center"},
             { targets: [5, 8], className: "text-right" },       
-            { targets: [11], className: "col-note" },            
+            { targets: [11], className: "col-note" },    
+            { targets: [-2], width: "1%" },
             { targets: [0], width: "6%" },
             { targets: [1], width: "6%" },
             { targets: [2], width: "5%" },          
@@ -112,7 +114,7 @@
             { targets: [7], width: "10%" },
             { targets: [8], width: "8%" },
             { targets: [9], width: "8%" },
-            { targets: [10], width: "9%" }            
+            { targets: [10], width: "9%" }           
         ],
         columns: [
             { data: obj => obj.BetId },
@@ -132,17 +134,22 @@
                     $(".note-ellipsis", cell).click(() => expandNote(cell));
                 }
             }
-        ]
-    });    
+        ],
+        rowCallback: function (cell, row, index) {            
+            if ($(window).width() < 1670) {
+                $(cell).find("#note-content").css('min-height', '96px');
+            }
+        }
+    });
 
-    function renderNote(row) {
+    function renderNote(row) {       
         var noteWrap = wrapString(row.Note, noteLengthCollapse);
 
-        return '<div class="container-note">'
+        return '<div class="outer-container"><div class="container-note">'
             + '<textarea class="input-note-content hide" rows="5">' + (row.Note != null ? row.Note : '') + '</textarea>'
             + '<div class="note-content" id="note-content">' + noteWrap + '</div>'
             + '<div class="icon-note-text icon-note" id="icon"></div>'
-            + '</div>';
+            + '</div></div>';
     }
 
     function wrapString(str, maxLength) {
@@ -217,11 +224,19 @@
         var inputNoteContent = $(cell).find('.input-note-content');
         var noteContent = $(cell).find("#note-content");
         var noteIcon = $(cell).find("#icon");
-      
+        var heightNote = $(noteContent).height();
+
         if ($(inputNoteContent).hasClass('hide')) {
             $(inputNoteContent).removeClass('hide').focus().select();
-            $(noteContent).addClass('hide'); 
-            $(noteIcon).removeClass('icon-note-text').addClass('icon-note-save');
+            // adjust height input Note
+            $(inputNoteContent).height(heightNote);
+
+            $(noteContent).addClass('hide').hide();            
+            $(noteIcon).removeClass('icon-note-text').addClass('icon-note-save').attr('title', 'save');
+
+            $(inputNoteContent).mouseout(function () {
+                ticket_table.DataTable().columns.adjust();
+            });
 
             $(inputNoteContent).keyup(function () {               
                 $(inputNoteContent).addClass('change');
@@ -262,16 +277,17 @@
         }
 
         $(inputContent).removeClass('change').addClass('hide');
-        $(content).removeClass('hide');
-        
-        $(cell).find("#icon").removeClass('icon-note-save').addClass('icon-note-text');       
-    }
+        $(content).removeClass('hide').show();
+
+        ticket_table.DataTable().columns.adjust();
+        $(cell).find("#icon").removeClass('icon-note-save').addClass('icon-note-text').attr('title', 'edit');
+    }    
 
     $("#generate").click(generate_report);
 
     $("#export").click(generate_excel);
 
-    $(".icon-calendar-text").click(e => $(e.target).prev().focus());
+    $(".icon-calendar-text").click(e => $(e.target).prev().focus());       
 
     generate_report();
 }
