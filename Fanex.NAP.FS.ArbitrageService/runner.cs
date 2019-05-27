@@ -166,8 +166,6 @@ namespace Fanex.NAP.FS.ArbitrageService
 
         private List<ArbitrageTicket> Precondition()
         {
-            LogService.Info($"{ProjectName} - {ServiceName} - Precondition is executed.");
-
             return _arbitrageService.PreCondition<ArbitrageTicket>().ToList();
         }
 
@@ -198,8 +196,6 @@ namespace Fanex.NAP.FS.ArbitrageService
 
                 Thread.Sleep(10);
             });
-
-            LogService.Info($"{ProjectName} - {ServiceName} - Rule is executed.");
         }
     }
 }

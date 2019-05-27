@@ -106,8 +106,6 @@ namespace Fanex.NAP.FS.ScannedOfficeIPService
 
         private void Precondition() {
             _matches = _scannedOfficeIpService.PreCondition<Match>();
-
-            LogService.Info($"{ProjectName} - {ServiceName} - Precondition is executed.");
         }
 
         private void Rule()
@@ -123,8 +121,6 @@ namespace Fanex.NAP.FS.ScannedOfficeIPService
             }
 
             Thread.Sleep(TimeSpan.FromSeconds(2));
-
-            LogService.Info($"{ProjectName} - {ServiceName} - Rule is executed.");
         }
     }
 }
