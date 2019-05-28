@@ -25,15 +25,6 @@ namespace Fanex.NAP.FS.Core
             File.AppendAllText(filePath, body);
         }
 
-        public static void Info(string message)
-        {
-#if DEBUG
-            Console.WriteLine(message);
-#else
-            LogService.Info(message);
-#endif
-        }
-
         public static string XMLConvert(object data)
         {
             var emptyNamespaces = new XmlSerializerNamespaces(new[] { XmlQualifiedName.Empty });

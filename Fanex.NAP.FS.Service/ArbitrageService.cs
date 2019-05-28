@@ -8,12 +8,12 @@
 
     public class ArbitrageService
     {
-        public IEnumerable<ArbitrageTicket> PreCondition<T>()
+        public IEnumerable<T> PreCondition<T>()
         {
             var criteria = new ArbitragePreconditionCriteria();
             var repository = new DynamicRepository();
 
-            return repository.Fetch<ArbitrageTicket>(criteria);
+            return repository.Fetch<T>(criteria);
         }       
       
         public void Rule(string matchIds, string associations)
