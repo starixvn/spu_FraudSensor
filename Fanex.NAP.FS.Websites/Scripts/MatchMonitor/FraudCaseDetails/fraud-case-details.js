@@ -310,7 +310,7 @@
             var selectedTab = $("#detailTabs li[aria-selected=true]").attr("aria-controls");
 
             var url = selectedTab === "customer-tab" ? common.modifyRelativeUrl("/MatchMonitor/ExportCSVArbitrageCustomers")
-                : common.modifyRelativeUrl("/MatchMonitor/ExportCSVArbitrageTickets");
+                : common.modifyRelativeUrl("/MatchMonitor/ExportExcelArbitrageTickets");
 
             common.downloadFile(url, criteria);
         } else {
@@ -465,9 +465,7 @@
             }
 
             return arr;
-        }, []);
-        
-        console.log(data);
+        }, []);            
 
         //each list group
         var dataGroup = [];
@@ -529,9 +527,9 @@
         common.closeLoading();
     }    
 
-    function renderArbitrageCSV(e) {
-        groupExportCSV = 1;
-        var url = common.modifyRelativeUrl("/MatchMonitor/ExportCSVArbitrageTicketByGroup");
+    function exportGroupTickets(e) {
+        groupExportCSV = 1;        
+        var url = common.modifyRelativeUrl("/MatchMonitor/ExportExcelArbitrageTicketByGroup");
 
         var obj = e.data;
         var keyName = obj.Score + " " + obj.BettypeName + " " + obj.Handicap;
@@ -641,7 +639,7 @@
                             td = $(`<td colspan='21' class='group' style='cursor: initial'><span class='icon-chevron-down' style='cursor: pointer;'></span><span class='bage' style='cursor: pointer;'>${obj.BettypeName} ${obj.Handicap}</span> <span class='bage' style='cursor: pointer;'>${obj.Score}</span> <span class='bage' style='cursor: pointer;'>Tickets: ${totalTicket}</span><button class="button -export"><span class="icon-export-excel"></span></button></td>`);
                         }
                     }                  
-                    $(".button.-export", td).click(obj, renderArbitrageCSV);
+                    $(".button.-export", td).click(obj, exportGroupTickets);
                     $(row).empty().html(td);
                     
                 }

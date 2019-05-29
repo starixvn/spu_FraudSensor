@@ -177,17 +177,18 @@
             criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
             var data = _fraudCaseDetailService.GetArbitrageTickets(criteria);
             return new JsonResult { Data = new { Content = data }, MaxJsonLength = Int32.MaxValue };
-        }
+        }       
 
-        public ActionResult ExportCSVArbitrageTickets(GetArbitrageTicketCriteria criteria)
+        public ActionResult ExportExcelArbitrageTickets(GetArbitrageTicketCriteria criteria)
         {
-            criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
-
+            var templatePath = Server.MapPath("~/App_Data/Excel Template/MatchMonitor/FraudCaseDetail/arbitrage.xlsx");
+            var fileName = string.Format("FraudCaseDetails_{0}", DateTime.Today.ToString("yyyyMMdd"));
             string[] filterInfo = GenerateFilterInfoForCsv(criteria);
-            var content = _fraudCaseDetailService.ExportArbitrageTicketAllCsv(criteria, filterInfo);
-            var encoded = Encoding.UTF8.GetBytes(content);
 
-            return File(encoded, "text/plain", "FraudCaseDetails_Tickets_" + DateTime.Today.ToString("yyyyMMdd") + ".csv");
+            criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;            
+            var content = _fraudCaseDetailService.ExportExcelArbitrageTickets(criteria, filterInfo, templatePath);
+
+            return ExcelFile(content, fileName);
         }
 
         [HttpPost]
@@ -216,17 +217,20 @@
 
             var fileName = string.Format("FraudCaseDetails_{0}.xlsx", DateTime.Today.ToString("yyyyMMdd"));
             return File(_fraudCaseDetailService.ExportExcel(matchId, fraudCaseId, eventDate, template, IsShowSpecialCurrencies), "application/vnd.ms-excel", fileName);
-        }
+        }      
 
-        public ActionResult ExportCSVArbitrageTicketByGroup(GetArbitrageTicketCriteria criteria, int groupId, string score, decimal handicap)
+        public ActionResult ExportExcelArbitrageTicketByGroup(GetArbitrageTicketCriteria criteria, string score)
         {
+            var templatePath = Server.MapPath("~/App_Data/Excel Template/MatchMonitor/FraudCaseDetail/arbitrage.xlsx");
+
+            var fileName = string.Format("FraudCaseDetails_{0}", DateTime.Today.ToString("yyyyMMdd"));
+
             string[] filterInfo = GenerateFilterInfoForCsv(criteria);
 
             criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
-            var content = _fraudCaseDetailService.ExportArbitrageTicketByGroupCsv(criteria, groupId, score, filterInfo);
-            var encoded = Encoding.UTF8.GetBytes(content);
+            var content = _fraudCaseDetailService.ExportExcelArbitrageTicketByGroup(criteria, score, filterInfo, templatePath);
 
-            return File(encoded, "text/plain", "FraudCaseDetails_Tickets_" + DateTime.Today.ToString("yyyyMMdd") + ".csv");
+            return ExcelFile(content, fileName);
         }
 
         private string[] GenerateFilterInfoForCsv(ArbitrageDetailsCriteria criteria)
@@ -289,11 +293,7 @@
 
             return Json(data, JsonRequestBehavior.AllowGet);
         }
-        #endregion Arbitrage
-
-        #region Test
-
-        #endregion
+        #endregion Arbitrage       
 
     }
 }

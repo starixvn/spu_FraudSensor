@@ -712,70 +712,33 @@
 
             return DataService.GetData<ScoreHDP>(criteria);
         }          
-
-        public string ExportArbitrageTicketByGroupCsv(GetArbitrageTicketCriteria criteria, int groupId, string score, string[] array)
+     
+        public byte[] ExportExcelArbitrageTicketByGroup(GetArbitrageTicketCriteria criteria, string score, string[] array, string templatePath)
         {
-            var txtResult = new StringBuilder();
-            var info = GetInfo(criteria.MatchId, (int)FraudCaseId.Arbitrage, criteria.EventDate);
-            var lstArbitrageTicket = GetArbitrageTickets(criteria).Where(c => c.GroupId == groupId && c.Score == score && c.Handicap == (decimal)criteria.Handicap).SelectMany(obj => obj.Home.Concat(obj.Away));
+            var legend = GetInfo(criteria.MatchId, (int)FraudCaseId.Arbitrage, criteria.EventDate);
+            legend.Filter = array;
 
-            if (lstArbitrageTicket != null)
-            {
-                List<string> lstBetType = lstArbitrageTicket.Select(c => c.BettypeName).ToList();
-                if (lstBetType.Count > 0)
-                {
-                    array[5] = score + " " + lstBetType[0] + " " + criteria.Handicap;
-                }
-            }
-            
-            txtResult.AppendLine($"\"Match: {info.Home} - vs - {info.Away}\", \"Date: {info.EventDate.ToString("MMM dd, yyyy").Replace(",", " -")}\", \"Fraud Case: { info.FraudCase }\" , \"HT/FT: {info.HTScore}/{info.FTScore}\"");
-            
-            if (array != null && array.Length >= 6)
-            {
-                txtResult.AppendLine($"\"Market: {array[0]}\", \"Currency: {array[1]}\", \"Evidence: {array[2]}\"");
-                txtResult.AppendLine($"\"Trans Date From: {array[3]}\", \"Trans Date To: {array[4]}\", \"Score/HDP: {array[5]}\"");
-            }
+            IEnumerable<ArbitrageGroupTicketList> groupTicket = GetArbitrageTickets(criteria).Where(c => c.GroupId == criteria.GroupId
+                                                                        && c.Score == score
+                                                                        && c.Handicap == (decimal)criteria.Handicap);
 
-            txtResult.AppendLine("\"Member\",\"Evidence\",\"Dangerous Level\",\"Currency\",\"By IP\",\"Bet ID\",\"Betteam\",\"Bettype\",\"HDP\",\"Score\",\"Odds\",\"Virtual Stake\",\"Com.PT Stake\",\"Full Stake\",\"TransDate\"");
+            var wb = ExcelUtilities.GetWorkbook(templatePath)
+                                    .RenderSheet(new ArbitrageConfig(criteria.TotalTicket, true), legend, groupTicket, null);
 
-            foreach (var item in lstArbitrageTicket)
-            {
-                var fraudByIP = item.IsIPFraud ? "Yes" : "";
-                txtResult.AppendLine($"\"{item.Username}\",\"{item.Evidences.Join(" /")}\",\"{item.DangerousLevel}\"," +
-                       $"\"{item.Currency}\",\"{fraudByIP}\",\"{item.BetId}\",\"{item.BetTeam}\",\"{item.BettypeName}\",\"{item.Handicap}\",\"{item.Score}\"," +
-                       $"\"{item.Odds}\",\"{item.Stake.Virtual}\",\"{item.Stake.ComPT}\"," +
-                       $"\"{item.Stake.Full}\",\"{item.TransDate.Replace(",", " -").Replace("<br/>", " ")}\"");
-            }
-
-            return txtResult.ToString();
+            return wb.ToBytes();
         }
-
-        public string ExportArbitrageTicketAllCsv(GetArbitrageTicketCriteria ticketCriteria, string[] array)
+    
+        public byte[] ExportExcelArbitrageTickets(GetArbitrageTicketCriteria criteria, string[] array, string templatePath)
         {
-            var txtResult = new StringBuilder();
-            var lstArbitrageTicket = GetArbitrageTickets(ticketCriteria).SelectMany(obj => obj.Home.Concat(obj.Away));
-            var info = GetInfo(ticketCriteria.MatchId, (int)FraudCaseId.Arbitrage, ticketCriteria.EventDate);
-       
-            txtResult.AppendLine($"\"Match: {info.Home} - vs - {info.Away}\", \"Date: {info.EventDate.ToString("MMM dd, yyyy").Replace(",", " -")}\", \"Fraud Case: { info.FraudCase } \" , \"HT/FT: {info.HTScore}/{info.FTScore}\"");
-            
-            if (array != null && array.Length >= 6)
-            {              
-                txtResult.AppendLine($"\"Market: {array[0]}\", \"Currency: {array[1]}\", \"Evidence: {array[2]}\"");
-                txtResult.AppendLine($"\"Trans Date From: {array[3]}\", \"Trans Date To: {array[4]}\", \"Score/HDP: {array[5]}\"");
-            }
-            
-            txtResult.AppendLine("\"Member\",\"Evidence\",\"Dangerous Level\",\"Currency\",\"By IP\",\"Bet ID\",\"Betteam\",\"Bettype\",\"HDP\",\"Score\",\"Odds\",\"Virtual Stake\",\"Com.PT Stake\",\"Full Stake\",\"TransDate\"");
+            var legend = GetInfo(criteria.MatchId, (int)FraudCaseId.Arbitrage, criteria.EventDate);
+            legend.Filter = array;
 
-            foreach (var item in lstArbitrageTicket)
-            {
-                var fraudByIP = item.IsIPFraud ? "Yes" : "";
-                txtResult.AppendLine($"\"{item.Username}\",\"{item.Evidences.Join(" /")}\",\"{item.DangerousLevel}\"," +
-                       $"\"{item.Currency}\",\"{fraudByIP}\",\"{item.BetId}\",\"{item.BetTeam}\",\"{item.BettypeName}\",\"{item.Handicap}\",\"{item.Score}\"," +
-                       $"\"{item.Odds}\",\"{item.Stake.Virtual}\",\"{item.Stake.ComPT}\"," +
-                       $"\"{item.Stake.Full}\",\"{item.TransDate.Replace(",", " -").Replace("<br/>", " ")}\"");
-            }
+            var groupsTicket = GetArbitrageTickets(criteria);
 
-            return txtResult.ToString();
+            var wb = ExcelUtilities.GetWorkbook(templatePath)
+                                    .RenderSheet(new ArbitrageConfig(criteria.TotalTicket, true), legend, groupsTicket, null);
+
+            return wb.ToBytes();
         }
 
         public string ExportArbitrageCustomersCsv(GetArbitrageCustomerCriteria criteria, string[] array)
@@ -804,7 +767,7 @@
 
             return txtResult.ToString();
         }
-
+       
         #endregion Arbitrage
 
     }
