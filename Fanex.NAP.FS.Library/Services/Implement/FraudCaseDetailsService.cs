@@ -713,6 +713,15 @@
             return DataService.GetData<ScoreHDP>(criteria);
         }          
      
+        public IEnumerable<Site> GetSites()
+        {
+            List<Site> lstSites = new List<Site>();
+            lstSites.Add(new Site { SiteId = "12ying", SiteName = "12ying" });
+            lstSites.Add(new Site { SiteId = "12bet", SiteName = "12bet" });
+
+            return lstSites;
+        }
+
         public byte[] ExportExcelArbitrageTicketByGroup(GetArbitrageTicketCriteria criteria, string score, string[] array, string templatePath)
         {
             var legend = GetInfo(criteria.MatchId, (int)FraudCaseId.Arbitrage, criteria.EventDate);

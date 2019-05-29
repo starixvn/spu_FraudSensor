@@ -139,8 +139,14 @@
             var model = _fraudCaseDetailService.GetInfo(matchId, fraudCaseId, eventDate);
 
             ViewBag.BUDate = _matchMonitorService.GetBalanceUpDate().BalanceUpDay;
-            ViewBag.EvidenceList = _fraudCaseDetailService.GetListEvidences();
 
+            if (fraudCaseId == (int)Library.Models.FraudCaseId.Arbitrage)
+            {
+                ViewBag.SiteList = _fraudCaseDetailService.GetSites();
+                ViewBag.CurrencyList = _fraudCaseDetailService.GetAllCurrency(IsShowSpecialCurrencies);
+                ViewBag.EvidenceList = _fraudCaseDetailService.GetListEvidences();                
+            }
+                      
             return View("FraudCaseDetails/Index", model);
         }
 
@@ -269,23 +275,7 @@
             filterInfo[5] = criteria.KeyName;
 
             return filterInfo;
-        }
-
-        public JsonResult GetListEvidences()
-        {
-            var data = _fraudCaseDetailService.GetListEvidences();
-            HttpContext.Cache["ListEvidences"] = data;
-
-            return Json(data, JsonRequestBehavior.AllowGet);
-        }
-
-        public JsonResult GetAllCurrency()
-        {
-            var data = _fraudCaseDetailService.GetAllCurrency(IsShowSpecialCurrencies);
-            HttpContext.Cache["ListCurrency"] = data;
-
-            return Json(data, JsonRequestBehavior.AllowGet);
-        }
+        }      
 
         public JsonResult GetScoreHDP(int matchId, DateTime eventDate)
         {

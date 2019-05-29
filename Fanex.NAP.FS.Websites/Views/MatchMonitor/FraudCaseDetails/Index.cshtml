@@ -45,8 +45,16 @@
         background: none;
     }
 
-    button.ui-multiselect.ui-widget.ui-state-default.ui-corner-all {
-        width: 345px !important;
+    #ddlEvidence_ms {
+            width: 345px !important;
+    }
+
+    #ddlSite_ms {
+        width: 210px !important;
+    }
+
+    #ddlCurrency_ms {
+        width: 140px !important;
     }
 
     </style>
@@ -70,20 +78,26 @@
 @if ((FraudCaseId)Model.FraudCaseId == FraudCaseId.Arbitrage)
 {
     <div class="form-filter">
-        <div class="group width-160" style="width: 130px;">
-            <label class="text">Market</label>
+        <div class="group width-220" style="width: 230px">
+            <label class="text">Site</label>
             <div class="edit-field col_9">
-                <select class="control" id="market">
-                    <option value="-1" selected>All</option>
-                    <option value="0">Non-Live</option>
-                    <option value="1">Live</option>
+                <select id="ddlSite" multiple="multiple">
+                    @foreach (var item in (IEnumerable<Site>)ViewBag.SiteList)
+                    {
+                        <option value="@item.SiteId">@item.SiteName</option>
+                    }
                 </select>
             </div>
         </div>
-        <div class="group width-160" style="width:130px;">
+        <div class="group width-160">
             <label class="text">Currency</label>
             <div class="edit-field col_9">
-                <select class="control" id="currency"></select>
+                <select id="ddlCurrency" multiple="multiple">
+                    @foreach (var item in (IEnumerable<Currency>)ViewBag.CurrencyList)
+                    {
+                        <option value="@item.CurrencyId">@item.CurrencyName</option>
+                    }
+                </select>
             </div>
         </div>
         <div class="group" style="width:335px;">
@@ -99,6 +113,16 @@
         </div>
     </div>
     <div class="form-filter">
+        <div class="group width-160" style="width: 130px;">
+            <label class="text">Market</label>
+            <div class="edit-field col_9">
+                <select class="control" id="market">
+                    <option value="-1" selected>All</option>
+                    <option value="0">Non-Live</option>
+                    <option value="1">Live</option>
+                </select>
+            </div>
+        </div>
         <div class="group" style="width:190px;">
             <label class="text">Trans Date</label>
             <div class="edit-field col_9">
@@ -117,7 +141,7 @@
             </div>
         </div>
         <button class="button -primary" id="generate">Generate</button>
-        
+
     </div>
 }
 

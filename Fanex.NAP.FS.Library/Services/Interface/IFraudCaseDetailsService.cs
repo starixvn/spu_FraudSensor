@@ -42,6 +42,8 @@
         IEnumerable<Currency> GetAllCurrency(bool isShowSpecialCurrencies);
 
         IEnumerable<ScoreHDP> GetScoreHDP(int matchId, bool isShowSpecialCurrencies);
+
+        IEnumerable<Site> GetSites();       
         
         byte[] ExportToExcelIpTickets(string ip, string template, bool isShowSpecialCurrencies);      
               

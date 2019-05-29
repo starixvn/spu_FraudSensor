@@ -31,24 +31,22 @@
         to_date.datepicker("option", "minDate", from_val);
     };
     
-    function handleMultipleSelect() {           
-        $("#ddlEvidence").multiselect({
-            menuHeight: 350,
-            menuWidth: 350
+    function initMultipleSelect() {
+        $("#ddlSite").multiselect({
+            menuWidth: 210,
+            menuHeight: 350
         });
-    };
 
-    function getAllCurrency() {
-        var url = common.modifyRelativeUrl("/MatchMonitor/GetAllCurrency");        
+        $("#ddlCurrency").multiselect({
+            menuWidth: 140,
+            menuHeight: 350
+        });
 
-        $.get(url, {}, function (json) {
-            $("#currency").append("<option value=-1>All</option>");
-
-            for (var i = 0; i < json.length; i++) {
-                $("#currency").append(`<option value='${json[i].CurrencyId}'>${json[i].CurrencyName}</option>`)
-            }
-        })
-    };
+        $("#ddlEvidence").multiselect({
+            menuWidth: 350,
+            menuHeight: 350            
+        });
+    };   
 
     function getScoreHDP() {
         var url = common.modifyRelativeUrl("/MatchMonitor/GetScoreHDP");
@@ -592,19 +590,21 @@
                 { targets: "_all", defaultContent: "-" },
                 { targets: [-5, -4, -3, -2, 5, 6, 7, 8], className: "text-right" },
                 { targets: [-1, 2, 3, 4, 9, 13, 14, 15], className: "text-center" },
-                { targets: [0, 11], width: "110px" },
-                { targets: [1, 12], width: "120px" },
-                { targets: [2, 13], width: "80px" },
-                { targets: [3, 14], width: "65px" },
-                { targets: [4, 15], width: "100px" },
-                { targets: [5, 16], width: "42px" },
-                { targets: [6, 7, 8, 17, 18, 19], width: "70px" },
-                { targets: [9, 20], width: "100px" }
+                { targets: [0, 12], width: "110px" },
+                { targets: [1, 13], width: "120px" },
+                { targets: [2, 14], width: "80px" },
+                { targets: [3, 15], width: "65px" },
+                { targets: [4, 16], width: "65px" },
+                { targets: [5, 17], width: "100px" },
+                { targets: [6, 18], width: "42px" },
+                { targets: [7, 8, 9, 19, 20, 21], width: "70px" },
+                { targets: [10, 22], width: "100px" }
             ],
             columns: [
                 { data: obj => obj.Home.Username },
                 { data: obj => common.makeWrapString((obj.Home.Evidences || []).join(", "), 18)},
                 { data: obj => obj.Home.DangerousLevel },
+                { data: obj => obj.Home.Site },
                 { data: obj => obj.Home.Currency },
                 { data: obj => renderIPFraud(obj.Home) },
                 { data: obj => common.formatGridNumber(obj.Home.Odds) },
@@ -616,6 +616,7 @@
                 { data: obj => obj.Away.Username },
                 { data: obj => common.makeWrapString((obj.Away.Evidences || []).join(", "), 18) },
                 { data: obj => obj.Away.DangerousLevel },
+                { data: obj => obj.Away.Site },
                 { data: obj => obj.Away.Currency },
                 { data: obj => renderIPFraud(obj.Away) },
                 { data: obj => common.formatGridNumber(obj.Away.Odds) },
@@ -916,9 +917,8 @@
 
     function init() {
         if (isArbitrage) {
-            getAllCurrency();
             getScoreHDP();
-            handleMultipleSelect();
+            initMultipleSelect();
         }
         else {
             loadTicketGrid();
