@@ -1,8 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Functions>
   <Function Name="CheckBetReport">
-    <Setting Key="FS_FraudCase_CheckBet_Rule" SpName="FS_FraudCase_CheckBet_Rule"
-              DbName="DBFS.bodb_FraudSensor.bodbSPUNet"/>
+    <Setting Key="FS_FraudCase_CheckBet_Rule" 
+             SpName="FS_FraudCase_CheckBet_Rule"
+             DbName="DBFS.bodb_FraudSensor.bodbSPUNet"
+             TimeOut="3600"/>
     <Setting Key="FS_FraudCase_GetById" SpName="FS_FraudCase_GetById"
              DbName="DBFS.bodb_FraudSensor.bodbSPUNet" />
   </Function>
