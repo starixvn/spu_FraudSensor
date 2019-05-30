@@ -97,6 +97,8 @@
        private static void Rule()
         {
             _dailyDataCaptureService.Rule();
+
+            LogService.Info("Rule is executed.");
         }
     }
 }
