@@ -54,9 +54,12 @@
     }
 
     #ddlCurrency_ms {
-        width: 130px !important;
+        width: 140px !important;
     }
 
+    .table thead tr th, .table tbody tr td {
+        padding: 8px 4px;
+    }
     </style>
 }
 <h1 class="title">@ViewBag.Title</h1>
@@ -89,7 +92,7 @@
                 </select>
             </div>
         </div>
-        <div class="group width-160" style="width: 150px;">
+        <div class="group width-160">
             <label class="text">Currency</label>
             <div class="edit-field col_9">
                 <select id="ddlCurrency" multiple="multiple">
@@ -113,7 +116,7 @@
         </div>
     </div>
     <div class="form-filter">
-        <div class="group width-160" style="width: 130px;">
+        <div class="group width-160" style="width: 140px;">
             <label class="text">Market</label>
             <div class="edit-field col_9">
                 <select class="control" id="market">

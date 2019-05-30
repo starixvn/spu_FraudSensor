@@ -719,34 +719,6 @@
 
             return wb.ToBytes();
         }
-
-        public string ExportArbitrageCustomersCsv(GetArbitrageCustomerCriteria criteria, string[] array)
-        {
-            var txtResult = new StringBuilder();
-            var arbitrageCustomers = GetArbitrageCustomerDetails(criteria);
-            var info = GetInfo(criteria.MatchId, (int)FraudCaseId.Arbitrage, criteria.EventDate);
-
-            txtResult.AppendLine($"\"Match: {info.Home} - vs - {info.Away}\", \"Date: {info.EventDate.ToString("MMM dd, yyyy").Replace(",", " -")}\", \"Fraud Case: { info.FraudCase } \" , \"HT/FT: {info.HTScore}/{info.FTScore}\"");
-
-            if (array != null && array.Length >= 6)
-            {
-                txtResult.AppendLine($"\"Market: {array[0]}\", \"Currency: {array[1]}\", \"Evidence: {array[2]}\"");
-                txtResult.AppendLine($"\"Trans Date From: {array[3]}\", \"Trans Date To: {array[4]}\", \"Score/HDP: {array[5]}\"");
-            }
-
-            txtResult.AppendLine("\"#\",\"Member\",\"Currency\",\"#Tickets\",\"Total Stake\",\"Total Win Loss\",\"Evidence\", \"Associated Accounts\"");
-
-            int rowIndex = 1;
-
-            foreach (var item in arbitrageCustomers)
-            {
-                txtResult.AppendLine($"\"{rowIndex}\",\"{item.Member}\",\"{item.CurrencyName}\",\"{item.Tickets}\",\"{item.TotalStake}\",\"{item.TotalWinLoss}\",\"{item.Evidence}\",\"{item.AssociatedAccounts}\"");
-                rowIndex ++;
-            }
-
-            return txtResult.ToString();
-        }        
         #endregion Arbitrage
-
     }
 }

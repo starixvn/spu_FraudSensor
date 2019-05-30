@@ -52,10 +52,10 @@
                .WriteBold("Fraud Case: ").Write(legend.FraudCase + "\n")
                .SetValue(cell1);                
 
-            if (arrFilter != null && arrFilter.Length >= 6)
+            if (arrFilter != null && arrFilter.Length >= 7)
             {
                 new XSSFRichTextString()
-                   .WriteBold("Site: ").Write("abc" + "\n")
+                   .WriteBold("Site: ").Write(arrFilter[6] + "\n")
                    .WriteBold("Currency: ").Write(arrFilter[1] + "\n")
                    .WriteBold("Evidence: ").Write(arrFilter[2] + "\n")
                    .SetValue(cell2);

@@ -32,12 +32,12 @@
             {
                 row = CreateRow(row);
                 IRow lastRow = row.Sheet.GetRow(row.RowNum - 1);
-                CopyGroupRow(lastRow).GetCell(0).SetCellValue("Score: " + data.Score + " " + data.BettypeName + " " + data.Handicap.ToString("0.##"));
+                CopyGroupRow(lastRow).GetCell(0).SetCellValue("Score/HDP: " + data.Score + " " + data.BettypeName + " " + data.Handicap.ToString("0.##"));
                 MergeRange(lastRow.Sheet, lastRow);
             }
             else
             {
-                row.Sheet.GetRow(4).GetCell(0).SetCellValue("Score: " + data.Score + " " + data.BettypeName + " " + data.Handicap.ToString("0.##"));
+                row.Sheet.GetRow(4).GetCell(0).SetCellValue("Score/HDP: " + data.Score + " " + data.BettypeName + " " + data.Handicap.ToString("0.##"));
             }            
 
             IEnumerator<ArbitrageTicket> dataHome = data.Home.GetEnumerator();
@@ -108,10 +108,10 @@
                 .WriteBold("Fraud Case: ").Write(legend.FraudCase + "\n")
                 .SetValue(cell1);
 
-            if (arrFilter != null && arrFilter.Length >= 6)
+            if (arrFilter != null && arrFilter.Length >= 7)
             {
                 new XSSFRichTextString()
-                   .WriteBold("Site: ").Write("abc" + "\n")
+                   .WriteBold("Site: ").Write(arrFilter[6] + "\n")
                    .WriteBold("Currency: ").Write(arrFilter[1] + "\n")
                    .WriteBold("Evidence: ").Write(arrFilter[2] + "\n")
                    .SetValue(cell2);

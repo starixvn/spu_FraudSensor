@@ -17,6 +17,9 @@
         public string CurrencyIds { get; set; }
 
         [SpParam(Ignored = true)]
+        public string CurrencyNames { get; set; }
+
+        [SpParam(Ignored = true)]
         public string EvidenceCodeList { get; set; }
 
         [SpParam(Ignored = true)]
@@ -68,6 +71,9 @@
 
         [SpParam(Ignored = true)]
         public int GroupId { get; set; }
+
+        [SpParam(Ignored = true)]
+        public string Sites { get; set; }
 
         [SpParam(Ignored = true)]
         public string Score { get; set; }

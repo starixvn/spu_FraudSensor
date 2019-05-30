@@ -226,17 +226,6 @@
             var content = _fraudCaseDetailService.ExportExcelArbitrageTickets(criteria, filterInfo, templatePath, false);
 
             return ExcelFile(content, fileName);
-        }      
-
-        public ActionResult ExportCSVArbitrageCustomers(GetArbitrageCustomerCriteria criteria)
-        {
-            criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
-
-            string[] filterInfo = GenerateFilterInfo(criteria);
-            var content = _fraudCaseDetailService.ExportArbitrageCustomersCsv(criteria, filterInfo);
-            var encoded = Encoding.UTF8.GetBytes(content);
-
-            return File(encoded, "text/plain", "FraudCaseDetails_Customers_" + DateTime.Today.ToString("yyyyMMdd") + ".csv");
         }
 
         public ActionResult ExportExcelArbitrageCustomers(GetArbitrageCustomerCriteria criteria)
@@ -254,20 +243,13 @@
 
         private string[] GenerateFilterInfo(ArbitrageDetailsCriteria criteria)
         {
-            string[] filterInfo = new string[6];
+            string[] filterInfo = new string[7];
 
             // get Market
             filterInfo[0] = criteria.LiveStatus == -1 ? "All" : (criteria.LiveStatus == 0 ? "Non-Live" : "Live");
 
             // get Currency
-            //var obj = HttpContext.Cache["ListCurrency"];
-            //if (obj != null)
-            //{
-            //    IEnumerable<Currency> lstObject = obj as IEnumerable<Currency>;
-            //    Currency currency = lstObject.FirstOrDefault(c => c.CurrencyId == criteria.CurrencyIds.ToString());
-            //    filterInfo[1] = currency != null ? currency.CurrencyName : "All";
-            //}
-            filterInfo[1] = criteria.CurrencyIds;
+            filterInfo[1] = criteria.CurrencyNames;
 
             // get Evidence name
             string strCode = string.Empty;
@@ -288,8 +270,11 @@
             // get Score/HDP
             filterInfo[5] = criteria.KeyName;
 
+            // Sites
+            filterInfo[6] = criteria.Sites;
+
             return filterInfo;
-        }      
+        }
 
         public JsonResult GetScoreHDP(int matchId, DateTime eventDate)
         {

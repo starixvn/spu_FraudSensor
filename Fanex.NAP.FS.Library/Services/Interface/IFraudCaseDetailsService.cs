@@ -46,9 +46,7 @@
         byte[] ExportToExcelIpTickets(string ip, string template, bool isShowSpecialCurrencies);
 
         byte[] ExportExcelArbitrageTickets(GetArbitrageTicketCriteria criteria, string[] array, string templatePath, bool isSummary);
-
-        string ExportArbitrageCustomersCsv(GetArbitrageCustomerCriteria criteria, string[] array);
-
+      
         byte[] ExportExcelArbitrageCustomers(GetArbitrageCustomerCriteria criteria, string[] array, string templatePath);
     }
 }

@@ -38,7 +38,7 @@
         });
 
         $("#ddlCurrency").multiselect({
-            menuWidth: 130,
+            menuWidth: 140,
             menuHeight: 350
         });
 
@@ -253,8 +253,7 @@
 
     function switchTab(ui) {
         if (ui.newPanel.is("#customer-tab")) {
-            customer_grid.DataTable().columns.adjust();
-            customer_grid.DataTable().columns.adjust();
+            customer_grid.DataTable().columns.adjust();          
         }
         else {
             ticket_grid.DataTable().columns.adjust();
@@ -286,11 +285,13 @@
                 }                
 
                 var criteria = {
-                    LiveStatus: $("#market").val(),
-                    EvidenceCodeList: getEvidenceSelected(),
-                    CurrencyIds: getCurrencySelected(),
-                    TransDateFromString: $("#transDateFrom").val(),
-                    TransDateToString: $("#transDateTo").val(),
+                    liveStatus: $("#market").val(),
+                    evidenceCodeList: getEvidences(),
+                    currencyIds: getCurrency(),
+                    currencyNames: getCurrencyNames(),
+                    sites: getSites(),
+                    transDateFromString: $("#transDateFrom").val(),
+                    transDateToString: $("#transDateTo").val(),
                     KeyName: $("#scoreHDP option:selected").text(),
                     bettype: bettype,
                     liveHomeScore: liveHomeScore,
@@ -301,7 +302,7 @@
                 };
             } else {
                 criteria = Object.assign({}, savedCriteria);
-            }            
+            }
 
             var selectedTab = $("#detailTabs li[aria-selected=true]").attr("aria-controls");
 
@@ -537,8 +538,10 @@
         if (savedCriteria == null) {
             var criteria = {
                 liveStatus: $("#market").val(),
-                evidenceCodeList: getEvidenceSelected(),
-                currencyIds: getCurrencySelected(),
+                evidenceCodeList: getEvidences(),
+                currencyIds: getCurrency(),
+                currencyNames: getCurrencyNames(),
+                sites: getSites(),
                 transDateFromString: $("#transDateFrom").val(),
                 transDateToString: $("#transDateTo").val(),
                 keyName: $("#scoreHDP option:selected").text(),
@@ -586,9 +589,9 @@
             scrollCollapse: true,
             columnDefs: [
                 { targets: "_all", defaultContent: "-" },
-                { targets: [-5, -4, -3, -2, 5, 6, 7, 8], className: "text-right" },
-                { targets: [-1, 2, 3, 4, 9, 13, 14, 15], className: "text-center" },            
-                { targets: [0, 12], width: "160px" },
+                { targets: [-5, -4, -3, -2, 6, 7, 8, 9, 18, 19, 20, 21], className: "text-right" },
+                { targets: [-1, 2, 4, 16], className: "text-center" },            
+                { targets: [0, 12], width: "170px" },
                 { targets: [1, 13], width: "145px" },
                 { targets: [2, 14], width: "91px" },
                 { targets: [3, 15], width: "90px" },
@@ -600,7 +603,7 @@
             ],
             columns: [
                 { data: obj => obj.Home.Username },
-                { data: obj => common.makeWrapString((obj.Home.Evidences || []).join(", "), 17), width: "40px"},
+                { data: obj => common.makeWrapString((obj.Home.Evidences || []).join(", "), 16), width: "40px"},
                 { data: obj => obj.Home.DangerousLevel },
                 { data: obj => obj.Home.Site },
                 { data: obj => obj.Home.Currency },
@@ -612,7 +615,7 @@
                 { data: obj => obj.Home.TransDate },
                 { data: obj => "", className: "plit-table", width: "5px" },
                 { data: obj => obj.Away.Username },
-                { data: obj => common.makeWrapString((obj.Away.Evidences || []).join(", "), 17), width: "40px" },
+                { data: obj => common.makeWrapString((obj.Away.Evidences || []).join(", "), 16), width: "40px" },
                 { data: obj => obj.Away.DangerousLevel },
                 { data: obj => obj.Away.Site },
                 { data: obj => obj.Away.Currency },
@@ -776,8 +779,9 @@
         if (savedCriteria == null) {
             var criteria = {
                 liveStatus: $("#market").val(),
-                evidenceCodeList: getEvidenceSelected(),
-                CurrencyIds: getCurrencySelected(),
+                evidenceCodeList: getEvidences(),
+                currencyIds: getCurrency(),
+                sites: getSites(),
                 transDateFromString: $("#transDateFrom").val(),
                 transDateToString: $("#transDateTo").val(),
                 keyName: keyName,
@@ -868,8 +872,10 @@
             }
             var criteria = {
                 liveStatus: $("#market").val(),
-                evidenceCodeList: getEvidenceSelected(),
-                currencyIds: getCurrencySelected(),
+                evidenceCodeList: getEvidences(),
+                currencyIds: getCurrency(),
+                currencyNames: getCurrencyNames(),
+                sites: getSites(),
                 transDateFromString: $("#transDateFrom").val(),
                 transDateToString: $("#transDateTo").val(),
                 keyName: $("#scoreHDP option:selected").text(),
@@ -889,10 +895,9 @@
         }
     };
 
-    function getEvidenceSelected()
-    {
-        var arrEvidences = $("#ddlEvidence").multiselect("getChecked");
+    function getEvidences() {
         var array = [];
+        var arrEvidences = $("#ddlEvidence").multiselect("getChecked");        
 
         for (var i = 0; i < arrEvidences.length; i++) {            
             array.push($(arrEvidences[i]).attr('value'));            
@@ -904,11 +909,15 @@
         return evidenceCode;
     }
 
-    function getCurrencySelected() {
-        var arrCurrency = $("ddlCurrency").multiselect("getChecked");
+    function getCurrency() {
         var array = [];
+        var arrCurrency = $("#ddlCurrency").multiselect("getChecked");
+        var lengthCurrency = $("#ddlCurrency").children("option").length;
 
-        for (var i = 0; i < arrCurrency; i++) {
+        if (arrCurrency.length == lengthCurrency) {
+            return "-1";
+        }
+        for (var i = 0; i < arrCurrency.length; i++) {
             array.push($(arrCurrency[i]).attr('value'));
         }
 
@@ -916,6 +925,42 @@
             var currencyIds = array.join(",");
         }
         return currencyIds;
+    }
+
+    function getCurrencyNames() {
+        var array = [];
+        var arrCurrency = $("#ddlCurrency").multiselect("getChecked");
+        var lengthCurrency = $("#ddlCurrency").children("option").length;
+
+        if (arrCurrency.length == lengthCurrency) {
+            return "All";
+        }
+        for (var i = 0; i < arrCurrency.length; i++) {            
+            array.push($(arrCurrency[i]).next().text());
+        }
+
+        if (arrCurrency != null && arrCurrency.length > 0) {
+            var currencyIds = array.join(",");
+        }
+        return currencyIds;
+    }
+
+    function getSites() {
+        var array = [];
+        var arrSites = $("#ddlSite").multiselect("getChecked");
+        var lengthSites = $("#ddlSite").children("option").length;
+
+        if (arrSites.length == lengthSites) {
+            return "All";
+        }
+        for (var i = 0; i < arrSites.length; i++) {
+            array.push($(arrSites[i]).next().text());
+        }
+
+        if (arrSites != null && arrSites.length > 0) {
+            var sites = array.join(",");
+        }
+        return sites;
     }
 
     function getListHDPScore()
