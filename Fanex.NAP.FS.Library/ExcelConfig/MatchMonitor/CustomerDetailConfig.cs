@@ -7,9 +7,16 @@
 
     public class CustomerDetailConfig : FSExcelConfig<MatchFraudCaseInfo, CustomerDetails, object>
     {
+        private readonly bool delete2Nd;
+
         public CustomerDetailConfig(int customerNo)
         {
             SheetName = string.Format("By Customers ({0})", customerNo);
+        }
+
+        public CustomerDetailConfig(int customerNo, bool delete2nd) : this(customerNo)
+        {
+            delete2Nd = delete2nd;
         }
 
         protected override int SheetIndex => 1;
@@ -28,7 +35,7 @@
             row.GetCell(cell_idx++).SetCellValue(customer.TotalStake);
             row.GetCell(cell_idx++).SetCellValue(customer.TotalWinLoss);
             row.GetCell(cell_idx++).SetCellValue(customer.Evidence);
-            row.GetCell(cell_idx++).SetCellValue(customer.AssociatedAccounts);
+            row.GetCell(cell_idx).SetCellValue(customer.AssociatedAccounts);
         }
 
         protected override void FillLegend(IRow row, MatchFraudCaseInfo legend)
@@ -39,25 +46,35 @@
             string[] arrFilter = legend.Filter;
 
             new XSSFRichTextString()
-                .WriteBold("Event: ").Write(string.Format("{0} - vs - {1}\n", legend.Home as string, legend.Away as string))
-                .WriteBold("Date: ").Write(legend.EventDate.ToString("MMM dd, yyyy") + "\n")
-                .WriteBold("Fraud Case: ").Write(legend.FraudCase + "\n")
-                .WriteBold("HT/FT Score: ").Write(legend.HTScore + " / " + legend.FTScore + "\n")
-                .SetValue(cell1);
+               .WriteBold("Match: ").Write(string.Format("{0} - vs - {1}\n", legend.Home as string, legend.Away as string))
+               .WriteBold("Date: ").Write(legend.EventDate.ToString("MMM dd, yyyy") + "\n")
+               .WriteBold("HT/FT: ").Write(legend.HTScore + " / " + legend.FTScore + "\n")
+               .WriteBold("Fraud Case: ").Write(legend.FraudCase + "\n")
+               .SetValue(cell1);                
 
             if (arrFilter != null && arrFilter.Length >= 6)
             {
                 new XSSFRichTextString()
-                   .WriteBold("Market: ").Write(arrFilter[0] + "\n")
+                   .WriteBold("Site: ").Write("abc" + "\n")
                    .WriteBold("Currency: ").Write(arrFilter[1] + "\n")
-                   .WriteBold("Evidence Code List: ").Write(arrFilter[2] + "\n")
+                   .WriteBold("Evidence: ").Write(arrFilter[2] + "\n")
                    .SetValue(cell2);
 
                 new XSSFRichTextString()
-                    .WriteBold("Trans Date From: ").Write(arrFilter[3] + "\n")
-                    .WriteBold("Trans Date To: ").Write(arrFilter[4] + "\n")
+                    .WriteBold("Market: ").Write(arrFilter[0] + "\n")
+                    .WriteBold("Trans Date: ").Write(arrFilter[3] + " - " + arrFilter[4] + "\n")
                     .WriteBold("Score/HDP: ").Write(arrFilter[5] + "\n")
                     .SetValue(cell3);
+            }           
+        }
+
+        protected override void CleanupTemplate(ISheet sheet)
+        {
+            base.CleanupTemplate(sheet);
+
+            if (delete2Nd)
+            {
+                sheet.Workbook.RemoveSheetAt(0);
             }
         }
     }

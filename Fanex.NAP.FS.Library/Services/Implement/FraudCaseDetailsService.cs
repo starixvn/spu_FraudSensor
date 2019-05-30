@@ -462,43 +462,8 @@
 
             return tsk.Where(t => t.Result != null).SelectMany(t => t.Result);
         }
-
-        public IEnumerable<ArbitrageGroupTicketList> GetArbitrageTickets(GetArbitrageTicketCriteria criteria)
-        {
-            IEnumerable<ArbitrageGroupTicketList> ticketDetails;                       
-
-            var rawData = DataService.GetData<TicketInfo>(criteria);
-            var url = AppSettings.Get("FPS_WEBAPI_GET_CUSTOMER_EVIDENCE");
-            var tsks = rawData.Select(t => t.CustId).Distinct()
-                .Chunk(500)
-                .Select(q => ApiHelper.Post<IEnumerable<CustomerEvidence>>(url, new CustomerEvidenceList { CustIdList = string.Join(",", q), EvidenceCodeList = null }))
-                .ToArray();
-
-            Task.WaitAll(tsks);
-
-            var listEvi = tsks.SelectMany(t => t.Result);
-            var otherEvidenceCode = AppSettings.Get("FPS_GET_OTHER_EVIDENCES");
-
-            if (criteria.EvidenceCodeList != null && criteria.EvidenceCodeList.Contains(otherEvidenceCode))
-            {
-                ticketDetails = HandleArbitrageTicketsOtherEvidence(rawData, listEvi, criteria.EvidenceCodeList);
-                criteria.TotalTicket = ticketDetails.Sum(c => c.Home.Count() + c.Away.Count());
-
-                return ticketDetails;
-            }
-
-            if (!string.IsNullOrEmpty(criteria.EvidenceCodeList))
-            {
-                listEvi = listEvi.Where(c => criteria.EvidenceCodeList.Contains(c.EvidenceCode));
-            }
-
-            ticketDetails = HandleArbitrageTickets(rawData, listEvi, string.IsNullOrEmpty(criteria.EvidenceCodeList));
-            criteria.TotalTicket = ticketDetails.Sum(c => c.Home.Count() + c.Away.Count());
-
-            return ticketDetails;
-        }
-
-        public IEnumerable<ArbitrageGroupTicketList> GetListArbitrageTickets(GetArbitrageTicketCriteria criteria)
+   
+        public IEnumerable<ArbitrageGroupTicketList> GetArbitrageTickets(GetArbitrageTicketCriteria criteria, bool isSummary)
         {
             IEnumerable<ArbitrageGroupTicketList> ticketDetails;          
 
@@ -516,9 +481,12 @@
 
             if (criteria.EvidenceCodeList != null && criteria.EvidenceCodeList.Contains(otherEvidenceCode))
             {
-                ticketDetails = HandleArbitrageTicketsOtherEvidence(rawData, listEvi, criteria.EvidenceCodeList).Where(g=>g.GroupId == criteria.GroupId);
-                criteria.TotalTicket = ticketDetails.Sum(c => c.Home.Count() + c.Away.Count());
+                ticketDetails = HandleArbitrageTicketsOtherEvidence(rawData, listEvi, criteria.EvidenceCodeList);
 
+                if (!isSummary)
+                {
+                     ticketDetails = ticketDetails.Where(g => g.GroupId == criteria.GroupId && g.Score == criteria.Score && g.Handicap == (decimal)criteria.Handicap);
+                }
                 return ticketDetails;
             }
 
@@ -527,9 +495,11 @@
                 listEvi = listEvi.Where(c => criteria.EvidenceCodeList.Contains(c.EvidenceCode));
             }
 
-            ticketDetails = HandleArbitrageTickets(rawData, listEvi, string.IsNullOrEmpty(criteria.EvidenceCodeList)).Where(g => g.GroupId == criteria.GroupId);
-            criteria.TotalTicket = ticketDetails.Sum(c => c.Home.Count() + c.Away.Count());
-
+            ticketDetails = HandleArbitrageTickets(rawData, listEvi, string.IsNullOrEmpty(criteria.EvidenceCodeList));
+            if (!isSummary)
+            {
+                ticketDetails = ticketDetails.Where(g => g.GroupId == criteria.GroupId && g.Score == criteria.Score && g.Handicap == (decimal)criteria.Handicap);
+            }
             return ticketDetails;
         }
 
@@ -720,32 +690,32 @@
             lstSites.Add(new Site { SiteId = "12bet", SiteName = "12bet" });
 
             return lstSites;
-        }
-
-        public byte[] ExportExcelArbitrageTicketByGroup(GetArbitrageTicketCriteria criteria, string score, string[] array, string templatePath)
+        }        
+    
+        public byte[] ExportExcelArbitrageTickets(GetArbitrageTicketCriteria criteria, string[] array, string templatePath, bool isSummary)
         {
             var legend = GetInfo(criteria.MatchId, (int)FraudCaseId.Arbitrage, criteria.EventDate);
             legend.Filter = array;
 
-            IEnumerable<ArbitrageGroupTicketList> groupTicket = GetArbitrageTickets(criteria).Where(c => c.GroupId == criteria.GroupId
-                                                                        && c.Score == score
-                                                                        && c.Handicap == (decimal)criteria.Handicap);
+            var groupsTicket = GetArbitrageTickets(criteria, isSummary);
+
+            int totalTicket = groupsTicket.Sum(g => g.Home.Count() + g.Away.Count());
 
             var wb = ExcelUtilities.GetWorkbook(templatePath)
-                                    .RenderSheet(new ArbitrageConfig(criteria.TotalTicket, true), legend, groupTicket, null);
+                                    .RenderSheet(new ArbitrageConfig(totalTicket, true), legend, groupsTicket, null);
 
             return wb.ToBytes();
         }
-    
-        public byte[] ExportExcelArbitrageTickets(GetArbitrageTicketCriteria criteria, string[] array, string templatePath)
+
+        public byte[] ExportExcelArbitrageCustomers(GetArbitrageCustomerCriteria criteria, string[] array, string templatePath)
         {
             var legend = GetInfo(criteria.MatchId, (int)FraudCaseId.Arbitrage, criteria.EventDate);
             legend.Filter = array;
 
-            var groupsTicket = GetArbitrageTickets(criteria);
+            var customers = GetArbitrageCustomerDetails(criteria);
 
             var wb = ExcelUtilities.GetWorkbook(templatePath)
-                                    .RenderSheet(new ArbitrageConfig(criteria.TotalTicket, true), legend, groupsTicket, null);
+                                    .RenderSheet(new CustomerDetailConfig(customers.Count(), true), legend, customers, null);
 
             return wb.ToBytes();
         }
@@ -775,8 +745,7 @@
             }
 
             return txtResult.ToString();
-        }
-       
+        }        
         #endregion Arbitrage
 
     }

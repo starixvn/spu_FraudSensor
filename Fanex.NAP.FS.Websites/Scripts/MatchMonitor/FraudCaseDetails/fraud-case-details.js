@@ -33,12 +33,12 @@
     
     function initMultipleSelect() {
         $("#ddlSite").multiselect({
-            menuWidth: 210,
+            menuWidth: 220,
             menuHeight: 350
         });
 
         $("#ddlCurrency").multiselect({
-            menuWidth: 140,
+            menuWidth: 130,
             menuHeight: 350
         });
 
@@ -266,8 +266,6 @@
             var criteria = {};
 
             if (savedCriteria == null) {
-                evidenceCode = getEvidenceSelected();
-                
                 var bettype = 0;
                 var liveHomeScore = 0;
                 var liveAwayScore = 0;
@@ -289,8 +287,8 @@
 
                 var criteria = {
                     LiveStatus: $("#market").val(),
-                    EvidenceCodeList: evidenceCode,
-                    CurrencyId: $("#currency").val(),
+                    EvidenceCodeList: getEvidenceSelected(),
+                    CurrencyIds: getCurrencySelected(),
                     TransDateFromString: $("#transDateFrom").val(),
                     TransDateToString: $("#transDateTo").val(),
                     KeyName: $("#scoreHDP option:selected").text(),
@@ -307,7 +305,7 @@
 
             var selectedTab = $("#detailTabs li[aria-selected=true]").attr("aria-controls");
 
-            var url = selectedTab === "customer-tab" ? common.modifyRelativeUrl("/MatchMonitor/ExportCSVArbitrageCustomers")
+            var url = selectedTab === "customer-tab" ? common.modifyRelativeUrl("/MatchMonitor/ExportExcelArbitrageCustomers")
                 : common.modifyRelativeUrl("/MatchMonitor/ExportExcelArbitrageTickets");
 
             common.downloadFile(url, criteria);
@@ -481,6 +479,8 @@
         if (n != 0) {
             $("#DataTables_Table_0_info").text(`Displaying 1 to ${n} of ${n} item(s)`);
         }
+
+        ticket_grid.DataTable().columns.adjust();
         common.closeLoading();     
     };
 
@@ -535,12 +535,10 @@
         var criteria = {};
 
         if (savedCriteria == null) {
-            evidenceCode = getEvidenceSelected();
-
             var criteria = {
                 liveStatus: $("#market").val(),
-                evidenceCodeList: evidenceCode,
-                currencyId: $("#currency").val(),
+                evidenceCodeList: getEvidenceSelected(),
+                currencyIds: getCurrencySelected(),
                 transDateFromString: $("#transDateFrom").val(),
                 transDateToString: $("#transDateTo").val(),
                 keyName: $("#scoreHDP option:selected").text(),
@@ -584,25 +582,25 @@
                 zeroRecords: "There's no data"
             },
             scrollY: '57vh',
-            scrollX: "1870px",
+            scrollX: "1855px",
             scrollCollapse: true,
             columnDefs: [
                 { targets: "_all", defaultContent: "-" },
                 { targets: [-5, -4, -3, -2, 5, 6, 7, 8], className: "text-right" },
-                { targets: [-1, 2, 3, 4, 9, 13, 14, 15], className: "text-center" },
-                { targets: [0, 12], width: "110px" },
-                { targets: [1, 13], width: "120px" },
-                { targets: [2, 14], width: "80px" },
-                { targets: [3, 15], width: "65px" },
-                { targets: [4, 16], width: "65px" },
-                { targets: [5, 17], width: "100px" },
-                { targets: [6, 18], width: "42px" },
+                { targets: [-1, 2, 3, 4, 9, 13, 14, 15], className: "text-center" },            
+                { targets: [0, 12], width: "160px" },
+                { targets: [1, 13], width: "145px" },
+                { targets: [2, 14], width: "91px" },
+                { targets: [3, 15], width: "90px" },
+                { targets: [4, 16], width: "75px" },
+                { targets: [5, 17], width: "107px" },
+                { targets: [6, 18], width: "49px" },
                 { targets: [7, 8, 9, 19, 20, 21], width: "70px" },
-                { targets: [10, 22], width: "100px" }
+                { targets: [10, 22], width: "105px" }
             ],
             columns: [
                 { data: obj => obj.Home.Username },
-                { data: obj => common.makeWrapString((obj.Home.Evidences || []).join(", "), 18)},
+                { data: obj => common.makeWrapString((obj.Home.Evidences || []).join(", "), 17), width: "40px"},
                 { data: obj => obj.Home.DangerousLevel },
                 { data: obj => obj.Home.Site },
                 { data: obj => obj.Home.Currency },
@@ -614,7 +612,7 @@
                 { data: obj => obj.Home.TransDate },
                 { data: obj => "", className: "plit-table", width: "5px" },
                 { data: obj => obj.Away.Username },
-                { data: obj => common.makeWrapString((obj.Away.Evidences || []).join(", "), 18) },
+                { data: obj => common.makeWrapString((obj.Away.Evidences || []).join(", "), 17), width: "40px" },
                 { data: obj => obj.Away.DangerousLevel },
                 { data: obj => obj.Away.Site },
                 { data: obj => obj.Away.Currency },
@@ -630,14 +628,14 @@
                     var totalTicket = obj.Home.length + obj.Away.length;
                     var td = "";
                     if (totalTicket > 1000) {
-                        td = $(`<td colspan='21' class='group' style='cursor: initial'><span class='icon-chevron-down'></span> <span class='bage'>${obj.BettypeName} ${obj.Handicap}</span> <span class="bage">${obj.Score}</span> <span class='bage'>Tickets: ${totalTicket}</span> <span class="bage muchdata" style="color:red;">Too much data. Export CSV file instead!</span> <button class="button -export"><span class="icon-export-excel"></span></button></td>`);
+                        td = $(`<td colspan='23' class='group' style='cursor: initial'><span class='icon-chevron-down'></span> <span class='bage'>${obj.BettypeName} ${obj.Handicap}</span> <span class="bage">${obj.Score}</span> <span class='bage'>Tickets: ${totalTicket}</span> <span class="bage muchdata" style="color:red;">Too much data. Export CSV file instead!</span> <button class="button -export"><span class="icon-export-excel"></span></button></td>`);
                     }
                     else {
                         var keyName = obj.Score + " " + obj.BettypeName + " " + obj.Handicap + " " + obj.GroupId;
                         if (groupExpand == keyName) {
-                            td = $(`<td colspan='21' class='group' style='cursor: initial'><span class='icon-chevron-up' style='cursor: pointer;'></span><span class='bage' style='cursor: pointer;'>${obj.BettypeName} ${obj.Handicap}</span> <span class='bage' style='cursor: pointer;'>${obj.Score}</span> <span class='bage' style='cursor: pointer;'>Tickets: ${totalTicket}</span><button class="button -export"><span class="icon-export-excel"></span></button></td>`);
+                            td = $(`<td colspan='23' class='group' style='cursor: initial'><span class='icon-chevron-up' style='cursor: pointer;'></span><span class='bage' style='cursor: pointer;'>${obj.BettypeName} ${obj.Handicap}</span> <span class='bage' style='cursor: pointer;'>${obj.Score}</span> <span class='bage' style='cursor: pointer;'>Tickets: ${totalTicket}</span><button class="button -export"><span class="icon-export-excel"></span></button></td>`);
                         } else {
-                            td = $(`<td colspan='21' class='group' style='cursor: initial'><span class='icon-chevron-down' style='cursor: pointer;'></span><span class='bage' style='cursor: pointer;'>${obj.BettypeName} ${obj.Handicap}</span> <span class='bage' style='cursor: pointer;'>${obj.Score}</span> <span class='bage' style='cursor: pointer;'>Tickets: ${totalTicket}</span><button class="button -export"><span class="icon-export-excel"></span></button></td>`);
+                            td = $(`<td colspan='23' class='group' style='cursor: initial'><span class='icon-chevron-down' style='cursor: pointer;'></span><span class='bage' style='cursor: pointer;'>${obj.BettypeName} ${obj.Handicap}</span> <span class='bage' style='cursor: pointer;'>${obj.Score}</span> <span class='bage' style='cursor: pointer;'>Tickets: ${totalTicket}</span><button class="button -export"><span class="icon-export-excel"></span></button></td>`);
                         }
                     }                  
                     $(".button.-export", td).click(obj, exportGroupTickets);
@@ -645,16 +643,16 @@
                     
                 }
                 else if (obj.Home.Username == null) {
-                    var td = $("<td colspan='10'></td>");
+                    var td = $("<td colspan='11'></td>");
 
-                    $("td:lt(10)", row).remove();
+                    $("td:lt(11)", row).remove();
 
                     $(row).prepend(td);
                 }
                 else if (obj.Away.Username == null) {
-                    var td = $("<td colspan='10'></td>");
+                    var td = $("<td colspan='11'></td>");
 
-                    $("td:gt(10)", row).remove();
+                    $("td:gt(11)", row).remove();
 
                     $(row).append(td);
                 }              
@@ -734,7 +732,7 @@
             error: function (err) {
                 loadError(err);
             }
-        });      
+        });
     };
 
     $('#ticket-tab table tbody').on('click', 'tr', function () {
@@ -769,18 +767,17 @@
     function expandGroup(obj) {
         common.showLoading();
 
-        var url = common.modifyRelativeUrl("/MatchMonitor/GetListArbitrageTickets");                
+        var url = common.modifyRelativeUrl("/MatchMonitor/GetArbitrageTickets");                
         var keyName = obj.Score + " " + obj.BettypeName + " " + obj.Handicap + " " + obj.GroupId;
         groupExpand = keyName;
         
         var criteria = {};
 
         if (savedCriteria == null) {
-            evidenceCode = getEvidenceSelected();
             var criteria = {
                 liveStatus: $("#market").val(),
-                evidenceCodeList: evidenceCode,
-                currencyId: $("#currency").val(),
+                evidenceCodeList: getEvidenceSelected(),
+                CurrencyIds: getCurrencySelected(),
                 transDateFromString: $("#transDateFrom").val(),
                 transDateToString: $("#transDateTo").val(),
                 keyName: keyName,
@@ -789,17 +786,20 @@
                 liveHomeScore: obj.LiveHomeScore,
                 liveAwayScore: obj.LiveAwayScore,
                 groupId: obj.GroupId,
+                score: obj.Score,
                 matchId: parameters.matchId,
                 eventDate: parameters.eventDate
             };
         } else {
             criteria = Object.assign({}, savedCriteria);
+
             criteria.keyName = keyName;
             criteria.bettype = obj.BettypeId;
             criteria.handicap = obj.Handicap;
             criteria.liveHomeScore = obj.LiveHomeScore;
             criteria.liveAwayScore = obj.LiveAwayScore;
             criteria.groupId = obj.GroupId;
+            criteria.score = obj.Score;
         }
 
         $.ajax({
@@ -830,8 +830,7 @@
 
     function loadGrids() {
         arrGroupTicket = [];
-        groupExpand = "";
-        evidenceCode = getEvidenceSelected();
+        groupExpand = "";      
         var transDateFrom = $("#transDateFrom").val();
         var transDateTo = $("#transDateTo").val();
         var transDateFromParent = $("#transDateFrom").parent();
@@ -869,8 +868,8 @@
             }
             var criteria = {
                 liveStatus: $("#market").val(),
-                evidenceCodeList: evidenceCode,
-                currencyId: $("#currency").val(),
+                evidenceCodeList: getEvidenceSelected(),
+                currencyIds: getCurrencySelected(),
                 transDateFromString: $("#transDateFrom").val(),
                 transDateToString: $("#transDateTo").val(),
                 keyName: $("#scoreHDP option:selected").text(),
@@ -903,6 +902,20 @@
            var evidenceCode = array.join(",");
         }
         return evidenceCode;
+    }
+
+    function getCurrencySelected() {
+        var arrCurrency = $("ddlCurrency").multiselect("getChecked");
+        var array = [];
+
+        for (var i = 0; i < arrCurrency; i++) {
+            array.push($(arrCurrency[i]).attr('value'));
+        }
+
+        if (arrCurrency != null && arrCurrency.length > 0) {
+            var currencyIds = array.join(",");
+        }
+        return currencyIds;
     }
 
     function getListHDPScore()

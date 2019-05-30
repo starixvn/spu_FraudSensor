@@ -31,11 +31,9 @@
 
         IEnumerable<TicketDetails> GetTicketFromIP(string ip, bool isShowSpecialCurrencies);
               
-        IEnumerable<CustomerDetails> GetArbitrageCustomerDetails(GetArbitrageCustomerCriteria criteria);
+        IEnumerable<CustomerDetails> GetArbitrageCustomerDetails(GetArbitrageCustomerCriteria criteria);       
 
-        IEnumerable<ArbitrageGroupTicketList> GetArbitrageTickets(GetArbitrageTicketCriteria criteria);
-
-        IEnumerable<ArbitrageGroupTicketList> GetListArbitrageTickets(GetArbitrageTicketCriteria criteria);
+        IEnumerable<ArbitrageGroupTicketList> GetArbitrageTickets(GetArbitrageTicketCriteria criteria, bool isSummary);
 
         IEnumerable<Evidence> GetListEvidences();
 
@@ -45,12 +43,12 @@
 
         IEnumerable<Site> GetSites();       
         
-        byte[] ExportToExcelIpTickets(string ip, string template, bool isShowSpecialCurrencies);      
-              
-        byte[] ExportExcelArbitrageTicketByGroup(GetArbitrageTicketCriteria criteria, string score, string[] array, string templatePath);
-   
-        byte[] ExportExcelArbitrageTickets(GetArbitrageTicketCriteria ticketCriteria, string[] array, string templatePath);
+        byte[] ExportToExcelIpTickets(string ip, string template, bool isShowSpecialCurrencies);
+
+        byte[] ExportExcelArbitrageTickets(GetArbitrageTicketCriteria criteria, string[] array, string templatePath, bool isSummary);
 
         string ExportArbitrageCustomersCsv(GetArbitrageCustomerCriteria criteria, string[] array);
+
+        byte[] ExportExcelArbitrageCustomers(GetArbitrageCustomerCriteria criteria, string[] array, string templatePath);
     }
 }
