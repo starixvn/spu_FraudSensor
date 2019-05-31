@@ -9,6 +9,7 @@
     @Styles.Render("~/fraud-case-styles")
     @Styles.Render("~/Contents/CoreBetList")
     <link href="~/Content/jquery-ui-timepicker-addon.min.css" rel="stylesheet" />
+    <link href="~/Content/scss/MultipleSelect/jquery.multiselect.filter.css" rel="stylesheet" />
     <link href="~/Content/scss/MultipleSelect/jquery.multiselect.css" rel="stylesheet" />
     <style>
     .ui-slider-handle.ui-corner-all.ui-state-default {
@@ -59,7 +60,7 @@
 
     .table thead tr th, .table tbody tr td {
         padding: 8px 4px;
-    }
+    }      
     </style>
 }
 <h1 class="title">@ViewBag.Title</h1>
@@ -161,7 +162,8 @@
     @Scripts.Render("~/bundles/jqueryval")
     <script src="~/Scripts/jquery-ui-1.12.1.min.js"></script>
     <script src="~/Scripts/jquery-ui-timepicker-addon.min.js"></script>
-    <script src="~/Scripts/MultipleSelect/jquery.multiselect.js"></script>
+    <script src="~/Scripts/MultipleSelect/jquery.multiselect.filter.js"></script>
+    <script src="~/Scripts/MultipleSelect/jquery.multiselect.js"></script>    
     <script>
         var parameters =
             {

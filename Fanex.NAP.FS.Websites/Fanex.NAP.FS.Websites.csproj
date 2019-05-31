@@ -414,6 +414,7 @@
     <Content Include="Content\scss\images\sort_both.png" />
     <Content Include="Content\scss\images\sort_desc.png" />
     <Content Include="Content\scss\images\UM.svg" />
+    <Content Include="Content\scss\MultipleSelect\jquery.multiselect.filter.css" />
     <Content Include="Content\scss\pages\configurations\fraud-case.css" />
     <Content Include="Content\scss\pages\customer-monitor\customer-monitor.css" />
     <Content Include="Content\scss\pages\errors\errors.css" />
@@ -961,6 +962,7 @@
     <Content Include="Scripts\moment.js" />
     <Content Include="Scripts\moment.min.js" />
     <Content Include="Scripts\multiple-select.js" />
+    <Content Include="Scripts\MultipleSelect\jquery.multiselect.filter.js" />
     <Content Include="Scripts\Notification\notification.js" />
     <Content Include="Scripts\numeral\numeral.js" />
     <Content Include="Scripts\numeral\numeral.min.js" />

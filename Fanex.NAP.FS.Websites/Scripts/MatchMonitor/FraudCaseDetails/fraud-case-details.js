@@ -35,18 +35,18 @@
         $("#ddlSite").multiselect({
             menuWidth: 220,
             menuHeight: 350
-        });
+        }).multiselectfilter({ width: 140 });
 
         $("#ddlCurrency").multiselect({
             menuWidth: 140,
             menuHeight: 350
-        });
+        }).multiselectfilter({ width: 65 });
 
         $("#ddlEvidence").multiselect({
             menuWidth: 350,
             menuHeight: 350            
-        });
-    };   
+        }).multiselectfilter({ width: 270 });
+    };       
 
     function getScoreHDP() {
         var url = common.modifyRelativeUrl("/MatchMonitor/GetScoreHDP");
