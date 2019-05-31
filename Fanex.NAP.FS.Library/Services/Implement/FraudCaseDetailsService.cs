@@ -496,10 +496,15 @@
 
             var rawData = DataService.GetData<TicketInfo>(criteria);
             
-            var custOfSites = rawData.Select(t => t.CustId).Distinct().Chunk(500)
+            var custOfSites = rawData.Select(t => t.CustId).Chunk(500)
                                     .Select(q => ApiHelper.Post<IEnumerable<CustomerSubcriber>>(urlCustSites, string.Join(",", q)))
                                     .ToArray();
             Task.WaitAll(custOfSites);
+
+            var custOfEvidences = rawData.Select(c => c.CustId).Chunk(500)
+                                        .Select(q => ApiHelper.Post<IEnumerable<CustomerEvidence>>(urlCustEvidences, new CustomerEvidenceList { CustIdList = string.Join(",", q) }))
+                                        .ToArray();
+            Task.WaitAll(custOfEvidences);
 
             // filter by criteria Sites
             var lstCustOfSites = FilterCustomerBySites(custOfSites.SelectMany(t => t.Result), criteria.Sites);
@@ -507,11 +512,6 @@
             {
                 return new List<ArbitrageGroupTicketList>();
             }
-
-            var custOfEvidences = lstCustOfSites.Select(c => c.CustId).Chunk(500)
-                                        .Select(q => ApiHelper.Post<IEnumerable<CustomerEvidence>>(urlCustEvidences, new CustomerEvidenceList { CustIdList = string.Join(",", q) }))
-                                        .ToArray();
-            Task.WaitAll(custOfEvidences);
 
             var listEvi = custOfEvidences.SelectMany(t => t.Result);
 
@@ -762,11 +762,13 @@
         public IEnumerable<Site> GetSites()
         {
             var url = AppSettings.Get("FPS_WEBAPI_CUSTOMER_SUBSCRIBER");
-            var sites = ApiHelper.Get<IEnumerable<string>>(url);
-            Task.WaitAll(sites);           
+            var responseSites = ApiHelper.Get<IEnumerable<string>>(url);
+            Task.WaitAll(responseSites);
+
+            var sites = responseSites.Result.OrderBy(c => c);
 
             List<Site> lstSites = new List<Site>();
-            foreach (string item in sites.Result)
+            foreach (string item in sites)
             {
                 lstSites.Add(new Site { SiteId = item, SiteName = item });
             }
