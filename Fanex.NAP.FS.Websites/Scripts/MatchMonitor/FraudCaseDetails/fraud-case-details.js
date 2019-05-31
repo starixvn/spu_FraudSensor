@@ -16,7 +16,7 @@
     var totalTicket = 0;    
     var arrGroupTicket = [];   
     var groupExpand = "";
-    var groupExportCSV = 0;
+    var groupExportExcel = 0;
     var savedCriteria = null;
 
     from_date.datepicker({       
@@ -164,7 +164,7 @@
             if (json.length > 1000) {
                 json = [];
                 customer_grid.DataTable().clear().rows.add(json).draw();
-                $(".dataTables_empty").text("Too much data. Export CSV file instead!").css("color", "red");
+                $(".dataTables_empty").text("Too much data. Export Excel file instead!").css("color", "red");
             }
             else {
                 customer_grid.DataTable().clear().rows.add(json).draw();
@@ -527,7 +527,7 @@
     }    
 
     function exportGroupTickets(e) {
-        groupExportCSV = 1;        
+        groupExportExcel = 1;        
         var url = common.modifyRelativeUrl("/MatchMonitor/ExportExcelArbitrageTicketByGroup");
 
         var obj = e.data;
@@ -631,7 +631,7 @@
                     var totalTicket = obj.Home.length + obj.Away.length;
                     var td = "";
                     if (totalTicket > 1000) {
-                        td = $(`<td colspan='23' class='group' style='cursor: initial'><span class='icon-chevron-down'></span> <span class='bage'>${obj.BettypeName} ${obj.Handicap}</span> <span class="bage">${obj.Score}</span> <span class='bage'>Tickets: ${totalTicket}</span> <span class="bage muchdata" style="color:red;">Too much data. Export CSV file instead!</span> <button class="button -export"><span class="icon-export-excel"></span></button></td>`);
+                        td = $(`<td colspan='23' class='group' style='cursor: initial'><span class='icon-chevron-down'></span> <span class='bage'>${obj.BettypeName} ${obj.Handicap}</span> <span class="bage">${obj.Score}</span> <span class='bage'>Tickets: ${totalTicket}</span> <span class="bage muchdata" style="color:red;">Too much data. Export Excel file instead!</span> <button class="button -export"><span class="icon-export-excel"></span></button></td>`);
                     }
                     else {
                         var keyName = obj.Score + " " + obj.BettypeName + " " + obj.Handicap + " " + obj.GroupId;
@@ -740,7 +740,7 @@
 
     $('#ticket-tab table tbody').on('click', 'tr', function () {
         if (isArbitrage) {
-            if (groupExportCSV == 0) {
+            if (groupExportExcel == 0) {
                 var table = ticket_grid.DataTable();
                 var data = table.row(this).data();
 
@@ -763,7 +763,7 @@
                     }
                 }
             }
-            groupExportCSV = 0;
+            groupExportExcel = 0;
         }
     });
 
@@ -897,10 +897,11 @@
 
     function getEvidences() {
         var array = [];
-        var arrEvidences = $("#ddlEvidence").multiselect("getChecked");        
+        var arrEvidences = $("#ddlEvidence").multiselect("getChecked");
+        var lengthEvidences = $("#ddlEvidence").children("option").length;    
 
-        for (var i = 0; i < arrEvidences.length; i++) {            
-            array.push($(arrEvidences[i]).attr('value'));            
+        for (var i = 0; i < arrEvidences.length; i++) {
+            array.push($(arrEvidences[i]).attr('value'));
         }
 
         if (arrEvidences != null && arrEvidences.length > 0) {
@@ -954,7 +955,7 @@
             return "All";
         }
         for (var i = 0; i < arrSites.length; i++) {
-            array.push($(arrSites[i]).next().text());
+            array.push($(arrSites[i]).next().text().toLowerCase());
         }
 
         if (arrSites != null && arrSites.length > 0) {

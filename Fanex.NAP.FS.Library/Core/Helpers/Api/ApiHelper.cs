@@ -80,6 +80,23 @@ namespace Fanex.NAP.FS.Library.Core.Helpers.Api
                 await web.PostAsJsonAsync(url, param).ConfigureAwait(false);
             }
         }
+
+        public static async Task<TResult> Get<TResult>(string url)
+        {
+            using (var web = new HttpClient())
+            {
+                var response = await web.GetAsync(url).ConfigureAwait(false);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new Exception(await response.Content.ReadAsStringAsync().ConfigureAwait(false));
+                }
+
+                var result = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+
+                return JsonConvert.DeserializeObject<TResult>(result);
+            }
+        }
     }
 }
 

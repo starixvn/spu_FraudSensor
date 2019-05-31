@@ -293,6 +293,7 @@
     <Compile Include="Criteria\SuspiciousInfo\SuspicousCustomerCurrencyGetCriteria.cs" />
     <Compile Include="DTO\CustomerEvidence.cs" />
     <Compile Include="DTO\CustomerEvidenceList.cs" />
+    <Compile Include="DTO\CustomerSubcriber.cs" />
     <Compile Include="DTO\CustomerTotalAssociation.cs" />
     <Compile Include="DTO\CustomerList.cs" />
     <Compile Include="DTO\CustomerAssociation.cs" />

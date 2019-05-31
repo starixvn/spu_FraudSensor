@@ -41,8 +41,10 @@
 
         IEnumerable<ScoreHDP> GetScoreHDP(int matchId, bool isShowSpecialCurrencies);
 
-        IEnumerable<Site> GetSites();       
-        
+        IEnumerable<Site> GetSites();
+
+        string ReplaceEvidences(string evidences);
+
         byte[] ExportToExcelIpTickets(string ip, string template, bool isShowSpecialCurrencies);
 
         byte[] ExportExcelArbitrageTickets(GetArbitrageTicketCriteria criteria, string[] array, string templatePath, bool isSummary);
