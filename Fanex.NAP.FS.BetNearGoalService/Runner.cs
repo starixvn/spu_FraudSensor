@@ -114,6 +114,8 @@
         private void Rule()
         {
             ExecuteBySeparatedThreads();
+
+            _baseService.MonitoringServiceLog();
         }
 
         private void ExecuteBySeparatedThreads()

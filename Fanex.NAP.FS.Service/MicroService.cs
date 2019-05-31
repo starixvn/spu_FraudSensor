@@ -21,6 +21,8 @@
         private static string _serviceName;
         private static int _fraudCaseId;
         private static string _queueName;
+        private static DateTime _lastUpdate;
+
 
         protected FraudCase _fraudCase;
         protected FraudCaseService fraudCaseService;
@@ -66,6 +68,8 @@
                 .UseHttpContext(new HttpContextHelper());
 
             maintenanceService = new MaintenanceService();
+
+            _lastUpdate = DateTime.Now;
         }
 
         public void Start(ElapsedEventHandler onTimedEvent)
@@ -133,7 +137,22 @@
             _timer.Dispose();
 
             LogService.Error($"{_serviceName} is stopped. Please contact with Admin.");
-        }        
+        }
+
+        public void MonitoringServiceLog()
+        {
+            var nowDate = DateTime.Now;
+
+            if (nowDate.Subtract(_lastUpdate).TotalMinutes >= 60)
+            {
+#if DEBUG
+              Console.WriteLine($"{_serviceName} is executed. Please be informed.");
+#else
+                LogService.Info($"{_serviceName} is executed. Please be informed.");
+#endif
+                _lastUpdate = nowDate;
+            }
+        }
 
         public void Report(ReportModel model)
         {
@@ -153,9 +172,6 @@
 
                 if (!result.IsSuccessful)
                 {
-#if DEBUG
-                    System.Console.WriteLine($"Report error: {result.ErrorMessage}");
-#endif
                     LogService.Error(result.ErrorMessage);
                 }
             }

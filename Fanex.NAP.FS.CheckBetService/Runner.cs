@@ -54,6 +54,8 @@
 
                     _checkBetService.Rule();
 
+                    _baseService.MonitoringServiceLog();
+
                     _isRunning = false;
                 }
             }

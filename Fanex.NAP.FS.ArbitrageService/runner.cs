@@ -196,6 +196,8 @@ namespace Fanex.NAP.FS.ArbitrageService
 
                 Thread.Sleep(10);
             });
+
+            _baseService.MonitoringServiceLog();
         }
     }
 }

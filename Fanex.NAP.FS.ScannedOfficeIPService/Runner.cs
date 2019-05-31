@@ -120,6 +120,8 @@ namespace Fanex.NAP.FS.ScannedOfficeIPService
                 _scannedOfficeIpService.Rule(matchIds);
             }
 
+            _baseService.MonitoringServiceLog();
+
             Thread.Sleep(TimeSpan.FromSeconds(2));
         }
     }

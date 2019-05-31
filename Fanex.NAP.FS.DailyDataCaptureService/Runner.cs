@@ -94,9 +94,11 @@
             _baseService.Report(model);
         }
 
-       private static void Rule()
+       private void Rule()
         {
             _dailyDataCaptureService.Rule();
+
+            _baseService.MonitoringServiceLog();
 
             LogService.Info("Rule is executed.");
         }
