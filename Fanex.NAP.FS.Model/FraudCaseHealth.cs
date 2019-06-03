@@ -15,5 +15,7 @@
         public bool IsActive { get; set; }
 
         public DateTime LastTimeSignal { get; set; }
+
+        public bool IsOkNow { get; set; }
     }
 }

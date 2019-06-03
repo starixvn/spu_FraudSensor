@@ -20,7 +20,6 @@
         private static readonly Queue.EasyNetQ RabbitMq;
         private static readonly Service.LetstalkService LetstalkService;
         private const int MaximumLetstalkConfig = 5;
-        private static bool IsOkNow = true;
         static HealthCheckController()
         {
             LetstalkService = new Service.LetstalkService();
@@ -35,7 +34,7 @@
             RabbitMq
                 .CreateBus()
                 .DeclareExchange(AppSetting.Exchange);
-
+            
             var thread = new Thread(InitThreadsForCheckHealth);
             thread.Start();
         }
@@ -55,7 +54,8 @@
                     TimeOut = timeout,
                     IsActive = isActive,
                     LastTimeSignal = DateTime.Now,
-                    LetstalkCurrentTimes = 1
+                    LetstalkCurrentTimes = 1,
+                    IsOkNow = true
                 };
 
                 lstFcHealth.Add(fraudcase);
@@ -164,7 +164,7 @@
 
                 if (!AppSetting.IgnoreCase.Contains(fraudCase.FraudCaseId) && fraudCase.IsActive)
                 {
-                    if ((period - fcHealth.TimeOut) > 900)
+                    if ((period - fcHealth.TimeOut) > 900) // 15 min
                     {
                         var errorMessage = $"Service name: {fraudCaseName} - Do not receive THE SIGNAL in " + (int)period + " seconds. ";
 
@@ -197,15 +197,15 @@
 
                         RetryFraudCaseService(fraudCase);
 
-                        IsOkNow = false;
+                        fcHealth.IsOkNow = false;
                     }
                     else
                     {
-                        if (!IsOkNow)
+                        if (!fcHealth.IsOkNow)
                         {
                             SendMessageToLetstalk(fcHealth.LetstalkCurrentTimes, $"Service name: {fraudCaseName} is OK now :).");
 
-                            IsOkNow = true;
+                            fcHealth.IsOkNow = true;
                         }
                     }
                 }
@@ -220,6 +220,8 @@
             if (currentTimes <= MaximumLetstalkConfig)
             {
                 LetstalkService.Error(message);
+
+                LogService.Error(message);
             }
         }
     }
