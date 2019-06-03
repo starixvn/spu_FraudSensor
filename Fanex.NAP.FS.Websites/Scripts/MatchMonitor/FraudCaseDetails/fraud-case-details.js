@@ -964,7 +964,7 @@
             return "All";
         }
         for (var i = 0; i < arrSites.length; i++) {
-            array.push($(arrSites[i]).next().text().toLowerCase());
+            array.push($(arrSites[i]).next().text());
         }
 
         if (arrSites != null && arrSites.length > 0) {

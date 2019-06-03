@@ -549,7 +549,7 @@
 
             IEnumerable<string> lstSites = sites.Split(',').AsEnumerable();
 
-            return lstCustOfSites.Where(c => lstSites.Contains(c.SubscriberName.ToLower()));
+            return lstCustOfSites.Where(c => lstSites.Contains(c.SubscriberName));
         }
 
         private IEnumerable<ArbitrageGroupTicketList> HandleArbitrageTicketsOtherEvidence(IEnumerable<TicketInfo> rawData, IEnumerable<CustomerSubcriber> custSubcribers, IEnumerable<CustomerEvidence> evidences, string lstEvidenceSelected)
