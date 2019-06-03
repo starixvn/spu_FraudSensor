@@ -185,7 +185,7 @@
                                 }
                             case 5:
                                 {
-                                    errorMessage += $"Please contact with Admin. THE SERVICE IS DEATH :(.";
+                                    errorMessage += $"Please contact with Admin. THE SERVICE IS DEAD :(.";
                                     break;
                                 }
 
