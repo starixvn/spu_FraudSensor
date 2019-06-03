@@ -773,6 +773,9 @@
                 lstSites.Add(new Site { SiteId = item, SiteName = item });
             }
 
+            List<string> siteRemoves = new List<string> { "Alpha", "Alpha789y", "ALPHA88", "AlphaCN88" };
+            lstSites.RemoveAll(c => siteRemoves.Contains(c.SiteName));
+
             return lstSites;
         }
     
