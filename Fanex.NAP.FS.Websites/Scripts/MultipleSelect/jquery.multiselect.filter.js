@@ -58,7 +58,7 @@
   $.widget('ech.multiselectfilter', {
 
     options: {
-      label: 'Filter:',                // (string) The label to show with the input
+      label: 'Filter',                // (string) The label to show with the input
       placeholder: 'Enter keywords',   // (string) The placeholder text to show in the input
       filterRule: 'contains',          // (string) Either a named filter rule from above or a regular expression containing {{term}} as a placeholder
       searchGroups: false,             // (true | false) If true, search option group labels and show an entire group on a match.

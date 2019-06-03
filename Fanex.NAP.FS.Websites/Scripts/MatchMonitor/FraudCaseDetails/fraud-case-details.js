@@ -35,17 +35,26 @@
         $("#ddlSite").multiselect({
             menuWidth: 220,
             menuHeight: 350
-        }).multiselectfilter({ width: 140 });
+        }).multiselectfilter({
+            width: 140,
+            placeholder: ''
+        });
 
         $("#ddlCurrency").multiselect({
             menuWidth: 140,
             menuHeight: 350
-        }).multiselectfilter({ width: 65 });
+        }).multiselectfilter({
+            width: 62,
+            placeholder: ''
+        });
 
         $("#ddlEvidence").multiselect({
             menuWidth: 350,
             menuHeight: 350            
-        }).multiselectfilter({ width: 270 });
+        }).multiselectfilter({
+            width: 270,
+            placeholder: ''
+        });
     };       
 
     function getScoreHDP() {
