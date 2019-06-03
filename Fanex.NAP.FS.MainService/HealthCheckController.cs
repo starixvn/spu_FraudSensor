@@ -164,7 +164,7 @@
 
                 if (!AppSetting.IgnoreCase.Contains(fraudCase.FraudCaseId) && fraudCase.IsActive)
                 {
-                    if ((period - fcHealth.TimeOut) > 900) // 15 min
+                    if ((period - fcHealth.TimeOut) > 300) // 15 min
                     {
                         var errorMessage = $"Service name: {fraudCaseName} - Do not receive THE SIGNAL in " + (int)period + " seconds. ";
 

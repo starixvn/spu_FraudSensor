@@ -139,11 +139,11 @@
             LogService.Error($"{_serviceName} is stopped. Please contact with Admin.");
         }
 
-        public void MonitoringServiceLog()
+        public void MonitoringServiceLog(int totalMinutes = 60)
         {
             var nowDate = DateTime.Now;
 
-            if (nowDate.Subtract(_lastUpdate).TotalMinutes >= 60)
+            if (nowDate.Subtract(_lastUpdate).TotalMinutes >= totalMinutes)
             {
 #if DEBUG
               Console.WriteLine($"{_serviceName} is executed. Please be informed.");
