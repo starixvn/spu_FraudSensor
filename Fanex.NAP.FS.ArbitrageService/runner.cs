@@ -29,11 +29,13 @@ namespace Fanex.NAP.FS.ArbitrageService
         private readonly Service.ArbitrageService _arbitrageService;
         private readonly MicroService _baseService;
         private bool _isRunning = false;
-
+        private DateTime _lastExecuted;
         public Runner()
         {
             _baseService = new MicroService(ServiceName, FraudCaseId.Arbitrage);
             _arbitrageService = new Service.ArbitrageService();
+
+            _lastExecuted = DateTime.Now;
 
             InitializeComponent();
         }
@@ -51,24 +53,29 @@ namespace Fanex.NAP.FS.ArbitrageService
         private void Execute(object source, ElapsedEventArgs e)
         {
             var exception = string.Empty;
-
+            var nowDate = DateTime.Now;
             try
             {
-                Report(true, exception, "Fraud Case is executing at " + DateTime.Now);
-
-                var isUm = _baseService.CheckUM();
-
-                if (!isUm)
+                if (Convert.ToBoolean(source) || nowDate.Subtract(_lastExecuted).TotalSeconds >= _baseService.FraudCase.FraudCaseInterval)
                 {
-                    if (_isRunning) return;
+                    Report(true, exception, "Fraud Case is executing at " + DateTime.Now);
 
-                    _isRunning = true;
+                    var isUm = _baseService.CheckUM();
 
-                    var tickets = Precondition();
+                    if (!isUm)
+                    {
+                        if (_isRunning) return;
 
-                    Rule(tickets);
+                        _isRunning = true;
 
-                    _isRunning = false;
+                        var tickets = Precondition();
+
+                        Rule(tickets);
+
+                        _isRunning = false;
+                    }
+
+                    _lastExecuted = nowDate;
                 }
             }
             catch (Exception ex)

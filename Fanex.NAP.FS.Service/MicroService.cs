@@ -1,4 +1,6 @@
-﻿namespace Fanex.NAP.FS.Service
+﻿using System.Runtime.Remoting.Channels;
+
+namespace Fanex.NAP.FS.Service
 {
     using Fanex.Logging;
     using Fanex.NAP.FS.Core;
@@ -78,10 +80,11 @@
             Console.WriteLine($"-> {_serviceName} is starting...");
 #endif
             _timer = new System.Timers.Timer();
-            _timer.Elapsed += onTimedEvent;
+            _timer.Elapsed += (sender, e) => onTimedEvent(false, e);
             _timer.AutoReset = true;
+            _timer.Interval = 60000;
 
-            ExecutingActionHandler = onTimedEvent;
+            ExecutingActionHandler = (sender, e) => onTimedEvent(true, e);
 
             if (!string.IsNullOrWhiteSpace(_queueName))
             {
@@ -139,14 +142,14 @@
             LogService.Error($"{_serviceName} is stopped. Please contact with Admin.");
         }
 
-        public void MonitoringServiceLog(int totalMinutes = 60)
+        public void MonitoringServiceLog()
         {
             var nowDate = DateTime.Now;
 
-            if (nowDate.Subtract(_lastUpdate).TotalMinutes >= totalMinutes)
+            if (nowDate.Subtract(_lastUpdate).TotalMinutes >= 60)
             {
 #if DEBUG
-              Console.WriteLine($"{_serviceName} is executed. Please be informed.");
+                Console.WriteLine($"{_serviceName} is executed. Please be informed.");
 #else
                 LogService.Info($"{_serviceName} is executed. Please be informed.");
 #endif
@@ -227,7 +230,7 @@
 
             if (fraudCase != null)
             {
-                _timer.Interval = fraudCase.FraudCaseInterval * 1000;
+                //_timer.Interval = fraudCase.FraudCaseInterval * 1000;
 
                 return fraudCase;
             }

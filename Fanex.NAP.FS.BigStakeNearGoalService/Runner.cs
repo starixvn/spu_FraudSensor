@@ -24,6 +24,7 @@
         public readonly List<Task> Threads;
         private readonly MicroService _baseService;
         private bool _isRunning = false;
+        private DateTime _lastExecuted;
 
         public Runner()
         {
@@ -31,6 +32,8 @@
             Threads = new List<Task>();
             _bigStakeNearGoalService = new Service.BigStakeNearGoalService();
             _baseService = new MicroService(ServiceName, FraudCaseId.BSNG);
+
+            _lastExecuted = DateTime.Now;
 
             InitializeComponent();
         }
@@ -48,24 +51,29 @@
         private void Execute(object source, System.Timers.ElapsedEventArgs e)
         {
             var exception = string.Empty;
-            
+            var nowDate = DateTime.Now;
+
             try
             {
-                Report(true, exception, "Fraud Case is executing at " + DateTime.Now);
-
-                var isUm = _baseService.CheckUM();
-                if (!isUm)
+                if (Convert.ToBoolean(source) || nowDate.Subtract(_lastExecuted).TotalSeconds >= _baseService.FraudCase.FraudCaseInterval)
                 {
+                    Report(true, exception, "Fraud Case is executing at " + DateTime.Now);
 
-                    if (_isRunning) return;
+                    var isUm = _baseService.CheckUM();
+                    if (!isUm)
+                    {
 
-                    _isRunning = true;
+                        if (_isRunning) return;
 
-                    CleanResult();
-                    Precondition();
-                    Rule();
+                        _isRunning = true;
 
-                    _isRunning = false;
+                        CleanResult();
+                        Precondition();
+                        Rule();
+
+                        _isRunning = false;
+                    }
+                    _lastExecuted = nowDate;
                 }
             }
             catch (Exception ex)
@@ -107,11 +115,11 @@
             var model = new ReportModel()
             {
                 ServiceName = ServiceName,
-                Exception = exception,                
+                Exception = exception,
                 Status = status,
                 IsActive = _baseService.FraudCase.IsActive,
                 Timeout = _baseService.FraudCase.FraudCaseInterval,
-                Message  = message
+                Message = message
             };
 
             _baseService.Report(model);
@@ -124,7 +132,7 @@
                 try
                 {
                     var matchIds = ((Match)m).MatchId.ToString();
-                    
+
                     _bigStakeNearGoalService.Rule(matchIds);
                 }
                 catch (Exception ex)
@@ -145,7 +153,7 @@
             try
             {
                 var matchIds = ((Match)match).MatchId.ToString();
-                
+
                 _bigStakeNearGoalService.Rule(matchIds);
             }
             catch (Exception ex)

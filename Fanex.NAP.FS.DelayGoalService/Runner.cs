@@ -25,6 +25,7 @@
         private IEnumerable<Match> _matches;
         private readonly List<Task> _threads;
         private const int ChunkSize = 100;
+        private DateTime _lastExecuted;
 
         public Runner()
         {
@@ -32,6 +33,8 @@
             _threads = new List<Task>();
             _delayGoalService = new Service.DelayGoalService();
             _baseService = new MicroService(ServiceName, Library.Models.FraudCaseId.DelayedGoal);
+
+            _lastExecuted = DateTime.Now;
 
             InitializeComponent();
         }
@@ -49,29 +52,34 @@
         private void Execute(object source, System.Timers.ElapsedEventArgs e)
         {
             var exception = string.Empty;
-           
+            var nowDate = DateTime.Now;
+
             try
             {
-                Report(true, exception, "Fraud Case is executing at " + DateTime.Now);
-
-                var isUm = _baseService.CheckUM();
-                if (!isUm)
+                if (Convert.ToBoolean(source) || nowDate.Subtract(_lastExecuted).TotalSeconds >= _baseService.FraudCase.FraudCaseInterval)
                 {
-                    if (_isRunning) return;
+                    Report(true, exception, "Fraud Case is executing at " + DateTime.Now);
 
-                    _isRunning = true;
+                    var isUm = _baseService.CheckUM();
+                    if (!isUm)
+                    {
+                        if (_isRunning) return;
 
-                    CleanResult();
-                    Precondition();
-                    Rule();
+                        _isRunning = true;
 
-                    _isRunning = false;
+                        CleanResult();
+                        Precondition();
+                        Rule();
+
+                        _isRunning = false;
+                    }
+                    _lastExecuted = nowDate;
                 }
             }
             catch (Exception ex)
             {
                 exception = ex.Message;
-                
+
                 _isRunning = false;
 
                 var logMessage = new LogMessage(ex.Message)
@@ -83,7 +91,7 @@
                 Report(false, exception, "Fraud Case is executed at " + DateTime.Now);
             }
 
-            
+
         }
 
         private void Precondition()

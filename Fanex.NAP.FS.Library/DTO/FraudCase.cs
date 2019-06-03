@@ -7,7 +7,9 @@
         public string FraudCaseName { get; set; }
 
         public string FraudCaseDesc { get; set; }
-
+        /// <summary>
+        /// Expressed in seconds.
+        /// </summary>
         public int FraudCaseInterval { get; set; }
 
         public bool IsActive { get; set; }

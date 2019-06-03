@@ -34,7 +34,7 @@
         private readonly MicroService _baseService;
 
         private bool _isRunning = false;
-
+        private DateTime _lastExecuted;
         public Runner()
         {
             _matches = new List<Match>();
@@ -62,6 +62,7 @@
                 LogService.Error(message);
             }
 
+            _lastExecuted = DateTime.Now;
 
             InitializeComponent();
         }
@@ -79,32 +80,37 @@
         private void Execute(object source, System.Timers.ElapsedEventArgs e)
         {
             var exception = string.Empty;
-     
+            var nowDate = DateTime.Now;
+
             try
             {
-                Report(true, exception, "Fraud Case is executing at " + DateTime.Now);
-
-                var isUm = _baseService.CheckUM();                
-
-                if (!isUm)
+                if (Convert.ToBoolean(source) || nowDate.Subtract(_lastExecuted).TotalSeconds >= _baseService.FraudCase.FraudCaseInterval)
                 {
-                    if (_isRunning) return;
+                    Report(true, exception, "Fraud Case is executing at " + DateTime.Now);
 
-                    _isRunning = true;
+                    var isUm = _baseService.CheckUM();
 
-                    CleanResult();
-                    Precondition();
-                    Rule();
+                    if (!isUm)
+                    {
+                        if (_isRunning) return;
 
-                    _isRunning = false;
+                        _isRunning = true;
 
+                        CleanResult();
+                        Precondition();
+                        Rule();
+
+                        _isRunning = false;
+                    }
+
+                    _lastExecuted = nowDate;
                 }
             }
             catch (Exception ex)
             {
                 _isRunning = false;
                 exception = ex.Message;
-                
+
                 var logMessage = new LogMessage(ex.Message)
                     .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
                     .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
@@ -121,7 +127,7 @@
             {
 
                 ServiceName = ServiceName,
-                Exception = exception,                
+                Exception = exception,
                 Status = status,
                 Timeout = _baseService.FraudCase.FraudCaseInterval,
                 IsActive = _baseService.FraudCase.IsActive,
@@ -179,7 +185,7 @@
                 .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
                 .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
 
-                LogService.Error($"{ProjectName} - {ServiceName} - ExecuteMultiple Exeption {logMessage}");               
+                LogService.Error($"{ProjectName} - {ServiceName} - ExecuteMultiple Exeption {logMessage}");
             }
         }
     }

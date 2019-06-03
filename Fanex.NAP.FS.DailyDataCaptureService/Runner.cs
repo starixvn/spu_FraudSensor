@@ -7,14 +7,7 @@
     using Fanex.NAP.FS.Model;
     using Fanex.NAP.FS.Service;
     using System;
-    using System.Collections.Generic;
-    using System.ComponentModel;
-    using System.Data;
-    using System.Diagnostics;
-    using System.Linq;
     using System.ServiceProcess;
-    using System.Text;
-    using System.Threading.Tasks;
 
     public partial class Runner : ServiceBase
     {
@@ -23,6 +16,7 @@
 
         static Service.DailyDataCaptureService _dailyDataCaptureService;
         private readonly MicroService _baseService;
+        private DateTime _lastExecuted;
 
         private bool _isRunning = false;
 
@@ -30,6 +24,8 @@
         {
             _baseService = new MicroService(ServiceName, FraudCaseId.DailyDataCapture);
             _dailyDataCaptureService = new Service.DailyDataCaptureService();
+
+            _lastExecuted = DateTime.Now;
 
             InitializeComponent();
         }
@@ -47,22 +43,27 @@
         private void Execute(object source, System.Timers.ElapsedEventArgs e)
         {
             var exception = string.Empty;
-            
+            var nowDate = DateTime.Now;
+
             try
             {
-                Report(true, exception, "Fraud Case is executing at " + DateTime.Now);
-
-                var isUm = _baseService.CheckUM();
-
-                if (!isUm)
+                if (Convert.ToBoolean(source) || nowDate.Subtract(_lastExecuted).TotalSeconds >= _baseService.FraudCase.FraudCaseInterval)
                 {
-                    if (_isRunning) return;
+                    Report(true, exception, "Fraud Case is executing at " + DateTime.Now);
 
-                    _isRunning = true;
+                    var isUm = _baseService.CheckUM();
 
-                    Rule();
+                    if (!isUm)
+                    {
+                        if (_isRunning) return;
 
-                    _isRunning = false;
+                        _isRunning = true;
+
+                        Rule();
+
+                        _isRunning = false;
+                    }
+                    _lastExecuted = nowDate;
                 }
             }
             catch (Exception ex)
@@ -79,7 +80,7 @@
             }
         }
 
-       private void Report(bool status, string exception, string message)
+        private void Report(bool status, string exception, string message)
         {
             var model = new ReportModel()
             {
@@ -94,7 +95,7 @@
             _baseService.Report(model);
         }
 
-       private void Rule()
+        private void Rule()
         {
             _dailyDataCaptureService.Rule();
 
