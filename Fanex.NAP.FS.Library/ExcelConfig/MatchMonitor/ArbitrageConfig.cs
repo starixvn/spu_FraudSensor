@@ -11,6 +11,7 @@
     public class ArbitrageConfig : FSExcelConfig<MatchFraudCaseInfo, ArbitrageGroupTicketList, object>
     {
         private readonly bool delete2Nd;
+        private ICellStyle _cellStyleDate;
 
         public ArbitrageConfig(int ticketNo)
         {
@@ -38,14 +39,17 @@
             }
             else
             {
-                row.Sheet.GetRow(4).GetCell(0).SetCellValue("Score/HDP: " + data.Score + " " + data.BettypeName + " " + data.Handicap.ToString("0.##"));
-            }            
+                _cellStyleDate = row.GetCell(11).CellStyle;
+                row.Sheet.GetRow(4).GetCell(0).SetCellValue("Score/HDP: " + data.Score + " " + data.BettypeName + " " + data.Handicap.ToString("0.##"));                
+            }
 
             IEnumerator<ArbitrageTicket> dataHome = data.Home.GetEnumerator();
             IEnumerator<ArbitrageTicket> dataAway = data.Away.GetEnumerator();
             bool hasHome = dataHome.MoveNext();
             bool hasAway = dataAway.MoveNext();
-           
+
+            IDataFormat dateFormat = row.Sheet.Workbook.CreateDataFormat();
+
             while (hasHome || hasAway)
             {
                 var idx = 0;
@@ -60,11 +64,12 @@
                     row.CreateCell(idx++).SetCellValue(dataHome.Current.Currency);
                     row.CreateCell(idx++).SetCellValue(fraudByIP);
                     row.CreateCell(idx++).SetCellValue(dataHome.Current.BetId.ToString());
-                    row.CreateCell(idx++).SetCellValue((double)dataHome.Current.Odds);
-                    row.CreateCell(idx++).SetCellValue(dataHome.Current.Stake.Virtual);
-                    row.CreateCell(idx++).SetCellValue(dataHome.Current.Stake.ComPT);
-                    row.CreateCell(idx++).SetCellValue(dataHome.Current.Stake.Full);
+                    row.CreateCell(idx++).SetCellValue(dataHome.Current.Odds.ToString("0.##"));
+                    row.CreateCell(idx++).SetCellValue(dataHome.Current.Stake.Virtual.ToString("0.##"));
+                    row.CreateCell(idx++).SetCellValue(dataHome.Current.Stake.ComPT.ToString("0.##"));
+                    row.CreateCell(idx++).SetCellValue(dataHome.Current.Stake.Full.ToString("0.##"));
                     row.CreateCell(idx).SetCellValue(DateTime.Parse(dataHome.Current.TransDate.Replace("<br/>", "")));
+                    row.GetCell(idx).CellStyle = _cellStyleDate;
                 }
 
                 idx = 13;
@@ -78,11 +83,12 @@
                     row.CreateCell(idx++).SetCellValue(dataAway.Current.Currency);
                     row.CreateCell(idx++).SetCellValue(fraudByIP);
                     row.CreateCell(idx++).SetCellValue(dataAway.Current.BetId.ToString());
-                    row.CreateCell(idx++).SetCellValue((double)dataAway.Current.Odds);
-                    row.CreateCell(idx++).SetCellValue(dataAway.Current.Stake.Virtual);
-                    row.CreateCell(idx++).SetCellValue(dataAway.Current.Stake.ComPT);
-                    row.CreateCell(idx++).SetCellValue(dataAway.Current.Stake.Full);
+                    row.CreateCell(idx++).SetCellValue(dataAway.Current.Odds.ToString("0.##"));
+                    row.CreateCell(idx++).SetCellValue(dataAway.Current.Stake.Virtual.ToString("0.##"));
+                    row.CreateCell(idx++).SetCellValue(dataAway.Current.Stake.ComPT.ToString("0.##"));
+                    row.CreateCell(idx++).SetCellValue(dataAway.Current.Stake.Full.ToString("0.##"));
                     row.CreateCell(idx).SetCellValue(DateTime.Parse(dataAway.Current.TransDate.Replace("<br/>", "")));
+                    row.GetCell(idx).CellStyle = _cellStyleDate;
                 }
 
                 hasHome = dataHome.MoveNext();
