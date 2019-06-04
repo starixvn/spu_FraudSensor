@@ -65,6 +65,10 @@
                     }
                     _lastExecuted = nowDate;
                 }
+                else
+                {
+                    _baseService.MonitoringServiceLog("Service is executed.");
+                }
             }
             catch (Exception ex)
             {
@@ -100,8 +104,6 @@
             _dailyDataCaptureService.Rule();
 
             _baseService.MonitoringServiceLog();
-
-            LogService.Info("Rule is executed.");
         }
     }
 }

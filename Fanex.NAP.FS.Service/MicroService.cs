@@ -142,17 +142,13 @@ namespace Fanex.NAP.FS.Service
             LogService.Error($"{_serviceName} is stopped. Please contact with Admin.");
         }
 
-        public void MonitoringServiceLog()
+        public void MonitoringServiceLog(string message = "Rule is executed.", int totalMinutes = 60)
         {
             var nowDate = DateTime.Now;
 
-            if (nowDate.Subtract(_lastUpdate).TotalMinutes >= 60)
+            if (nowDate.Subtract(_lastUpdate).TotalMinutes >= totalMinutes)
             {
-#if DEBUG
-                Console.WriteLine($"{_serviceName} is executed. Please be informed.");
-#else
-                LogService.Info($"{_serviceName} is executed. Please be informed.");
-#endif
+                LogService.Info(message);
                 _lastUpdate = nowDate;
             }
         }
@@ -230,8 +226,6 @@ namespace Fanex.NAP.FS.Service
 
             if (fraudCase != null)
             {
-                //_timer.Interval = fraudCase.FraudCaseInterval * 1000;
-
                 return fraudCase;
             }
 
