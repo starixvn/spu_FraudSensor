@@ -20,7 +20,7 @@
         public ArbitrageConfig(int ticketNo, bool delete2nd) : this(ticketNo)
         {
             delete2Nd = delete2nd;
-        }
+        }        
 
         protected override int SheetIndex => 0;
 
@@ -32,7 +32,8 @@
             {
                 row = CreateRow(row);
                 IRow lastRow = row.Sheet.GetRow(row.RowNum - 1);
-                CopyGroupRow(lastRow).GetCell(0).SetCellValue("Score/HDP: " + data.Score + " " + data.BettypeName + " " + data.Handicap.ToString("0.##"));
+                lastRow.GetCell(0).SetCellValue("Score/HDP: " + data.Score + " " + data.BettypeName + " " + data.Handicap.ToString("0.##"));
+                lastRow.GetCell(0).CellStyle = row.Sheet.GetRow(4).GetCell(0).CellStyle;
                 MergeRange(lastRow.Sheet, lastRow);
             }
             else
@@ -52,36 +53,36 @@
                 if (hasHome)
                 {
                     var fraudByIP = dataHome.Current.IsIPFraud ? "Yes" : "";
-                    row.GetCell(idx++).SetCellValue(dataHome.Current.Username);
-                    row.GetCell(idx++).SetCellValue(string.Join(",", dataHome.Current.Evidences));
-                    row.GetCell(idx++).SetCellValue(dataHome.Current.DangerousLevel);
-                    row.GetCell(idx++).SetCellValue(dataHome.Current.Site);
-                    row.GetCell(idx++).SetCellValue(dataHome.Current.Currency);
-                    row.GetCell(idx++).SetCellValue(fraudByIP);
-                    row.GetCell(idx++).SetCellValue(dataHome.Current.BetId.ToString());
-                    row.GetCell(idx++).SetCellValue((double)dataHome.Current.Odds);
-                    row.GetCell(idx++).SetCellValue(dataHome.Current.Stake.Virtual);
-                    row.GetCell(idx++).SetCellValue(dataHome.Current.Stake.ComPT);
-                    row.GetCell(idx++).SetCellValue(dataHome.Current.Stake.Full);
-                    row.GetCell(idx).SetCellValue(DateTime.Parse(dataHome.Current.TransDate.Replace("<br/>", "")));
+                    row.CreateCell(idx++).SetCellValue(dataHome.Current.Username);
+                    row.CreateCell(idx++).SetCellValue(string.Join(",", dataHome.Current.Evidences));
+                    row.CreateCell(idx++).SetCellValue(dataHome.Current.DangerousLevel);
+                    row.CreateCell(idx++).SetCellValue(dataHome.Current.Site);
+                    row.CreateCell(idx++).SetCellValue(dataHome.Current.Currency);
+                    row.CreateCell(idx++).SetCellValue(fraudByIP);
+                    row.CreateCell(idx++).SetCellValue(dataHome.Current.BetId.ToString());
+                    row.CreateCell(idx++).SetCellValue((double)dataHome.Current.Odds);
+                    row.CreateCell(idx++).SetCellValue(dataHome.Current.Stake.Virtual);
+                    row.CreateCell(idx++).SetCellValue(dataHome.Current.Stake.ComPT);
+                    row.CreateCell(idx++).SetCellValue(dataHome.Current.Stake.Full);
+                    row.CreateCell(idx).SetCellValue(DateTime.Parse(dataHome.Current.TransDate.Replace("<br/>", "")));
                 }
 
                 idx = 13;
                 if (hasAway)
                 {
                     var fraudByIP = dataAway.Current.IsIPFraud ? "Yes" : "";
-                    row.GetCell(idx++).SetCellValue(dataAway.Current.Username);
-                    row.GetCell(idx++).SetCellValue(string.Join(",", dataAway.Current.Evidences));
-                    row.GetCell(idx++).SetCellValue(dataAway.Current.DangerousLevel);
-                    row.GetCell(idx++).SetCellValue(dataAway.Current.Site);
-                    row.GetCell(idx++).SetCellValue(dataAway.Current.Currency);
-                    row.GetCell(idx++).SetCellValue(fraudByIP);
-                    row.GetCell(idx++).SetCellValue(dataAway.Current.BetId.ToString());
-                    row.GetCell(idx++).SetCellValue((double)dataAway.Current.Odds);
-                    row.GetCell(idx++).SetCellValue(dataAway.Current.Stake.Virtual);
-                    row.GetCell(idx++).SetCellValue(dataAway.Current.Stake.ComPT);
-                    row.GetCell(idx++).SetCellValue(dataAway.Current.Stake.Full);
-                    row.GetCell(idx).SetCellValue(DateTime.Parse(dataAway.Current.TransDate.Replace("<br/>", "")));
+                    row.CreateCell(idx++).SetCellValue(dataAway.Current.Username);
+                    row.CreateCell(idx++).SetCellValue(string.Join(",", dataAway.Current.Evidences));
+                    row.CreateCell(idx++).SetCellValue(dataAway.Current.DangerousLevel);
+                    row.CreateCell(idx++).SetCellValue(dataAway.Current.Site);
+                    row.CreateCell(idx++).SetCellValue(dataAway.Current.Currency);
+                    row.CreateCell(idx++).SetCellValue(fraudByIP);
+                    row.CreateCell(idx++).SetCellValue(dataAway.Current.BetId.ToString());
+                    row.CreateCell(idx++).SetCellValue((double)dataAway.Current.Odds);
+                    row.CreateCell(idx++).SetCellValue(dataAway.Current.Stake.Virtual);
+                    row.CreateCell(idx++).SetCellValue(dataAway.Current.Stake.ComPT);
+                    row.CreateCell(idx++).SetCellValue(dataAway.Current.Stake.Full);
+                    row.CreateCell(idx).SetCellValue(DateTime.Parse(dataAway.Current.TransDate.Replace("<br/>", "")));
                 }
 
                 hasHome = dataHome.MoveNext();
@@ -134,19 +135,11 @@
             }
         }
 
-        private IRow CopyGroupRow(IRow row)
-        {
-            ExcelUtilities.CopyRow(row.Sheet.GetRow(4), row);            
-
-            return row;
-        }
-
         private IRow CreateRow(IRow rSource)
         {
             var sheet = rSource.Sheet;
             var rowIndex = ShiftTemplate(sheet);
             var newRow = sheet.CreateRow(rowIndex);
-            ExcelUtilities.CopyRow(rSource, newRow);
 
             return newRow;
         }
