@@ -846,20 +846,20 @@
         groupExpand = "";      
         var transDateFrom = $("#transDateFrom").val();
         var transDateTo = $("#transDateTo").val();
-        var transDateFromParent = $("#transDateFrom").parent();
-        var transDateToParent = $("#transDateTo").parent();
+        var transDateFromInput = $("#transDateFrom");
+        var transDateToInput = $("#transDateTo");
 
         if (transDateFrom !== "" && transDateTo === "") {
-            transDateFromParent.css({ 'border-color': '#666', 'border-style': 'solid', 'border-width': '0px' });
-            transDateToParent.css({'border-color': 'red', 'border-style': 'solid', 'border-width': '1px' });
+            transDateFromInput.css({ 'border': '1px solid #d6d6d6' });
+            transDateToInput.css({'border-color': 'red', 'border-style': 'solid', 'border-width': '1px' });
         }
         else if (transDateFrom === "" && transDateTo !== "") {
-            transDateFromParent.css({ 'border-color': 'red', 'border-style': 'solid', 'border-width': '1px' });
-            transDateToParent.css({ 'border-color': '#666', 'border-style': 'solid', 'border-width': '0px' });
+            transDateFromInput.css({ 'border-color': 'red', 'border-style': 'solid', 'border-width': '1px' });
+            transDateToInput.css({ 'border': '1px solid #d6d6d6' });
         }
         else {
-            transDateFromParent.css({ 'border-color': '#666', 'border-style': 'solid', 'border-width': '0px' });
-            transDateToParent.css({ 'border-color': '#666', 'border-style': 'solid', 'border-width': '0px' });
+            transDateFromInput.css({ 'border': '1px solid #d6d6d6' });
+            transDateToInput.css({ 'border': '1px solid #d6d6d6' });
 
             var bettype = 0;            
             var liveHomeScore = 0;
