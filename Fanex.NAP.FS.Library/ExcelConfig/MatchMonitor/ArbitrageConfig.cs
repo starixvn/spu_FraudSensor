@@ -5,13 +5,13 @@
     using NPOI.SS.UserModel;
     using NPOI.XSSF.UserModel;
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
+    using System.Collections.Generic;    
 
     public class ArbitrageConfig : FSExcelConfig<MatchFraudCaseInfo, ArbitrageGroupTicketList, object>
     {
         private readonly bool delete2Nd;
         private ICellStyle _cellStyleDate;
+        private ICellStyle _cellStyleCurrency;
 
         public ArbitrageConfig(int ticketNo)
         {
@@ -40,6 +40,7 @@
             else
             {
                 _cellStyleDate = row.GetCell(11).CellStyle;
+                _cellStyleCurrency = row.GetCell(8).CellStyle;
                 row.Sheet.GetRow(4).GetCell(0).SetCellValue("Score/HDP: " + data.Score + " " + data.BettypeName + " " + data.Handicap.ToString("0.##"));                
             }
 
@@ -47,8 +48,6 @@
             IEnumerator<ArbitrageTicket> dataAway = data.Away.GetEnumerator();
             bool hasHome = dataHome.MoveNext();
             bool hasAway = dataAway.MoveNext();
-
-            IDataFormat dateFormat = row.Sheet.Workbook.CreateDataFormat();
 
             while (hasHome || hasAway)
             {
@@ -64,10 +63,14 @@
                     row.CreateCell(idx++).SetCellValue(dataHome.Current.Currency);
                     row.CreateCell(idx++).SetCellValue(fraudByIP);
                     row.CreateCell(idx++).SetCellValue(dataHome.Current.BetId.ToString());
-                    row.CreateCell(idx++).SetCellValue(dataHome.Current.Odds.ToString("0.##"));
-                    row.CreateCell(idx++).SetCellValue(dataHome.Current.Stake.Virtual.ToString("0.##"));
-                    row.CreateCell(idx++).SetCellValue(dataHome.Current.Stake.ComPT.ToString("0.##"));
-                    row.CreateCell(idx++).SetCellValue(dataHome.Current.Stake.Full.ToString("0.##"));
+                    row.CreateCell(idx++).SetCellValue((double)dataHome.Current.Odds);
+                    row.GetCell(idx - 1).CellStyle = _cellStyleCurrency;
+                    row.CreateCell(idx++).SetCellValue(dataHome.Current.Stake.Virtual);
+                    row.GetCell(idx - 1).CellStyle = _cellStyleCurrency;
+                    row.CreateCell(idx++).SetCellValue(dataHome.Current.Stake.ComPT);
+                    row.GetCell(idx - 1).CellStyle = _cellStyleCurrency;
+                    row.CreateCell(idx++).SetCellValue(dataHome.Current.Stake.Full);
+                    row.GetCell(idx - 1).CellStyle = _cellStyleCurrency;
                     row.CreateCell(idx).SetCellValue(DateTime.Parse(dataHome.Current.TransDate.Replace("<br/>", "")));
                     row.GetCell(idx).CellStyle = _cellStyleDate;
                 }
@@ -83,10 +86,14 @@
                     row.CreateCell(idx++).SetCellValue(dataAway.Current.Currency);
                     row.CreateCell(idx++).SetCellValue(fraudByIP);
                     row.CreateCell(idx++).SetCellValue(dataAway.Current.BetId.ToString());
-                    row.CreateCell(idx++).SetCellValue(dataAway.Current.Odds.ToString("0.##"));
-                    row.CreateCell(idx++).SetCellValue(dataAway.Current.Stake.Virtual.ToString("0.##"));
-                    row.CreateCell(idx++).SetCellValue(dataAway.Current.Stake.ComPT.ToString("0.##"));
-                    row.CreateCell(idx++).SetCellValue(dataAway.Current.Stake.Full.ToString("0.##"));
+                    row.CreateCell(idx++).SetCellValue((double)dataAway.Current.Odds);
+                    row.GetCell(idx - 1).CellStyle = _cellStyleCurrency;
+                    row.CreateCell(idx++).SetCellValue(dataAway.Current.Stake.Virtual);
+                    row.GetCell(idx - 1).CellStyle = _cellStyleCurrency;
+                    row.CreateCell(idx++).SetCellValue(dataAway.Current.Stake.ComPT);
+                    row.GetCell(idx - 1).CellStyle = _cellStyleCurrency;
+                    row.CreateCell(idx++).SetCellValue(dataAway.Current.Stake.Full);
+                    row.GetCell(idx - 1).CellStyle = _cellStyleCurrency;
                     row.CreateCell(idx).SetCellValue(DateTime.Parse(dataAway.Current.TransDate.Replace("<br/>", "")));
                     row.GetCell(idx).CellStyle = _cellStyleDate;
                 }
