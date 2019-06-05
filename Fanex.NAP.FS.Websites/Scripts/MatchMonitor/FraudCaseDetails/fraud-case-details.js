@@ -326,6 +326,7 @@
                 url: urlSaveCriteria,
                 data: criteria,
                 global: false,
+                crossDomain: true,
                 success: function (data) {
                     common.downloadFile(urlDownload, { id: data.Id });
                 },
@@ -595,6 +596,7 @@
             url: urlSaveCriteria,
             data: criteria,
             global: false,
+            crossDomain: true,
             success: function (data) {
                 common.downloadFile(urlDownload, { id: data.Id });
             },
