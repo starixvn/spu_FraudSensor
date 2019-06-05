@@ -202,43 +202,92 @@
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult ExportExcelArbitrageTickets(GetArbitrageTicketCriteria criteria)
+        [HttpPost]
+        public ActionResult SaveCriteriaArbitrageTickets(GetArbitrageTicketCriteria criteria)
         {
-            var templatePath = Server.MapPath("~/App_Data/Excel Template/MatchMonitor/FraudCaseDetail/arbitrage.xlsx");
-            var fileName = string.Format("FraudCaseDetails_{0}", DateTime.Today.ToString("yyyyMMdd"));
-            string[] filterInfo = GenerateFilterInfo(criteria);
-
             criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
-            var content = _fraudCaseDetailService.ExportExcelArbitrageTickets(criteria, filterInfo, templatePath, true);
 
-            return ExcelFile(content, fileName);
+            string criteriaId = Guid.NewGuid().ToString();
+            TempData[criteriaId] = criteria;
+
+            return new JsonResult { JsonRequestBehavior = JsonRequestBehavior.AllowGet, Data = new { Id = criteriaId } };
         }
 
-        public ActionResult ExportExcelArbitrageTicketByGroup(GetArbitrageTicketCriteria criteria)
+        public ActionResult ExportExcelArbitrageTickets(string id)
         {
-            var templatePath = Server.MapPath("~/App_Data/Excel Template/MatchMonitor/FraudCaseDetail/arbitrage.xlsx");
+            if (TempData[id] != null)
+            {
+                GetArbitrageTicketCriteria criteria = (GetArbitrageTicketCriteria)TempData[id];
 
-            var fileName = string.Format("FraudCaseDetails_{0}", DateTime.Today.ToString("yyyyMMdd"));
+                var templatePath = Server.MapPath("~/App_Data/Excel Template/MatchMonitor/FraudCaseDetail/arbitrage.xlsx");
+                var fileName = string.Format("FraudCaseDetails_{0}", DateTime.Today.ToString("yyyyMMdd"));
+                string[] filterInfo = GenerateFilterInfo(criteria);
 
-            string[] filterInfo = GenerateFilterInfo(criteria);
+                criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
+                var content = _fraudCaseDetailService.ExportExcelArbitrageTickets(criteria, filterInfo, templatePath, true);
 
-            criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
-            var content = _fraudCaseDetailService.ExportExcelArbitrageTickets(criteria, filterInfo, templatePath, false);
+                TempData[id] = null;
 
-            return ExcelFile(content, fileName);
+                return ExcelFile(content, fileName);
+            }
+
+            return new EmptyResult();
         }
 
-        public ActionResult ExportExcelArbitrageCustomers(GetArbitrageCustomerCriteria criteria)
+        public ActionResult ExportExcelArbitrageTicketByGroup(string id)
         {
-            var templatePath = Server.MapPath("~/App_Data/Excel Template/MatchMonitor/FraudCaseDetail/arbitrage.xlsx");
+            if (TempData[id] != null)
+            {
+                GetArbitrageTicketCriteria criteria = (GetArbitrageTicketCriteria)TempData[id];
 
-            var fileName = string.Format("FraudCaseDetails_{0}", DateTime.Today.ToString("yyyyMMdd"));
+                var templatePath = Server.MapPath("~/App_Data/Excel Template/MatchMonitor/FraudCaseDetail/arbitrage.xlsx");
 
+                var fileName = string.Format("FraudCaseDetails_{0}", DateTime.Today.ToString("yyyyMMdd"));
+
+                string[] filterInfo = GenerateFilterInfo(criteria);
+
+                criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
+                var content = _fraudCaseDetailService.ExportExcelArbitrageTickets(criteria, filterInfo, templatePath, false);
+
+                TempData[id] = null;
+
+                return ExcelFile(content, fileName);
+            }
+
+            return new EmptyResult();
+        }
+
+        [HttpPost]
+        public ActionResult SaveCriteriaArbitrageCustomers(GetArbitrageCustomerCriteria criteria)
+        {
             criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
-            string[] filterInfo = GenerateFilterInfo(criteria);
-            var content = _fraudCaseDetailService.ExportExcelArbitrageCustomers(criteria, filterInfo, templatePath);
-          
-            return ExcelFile(content, fileName);
+
+            string criteriaId = Guid.NewGuid().ToString();
+            TempData[criteriaId] = criteria;
+
+            return new JsonResult { JsonRequestBehavior = JsonRequestBehavior.AllowGet, Data = new { Id = criteriaId } };
+        }
+
+        public ActionResult ExportExcelArbitrageCustomers(string id)
+        {
+            if (TempData[id] != null)
+            {
+                GetArbitrageCustomerCriteria criteria = (GetArbitrageCustomerCriteria)TempData[id];
+
+                var templatePath = Server.MapPath("~/App_Data/Excel Template/MatchMonitor/FraudCaseDetail/arbitrage.xlsx");
+
+                var fileName = string.Format("FraudCaseDetails_{0}", DateTime.Today.ToString("yyyyMMdd"));
+
+                criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
+                string[] filterInfo = GenerateFilterInfo(criteria);
+                var content = _fraudCaseDetailService.ExportExcelArbitrageCustomers(criteria, filterInfo, templatePath);
+
+                TempData[id] = null;
+
+                return ExcelFile(content, fileName);
+            }
+
+            return new EmptyResult();
         }            
 
         private string[] GenerateFilterInfo(ArbitrageDetailsCriteria criteria)

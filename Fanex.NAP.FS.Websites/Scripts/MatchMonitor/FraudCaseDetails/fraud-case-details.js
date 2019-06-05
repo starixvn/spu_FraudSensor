@@ -315,10 +315,25 @@
 
             var selectedTab = $("#detailTabs li[aria-selected=true]").attr("aria-controls");
 
-            var url = selectedTab === "customer-tab" ? common.modifyRelativeUrl("/MatchMonitor/ExportExcelArbitrageCustomers")
+            var urlSaveCriteria = selectedTab === "customer-tab" ? common.modifyRelativeUrl("/MatchMonitor/SaveCriteriaArbitrageCustomers")
+                : common.modifyRelativeUrl("/MatchMonitor/SaveCriteriaArbitrageTickets");
+
+            var urlDownload = selectedTab === "customer-tab" ? common.modifyRelativeUrl("/MatchMonitor/ExportExcelArbitrageCustomers")
                 : common.modifyRelativeUrl("/MatchMonitor/ExportExcelArbitrageTickets");
 
-            common.downloadFile(url, criteria);
+            $.ajax({
+                type: 'POST',
+                url: urlSaveCriteria,
+                data: criteria,
+                global: false,
+                success: function (data) {
+                    common.downloadFile(urlDownload, { id: data.Id });
+                },
+                error: function (xhr, status, error) {
+                    console.log('data of ' + xhr.responseText);
+                }
+            });            
+
         } else {
             var url = common.modifyRelativeUrl("/MatchMonitor/ExportExcelForDetail");
 
@@ -537,7 +552,8 @@
 
     function exportGroupTickets(e) {
         groupExportExcel = 1;        
-        var url = common.modifyRelativeUrl("/MatchMonitor/ExportExcelArbitrageTicketByGroup");
+        var urlSaveCriteria = common.modifyRelativeUrl("/MatchMonitor/SaveCriteriaArbitrageTickets");
+        var urlDownload = common.modifyRelativeUrl("/MatchMonitor/ExportExcelArbitrageTicketByGroup");
 
         var obj = e.data;
         var keyName = obj.Score + " " + obj.BettypeName + " " + obj.Handicap;
@@ -573,8 +589,19 @@
             criteria.liveAwayScore = obj.LiveAwayScore;
             criteria.handicap = obj.Handicap;
         }
-            
-        common.downloadFile(url, criteria);
+                    
+        $.ajax({
+            type: 'POST',
+            url: urlSaveCriteria,
+            data: criteria,
+            global: false,
+            success: function (data) {
+                common.downloadFile(urlDownload, { id: data.Id });
+            },
+            error: function (xhr, status, error) {
+                console.log('data of ' + xhr.responseText);
+            }
+        });
     }
 
     if (isArbitrage) {

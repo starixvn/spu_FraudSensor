@@ -116,24 +116,24 @@
             string[] arrFilter = legend.Filter;
 
             new XSSFRichTextString()
-                .WriteBold("Match: ").Write(string.Format("{0} - vs - {1}\n", legend.Home as string, legend.Away as string))
-                .WriteBold("Date: ").Write(legend.EventDate.ToString("MMM dd, yyyy") + "\n")
-                .WriteBold("HT/FT: ").Write(legend.HTScore + " / " + legend.FTScore + "\n")
+                .WriteBold("Match: ").Write(string.Format("{0} - vs - {1} \n", legend.Home as string, legend.Away as string))
+                .WriteBold("Date: ").Write(legend.EventDate.ToString("MMM dd, yyyy") + " \n")
+                .WriteBold("HT/FT: ").Write(legend.HTScore + " / " + legend.FTScore + " \n")
                 .WriteBold("Fraud Case: ").Write(legend.FraudCase + "\n")
                 .SetValue(cell1);
 
             if (arrFilter != null && arrFilter.Length >= 7)
             {
                 new XSSFRichTextString()
-                   .WriteBold("Site: ").Write(arrFilter[6] + "\n")
-                   .WriteBold("Currency: ").Write(arrFilter[1] + "\n")
-                   .WriteBold("Evidence: ").Write(arrFilter[2] + "\n")
+                   .WriteBold("Site: ").Write(arrFilter[6] + " \n")
+                   .WriteBold("Currency: ").Write(arrFilter[1] + " \n")
+                   .WriteBold("Evidence: ").Write(arrFilter[2] + " \n")
                    .SetValue(cell2);
 
                 new XSSFRichTextString()
-                    .WriteBold("Market: ").Write(arrFilter[0] + "\n")
-                    .WriteBold("Trans Date: ").Write(arrFilter[3] + " - " + arrFilter[4] + "\n")
-                    .WriteBold("Score/HDP: ").Write(arrFilter[5] + "\n")
+                    .WriteBold("Market: ").Write(arrFilter[0] + " \n")
+                    .WriteBold("Trans Date: ").Write(arrFilter[3] + " - " + arrFilter[4] + " \n")
+                    .WriteBold("Score/HDP: ").Write(arrFilter[5] + " \n")
                     .SetValue(cell3);
             }
         }
