@@ -496,12 +496,12 @@
 
             var rawData = DataService.GetData<TicketInfo>(criteria);
             
-            var custOfSites = rawData.Select(t => t.CustId).Chunk(500)
+            var custOfSites = rawData.Select(t => t.CustId).Distinct().Chunk(500)
                                     .Select(q => ApiHelper.Post<IEnumerable<CustomerSubcriber>>(urlCustSites, string.Join(",", q)))
                                     .ToArray();
             Task.WaitAll(custOfSites);
 
-            var custOfEvidences = rawData.Select(c => c.CustId).Chunk(500)
+            var custOfEvidences = rawData.Select(c => c.CustId).Distinct().Chunk(500)
                                         .Select(q => ApiHelper.Post<IEnumerable<CustomerEvidence>>(urlCustEvidences, new CustomerEvidenceList { CustIdList = string.Join(",", q) }))
                                         .ToArray();
             Task.WaitAll(custOfEvidences);
