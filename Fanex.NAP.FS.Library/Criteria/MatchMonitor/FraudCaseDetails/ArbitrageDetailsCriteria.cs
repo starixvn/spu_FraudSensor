@@ -4,6 +4,7 @@
     using Fanex.Data.Repository;
     using System;
 
+    [Serializable]
     public class ArbitrageDetailsCriteria : CriteriaBase
     {
         public int MatchId { get; set; }

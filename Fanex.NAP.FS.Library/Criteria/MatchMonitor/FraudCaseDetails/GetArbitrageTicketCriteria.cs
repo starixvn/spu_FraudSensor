@@ -1,7 +1,7 @@
-﻿namespace Fanex.NAP.FS.Library.Criteria.MatchMonitor.FraudCaseDetails
-{
-    using System;
+﻿using System;
 
+namespace Fanex.NAP.FS.Library.Criteria.MatchMonitor.FraudCaseDetails
+{
     [Serializable]
     public class GetArbitrageTicketCriteria : ArbitrageDetailsCriteria
     {      
