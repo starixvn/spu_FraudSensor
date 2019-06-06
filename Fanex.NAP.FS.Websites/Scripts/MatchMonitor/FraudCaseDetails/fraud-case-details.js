@@ -324,7 +324,7 @@
             $.ajax({
                 type: 'POST',
                 url: urlSaveCriteria,
-                data: criteria,           
+                data: $.param(criteria),           
                 success: function (response) {
                     common.downloadFile(urlDownload, { id: response.Id });
                 },
