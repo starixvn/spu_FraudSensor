@@ -186,11 +186,21 @@
             return new JsonResult { Data = new { Content = data }, MaxJsonLength = Int32.MaxValue };
         }
 
-        public ActionResult GetArbitrageTickets(GetArbitrageTicketCriteria criteria)
+        public ActionResult GetArbitrageTickets(string id)
         {
-            criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
-            var data = _fraudCaseDetailService.GetArbitrageTickets(criteria, false);
-            return Json(data, JsonRequestBehavior.AllowGet);
+            if (TempData[id] != null)
+            {
+                GetArbitrageTicketCriteria criteria = (GetArbitrageTicketCriteria)TempData[id];
+
+                criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
+                var data = _fraudCaseDetailService.GetArbitrageTickets(criteria, false);
+
+                TempData[id] = null;
+
+                return Json(data, JsonRequestBehavior.AllowGet);
+            }
+
+            return new EmptyResult();
         }
 
         [HttpPost]
@@ -210,7 +220,7 @@
             string criteriaId = Guid.NewGuid().ToString();
             TempData[criteriaId] = criteria;
 
-            return new JsonResult { JsonRequestBehavior = JsonRequestBehavior.AllowGet, Data = new { Id = criteriaId } };
+            return new JsonResult { JsonRequestBehavior = JsonRequestBehavior.AllowGet, Data = new { Id = criteriaId }, MaxJsonLength = Int32.MaxValue };
         }
 
         public ActionResult ExportExcelArbitrageTickets(string id)
@@ -265,7 +275,7 @@
             string criteriaId = Guid.NewGuid().ToString();
             TempData[criteriaId] = criteria;
 
-            return new JsonResult { JsonRequestBehavior = JsonRequestBehavior.AllowGet, Data = new { Id = criteriaId } };
+            return new JsonResult { JsonRequestBehavior = JsonRequestBehavior.AllowGet, Data = new { Id = criteriaId }, MaxJsonLength = Int32.MaxValue };
         }
 
         public ActionResult ExportExcelArbitrageCustomers(string id)

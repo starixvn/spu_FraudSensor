@@ -324,11 +324,9 @@
             $.ajax({
                 type: 'POST',
                 url: urlSaveCriteria,
-                data: criteria,
-                global: false,
-                crossDomain: true,
-                success: function (data) {
-                    common.downloadFile(urlDownload, { id: data.Id });
+                data: criteria,           
+                success: function (response) {
+                    common.downloadFile(urlDownload, { id: response.Id });
                 },
                 error: function (xhr, status, error) {
                     console.log('data of ' + xhr.responseText);
@@ -595,10 +593,8 @@
             type: 'POST',
             url: urlSaveCriteria,
             data: criteria,
-            global: false,
-            crossDomain: true,
-            success: function (data) {
-                common.downloadFile(urlDownload, { id: data.Id });
+            success: function (response) {
+                common.downloadFile(urlDownload, { id: response.Id });
             },
             error: function (xhr, status, error) {
                 console.log('data of ' + xhr.responseText);
@@ -808,7 +804,8 @@
     function expandGroup(obj) {
         common.showLoading();
 
-        var url = common.modifyRelativeUrl("/MatchMonitor/GetArbitrageTickets");                
+        var urlSaveCriteria = common.modifyRelativeUrl("/MatchMonitor/SaveCriteriaArbitrageTickets");
+        var urlGetData = common.modifyRelativeUrl("/MatchMonitor/GetArbitrageTickets");
         var keyName = obj.Score + " " + obj.BettypeName + " " + obj.Handicap + " " + obj.GroupId;
         groupExpand = keyName;
         
@@ -845,12 +842,14 @@
         }
 
         $.ajax({
-            type: 'GET',
-            url: url,
-            data: criteria,
+            type: 'POST',
+            url: urlSaveCriteria,
+            data: criteria,      
             success: function (response) {
                 if (response != null) {
-                    renderArbitrageTicketDetailByGroup(response);
+                    $.get(urlGetData, { id: response.Id }, function (json) {
+                        renderArbitrageTicketDetailByGroup(json);
+                    });
                 }
             },
             error: function (err) {
