@@ -319,19 +319,23 @@
                 : common.modifyRelativeUrl("/MatchMonitor/SaveCriteriaArbitrageTickets");
 
             var urlDownload = selectedTab === "customer-tab" ? common.modifyRelativeUrl("/MatchMonitor/ExportExcelArbitrageCustomers")
-                : common.modifyRelativeUrl("/MatchMonitor/ExportExcelArbitrageTickets");
+                : common.modifyRelativeUrl("/MatchMonitor/ExportExcelArbitrageTickets");           
 
-            $.ajax({
-                type: 'POST',
-                url: urlSaveCriteria,
-                data: $.param(criteria),           
-                success: function (response) {
-                    common.downloadFile(urlDownload, { id: response.Id });
-                },
-                error: function (xhr, status, error) {
-                    console.log('data of ' + xhr.responseText);
-                }
-            });            
+            //$.ajax({
+            //    type: 'POST',
+            //    url: urlSaveCriteria,
+            //    data: $.param(criteria),           
+            //    success: function (response) {
+            //        common.downloadFile(urlDownload, { id: response.Id });
+            //    },
+            //    error: function (xhr, status, error) {
+            //        console.log('data of ' + xhr.responseText);
+            //    }
+            //});
+
+            $.post(urlSaveCriteria, criteria, function (response) {
+                common.downloadFile(urlDownload, { id: response.Id });
+            });
 
         } else {
             var url = common.modifyRelativeUrl("/MatchMonitor/ExportExcelForDetail");
@@ -589,16 +593,20 @@
             criteria.handicap = obj.Handicap;
         }
                     
-        $.ajax({
-            type: 'POST',
-            url: urlSaveCriteria,
-            data: criteria,
-            success: function (response) {
-                common.downloadFile(urlDownload, { id: response.Id });
-            },
-            error: function (xhr, status, error) {
-                console.log('data of ' + xhr.responseText);
-            }
+        //$.ajax({
+        //    type: 'POST',
+        //    url: urlSaveCriteria,
+        //    data: criteria,
+        //    success: function (response) {
+        //        common.downloadFile(urlDownload, { id: response.Id });
+        //    },
+        //    error: function (xhr, status, error) {
+        //        console.log('data of ' + xhr.responseText);
+        //    }
+        //});
+
+        $.post(urlSaveCriteria, criteria, function (response) {
+            common.downloadFile(urlDownload, { id: response.Id });
         });
     }
 
@@ -839,21 +847,29 @@
             criteria.liveAwayScore = obj.LiveAwayScore;
             criteria.groupId = obj.GroupId;
             criteria.score = obj.Score;
-        }
+        }       
 
-        $.ajax({
-            type: 'POST',
-            url: urlSaveCriteria,
-            data: criteria,      
-            success: function (response) {
-                if (response != null) {
-                    $.get(urlGetData, { id: response.Id }, function (json) {
-                        renderArbitrageTicketDetailByGroup(json);
-                    });
-                }
-            },
-            error: function (err) {
-                loadError(err);
+        //$.ajax({
+        //    type: 'POST',
+        //    url: urlSaveCriteria,
+        //    data: criteria,      
+        //    success: function (response) {
+        //        if (response != null) {
+        //            $.get(urlGetData, { id: response.Id }, function (json) {
+        //                renderArbitrageTicketDetailByGroup(json);
+        //            });
+        //        }
+        //    },
+        //    error: function (err) {
+        //        loadError(err);
+        //    }
+        //});
+
+        $.post(urlSaveCriteria, criteria, function (response) {
+            if (response != null) {
+                $.get(urlGetData, { id: response.Id }, function (json) {
+                    renderArbitrageTicketDetailByGroup(json);
+                });
             }
         });
     };
