@@ -186,21 +186,13 @@
             return new JsonResult { Data = new { Content = data }, MaxJsonLength = Int32.MaxValue };
         }
 
-        public ActionResult GetArbitrageTickets(string id)
+        [HttpPost]
+        public ActionResult GetArbitrageTickets(GetArbitrageTicketCriteria criteria)
         {
-            if (TempData[id] != null)
-            {
-                GetArbitrageTicketCriteria criteria = (GetArbitrageTicketCriteria)TempData[id];
-
-                criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
-                var data = _fraudCaseDetailService.GetArbitrageTickets(criteria, false);
-
-                TempData[id] = null;
-
-                return Json(data, JsonRequestBehavior.AllowGet);
-            }
-
-            return new EmptyResult();
+            criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
+            var data = _fraudCaseDetailService.GetArbitrageTickets(criteria, false);
+           
+            return Json(data, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
@@ -213,93 +205,40 @@
         }
 
         [HttpPost]
-        public ActionResult SaveCriteriaArbitrageTickets(GetArbitrageTicketCriteria criteria)
+        public ActionResult SaveFileArbitrageTickets(GetArbitrageTicketCriteria criteria)
         {
+            var templatePath = Server.MapPath("~/App_Data/Excel Template/MatchMonitor/FraudCaseDetail/arbitrage.xlsx");
+            var fileName = string.Format("FraudCaseDetails_{0}", DateTime.Today.ToString("yyyyMMdd")) + ".xlsx";
+            string[] filterInfo = GenerateFilterInfo(criteria);
+
+            bool isSummary = criteria.GroupId == 0;
             criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
+            var content = _fraudCaseDetailService.ExportExcelArbitrageTickets(criteria, filterInfo, templatePath, isSummary);
 
-            string criteriaId = Guid.NewGuid().ToString();
-            //TempData[criteriaId] = criteria;
+            string fileId = Guid.NewGuid().ToString();
 
-            return new JsonResult { JsonRequestBehavior = JsonRequestBehavior.AllowGet, Data = new { Id = criteriaId }, MaxJsonLength = Int32.MaxValue };
-        }
+            TempData[fileId] = content;
 
-        public ActionResult ExportExcelArbitrageTickets(string id)
-        {
-            if (TempData[id] != null)
-            {
-                GetArbitrageTicketCriteria criteria = (GetArbitrageTicketCriteria)TempData[id];
-
-                var templatePath = Server.MapPath("~/App_Data/Excel Template/MatchMonitor/FraudCaseDetail/arbitrage.xlsx");
-                var fileName = string.Format("FraudCaseDetails_{0}", DateTime.Today.ToString("yyyyMMdd"));
-                string[] filterInfo = GenerateFilterInfo(criteria);
-
-                criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
-                var content = _fraudCaseDetailService.ExportExcelArbitrageTickets(criteria, filterInfo, templatePath, true);
-
-                TempData[id] = null;
-
-                return ExcelFile(content, fileName);
-            }
-
-            return new EmptyResult();
-        }
-
-        public ActionResult ExportExcelArbitrageTicketByGroup(string id)
-        {
-            if (TempData[id] != null)
-            {
-                GetArbitrageTicketCriteria criteria = (GetArbitrageTicketCriteria)TempData[id];
-
-                var templatePath = Server.MapPath("~/App_Data/Excel Template/MatchMonitor/FraudCaseDetail/arbitrage.xlsx");
-
-                var fileName = string.Format("FraudCaseDetails_{0}", DateTime.Today.ToString("yyyyMMdd"));
-
-                string[] filterInfo = GenerateFilterInfo(criteria);
-
-                criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
-                var content = _fraudCaseDetailService.ExportExcelArbitrageTickets(criteria, filterInfo, templatePath, false);
-
-                TempData[id] = null;
-
-                return ExcelFile(content, fileName);
-            }
-
-            return new EmptyResult();
+            return new JsonResult { JsonRequestBehavior = JsonRequestBehavior.AllowGet, Data = new { FileId = fileId, FileName = fileName } };
         }
 
         [HttpPost]
-        public ActionResult SaveCriteriaArbitrageCustomers(GetArbitrageCustomerCriteria criteria)
+        public ActionResult SaveFileArbitrageCustomers(GetArbitrageCustomerCriteria criteria)
         {
+            var templatePath = Server.MapPath("~/App_Data/Excel Template/MatchMonitor/FraudCaseDetail/arbitrage.xlsx");
+
+            var fileName = string.Format("FraudCaseDetails_{0}", DateTime.Today.ToString("yyyyMMdd")) + ".xlsx";
+
             criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
+            string[] filterInfo = GenerateFilterInfo(criteria);
+            var content = _fraudCaseDetailService.ExportExcelArbitrageCustomers(criteria, filterInfo, templatePath);
+            string fileId = Guid.NewGuid().ToString();
 
-            string criteriaId = Guid.NewGuid().ToString();
-            TempData[criteriaId] = criteria;
+            TempData[fileId] = content;
 
-            return new JsonResult { JsonRequestBehavior = JsonRequestBehavior.AllowGet, Data = new { Id = criteriaId }, MaxJsonLength = Int32.MaxValue };
+            return new JsonResult { JsonRequestBehavior = JsonRequestBehavior.AllowGet, Data = new { FileId = fileId, FileName = fileName } };
         }
-
-        public ActionResult ExportExcelArbitrageCustomers(string id)
-        {
-            if (TempData[id] != null)
-            {
-                GetArbitrageCustomerCriteria criteria = (GetArbitrageCustomerCriteria)TempData[id];
-
-                var templatePath = Server.MapPath("~/App_Data/Excel Template/MatchMonitor/FraudCaseDetail/arbitrage.xlsx");
-
-                var fileName = string.Format("FraudCaseDetails_{0}", DateTime.Today.ToString("yyyyMMdd"));
-
-                criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
-                string[] filterInfo = GenerateFilterInfo(criteria);
-                var content = _fraudCaseDetailService.ExportExcelArbitrageCustomers(criteria, filterInfo, templatePath);
-
-                TempData[id] = null;
-
-                return ExcelFile(content, fileName);
-            }
-
-            return new EmptyResult();
-        }            
-
+        
         private string[] GenerateFilterInfo(ArbitrageDetailsCriteria criteria)
         {
             string[] filterInfo = new string[7];

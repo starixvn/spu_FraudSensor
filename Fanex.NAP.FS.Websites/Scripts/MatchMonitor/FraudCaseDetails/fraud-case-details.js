@@ -315,26 +315,21 @@
 
             var selectedTab = $("#detailTabs li[aria-selected=true]").attr("aria-controls");
 
-            var urlSaveCriteria = selectedTab === "customer-tab" ? common.modifyRelativeUrl("/MatchMonitor/SaveCriteriaArbitrageCustomers")
-                : common.modifyRelativeUrl("/MatchMonitor/SaveCriteriaArbitrageTickets");
+            var urlSaveCriteria = selectedTab === "customer-tab" ? common.modifyRelativeUrl("/MatchMonitor/SaveFileArbitrageCustomers")
+                : common.modifyRelativeUrl("/MatchMonitor/SaveFileArbitrageTickets");
 
-            var urlDownload = selectedTab === "customer-tab" ? common.modifyRelativeUrl("/MatchMonitor/ExportExcelArbitrageCustomers")
-                : common.modifyRelativeUrl("/MatchMonitor/ExportExcelArbitrageTickets");           
+            var urlDownload = common.modifyRelativeUrl("/MatchMonitor/DownloadExcel");
 
-            //$.ajax({
-            //    type: 'POST',
-            //    url: urlSaveCriteria,
-            //    data: $.param(criteria),           
-            //    success: function (response) {
-            //        common.downloadFile(urlDownload, { id: response.Id });
-            //    },
-            //    error: function (xhr, status, error) {
-            //        console.log('data of ' + xhr.responseText);
-            //    }
-            //});
-
-            $.post(urlSaveCriteria, criteria, function (response) {
-                common.downloadFile(urlDownload, { id: response.Id });
+            $.ajax({
+                type: 'POST',
+                url: urlSaveCriteria,
+                data: criteria,           
+                success: function (response) {
+                    common.downloadFile(urlDownload, { fileId: response.FileId, fileName: response.FileName }); 
+                },
+                error: function (xhr, status, error) {
+                    console.log('data of ' + xhr.responseText);
+                }
             });
 
         } else {
@@ -555,8 +550,8 @@
 
     function exportGroupTickets(e) {
         groupExportExcel = 1;        
-        var urlSaveCriteria = common.modifyRelativeUrl("/MatchMonitor/SaveCriteriaArbitrageTickets");
-        var urlDownload = common.modifyRelativeUrl("/MatchMonitor/ExportExcelArbitrageTicketByGroup");
+        var urlSaveCriteria = common.modifyRelativeUrl("/MatchMonitor/SaveFileArbitrageTickets");
+        var urlDownload = common.modifyRelativeUrl("/MatchMonitor/DownloadExcel");
 
         var obj = e.data;
         var keyName = obj.Score + " " + obj.BettypeName + " " + obj.Handicap;
@@ -593,21 +588,17 @@
             criteria.handicap = obj.Handicap;
         }
                     
-        //$.ajax({
-        //    type: 'POST',
-        //    url: urlSaveCriteria,
-        //    data: criteria,
-        //    success: function (response) {
-        //        common.downloadFile(urlDownload, { id: response.Id });
-        //    },
-        //    error: function (xhr, status, error) {
-        //        console.log('data of ' + xhr.responseText);
-        //    }
-        //});
-
-        $.post(urlSaveCriteria, criteria, function (response) {
-            common.downloadFile(urlDownload, { id: response.Id });
-        });
+        $.ajax({
+            type: 'POST',
+            url: urlSaveCriteria,
+            data: criteria,
+            success: function (response) {
+                common.downloadFile(urlDownload, { fileId: response.FileId, fileName: response.FileName });
+            },
+            error: function (xhr, status, error) {
+                console.log('data of ' + xhr.responseText);
+            }
+        });       
     }
 
     if (isArbitrage) {
@@ -812,8 +803,8 @@
     function expandGroup(obj) {
         common.showLoading();
 
-        var urlSaveCriteria = common.modifyRelativeUrl("/MatchMonitor/SaveCriteriaArbitrageTickets");
-        var urlGetData = common.modifyRelativeUrl("/MatchMonitor/GetArbitrageTickets");
+        var url = common.modifyRelativeUrl("/MatchMonitor/GetArbitrageTickets");
+        
         var keyName = obj.Score + " " + obj.BettypeName + " " + obj.Handicap + " " + obj.GroupId;
         groupExpand = keyName;
         
@@ -847,29 +838,11 @@
             criteria.liveAwayScore = obj.LiveAwayScore;
             criteria.groupId = obj.GroupId;
             criteria.score = obj.Score;
-        }       
+        }
 
-        //$.ajax({
-        //    type: 'POST',
-        //    url: urlSaveCriteria,
-        //    data: criteria,      
-        //    success: function (response) {
-        //        if (response != null) {
-        //            $.get(urlGetData, { id: response.Id }, function (json) {
-        //                renderArbitrageTicketDetailByGroup(json);
-        //            });
-        //        }
-        //    },
-        //    error: function (err) {
-        //        loadError(err);
-        //    }
-        //});
-
-        $.post(urlSaveCriteria, criteria, function (response) {
-            if (response != null) {
-                $.get(urlGetData, { id: response.Id }, function (json) {
-                    renderArbitrageTicketDetailByGroup(json);
-                });
+        $.post(url, criteria, function (json) {
+            if (json != null) {
+                renderArbitrageTicketDetailByGroup(json);
             }
         });
     };
