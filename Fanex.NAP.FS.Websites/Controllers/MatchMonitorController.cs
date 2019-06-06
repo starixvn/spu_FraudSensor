@@ -218,7 +218,7 @@
             criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
 
             string criteriaId = Guid.NewGuid().ToString();
-            TempData[criteriaId] = criteria;
+            //TempData[criteriaId] = criteria;
 
             return new JsonResult { JsonRequestBehavior = JsonRequestBehavior.AllowGet, Data = new { Id = criteriaId }, MaxJsonLength = Int32.MaxValue };
         }
