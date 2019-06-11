@@ -1001,7 +1001,7 @@
     }
 
     function init() {
-        if (isArbitrage) {
+        if (isArbitrage || isFlaggedAccount) {
             getScoreHDP();
             initMultipleSelect();
         }

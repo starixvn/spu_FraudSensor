@@ -79,7 +79,8 @@
     </tr>
 </table>
 
-@if ((FraudCaseId)Model.FraudCaseId == FraudCaseId.Arbitrage)
+@if ((FraudCaseId)Model.FraudCaseId == FraudCaseId.Arbitrage
+    || (FraudCaseId)Model.FraudCaseId == FraudCaseId.FlaggedAccount)
 {
     <div class="form-filter">
         <div class="group width-220" style="width: 240px">
@@ -138,12 +139,25 @@
                 <input type="text" id="transDateTo" class="form-control date-time-picker" />
             </div>
         </div>
-        <div class="group" style="width:235px;">
-            <label class="text">Score/HDP</label>
-            <div class="edit-field col_9" style="width: 225px;">
-                <select class="control" id="scoreHDP"></select>
+
+        @if((FraudCaseId)Model.FraudCaseId == FraudCaseId.Arbitrage)
+        {
+            <div class="group" style="width:235px;">
+                <label class="text">Score/HDP</label>
+                <div class="edit-field col_9" style="width: 225px;">
+                    <select class="control" id="scoreHDP"></select>
+                </div>
             </div>
-        </div>
+        } else
+        {
+            <div class="group" style="width:235px;">
+                <label class="text">Bet Type</label>
+                <div class="edit-field col_9" style="width: 225px;">
+                    <select class="control" id="scoreHDP"></select>
+                </div>
+            </div>
+        }
+
         <button class="button -primary" id="generate">Generate</button>
 
     </div>
@@ -175,6 +189,7 @@
         var bu_date = "@ViewBag.BUDate.ToString("MMM dd, yyyy")";
 
         var isArbitrage = @(Convert.ToInt32((FraudCaseId)Model.FraudCaseId == FraudCaseId.Arbitrage));
+        var isFlaggedAccount = @(Convert.ToInt32((FraudCaseId)Model.FraudCaseId == FraudCaseId.FlaggedAccount));
 
         //datetime picker
         $(".date-time-picker").datetimepicker({

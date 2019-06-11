@@ -140,7 +140,8 @@
 
             ViewBag.BUDate = _matchMonitorService.GetBalanceUpDate().BalanceUpDay;
 
-            if (fraudCaseId == (int)Library.Models.FraudCaseId.Arbitrage)
+            if (fraudCaseId == (int)Library.Models.FraudCaseId.Arbitrage
+                || fraudCaseId == (int)Library.Models.FraudCaseId.FlaggedAccount)
             {
                 ViewBag.SiteList = _fraudCaseDetailService.GetSites();
                 ViewBag.CurrencyList = _fraudCaseDetailService.GetAllCurrency(IsShowSpecialCurrencies);
