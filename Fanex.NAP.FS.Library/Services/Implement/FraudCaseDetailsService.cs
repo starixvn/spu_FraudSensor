@@ -365,16 +365,31 @@
         public IEnumerable<CustomerDetails> GetArbitrageCustomerDetails(GetArbitrageCustomerCriteria criteria)
         {
             var otherEvidenceCode = AppSettings.Get("FPS_GET_OTHER_EVIDENCES");
+            var urlCustSites = AppSettings.Get("FPS_WEBAPI_CUSTOMER_SUBSCRIBER");
 
             using (var db = new ObjectDb(criteria.GetSettingKey()))
             using (var query = db.QueryMultiple(criteria))
             {
                 var custInfo = query.Read<CustInfo>();
-                var custEvidence = GetEvidences(custInfo.Select(info => info.CustId));
+
+                var custOfSites = custInfo.Select(t => t.CustId).Chunk(500)
+                                   .Select(q => ApiHelper.Post<IEnumerable<CustomerSubcriber>>(urlCustSites, string.Join(",", q)))
+                                   .ToArray();
+                Task.WaitAll(custOfSites);
+                
+                // filter by criteria Sites
+                var lstCustOfSites = FilterCustomerBySites(custOfSites.SelectMany(t => t.Result), criteria.Sites);
+
+                if (lstCustOfSites.Count() == 0)
+                {
+                    return new List<CustomerDetails>();
+                }
+                
+                var custEvidence = GetEvidences(lstCustOfSites.Select(c => c.CustId));
 
                 if (criteria.EvidenceCodeList != null && criteria.EvidenceCodeList.Contains(otherEvidenceCode))
                 {
-                    return HandleArbitrageCustomerOtherEvidence(custInfo, custEvidence, criteria.EvidenceCodeList);
+                    return HandleArbitrageCustomerOtherEvidence(custInfo, lstCustOfSites, custEvidence, criteria.EvidenceCodeList);
                 }
 
                 if (!string.IsNullOrEmpty(criteria.EvidenceCodeList))
@@ -382,12 +397,17 @@
                     custEvidence = custEvidence.Where(c => criteria.EvidenceCodeList.Contains(c.EvidenceCode));
                 }
 
-                return HandleArbitrageCustomerEvidence(custInfo, custEvidence, string.IsNullOrEmpty(criteria.EvidenceCodeList));
+                return HandleArbitrageCustomerEvidence(custInfo, lstCustOfSites, custEvidence, string.IsNullOrEmpty(criteria.EvidenceCodeList));
             }
         }
 
-        private IEnumerable<CustomerDetails> HandleArbitrageCustomerOtherEvidence(IEnumerable<CustInfo> custInfo, IEnumerable<CustomerEvidence> custEvidence, string lstEvidenceSelected)
+        private IEnumerable<CustomerDetails> HandleArbitrageCustomerOtherEvidence(IEnumerable<CustInfo> custInfo, IEnumerable<CustomerSubcriber> custSubcribers, IEnumerable<CustomerEvidence> custEvidence, string lstEvidenceSelected)
         {
+            // fiter by Sites
+            var custIds = custSubcribers.Select(c => c.CustId);
+            Func<long, bool> conditionSubcriber = s => custIds.Contains((int)s);
+
+            // filter by Evidences
             var distinctedCustEvidence = custEvidence.Distinct();
             var evidenceExtract = distinctedCustEvidence.Where(c => !lstEvidenceSelected.Contains(c.EvidenceCode));
             var lstEvidenceExtract = evidenceExtract.Select(c => (long)c.CustId).ToList();
@@ -395,7 +415,7 @@
             Func<long, bool> conditionExtract = f => !lstEvidenceExtract.Contains(f);
 
             IEnumerable<CustomerDetails> custDetails = custInfo
-                   .Where(c => conditionExtract(c.CustId))
+                   .Where(c => conditionExtract(c.CustId) && conditionSubcriber(c.CustId))
                    .GroupJoin(
                    distinctedCustEvidence,
                    info => info.CustId,
@@ -415,8 +435,13 @@
             return custDetails;
         }
 
-        private IEnumerable<CustomerDetails> HandleArbitrageCustomerEvidence(IEnumerable<CustInfo> custInfo, IEnumerable<CustomerEvidence> custEvidence, bool isAllEvidence)
+        private IEnumerable<CustomerDetails> HandleArbitrageCustomerEvidence(IEnumerable<CustInfo> custInfo, IEnumerable<CustomerSubcriber> custSubcribers, IEnumerable<CustomerEvidence> custEvidence, bool isAllEvidence)
         {
+            // fiter by Sites
+            var custIds = custSubcribers.Select(c => c.CustId);
+            Func<long, bool> conditionSubcriber = s => custIds.Contains((int)s);
+
+            // filter by Evidences
             var distinctedCustEvidence = custEvidence.Distinct();
             Func<long, bool> conditionExtract = f => 1.Equals(1);
 
@@ -429,7 +454,7 @@
             var totalAssociation = GetTotalAssociations(custInfo.Select(i => i.CustId)).ToDictionary(o => o.CustId, o => o.TotalAssociation);
 
             IEnumerable<CustomerDetails> custDetails = custInfo
-                   .Where(c => conditionExtract(c.CustId))
+                   .Where(c => conditionExtract(c.CustId) && conditionSubcriber(c.CustId))
                    .GroupJoin(
                    distinctedCustEvidence,
                    info => info.CustId,
@@ -462,28 +487,43 @@
 
             return tsk.Where(t => t.Result != null).SelectMany(t => t.Result);
         }
-
-        public IEnumerable<ArbitrageGroupTicketList> GetArbitrageTickets(GetArbitrageTicketCriteria criteria)
+   
+        public IEnumerable<ArbitrageGroupTicketList> GetArbitrageTickets(GetArbitrageTicketCriteria criteria, bool isSummary)
         {
-            IEnumerable<ArbitrageGroupTicketList> ticketDetails;                       
+            IEnumerable<ArbitrageGroupTicketList> ticketDetails;
+            var urlCustSites = AppSettings.Get("FPS_WEBAPI_CUSTOMER_SUBSCRIBER");
+            var urlCustEvidences = AppSettings.Get("FPS_WEBAPI_GET_CUSTOMER_EVIDENCE");
 
             var rawData = DataService.GetData<TicketInfo>(criteria);
-            var url = AppSettings.Get("FPS_WEBAPI_GET_CUSTOMER_EVIDENCE");
-            var tsks = rawData.Select(t => t.CustId).Distinct()
-                .Chunk(500)
-                .Select(q => ApiHelper.Post<IEnumerable<CustomerEvidence>>(url, new CustomerEvidenceList { CustIdList = string.Join(",", q), EvidenceCodeList = null }))
-                .ToArray();
+            
+            var custOfSites = rawData.Select(t => t.CustId).Distinct().Chunk(500)
+                                    .Select(q => ApiHelper.Post<IEnumerable<CustomerSubcriber>>(urlCustSites, string.Join(",", q)))
+                                    .ToArray();
+            Task.WaitAll(custOfSites);
 
-            Task.WaitAll(tsks);
+            var custOfEvidences = rawData.Select(c => c.CustId).Distinct().Chunk(500)
+                                        .Select(q => ApiHelper.Post<IEnumerable<CustomerEvidence>>(urlCustEvidences, new CustomerEvidenceList { CustIdList = string.Join(",", q) }))
+                                        .ToArray();
+            Task.WaitAll(custOfEvidences);
 
-            var listEvi = tsks.SelectMany(t => t.Result);
+            // filter by criteria Sites
+            var lstCustOfSites = FilterCustomerBySites(custOfSites.SelectMany(t => t.Result), criteria.Sites);
+            if (lstCustOfSites.Count() == 0)
+            {
+                return new List<ArbitrageGroupTicketList>();
+            }
+
+            var listEvi = custOfEvidences.SelectMany(t => t.Result);
+
             var otherEvidenceCode = AppSettings.Get("FPS_GET_OTHER_EVIDENCES");
-
             if (criteria.EvidenceCodeList != null && criteria.EvidenceCodeList.Contains(otherEvidenceCode))
             {
-                ticketDetails = HandleArbitrageTicketsOtherEvidence(rawData, listEvi, criteria.EvidenceCodeList);
-                criteria.TotalTicket = ticketDetails.Sum(c => c.Home.Count() + c.Away.Count());
+                ticketDetails = HandleArbitrageTicketsOtherEvidence(rawData, lstCustOfSites, listEvi, criteria.EvidenceCodeList);
 
+                if (!isSummary)
+                {
+                     ticketDetails = ticketDetails.Where(g => g.GroupId == criteria.GroupId && g.Score == criteria.Score && g.Handicap == (decimal)criteria.Handicap);
+                }
                 return ticketDetails;
             }
 
@@ -492,49 +532,34 @@
                 listEvi = listEvi.Where(c => criteria.EvidenceCodeList.Contains(c.EvidenceCode));
             }
 
-            ticketDetails = HandleArbitrageTickets(rawData, listEvi, string.IsNullOrEmpty(criteria.EvidenceCodeList));
-            criteria.TotalTicket = ticketDetails.Sum(c => c.Home.Count() + c.Away.Count());
-
+            ticketDetails = HandleArbitrageTickets(rawData, lstCustOfSites, listEvi, string.IsNullOrEmpty(criteria.EvidenceCodeList));
+            if (!isSummary)
+            {
+                ticketDetails = ticketDetails.Where(g => g.GroupId == criteria.GroupId && g.Score == criteria.Score && g.Handicap == (decimal)criteria.Handicap);
+            }
             return ticketDetails;
         }
 
-        public IEnumerable<ArbitrageGroupTicketList> GetListArbitrageTickets(GetArbitrageTicketCriteria criteria)
+        private IEnumerable<CustomerSubcriber> FilterCustomerBySites(IEnumerable<CustomerSubcriber> lstCustOfSites, string sites)
         {
-            IEnumerable<ArbitrageGroupTicketList> ticketDetails;          
-
-            var rawData = DataService.GetData<TicketInfo>(criteria);
-            var url = AppSettings.Get("FPS_WEBAPI_GET_CUSTOMER_EVIDENCE");
-            var tsks = rawData.Select(t => t.CustId).Distinct()
-                .Chunk(500)
-                .Select(q => ApiHelper.Post<IEnumerable<CustomerEvidence>>(url, new CustomerEvidenceList { CustIdList = string.Join(",", q), EvidenceCodeList = null }))
-                .ToArray();
-
-            Task.WaitAll(tsks);
-
-            var listEvi = tsks.SelectMany(t => t.Result);
-            var otherEvidenceCode = AppSettings.Get("FPS_GET_OTHER_EVIDENCES");
-
-            if (criteria.EvidenceCodeList != null && criteria.EvidenceCodeList.Contains(otherEvidenceCode))
+            if (sites == null || sites == "All")
             {
-                ticketDetails = HandleArbitrageTicketsOtherEvidence(rawData, listEvi, criteria.EvidenceCodeList).Where(g=>g.GroupId == criteria.GroupId);
-                criteria.TotalTicket = ticketDetails.Sum(c => c.Home.Count() + c.Away.Count());
-
-                return ticketDetails;
+                return lstCustOfSites;
             }
 
-            if (!string.IsNullOrEmpty(criteria.EvidenceCodeList))
-            {
-                listEvi = listEvi.Where(c => criteria.EvidenceCodeList.Contains(c.EvidenceCode));
-            }
+            IEnumerable<string> lstSites = sites.Split(',').AsEnumerable();
 
-            ticketDetails = HandleArbitrageTickets(rawData, listEvi, string.IsNullOrEmpty(criteria.EvidenceCodeList)).Where(g => g.GroupId == criteria.GroupId);
-            criteria.TotalTicket = ticketDetails.Sum(c => c.Home.Count() + c.Away.Count());
-
-            return ticketDetails;
+            return lstCustOfSites.Where(c => lstSites.Contains(c.SubscriberName));
         }
 
-        private IEnumerable<ArbitrageGroupTicketList> HandleArbitrageTicketsOtherEvidence(IEnumerable<TicketInfo> rawData, IEnumerable<CustomerEvidence> evidences, string lstEvidenceSelected)
+        private IEnumerable<ArbitrageGroupTicketList> HandleArbitrageTicketsOtherEvidence(IEnumerable<TicketInfo> rawData, IEnumerable<CustomerSubcriber> custSubcribers, IEnumerable<CustomerEvidence> evidences, string lstEvidenceSelected)
         {
+            // fiter by Sites
+            var custIds = custSubcribers.Select(c => c.CustId);
+            var subcriberDict = custSubcribers.ToLookup(c => c.CustId, c => c.SubscriberName);
+            Func<long, bool> conditionSubcriber = s => custIds.Contains((int)s);
+
+            // filter by Evidences
             var evidenceDict = evidences.ToLookup(c => c.CustId, c => c.EvidenceCode + "-" + c.EvidenceName);
             var evidenceExtract = evidences.Where(c => !lstEvidenceSelected.Contains(c.EvidenceCode));
             var lstEvidenceExtract = evidenceExtract.Select(c => (long)c.CustId).ToList();
@@ -545,12 +570,13 @@
 
             var data = rawData
                 .AsParallel()
-                .Where(c => conditionExtract(c.CustId))
+                .Where(c => conditionExtract(c.CustId) && conditionSubcriber(c.CustId))
                 .GroupBy(t => Tuple.Create(t.BetTypeId, t.Handicap1 - t.Handicap2, t.LiveHomeScore, t.LiveAwayScore, t.GroupId), t => new ArbitrageTicket
                 {
                     BetId = t.TransId,
                     Currency = t.CurrencyName,
                     DangerousLevel = t.DangerLevel,
+                    Site = subcriberDict[(int)t.CustId].FirstOrDefault(),
                     Evidences = evidenceDict[(int)t.CustId],
                     Odds = t.Odds,
                     RawTransDate = t.TransDate,
@@ -590,11 +616,16 @@
             return data;
         }
 
-        private IEnumerable<ArbitrageGroupTicketList> HandleArbitrageTickets(IEnumerable<TicketInfo> rawData, IEnumerable<CustomerEvidence> evidences, bool isAllEvidence)
+        private IEnumerable<ArbitrageGroupTicketList> HandleArbitrageTickets(IEnumerable<TicketInfo> rawData, IEnumerable<CustomerSubcriber> custSubcribers, IEnumerable<CustomerEvidence> evidences, bool isAllEvidence)
         {
+            // fiter by Sites
+            var custIds = custSubcribers.Select(c => c.CustId);
+            var subcriberDict = custSubcribers.ToLookup(c => c.CustId, c => c.SubscriberName);
+            Func<long, bool> conditionSubcriber = s => custIds.Contains((int)s);
+
+            // filter by Evidences
             var evidenceDict = evidences.ToLookup(c => c.CustId, c => c.EvidenceCode + "-" + c.EvidenceName);
             var listEvidenceByCus = evidences.Select(c => (long)c.CustId).ToList();
-
             Func<long, bool> conditionExtract = f => 1.Equals(1);
 
             if (!isAllEvidence)
@@ -604,12 +635,13 @@
 
             var data = rawData
                 .AsParallel()
-                .Where(c => conditionExtract(c.CustId))
+                .Where(c => conditionExtract(c.CustId) && conditionSubcriber(c.CustId))
                 .GroupBy(t => Tuple.Create(t.BetTypeId, t.Handicap1 - t.Handicap2, t.LiveHomeScore, t.LiveAwayScore, t.GroupId), t => new ArbitrageTicket
                 {
                     BetId = t.TransId,
                     Currency = t.CurrencyName,
                     DangerousLevel = t.DangerLevel,
+                    Site = subcriberDict[(int)t.CustId].FirstOrDefault(),
                     Evidences = evidenceDict[(int)t.CustId],
                     Odds = t.Odds,
                     RawTransDate = t.TransDate,
@@ -622,7 +654,7 @@
                         Full = t.FullStake
                     },                   
                     BettypeName = CachedRef.GetBettypeName(t.BetTypeId),
-                    Handicap = (double)(t.Handicap1 - t.Handicap2),                  
+                    Handicap = (double)(t.Handicap1 - t.Handicap2),
                     Score = $"{t.LiveHomeScore} - {t.LiveAwayScore}",
                     IsIPFraud = t.IsIPFraud
                 })
@@ -690,6 +722,20 @@
             return lstEvidences;
         }
 
+        public string ReplaceEvidences(string evidences)
+        {
+            if (!string.IsNullOrEmpty(evidences))
+            {
+                int totalAll = GetListEvidences().Count();
+                string[] lstCode = evidences.Split('/');
+                if (lstCode.Count() == totalAll)
+                {
+                    return "All";
+                }
+            }
+            return evidences;
+        }
+
         /// <summary>
         /// Get all customer currency
         /// </summary>
@@ -712,100 +758,54 @@
 
             return DataService.GetData<ScoreHDP>(criteria);
         }          
-
-        public string ExportArbitrageTicketByGroupCsv(GetArbitrageTicketCriteria criteria, int groupId, string score, string[] array)
+     
+        public IEnumerable<Site> GetSites()
         {
-            var txtResult = new StringBuilder();
-            var info = GetInfo(criteria.MatchId, (int)FraudCaseId.Arbitrage, criteria.EventDate);
-            var lstArbitrageTicket = GetArbitrageTickets(criteria).Where(c => c.GroupId == groupId && c.Score == score && c.Handicap == (decimal)criteria.Handicap).SelectMany(obj => obj.Home.Concat(obj.Away));
+            var url = AppSettings.Get("FPS_WEBAPI_CUSTOMER_SUBSCRIBER");
+            var responseSites = ApiHelper.Get<IEnumerable<string>>(url);
+            Task.WaitAll(responseSites);
 
-            if (lstArbitrageTicket != null)
+            var sites = responseSites.Result.OrderBy(c => c);
+
+            List<Site> lstSites = new List<Site>();
+            foreach (string item in sites)
             {
-                List<string> lstBetType = lstArbitrageTicket.Select(c => c.BettypeName).ToList();
-                if (lstBetType.Count > 0)
-                {
-                    array[5] = score + " " + lstBetType[0] + " " + criteria.Handicap;
-                }
-            }
-            
-            txtResult.AppendLine($"\"Match: {info.Home} - vs - {info.Away}\", \"Date: {info.EventDate.ToString("MMM dd, yyyy").Replace(",", " -")}\", \"Fraud Case: { info.FraudCase }\" , \"HT/FT: {info.HTScore}/{info.FTScore}\"");
-            
-            if (array != null && array.Length >= 6)
-            {
-                txtResult.AppendLine($"\"Market: {array[0]}\", \"Currency: {array[1]}\", \"Evidence: {array[2]}\"");
-                txtResult.AppendLine($"\"Trans Date From: {array[3]}\", \"Trans Date To: {array[4]}\", \"Score/HDP: {array[5]}\"");
+                lstSites.Add(new Site { SiteId = item, SiteName = item });
             }
 
-            txtResult.AppendLine("\"Member\",\"Evidence\",\"Dangerous Level\",\"Currency\",\"By IP\",\"Bet ID\",\"Betteam\",\"Bettype\",\"HDP\",\"Score\",\"Odds\",\"Virtual Stake\",\"Com.PT Stake\",\"Full Stake\",\"TransDate\"");
+            List<string> siteRemoves = new List<string> { "Alpha", "Alpha789y", "ALPHA88", "AlphaCN88" };
+            lstSites.RemoveAll(c => siteRemoves.Contains(c.SiteName));
 
-            foreach (var item in lstArbitrageTicket)
-            {
-                var fraudByIP = item.IsIPFraud ? "Yes" : "";
-                txtResult.AppendLine($"\"{item.Username}\",\"{item.Evidences.Join(" /")}\",\"{item.DangerousLevel}\"," +
-                       $"\"{item.Currency}\",\"{fraudByIP}\",\"{item.BetId}\",\"{item.BetTeam}\",\"{item.BettypeName}\",\"{item.Handicap}\",\"{item.Score}\"," +
-                       $"\"{item.Odds}\",\"{item.Stake.Virtual}\",\"{item.Stake.ComPT}\"," +
-                       $"\"{item.Stake.Full}\",\"{item.TransDate.Replace(",", " -").Replace("<br/>", " ")}\"");
-            }
+            return lstSites;
+        }
+    
+        public byte[] ExportExcelArbitrageTickets(GetArbitrageTicketCriteria criteria, string[] array, string templatePath, bool isSummary)
+        {
+            var legend = GetInfo(criteria.MatchId, (int)FraudCaseId.Arbitrage, criteria.EventDate);
+            legend.Filter = array;
 
-            return txtResult.ToString();
+            var groupsTicket = GetArbitrageTickets(criteria, isSummary);
+
+            int totalTicket = groupsTicket.Sum(g => g.Home.Count() + g.Away.Count());
+
+            var wb = ExcelUtilities.GetWorkbook(templatePath)
+                                    .RenderSheet(new ArbitrageConfig(totalTicket, true), legend, groupsTicket, null);
+
+            return wb.ToBytes();
         }
 
-        public string ExportArbitrageTicketAllCsv(GetArbitrageTicketCriteria ticketCriteria, string[] array)
+        public byte[] ExportExcelArbitrageCustomers(GetArbitrageCustomerCriteria criteria, string[] array, string templatePath)
         {
-            var txtResult = new StringBuilder();
-            var lstArbitrageTicket = GetArbitrageTickets(ticketCriteria).SelectMany(obj => obj.Home.Concat(obj.Away));
-            var info = GetInfo(ticketCriteria.MatchId, (int)FraudCaseId.Arbitrage, ticketCriteria.EventDate);
-       
-            txtResult.AppendLine($"\"Match: {info.Home} - vs - {info.Away}\", \"Date: {info.EventDate.ToString("MMM dd, yyyy").Replace(",", " -")}\", \"Fraud Case: { info.FraudCase } \" , \"HT/FT: {info.HTScore}/{info.FTScore}\"");
-            
-            if (array != null && array.Length >= 6)
-            {              
-                txtResult.AppendLine($"\"Market: {array[0]}\", \"Currency: {array[1]}\", \"Evidence: {array[2]}\"");
-                txtResult.AppendLine($"\"Trans Date From: {array[3]}\", \"Trans Date To: {array[4]}\", \"Score/HDP: {array[5]}\"");
-            }
-            
-            txtResult.AppendLine("\"Member\",\"Evidence\",\"Dangerous Level\",\"Currency\",\"By IP\",\"Bet ID\",\"Betteam\",\"Bettype\",\"HDP\",\"Score\",\"Odds\",\"Virtual Stake\",\"Com.PT Stake\",\"Full Stake\",\"TransDate\"");
+            var legend = GetInfo(criteria.MatchId, (int)FraudCaseId.Arbitrage, criteria.EventDate);
+            legend.Filter = array;
 
-            foreach (var item in lstArbitrageTicket)
-            {
-                var fraudByIP = item.IsIPFraud ? "Yes" : "";
-                txtResult.AppendLine($"\"{item.Username}\",\"{item.Evidences.Join(" /")}\",\"{item.DangerousLevel}\"," +
-                       $"\"{item.Currency}\",\"{fraudByIP}\",\"{item.BetId}\",\"{item.BetTeam}\",\"{item.BettypeName}\",\"{item.Handicap}\",\"{item.Score}\"," +
-                       $"\"{item.Odds}\",\"{item.Stake.Virtual}\",\"{item.Stake.ComPT}\"," +
-                       $"\"{item.Stake.Full}\",\"{item.TransDate.Replace(",", " -").Replace("<br/>", " ")}\"");
-            }
+            var customers = GetArbitrageCustomerDetails(criteria);
 
-            return txtResult.ToString();
+            var wb = ExcelUtilities.GetWorkbook(templatePath)
+                                    .RenderSheet(new CustomerDetailConfig(customers.Count(), true), legend, customers, null);
+
+            return wb.ToBytes();
         }
-
-        public string ExportArbitrageCustomersCsv(GetArbitrageCustomerCriteria criteria, string[] array)
-        {
-            var txtResult = new StringBuilder();
-            var arbitrageCustomers = GetArbitrageCustomerDetails(criteria);
-            var info = GetInfo(criteria.MatchId, (int)FraudCaseId.Arbitrage, criteria.EventDate);
-
-            txtResult.AppendLine($"\"Match: {info.Home} - vs - {info.Away}\", \"Date: {info.EventDate.ToString("MMM dd, yyyy").Replace(",", " -")}\", \"Fraud Case: { info.FraudCase } \" , \"HT/FT: {info.HTScore}/{info.FTScore}\"");
-
-            if (array != null && array.Length >= 6)
-            {
-                txtResult.AppendLine($"\"Market: {array[0]}\", \"Currency: {array[1]}\", \"Evidence: {array[2]}\"");
-                txtResult.AppendLine($"\"Trans Date From: {array[3]}\", \"Trans Date To: {array[4]}\", \"Score/HDP: {array[5]}\"");
-            }
-
-            txtResult.AppendLine("\"#\",\"Member\",\"Currency\",\"#Tickets\",\"Total Stake\",\"Total Win Loss\",\"Evidence\", \"Associated Accounts\"");
-
-            int rowIndex = 1;
-
-            foreach (var item in arbitrageCustomers)
-            {
-                txtResult.AppendLine($"\"{rowIndex}\",\"{item.Member}\",\"{item.CurrencyName}\",\"{item.Tickets}\",\"{item.TotalStake}\",\"{item.TotalWinLoss}\",\"{item.Evidence}\",\"{item.AssociatedAccounts}\"");
-                rowIndex ++;
-            }
-
-            return txtResult.ToString();
-        }
-
         #endregion Arbitrage
-
     }
 }

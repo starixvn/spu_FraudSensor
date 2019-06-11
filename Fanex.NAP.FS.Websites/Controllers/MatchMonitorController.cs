@@ -139,8 +139,14 @@
             var model = _fraudCaseDetailService.GetInfo(matchId, fraudCaseId, eventDate);
 
             ViewBag.BUDate = _matchMonitorService.GetBalanceUpDate().BalanceUpDay;
-            ViewBag.EvidenceList = _fraudCaseDetailService.GetListEvidences();
 
+            if (fraudCaseId == (int)Library.Models.FraudCaseId.Arbitrage)
+            {
+                ViewBag.SiteList = _fraudCaseDetailService.GetSites();
+                ViewBag.CurrencyList = _fraudCaseDetailService.GetAllCurrency(IsShowSpecialCurrencies);
+                ViewBag.EvidenceList = _fraudCaseDetailService.GetListEvidences();                
+            }
+                      
             return View("FraudCaseDetails/Index", model);
         }
 
@@ -161,33 +167,32 @@
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
-        #endregion Other Fraud Cases
-
-        #region Arbitrage
-        public ActionResult GetListArbitrageTickets(GetArbitrageTicketCriteria criteria)
+        public ActionResult ExportExcelForDetail(int fraudCaseId, int matchId, DateTime eventDate)
         {
-            criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
-            var data = _fraudCaseDetailService.GetListArbitrageTickets(criteria);
-            return Json(data, JsonRequestBehavior.AllowGet);
+            var template = Server.MapPath("~/App_Data/Excel Template/MatchMonitor/FraudCaseDetail/template.xlsx");
+
+            var fileName = string.Format("FraudCaseDetails_{0}.xlsx", DateTime.Today.ToString("yyyyMMdd"));
+            return File(_fraudCaseDetailService.ExportExcel(matchId, fraudCaseId, eventDate, template, IsShowSpecialCurrencies), "application/vnd.ms-excel", fileName);
         }
 
+        #endregion Other Fraud Cases
+
+        #region Arbitrage        
         [HttpPost]
         public ActionResult GetArbitrageTicketsGroupSummary(GetArbitrageTicketCriteria criteria)
         {
             criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
-            var data = _fraudCaseDetailService.GetArbitrageTickets(criteria);
+            var data = _fraudCaseDetailService.GetArbitrageTickets(criteria, true);
             return new JsonResult { Data = new { Content = data }, MaxJsonLength = Int32.MaxValue };
         }
 
-        public ActionResult ExportCSVArbitrageTickets(GetArbitrageTicketCriteria criteria)
+        [HttpPost]
+        public ActionResult GetArbitrageTickets(GetArbitrageTicketCriteria criteria)
         {
             criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
-
-            string[] filterInfo = GenerateFilterInfoForCsv(criteria);
-            var content = _fraudCaseDetailService.ExportArbitrageTicketAllCsv(criteria, filterInfo);
-            var encoded = Encoding.UTF8.GetBytes(content);
-
-            return File(encoded, "text/plain", "FraudCaseDetails_Tickets_" + DateTime.Today.ToString("yyyyMMdd") + ".csv");
+            var data = _fraudCaseDetailService.GetArbitrageTickets(criteria, false);
+           
+            return Json(data, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
@@ -199,51 +204,50 @@
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult ExportCSVArbitrageCustomers(GetArbitrageCustomerCriteria criteria)
+        [HttpPost]
+        public ActionResult SaveFileArbitrageTickets(GetArbitrageTicketCriteria criteria)
         {
+            var templatePath = Server.MapPath("~/App_Data/Excel Template/MatchMonitor/FraudCaseDetail/arbitrage.xlsx");
+            var fileName = string.Format("FraudCaseDetails_{0}", DateTime.Today.ToString("yyyyMMdd")) + ".xlsx";
+            string[] filterInfo = GenerateFilterInfo(criteria);
+
+            bool isSummary = criteria.GroupId == 0;
             criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
+            var content = _fraudCaseDetailService.ExportExcelArbitrageTickets(criteria, filterInfo, templatePath, isSummary);
 
-            string[] filterInfo = GenerateFilterInfoForCsv(criteria);
-            var content = _fraudCaseDetailService.ExportArbitrageCustomersCsv(criteria, filterInfo);
-            var encoded = Encoding.UTF8.GetBytes(content);
+            string fileId = Guid.NewGuid().ToString();
 
-            return File(encoded, "text/plain", "FraudCaseDetails_Customers_" + DateTime.Today.ToString("yyyyMMdd") + ".csv");
+            TempData[fileId] = content;
+
+            return new JsonResult { JsonRequestBehavior = JsonRequestBehavior.AllowGet, Data = new { FileId = fileId, FileName = fileName } };
         }
 
-        public ActionResult ExportExcelForDetail(int fraudCaseId, int matchId, DateTime eventDate)
+        [HttpPost]
+        public ActionResult SaveFileArbitrageCustomers(GetArbitrageCustomerCriteria criteria)
         {
-            var template = Server.MapPath("~/App_Data/Excel Template/MatchMonitor/FraudCaseDetail/template.xlsx");
+            var templatePath = Server.MapPath("~/App_Data/Excel Template/MatchMonitor/FraudCaseDetail/arbitrage.xlsx");
 
-            var fileName = string.Format("FraudCaseDetails_{0}.xlsx", DateTime.Today.ToString("yyyyMMdd"));
-            return File(_fraudCaseDetailService.ExportExcel(matchId, fraudCaseId, eventDate, template, IsShowSpecialCurrencies), "application/vnd.ms-excel", fileName);
-        }
-
-        public ActionResult ExportCSVArbitrageTicketByGroup(GetArbitrageTicketCriteria criteria, int groupId, string score, decimal handicap)
-        {
-            string[] filterInfo = GenerateFilterInfoForCsv(criteria);
+            var fileName = string.Format("FraudCaseDetails_{0}", DateTime.Today.ToString("yyyyMMdd")) + ".xlsx";
 
             criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
-            var content = _fraudCaseDetailService.ExportArbitrageTicketByGroupCsv(criteria, groupId, score, filterInfo);
-            var encoded = Encoding.UTF8.GetBytes(content);
+            string[] filterInfo = GenerateFilterInfo(criteria);
+            var content = _fraudCaseDetailService.ExportExcelArbitrageCustomers(criteria, filterInfo, templatePath);
+            string fileId = Guid.NewGuid().ToString();
 
-            return File(encoded, "text/plain", "FraudCaseDetails_Tickets_" + DateTime.Today.ToString("yyyyMMdd") + ".csv");
+            TempData[fileId] = content;
+
+            return new JsonResult { JsonRequestBehavior = JsonRequestBehavior.AllowGet, Data = new { FileId = fileId, FileName = fileName } };
         }
-
-        private string[] GenerateFilterInfoForCsv(ArbitrageDetailsCriteria criteria)
+        
+        private string[] GenerateFilterInfo(ArbitrageDetailsCriteria criteria)
         {
-            string[] filterInfo = new string[6];
+            string[] filterInfo = new string[7];
 
             // get Market
             filterInfo[0] = criteria.LiveStatus == -1 ? "All" : (criteria.LiveStatus == 0 ? "Non-Live" : "Live");
 
             // get Currency
-            var obj = HttpContext.Cache["ListCurrency"];
-            if (obj != null)
-            {
-                IEnumerable<Currency> lstObject = obj as IEnumerable<Currency>;
-                Currency currency = lstObject.FirstOrDefault(c => c.CurrencyId == criteria.CurrencyId.ToString());
-                filterInfo[1] = currency != null ? currency.CurrencyName : "All";
-            }
+            filterInfo[1] = criteria.CurrencyNames;
 
             // get Evidence name
             string strCode = string.Empty;
@@ -255,7 +259,7 @@
                 strCode = strCode.Replace(',', '/');
             }
 
-            filterInfo[2] = strCode;
+            filterInfo[2] = _fraudCaseDetailService.ReplaceEvidences(strCode);
 
             // From date, to date
             filterInfo[3] = criteria.TransDateFromString != null ? criteria.TransDateFromString.Replace(',', '-') : string.Empty;
@@ -264,23 +268,10 @@
             // get Score/HDP
             filterInfo[5] = criteria.KeyName;
 
+            // Sites
+            filterInfo[6] = criteria.Sites;
+
             return filterInfo;
-        }
-
-        public JsonResult GetListEvidences()
-        {
-            var data = _fraudCaseDetailService.GetListEvidences();
-            HttpContext.Cache["ListEvidences"] = data;
-
-            return Json(data, JsonRequestBehavior.AllowGet);
-        }
-
-        public JsonResult GetAllCurrency()
-        {
-            var data = _fraudCaseDetailService.GetAllCurrency(IsShowSpecialCurrencies);
-            HttpContext.Cache["ListCurrency"] = data;
-
-            return Json(data, JsonRequestBehavior.AllowGet);
         }
 
         public JsonResult GetScoreHDP(int matchId, DateTime eventDate)
@@ -289,6 +280,7 @@
 
             return Json(data, JsonRequestBehavior.AllowGet);
         }
-        #endregion Arbitrage
+        #endregion Arbitrage       
+
     }
 }

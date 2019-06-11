@@ -4,6 +4,7 @@
     using Fanex.Data.Repository;
     using System;
 
+    [Serializable]
     public class ArbitrageDetailsCriteria : CriteriaBase
     {
         public int MatchId { get; set; }
@@ -14,7 +15,10 @@
 
         public int LiveStatus { get; set; }
 
-        public int CurrencyId { get; set; }
+        public string CurrencyIds { get; set; }
+
+        [SpParam(Ignored = true)]
+        public string CurrencyNames { get; set; }
 
         [SpParam(Ignored = true)]
         public string EvidenceCodeList { get; set; }
@@ -68,6 +72,12 @@
 
         [SpParam(Ignored = true)]
         public int GroupId { get; set; }
+
+        [SpParam(Ignored = true)]
+        public string Sites { get; set; }
+
+        [SpParam(Ignored = true)]
+        public string Score { get; set; }
 
         [SpParam(Ignored = true)]
         public int TotalTicket { get; set; }

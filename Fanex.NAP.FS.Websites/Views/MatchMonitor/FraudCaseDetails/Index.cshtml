@@ -9,6 +9,7 @@
     @Styles.Render("~/fraud-case-styles")
     @Styles.Render("~/Contents/CoreBetList")
     <link href="~/Content/jquery-ui-timepicker-addon.min.css" rel="stylesheet" />
+    <link href="~/Content/scss/MultipleSelect/jquery.multiselect.filter.css" rel="stylesheet" />
     <link href="~/Content/scss/MultipleSelect/jquery.multiselect.css" rel="stylesheet" />
     <style>
     .ui-slider-handle.ui-corner-all.ui-state-default {
@@ -45,10 +46,21 @@
         background: none;
     }
 
-    button.ui-multiselect.ui-widget.ui-state-default.ui-corner-all {
-        width: 345px !important;
+    #ddlEvidence_ms {
+            width: 345px !important;
     }
 
+    #ddlSite_ms {
+        width: 220px !important;
+    }
+
+    #ddlCurrency_ms {
+        width: 140px !important;
+    }
+
+    .table thead tr th, .table tbody tr td {
+        padding: 8px 4px;
+    }      
     </style>
 }
 <h1 class="title">@ViewBag.Title</h1>
@@ -70,20 +82,26 @@
 @if ((FraudCaseId)Model.FraudCaseId == FraudCaseId.Arbitrage)
 {
     <div class="form-filter">
-        <div class="group width-160" style="width: 130px;">
-            <label class="text">Market</label>
+        <div class="group width-220" style="width: 240px">
+            <label class="text">Site</label>
             <div class="edit-field col_9">
-                <select class="control" id="market">
-                    <option value="-1" selected>All</option>
-                    <option value="0">Non-Live</option>
-                    <option value="1">Live</option>
+                <select id="ddlSite" multiple="multiple">
+                    @foreach (var item in (IEnumerable<Site>)ViewBag.SiteList)
+                    {
+                        <option value="@item.SiteId">@item.SiteName</option>
+                    }
                 </select>
             </div>
         </div>
-        <div class="group width-160" style="width:130px;">
+        <div class="group width-160">
             <label class="text">Currency</label>
             <div class="edit-field col_9">
-                <select class="control" id="currency"></select>
+                <select id="ddlCurrency" multiple="multiple">
+                    @foreach (var item in (IEnumerable<Currency>)ViewBag.CurrencyList)
+                    {
+                        <option value="@item.CurrencyId">@item.CurrencyName</option>
+                    }
+                </select>
             </div>
         </div>
         <div class="group" style="width:335px;">
@@ -99,14 +117,24 @@
         </div>
     </div>
     <div class="form-filter">
+        <div class="group width-160" style="width: 140px;">
+            <label class="text">Market</label>
+            <div class="edit-field col_9">
+                <select class="control" id="market">
+                    <option value="-1" selected>All</option>
+                    <option value="0">Non-Live</option>
+                    <option value="1">Live</option>
+                </select>
+            </div>
+        </div>
         <div class="group" style="width:190px;">
             <label class="text">Trans Date</label>
-            <div class="edit-field col_9">
+            <div class="edit-field col_9" style="width:174px;">
                 <input type="text" id="transDateFrom" class="form-control date-time-picker" />
             </div>
         </div>
         <div class="group" style="width:190px;">
-            <div class="edit-field col_9">
+            <div class="edit-field col_9" style="width:174px;">
                 <input type="text" id="transDateTo" class="form-control date-time-picker" />
             </div>
         </div>
@@ -117,7 +145,7 @@
             </div>
         </div>
         <button class="button -primary" id="generate">Generate</button>
-        
+
     </div>
 }
 
@@ -134,7 +162,8 @@
     @Scripts.Render("~/bundles/jqueryval")
     <script src="~/Scripts/jquery-ui-1.12.1.min.js"></script>
     <script src="~/Scripts/jquery-ui-timepicker-addon.min.js"></script>
-    <script src="~/Scripts/MultipleSelect/jquery.multiselect.js"></script>
+    <script src="~/Scripts/MultipleSelect/jquery.multiselect.filter.js"></script>
+    <script src="~/Scripts/MultipleSelect/jquery.multiselect.js"></script>    
     <script>
         var parameters =
             {

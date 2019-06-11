@@ -293,6 +293,7 @@
     <Compile Include="Criteria\SuspiciousInfo\SuspicousCustomerCurrencyGetCriteria.cs" />
     <Compile Include="DTO\CustomerEvidence.cs" />
     <Compile Include="DTO\CustomerEvidenceList.cs" />
+    <Compile Include="DTO\CustomerSubcriber.cs" />
     <Compile Include="DTO\CustomerTotalAssociation.cs" />
     <Compile Include="DTO\CustomerList.cs" />
     <Compile Include="DTO\CustomerAssociation.cs" />
@@ -357,6 +358,7 @@
     <Compile Include="Models\MatchMonitor\FraudCaseDetails\Evidence.cs" />
     <Compile Include="Models\MatchMonitor\FraudCaseDetails\ScoreHDP.cs" />
     <Compile Include="Models\MatchMonitor\FraudCaseDetails\MatchInfo.cs" />
+    <Compile Include="Models\MatchMonitor\FraudCaseDetails\Site.cs" />
     <Compile Include="Models\MatchMonitor\FraudCaseDetails\TicketInfo.cs" />
     <Compile Include="Models\MatchMonitor\League.cs" />
     <Compile Include="Models\MatchMonitor\Match.cs" />

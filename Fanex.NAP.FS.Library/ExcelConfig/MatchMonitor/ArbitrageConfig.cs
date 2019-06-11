@@ -5,10 +5,13 @@
     using NPOI.SS.UserModel;
     using NPOI.XSSF.UserModel;
     using System;
+    using System.Collections.Generic;    
 
-    public class ArbitrageConfig : FSExcelConfig<MatchFraudCaseInfo, ArbitrageTicket, object>
+    public class ArbitrageConfig : FSExcelConfig<MatchFraudCaseInfo, ArbitrageGroupTicketList, object>
     {
         private readonly bool delete2Nd;
+        private ICellStyle _cellStyleDate;
+        private ICellStyle _cellStyleCurrency;
 
         public ArbitrageConfig(int ticketNo)
         {
@@ -18,59 +21,119 @@
         public ArbitrageConfig(int ticketNo, bool delete2nd) : this(ticketNo)
         {
             delete2Nd = delete2nd;
-        }
+        }        
 
         protected override int SheetIndex => 0;
 
         protected override string SheetName { get; }
 
-        protected override void FillData(IRow row, ArbitrageTicket data)
+        protected override void FillData(IRow row, ArbitrageGroupTicketList data)
         {
-            var idx = 0;
-            var fraudByIP = data.IsIPFraud ? "Yes" : "";
+            if (row.RowNum > 5)
+            {
+                row = CreateRow(row);
+                IRow lastRow = row.Sheet.GetRow(row.RowNum - 1);
+                lastRow.GetCell(0).SetCellValue("Score/HDP: " + data.Score + " " + data.BettypeName + " " + data.Handicap.ToString("0.##"));
+                lastRow.GetCell(0).CellStyle = row.Sheet.GetRow(4).GetCell(0).CellStyle;
+                MergeRange(lastRow.Sheet, lastRow);
+            }
+            else
+            {
+                _cellStyleDate = row.GetCell(11).CellStyle;
+                _cellStyleCurrency = row.GetCell(8).CellStyle;
+                row.Sheet.GetRow(4).GetCell(0).SetCellValue("Score/HDP: " + data.Score + " " + data.BettypeName + " " + data.Handicap.ToString("0.##"));                
+            }
 
-            row.GetCell(idx++).SetCellValue(data.Username);
-            row.GetCell(idx++).SetCellValue(string.Join(",", data.Evidences));
-            row.GetCell(idx++).SetCellValue(data.DangerousLevel);
-            row.GetCell(idx++).SetCellValue(data.Currency);
-            row.GetCell(idx++).SetCellValue(fraudByIP);
-            row.GetCell(idx++).SetCellValue(data.BetId.ToString());
-            row.GetCell(idx++).SetCellValue(data.BetTeam == "h" ? "Home" : "Away");
-            row.GetCell(idx++).SetCellValue(data.BettypeName);
-            row.GetCell(idx++).SetCellValue(data.Handicap);
-            row.GetCell(idx++).SetCellValue(data.Score);
-            row.GetCell(idx++).SetCellValue((double)data.Odds);
-            row.GetCell(idx++).SetCellValue(data.Stake.Virtual);
-            row.GetCell(idx++).SetCellValue(data.Stake.ComPT);
-            row.GetCell(idx++).SetCellValue(data.Stake.Full);
-            row.GetCell(idx).SetCellValue(DateTime.Parse(data.TransDate.Replace("<br/>", "")));
+            IEnumerator<ArbitrageTicket> dataHome = data.Home.GetEnumerator();
+            IEnumerator<ArbitrageTicket> dataAway = data.Away.GetEnumerator();
+            bool hasHome = dataHome.MoveNext();
+            bool hasAway = dataAway.MoveNext();
+
+            while (hasHome || hasAway)
+            {
+                var idx = 0;
+
+                if (hasHome)
+                {
+                    var fraudByIP = dataHome.Current.IsIPFraud ? "Yes" : "";
+                    row.CreateCell(idx++).SetCellValue(dataHome.Current.Username);
+                    row.CreateCell(idx++).SetCellValue(string.Join(",", dataHome.Current.Evidences));
+                    row.CreateCell(idx++).SetCellValue(dataHome.Current.DangerousLevel);
+                    row.CreateCell(idx++).SetCellValue(dataHome.Current.Site);
+                    row.CreateCell(idx++).SetCellValue(dataHome.Current.Currency);
+                    row.CreateCell(idx++).SetCellValue(fraudByIP);
+                    row.CreateCell(idx++).SetCellValue(dataHome.Current.BetId.ToString());
+                    row.CreateCell(idx++).SetCellValue((double)dataHome.Current.Odds);
+                    row.GetCell(idx - 1).CellStyle = _cellStyleCurrency;
+                    row.CreateCell(idx++).SetCellValue(dataHome.Current.Stake.Virtual);
+                    row.GetCell(idx - 1).CellStyle = _cellStyleCurrency;
+                    row.CreateCell(idx++).SetCellValue(dataHome.Current.Stake.ComPT);
+                    row.GetCell(idx - 1).CellStyle = _cellStyleCurrency;
+                    row.CreateCell(idx++).SetCellValue(dataHome.Current.Stake.Full);
+                    row.GetCell(idx - 1).CellStyle = _cellStyleCurrency;
+                    row.CreateCell(idx).SetCellValue(DateTime.Parse(dataHome.Current.TransDate.Replace("<br/>", "")));
+                    row.GetCell(idx).CellStyle = _cellStyleDate;
+                }
+
+                idx = 13;
+                if (hasAway)
+                {
+                    var fraudByIP = dataAway.Current.IsIPFraud ? "Yes" : "";
+                    row.CreateCell(idx++).SetCellValue(dataAway.Current.Username);
+                    row.CreateCell(idx++).SetCellValue(string.Join(",", dataAway.Current.Evidences));
+                    row.CreateCell(idx++).SetCellValue(dataAway.Current.DangerousLevel);
+                    row.CreateCell(idx++).SetCellValue(dataAway.Current.Site);
+                    row.CreateCell(idx++).SetCellValue(dataAway.Current.Currency);
+                    row.CreateCell(idx++).SetCellValue(fraudByIP);
+                    row.CreateCell(idx++).SetCellValue(dataAway.Current.BetId.ToString());
+                    row.CreateCell(idx++).SetCellValue((double)dataAway.Current.Odds);
+                    row.GetCell(idx - 1).CellStyle = _cellStyleCurrency;
+                    row.CreateCell(idx++).SetCellValue(dataAway.Current.Stake.Virtual);
+                    row.GetCell(idx - 1).CellStyle = _cellStyleCurrency;
+                    row.CreateCell(idx++).SetCellValue(dataAway.Current.Stake.ComPT);
+                    row.GetCell(idx - 1).CellStyle = _cellStyleCurrency;
+                    row.CreateCell(idx++).SetCellValue(dataAway.Current.Stake.Full);
+                    row.GetCell(idx - 1).CellStyle = _cellStyleCurrency;
+                    row.CreateCell(idx).SetCellValue(DateTime.Parse(dataAway.Current.TransDate.Replace("<br/>", "")));
+                    row.GetCell(idx).CellStyle = _cellStyleDate;
+                }
+
+                hasHome = dataHome.MoveNext();
+                hasAway = dataAway.MoveNext();
+
+                if (hasHome || hasAway)
+                {
+                    row = CreateRow(row);
+                }
+            }
         }
 
         protected override void FillLegend(IRow row, MatchFraudCaseInfo legend)
         {
             var cell1 = row.GetCell(0);
-            var cell2 = row.GetCell(3);
+            var cell2 = row.GetCell(5);
             var cell3 = row.GetCell(9);
             string[] arrFilter = legend.Filter;
 
             new XSSFRichTextString()
-                .WriteBold("Event: ").Write(string.Format("{0} - vs - {1}\n", legend.Home as string, legend.Away as string))
-                .WriteBold("Date: ").Write(legend.EventDate.ToString("MMM dd, yyyy") + "\n")
+                .WriteBold("Match: ").Write(string.Format("{0} - vs - {1} \n", legend.Home as string, legend.Away as string))
+                .WriteBold("Date: ").Write(legend.EventDate.ToString("MMM dd, yyyy") + " \n")
+                .WriteBold("HT/FT: ").Write(legend.HTScore + " / " + legend.FTScore + " \n")
                 .WriteBold("Fraud Case: ").Write(legend.FraudCase + "\n")
-                .WriteBold("HT/FT Score: ").Write(legend.HTScore + " / " + legend.FTScore + "\n")
                 .SetValue(cell1);
-            if (arrFilter != null && arrFilter.Length >= 6)
+
+            if (arrFilter != null && arrFilter.Length >= 7)
             {
                 new XSSFRichTextString()
-                   .WriteBold("Market: ").Write(arrFilter[0] + "\n")
-                   .WriteBold("Currency: ").Write(arrFilter[1] + "\n")
-                   .WriteBold("Evidence Code List: ").Write(arrFilter[2] + "\n")
+                   .WriteBold("Site: ").Write(arrFilter[6] + " \n")
+                   .WriteBold("Currency: ").Write(arrFilter[1] + " \n")
+                   .WriteBold("Evidence: ").Write(arrFilter[2] + " \n")
                    .SetValue(cell2);
 
                 new XSSFRichTextString()
-                    .WriteBold("Trans Date From: ").Write(arrFilter[3] + "\n")
-                    .WriteBold("Trans Date To: ").Write(arrFilter[4] + "\n")
-                    .WriteBold("Score/HDP: ").Write(arrFilter[5] + "\n")
+                    .WriteBold("Market: ").Write(arrFilter[0] + " \n")
+                    .WriteBold("Trans Date: ").Write(arrFilter[3] + " - " + arrFilter[4] + " \n")
+                    .WriteBold("Score/HDP: ").Write(arrFilter[5] + " \n")
                     .SetValue(cell3);
             }
         }
@@ -83,6 +146,20 @@
             {
                 sheet.Workbook.RemoveSheetAt(1);
             }
+        }
+
+        private IRow CreateRow(IRow rSource)
+        {
+            var sheet = rSource.Sheet;
+            var rowIndex = ShiftTemplate(sheet);
+            var newRow = sheet.CreateRow(rowIndex);
+
+            return newRow;
+        }
+
+        private void MergeRange(ISheet sheet, IRow row)
+        {
+            sheet.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(row.RowNum, row.RowNum, 0, 24));
         }
     }
 }
