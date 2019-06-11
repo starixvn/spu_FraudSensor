@@ -41,7 +41,7 @@
             { data: row => row.Username },
             { data: row => row.TotalTicket },
             { data: row => renderViolation(row) },
-            { data: row => row.Remark },
+            { data: row => renderRemark(row) },
             {
                 data: renderNote, createdCell: (cell, _, row) => {
                     $(".icon-note", cell).click(() => renderNoteEdit(cell, row));
@@ -91,6 +91,22 @@
         return `<a class='info-bng' href='CustomerMonitor/GetCustomerTicketDetails?CustId=${obj.CustId}&Username=${obj.Username}&FromDate=${fromDate}&ToDate=${toDate}&TicketCount=${obj.TicketCount}&ViolationCount=${obj.ViolationCount}&MatchCount=${obj.MatchCount}' target='_blank'>
             ${obj.TicketCount}/${obj.ViolationCount}/${obj.MatchCount}
         </a>`;
+    }
+
+    function renderRemark(obj) {
+        var remark = [];
+
+        if (obj.TicketWON > 0) {
+            remark.push(obj.TicketWON + ' WON');
+        }
+        if (obj.TicketReject > 0) {
+            remark.push(obj.TicketReject + ' Reject');
+        }
+        if (obj.TicketVoid > 0) {
+            remark.push(obj.TicketVoid + ' Void');
+        }
+        
+        return remark.join(', ');
     }
 
     function gen_data(full = true) {

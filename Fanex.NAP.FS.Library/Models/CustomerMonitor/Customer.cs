@@ -14,7 +14,11 @@
 
         public int MatchCount { get; set; }
 
-        public string Remark { get; set; }
+        public int TicketWON { get; set; }
+
+        public int TicketReject { get; set; }
+
+        public int TicketVoid { get; set; }       
 
         public string Note { get; set; }
     }
