@@ -28,16 +28,20 @@
         scrollX: true,
         scrollCollapse: true,
         columnDefs: [
-            { targets: [0,2], className: "text-center" },
+            { targets: [0, 2, 3], className: "text-center" },
             { targets: 0, width: "40px" },
-            { targets: 1, width: "182px" },
+            { targets: 1, width: "185px" },
             { targets: 2, width: "90px" },
-            { targets: 3, className: "col-note" }
+            { targets: 3, width: "90px" },
+            { targets: 4, width: "190px" },
+            { targets: 5, className: "col-note" }
         ],
         columns: [
             { data: (row, type, set, meta) => meta.row + 1 },
             { data: row => row.Username },
+            { data: row => row.TotalTicket },
             { data: row => renderViolation(row) },
+            { data: row => row.Remark },
             {
                 data: renderNote, createdCell: (cell, _, row) => {
                     $(".icon-note", cell).click(() => renderNoteEdit(cell, row));
@@ -46,7 +50,7 @@
             }    
         ],
         headerCallback: function (thread) {
-            $("th", thread).eq(2).attr("title", "[Ticket Count] / [Violation Count] / [Match Count]");
+            $("th", thread).eq(3).attr("title", "[Ticket Count] / [Violation Count] / [Match Count]");
         }        
     });
 
@@ -191,7 +195,7 @@
             $(inputNoteContent).removeClass('hide').focus().select();
 
             // adjust height input Note
-            $(inputNoteContent).height(heightNote + 6);
+            $(inputNoteContent).height(heightNote + 4);
 
             $(noteContent).addClass('hide').hide();
             $(noteIcon).removeClass('icon-note-text').addClass('icon-note-save').attr('title', 'save');
