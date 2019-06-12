@@ -361,6 +361,13 @@
         }
         #endregion Other Fraud Cases
 
+        #region Flagged Accounts
+        public IEnumerable<BetTypes> GetBetTypes(GetBetTypesCriteria criteria)
+        {
+            return DataService.GetData<BetTypes>(criteria);
+        }
+        #endregion
+
         #region Arbitrage
         public IEnumerable<CustomerDetails> GetArbitrageCustomerDetails(GetArbitrageCustomerCriteria criteria)
         {

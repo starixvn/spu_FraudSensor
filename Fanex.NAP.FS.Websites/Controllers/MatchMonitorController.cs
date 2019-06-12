@@ -4,17 +4,13 @@
     using Fanex.NAP.Core.Web.Attribute;
     using Fanex.NAP.FS.Library.Criteria.MatchMonitor;
     using Library.Core.Helpers;
-    using Library.Criteria.MatchMonitor.FraudCaseDetails;
-    using Library.Models.MatchMonitor.FraudCaseDetails;
+    using Library.Criteria.MatchMonitor.FraudCaseDetails;    
     using Library.Service;
     using Service;
     using Service.MatchMonitor;
-    using System;
-    using System.Collections.Generic;
+    using System;    
     using System.Configuration;
     using System.Linq;
-    using System.Net;
-    using System.Text;
     using System.Web.Mvc;
 
     [NapAuth(FunctionKey = FSFunctionKeys.MatchMonitoring, Policy = Core.Business.Constant.Policy.Read)]
@@ -177,6 +173,16 @@
         }
 
         #endregion Other Fraud Cases
+
+        #region Flagged Accounts
+        public ActionResult GetBetType(GetBetTypesCriteria criteria)
+        {
+            var data = _fraudCaseDetailService.GetBetTypes(criteria);
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        #endregion
 
         #region Arbitrage        
         [HttpPost]

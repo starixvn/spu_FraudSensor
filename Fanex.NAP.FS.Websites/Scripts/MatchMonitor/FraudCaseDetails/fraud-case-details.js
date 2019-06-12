@@ -30,7 +30,7 @@
         var from_val = from_date.datepicker("getDate");
         to_date.datepicker("option", "minDate", from_val);
     };
-    
+
     function initMultipleSelect() {
         $("#ddlSite").multiselect({
             menuWidth: 220,
@@ -56,6 +56,18 @@
             placeholder: ''
         });
     };       
+
+    function getBetType() {
+        var url = common.modifyRelativeUrl('/MatchMonitor/GetBetType');
+
+        $.get(url, parameters, function (json) {
+            $('#betType').append('<option value=-1>All</option>');
+
+            for (var i = 0; i < json.length; i++) {
+                $('#betType').append(`<option value='${json[i].BetType}'>${json[i].BetTypeName}</option>`);
+            }
+        });
+    }
 
     function getScoreHDP() {
         var url = common.modifyRelativeUrl("/MatchMonitor/GetScoreHDP");
@@ -896,6 +908,7 @@
                 liveAwayScore = arrBet[2];
                 handicap = arrBet[3];
             }
+
             var criteria = {
                 liveStatus: $("#market").val(),
                 evidenceCodeList: getEvidences(),
@@ -919,7 +932,7 @@
 
             loadTicketGridArbitrage(criteria);
         }
-    };
+    };    
 
     function getEvidences() {
         var array = [];
@@ -1001,11 +1014,13 @@
     }
 
     function init() {
-        if (isArbitrage || isFlaggedAccount) {
+        if (isArbitrage) {
             getScoreHDP();
             initMultipleSelect();
-        }
-        else {
+        } else if (isFlaggedAccount) {
+            getBetType();
+            initMultipleSelect();
+        } else {
             loadTicketGrid();
             loadCustomerGrid();
         }
