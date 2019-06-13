@@ -35,6 +35,8 @@
     <Setting Key="FS_Rpt_Currency_GetAll" SpName="FS_Rpt_Currency_GetAll_xtest" DbName="DBFS.bodb_FraudSensor.bodbSPUNet" />
     <Setting Key="FS_Rpt_MatchMonitor_Details_Get_ScoreHDP" SpName="FS_Rpt_MatchMonitor_Details_Get_ScoreHDP_xtest" DbName="DBFS.bodb_FraudSensor.bodbSPUNet" />
     <Setting Key="FS_Rpt_MatchMonitor_Details_Get_ByCustomer_Arbitrage" SpName="FS_Rpt_MatchMonitor_Details_Get_ByCustomer_Arbitrage_xtest" DbName="DBFS.bodb_FraudSensor.bodbSPUNet" />
+    <Setting Key="FS_Rpt_MatchMonitor_Details_Get_ByTicket_FlaggedAccount" SpName="FS_Rpt_MatchMonitor_Details_Get_ByTicket_FlaggedAccount_xtest" DbName="DBFS.bodb_FraudSensor.bodbSPUNet" />
+    <Setting Key="FS_Rpt_MatchMonitor_Details_Get_ByCustomer_FlaggedAccount" SpName="FS_Rpt_MatchMonitor_Details_Get_ByCustomer_FlaggedAccount_xtest" DbName="DBFS.bodb_FraudSensor.bodbSPUNet" />
   </Function>
   <Function Name="FraudCase">
     <Setting Key="FS_FraudCase_GetById" SpName="FS_FraudCase_GetById_xtest" DbName="DBFS.bodb_FraudSensor.bodbSPUNet" />

@@ -177,9 +177,8 @@
         #region Flagged Accounts
 
         [HttpPost]
-        public ActionResult FlaggedAccountTickets(GetFlaggedAccountCriteria criteria)
+        public ActionResult FlaggedAccountTickets(GetFlaggedAccountTicketCriteria criteria)
         {
-            criteria.FraudCaseId = (int)Library.Models.FraudCaseId.FlaggedAccount;
             criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
 
             var data =
@@ -190,9 +189,8 @@
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult FlaggedAccountCustomers(GetFlaggedAccountCriteria criteria)
+        public ActionResult FlaggedAccountCustomers(GetFlaggedAccountCustomerCriteria criteria)
         {
-            criteria.FraudCaseId = (int)Library.Models.FraudCaseId.FlaggedAccount;
             criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
 
             var data = _fraudCaseDetailService.FlaggedAccountCustomers(criteria);
@@ -201,13 +199,12 @@
         }
 
         [HttpPost]
-        public ActionResult SaveFileFlaggedAccounts(GetFlaggedAccountCriteria criteria)
+        public ActionResult SaveFileFlaggedAccounts(GetFlaggedAccountTicketCriteria criteria)
         {
             var template = Server.MapPath("~/App_Data/Excel Template/MatchMonitor/FraudCaseDetail/flagged account.xlsx");
 
             var fileName = string.Format("FraudCaseDetails_{0}.xlsx", DateTime.Today.ToString("yyyyMMdd"));
-           
-            criteria.FraudCaseId = (int)Library.Models.FraudCaseId.FlaggedAccount;
+                    
             criteria.SaveChoice = true;
             criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
             var content = _fraudCaseDetailService.ExportFlaggedAccounts(criteria, template);
@@ -219,13 +216,13 @@
             return new JsonResult { JsonRequestBehavior = JsonRequestBehavior.AllowGet, Data = new { FileId = fileId, FileName = fileName } };
         }
 
-        public ActionResult GetBetType(GetBetTypesCriteria criteria)
+        public ActionResult GetBetType()
         {
-            var data = _fraudCaseDetailService.GetBetTypes(criteria);
+            var data = _fraudCaseDetailService.GetBetTypes();
 
             return Json(data, JsonRequestBehavior.AllowGet);
         }
-
+       
         #endregion
 
         #region Arbitrage        

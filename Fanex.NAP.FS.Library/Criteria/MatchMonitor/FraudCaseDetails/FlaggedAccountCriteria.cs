@@ -5,18 +5,16 @@
     using System;
 
     [Serializable]
-    public class GetFlaggedAccountCriteria : CriteriaBase
+    public class FlaggedAccountCriteria : CriteriaBase
     {
         public int MatchId { get; set; }
 
         public DateTime EventDate { get; set; }
 
         public bool IsShowSpecialCurrencies { get; set; }
-
-        [SpParam(Ignored = true)]
+     
         public int LiveStatus { get; set; }
 
-        [SpParam(Ignored = true)]
         public string CurrencyIds { get; set; }
 
         [SpParam(Ignored = true)]
@@ -28,7 +26,6 @@
         [SpParam(Ignored = true)]
         public string TransDateFromString { get; set; }
 
-        [SpParam(Ignored = true)]
         public DateTime TransDateFrom
         {
             get
@@ -47,7 +44,6 @@
         [SpParam(Ignored = true)]
         public string TransDateToString { get; set; }
 
-        [SpParam(Ignored = true)]
         public DateTime TransDateTo
         {
             get
@@ -63,18 +59,18 @@
             }
         }
 
+        public int Bettype { get; set; }
+
         [SpParam(Ignored = true)]
-        public int Bettype { get; set; }        
+        public bool IsBettypeOther { get; set; }
 
         [SpParam(Ignored = true)]
         public string Sites { get; set; }
 
         [SpParam(Ignored = true)]
-        public bool SaveChoice { get; set; }
+        public bool SaveChoice { get; set; }  
 
-        public int FraudCaseId { get; set; }
-
-        public override string GetSettingKey() => "FS_Rpt_MatchMonitor_Details_Get_ByTicket";
+        public override string GetSettingKey() => "";
 
         public override bool IsValid() => true;
 

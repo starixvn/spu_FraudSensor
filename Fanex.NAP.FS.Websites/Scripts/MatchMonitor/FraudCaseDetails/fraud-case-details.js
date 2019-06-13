@@ -66,6 +66,8 @@
             for (var i = 0; i < json.length; i++) {
                 $('#betType').append(`<option value='${json[i].BetType}'>${json[i].BetTypeName}</option>`);
             }
+
+            $('#betType').append('<option value=0>Others</option>');
         });
     }
 
@@ -766,7 +768,7 @@
             columns: [
                 { data: obj => obj.key ? obj.value : ++global_idx, className: "text-center", width: "30px" },
                 { data: obj => obj.Member, width: "120px" },
-                { data: obj => common.makeWrapString((obj.Evidences || []).join(", "), 16), width: "160px" },
+                { data: obj => common.makeWrapString((obj.Evidences || []).join(", "), 30), width: "160px" },
                 { data: obj => obj.DangerousLevel, className: "text-center", width: "40px"},
                 { data: obj => obj.Site, width: "120px"},
                 { data: obj => obj.CurrencyName, className: "text-center", width: "10px" },
@@ -995,6 +997,7 @@
     };
 
     function loadGrids() {
+        global_idx = 0;
         arrGroupTicket = [];
         groupExpand = "";      
         var transDateFrom = $("#transDateFrom").val();
