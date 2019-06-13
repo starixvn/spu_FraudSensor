@@ -362,7 +362,7 @@
         #endregion Other Fraud Cases
 
         #region Flagged Accounts
-        public IEnumerable<TicketDetails> FlaggedAccountTickets(GetFlaggedAccountCriteria criteria)
+        public IEnumerable<FlaggedAccountTicket> FlaggedAccountTickets(GetFlaggedAccountCriteria criteria)
         {
             var legend = GetInfo(criteria.MatchId, criteria.FraudCaseId, criteria.EventDate);
             var html_builder = new BetListHTMLBuilder();
@@ -383,9 +383,10 @@
                     var bettype = CachedRef.GetBettypeName(a.BetTypeId);
                     var grouped_bettype = GetOrder(bettype) != BettypeOrder.Other ? bettype : "Others";
 
-                    return new TicketDetails
+                    return new FlaggedAccountTicket
                     {
                         Member = a.UserName,
+                        Evidences = new List<string>(),
                         Bettype = grouped_bettype,
                         TransDate = a.TransDate.ToString("MMM dd, yyyy hh:mm:ss tt"),
                         BetID = a.TransId.ToString(),
@@ -448,7 +449,7 @@
 
             var wb =
                 ExcelUtilities.GetWorkbook(templatePath)
-                    .RenderSheet(new TicketDetailConfig(tickets.Count()), legend, tickets, null)
+                    .RenderSheet(new FlaggedAccountConfig(tickets.Count()), legend, tickets, null)
                     .RenderSheet(new CustomerDetailConfig(customers.Count()), legend, customers, null);
 
             return wb.ToBytes();

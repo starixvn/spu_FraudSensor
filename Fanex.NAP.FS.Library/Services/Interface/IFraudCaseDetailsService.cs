@@ -51,7 +51,7 @@
       
         byte[] ExportExcelArbitrageCustomers(GetArbitrageCustomerCriteria criteria, string[] array, string templatePath);
 
-        IEnumerable<TicketDetails> FlaggedAccountTickets(GetFlaggedAccountCriteria criteria);
+        IEnumerable<FlaggedAccountTicket> FlaggedAccountTickets(GetFlaggedAccountCriteria criteria);
 
         IEnumerable<CustomerDetails> FlaggedAccountCustomers(GetFlaggedAccountCriteria criteria);
 

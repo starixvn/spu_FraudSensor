@@ -745,8 +745,54 @@
                 }              
             }         
         });
-    }
-    else {
+    } else if (isFlaggedAccount) {
+        ticket_grid.DataTable({
+            ordering: false,
+            paging: false,
+            dom: "t<'pagination'<'page-size'lp>i>",
+            language: {
+                lengthMenu: "Page size _MENU_",
+                paginate: {
+                    previous: "Back"
+                },
+                info: "Displaying _START_ to _MAX_ of _MAX_ item(s)",
+                infoEmpty: "",
+                infoFiltered: "",
+                thousands: ",",
+                zeroRecords: "There's no data"
+            },
+            scrollY: '57vh',
+            scrollCollapse: true,
+            columns: [
+                { data: obj => obj.key ? obj.value : ++global_idx, className: "text-center", width: "30px" },
+                { data: obj => obj.Member, width: "120px" },
+                { data: obj => common.makeWrapString((obj.Evidences || []).join(", "), 16), width: "160px" },
+                { data: obj => obj.DangerousLevel, className: "text-center", width: "40px"},
+                { data: obj => obj.Site, width: "120px"},
+                { data: obj => obj.CurrencyName, className: "text-center", width: "10px" },
+                { data: obj => moment(obj.TransDate, "MMM D, YYYY hh:mm:ss A").format("MMM D, YYYY<br/>hh:mm:ss A"), className: "text-center", width: "100px" },
+                { data: obj => obj.BetID, width: "120px" },
+                { data: obj => obj.Choice, className: "text-right" },
+                { data: obj => obj.Score, className: "text-center", width: "40px" },
+                { data: obj => obj.Odds != null ? obj.Odds.Html : null, width: "50px", className: "text-right" },
+                { data: obj => obj.Stake == null ? null : numeral(obj.Stake).format("0,0.00"), className: "text-right", width: "100px" },
+                { data: obj => obj.WinLoss == null ? null : obj.WinLoss >= 0 ? numeral(obj.WinLoss).format("0,0.00") : `<span class='text-red'>${numeral(obj.WinLoss).format('0,0.00')}</span>`, className: "text-right", width: "100px" },
+                { data: obj => obj.Status, width: "82px", className: "text-center uppercase" },
+                { data: obj => `<span class='link ip-link'>${obj.IP}</span>`, width: "100px" }
+            ],
+            columnDefs: [{ targets: "_all", defaultContent: "-" }],
+            createdRow: function (row, obj) {
+                if (obj.key) {
+                    var td = $(`<td colspan='15' class='group'><span class='icon-chevron-up'></span> ${obj.value} </td>`);
+
+                    $(row).empty().html(td).click(e => show_hide_bettype_items(e.target, obj.value));
+                } else {
+                    $(row).attr("data-bettype-item", obj.Bettype);
+                }
+            },
+            headerCallback: tr => $(":nth-child(14)", tr).removeClass("uppercase")
+        });
+    } else {
         ticket_grid.DataTable({
             ordering: false,
             paging: false,

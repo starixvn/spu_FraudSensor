@@ -3,7 +3,7 @@
 
 @switch ((FraudCaseId)Model.FraudCaseId)
 {
-    case Fanex.NAP.FS.Library.Models.FraudCaseId.Arbitrage:
+    case FraudCaseId.Arbitrage:
         <div id="ticket-tab">
             <table class="table table-striped width-100per display nowrap" style="width: 100%">
                 <thead>
@@ -39,6 +39,37 @@
                 </thead>
             </table>
         </div>
+        break;
+    case FraudCaseId.FlaggedAccount:
+        <div id="ticket-tab">
+            <table class="table table-striped width-100per" style="width: 100%">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Member</th>
+                        <th>Evidence</th>
+                        <th>Dangerous Level</th>
+                        <th>Site</th>
+                        <th>Currency</th>
+                        <th>Trans Date</th>
+                        <th>Bet ID</th>
+                        <th>Choice</th>
+                        <th>Score</th>
+                        <th>Odds</th>
+                        <th>Stake</th>
+                        <th>Win Loss</th>
+                        <th>Status</th>
+                        <th>IP</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <div id="ticket-by-ip">
+            @Html.Partial("FraudCaseDetails/TicketByIP")
+        </div>
+
         break;
     default:
         <div id="ticket-tab">
