@@ -146,34 +146,43 @@
 
             common.closeLoading();
         });
-    }
+    }    
 
-    function loadTicketGridArbitrage(criteria) {
-        if (isArbitrage) {
-            loadArbitrageGroups(criteria);
-        }
-        else {
-            global_idx = 0;
+    function loadCustomerGridFlaggedAccount(criteria) {
+        var url = common.modifyRelativeUrl("/MatchMonitor/FlaggedAccountCustomers");
 
-            var url = common.modifyRelativeUrl("/MatchMonitor/GetFraudCaseTicketDetails");
+        $.post(url, criteria, function (json) {
+            $("#customers").text(`By Customers (${json.length})`);
+            customer_grid.DataTable().clear().rows.add(json).draw();
 
-            $.get(url, parameters, function (json) {
-                var table = ticket_grid.DataTable();
+            $(".action").selectmenu({
+                classes: {
+                    "ui-selectmenu-button": "ui-button-icon-only demo-splitbutton-select"
+                },
+                position: { my: "left top", at: "left bottom", collision: "flip" },
+                select: function () {
+                    var tr = $(this).parents("tr");
 
-                table.clear().rows.add(process_ticket_json(json)).draw();
-                
-                var n = json.reduce((a, arr) => a + arr.data.length, 0);
+                    var obj = customer_grid.DataTable().row(tr).data();
 
-                $("#tickets").text(`By Tickets (${n})`);
-
-                if (n != 0) {
-                    $("#DataTables_Table_0_info").text(`Displaying 1 to ${n} of ${n} item(s)`);
-                }
-
-                totalTicket = n;
-                $(".ip-link").click(renderTicketByIp);
+                    if (this.value == "2") {
+                        renderAssociatedAccounts(obj);
+                    }
+                    else if (this.value == "1") {
+                        renderLast7DaysTickets(obj);
+                    }
+                    else {
+                        openSuspiciousHistoryLink(obj);
+                    }
+                },
             });
-        }      
+
+            $(".group-action").controlgroup();
+
+            $(".group-action button").click(e => $(e.target).next().selectmenu("open"));
+
+            common.closeLoading();
+        });
     }
 
     function loadCustomerGridArbitrage(criteria) {
@@ -220,7 +229,7 @@
             common.closeLoading();
         });
     }
-
+  
     function process_ticket_json(json) {
         var result = [];
 
@@ -283,72 +292,102 @@
 
     function exportExcel() {
         if (isArbitrage) {
-            var criteria = {};
-
-            if (savedCriteria == null) {
-                var bettype = 0;
-                var liveHomeScore = 0;
-                var liveAwayScore = 0;
-                var handicap = 0;
-                var valBet = $("#scoreHDP").val();
-
-                if (valBet == "-1") {
-                    bettype = "-1";
-                    liveHomeScore = "-1";
-                    liveAwayScore = "-1";
-                    handicap = "-1";
-                } else if (valBet != "") {
-                    var arrBet = valBet.split(';');
-                    bettype = arrBet[0];
-                    liveHomeScore = arrBet[1];
-                    liveAwayScore = arrBet[2];
-                    handicap = arrBet[3];
-                }                
-
-                var criteria = {
-                    liveStatus: $("#market").val(),
-                    evidenceCodeList: getEvidences(),
-                    currencyIds: getCurrency(),
-                    currencyNames: getCurrencyNames(),
-                    sites: getSites(),
-                    transDateFromString: $("#transDateFrom").val(),
-                    transDateToString: $("#transDateTo").val(),
-                    KeyName: $("#scoreHDP option:selected").text(),
-                    bettype: bettype,
-                    liveHomeScore: liveHomeScore,
-                    liveAwayScore: liveAwayScore,
-                    handicap: handicap,
-                    MatchId: parameters.matchId,
-                    EventDate: parameters.eventDate
-                };
-            } else {
-                criteria = Object.assign({}, savedCriteria);
-            }
-
-            var selectedTab = $("#detailTabs li[aria-selected=true]").attr("aria-controls");
-
-            var urlSaveCriteria = selectedTab === "customer-tab" ? common.modifyRelativeUrl("/MatchMonitor/SaveFileArbitrageCustomers")
-                : common.modifyRelativeUrl("/MatchMonitor/SaveFileArbitrageTickets");
-
-            var urlDownload = common.modifyRelativeUrl("/MatchMonitor/DownloadExcel");
-
-            $.ajax({
-                type: 'POST',
-                url: urlSaveCriteria,
-                data: criteria,           
-                success: function (response) {
-                    common.downloadFile(urlDownload, { fileId: response.FileId, fileName: response.FileName }); 
-                },
-                error: function (xhr, status, error) {
-                    console.log('data of ' + xhr.responseText);
-                }
-            });
-
+            exportArbitrage();
+        } else if (isFlaggedAccount) {
+            exportFlaggedAccounts();
         } else {
             var url = common.modifyRelativeUrl("/MatchMonitor/ExportExcelForDetail");
 
             common.downloadFile(url, parameters);
         }
+    }
+
+    function exportArbitrage() {
+        var criteria = {};
+
+        if (savedCriteria == null) {
+            var bettype = 0;
+            var liveHomeScore = 0;
+            var liveAwayScore = 0;
+            var handicap = 0;
+            var valBet = $("#scoreHDP").val();
+
+            if (valBet == "-1") {
+                bettype = "-1";
+                liveHomeScore = "-1";
+                liveAwayScore = "-1";
+                handicap = "-1";
+            } else if (valBet != "") {
+                var arrBet = valBet.split(';');
+                bettype = arrBet[0];
+                liveHomeScore = arrBet[1];
+                liveAwayScore = arrBet[2];
+                handicap = arrBet[3];
+            }
+
+            var criteria = {
+                liveStatus: $("#market").val(),
+                evidenceCodeList: getEvidences(),
+                currencyIds: getCurrency(),
+                currencyNames: getCurrencyNames(),
+                sites: getSites(),
+                transDateFromString: $("#transDateFrom").val(),
+                transDateToString: $("#transDateTo").val(),
+                KeyName: $("#scoreHDP option:selected").text(),
+                bettype: bettype,
+                liveHomeScore: liveHomeScore,
+                liveAwayScore: liveAwayScore,
+                handicap: handicap,
+                MatchId: parameters.matchId,
+                EventDate: parameters.eventDate
+            };
+        } else {
+            criteria = Object.assign({}, savedCriteria);
+        }
+
+        var selectedTab = $("#detailTabs li[aria-selected=true]").attr("aria-controls");
+
+        var urlSaveCriteria = selectedTab === "customer-tab" ? common.modifyRelativeUrl("/MatchMonitor/SaveFileArbitrageCustomers")
+            : common.modifyRelativeUrl("/MatchMonitor/SaveFileArbitrageTickets");
+
+        var urlDownload = common.modifyRelativeUrl("/MatchMonitor/DownloadExcel");
+
+        $.ajax({
+            type: 'POST',
+            url: urlSaveCriteria,
+            data: criteria,
+            success: function (response) {
+                common.downloadFile(urlDownload, { fileId: response.FileId, fileName: response.FileName });
+            },
+            error: function (xhr, status, error) {
+                console.log('data of ' + xhr.responseText);
+            }
+        });
+    }    
+
+    function exportFlaggedAccounts() {
+
+        var urlSaveCriteria = common.modifyRelativeUrl("/MatchMonitor/SaveFileFlaggedAccounts");
+        var urlDownload = common.modifyRelativeUrl("/MatchMonitor/DownloadExcel");
+        var criteria = {};
+
+        if (savedCriteria == null) {
+            criteria = getCriteriaFlaggedAccounts();
+        } else {
+            criteria = Object.assign({}, savedCriteria);
+        }
+
+        $.ajax({
+            type: 'POST',
+            url: urlSaveCriteria,
+            data: criteria,
+            success: function (response) {
+                common.downloadFile(urlDownload, { fileId: response.FileId, fileName: response.FileName });
+            },
+            error: function (xhr, status, error) {
+                console.log('data of ' + xhr.responseText);
+            }
+        });
     }
 
     function removeMatchLeague() {
@@ -762,7 +801,46 @@
         return obj.BetId;
     };   
 
-    function loadArbitrageGroups(criteria) {       
+    function loadFlaggedAccountsTicket(criteria) {
+        var url = common.modifyRelativeUrl('/MatchMonitor/FlaggedAccountTickets');
+
+        common.showLoading();
+
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data: criteria,
+            success: function (response) {
+                if (response != null) {
+                    renderFlaggedAccountTicketGrid(response);
+                }
+            },
+            error: function (err) {
+                loadError(err);
+            }
+        });
+    }
+
+    function renderFlaggedAccountTicketGrid(json) {
+        var table = ticket_grid.DataTable();
+
+        table.clear().rows.add(process_ticket_json(json)).draw();
+
+        var n = json.reduce((a, arr) => a + arr.data.length, 0);
+
+        $("#tickets").text(`By Tickets (${n})`);
+
+        if (n != 0) {
+            $("#DataTables_Table_0_info").text(`Displaying 1 to ${n} of ${n} item(s)`);
+        }
+
+        totalTicket = n;
+        $(".ip-link").click(renderTicketByIp);
+
+        common.closeLoading();
+    }
+
+    function loadArbitrageTicketGroups(criteria) {       
         var urlGroup = common.modifyRelativeUrl("/MatchMonitor/GetArbitrageTicketsGroupSummary");
 
         common.showLoading();
@@ -890,49 +968,82 @@
             transDateFromInput.css({ 'border': '1px solid #d6d6d6' });
             transDateToInput.css({ 'border': '1px solid #d6d6d6' });
 
-            var bettype = 0;            
-            var liveHomeScore = 0;
-            var liveAwayScore = 0;
-            var handicap = 0;
-            var valBet = $("#scoreHDP").val();
-            
-            if (valBet == "-1") {
-                bettype = "-1";
-                liveHomeScore = "-1";
-                liveAwayScore = "-1";
-                handicap = "-1";
-            } else if (valBet != "") {
-                var arrBet = valBet.split(';');
-                bettype = arrBet[0];
-                liveHomeScore = arrBet[1];
-                liveAwayScore = arrBet[2];
-                handicap = arrBet[3];
+            var criteria = {};
+
+            if (isArbitrage) {
+                criteria = getCriteriaArbitrage();
+
+                loadCustomerGridArbitrage(criteria);
+                loadArbitrageTicketGroups(criteria);
+            }
+            else if (isFlaggedAccount) {
+                criteria = getCriteriaFlaggedAccounts();
+
+                loadCustomerGridFlaggedAccount(criteria);
+                loadFlaggedAccountsTicket(criteria);
             }
 
-            var criteria = {
-                liveStatus: $("#market").val(),
-                evidenceCodeList: getEvidences(),
-                currencyIds: getCurrency(),
-                currencyNames: getCurrencyNames(),
-                sites: getSites(),
-                transDateFromString: $("#transDateFrom").val(),
-                transDateToString: $("#transDateTo").val(),
-                keyName: $("#scoreHDP option:selected").text(),
-                bettype: bettype,
-                liveHomeScore: liveHomeScore,
-                liveAwayScore: liveAwayScore,
-                handicap:handicap,
-                matchId: parameters.matchId,
-                eventDate: parameters.eventDate
-            };
-
             savedCriteria = criteria;
-
-            loadCustomerGridArbitrage(criteria);
-
-            loadTicketGridArbitrage(criteria);
         }
     };    
+
+    function getCriteriaArbitrage() {
+        var bettype = 0;
+        var liveHomeScore = 0;
+        var liveAwayScore = 0;
+        var handicap = 0;
+        var valBet = $("#scoreHDP").val();
+
+        if (valBet == "-1") {
+            bettype = "-1";
+            liveHomeScore = "-1";
+            liveAwayScore = "-1";
+            handicap = "-1";
+        } else if (valBet != "") {
+            var arrBet = valBet.split(';');
+            bettype = arrBet[0];
+            liveHomeScore = arrBet[1];
+            liveAwayScore = arrBet[2];
+            handicap = arrBet[3];
+        }
+
+        var criteria = {
+            liveStatus: $("#market").val(),
+            evidenceCodeList: getEvidences(),
+            currencyIds: getCurrency(),
+            currencyNames: getCurrencyNames(),
+            sites: getSites(),
+            transDateFromString: $("#transDateFrom").val(),
+            transDateToString: $("#transDateTo").val(),
+            keyName: $("#scoreHDP option:selected").text(),
+            bettype: bettype,
+            liveHomeScore: liveHomeScore,
+            liveAwayScore: liveAwayScore,
+            handicap: handicap,
+            matchId: parameters.matchId,
+            eventDate: parameters.eventDate
+        };
+
+        return criteria;
+    }
+
+    function getCriteriaFlaggedAccounts() {        
+
+        var criteria = {
+            LiveStatus: $("#market").val(),
+            EvidenceCodeList: getEvidences(),
+            CurrencyIds: getCurrency(),
+            CurrencyNames: getCurrencyNames(),
+            Sites: getSites(),
+            TransDateFromString: $("#transDateFrom").val(),
+            TransDateToString: $("#transDateTo").val(),
+            Bettype: $('#betType').val(),
+            MatchId: parameters.matchId,
+            EventDate: parameters.eventDate
+        };
+
+        return criteria;
+    }
 
     function getEvidences() {
         var array = [];

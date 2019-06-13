@@ -45,9 +45,7 @@
             }
 
             row.GetCell(cell_idx++).SetCellValue(ticket.Status);
-#pragma warning disable S1854 // Dead stores should be removed
-            row.GetCell(cell_idx++).SetCellValue(ticket.IP);
-#pragma warning restore S1854 // Dead stores should be removed
+            row.GetCell(cell_idx).SetCellValue(ticket.IP);
         }
 
         protected override void FillLegend(IRow row, MatchFraudCaseInfo legend)
@@ -64,17 +62,22 @@
 
         private static void GetChoiceExcel(TicketDetails t, ICell cell)
         {
-            var bet_team = new StringBuilder(t.ChoiceExcel.betTeam);
+            var bet_team = new StringBuilder();
+            var handicap = new StringBuilder();
+            var score = string.Empty;
 
-            var score = BetListHelper.ExtractStringFromHtml(t.ChoiceExcel.Score);
+            if (t.ChoiceExcel != null)
+            {
+                bet_team.Append(t.ChoiceExcel.betTeam);
+                handicap.Append(t.ChoiceExcel.Handicap);
+                score = BetListHelper.ExtractStringFromHtml(t.ChoiceExcel.Score);
+            }
 
             bet_team
                 .Replace("&nbsp;", "")
                 .Replace("<span class=\"underdog\">", "")
                 .Replace("</span>", "")
                 .Replace("<span class=\"favorite\">", "");
-
-            var handicap = new StringBuilder(t.ChoiceExcel.Handicap);
 
             handicap
                 .Replace("<span class='handicap'>", "")

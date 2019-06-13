@@ -175,6 +175,50 @@
         #endregion Other Fraud Cases
 
         #region Flagged Accounts
+
+        [HttpPost]
+        public ActionResult FlaggedAccountTickets(GetFlaggedAccountCriteria criteria)
+        {
+            criteria.FraudCaseId = (int)Library.Models.FraudCaseId.FlaggedAccount;
+            criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
+
+            var data =
+               _fraudCaseDetailService.FlaggedAccountTickets(criteria)
+               .GroupBy(t => t.Bettype)
+               .Select(g => new { key = g.Key, data = g.AsEnumerable() });
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult FlaggedAccountCustomers(GetFlaggedAccountCriteria criteria)
+        {
+            criteria.FraudCaseId = (int)Library.Models.FraudCaseId.FlaggedAccount;
+            criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
+
+            var data = _fraudCaseDetailService.FlaggedAccountCustomers(criteria);
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public ActionResult SaveFileFlaggedAccounts(GetFlaggedAccountCriteria criteria)
+        {
+            var template = Server.MapPath("~/App_Data/Excel Template/MatchMonitor/FraudCaseDetail/flagged account.xlsx");
+
+            var fileName = string.Format("FraudCaseDetails_{0}.xlsx", DateTime.Today.ToString("yyyyMMdd"));
+           
+            criteria.FraudCaseId = (int)Library.Models.FraudCaseId.FlaggedAccount;
+            criteria.SaveChoice = true;
+            criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
+            var content = _fraudCaseDetailService.ExportFlaggedAccounts(criteria, template);
+
+            string fileId = Guid.NewGuid().ToString();
+
+            TempData[fileId] = content;
+
+            return new JsonResult { JsonRequestBehavior = JsonRequestBehavior.AllowGet, Data = new { FileId = fileId, FileName = fileName } };
+        }
+
         public ActionResult GetBetType(GetBetTypesCriteria criteria)
         {
             var data = _fraudCaseDetailService.GetBetTypes(criteria);

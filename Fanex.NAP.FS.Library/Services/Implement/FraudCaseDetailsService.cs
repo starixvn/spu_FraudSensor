@@ -362,6 +362,98 @@
         #endregion Other Fraud Cases
 
         #region Flagged Accounts
+        public IEnumerable<TicketDetails> FlaggedAccountTickets(GetFlaggedAccountCriteria criteria)
+        {
+            var legend = GetInfo(criteria.MatchId, criteria.FraudCaseId, criteria.EventDate);
+            var html_builder = new BetListHTMLBuilder();
+            var ticketHelper = new TicketHelper();
+
+            var null_winloss = new HashSet<string>
+            {
+                "running",
+                "reject"
+            };
+
+            var data = DataService.GetData<TicketInfo>(criteria)
+                .Select(a =>
+                {
+                    a.HomeId = legend.HomeId;
+                    a.AwayId = legend.AwayId;
+
+                    var bettype = CachedRef.GetBettypeName(a.BetTypeId);
+                    var grouped_bettype = GetOrder(bettype) != BettypeOrder.Other ? bettype : "Others";
+
+                    return new TicketDetails
+                    {
+                        Member = a.UserName,
+                        Bettype = grouped_bettype,
+                        TransDate = a.TransDate.ToString("MMM dd, yyyy hh:mm:ss tt"),
+                        BetID = a.TransId.ToString(),
+                        IP = a.IP,
+                        Odds = new OddsDetails { Value = (double)a.Odds, Type = CachedRef.GetOddsTypeName(int.Parse(a.OddsType)), Html = html_builder.BuildOdds(a, null, ticketHelper.GetOddsTypeNameById) },
+                        Score = string.Format("{0}-{1}", a.LiveHomeScore, a.LiveAwayScore),
+                        Stake = a.Stake,
+                        Status = a.Status,
+                        WinLoss = null_winloss.Contains(a.Status.ToLowerInvariant()) ? null : new decimal?(a.Winlost),
+                        Choice = html_builder.BuildChoice(a, ticketHelper, null, false),
+                        ChoiceExcel = criteria.SaveChoice ? html_builder.BuildChoiceBlock(a, ticketHelper, null, false) : null,
+                        BettypeRealName = bettype,
+                        CurrencyName = a.CurrencyName,
+                        RawData = criteria.SaveChoice ? a : null
+                    };
+                })
+                .OrderBy(t => GetOrder(t.Bettype))
+                .ThenBy(t => DateTime.Parse(t.TransDate))
+                .ThenBy(t => t.Member);
+
+            return data;
+        }
+
+        public IEnumerable<CustomerDetails> FlaggedAccountCustomers(GetFlaggedAccountCriteria criteria)
+        {
+            using (var db = new ObjectDb(criteria.GetSettingKey()))
+            using (var query = db.QueryMultiple(criteria))
+            {
+                var custInfo = query.Read<CustInfo>();
+
+                IEnumerable<CustomerEvidence> custEvidence;
+
+                custEvidence = GetEvidences(custInfo.Select(info => info.CustId));
+
+                var totalAssociation = GetTotalAssociations(custInfo.Select(i => i.CustId)).ToDictionary(o => o.CustId, o => o.TotalAssociation);
+
+                return custInfo.GroupJoin(
+                    custEvidence,
+                    info => info.CustId,
+                    evid => evid.CustId,
+                    (info, evidence) => new CustomerDetails
+                    {
+                        CustId = info.CustId,
+                        Member = info.Username,
+                        TotalWinLoss = (double)info.TotalWinlost,
+                        TotalStake = (double)info.TotalStake,
+                        Tickets = info.NoOfTickets,
+                        Evidence = string.Join(", ", evidence.Distinct().Select(e => e.EvidenceCode + "-" + e.EvidenceName)),
+                        AssociatedAccounts = totalAssociation.ContainsKey(info.CustId) ? totalAssociation[info.CustId] : 0,
+                        CurrencyName = info.CurrencyName
+                    }).OrderBy(c => c.Member);
+            }
+        }
+
+        public byte[] ExportFlaggedAccounts(GetFlaggedAccountCriteria criteria, string templatePath)
+        {
+            var legend = GetInfo(criteria.MatchId, criteria.FraudCaseId, criteria.EventDate);
+            var tickets = FlaggedAccountTickets(criteria);
+            var customers = FlaggedAccountCustomers(criteria);
+
+            var wb =
+                ExcelUtilities.GetWorkbook(templatePath)
+                    .RenderSheet(new TicketDetailConfig(tickets.Count()), legend, tickets, null)
+                    .RenderSheet(new CustomerDetailConfig(customers.Count()), legend, customers, null);
+
+            return wb.ToBytes();
+        }
+
         public IEnumerable<BetTypes> GetBetTypes(GetBetTypesCriteria criteria)
         {
             return DataService.GetData<BetTypes>(criteria);
