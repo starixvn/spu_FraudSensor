@@ -3,8 +3,7 @@
     using Core.BaseClasses;
     using Fanex.BetList.Core.Builder;
     using Fanex.BetList.Core.TicketHelper;
-    using Fanex.Data;
-    using Fanex.Logging;
+    using Fanex.Data;    
     using Fanex.NAP.FS.Library.Core.ExportExcel;
     using Fanex.NAP.FS.Library.Core.Helpers;
     using Fanex.NAP.FS.Library.Core.Helpers.Api;
@@ -17,13 +16,11 @@
     using Fanex.NAP.FS.Library.Models.MatchMonitor;
     using Fanex.NAP.FS.Library.Models.MatchMonitor.FraudCaseDetails;
     using Fanex.NAP.FS.Library.ViewModels.MatchMonitor.FraudCaseDetails;
+    using Fanex.Data.Repository;
     using System;
     using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
-    using Data.Repository;
-    using System.Reflection;
+    using System.Linq;    
+    using System.Threading.Tasks;         
 
     public class FraudCaseDetailsService : IFraudCaseDetailsService
     {
@@ -643,34 +640,58 @@
         public byte[] ExportFlaggedAccounts(FlaggedAccountCriteria criteria, string templatePath)
         {
             var legend = GetInfo(criteria.MatchId, 6, criteria.EventDate);
+            legend.Filter = GenerateFilterInfo(criteria);
             var tickets = FlaggedAccountTickets(criteria);
 
-            GetFlaggedAccountCustomerCriteria cusCriteria = ChangeType<GetFlaggedAccountCustomerCriteria>(criteria);
+            GetFlaggedAccountCustomerCriteria cusCriteria = ObjectHelper.ConvertObject<GetFlaggedAccountCustomerCriteria>(criteria);
             var customers = FlaggedAccountCustomers(cusCriteria);
 
             var wb =
                 ExcelUtilities.GetWorkbook(templatePath)
-                    .RenderSheet(new FlaggedAccountConfig(tickets.Count()), legend, tickets, null)
+                    .RenderSheet(new FlaggedAccountTicketConfig(tickets.Count()), legend, tickets, null)
                     .RenderSheet(new CustomerDetailConfig(customers.Count()), legend, customers, null);
             
             return wb.ToBytes();
         }
 
-        private T ChangeType<T>(object source)
+        private string[] GenerateFilterInfo(ICriteria criteria)
         {
-            var target = Activator.CreateInstance<T>();
+            string[] filterInfo = new string[7];
 
-            var fields = target.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public);
-
-            foreach (var field in fields)
+            if(criteria is GetFlaggedAccountTicketCriteria)
             {
-                var value = field.GetValue(source);
-                if (field.CanWrite)
+                GetFlaggedAccountTicketCriteria filter = criteria as GetFlaggedAccountTicketCriteria;
+
+                // Market
+                filterInfo[0] = filter.LiveStatus == -1 ? "All" : (filter.LiveStatus == 0 ? "Non-Live" : "Live");
+
+                // Currency
+                filterInfo[1] = filter.CurrencyNames;
+
+                // Evidence name
+                string strCode = string.Empty;
+                var otherEvidenceCode = AppSettings.Get("FPS_GET_OTHER_EVIDENCES");
+                if (otherEvidenceCode != null && filter.EvidenceCodeList != null)
                 {
-                    field.SetValue(target, value);
+                    strCode = filter.EvidenceCodeList;
+                    strCode = strCode.Replace(otherEvidenceCode, "Others");
+                    strCode = strCode.Replace(',', '/');
                 }
-            }
-            return target;
+
+                filterInfo[2] = ReplaceEvidences(strCode);
+
+                // From date, to date
+                filterInfo[3] = filter.TransDateFromString != null ? filter.TransDateFromString.Replace(',', '-') : string.Empty;
+                filterInfo[4] = filter.TransDateToString != null ? filter.TransDateToString.Replace(',', '-') : string.Empty;
+
+                // Bet type
+                filterInfo[5] = filter.Bettype == -1 ? "All" : (filter.Bettype == 0 ? "Others" : CachedRef.GetBettypeName(filter.Bettype));
+
+                // Sites
+                filterInfo[6] = filter.Sites;
+            }            
+            
+            return filterInfo;
         }
 
         public IEnumerable<BetTypes> GetBetTypes()

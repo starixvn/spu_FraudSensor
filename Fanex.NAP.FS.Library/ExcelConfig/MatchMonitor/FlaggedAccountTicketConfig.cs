@@ -8,13 +8,13 @@
     using System;
     using System.Text;
 
-    public class FlaggedAccountConfig : FSExcelConfig<MatchFraudCaseInfo, FlaggedAccountTicket, object>
+    public class FlaggedAccountTicketConfig : FSExcelConfig<MatchFraudCaseInfo, FlaggedAccountTicket, object>
     {
         protected override int SheetIndex => 0;
 
         protected override string SheetName { get; }
 
-        public FlaggedAccountConfig(int ticketNo)
+        public FlaggedAccountTicketConfig(int ticketNo)
         {
             SheetName = string.Format("By Tickets ({0})", ticketNo);
         }      
@@ -54,6 +54,9 @@
         protected override void FillLegend(IRow row, MatchFraudCaseInfo legend)
         {
             var cell1 = row.GetCell(0);
+            var cell2 = row.GetCell(5);
+            var cell3 = row.GetCell(9);
+            string[] arrFilter = legend.Filter;
 
             new XSSFRichTextString()
                 .WriteBold("Event: ").Write(string.Format("{0} - vs - {1}\n", legend.Home as string, legend.Away as string))
@@ -61,6 +64,21 @@
                 .WriteBold("Fraud Case: ").Write(legend.FraudCase + "\n")
                 .WriteBold("HT/FT Score: ").Write(legend.HTScore + " / " + legend.FTScore + "\n")
                 .SetValue(cell1);
+
+            if (arrFilter != null && arrFilter.Length >= 7)
+            {
+                new XSSFRichTextString()
+                   .WriteBold("Site: ").Write(arrFilter[6] + "\n")
+                   .WriteBold("Currency: ").Write(arrFilter[1] + "\n")
+                   .WriteBold("Evidence: ").Write(arrFilter[2] + "\n")
+                   .SetValue(cell2);
+
+                new XSSFRichTextString()
+                    .WriteBold("Market: ").Write(arrFilter[0] + "\n")
+                    .WriteBold("Trans Date: ").Write(arrFilter[3] + " - " + arrFilter[4] + "\n")
+                    .WriteBold("Bet Type: ").Write(arrFilter[5] + "\n")
+                    .SetValue(cell3);
+            }
         }
 
         private static void GetChoiceExcel(FlaggedAccountTicket t, ICell cell)

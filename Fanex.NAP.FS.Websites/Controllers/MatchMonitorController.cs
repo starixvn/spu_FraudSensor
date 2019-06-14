@@ -202,15 +202,13 @@
         public ActionResult SaveFileFlaggedAccounts(GetFlaggedAccountTicketCriteria criteria)
         {
             var template = Server.MapPath("~/App_Data/Excel Template/MatchMonitor/FraudCaseDetail/flagged account.xlsx");
-
             var fileName = string.Format("FraudCaseDetails_{0}.xlsx", DateTime.Today.ToString("yyyyMMdd"));
-                    
+
             criteria.SaveChoice = true;
             criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
             var content = _fraudCaseDetailService.ExportFlaggedAccounts(criteria, template);
 
             string fileId = Guid.NewGuid().ToString();
-
             TempData[fileId] = content;
 
             return new JsonResult { JsonRequestBehavior = JsonRequestBehavior.AllowGet, Data = new { FileId = fileId, FileName = fileName } };

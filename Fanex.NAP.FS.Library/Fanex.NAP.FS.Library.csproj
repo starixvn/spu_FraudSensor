@@ -318,7 +318,7 @@
     <Compile Include="ExcelConfig\FraudCase\ScannedOfficeIP\OfficeIPInternalAccountExcelConfig.cs" />
     <Compile Include="ExcelConfig\MatchMonitor\ArbitrageConfig.cs" />
     <Compile Include="ExcelConfig\MatchMonitor\CustomerDetailConfig.cs" />
-    <Compile Include="ExcelConfig\MatchMonitor\FlaggedAccountConfig.cs" />
+    <Compile Include="ExcelConfig\MatchMonitor\FlaggedAccountTicketConfig.cs" />
     <Compile Include="ExcelConfig\MatchMonitor\MatchMonitorExcelConfig.cs" />
     <Compile Include="ExcelConfig\MatchMonitor\TicketByIpConfig.cs" />
     <Compile Include="ExcelConfig\MatchMonitor\TicketDetailConfig.cs" />
