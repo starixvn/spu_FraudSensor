@@ -763,6 +763,7 @@
                 thousands: ",",
                 zeroRecords: "There's no data"
             },
+            scrollX: "1855px",
             scrollY: '57vh',
             scrollCollapse: true,
             columns: [
@@ -772,7 +773,7 @@
                 { data: obj => obj.DangerousLevel, className: "text-center", width: "40px"},
                 { data: obj => obj.Site, width: "120px"},
                 { data: obj => obj.CurrencyName, className: "text-center", width: "10px" },
-                { data: obj => moment(obj.TransDate, "MMM D, YYYY hh:mm:ss A").format("MMM D, YYYY<br/>hh:mm:ss A"), className: "text-center", width: "100px" },
+                { data: obj => moment(obj.TransDate, "MMM D, YYYY hh:mm:ss A").format("MMM D, YYYY<br/>hh:mm:ss A"), className: "text-center", width: "120px" },
                 { data: obj => obj.BetID, width: "120px" },
                 { data: obj => obj.Choice, className: "text-right" },
                 { data: obj => obj.Score, className: "text-center", width: "40px" },

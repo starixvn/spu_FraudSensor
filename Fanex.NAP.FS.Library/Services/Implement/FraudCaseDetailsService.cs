@@ -375,7 +375,7 @@
             var rawData = DataService.GetData<TicketInfo>(criteria);
             string sites = criteria.Sites != "All" ? criteria.Sites : null;
 
-            string evidenceList = ReplaceString(criteria.EvidenceCodeList, otherEvidenceCode, string.Empty);
+            string evidenceList = CheckCriteriaEvidenceOther(criteria.EvidenceCodeList, otherEvidenceCode);
 
             var custOfSites = rawData.Select(t => t.CustId).Distinct().Chunk(500)
                                     .Select(q => ApiHelper.Post<IEnumerable<CustomerSubcriber>>(urlCustSites, new CustomerSubcriberList { CustIds = string.Join(",", q), Subscribers = sites }))
@@ -697,14 +697,19 @@
             return lstBetTypes;
         }
 
-        private string ReplaceString(string code, string oldCode, string newCode)
+        private string CheckCriteriaEvidenceOther(string code, string otherEvidenceCode)
         {
             if (code == null)
             {
-                return code;
+                return null;
             }
 
-            return code.Replace(oldCode, newCode);
+            if (code.Contains(otherEvidenceCode))
+            {
+                return null;
+            }
+
+            return code;
         }
 
         #endregion
@@ -814,7 +819,7 @@
             var url = AppSettings.Get("FPS_WEBAPI_GET_CUSTOMER_EVIDENCE");
             var otherEvidenceCode = AppSettings.Get("FPS_GET_OTHER_EVIDENCES");
 
-            string evidenceList = ReplaceString(evidenceCodeList, otherEvidenceCode, string.Empty);
+            string evidenceList = CheckCriteriaEvidenceOther(evidenceCodeList, otherEvidenceCode);
 
             var tsk = custIds.Distinct().Chunk(500).Select(a => new CustomerEvidenceList
             {
@@ -838,7 +843,7 @@
 
             string sites = criteria.Sites != "All" ? criteria.Sites : null;
 
-            string evidenceList = ReplaceString(criteria.EvidenceCodeList, otherEvidenceCode, string.Empty);
+            string evidenceList = CheckCriteriaEvidenceOther(criteria.EvidenceCodeList, otherEvidenceCode);
 
             var custOfSites = rawData.Select(t => t.CustId).Distinct().Chunk(500)
                                     .Select(q => ApiHelper.Post<IEnumerable<CustomerSubcriber>>(urlCustSites, new CustomerSubcriberList { CustIds = string.Join(",", q), Subscribers = sites }))
