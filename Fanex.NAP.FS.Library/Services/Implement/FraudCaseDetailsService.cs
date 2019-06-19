@@ -918,8 +918,7 @@
                         ComPT = t.ComPTStake,
                         Virtual = t.VirtualStake,
                         Full = t.FullStake
-                    },
-                    BettypeName = CachedRef.GetBettypeName(t.BetTypeId),
+                    },                   
                     Handicap = (double)(t.Handicap1 - t.Handicap2),
                     Score = $"{t.LiveHomeScore} - {t.LiveAwayScore}",
                     IsIPFraud = t.IsIPFraud
@@ -981,8 +980,7 @@
                         ComPT = t.ComPTStake,
                         Virtual = t.VirtualStake,
                         Full = t.FullStake
-                    },                   
-                    BettypeName = CachedRef.GetBettypeName(t.BetTypeId),
+                    },                                       
                     Handicap = (double)(t.Handicap1 - t.Handicap2),
                     Score = $"{t.LiveHomeScore} - {t.LiveAwayScore}",
                     IsIPFraud = t.IsIPFraud
@@ -994,7 +992,7 @@
                     return new ArbitrageGroupTicketList
                     {
                         BettypeId = g.Key.Item1,
-                        BettypeName = CachedRef.GetBettypeName(g.Key.Item1),
+                        BettypeName = CachedRef.GetBettypeName(g.Key.Item1),                        
                         Away = tmp.Where(t => t.BetTeam == "a"),
                         Home = tmp.Where(t => t.BetTeam == "h"),
                         Handicap = g.Key.Item2,
