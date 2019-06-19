@@ -15,9 +15,16 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Library.Models.MatchMonitor;
+    using Fanex.NAP.FS.Library.Criteria.MatchMonitor;
 
     public class CustomerMonitorService : ICustomerMonitorService
     {
+        public BalanceUpDate GetBalanceUpDate()
+        {
+            return DataService.GetData<Library.Models.MatchMonitor.BalanceUpDate>(new BalanceUpDateGetCriteria()).First();
+        }
+
         public IEnumerable<Customer> GetCustomers(CustomerGetCriteria criteria)
         {
             return DataService.GetData<Customer>(criteria);

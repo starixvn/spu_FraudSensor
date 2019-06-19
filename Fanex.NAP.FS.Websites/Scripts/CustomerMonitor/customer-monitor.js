@@ -56,14 +56,15 @@
 
     from_date.datepicker({
         dateFormat: "M dd, yy",
+        minDate: balanceUpDay,
         changeMonth: true,
         changeYear: true,
-        firstDay: 1,
-        minDate: "-1y +1d"
+        firstDay: 1       
     });
 
     to_date.datepicker({
         dateFormat: "M dd, yy",
+        minDate: balanceUpDay,
         changeMonth: true,
         changeYear: true,
         firstDay: 1
@@ -352,13 +353,23 @@
 
         from_date.datepicker("option", "maxDate", to_val);
 
-        from_date.datepicker("option", "minDate", moment(to_val).add(-1, "y").toDate());
+        var minDate = moment(to_val).add(-1, "y").toDate();
+
+        if (minDate < balanceUpDay) {
+            minDate = balanceUpDay;
+        }
+
+        from_date.datepicker("option", "minDate", minDate);
 
         date_type.val(7).change();
     }
 
     function restrict_to_date() {
         var from_val = from_date.datepicker("getDate");
+        
+        if (from_val < balanceUpDay) {
+            from_val = balanceUpDay;
+        }
 
         to_date.datepicker("option", "minDate", from_val);
 

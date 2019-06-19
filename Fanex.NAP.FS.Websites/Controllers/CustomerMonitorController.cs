@@ -29,8 +29,8 @@
 
         public ActionResult Index()
         {
-            return View();
-        }
+            return View(_customerMonitorService.GetBalanceUpDate());
+        }        
 
         [HttpPost]
         public ActionResult GetCustomers(CustomerGetCriteria criteria)
