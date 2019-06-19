@@ -60,8 +60,7 @@
                         League = CachedRef.GetLeagueName(a.LeagueId),
                         LeagueMatch = string.Format("{0} (<div class='text-blue'> {1} </div>)", string.Format("{0} -vs- {1}", CachedRef.GetTeamName(int.Parse(a.HomeId.ToString())), CachedRef.GetTeamName(int.Parse(a.AwayId.ToString()))), CachedRef.GetLeagueName(a.LeagueId))
                     };
-                })
-                .OrderBy(t => t.MatchId)
+                }).OrderBy(t => t.MatchString)
                 .ThenBy(t => DateTime.Parse(t.TransDate));
         }
 
