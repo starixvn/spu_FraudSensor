@@ -344,7 +344,8 @@
             from_date.datepicker("setDate", from);
             to_date.datepicker("setDate", to);
             from_date.datepicker("option", "maxDate", null);
-            to_date.datepicker("option", "minDate", "-1y");
+            //to_date.datepicker("option", "minDate", "-1y");
+            to_date.datepicker("option", "minDate", balanceUpDay);
         }
     }
 
