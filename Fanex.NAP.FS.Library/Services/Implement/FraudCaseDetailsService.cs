@@ -366,6 +366,7 @@
 
             if (criteria.Bettype == 0)
             {
+                criteria.IsBettypeOther = true;
                 criteria.Bettype = -1;
             }
 
@@ -559,7 +560,7 @@
                 var custInfo = query.Read<CustInfo>();
 
                 // filter by criteria BetType is "Others"
-                custInfo = FilterCustomerByBetTypeOther(custInfo, criteria.IsBettypeOther);
+                custInfo = FilterCustomerByBetType(custInfo, criteria.IsBettypeOther);
 
                 return FilterCustomerDetail(custInfo, criteria.Sites, criteria.EvidenceCodeList);
             }
@@ -600,7 +601,7 @@
             return FilterCustomerDetail(custInfo, lstCustOfSites, custEvidence, string.IsNullOrEmpty(evidenceCodeList));
         }
         
-        private IEnumerable<CustInfo> FilterCustomerByBetTypeOther(IEnumerable<CustInfo> custInfo, bool isBetTypeOthers)
+        private IEnumerable<CustInfo> FilterCustomerByBetType(IEnumerable<CustInfo> custInfo, bool isBetTypeOthers)
         {
             if (isBetTypeOthers)
             {
