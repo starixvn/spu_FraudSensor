@@ -362,59 +362,59 @@
         #region Flagged Accounts
         public IEnumerable<FlaggedAccountTicket> GetFlaggedAccountTickets(FlaggedAccountCriteria criteria)
         {
-            var urlCustSites = AppSettings.Get("FPS_WEBAPI_CUSTOMER_SUBSCRIBER");
-            var urlCustEvidences = AppSettings.Get("FPS_WEBAPI_GET_CUSTOMER_EVIDENCE");
-            var otherEvidenceCode = AppSettings.Get("FPS_GET_OTHER_EVIDENCES");
+            var otherEvidenceCodes = AppSettings.Get("FPS_GET_OTHER_EVIDENCES");
 
-            if (criteria.Bettype == 0) //Bettype is Others
+            if (criteria.Bettype == 0)
             {
-                criteria.IsBettypeOther = true;
                 criteria.Bettype = -1;
             }
 
-            var rawData = DataService.GetData<TicketInfo>(criteria);
-            string sites = criteria.Sites != "All" ? criteria.Sites : null;
+            var rawTickets = DataService.GetData<TicketInfo>(criteria);
+            string siteList = criteria.Sites != "All" ? criteria.Sites : null;
+            string evidenceList = CheckCriteriaEvidenceOther(criteria.EvidenceCodeList, otherEvidenceCodes);
 
-            string evidenceList = CheckCriteriaEvidenceOther(criteria.EvidenceCodeList, otherEvidenceCode);
+            var custOfSites = FilterCustomersBySites(rawTickets, siteList);
 
-            var custOfSites = rawData.Select(t => t.CustId).Distinct().Chunk(500)
-                                    .Select(q => ApiHelper.Post<IEnumerable<CustomerSubcriber>>(urlCustSites, new CustomerSubcriberList { CustIds = string.Join(",", q), Subscribers = sites }))
-                                    .ToArray();
-
-            Task.WaitAll(custOfSites);
-            // filter by criteria Sites
-            var lstCustOfSites = custOfSites.SelectMany(t => t.Result);
-            if (lstCustOfSites.Count() == 0)
+            if (!custOfSites.Any())
             {
                 return new List<FlaggedAccountTicket>();
             }
 
-            var custOfEvidences = lstCustOfSites.Select(c => c.CustId).Distinct().Chunk(500)
-                                       .Select(q => ApiHelper.Post<IEnumerable<CustomerEvidence>>(urlCustEvidences, new CustomerEvidenceList { CustIdList = string.Join(",", q), EvidenceCodeList = evidenceList }))
-                                       .ToArray();
-            Task.WaitAll(custOfEvidences);
+            var custOfEvidences = FilterCustomersByEvidences(custOfSites, evidenceList);
 
-            // filter by criteria Bet type is "Others"
-            rawData = FilterTicketByBetTypeOther(rawData, criteria.IsBettypeOther);
+            rawTickets = criteria.Bettype == 0 ? rawTickets.Where(t => !(new List<int> { 1, 3, 7, 8 }).Contains(t.BetTypeId)) : rawTickets;       
 
-            var listCustEvidence = custOfEvidences.SelectMany(t => t.Result);            
-
-            if (criteria.EvidenceCodeList != null && criteria.EvidenceCodeList.Contains(otherEvidenceCode))
+            if (criteria.EvidenceCodeList != null && criteria.EvidenceCodeList.Contains(otherEvidenceCodes))
             {
-                return FilterFlaggedAccountTicketsOtherEvidence(rawData, lstCustOfSites, listCustEvidence, criteria);
+                return FilterFlaggedAccountTicketsOtherEvidence(rawTickets, custOfSites, custOfEvidences, criteria);
             }
 
-            return FilterFlaggedAccountTickets(rawData, lstCustOfSites, listCustEvidence, criteria);
+            return FilterFlaggedAccountTickets(rawTickets, custOfSites, custOfEvidences, criteria);
         }
 
-        private IEnumerable<TicketInfo> FilterTicketByBetTypeOther(IEnumerable<TicketInfo> ticketInfos, bool isBetTypeOthers)
+        private static IEnumerable<CustomerSubcriber> FilterCustomersBySites(IEnumerable<TicketInfo> rawTickets, string sites)
         {
-            if (isBetTypeOthers)
-            {
-                List<int> conditionExtract = new List<int> { 1, 3, 7, 8 };
-                return ticketInfos.Where(c => !conditionExtract.Contains(c.BetTypeId));
-            }
-            return ticketInfos;
+            var urlCustSites = AppSettings.Get("FPS_WEBAPI_CUSTOMER_SUBSCRIBER");
+
+            var customersBySites = rawTickets.Select(t => t.CustId).Distinct().Chunk(500)
+                                    .Select(q => ApiHelper.Post<IEnumerable<CustomerSubcriber>>(urlCustSites, new CustomerSubcriberList { CustIds = string.Join(",", q), Subscribers = sites }))
+                                    .ToArray();
+
+            Task.WaitAll(customersBySites);
+
+            return customersBySites.SelectMany(t => t.Result);
+        }
+
+        private static IEnumerable<CustomerEvidence> FilterCustomersByEvidences(IEnumerable<CustomerSubcriber> customerBySites, string evidenceList)
+        {
+            var urlCustEvidences = AppSettings.Get("FPS_WEBAPI_GET_CUSTOMER_EVIDENCE");
+
+            var customerByEvidences = customerBySites.Select(c => c.CustId).Distinct().Chunk(500)
+                                       .Select(q => ApiHelper.Post<IEnumerable<CustomerEvidence>>(urlCustEvidences, new CustomerEvidenceList { CustIdList = string.Join(",", q), EvidenceCodeList = evidenceList }))
+                                       .ToArray();
+            Task.WaitAll(customerByEvidences);
+
+            return customerByEvidences.SelectMany(t => t.Result);
         }
 
         private IEnumerable<FlaggedAccountTicket> FilterFlaggedAccountTicketsOtherEvidence(IEnumerable<TicketInfo> rawData, IEnumerable<CustomerSubcriber> custSubcribers, IEnumerable<CustomerEvidence> evidences, FlaggedAccountCriteria criteria)
@@ -688,7 +688,7 @@
 
         public IEnumerable<BetTypes> GetBetTypes()
         {
-            List<BetTypes> lstBetTypes = new List<BetTypes>();
+            var lstBetTypes = new List<BetTypes>();
             lstBetTypes.Add(new BetTypes { BetType = 1 });
             lstBetTypes.Add(new BetTypes { BetType = 3 });
             lstBetTypes.Add(new BetTypes { BetType = 7 });
@@ -697,14 +697,9 @@
             return lstBetTypes;
         }
 
-        private string CheckCriteriaEvidenceOther(string code, string otherEvidenceCode)
+        private static string CheckCriteriaEvidenceOther(string code, string otherEvidenceCode)
         {
-            if (code == null)
-            {
-                return null;
-            }
-
-            if (code.Contains(otherEvidenceCode))
+            if (code == null || code.Contains(otherEvidenceCode))
             {
                 return null;
             }
