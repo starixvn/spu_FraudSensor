@@ -6,9 +6,12 @@
     using Fanex.NAP.FS.Library.Models.CustomerMonitor;
     using Fanex.NAP.FS.Library.ViewModels.CustomerMonitor.CustomerDetails;
     using System.Collections.Generic;
+    using Library.Models.MatchMonitor;
 
     public interface ICustomerMonitorService
     {
+        BalanceUpDate GetBalanceUpDate();
+
         IEnumerable<Customer> GetCustomers(CustomerGetCriteria criteria);
 
         DBResult UpdateNote(UpdateNoteCriteria criteria);

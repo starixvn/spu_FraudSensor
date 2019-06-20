@@ -174,10 +174,8 @@
                     {
                         "Bet type = HDP, O/U, FT. 1X2, 1H HDP, 1H O/U, 1H 1X2",
                         "Transaction Date = Danger Period (before goal 30s)",
-                        "Ticket count >= 5",
                         "Currency <> Test Currency",
-                        "Ticket Status =  WON",
-                        "Violation time + 1 for one match/score"
+                        "Ticket Status =  WON, Reject, Void"                       
                     };
 	
                     break;
