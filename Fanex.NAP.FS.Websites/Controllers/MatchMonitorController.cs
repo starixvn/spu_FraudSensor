@@ -177,23 +177,23 @@
         #region Flagged Accounts
 
         [HttpPost]
-        public ActionResult FlaggedAccountTickets(GetFlaggedAccountTicketCriteria criteria)
+        public ActionResult GetFlaggedAccountTickets(GetFlaggedAccountTicketCriteria criteria)
         {
             criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
 
             var data =
-               _fraudCaseDetailService.FlaggedAccountTickets(criteria)
+               _fraudCaseDetailService.GetFlaggedAccountTickets(criteria)
                .GroupBy(t => t.Bettype)
                .Select(g => new { key = g.Key, data = g.AsEnumerable() });
 
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult FlaggedAccountCustomers(GetFlaggedAccountCustomerCriteria criteria)
+        public ActionResult GetFlaggedAccountCustomers(GetFlaggedAccountCustomerCriteria criteria)
         {
             criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
 
-            var data = _fraudCaseDetailService.FlaggedAccountCustomers(criteria);
+            var data = _fraudCaseDetailService.GetFlaggedAccountCustomers(criteria);
 
             return Json(data, JsonRequestBehavior.AllowGet);
         }

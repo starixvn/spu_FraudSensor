@@ -151,7 +151,7 @@
     }    
 
     function loadCustomerGridFlaggedAccount(criteria) {
-        var url = common.modifyRelativeUrl("/MatchMonitor/FlaggedAccountCustomers");
+        var url = common.modifyRelativeUrl("/MatchMonitor/GetFlaggedAccountCustomers");
 
         $.post(url, criteria, function (json) {
             $("#customers").text(`By Customers (${json.length})`);
@@ -851,7 +851,7 @@
     };   
 
     function loadFlaggedAccountsTicket(criteria) {
-        var url = common.modifyRelativeUrl('/MatchMonitor/FlaggedAccountTickets');
+        var url = common.modifyRelativeUrl('/MatchMonitor/GetFlaggedAccountTickets');
 
         common.showLoading();
 
