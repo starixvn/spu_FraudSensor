@@ -371,6 +371,8 @@
             }
 
             var rawTickets = DataService.GetData<TicketInfo>(criteria);
+            rawTickets = criteria.Bettype == 0 ? rawTickets.Where(t => !(new List<int> { 1, 3, 7, 8 }).Contains(t.BetTypeId)) : rawTickets;  
+
             string siteList = criteria.Sites != "All" ? criteria.Sites : null;
             string evidenceList = CheckCriteriaEvidenceOther(criteria.EvidenceCodeList, otherEvidenceCodes);
 
@@ -381,9 +383,7 @@
                 return new List<FlaggedAccountTicket>();
             }
 
-            var custOfEvidences = FilterCustomersByEvidences(custOfSites, evidenceList);
-
-            rawTickets = criteria.Bettype == 0 ? rawTickets.Where(t => !(new List<int> { 1, 3, 7, 8 }).Contains(t.BetTypeId)) : rawTickets;       
+            var custOfEvidences = FilterCustomersByEvidences(custOfSites, evidenceList);     
 
             if (criteria.EvidenceCodeList != null && criteria.EvidenceCodeList.Contains(otherEvidenceCodes))
             {
