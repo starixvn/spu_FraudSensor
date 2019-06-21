@@ -378,8 +378,8 @@
         #region Flagged Accounts
         public IEnumerable<FlaggedAccountTicket> GetFlaggedAccountTickets(FlaggedAccountCriteria criteria)
         {
-            var otherEvidenceCodes = AppSettings.Get("FPS_GET_OTHER_EVIDENCES");
             var isBettypeOther = false;
+            var otherEvidenceCodes = AppSettings.Get("FPS_GET_OTHER_EVIDENCES");
 
             if (criteria.Bettype == 0)
             {
@@ -590,7 +590,6 @@
 
         private IEnumerable<CustomerDetails> FilterCustomerDetail(IEnumerable<CustInfo> custInfo, string sites, string evidenceCodes)
         {
-            IEnumerable<CustomerEvidence> custEvidence;
             var otherEvidenceCode = AppSettings.Get("FPS_GET_OTHER_EVIDENCES");
 
             var custsOfSites = GetCustsOfSites(custInfo.Select(c => c.CustId), sites);
@@ -600,7 +599,7 @@
                 return new List<CustomerDetails>();
             }
 
-            custEvidence = GetCustOfEvidences(custsOfSites.Select(c => c.CustId), evidenceCodes);
+            var custEvidence = GetCustOfEvidences(custsOfSites.Select(c => c.CustId), evidenceCodes);
 
             if (evidenceCodes != null && evidenceCodes.Contains(otherEvidenceCode))
             {
@@ -1047,6 +1046,7 @@
             {
                 int totalAll = GetListEvidences().Count();
                 string[] lstCode = evidences.Split('/');
+
                 if (lstCode.Count() == totalAll)
                 {
                     return "All";
@@ -1100,9 +1100,7 @@
             legend.Filter = array;
 
             var groupsTicket = GetArbitrageTickets(criteria, isSummary);
-
             int totalTicket = groupsTicket.Sum(g => g.Home.Count() + g.Away.Count());
-
             var wb = ExcelUtilities.GetWorkbook(templatePath)
                                     .RenderSheet(new ArbitrageConfig(totalTicket, true), legend, groupsTicket, null);
 
@@ -1115,7 +1113,6 @@
             legend.Filter = array;
 
             var customers = GetArbitrageCustomerDetails(criteria);
-
             var wb = ExcelUtilities.GetWorkbook(templatePath)
                                     .RenderSheet(new CustomerDetailConfig(customers.Count(), true), legend, customers, null);
 
