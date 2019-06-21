@@ -189,6 +189,7 @@
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
+        [HttpPost]
         public ActionResult GetFlaggedAccountCustomers(GetFlaggedAccountCustomerCriteria criteria)
         {
             criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
