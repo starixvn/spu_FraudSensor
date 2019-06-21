@@ -60,10 +60,7 @@
         }
 
         public int Bettype { get; set; }
-
-        [SpParam(Ignored = true)]
-        public bool IsBettypeOther { get; set; }
-
+    
         [SpParam(Ignored = true)]
         public string Sites { get; set; }
 
