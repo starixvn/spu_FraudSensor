@@ -15,9 +15,16 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Library.Models.MatchMonitor;
+    using Fanex.NAP.FS.Library.Criteria.MatchMonitor;
 
     public class CustomerMonitorService : ICustomerMonitorService
     {
+        public BalanceUpDate GetBalanceUpDate()
+        {
+            return DataService.GetData<Library.Models.MatchMonitor.BalanceUpDate>(new BalanceUpDateGetCriteria()).First();
+        }
+
         public IEnumerable<Customer> GetCustomers(CustomerGetCriteria criteria)
         {
             return DataService.GetData<Customer>(criteria);
@@ -60,8 +67,7 @@
                         League = CachedRef.GetLeagueName(a.LeagueId),
                         LeagueMatch = string.Format("{0} (<div class='text-blue'> {1} </div>)", string.Format("{0} -vs- {1}", CachedRef.GetTeamName(int.Parse(a.HomeId.ToString())), CachedRef.GetTeamName(int.Parse(a.AwayId.ToString()))), CachedRef.GetLeagueName(a.LeagueId))
                     };
-                })
-                .OrderBy(t => t.MatchId)
+                }).OrderBy(t => t.MatchString)
                 .ThenBy(t => DateTime.Parse(t.TransDate));
         }
 

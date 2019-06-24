@@ -13,5 +13,7 @@
         public decimal TotalWinlost { get; set; }
 
         public string CurrencyName { get; set; }
+
+        public int BettypeId { get; set; }
     }
 }

@@ -6,7 +6,6 @@
     using Fanex.NAP.FS.Library.ViewModels.MatchMonitor.FraudCaseDetails;
     using System;
     using System.Collections.Generic;    
-
     public interface IFraudCaseDetailsService
     {
         IEnumerable<TicketDetails> GetTicketDetails(int matchId, int fraudCaseId, DateTime eventDate, bool isShowSpecialCurrencies, bool saveChoice = false);
@@ -50,5 +49,13 @@
         byte[] ExportExcelArbitrageTickets(GetArbitrageTicketCriteria criteria, string[] array, string templatePath, bool isSummary);
       
         byte[] ExportExcelArbitrageCustomers(GetArbitrageCustomerCriteria criteria, string[] array, string templatePath);
+
+        IEnumerable<FlaggedAccountTicket> GetFlaggedAccountTickets(FlaggedAccountCriteria criteria);
+
+        IEnumerable<CustomerDetails> GetFlaggedAccountCustomers(FlaggedAccountCriteria criteria);
+
+        byte[] ExportFlaggedAccounts(FlaggedAccountCriteria criteria, string templatePath);
+
+        IEnumerable<BetTypes> GetBetTypes();
     }
 }

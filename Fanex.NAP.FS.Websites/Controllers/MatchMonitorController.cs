@@ -4,17 +4,13 @@
     using Fanex.NAP.Core.Web.Attribute;
     using Fanex.NAP.FS.Library.Criteria.MatchMonitor;
     using Library.Core.Helpers;
-    using Library.Criteria.MatchMonitor.FraudCaseDetails;
-    using Library.Models.MatchMonitor.FraudCaseDetails;
+    using Library.Criteria.MatchMonitor.FraudCaseDetails;    
     using Library.Service;
     using Service;
     using Service.MatchMonitor;
-    using System;
-    using System.Collections.Generic;
+    using System;    
     using System.Configuration;
     using System.Linq;
-    using System.Net;
-    using System.Text;
     using System.Web.Mvc;
 
     [NapAuth(FunctionKey = FSFunctionKeys.MatchMonitoring, Policy = Core.Business.Constant.Policy.Read)]
@@ -140,7 +136,8 @@
 
             ViewBag.BUDate = _matchMonitorService.GetBalanceUpDate().BalanceUpDay;
 
-            if (fraudCaseId == (int)Library.Models.FraudCaseId.Arbitrage)
+            if (fraudCaseId == (int)Library.Models.FraudCaseId.Arbitrage
+                || fraudCaseId == (int)Library.Models.FraudCaseId.FlaggedAccount)
             {
                 ViewBag.SiteList = _fraudCaseDetailService.GetSites();
                 ViewBag.CurrencyList = _fraudCaseDetailService.GetAllCurrency(IsShowSpecialCurrencies);
@@ -176,6 +173,56 @@
         }
 
         #endregion Other Fraud Cases
+
+        #region Flagged Accounts
+
+        [HttpPost]
+        public ActionResult GetFlaggedAccountTickets(GetFlaggedAccountTicketCriteria criteria)
+        {
+            criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
+
+            var data =
+               _fraudCaseDetailService.GetFlaggedAccountTickets(criteria)
+               .GroupBy(t => t.Bettype)
+               .Select(g => new { key = g.Key, data = g.AsEnumerable() });
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public ActionResult GetFlaggedAccountCustomers(GetFlaggedAccountCustomerCriteria criteria)
+        {
+            criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
+
+            var data = _fraudCaseDetailService.GetFlaggedAccountCustomers(criteria);
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public ActionResult SaveFileFlaggedAccounts(GetFlaggedAccountTicketCriteria criteria)
+        {
+            var template = Server.MapPath("~/App_Data/Excel Template/MatchMonitor/FraudCaseDetail/flagged account.xlsx");
+            var fileName = string.Format("FraudCaseDetails_{0}.xlsx", DateTime.Today.ToString("yyyyMMdd"));
+
+            criteria.SaveChoice = true;
+            criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
+            var content = _fraudCaseDetailService.ExportFlaggedAccounts(criteria, template);
+
+            string fileId = Guid.NewGuid().ToString();
+            TempData[fileId] = content;
+
+            return new JsonResult { JsonRequestBehavior = JsonRequestBehavior.AllowGet, Data = new { FileId = fileId, FileName = fileName } };
+        }
+
+        public ActionResult GetBetType()
+        {
+            var data = _fraudCaseDetailService.GetBetTypes();
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+       
+        #endregion
 
         #region Arbitrage        
         [HttpPost]

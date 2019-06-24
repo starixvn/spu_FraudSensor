@@ -28,16 +28,20 @@
         scrollX: true,
         scrollCollapse: true,
         columnDefs: [
-            { targets: [0,2], className: "text-center" },
+            { targets: [0, 2, 3], className: "text-center" },
             { targets: 0, width: "40px" },
-            { targets: 1, width: "182px" },
+            { targets: 1, width: "185px" },
             { targets: 2, width: "90px" },
-            { targets: 3, className: "col-note" }
+            { targets: 3, width: "90px" },
+            { targets: 4, width: "190px" },
+            { targets: 5, className: "col-note" }
         ],
         columns: [
             { data: (row, type, set, meta) => meta.row + 1 },
             { data: row => row.Username },
+            { data: row => row.TotalTicket },
             { data: row => renderViolation(row) },
+            { data: row => renderRemark(row) },
             {
                 data: renderNote, createdCell: (cell, _, row) => {
                     $(".icon-note", cell).click(() => renderNoteEdit(cell, row));
@@ -46,20 +50,21 @@
             }    
         ],
         headerCallback: function (thread) {
-            $("th", thread).eq(2).attr("title", "[Ticket Count] / [Violation Count] / [Match Count]");
+            $("th", thread).eq(3).attr("title", "[Ticket Count] / [Violation Count] / [Match Count]");
         }        
     });
 
     from_date.datepicker({
         dateFormat: "M dd, yy",
+        minDate: balanceUpDay,
         changeMonth: true,
         changeYear: true,
-        firstDay: 1,
-        minDate: "-1y +1d"
+        firstDay: 1       
     });
 
     to_date.datepicker({
         dateFormat: "M dd, yy",
+        minDate: balanceUpDay,
         changeMonth: true,
         changeYear: true,
         firstDay: 1
@@ -87,6 +92,22 @@
         return `<a class='info-bng' href='CustomerMonitor/GetCustomerTicketDetails?CustId=${obj.CustId}&Username=${obj.Username}&FromDate=${fromDate}&ToDate=${toDate}&TicketCount=${obj.TicketCount}&ViolationCount=${obj.ViolationCount}&MatchCount=${obj.MatchCount}' target='_blank'>
             ${obj.TicketCount}/${obj.ViolationCount}/${obj.MatchCount}
         </a>`;
+    }
+
+    function renderRemark(obj) {
+        var remark = [];
+
+        if (obj.TicketWON > 0) {
+            remark.push(obj.TicketWON + ' WON');
+        }
+        if (obj.TicketReject > 0) {
+            remark.push(obj.TicketReject + ' Reject');
+        }
+        if (obj.TicketVoid > 0) {
+            remark.push(obj.TicketVoid + ' Void');
+        }
+        
+        return remark.join(', ');
     }
 
     function gen_data(full = true) {
@@ -191,7 +212,7 @@
             $(inputNoteContent).removeClass('hide').focus().select();
 
             // adjust height input Note
-            $(inputNoteContent).height(heightNote + 6);
+            $(inputNoteContent).height(heightNote + 4);
 
             $(noteContent).addClass('hide').hide();
             $(noteIcon).removeClass('icon-note-text').addClass('icon-note-save').attr('title', 'save');
@@ -323,7 +344,8 @@
             from_date.datepicker("setDate", from);
             to_date.datepicker("setDate", to);
             from_date.datepicker("option", "maxDate", null);
-            to_date.datepicker("option", "minDate", "-1y");
+            //to_date.datepicker("option", "minDate", "-1y");
+            to_date.datepicker("option", "minDate", balanceUpDay);
         }
     }
 
@@ -332,13 +354,23 @@
 
         from_date.datepicker("option", "maxDate", to_val);
 
-        from_date.datepicker("option", "minDate", moment(to_val).add(-1, "y").toDate());
+        var minDate = moment(to_val).add(-1, "y").toDate();
+
+        if (minDate < balanceUpDay) {
+            minDate = balanceUpDay;
+        }
+
+        from_date.datepicker("option", "minDate", minDate);
 
         date_type.val(7).change();
     }
 
     function restrict_to_date() {
         var from_val = from_date.datepicker("getDate");
+        
+        if (from_val < balanceUpDay) {
+            from_val = balanceUpDay;
+        }
 
         to_date.datepicker("option", "minDate", from_val);
 

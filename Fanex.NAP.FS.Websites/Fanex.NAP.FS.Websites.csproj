@@ -812,6 +812,7 @@
     <Content Include="App_Data\Excel Template\MatchMonitor\FraudCaseDetail\arbitrage.xlsx" />
     <Content Include="App_Data\Excel Template\CustomerMonitor\CustomerDetails\template.xlsx" />
     <Content Include="App_Data\Excel Template\FraudCase\ScannedOfficeIP\InternalAccountTemplate.xlsx" />
+    <Content Include="App_Data\Excel Template\MatchMonitor\FraudCaseDetail\flagged account.xlsx" />
     <None Include="bundleconfig.json" />
     <Content Include="fonts\Fraud-Sensor.eot" />
     <Content Include="fonts\Fraud-Sensor.ttf" />
