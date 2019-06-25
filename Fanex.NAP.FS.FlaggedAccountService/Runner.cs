@@ -77,6 +77,11 @@
             _baseService.Hold();
         }
 
+        public void Start()
+        {
+            _baseService.Start(Execute);
+        }
+
         private void Execute(object source, System.Timers.ElapsedEventArgs e)
         {
             var exception = string.Empty;

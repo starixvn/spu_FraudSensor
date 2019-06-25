@@ -1,4 +1,8 @@
-﻿using System;
+﻿using Fanex.Logging;
+using Fanex.Logging.Sentry.RavenClient;
+using Fanex.NAP.FS.Core;
+using SharpRaven;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -15,6 +19,15 @@ namespace Fanex.NAP.FS.ExecutingService
         /// </summary>
         static void Main(string[] args)
         {
+            LogManager.SetDefaultLogCategory(AppSetting.FanexLogCategory)
+                    .Use(new List<ILogEngine>
+                    {
+                         new SentryLogging(new SentryEngineOptions
+                         {
+                             Dsn = new Dsn(AppSetting.SentryLogging)
+                         })
+                    });
+
             ServiceBase[] ServicesToRun;
             ServicesToRun = new ServiceBase[]
             {
