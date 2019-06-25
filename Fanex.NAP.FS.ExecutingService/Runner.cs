@@ -1,0 +1,30 @@
+﻿using Quartz.Impl;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Diagnostics;
+using System.Linq;
+using System.ServiceProcess;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Fanex.NAP.FS.ExecutingService
+{
+    public partial class Runner : ServiceBase
+    {
+        public Runner()
+        {
+            InitializeComponent();
+        }
+
+        protected override void OnStart(string[] args)
+        {
+            StdSchedulerFactory.GetDefaultScheduler().Result.Start();
+        }
+
+        protected override void OnStop()
+        {
+        }
+    }
+}
