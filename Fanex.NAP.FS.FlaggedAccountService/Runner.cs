@@ -185,10 +185,7 @@
                 .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
                 .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
 
-                if (!logMessage.Contains("(17507649)"))
-                {
-                    LogService.Error($"{ProjectName} - {ServiceName} - ExecuteMultiple Exeption {logMessage}");
-                }
+                LogService.Error($"{ProjectName} - {ServiceName} - ExecuteMultiple Exeption {logMessage}");
             }
         }
     }

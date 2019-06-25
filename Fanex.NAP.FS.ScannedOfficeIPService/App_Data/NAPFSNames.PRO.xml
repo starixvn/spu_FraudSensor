@@ -6,7 +6,7 @@
              DbName="DBFS.bodb_FraudSensor.bodbSPUNet"/>
 
     <Setting Key="FS_FraudCase_OfficeIP_Rule"
-         SpName="FS_FraudCase_OfficeIP_Rule"
+         SpName="FS_FraudCase_OfficeIP_Rule_xtest"
          DbName="DBFS.bodb_FraudSensor.bodbSPUNet"/>
 
     <Setting Key="FS_FraudCase_GetById"

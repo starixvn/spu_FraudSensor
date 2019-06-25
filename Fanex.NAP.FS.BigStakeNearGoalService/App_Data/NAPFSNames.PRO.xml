@@ -5,7 +5,7 @@
              SpName="FS_FraudCase_BSNG_PreCondition" 
              DbName="DBFS.bodb_FraudSensor.bodbSPUNet" TimeOut="600"/>
     <Setting Key="FS_FraudCase_BSNG_Rule" 
-             SpName="FS_FraudCase_BSNG_Rule" 
+             SpName="FS_FraudCase_BSNG_Rule_xtest" 
              DbName="DBFS.bodb_FraudSensor.bodbSPUNet" TimeOut="600"/>
     <Setting Key="FS_FraudCase_GetById" 
              SpName="FS_FraudCase_GetById" 
