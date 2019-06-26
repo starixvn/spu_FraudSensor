@@ -7,7 +7,7 @@
     using System.Collections.Generic;
 
     public class FraudCaseService
-    {
+    {        
         public IEnumerable<FraudCase> Get(int? isInternal, int? isActive, int environment)
         {
             var criteria = new FraudCaseGetCriteria(isInternal, isActive, environment);;
@@ -15,6 +15,16 @@
             using (var db = new ObjectDb(criteria.GetSettingKey()))
             {                
                 return db.Query<FraudCase>(criteria);
+            }
+        }
+
+        public IEnumerable<T> GetFraudCase<T>(int? isInternal, int? isActive, int environment)
+        {
+            var criteria = new FraudCaseGetCriteria(isInternal, isActive, environment); ;
+
+            using (var db = new ObjectDb(criteria.GetSettingKey()))
+            {
+                return db.Query<T>(criteria);
             }
         }
 

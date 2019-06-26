@@ -9,10 +9,9 @@
     using System.Reflection;
     using System.ServiceProcess;
     using System.Threading.Tasks;
-    //using Fanex.NAP.FS.Library.Models;
-    //using Fanex.NAP.FS.Library.DTO;
     using Fanex.NAP.FS.ExecutingService.Schedules;
     using Fanex.NAP.FS.ExecutingService.Jobs;
+    using Fanex.NAP.FS.Service;
 
     public partial class Runner : ServiceBase
     {
@@ -47,45 +46,45 @@
 
         }
 
-        //private async void GetFraudCase()
-        //{
-        //    var fraudCaseService = new Service.FraudCaseService();
+        private async void GetFraudCase()
+        {
+            var fraudCaseService = new FraudCaseService();
 
-        //    var fraudCases = fraudCaseService.Get(null, 1, Core.AppSetting.Environment);
+            var fraudCases = fraudCaseService.GetFraudCase<FraudCase>(null, 1, Core.AppSetting.Environment);
 
-        //    var scheduler = await StdSchedulerFactory.GetDefaultScheduler();
+            var scheduler = await StdSchedulerFactory.GetDefaultScheduler();
 
-        //    foreach (var fraudCase in fraudCases)
-        //    {
-        //        if (!fraudCase.IsActive)
-        //            continue;
+            foreach (var fraudCase in fraudCases)
+            {
+                if (!fraudCase.IsActive)
+                    continue;
 
-        //        var fraudCaseName = Enum.GetName(typeof(FraudCaseId), fraudCase.FraudCaseId);
+                //var fraudCaseName = Enum.GetName(typeof(FraudCaseId), fraudCase.FraudCaseId);
 
-        //        if (string.IsNullOrWhiteSpace(fraudCaseName))
-        //            continue;
+                //if (string.IsNullOrWhiteSpace(fraudCaseName))
+                //    continue;
 
-        //        AddScheduleJob(scheduler, fraudCase);
-        //    }
-        //}
+                AddScheduleJob(scheduler, fraudCase);
+            }
+        }
 
-        //private async void AddScheduleJob(IScheduler scheduler, FraudCase fraudCase)
-        //{
-        //    switch (fraudCase.FraudCaseId)
-        //    {
-        //        case (int)FraudCaseId.FlaggedAccount:
+        private async void AddScheduleJob(IScheduler scheduler, FraudCase fraudCase)
+        {
+            switch (fraudCase.FraudCaseId)
+            {
+                case (int)FraudCaseId.FlaggedAccount:
 
-        //            var schedule = new FlaggedAcocuntSchedule();
-        //            var job = schedule.CreateJob(fraudCase.FraudCaseName, ProjectName, fraudCase.FraudCaseDesc);
-        //            var trigger = schedule.CreateTrigger(fraudCase.FraudCaseName, fraudCase.FraudCaseInterval);
+                    var schedule = new FlaggedAcocuntSchedule();
+                    var job = schedule.CreateJob(fraudCase.FraudCaseName, ProjectName, fraudCase.FraudCaseDesc);
+                    var trigger = schedule.CreateTrigger(fraudCase.FraudCaseName, fraudCase.FraudCaseInterval);
 
-        //            await scheduler.ScheduleJob(job, trigger);
+                    await scheduler.ScheduleJob(job, trigger);
 
-        //            break;
-        //        default:
-        //            break;
-        //    }            
-        //}
+                    break;
+                default:
+                    break;
+            }
+        }
 
         private void CreateScheduleJob()
         {
@@ -130,5 +129,32 @@
             return scheduler;
         }
         
+    }
+
+    public class FraudCase
+    {
+        public int FraudCaseId { get; set; }
+
+        public string FraudCaseName { get; set; }
+
+        public string FraudCaseDesc { get; set; }
+      
+        public int FraudCaseInterval { get; set; }
+
+        public bool IsActive { get; set; }
+
+        public bool IsTest { get; set; }
+    }
+
+    public enum FraudCaseId
+    {
+        BSNG = 1,
+        FlaggedAccount = 6,
+        DelayedGoal = 8,
+        ScannedOfficeIP = 2,
+        DailyDataCapture = 4,
+        CheckBet = 3,
+        Arbitrage = 10,
+        BetsNearGoal = 11
     }
 }
