@@ -2,12 +2,10 @@
 {
     public interface ISchedule
     {
-        ISchedule Create();
+        void Shutdown();
 
-        ISchedule Shutdown();
+        void Start();
 
-        ISchedule Start();
-
-        ISchedule Pause();
+        void PauseAll();
     }
 }

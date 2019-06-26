@@ -4,12 +4,11 @@
     using Quartz;
     using Quartz.Impl; 
     using System;
-    using System.Collections.Generic;    
     using System.ServiceProcess;
     using System.Threading.Tasks;
-    using Fanex.NAP.FS.ExecutingService.Schedules;
     using Fanex.NAP.FS.ExecutingService.Jobs;
     using Fanex.NAP.FS.Service;
+    using Fanex.NAP.FS.ExecutingService.Models;
 
     public partial class Runner : ServiceBase
     {
@@ -27,9 +26,7 @@
         {
             try
             {
-                //var scheduler = CreateScheduleJobTest().Result.Start();
-                //var scheduler = CreateScheduleJobDemo().Result.Start();                
-
+                //var scheduler = CreateScheduleJobDemo().Result.Start();
                 var scheduler = GetFraudCase().Result.Start();
 
                 LogService.Info($"Executing service is STARTED at {DateTime.Now}");
@@ -37,7 +34,7 @@
             catch (Exception ex)
             {
                 LogService.Info($"Executing service is START error message: { ex.ToString() } at {DateTime.Now}");
-            }            
+            }
         }
 
         protected override void OnStop()
@@ -69,24 +66,24 @@
             return scheduler;
         }
 
-        private async void AddScheduleJob(IScheduler scheduler, FraudCase fraudCase)
+        private void AddScheduleJob(IScheduler scheduler, FraudCase fraudCase)
         {
             switch (fraudCase.FraudCaseId)
             {
                 case (int)FraudCaseId.FlaggedAccount:
 
-                    var schedule = new FlaggedAcocuntSchedule();
+                    var schedule = new FlaggedAcocuntSchedule(scheduler);
                     var job = schedule.CreateJob(fraudCase.FraudCaseName, ProjectName, fraudCase.FraudCaseDesc);
                     var trigger = schedule.CreateTrigger(fraudCase.FraudCaseName, fraudCase.FraudCaseInterval);
 
-                    var task = await scheduler.ScheduleJob(job, trigger);
+                    schedule.Schedule(job, trigger);
                     break;
                 default:
                     break;
             }
         }
 
-        private async Task<IScheduler> CreateScheduleJobTest()
+        private async Task<IScheduler> CreateScheduleJobDemo()
         {
             var scheduler = await StdSchedulerFactory.GetDefaultScheduler();
 
@@ -101,8 +98,7 @@
                 .StartNow()
                 .WithSimpleSchedule(x => x
                     .WithIntervalInSeconds(10)
-                    .RepeatForever())
-                    .StartNow()
+                    .RepeatForever())                    
                 .Build();
 
             await scheduler.ScheduleJob(job, trigger);
@@ -110,56 +106,5 @@
             return scheduler;
         }
 
-        private async Task<IScheduler> CreateScheduleJobDemo()
-        {
-            var scheduler = await StdSchedulerFactory.GetDefaultScheduler();
-
-            var job = JobBuilder.Create<FlaggedAccountJob>()
-                   .WithIdentity("Sales", "REPORTS")
-                   .WithDescription("Hello Job!")
-                   .StoreDurably()
-                   .Build();
-
-            var trigger = TriggerBuilder.Create()
-                .WithIdentity("MorningSales")
-                .StartNow()
-                .WithSimpleSchedule(x => x
-                    .WithIntervalInSeconds(10)
-                    .RepeatForever())
-                    .StartNow()
-                .Build();
-
-            await scheduler.ScheduleJob(job, trigger);
-
-            return scheduler;
-        }
-
-    }
-
-    public class FraudCase
-    {
-        public int FraudCaseId { get; set; }
-
-        public string FraudCaseName { get; set; }
-
-        public string FraudCaseDesc { get; set; }
-
-        public int FraudCaseInterval { get; set; }
-
-        public bool IsActive { get; set; }
-
-        public bool IsTest { get; set; }
-    }
-
-    public enum FraudCaseId
-    {
-        BSNG = 1,
-        FlaggedAccount = 6,
-        DelayedGoal = 8,
-        ScannedOfficeIP = 2,
-        DailyDataCapture = 4,
-        CheckBet = 3,
-        Arbitrage = 10,
-        BetsNearGoal = 11
-    }
+    }    
 }

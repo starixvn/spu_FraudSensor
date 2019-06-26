@@ -19,10 +19,10 @@ namespace Fanex.NAP.FS.ExecutingService.Jobs
 
             try
             {
-                var rootPath = @"D:\Projects\fraudsensor\Fanex.NAP.FS.FlaggedAccountLibrary\bin\Debug\";
+                var rootPath = @"D:\Projects\fraudsensor\Fanex.NAP.FS.FlaggedAccount.Console\bin\Debug\";
 
-                Assembly assembly = Assembly.LoadFrom(rootPath + "Fanex.NAP.FS.FlaggedAccountLibrary.dll");
-                Type type = assembly.GetType("Fanex.NAP.FS.FlaggedAccountLibrary.Program");
+                Assembly assembly = Assembly.LoadFrom(rootPath + "Fanex.NAP.FS.FlaggedAccount.Console.dll");
+                Type type = assembly.GetType("Fanex.NAP.FS.FlaggedAccount.Console.Run");
                 MethodInfo methodInfo = type.GetMethod("Start");
 
                 var classInstance = Activator.CreateInstance(type, null);

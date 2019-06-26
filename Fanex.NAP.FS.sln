@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29009.5
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2026
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fanex.NAP.FS.Websites", "Fanex.NAP.FS.Websites\Fanex.NAP.FS.Websites.csproj", "{2CEE814C-AB8D-42A3-9A00-F605B5A6649B}"
 EndProject
@@ -48,6 +48,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fanex.NAP.FS.DelayGoalService", "Fanex.NAP.FS.DelayGoalService\Fanex.NAP.FS.DelayGoalService.csproj", "{267BED2E-4A8E-4C41-AFED-9167603D5B0B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fanex.NAP.FS.ExecutingService", "Fanex.NAP.FS.ExecutingService\Fanex.NAP.FS.ExecutingService.csproj", "{3E476E98-FD03-461F-842B-CF548129BB7F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Consoles", "Consoles", "{F44D6585-6187-4D1D-AABA-BF1B11CBA39A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fanex.NAP.FS.FlaggedAccount.Console", "Fanex.NAP.FS.FlaggedAccount.Console\Fanex.NAP.FS.FlaggedAccount.Console.csproj", "{FA2F687E-544E-460A-905A-FBAF9CD67271}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -130,6 +134,10 @@ Global
 		{3E476E98-FD03-461F-842B-CF548129BB7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3E476E98-FD03-461F-842B-CF548129BB7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3E476E98-FD03-461F-842B-CF548129BB7F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FA2F687E-544E-460A-905A-FBAF9CD67271}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FA2F687E-544E-460A-905A-FBAF9CD67271}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FA2F687E-544E-460A-905A-FBAF9CD67271}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FA2F687E-544E-460A-905A-FBAF9CD67271}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -149,6 +157,8 @@ Global
 		{62B12740-1831-42C9-9623-1E210B0A2CD0} = {8B084C18-127D-4163-8E20-502FF66ECCBF}
 		{267BED2E-4A8E-4C41-AFED-9167603D5B0B} = {8B084C18-127D-4163-8E20-502FF66ECCBF}
 		{3E476E98-FD03-461F-842B-CF548129BB7F} = {8B084C18-127D-4163-8E20-502FF66ECCBF}
+		{F44D6585-6187-4D1D-AABA-BF1B11CBA39A} = {8B084C18-127D-4163-8E20-502FF66ECCBF}
+		{FA2F687E-544E-460A-905A-FBAF9CD67271} = {F44D6585-6187-4D1D-AABA-BF1B11CBA39A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C1C2F49F-E515-4D9B-BAFB-9D5E6078AB28}

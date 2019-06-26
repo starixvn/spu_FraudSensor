@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Functions>
+  <Function Name="FlaggedAccount">
+    <Setting Key="FS_FraudCase_FlaggedAccount_PreCondition" SpName="FS_FraudCase_FlaggedAccount_PreCondition" 
+             DbName="DBFS.bodb_FraudSensor.bodbSPUNet" TimeOut="600"/>
+    <Setting Key="FS_FraudCase_FlaggedAccount_Rule" SpName="FS_FraudCase_FlaggedAccount_Rule" 
+             DbName="DBFS.bodb_FraudSensor.bodbSPUNet" TimeOut="600"/>
+    <Setting Key="FS_FraudCase_GetById" SpName="FS_FraudCase_GetById" DbName="DBFS.bodb_FraudSensor.bodbSPUNet" />
+  </Function>
+ </Functions>
