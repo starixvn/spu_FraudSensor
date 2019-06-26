@@ -1,40 +1,36 @@
-﻿using Quartz;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Fanex.NAP.FS.ExecutingService.Jobs
+﻿namespace Fanex.NAP.FS.ExecutingService.Jobs
 {
+    using Fanex.NAP.FS.Core;
+    using Quartz;
+    using System;
+    using System.Diagnostics;
+    using System.Reflection;
+    using System.Threading.Tasks;
+
     public  class FlaggedAccountJob : IJob
     {
         private static readonly Random Random = new Random();
 
         public async Task Execute(IJobExecutionContext context)
         {
-            Debug.WriteLine("Flagged Account Job > " + DateTime.Now);
-
             try
             {
-                var rootPath = @"D:\Projects\fraudsensor\Fanex.NAP.FS.FlaggedAccount.Console\bin\Debug\";
+                var rootPath = string.Format(AppSetting.FraudCaseConsoleRootPath, "FlaggedAccount");
+                var assemblyName = string.Format(AppSetting.FraudCaseConsoleAssembly, "FlaggedAccount");
+                var assembly = Assembly.LoadFrom(rootPath + assemblyName);
 
-                Assembly assembly = Assembly.LoadFrom(rootPath + "Fanex.NAP.FS.FlaggedAccount.Console.dll");
-                Type type = assembly.GetType("Fanex.NAP.FS.FlaggedAccount.Console.Run");
-                MethodInfo methodInfo = type.GetMethod("Start");
-
+                var type = assembly.GetType(string.Format(AppSetting.FraudCaseConsoleType, "FlaggedAccount"));
+                var methodInfo = type.GetMethod("Start");
                 var classInstance = Activator.CreateInstance(type, null);
 
                 methodInfo.Invoke(classInstance, new object[] { });
             }
             catch(Exception ex)
             {
-                Console.WriteLine(ex.ToString());
+                Debug.WriteLine(ex.ToString());
             }
 
-            await Task.Delay(TimeSpan.FromSeconds(Random.Next(1, 20)));
+            await Task.Delay(TimeSpan.FromSeconds(Random.Next(1, 10)));
         }
     }
 }

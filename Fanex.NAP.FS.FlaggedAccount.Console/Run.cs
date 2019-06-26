@@ -4,12 +4,16 @@
     using Fanex.Data.ConnectionStringProvider20;
     using Fanex.NAP.FS.Core;
     using Fanex.NAP.FS.Library.Core.Helpers.Api;
+    using Fanex.NAP.FS.Library.Core.Helpers.Xml;
+    using Fanex.NAP.FS.Library.Core.Utilities;
     using Fanex.NAP.FS.Library.DTO;
     using Fanex.NAP.FS.Library.Models;
     using Fanex.NAP.FS.Library.Models.FraudCase.FlaggedAccount;
     using Fanex.NAP.FS.Service;
     using System;
     using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading;
     using System.Threading.Tasks;
 
     public class Run
@@ -101,9 +105,9 @@
 
                         _isRunning = true;
 
-                        //CleanResult();
-                        //Precondition();
-                        //Rule();
+                        CleanResult();
+                        Precondition();
+                        Rule();
 
                         _isRunning = false;
                     }
@@ -123,6 +127,61 @@
                 //LogService.Error($"{ProjectName} - {ServiceName} - Execute Exeption {logMessage}");
 
                 Report(false, exception, "Fraud Case is executed at " + DateTime.Now);
+            }
+        }
+
+        private void CleanResult()
+        {
+            if (_matches == null || !_matches.Any()) return;
+            _matches = Enumerable.Empty<Match>();
+        }
+
+        private void Precondition()
+        {
+            _matches = FlaggedAccountService.PreCondition<Match>();
+        }
+
+        private void Rule()
+        {
+            ExecuteBySeparatedThreads();
+
+            _baseService.MonitoringServiceLog();
+        }
+
+        private void ExecuteBySeparatedThreads()
+        {
+            if (_matches == null) return;
+            var matchChunks = _matches.Chunk(ChunkSize);
+
+            foreach (var matches in matchChunks)
+            {
+                ExecuteMatches(matches.ToList());
+            }
+
+            Thread.Sleep(TimeSpan.FromSeconds(2));
+        }
+
+        private void ExecuteMatches(List<Match> matches)
+        {
+            try
+            {
+
+                var matchIds = string.Join(",", ((List<Match>)matches).Select(t => t.MatchId.ToString()));
+                var flaggedAccounts = XmlHelper.ToXmlString(_flaggedCustomers);
+
+                FlaggedAccountService.Rule(matchIds, flaggedAccounts);
+
+            }
+            catch (Exception ex)
+            {
+                //var logMessage = new LogMessage(ex.Message)
+                //.AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
+                //.AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
+
+                //if (!logMessage.Contains("(17507649)"))
+                //{
+                //    LogService.Error($"{ProjectName} - {ServiceName} - ExecuteMultiple Exeption {logMessage}");
+                //}
             }
         }
 
