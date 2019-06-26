@@ -6,7 +6,7 @@
   </Function>
   <Function Name="Arbitrage">
     <Setting Key="FS_FraudCase_Arbitrage_PreCondition"
-             SpName="FS_FraudCase_Arbitrage_PreCondition_xtest"
+             SpName="FS_FraudCase_Arbitrage_PreCondition"
              DbName="DBFS.bodb_FraudSensor.bodbSPUNet" />
 
     <Setting Key="FS_FraudCase_Arbitrage_CleanUp"
@@ -14,7 +14,7 @@
              DbName="DBFS.bodb_FraudSensor.bodbSPUNet" />
 
     <Setting Key="FS_FraudCase_Arbitrage_Rule"
-             SpName="FS_FraudCase_Arbitrage_Rule_xtest"
+             SpName="FS_FraudCase_Arbitrage_Rule"
              DbName="DBFS.bodb_FraudSensor.bodbSPUNet"
              TimeOut="3600"/>
 
