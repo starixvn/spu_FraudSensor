@@ -6,9 +6,9 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Fanex.NAP.FS.ExecutingService.Jobs.FlaggedAccount
+namespace Fanex.NAP.FS.ExecutingService.Jobs
 {
-    public  class Job : IJob
+    public  class FlaggedAccountJob : IJob
     {
         private static readonly Random Random = new Random();
 
@@ -19,10 +19,10 @@ namespace Fanex.NAP.FS.ExecutingService.Jobs.FlaggedAccount
 #endif  
             try
             {
-                var rootPath = @"D:\Projects\fraudsensor\Fanex.NAP.FS.FlaggedAccountService\bin\Debug\\";
+                var rootPath = @"D:\Projects\fraudsensor\Fanex.NAP.FS.FlaggedAccountLibrary\bin\Debug\";
 
-                Assembly assembly = Assembly.LoadFrom(rootPath + "Fanex.NAP.FS.FlaggedAccountService.exe");
-                Type type = assembly.GetType("Fanex.NAP.FS.FlaggedAccountService.Runner");
+                Assembly assembly = Assembly.LoadFrom(rootPath + "Fanex.NAP.FS.FlaggedAccountLibrary.dll");
+                Type type = assembly.GetType("Fanex.NAP.FS.FlaggedAccountLibrary.Program");
                 MethodInfo methodInfo = type.GetMethod("Start");
 
                 var classInstance = Activator.CreateInstance(type, null);

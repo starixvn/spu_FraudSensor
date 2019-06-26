@@ -1,29 +1,43 @@
-﻿using Fanex.Logging;
-using Fanex.NAP.FS.ExecutingService.Jobs.Dummy;
-using Quartz;
-using Quartz.Impl;
-using Quartz.Util;
-using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.ServiceProcess;
-using System.Threading.Tasks;
-
-namespace Fanex.NAP.FS.ExecutingService
+﻿namespace Fanex.NAP.FS.ExecutingService
 {
+    using Fanex.Logging;
+    using Quartz;
+    using Quartz.Impl;
+    using Quartz.Util;
+    using System;
+    using System.Collections.Generic;
+    using System.Reflection;
+    using System.ServiceProcess;
+    using System.Threading.Tasks;
+    //using Fanex.NAP.FS.Library.Models;
+    //using Fanex.NAP.FS.Library.DTO;
+    using Fanex.NAP.FS.ExecutingService.Schedules;
+    using Fanex.NAP.FS.ExecutingService.Jobs;
+
     public partial class Runner : ServiceBase
     {
         private static List<ISchedule> schedulers;
+        //private readonly LetstalkService _letstalkService;
+        private const string ProjectName = "Fraud Sensor Service";
 
         public Runner()
         {
             InitializeComponent();
+           
+            //_letstalkService = new LetstalkService();
         }
 
         protected override void OnStart(string[] args)
         {
-            CreateScheduleJobTest().Result.Start();
-            //CreateScheduleJob();
+            try
+            {
+                CreateScheduleJobTest().Result.Start();
+                //CreateScheduleJob();
+                //GetFraudCase();
+            }
+            catch (Exception ex)
+            {
+            }
 
             LogService.Info($"Executing service is STARTED at {DateTime.Now}");
         }
@@ -32,6 +46,46 @@ namespace Fanex.NAP.FS.ExecutingService
         {
 
         }
+
+        //private async void GetFraudCase()
+        //{
+        //    var fraudCaseService = new Service.FraudCaseService();
+
+        //    var fraudCases = fraudCaseService.Get(null, 1, Core.AppSetting.Environment);
+
+        //    var scheduler = await StdSchedulerFactory.GetDefaultScheduler();
+
+        //    foreach (var fraudCase in fraudCases)
+        //    {
+        //        if (!fraudCase.IsActive)
+        //            continue;
+
+        //        var fraudCaseName = Enum.GetName(typeof(FraudCaseId), fraudCase.FraudCaseId);
+
+        //        if (string.IsNullOrWhiteSpace(fraudCaseName))
+        //            continue;
+
+        //        AddScheduleJob(scheduler, fraudCase);
+        //    }
+        //}
+
+        //private async void AddScheduleJob(IScheduler scheduler, FraudCase fraudCase)
+        //{
+        //    switch (fraudCase.FraudCaseId)
+        //    {
+        //        case (int)FraudCaseId.FlaggedAccount:
+
+        //            var schedule = new FlaggedAcocuntSchedule();
+        //            var job = schedule.CreateJob(fraudCase.FraudCaseName, ProjectName, fraudCase.FraudCaseDesc);
+        //            var trigger = schedule.CreateTrigger(fraudCase.FraudCaseName, fraudCase.FraudCaseInterval);
+
+        //            await scheduler.ScheduleJob(job, trigger);
+
+        //            break;
+        //        default:
+        //            break;
+        //    }            
+        //}
 
         private void CreateScheduleJob()
         {
@@ -75,5 +129,6 @@ namespace Fanex.NAP.FS.ExecutingService
 
             return scheduler;
         }
+        
     }
 }

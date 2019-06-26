@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Fanex.NAP.FS.ExecutingService.Jobs.Dummy
+namespace Fanex.NAP.FS.ExecutingService.Jobs
 {
     public class DummyJob : IJob
     {

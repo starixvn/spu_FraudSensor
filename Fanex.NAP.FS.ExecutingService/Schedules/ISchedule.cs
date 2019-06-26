@@ -1,4 +1,4 @@
-﻿namespace Fanex.NAP.FS.ExecutingService
+﻿namespace Fanex.NAP.FS.ExecutingService.Schedules
 {
     public interface ISchedule
     {
