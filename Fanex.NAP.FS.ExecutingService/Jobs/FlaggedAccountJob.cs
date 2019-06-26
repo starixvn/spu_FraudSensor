@@ -1,6 +1,7 @@
 ﻿using Quartz;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -14,9 +15,8 @@ namespace Fanex.NAP.FS.ExecutingService.Jobs
 
         public async Task Execute(IJobExecutionContext context)
         {
-#if DEBUG
-            Console.WriteLine("Flagged Account Job > " + DateTime.Now);
-#endif  
+            Debug.WriteLine("Flagged Account Job > " + DateTime.Now);
+
             try
             {
                 var rootPath = @"D:\Projects\fraudsensor\Fanex.NAP.FS.FlaggedAccountLibrary\bin\Debug\";

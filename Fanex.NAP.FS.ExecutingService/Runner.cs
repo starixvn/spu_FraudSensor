@@ -2,11 +2,9 @@
 {
     using Fanex.Logging;
     using Quartz;
-    using Quartz.Impl;
-    using Quartz.Util;
+    using Quartz.Impl; 
     using System;
-    using System.Collections.Generic;
-    using System.Reflection;
+    using System.Collections.Generic;    
     using System.ServiceProcess;
     using System.Threading.Tasks;
     using Fanex.NAP.FS.ExecutingService.Schedules;
@@ -15,7 +13,6 @@
 
     public partial class Runner : ServiceBase
     {
-        private static List<ISchedule> schedulers;
         //private readonly LetstalkService _letstalkService;
         private const string ProjectName = "Fraud Sensor Service";
 
@@ -30,15 +27,17 @@
         {
             try
             {
-                CreateScheduleJobTest().Result.Start();
-                //CreateScheduleJob();
-                //GetFraudCase();
+                //var scheduler = CreateScheduleJobTest().Result.Start();
+                //var scheduler = CreateScheduleJobDemo().Result.Start();                
+
+                var scheduler = GetFraudCase().Result.Start();
+
+                LogService.Info($"Executing service is STARTED at {DateTime.Now}");
             }
             catch (Exception ex)
             {
-            }
-
-            LogService.Info($"Executing service is STARTED at {DateTime.Now}");
+                LogService.Info($"Executing service is START error message: { ex.ToString() } at {DateTime.Now}");
+            }            
         }
 
         protected override void OnStop()
@@ -46,7 +45,7 @@
 
         }
 
-        private async void GetFraudCase()
+        private async Task<IScheduler> GetFraudCase()
         {
             var fraudCaseService = new FraudCaseService();
 
@@ -59,13 +58,15 @@
                 if (!fraudCase.IsActive)
                     continue;
 
-                //var fraudCaseName = Enum.GetName(typeof(FraudCaseId), fraudCase.FraudCaseId);
+                var fraudCaseName = Enum.GetName(typeof(FraudCaseId), fraudCase.FraudCaseId);
 
-                //if (string.IsNullOrWhiteSpace(fraudCaseName))
-                //    continue;
+                if (string.IsNullOrWhiteSpace(fraudCaseName))
+                    continue;
 
                 AddScheduleJob(scheduler, fraudCase);
             }
+
+            return scheduler;
         }
 
         private async void AddScheduleJob(IScheduler scheduler, FraudCase fraudCase)
@@ -78,33 +79,12 @@
                     var job = schedule.CreateJob(fraudCase.FraudCaseName, ProjectName, fraudCase.FraudCaseDesc);
                     var trigger = schedule.CreateTrigger(fraudCase.FraudCaseName, fraudCase.FraudCaseInterval);
 
-                    await scheduler.ScheduleJob(job, trigger);
-
+                    var task = await scheduler.ScheduleJob(job, trigger);
                     break;
                 default:
                     break;
             }
         }
-
-        private void CreateScheduleJob()
-        {
-            schedulers = new List<ISchedule>();
-
-            var assembly = typeof(Program).GetTypeInfo().Assembly;
-            var types = assembly.GetTypes();
-
-            foreach (Type type in types)
-            {
-                if (new List<Type>(type.GetInterfaces()).Contains(typeof(ISchedule)))
-                {
-                    var scheduler = ObjectUtils.InstantiateType<ISchedule>(type);
-
-                    scheduler.Create().Start();
-
-                    schedulers.Add(scheduler);
-                }
-            }
-        }    
 
         private async Task<IScheduler> CreateScheduleJobTest()
         {
@@ -122,13 +102,38 @@
                 .WithSimpleSchedule(x => x
                     .WithIntervalInSeconds(10)
                     .RepeatForever())
+                    .StartNow()
                 .Build();
 
             await scheduler.ScheduleJob(job, trigger);
 
             return scheduler;
         }
-        
+
+        private async Task<IScheduler> CreateScheduleJobDemo()
+        {
+            var scheduler = await StdSchedulerFactory.GetDefaultScheduler();
+
+            var job = JobBuilder.Create<FlaggedAccountJob>()
+                   .WithIdentity("Sales", "REPORTS")
+                   .WithDescription("Hello Job!")
+                   .StoreDurably()
+                   .Build();
+
+            var trigger = TriggerBuilder.Create()
+                .WithIdentity("MorningSales")
+                .StartNow()
+                .WithSimpleSchedule(x => x
+                    .WithIntervalInSeconds(10)
+                    .RepeatForever())
+                    .StartNow()
+                .Build();
+
+            await scheduler.ScheduleJob(job, trigger);
+
+            return scheduler;
+        }
+
     }
 
     public class FraudCase
@@ -138,7 +143,7 @@
         public string FraudCaseName { get; set; }
 
         public string FraudCaseDesc { get; set; }
-      
+
         public int FraudCaseInterval { get; set; }
 
         public bool IsActive { get; set; }
