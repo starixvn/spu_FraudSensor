@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<Functions>
+  <Function Name="MiddleSerivce">
+    <GraphSetting Key="GroupCustomer" SpName="GroupCustomer" DbName="DB.MiddleService" />
+  </Function>
+  <Function Name="Arbitrage">
+    <Setting Key="FS_FraudCase_Arbitrage_PreCondition"
+             SpName="FS_FraudCase_Arbitrage_PreCondition_xtest"
+             DbName="DBFS.bodb_FraudSensor.bodbSPUNet" />
+
+    <Setting Key="FS_FraudCase_Arbitrage_CleanUp"
+             SpName="FS_FraudCase_Arbitrage_CleanUp_xtest"
+             DbName="DBFS.bodb_FraudSensor.bodbSPUNet" />
+
+    <Setting Key="FS_FraudCase_Arbitrage_Rule"
+             SpName="FS_FraudCase_Arbitrage_Rule_xtest"
+             DbName="DBFS.bodb_FraudSensor.bodbSPUNet" />
+
+    <Setting Key="FS_FraudCase_GetById"
+             SpName="FS_FraudCase_GetById_xtest"
+             DbName="DBFS.bodb_FraudSensor.bodbSPUNet" />
+  </Function>
+</Functions>
