@@ -7,20 +7,13 @@
     using System.Reflection;
     using System.Threading.Tasks;
 
-    public abstract class Job : IJob
+    public abstract class Jobs : IJobs
     {
         private static readonly Random Random = new Random();
         private const string Method = "Start";
         public abstract string GetFraudCase();
 
-        public static IJobDetail CreateJob(string name, string groupName, string description)
-        {
-            return JobBuilder.Create<Job>()
-                               .WithIdentity(name, groupName)
-                               .WithDescription(description)
-                               .StoreDurably()
-                               .Build();
-        }
+        public abstract IJobDetail CreateJob(string name, string groupName, string description);
 
         public async Task Execute(IJobExecutionContext context)
         {

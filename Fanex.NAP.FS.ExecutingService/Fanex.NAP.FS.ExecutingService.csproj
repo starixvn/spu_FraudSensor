@@ -149,7 +149,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Jobs\Job.cs" />
+    <Compile Include="Jobs\ArbitrageJob.cs" />
+    <Compile Include="Jobs\BetNearGoalJob.cs" />
+    <Compile Include="Jobs\BigStakeNearGoalJob.cs" />
+    <Compile Include="Jobs\CheckBetJob.cs" />
+    <Compile Include="Jobs\DailyDataCaptureJob.cs" />
+    <Compile Include="Jobs\DelayGoalJob.cs" />
+    <Compile Include="Jobs\FlaggedAccountJob.cs" />
+    <Compile Include="Jobs\IJobs.cs" />
+    <Compile Include="Jobs\Jobs.cs" />
+    <Compile Include="Jobs\ScannedOfficeIPJob.cs" />
     <Compile Include="Models\FraudCase.cs" />
     <Compile Include="Models\FraudCaseId.cs" />
     <Compile Include="Runner.cs">
@@ -161,7 +170,6 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Schedules\ScheduleJob.cs" />
-    <Compile Include="Schedules\ISchedule.cs" />
     <Compile Include="Schedules\IScheduleJob.cs" />
   </ItemGroup>
   <ItemGroup>

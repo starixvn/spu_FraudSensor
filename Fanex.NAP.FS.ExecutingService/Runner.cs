@@ -23,7 +23,7 @@
         {
             try
             {
-                StartFraudCase().Result.Start();
+               StartFraudCase().Result.Start();
                 
                 LogService.Info($"Executing service is STARTED at {DateTime.Now}");
             }
@@ -40,7 +40,7 @@
             LogService.Info($"Executing service is STOP at {DateTime.Now}");
         }
 
-        private static async Task<IScheduler> StartFraudCase()
+        private async Task<IScheduler> StartFraudCase()
         {
             var fraudCaseService = new FraudCaseService();
 
@@ -61,20 +61,45 @@
                 {
                     continue;
                 }
-
+            
                 AddScheduleJob(scheduler, fraudCase);
             }
 
             return scheduler;
         }
 
-        private static void AddScheduleJob(IScheduler scheduler, FraudCase fraudCase)
+        private void AddScheduleJob(IScheduler scheduler, FraudCase fraudCase)
         {
             var schedule = new ScheduleJob(scheduler);
-            var job = Job.CreateJob(fraudCase.FraudCaseName, ProjectName, fraudCase.FraudCaseDesc);
-            var trigger = schedule.CreateTrigger(fraudCase.FraudCaseName, fraudCase.FraudCaseInterval);
+            var job = GetJobDetail(fraudCase);            
+            var trigger = schedule.CreateTrigger(fraudCase.FraudCaseName, fraudCase.FraudCaseInterval);            
 
             schedule.Schedule(job, trigger);
+        }
+
+        private IJobDetail GetJobDetail(FraudCase fraudCase)
+        {
+            switch (fraudCase.FraudCaseId)
+            {
+                case (int)FraudCaseId.Arbitrage:
+                    return new ArbitrageJob().CreateJob(fraudCase.FraudCaseName, ProjectName, fraudCase.FraudCaseDesc);
+                case (int)FraudCaseId.BetsNearGoal:
+                    return new BetNearGoalJob().CreateJob(fraudCase.FraudCaseName, ProjectName, fraudCase.FraudCaseDesc);
+                case (int)FraudCaseId.BSNG:
+                    return new BigStakeNearGoalJob().CreateJob(fraudCase.FraudCaseName, ProjectName, fraudCase.FraudCaseDesc);
+                case (int)FraudCaseId.CheckBet:
+                    return new CheckBetJob().CreateJob(fraudCase.FraudCaseName, ProjectName, fraudCase.FraudCaseDesc);
+                case (int)FraudCaseId.DailyDataCapture:
+                    return new DailyDataCaptureJob().CreateJob(fraudCase.FraudCaseName, ProjectName, fraudCase.FraudCaseDesc);
+                case (int)FraudCaseId.DelayedGoal:
+                    return new DelayGoalJob().CreateJob(fraudCase.FraudCaseName, ProjectName, fraudCase.FraudCaseDesc);
+                case (int)FraudCaseId.FlaggedAccount:
+                    return new FlaggedAccountJob().CreateJob(fraudCase.FraudCaseName, ProjectName, fraudCase.FraudCaseDesc);
+                case (int)FraudCaseId.ScannedOfficeIP:
+                    return new ScannedOfficeIPJob().CreateJob(fraudCase.FraudCaseName, ProjectName, fraudCase.FraudCaseDesc);
+                default:
+                    return null;
+            }
         }
     }
 }

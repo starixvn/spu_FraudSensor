@@ -2,9 +2,8 @@
 {
     using Fanex.NAP.FS.ExecutingService.Schedules;    
     using Quartz;
-    using System;
 
-    public class ScheduleJob : IScheduleJob, ISchedule
+    public class ScheduleJob : IScheduleJob
     {
         private IScheduler _scheduler;
 
