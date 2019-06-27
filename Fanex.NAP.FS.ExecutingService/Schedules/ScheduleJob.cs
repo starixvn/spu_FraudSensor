@@ -2,23 +2,15 @@
 {
     using Fanex.NAP.FS.ExecutingService.Schedules;    
     using Quartz;
+    using System;
 
-    public class FlaggedAcocuntSchedule : IScheduleJob, ISchedule
+    public class ScheduleJob : IScheduleJob, ISchedule
     {
         private IScheduler _scheduler;
 
-        public FlaggedAcocuntSchedule(IScheduler scheduler)
+        public ScheduleJob(IScheduler scheduler)
         {
             _scheduler = scheduler;
-        }
-
-        public IJobDetail CreateJob(string name, string groupName, string description)
-        {
-            return JobBuilder.Create<FlaggedAccountJob>()
-                               .WithIdentity(name, groupName)
-                               .WithDescription(description)
-                               .StoreDurably()
-                               .Build();
         }
 
         public ITrigger CreateTrigger(string name, int interval)
