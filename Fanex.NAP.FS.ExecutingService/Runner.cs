@@ -74,8 +74,6 @@
             var schedule = new ScheduleJob(scheduler);                       
             var trigger = schedule.CreateTrigger(fraudCase.FraudCaseName, fraudCase.FraudCaseInterval);
             var job = CreateJob(fraudCase);
-
-            var job = GetJobDetail(fraudCase);
             
             schedule.Schedule(job, trigger);           
         }
