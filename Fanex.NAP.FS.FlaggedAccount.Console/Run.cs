@@ -16,16 +16,18 @@
     using System.Threading;
     using System.Threading.Tasks;
 
-    public class Run
+    public static class Run
     {
-        public void Start()
+        public static void Start()
         {
             try
             {
                 var _service = new Service();
 
                 if (_service.CheckUM())
+                {
                     return;
+                }
 
                 _service
                     .CleanResult()
