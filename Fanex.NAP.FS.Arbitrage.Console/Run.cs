@@ -1,11 +1,9 @@
 namespace Fanex.NAP.FS.Arbitrage.Console
 {
     using System.Diagnostics;
-    public class Run
+    public static class Run
     {
-        public Run() { }
-
-        public void Start()
+        public static void Start()
         {
             Debug.WriteLine("Hello Arbitrage service!");
         }

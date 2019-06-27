@@ -2,13 +2,11 @@ namespace Fanex.NAP.FS.BigStakeNearGoal.Console
 {
     using System.Diagnostics;
 
-    public class Run
+    public static class Run
     {
-        public Run() { }
-
-        public void Start()
+        public static void Start()
         {
-            Debug.WriteLine("Hello World!");
+            Debug.WriteLine("Hello Big Stake Near Goal World!");
             
         }
     }

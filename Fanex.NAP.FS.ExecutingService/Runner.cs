@@ -23,7 +23,7 @@
         {
             try
             {
-               StartFraudCase().Result.Start();
+                CreateScheduler().Result.Start();
                 
                 LogService.Info($"Executing service is STARTED at {DateTime.Now}");
             }
@@ -40,7 +40,7 @@
             LogService.Info($"Executing service is STOP at {DateTime.Now}");
         }
 
-        private async Task<IScheduler> StartFraudCase()
+        private async Task<IScheduler> CreateScheduler()
         {
             var fraudCaseService = new FraudCaseService();
 
@@ -61,29 +61,26 @@
                 {
                     continue;
                 }
+               
+                CreateScheduleJob(scheduler, fraudCase);              
 
-
-                //CreateJob(fraudCase.Name)
-                        //.CreateSchedule(fraudCase.FraudCaseInterval, fraudCase.FraudCaseDesc)
-                        //.Run();
-
-                AddScheduleJob(scheduler, fraudCase);
             }
 
             return scheduler;
         }
 
-        private void AddScheduleJob(IScheduler scheduler, FraudCase fraudCase)
+        private void CreateScheduleJob(IScheduler scheduler, FraudCase fraudCase)
         {
             var schedule = new ScheduleJob(scheduler);                       
             var trigger = schedule.CreateTrigger(fraudCase.FraudCaseName, fraudCase.FraudCaseInterval);
+            var job = CreateJob(fraudCase);
 
             var job = GetJobDetail(fraudCase);
             
             schedule.Schedule(job, trigger);           
         }
 
-        private IJobDetail GetJobDetail(FraudCase fraudCase)
+        private IJobDetail CreateJob(FraudCase fraudCase)
         {
             switch (fraudCase.FraudCaseId)
             {

@@ -2,11 +2,9 @@ namespace Fanex.NAP.FS.BetNearGoal.Console
 {
     using System.Diagnostics;
 
-    public class Run
+    public static class Run
     {
-        public Run() {}
-
-        public void Start()
+        public static void Start()
         {
             Debug.WriteLine("Hello Bet Near Goal service!");
         }
