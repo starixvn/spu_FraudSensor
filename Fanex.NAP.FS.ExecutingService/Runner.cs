@@ -51,16 +51,18 @@
             foreach (var fraudCase in fraudCases)
             {
                 if (!fraudCase.IsActive)
+                {
                     continue;
-
+                }
+                    
                 var fraudCaseName = Enum.GetName(typeof(FraudCaseId), fraudCase.FraudCaseId);
 
                 if (string.IsNullOrWhiteSpace(fraudCaseName))
+                {
                     continue;
+                }
 
-                var listFraudCase = new System.Collections.Generic.List<int> { 1, 2, 3, 4, 6, 8, 10, 11 };
-                if (listFraudCase.Contains(fraudCase.FraudCaseId))
-                    AddScheduleJob(scheduler, fraudCase);
+                AddScheduleJob(scheduler, fraudCase);
             }
 
             return scheduler;
