@@ -3,10 +3,10 @@
     using Quartz;
     public interface IScheduleJob
     {
-        ITrigger CreateTrigger(string name, int interval);
-        void Schedule(IJobDetail jobDetail, ITrigger trigger);
-        void PauseAll();
-        void Shutdown();
-        void Start();
+        IScheduleJob CreateTrigger(string name, int interval);
+        IScheduleJob Schedule(IJobDetail jobDetail);
+        IScheduleJob PauseAll();
+        IScheduleJob Shutdown();
+        IScheduleJob Start();
     }
 }

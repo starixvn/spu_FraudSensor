@@ -9,6 +9,7 @@
     using Fanex.NAP.FS.ExecutingService.Jobs;
     using Fanex.NAP.FS.Service;
     using Fanex.NAP.FS.ExecutingService.Models;
+    using Fanex.NAP.FS.ExecutingService.Schedules;
 
     public partial class Runner : ServiceBase
     {
@@ -23,8 +24,9 @@
         {
             try
             {
-                CreateScheduler().Result.Start();
-                
+                CreateScheduler().Result
+                    .Start();
+
                 LogService.Info($"Executing service is STARTED at {DateTime.Now}");
             }
             catch (Exception ex)
@@ -54,28 +56,27 @@
                 {
                     continue;
                 }
-                    
-                var fraudCaseName = Enum.GetName(typeof(FraudCaseId), fraudCase.FraudCaseId);
 
-                if (string.IsNullOrWhiteSpace(fraudCaseName))
+                if (string.IsNullOrWhiteSpace(Enum.GetName(typeof(FraudCaseId), fraudCase.FraudCaseId)))
                 {
                     continue;
                 }
-               
-                CreateScheduleJob(scheduler, fraudCase);              
 
+                scheduler = CreateScheduleJob(scheduler, fraudCase);
             }
 
             return scheduler;
         }
 
-        private void CreateScheduleJob(IScheduler scheduler, FraudCase fraudCase)
+        private IScheduler CreateScheduleJob(IScheduler scheduler, FraudCase fraudCase)
         {
-            var schedule = new ScheduleJob(scheduler);                       
-            var trigger = schedule.CreateTrigger(fraudCase.FraudCaseName, fraudCase.FraudCaseInterval);
             var job = CreateJob(fraudCase);
-            
-            schedule.Schedule(job, trigger);           
+
+            new ScheduleJob(scheduler)
+                    .CreateTrigger(fraudCase.FraudCaseName, fraudCase.FraudCaseInterval)
+                    .Schedule(job);
+
+            return scheduler;
         }
 
         private IJobDetail CreateJob(FraudCase fraudCase)

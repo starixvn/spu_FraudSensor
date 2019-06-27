@@ -1,46 +1,57 @@
-﻿namespace Fanex.NAP.FS.ExecutingService.Jobs
+﻿namespace Fanex.NAP.FS.ExecutingService.Schedules
 {
     using Fanex.NAP.FS.ExecutingService.Schedules;    
     using Quartz;
 
     public class ScheduleJob : IScheduleJob
     {
-        private IScheduler _scheduler;
+        private readonly IScheduler _scheduler;
+        private ITrigger _trigger;
 
         public ScheduleJob(IScheduler scheduler)
         {
             _scheduler = scheduler;
         }
 
-        public ITrigger CreateTrigger(string name, int interval)
+        public IScheduleJob CreateTrigger(string name, int interval)
         {
-            return TriggerBuilder.Create()
+            _trigger = TriggerBuilder.Create()
                 .WithIdentity(name)
                 .StartNow()
                 .WithSimpleSchedule(x => x
                     .WithIntervalInSeconds(interval)
                     .RepeatForever())
                 .Build();
+
+            return this;
         }
 
-        public void Schedule(IJobDetail jobDetail, ITrigger trigger)
+        public IScheduleJob Schedule(IJobDetail jobDetail)
         {
-            _scheduler.ScheduleJob(jobDetail, trigger);
+            _scheduler.ScheduleJob(jobDetail, _trigger);
+
+            return this;
         }
 
-        public void PauseAll()
+        public IScheduleJob PauseAll()
         {
             _scheduler.PauseAll();
+
+            return this;
         }
 
-        public void Shutdown()
+        public IScheduleJob Shutdown()
         {
             _scheduler.Shutdown();
+
+            return this;
         }
 
-        public void Start()
+        public IScheduleJob Start()
         {
             _scheduler.Start();
+
+            return this;
         }
     }
 }

@@ -27,9 +27,8 @@
 
                 var type = assembly.GetType(string.Format(AppSetting.FraudCaseConsoleType, fraudCase));
                 var methodInfo = type.GetMethod(Method);
-                var classInstance = Activator.CreateInstance(type, null);
 
-                methodInfo.Invoke(classInstance, new object[] { });
+                methodInfo.Invoke(null, new object[] { });
             }
             catch(Exception ex)
             {
