@@ -47,6 +47,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>Fanex.NAP.FS.ArbitrageService-1.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject />
@@ -102,6 +103,8 @@
     <Content Include="App_Data\Scripts\GroupCustomer.scrypt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="Fanex.NAP.FS.ArbitrageService-1.ruleset" />
+    <None Include="Fanex.NAP.FS.ArbitrageService.ruleset" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Data\NAPFSNames.xml">
@@ -147,6 +150,11 @@
     </PackageReference>
     <PackageReference Include="RestSharp">
       <Version>106.6.9</Version>
+    </PackageReference>
+    <PackageReference Include="SonarAnalyzer.CSharp">
+      <Version>7.14.0.8411</Version>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="System.Net.Http">
       <Version>4.3.4</Version>

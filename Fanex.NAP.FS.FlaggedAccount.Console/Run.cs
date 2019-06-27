@@ -18,187 +18,28 @@
 
     public class Run
     {
-        private const int ChunkSize = 100;
-        protected readonly Service.FlaggedAccountService FlaggedAccountService;
-        private readonly IEnumerable<FlaggedCustomer> _flaggedCustomers;
-
-        private new const string ServiceName = "Flagged Account Service";
-        private const string ProjectName = "Fraud Sensor Service";
-
-        private IEnumerable<Match> _matches;
-        private readonly List<Task> _threads;
-        private readonly MicroService _baseService;
-
-        private bool _isRunning = false;
-        private DateTime _lastExecuted;
-        public Run()
-        {
-            ConfigManager();
-
-            _matches = new List<Match>();
-            _threads = new List<Task>();
-            _flaggedCustomers = new List<FlaggedCustomer>();
-            _baseService = new MicroService(ServiceName, FraudCaseId.FlaggedAccount);
-            FlaggedAccountService = new Service.FlaggedAccountService();
-
-            var param = new CustomerEvidenceList
-            {
-                CustIdList = string.Empty,
-                EvidenceCodeList = string.Empty
-            };
-
-            try
-            {
-                _flaggedCustomers = ApiHelper.Post<IEnumerable<FlaggedCustomer>>(AppSetting.CustomerEvidenceApi, param).Result;
-            }
-            catch (Exception exception)
-            {
-                var error = "<b>Error:</b> " + exception.Message +
-                              "<br><b>StackTrace:</b> " + exception.StackTrace;
-                var message = string.Format("<b>Problem with FraudCaseId = {0}, FraudCaseName = {1}</b><br><br>", FraudCaseId.FlaggedAccount, ServiceName) + error;
-
-                //LogService.Error(message);
-            }
-
-            _lastExecuted = DateTime.Now;
-        }
-
-        public void ConfigManager()
-        {
-            DbSettingProviderManager
-                  .StartNewSession()
-                  .Use(new ConnectionStringProvider20())
-                  .UseDefaultDbSettingProvider(AppSetting.AppData, false)
-                  .Run();
-
-            //LogManager.SetDefaultLogCategory(AppSetting.FanexLogCategory)
-            //         .Use(new List<ILogEngine>
-            //         {
-            //             new SentryLogging(new SentryEngineOptions
-            //             {
-            //                 Dsn = new Dsn(AppSetting.SentryLogging)
-            //             })
-            //         });
-        }
-
         public void Start()
         {
-            _baseService.Start(Execute);
-        }
-
-        private void Execute(object source, System.Timers.ElapsedEventArgs e)
-        {
-            var exception = string.Empty;
-            var nowDate = DateTime.Now;
-
             try
             {
-                if (Convert.ToBoolean(source) || nowDate.Subtract(_lastExecuted).TotalSeconds >= _baseService.FraudCase.FraudCaseInterval)
-                {
-                    Report(true, exception, "Fraud Case is executing at " + DateTime.Now);
+                var _service = new Service();
 
-                    var isUm = _baseService.CheckUM();
+                if (_service.CheckUM())
+                    return;
 
-                    if (!isUm)
-                    {
-                        if (_isRunning) return;
-
-                        _isRunning = true;
-
-                        CleanResult();
-                        Precondition();
-                        Rule();
-
-                        _isRunning = false;
-                    }
-
-                    _lastExecuted = nowDate;
-                }
+                _service
+                    .CleanResult()
+                    .Precondition()
+                    .Rule();
             }
             catch (Exception ex)
             {
-                _isRunning = false;
-                exception = ex.Message;
-
                 //var logMessage = new LogMessage(ex.Message)
                 //    .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
                 //    .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
 
                 //LogService.Error($"{ProjectName} - {ServiceName} - Execute Exeption {logMessage}");
-
-                Report(false, exception, "Fraud Case is executed at " + DateTime.Now);
             }
-        }
-
-        private void CleanResult()
-        {
-            if (_matches == null || !_matches.Any()) return;
-            _matches = Enumerable.Empty<Match>();
-        }
-
-        private void Precondition()
-        {
-            _matches = FlaggedAccountService.PreCondition<Match>();
-        }
-
-        private void Rule()
-        {
-            ExecuteBySeparatedThreads();
-
-            _baseService.MonitoringServiceLog();
-        }
-
-        private void ExecuteBySeparatedThreads()
-        {
-            if (_matches == null) return;
-            var matchChunks = _matches.Chunk(ChunkSize);
-
-            foreach (var matches in matchChunks)
-            {
-                ExecuteMatches(matches.ToList());
-            }
-
-            Thread.Sleep(TimeSpan.FromSeconds(2));
-        }
-
-        private void ExecuteMatches(List<Match> matches)
-        {
-            try
-            {
-
-                var matchIds = string.Join(",", ((List<Match>)matches).Select(t => t.MatchId.ToString()));
-                var flaggedAccounts = XmlHelper.ToXmlString(_flaggedCustomers);
-
-                FlaggedAccountService.Rule(matchIds, flaggedAccounts);
-
-            }
-            catch (Exception ex)
-            {
-                //var logMessage = new LogMessage(ex.Message)
-                //.AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
-                //.AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
-
-                //if (!logMessage.Contains("(17507649)"))
-                //{
-                //    LogService.Error($"{ProjectName} - {ServiceName} - ExecuteMultiple Exeption {logMessage}");
-                //}
-            }
-        }
-
-        private void Report(bool status, string exception, string message)
-        {
-            //var model = new ReportModel()
-            //{
-
-            //    ServiceName = ServiceName,
-            //    Exception = exception,
-            //    Status = status,
-            //    Timeout = _baseService.FraudCase.FraudCaseInterval,
-            //    IsActive = _baseService.FraudCase.IsActive,
-            //    Message = message
-            //};
-
-            //_baseService.Report(model);
         }
     }
 }
