@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27703.2026
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29020.237
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fanex.NAP.FS.Websites", "Fanex.NAP.FS.Websites\Fanex.NAP.FS.Websites.csproj", "{2CEE814C-AB8D-42A3-9A00-F605B5A6649B}"
 EndProject
@@ -16,8 +16,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SonarQube", "SonarQube", "{
 		SonarQube\SolutionBinding.sqconfig = SonarQube\SolutionBinding.sqconfig
 		SonarQube\SPUFraudSensorCSharp.ruleset = SonarQube\SPUFraudSensorCSharp.ruleset
 	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fanex.NAP.FS.DB", "Fanex.NAP.FS.DB\Fanex.NAP.FS.DB.csproj", "{3306603D-8891-4541-A882-F8E790365A43}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MicroServices", "MicroServices", "{8B084C18-127D-4163-8E20-502FF66ECCBF}"
 EndProject
@@ -89,9 +87,6 @@ Global
 		{2226E469-7F62-4BFF-B5AC-C99051228374}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2226E469-7F62-4BFF-B5AC-C99051228374}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2226E469-7F62-4BFF-B5AC-C99051228374}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3306603D-8891-4541-A882-F8E790365A43}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3306603D-8891-4541-A882-F8E790365A43}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3306603D-8891-4541-A882-F8E790365A43}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5CE0BA40-0A37-4C89-A33B-D61C7944BE08}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5CE0BA40-0A37-4C89-A33B-D61C7944BE08}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5CE0BA40-0A37-4C89-A33B-D61C7944BE08}.Release|Any CPU.ActiveCfg = Release|Any CPU

@@ -61,7 +61,12 @@
                 {
                     continue;
                 }
-            
+
+
+                //CreateJob(fraudCase.Name)
+                        //.CreateSchedule(fraudCase.FraudCaseInterval, fraudCase.FraudCaseDesc)
+                        //.Run();
+
                 AddScheduleJob(scheduler, fraudCase);
             }
 
@@ -70,11 +75,12 @@
 
         private void AddScheduleJob(IScheduler scheduler, FraudCase fraudCase)
         {
-            var schedule = new ScheduleJob(scheduler);
-            var job = GetJobDetail(fraudCase);            
-            var trigger = schedule.CreateTrigger(fraudCase.FraudCaseName, fraudCase.FraudCaseInterval);            
+            var schedule = new ScheduleJob(scheduler);                       
+            var trigger = schedule.CreateTrigger(fraudCase.FraudCaseName, fraudCase.FraudCaseInterval);
 
-            schedule.Schedule(job, trigger);
+            var job = GetJobDetail(fraudCase);
+            
+            schedule.Schedule(job, trigger);           
         }
 
         private IJobDetail GetJobDetail(FraudCase fraudCase)
