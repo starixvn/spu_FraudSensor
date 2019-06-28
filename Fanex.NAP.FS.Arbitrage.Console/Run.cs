@@ -5,6 +5,9 @@ namespace Fanex.NAP.FS.Arbitrage.Console
     using Fanex.Logging.Extensions.Database;
     using Fanex.Logging.Sentry.RavenClient;
     using Fanex.NAP.FS.Core;
+    using Microsoft.Web.Infrastructure;
+    using ONEbook.UM;
+    using ONEbook.UM.AspNetMVC.Configuration;    
     using SharpRaven;
     using System;
     using System.Collections.Generic;
@@ -27,10 +30,10 @@ namespace Fanex.NAP.FS.Arbitrage.Console
 
                 var _service = new Service();
 
-                if (_service.CheckUM())
-                {
-                    return;
-                }
+                //if (_service.CheckUM())
+                //{
+                //    return;
+                //}
 
                 _service
                     .CleanResult()

@@ -3,5 +3,22 @@
   <Function Name="FraudCase">
     <Setting Key="FS_FraudCase_GetAll" SpName="FS_FraudCase_GetAll" DbName="DBFS.bodb_FraudSensor.bodbSPUNet" />
     <Setting Key="FS_FraudCase_GetById" SpName="FS_FraudCase_GetById" DbName="DBFS.bodb_FraudSensor.bodbSPUNet" />
-  </Function>  
+  </Function>
+  <Function Name="Arbitrage">
+    <Setting Key="FS_FraudCase_Arbitrage_PreCondition"
+             SpName="FS_FraudCase_Arbitrage_PreCondition"
+             DbName="DBFS.bodb_FraudSensor.bodbSPUNet" />
+
+    <Setting Key="FS_FraudCase_Arbitrage_CleanUp"
+             SpName="FS_FraudCase_Arbitrage_CleanUp"
+             DbName="DBFS.bodb_FraudSensor.bodbSPUNet" />
+
+    <Setting Key="FS_FraudCase_Arbitrage_Rule"
+             SpName="FS_FraudCase_Arbitrage_Rule"
+             DbName="DBFS.bodb_FraudSensor.bodbSPUNet" />
+
+    <Setting Key="FS_FraudCase_GetById"
+             SpName="FS_FraudCase_GetById"
+             DbName="DBFS.bodb_FraudSensor.bodbSPUNet" />
+  </Function>
 </Functions>

@@ -38,7 +38,7 @@ namespace Fanex.NAP.FS.Service
 
             FraudCaseId = Convert.ToInt32(fraudCaseId);
 
-            maintenanceService = new MaintenanceService();
+            //maintenanceService = new MaintenanceService();
         }
 
         public virtual BaseService Precondition() { return this; }

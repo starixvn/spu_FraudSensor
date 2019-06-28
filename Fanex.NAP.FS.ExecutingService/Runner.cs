@@ -61,7 +61,7 @@
                 {
                     continue;
                 }
-
+              
                 scheduler = CreateScheduleJob(scheduler, fraudCase);
             }
 

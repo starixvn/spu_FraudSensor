@@ -1,5 +1,8 @@
 ﻿namespace Fanex.NAP.FS.Arbitrage.Console
 {
+    using Fanex.Logging;
+    using Fanex.Logging.Extensions;
+    using Fanex.Logging.Extensions.Database;
     using Fanex.NAP.FS.Core;
     using Fanex.NAP.FS.Library.Core.Helpers.Api;
     using Fanex.NAP.FS.Library.Core.Helpers.Xml;
@@ -96,12 +99,12 @@
             }
             catch (Exception ex)
             {
-                //var logMessage = new LogMessage(ex.Message)
-                //    .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
-                //    .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
+                var logMessage = new LogMessage(ex.Message)
+                    .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
+                    .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
 
-                //LogService.Error(
-                //    $"{ProjectName} - {ServiceName} - GroupCustomer Exception: Cannot get Group Customer from Web API - Exception: {logMessage}");
+                LogService.Error(
+                    $"Arbitrage service - GroupCustomer Exception: Cannot get Group Customer from Web API - Exception: {logMessage}");
 
                 return Enumerable.Empty<ArbitrageCustomer>();
             }
@@ -121,12 +124,12 @@
             }
             catch (Exception ex)
             {
-            //    var logMessage = new LogMessage(ex.Message)
-            //        .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
-            //        .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
+                var logMessage = new LogMessage(ex.Message)
+                    .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
+                    .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
 
-            //    LogService.Error(
-            //        $"{ProjectName} - {ServiceName} - MatchId: {matchId} - GroupData Exeption: {logMessage}");
+                LogService.Error(
+                    $"Arbitrage service - MatchId: {matchId} - GroupData Exeption: {logMessage}");
             }
         }
     }
