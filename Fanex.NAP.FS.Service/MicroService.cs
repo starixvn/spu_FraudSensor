@@ -132,7 +132,7 @@
             LogService.Error($"{_serviceName} is stopped. Please contact with Admin.");
         }
 
-        public void MonitoringServiceLog(string message = "Rule is executed.", int totalMinutes = 60)
+        public void MonitoringServiceLog(int totalMinutes = 60, string message = "Rule is executed.")
         {
             var nowDate = DateTime.Now;
 

@@ -64,11 +64,7 @@
                         _isRunning = false;
                     }
                     _lastExecuted = nowDate;
-                }
-                else
-                {
-                    _baseService.MonitoringServiceLog("Service is executed.");
-                }
+                }               
             }
             catch (Exception ex)
             {
