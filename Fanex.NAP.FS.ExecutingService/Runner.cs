@@ -15,7 +15,7 @@
     public partial class Runner : ServiceBase
     {
         private const string ProjectName = "Fraud Sensor Service";
-        private List<IScheduler> schedulers;
+        private List<ISchedulesFS> schedulesFS;
 
         public Runner()
         {
@@ -26,11 +26,11 @@
         {
             try
             {
-                schedulers = new List<IScheduler>();
+                schedulesFS = new List<ISchedulesFS>();
 
-                CreateScheduler().Result.Start();
+                CreateSchedulers().Result.Start();
 
-                LogService.Info($"Executing service is STARTED at {DateTime.Now}");
+                LogService.Info($"Executing service is STARTED");
             }
             catch (Exception ex)
             {
@@ -42,7 +42,7 @@
         {
             try
             {
-                schedulers.ForEach(x => x.Shutdown());
+                schedulesFS.ForEach(x => x.Shutdown());
 
                 LogService.Info($"Executing service is STOP at {DateTime.Now}");
             }
@@ -53,7 +53,7 @@
             }
         }
 
-        private async Task<IScheduler> CreateScheduler()
+        private async Task<IScheduler> CreateSchedulers()
         {
             var fraudCaseService = new FraudCaseService();
 
@@ -73,21 +73,21 @@
                     continue;
                 }
               
-                scheduler = CreateScheduleJob(scheduler, fraudCase);
-
-                schedulers.Add(scheduler);
+                scheduler = CreateSchedule(scheduler, fraudCase);
             }
             
             return scheduler;
         }
 
-        private IScheduler CreateScheduleJob(IScheduler scheduler, FraudCase fraudCase)
+        private IScheduler CreateSchedule(IScheduler scheduler, FraudCase fraudCase)
         {
             var job = CreateJob(fraudCase);
 
-            new ScheduleJob(scheduler)
-                    .CreateTrigger(fraudCase.FraudCaseName, fraudCase.FraudCaseInterval)
-                    .Schedule(job);
+            var schedule = new SchedulesFS(scheduler)
+                                .CreateTrigger(fraudCase.FraudCaseName, fraudCase.FraudCaseInterval)
+                                .Schedule(job);
+
+            schedulesFS.Add(schedule);
 
             return scheduler;
         }
