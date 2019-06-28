@@ -128,7 +128,7 @@
       <Version>12.0.1</Version>
     </PackageReference>
     <PackageReference Include="RestSharp">
-      <Version>106.6.9</Version>
+      <Version>105.2.3</Version>
     </PackageReference>
     <PackageReference Include="SonarAnalyzer.CSharp">
       <Version>7.14.0.8411</Version>

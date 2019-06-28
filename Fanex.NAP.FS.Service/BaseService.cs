@@ -1,23 +1,20 @@
-﻿using Fanex.Data;
-using Fanex.Data.ConnectionStringProvider20;
-using Fanex.NAP.FS.Core;
-using Fanex.NAP.FS.Library.Models;
-using Fanex.NAP.FS.Model;
-using ONEbook.UM.Services;
-using RestSharp;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Fanex.NAP.FS.Service
+﻿namespace Fanex.NAP.FS.Service
 {
+    using Fanex.Data;
+    using Fanex.Data.ConnectionStringProvider20;
+    using Fanex.NAP.FS.Core;
+    using Fanex.NAP.FS.Library.Models;
+    using Fanex.NAP.FS.Model;
+    using ONEbook.UM.Services;
+    using RestSharp;
+    using System;
+    using ONEbook.UM.Services.Impl;
+
     public class BaseService
     {
         public int FraudCaseId { get; set; }
 
-        protected MaintenanceService maintenanceService;
+        protected IUMControlAdapter maintenanceService;
 
         public BaseService(FraudCaseId fraudCaseId)
         {
@@ -26,19 +23,10 @@ namespace Fanex.NAP.FS.Service
                   .Use(new ConnectionStringProvider20())
                   .UseDefaultDbSettingProvider(AppSetting.AppData, false)
                   .Run();
-
-            //LogManager.SetDefaultLogCategory(AppSetting.FanexLogCategory)
-            //         .Use(new List<ILogEngine>
-            //         {
-            //             new SentryLogging(new SentryEngineOptions
-            //             {
-            //                 Dsn = new Dsn(AppSetting.SentryLogging)
-            //             })
-            //         });
-
+        
             FraudCaseId = Convert.ToInt32(fraudCaseId);
 
-            //maintenanceService = new MaintenanceService();
+            maintenanceService = new UMControlAdapter();
         }
 
         public virtual BaseService Precondition() { return this; }
@@ -64,7 +52,7 @@ namespace Fanex.NAP.FS.Service
 
         public bool CheckUM()
         {
-            return maintenanceService.IsUnderMaintenance().Result;
+            return maintenanceService.GetUnderMaintenanceTime().IsUnderMaintenanceTime;
         }
     }
 }

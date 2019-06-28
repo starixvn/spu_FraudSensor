@@ -13,10 +13,10 @@
             {
                 var _service = new Service();
 
-                //if (_service.CheckUM())
-                //{
-                //    return;
-                //}
+                if (_service.CheckUM())
+                {
+                    return;
+                }
 
                 _service
                     .CleanResult()
