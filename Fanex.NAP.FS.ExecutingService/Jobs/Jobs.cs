@@ -7,15 +7,15 @@
     using System.Reflection;
     using System.Threading.Tasks;
 
+    [DisallowConcurrentExecution]
     public abstract class Jobs : IJobs
     {
-        private static readonly Random Random = new Random();
         private const string Method = "Start";
         public abstract string GetFraudCase();
 
         public abstract IJobDetail CreateJob(string name, string groupName, string description);
 
-        public async Task Execute(IJobExecutionContext context)
+        public Task Execute(IJobExecutionContext context)
         {
             try
             {
@@ -35,7 +35,7 @@
                 Debug.WriteLine(ex.ToString());
             }
 
-            await Task.Delay(TimeSpan.FromSeconds(Random.Next(1, 10)));
+            return Task.FromResult(true);
         }
     }
 }

@@ -10,10 +10,12 @@
     using Fanex.NAP.FS.Service;
     using Fanex.NAP.FS.ExecutingService.Models;
     using Fanex.NAP.FS.ExecutingService.Schedules;
+    using System.Collections.Generic;
 
     public partial class Runner : ServiceBase
     {
         private const string ProjectName = "Fraud Sensor Service";
+        private List<IScheduler> schedulers;
 
         public Runner()
         {
@@ -24,8 +26,9 @@
         {
             try
             {
-                CreateScheduler().Result
-                    .Start();
+                schedulers = new List<IScheduler>();
+
+                CreateScheduler().Result.Start();
 
                 LogService.Info($"Executing service is STARTED at {DateTime.Now}");
             }
@@ -37,9 +40,17 @@
 
         protected override void OnStop()
         {
-            // TO DO
+            try
+            {
+                schedulers.ForEach(x => x.Shutdown());
 
-            LogService.Info($"Executing service is STOP at {DateTime.Now}");
+                LogService.Info($"Executing service is STOP at {DateTime.Now}");
+            }
+            catch (Exception ex)
+            {
+
+                LogService.Info($"Executing service is STOP error message: { ex.ToString() } at {DateTime.Now}");
+            }
         }
 
         private async Task<IScheduler> CreateScheduler()
@@ -63,8 +74,10 @@
                 }
               
                 scheduler = CreateScheduleJob(scheduler, fraudCase);
-            }
 
+                schedulers.Add(scheduler);
+            }
+            
             return scheduler;
         }
 
