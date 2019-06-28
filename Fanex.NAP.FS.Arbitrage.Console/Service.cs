@@ -26,6 +26,18 @@
             _ticket = new List<ArbitrageTicket>();
         }
 
+        public BaseService CleanResult()
+        {
+            if (_ticket == null || !_ticket.Any())
+            {
+                return this;
+            }
+
+            _ticket = Enumerable.Empty<ArbitrageTicket>();
+
+            return base.CleanResult();
+        }
+
         public override BaseService Precondition()
         {
             _ticket = _service.PreCondition<ArbitrageTicket>();

@@ -1,20 +1,9 @@
 ﻿namespace Fanex.NAP.FS.FlaggedAccount.Console
 {
-    using Fanex.Data;
-    using Fanex.Data.ConnectionStringProvider20;
-    using Fanex.NAP.FS.Core;
-    using Fanex.NAP.FS.Library.Core.Helpers.Api;
-    using Fanex.NAP.FS.Library.Core.Helpers.Xml;
-    using Fanex.NAP.FS.Library.Core.Utilities;
-    using Fanex.NAP.FS.Library.DTO;
-    using Fanex.NAP.FS.Library.Models;
-    using Fanex.NAP.FS.Library.Models.FraudCase.FlaggedAccount;
-    using Fanex.NAP.FS.Service;
+    using Fanex.Logging;
+    using Fanex.Logging.Extensions;
+    using Fanex.Logging.Extensions.Database;
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading;
-    using System.Threading.Tasks;
 
     public static class Run
     {
@@ -24,10 +13,10 @@
             {
                 var _service = new Service();
 
-                if (_service.CheckUM())
-                {
-                    return;
-                }
+                //if (_service.CheckUM())
+                //{
+                //    return;
+                //}
 
                 _service
                     .CleanResult()
@@ -36,11 +25,11 @@
             }
             catch (Exception ex)
             {
-                //var logMessage = new LogMessage(ex.Message)
-                //    .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
-                //    .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
+                var logMessage = new LogMessage(ex.Message)
+                    .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
+                    .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
 
-                //LogService.Error($"{ProjectName} - {ServiceName} - Execute Exeption {logMessage}");
+                LogService.Error($"Flagged Account service - Start Exeption {logMessage}");
             }
         }
     }

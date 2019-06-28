@@ -5,9 +5,6 @@ namespace Fanex.NAP.FS.Arbitrage.Console
     using Fanex.Logging.Extensions.Database;
     using Fanex.Logging.Sentry.RavenClient;
     using Fanex.NAP.FS.Core;
-    using Microsoft.Web.Infrastructure;
-    using ONEbook.UM;
-    using ONEbook.UM.AspNetMVC.Configuration;    
     using SharpRaven;
     using System;
     using System.Collections.Generic;
@@ -46,7 +43,7 @@ namespace Fanex.NAP.FS.Arbitrage.Console
                     .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
                     .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
 
-                LogService.Error($"Arbitrage Service - Execute Exeption {logMessage}");
+                LogService.Error($"Arbitrage service - Start Exeption {logMessage}");
             }
         }
     }

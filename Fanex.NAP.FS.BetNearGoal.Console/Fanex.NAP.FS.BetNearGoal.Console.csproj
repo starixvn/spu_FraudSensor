@@ -37,8 +37,38 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Dapper, Version=1.50.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Dapper.1.50.5\lib\net451\Dapper.dll</HintPath>
+    </Reference>
+    <Reference Include="Fanex.Data, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Fanex.Data.3.0.0\lib\net461\Fanex.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="Fanex.Logging, Version=2.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Fanex.Logging.2.0.1\lib\net461\Fanex.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="Fanex.Logging.Extensions, Version=1.0.6.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Fanex.Logging.Extensions.1.0.6\lib\net461\Fanex.Logging.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="Fanex.Logging.Extensions.Database, Version=1.0.6.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Fanex.Logging.Extensions.Database.1.0.6-beta2\lib\net461\Fanex.Logging.Extensions.Database.dll</HintPath>
+    </Reference>
+    <Reference Include="Fanex.Logging.Sentry.RavenClient, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Fanex.Logging.Sentry.RavenClient.1.0.1\lib\net461\Fanex.Logging.Sentry.RavenClient.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpRaven, Version=2.4.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpRaven.2.4.0\lib\net45\SharpRaven.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.InteropServices.RuntimeInformation, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.InteropServices.RuntimeInformation.4.3.0\lib\net45\System.Runtime.InteropServices.RuntimeInformation.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security" />
+    <Reference Include="System.Transactions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -49,6 +79,7 @@
   <ItemGroup>
     <Compile Include="Run.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Service.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -59,6 +90,20 @@
     <Analyzer Include="..\packages\SonarAnalyzer.CSharp.7.14.0.8411\analyzers\Google.Protobuf.dll" />
     <Analyzer Include="..\packages\SonarAnalyzer.CSharp.7.14.0.8411\analyzers\SonarAnalyzer.CSharp.dll" />
     <Analyzer Include="..\packages\SonarAnalyzer.CSharp.7.14.0.8411\analyzers\SonarAnalyzer.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Fanex.NAP.FS.Core\Fanex.NAP.FS.Core.csproj">
+      <Project>{f95ab8f2-f7dc-4c12-89e0-090fb0ec6414}</Project>
+      <Name>Fanex.NAP.FS.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Fanex.NAP.FS.Library\Fanex.NAP.FS.Library.csproj">
+      <Project>{2d6f84f8-e9b5-49ec-b487-05b44e994dcc}</Project>
+      <Name>Fanex.NAP.FS.Library</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Fanex.NAP.FS.Service\Fanex.NAP.FS.Service.csproj">
+      <Project>{e60465e7-1880-4a9e-846c-964af786ce7e}</Project>
+      <Name>Fanex.NAP.FS.Service</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
