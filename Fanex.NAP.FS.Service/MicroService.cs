@@ -1,19 +1,16 @@
-﻿using System.Runtime.Remoting.Channels;
-
-namespace Fanex.NAP.FS.Service
+﻿namespace Fanex.NAP.FS.Service
 {
     using Fanex.Logging;
     using Fanex.NAP.FS.Core;
     using Fanex.NAP.FS.Library.DTO;
     using Fanex.NAP.FS.Library.Models;
     using Fanex.NAP.FS.Model;
-    using ONEbook.UM;
-    using ONEbook.UM.AspNetMVC.Configuration;
-    using ONEbook.UM.Helpers;
     using ONEbook.UM.Services;
+    using ONEbook.UM.Services.Impl;
     using RestSharp;
     using System;
     using System.Threading;
+    using System.Threading.Tasks;
     using System.Timers;
 
     public class MicroService
@@ -28,7 +25,7 @@ namespace Fanex.NAP.FS.Service
 
         protected FraudCase _fraudCase;
         protected FraudCaseService fraudCaseService;
-        protected MaintenanceService maintenanceService;
+        protected IUMControlAdapter maintenanceService;
 
         private readonly string projectName = "Fraud Sensor Service";
 
@@ -61,15 +58,8 @@ namespace Fanex.NAP.FS.Service
                .DeclareQueue(_queueName)
                .DeclareRoutingKey(_queueName)
                .Bind();
-
-            var umConfig = new UMClientConfiguration();
-
-            UMClientManager
-                .UseConfig(umConfig)
-                .UseRestClient(new ONEbook.UM.Transport.RestClient(umConfig))
-                .UseHttpContext(new HttpContextHelper());
-
-            maintenanceService = new MaintenanceService();
+                       
+            maintenanceService = new UMControlAdapter();
 
             _lastUpdate = DateTime.Now;
         }
@@ -167,12 +157,7 @@ namespace Fanex.NAP.FS.Service
 
             try
             {
-                var result = client.Execute(request);
-
-                if (!result.IsSuccessful)
-                {
-                    LogService.Error(result.ErrorMessage);
-                }
+                client.Execute(request);
             }
             catch (Exception ex)
             {
@@ -182,7 +167,7 @@ namespace Fanex.NAP.FS.Service
 
         public bool CheckUM()
         {
-            return maintenanceService.IsUnderMaintenance().Result;
+            return maintenanceService.GetUnderMaintenanceTime().IsUnderMaintenanceTime;            
         }
 
         private FraudCaseMessage GetMessage(Action<FraudCaseMessage> handler)

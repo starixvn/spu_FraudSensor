@@ -64,15 +64,16 @@ namespace Fanex.NAP.FS.ArbitrageService
 
                     if (!isUm)
                     {
-                        if (_isRunning) return;
+                        if (!_isRunning)
+                        {
+                            _isRunning = true;
 
-                        _isRunning = true;
+                            var tickets = Precondition();
 
-                        var tickets = Precondition();
+                            Rule(tickets);
 
-                        Rule(tickets);
-
-                        _isRunning = false;
+                            _isRunning = false;
+                        }
                     }
 
                     _lastExecuted = nowDate;

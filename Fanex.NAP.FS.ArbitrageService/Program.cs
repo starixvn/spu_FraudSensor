@@ -32,7 +32,7 @@ namespace Fanex.NAP.FS.ArbitrageService
                     {
                         Dsn = new Dsn(AppSetting.SentryLogging)
                     })
-                });
+                });           
 
             ServiceBase[] ServicesToRun;
             ServicesToRun = new ServiceBase[]

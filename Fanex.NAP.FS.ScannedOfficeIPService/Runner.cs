@@ -94,7 +94,7 @@ namespace Fanex.NAP.FS.ScannedOfficeIPService
 
         private void Report(bool status, string exception, string message)
         {
-            var model = new ReportModel()
+            var model = new ReportModel
             {
                 ServiceName = ServiceName,
                 Exception = exception,
@@ -120,6 +120,7 @@ namespace Fanex.NAP.FS.ScannedOfficeIPService
         private void Rule()
         {
             if (_matches == null || !_matches.Any()) return;
+
             foreach (var chunk in _matches.Chunk(100))
             {
                 var ids = chunk.Select(m => m.MatchId);

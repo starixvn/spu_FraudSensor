@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>Fanex.NAP.FS.Service.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -29,6 +30,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>Fanex.NAP.FS.Service.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -90,6 +92,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="Fanex.NAP.FS.Service.ruleset" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Dapper">
@@ -122,20 +125,25 @@
     <PackageReference Include="Newtonsoft.Json">
       <Version>12.0.1</Version>
     </PackageReference>
-    <PackageReference Include="ONEbook.UM.AspNetMVC">
-      <Version>3.0.0-beta2</Version>
-    </PackageReference>
-    <PackageReference Include="ONEbook.UM.Transport">
-      <Version>3.0.0-beta1</Version>
+    <PackageReference Include="ONEbook.UM">
+      <Version>2.0.2.9</Version>
     </PackageReference>
     <PackageReference Include="RestSharp">
-      <Version>106.6.9</Version>
+      <Version>105.2.3</Version>
+    </PackageReference>
+    <PackageReference Include="SonarAnalyzer.CSharp">
+      <Version>7.14.0.8411</Version>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="System.Net.Http">
       <Version>4.3.4</Version>
     </PackageReference>
     <PackageReference Include="System.Security.Principal.Windows">
       <Version>4.5.1</Version>
+    </PackageReference>
+    <PackageReference Include="UMControllerLibrary">
+      <Version>1.0.1872.836</Version>
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

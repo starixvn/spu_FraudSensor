@@ -32,7 +32,7 @@
                          {
                              Dsn = new Dsn(AppSetting.SentryLogging)
                          })
-                     });
+                     });           
 
             ServiceBase[] ServicesToRun;
             ServicesToRun = new ServiceBase[]

@@ -93,7 +93,7 @@
 
         private void Report(bool status, string exception, string message)
         {
-            var model = new ReportModel()
+            var model = new ReportModel
             {
                 ServiceName = base.ServiceName,
                 Exception = exception,
