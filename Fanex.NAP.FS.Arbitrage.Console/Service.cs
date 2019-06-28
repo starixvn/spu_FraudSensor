@@ -19,6 +19,7 @@
     {
         private readonly FS.Service.ArbitrageService _service;
         private IEnumerable<ArbitrageTicket> _ticket;
+        private const int SleepTime = 10;
 
         public Service() : base(Library.Models.FraudCaseId.Arbitrage)
         {
@@ -26,7 +27,7 @@
             _ticket = new List<ArbitrageTicket>();
         }
 
-        public BaseService CleanResult()
+        public override BaseService CleanResult()
         {
             if (_ticket == null || !_ticket.Any())
             {
@@ -54,7 +55,10 @@
 
         private void ExecuteBySeparatedThreads()
         {
-            if (_ticket == null || !_ticket.Any()) return;
+            if (_ticket == null || !_ticket.Any())
+            {
+                return;
+            }
 
             var ticketGroupBy = _ticket
                 .GroupBy(t => t.MatchId)
@@ -64,7 +68,7 @@
                     ArbitrageTicketList = x.ToList()
                 }).ToList();
 
-            var options = new ParallelOptions() { MaxDegreeOfParallelism = 2 };
+            var options = new ParallelOptions { MaxDegreeOfParallelism = 2 };
 
             Parallel.ForEach(ticketGroupBy, options, ticket =>
             {
@@ -77,10 +81,8 @@
 
                 ExecuteGroupCustomer(ticket.MatchId, groupCustomer, ticket.ArbitrageTicketList);
 
-                Thread.Sleep(10);
-            });
-
-            //_baseService.MonitoringServiceLog();
+                Thread.Sleep(SleepTime);
+            });            
         }
 
         private List<ArbitrageCustomer> GroupCustomer(List<int> custIds)
@@ -95,12 +97,12 @@
 
                 taskCustomers.Add(taskCustomer);
 
-                Thread.Sleep(10);
+                Thread.Sleep(SleepTime);
             }
 
-            Task.WaitAll(taskCustomers.ToArray());
+            Task.WhenAll(taskCustomers.ToArray());
 
-            return taskCustomers.SelectMany(t => t.Result).ToList();
+            return taskCustomers.SelectMany(t=>t.Result).ToList();
         }
 
         private async Task<IEnumerable<ArbitrageCustomer>> GroupCustomer(IEnumerable<int> custids)
@@ -141,7 +143,7 @@
                     .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
 
                 LogService.Error(
-                    $"Arbitrage service - MatchId: {matchId} - GroupData Exeption: {logMessage}");
+                    $"Arbitrage service - MatchId: {matchId} - ExecuteGroupCustomer Exeption: {logMessage}");
             }
         }
     }
