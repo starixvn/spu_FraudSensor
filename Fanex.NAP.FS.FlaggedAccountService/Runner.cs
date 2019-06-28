@@ -152,7 +152,7 @@
         {
             ExecuteBySeparatedThreads();
 
-            _baseService.MonitoringServiceLog(10);
+            _baseService.MonitoringServiceLog(30);
         }
 
         private void ExecuteBySeparatedThreads()

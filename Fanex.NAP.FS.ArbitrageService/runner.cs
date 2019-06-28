@@ -29,7 +29,9 @@ namespace Fanex.NAP.FS.ArbitrageService
         private readonly Service.ArbitrageService _arbitrageService;
         private readonly MicroService _baseService;
         private bool _isRunning = false;
+        
         private DateTime _lastExecuted;
+
         public Runner()
         {
             _baseService = new MicroService(ServiceName, FraudCaseId.Arbitrage);
@@ -56,14 +58,16 @@ namespace Fanex.NAP.FS.ArbitrageService
             var nowDate = DateTime.Now;
             try
             {
-                if (Convert.ToBoolean(source) || nowDate.Subtract(_lastExecuted).TotalSeconds >= _baseService.FraudCase.FraudCaseInterval)
+                var lastExecutedTotalSeconds = nowDate.Subtract(_lastExecuted).TotalSeconds;
+
+                if (Convert.ToBoolean(source) || lastExecutedTotalSeconds >= _baseService.FraudCase.FraudCaseInterval)
                 {
                     Report(true, exception, "Fraud Case is executing at " + DateTime.Now);
 
                     var isUm = _baseService.CheckUM();
 
                     if (!isUm)
-                    {
+                    {                      
                         if (!_isRunning)
                         {
                             _isRunning = true;
@@ -74,6 +78,10 @@ namespace Fanex.NAP.FS.ArbitrageService
 
                             _isRunning = false;
                         }
+                    }
+                    else
+                    {
+                        _baseService.WriteLogForUM(nowDate);
                     }
 
                     _lastExecuted = nowDate;
@@ -92,7 +100,7 @@ namespace Fanex.NAP.FS.ArbitrageService
 
                 Report(false, exception, "Fraud Case is executed at " + DateTime.Now);
             }
-        }
+        }       
 
         private List<ArbitrageCustomer> GroupCustomer(List<int> custIds)
         {

@@ -5,12 +5,12 @@
     using Fanex.NAP.FS.Library.DTO;
     using Fanex.NAP.FS.Library.Models;
     using Fanex.NAP.FS.Model;
+    using ONEbook.UM.Models;
     using ONEbook.UM.Services;
     using ONEbook.UM.Services.Impl;
     using RestSharp;
     using System;
     using System.Threading;
-    using System.Threading.Tasks;
     using System.Timers;
 
     public class MicroService
@@ -21,7 +21,8 @@
         private static int _fraudCaseId;
         private static string _queueName;
         private static DateTime _lastUpdate;
-
+        private DateTime _lastTurnOnUM;
+        private bool _isOnUM = false;
 
         protected FraudCase _fraudCase;
         protected FraudCaseService fraudCaseService;
@@ -61,7 +62,7 @@
                        
             maintenanceService = new UMControlAdapter();
 
-            _lastUpdate = DateTime.Now;
+            _lastUpdate = _lastTurnOnUM = DateTime.Now;
         }
 
         public void Start(ElapsedEventHandler onTimedEvent)
@@ -165,9 +166,47 @@
             }
         }
 
-        public bool CheckUM()
+        public bool CheckUM() => maintenanceService.GetUnderMaintenanceTime().IsUnderMaintenanceTime;        
+
+        public double GetTotalUMTime()
         {
-            return maintenanceService.GetUnderMaintenanceTime().IsUnderMaintenanceTime;            
+            var getUMTime = maintenanceService.GetUnderMaintenanceTime();
+
+            if (getUMTime.IsUnderMaintenanceTime)
+            {
+                var from = Convert.ToDateTime(getUMTime.From);
+                var to = Convert.ToDateTime(getUMTime.To);
+
+                return to.Subtract(from).TotalMinutes;
+            }
+            else
+            {
+                _isOnUM = false;
+            }
+
+            return 0;
+        }
+
+        public void WriteLogForUM(DateTime nowDate)
+        {
+            var getTotalUMTime = this.GetTotalUMTime();
+
+            if (!_isOnUM)
+            {
+                _lastTurnOnUM = nowDate;
+                _isOnUM = true;
+
+                //LogService.Info($"{projectName} - {_serviceName} - Under Maintenance is turned on.");
+                Console.WriteLine($"{projectName} - {_serviceName} - Under Maintenance is turned on.");
+            }
+
+            var lastTurnedOnUMTotalMinutes = nowDate.Subtract(_lastTurnOnUM).TotalMinutes;
+
+            if (lastTurnedOnUMTotalMinutes >= (getTotalUMTime + 1))
+            {
+                //LogService.Error($"{projectName} - {_serviceName} - Under Maintenance Time: Got the problem when UM time is turned on.");
+                Console.WriteLine($"{projectName} - {_serviceName} - Under Maintenance Time: Got the problem when UM time is turned on.");
+            }
         }
 
         private FraudCaseMessage GetMessage(Action<FraudCaseMessage> handler)
