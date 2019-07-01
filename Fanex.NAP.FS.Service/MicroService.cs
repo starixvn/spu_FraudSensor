@@ -196,16 +196,16 @@
                 _lastTurnOnUM = nowDate;
                 _isOnUM = true;
 
-                //LogService.Info($"{projectName} - {_serviceName} - Under Maintenance is turned on.");
-                Console.WriteLine($"{projectName} - {_serviceName} - Under Maintenance is turned on.");
+                LogService.Info($"{projectName} - {_serviceName} - Under Maintenance is turned on.");
+                //Console.WriteLine($"{projectName} - {_serviceName} - Under Maintenance is turned on.");
             }
 
             var lastTurnedOnUMTotalMinutes = nowDate.Subtract(_lastTurnOnUM).TotalMinutes;
 
-            if (lastTurnedOnUMTotalMinutes >= (getTotalUMTime + 1))
+            if (lastTurnedOnUMTotalMinutes >= (getTotalUMTime + 10))
             {
-                //LogService.Error($"{projectName} - {_serviceName} - Under Maintenance Time: Got the problem when UM time is turned on.");
-                Console.WriteLine($"{projectName} - {_serviceName} - Under Maintenance Time: Got the problem when UM time is turned on.");
+                LogService.Error($"{projectName} - {_serviceName} - Under Maintenance Time: Got the problem when UM time is turned on.");
+                //Console.WriteLine($"{projectName} - {_serviceName} - Under Maintenance Time: Got the problem when UM time is turned on.");
             }
         }
 

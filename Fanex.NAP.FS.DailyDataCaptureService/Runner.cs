@@ -99,7 +99,7 @@
         {
             _dailyDataCaptureService.Rule();
 
-            _baseService.MonitoringServiceLog();
+            _baseService.MonitoringServiceLog(5);
         }
     }
 }
