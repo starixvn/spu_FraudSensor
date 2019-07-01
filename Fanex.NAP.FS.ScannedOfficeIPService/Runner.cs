@@ -76,6 +76,10 @@ namespace Fanex.NAP.FS.ScannedOfficeIPService
                     }
                     _lastExecuted = nowDate;
                 }
+                else
+                {
+                    _baseService.MonitoringServiceLog(5);
+                }
             }
             catch (Exception ex)
             {
@@ -128,9 +132,7 @@ namespace Fanex.NAP.FS.ScannedOfficeIPService
                 var matchIds = string.Join(",", ids);
 
                 _scannedOfficeIpService.Rule(matchIds);
-            }
-
-            _baseService.MonitoringServiceLog(5);
+            }            
 
             Thread.Sleep(TimeSpan.FromSeconds(2));
         }

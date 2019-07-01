@@ -64,7 +64,11 @@
                         _isRunning = false;
                     }
                     _lastExecuted = nowDate;
-                }               
+                }  
+                else
+                {
+                    _baseService.MonitoringServiceLog(5);
+                }
             }
             catch (Exception ex)
             {
@@ -97,9 +101,7 @@
 
         private void Rule()
         {
-            _dailyDataCaptureService.Rule();
-
-            _baseService.MonitoringServiceLog(5);
+            _dailyDataCaptureService.Rule();            
         }
     }
 }
