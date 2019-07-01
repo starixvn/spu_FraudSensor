@@ -8,6 +8,8 @@
     using SharpRaven;
     using System;
     using System.Collections.Generic;
+    using System.Threading;
+    using System.Threading.Tasks;
 
     static class Program
     {
@@ -36,6 +38,9 @@
                     .CleanResult()
                     .Precondition()
                     .Rule();
+
+                Thread.Sleep(600000);
+                
             }
             catch (Exception ex)
             {

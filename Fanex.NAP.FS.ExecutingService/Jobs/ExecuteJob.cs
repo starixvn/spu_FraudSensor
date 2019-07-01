@@ -6,13 +6,15 @@
     using System;
     using System.Diagnostics;
     using System.Threading.Tasks;
+
+    [DisallowConcurrentExecution]
     public class ExecuteJob : IJob
     {
         public Task Execute(IJobExecutionContext context)
         {
             try
             {
-                Process process = new Process();         
+                Process process = new Process();
                 var instance = context.JobDetail.JobDataMap.GetString("JobData");
 
                 process.StartInfo.UseShellExecute = false;
@@ -29,6 +31,6 @@
             }
 
             return Task.FromResult(true);
-        }
+        }        
     }
 }

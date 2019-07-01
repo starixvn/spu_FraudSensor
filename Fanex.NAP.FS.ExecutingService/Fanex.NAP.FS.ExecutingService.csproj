@@ -199,15 +199,7 @@
   <ItemGroup>
     <Compile Include="IJobFS.cs" />
     <Compile Include="JobFS.cs" />
-    <Compile Include="Jobs\ArbitrageJob.cs" />
-    <Compile Include="Jobs\BetNearGoalJob.cs" />
-    <Compile Include="Jobs\BigStakeNearGoalJob.cs" />
-    <Compile Include="Jobs\CheckBetJob.cs" />
-    <Compile Include="Jobs\DailyDataCaptureJob.cs" />
-    <Compile Include="Jobs\DelayGoalJob.cs" />
     <Compile Include="Jobs\ExecuteJob.cs" />
-    <Compile Include="Jobs\FlaggedAccountJob.cs" />
-    <Compile Include="Jobs\ScannedOfficeIPJob.cs" />
     <Compile Include="Models\FraudCase.cs" />
     <Compile Include="Models\FraudCaseId.cs" />
     <Compile Include="Runner.cs">
