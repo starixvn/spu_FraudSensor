@@ -15,6 +15,7 @@
     public partial class Runner : ServiceBase
     {
         private const string ProjectName = "Fraud Sensor Service";
+        private const string GroupName = "FraudCaseGroup";
         private List<ISchedulesFS> schedulesFS;
 
         public Runner()
@@ -28,7 +29,7 @@
             {
                 schedulesFS = new List<ISchedulesFS>();
 
-                CreateSchedulers().Result.Start();
+                ExecuteJobs();
 
                 LogService.Info($"Executing service is STARTED");
             }
@@ -53,13 +54,11 @@
             }
         }
 
-        private async Task<IScheduler> CreateSchedulers()
+        private void ExecuteJobs()
         {
             var fraudCaseService = new FraudCaseService();
 
             var fraudCases = fraudCaseService.GetFraudCase<FraudCase>(null, 1, Core.AppSetting.Environment);
-
-            var scheduler = await StdSchedulerFactory.GetDefaultScheduler();
 
             foreach (var fraudCase in fraudCases)
             {
@@ -72,48 +71,17 @@
                 {
                     continue;
                 }
-              
-                scheduler = CreateSchedule(scheduler, fraudCase);
-            }
-            
-            return scheduler;
-        }
 
-        private IScheduler CreateSchedule(IScheduler scheduler, FraudCase fraudCase)
-        {
-            var job = CreateJob(fraudCase);
+                var job = new JobFS();
+                var fraudCaseName = Enum.GetName(typeof(FraudCaseId), fraudCase.FraudCaseId);
+                var className = string.Format("{0}Job", fraudCaseName);
+                var jobName = className;
+                var triggerName = string.Format("{0}Trigger", fraudCaseName);
 
-            var schedule = new SchedulesFS(scheduler)
-                                .CreateTrigger(fraudCase.FraudCaseName, fraudCase.FraudCaseInterval)                                
-                                .Schedule(job);
-
-            schedulesFS.Add(schedule);
-
-            return scheduler;
-        }
-
-        private IJobDetail CreateJob(FraudCase fraudCase)
-        {
-            switch (fraudCase.FraudCaseId)
-            {
-                case (int)FraudCaseId.Arbitrage:
-                    return new ArbitrageJob().CreateJob(fraudCase.FraudCaseName, ProjectName, fraudCase.FraudCaseDesc);
-                case (int)FraudCaseId.BetsNearGoal:
-                    return new BetNearGoalJob().CreateJob(fraudCase.FraudCaseName, ProjectName, fraudCase.FraudCaseDesc);
-                case (int)FraudCaseId.BSNG:
-                    return new BigStakeNearGoalJob().CreateJob(fraudCase.FraudCaseName, ProjectName, fraudCase.FraudCaseDesc);
-                case (int)FraudCaseId.CheckBet:
-                    return new CheckBetJob().CreateJob(fraudCase.FraudCaseName, ProjectName, fraudCase.FraudCaseDesc);
-                case (int)FraudCaseId.DailyDataCapture:
-                    return new DailyDataCaptureJob().CreateJob(fraudCase.FraudCaseName, ProjectName, fraudCase.FraudCaseDesc);
-                case (int)FraudCaseId.DelayedGoal:
-                    return new DelayGoalJob().CreateJob(fraudCase.FraudCaseName, ProjectName, fraudCase.FraudCaseDesc);
-                case (int)FraudCaseId.FlaggedAccount:
-                    return new FlaggedAccountJob().CreateJob(fraudCase.FraudCaseName, ProjectName, fraudCase.FraudCaseDesc);
-                case (int)FraudCaseId.ScannedOfficeIP:
-                    return new ScannedOfficeIPJob().CreateJob(fraudCase.FraudCaseName, ProjectName, fraudCase.FraudCaseDesc);
-                default:
-                    return null;
+                job.CreateJob(className, jobName, GroupName)
+                    .CreateTrigger(triggerName, fraudCase.FraudCaseInterval)
+                    .CreateSchedule()
+                    .Run();
             }
         }
     }

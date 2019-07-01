@@ -4,23 +4,16 @@
     using Quartz;
     using System;
     using System.Diagnostics;
-    using System.Reflection;
     using System.Threading.Tasks;
-
-    [DisallowConcurrentExecution]
-    public abstract class Jobs : IJobs
-    {      
-        public abstract string GetFraudCase();
-
-        public abstract IJobDetail CreateJob(string name, string groupName, string description);
-
+    public class ExecuteJob : IJob
+    {
         public Task Execute(IJobExecutionContext context)
         {
             try
             {
-                string fraudCase = GetFraudCase();
+                string fraudCase = "";
                 Process process = new Process();
-                
+
                 var rootPath = string.Format(AppSetting.FraudCaseConsoleRootPath, fraudCase);
                 var instance = string.Format(AppSetting.FraudCaseConsoleInstance, fraudCase);
 
