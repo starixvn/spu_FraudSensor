@@ -1,0 +1,5 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Jobs>
+  <Job Id="10" Name="Arbitrage" Path="D:\Projects\FraudSensor\Fanex.NAP.FS.Arbitrage.Console\bin\Debug\abc.exe"></Job>
+  <Job Id="11" Name="BigStakeNearGoal" Path="D:\Projects\FraudSensor\Fanex.NAP.FS.Arbitrage.Console\bin\Debug\abc.exe"></Job>
+</Jobs>

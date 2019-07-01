@@ -78,7 +78,7 @@
                 var jobName = className;
                 var triggerName = string.Format("{0}Trigger", fraudCaseName);
 
-                job.CreateJob(className, jobName, GroupName)
+                job.CreateJob(className, jobName, GroupName, null)
                     .CreateTrigger(triggerName, fraudCase.FraudCaseInterval)
                     .CreateSchedule()
                     .Run();

@@ -231,12 +231,17 @@
       <Project>{f95ab8f2-f7dc-4c12-89e0-090fb0ec6414}</Project>
       <Name>Fanex.NAP.FS.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Fanex.NAP.FS.Model\Fanex.NAP.FS.Model.csproj">
+      <Project>{5CE0BA40-0A37-4C89-A33B-D61C7944BE08}</Project>
+      <Name>Fanex.NAP.FS.Model</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Fanex.NAP.FS.Service\Fanex.NAP.FS.Service.csproj">
       <Project>{e60465e7-1880-4a9e-846c-964af786ce7e}</Project>
       <Name>Fanex.NAP.FS.Service</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Data\JobDataExecuting.xml" />
     <Content Include="App_Data\NAPFSNames.LOCAL.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

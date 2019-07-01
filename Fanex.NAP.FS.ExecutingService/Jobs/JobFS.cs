@@ -1,5 +1,6 @@
 ﻿namespace Fanex.NAP.FS.ExecutingService.Jobs
 {
+    using Fanex.NAP.FS.Model;
     using Quartz;
     using Quartz.Impl;
 
@@ -12,12 +13,13 @@
 
         public IScheduler Schedule { get; set; }
 
-        public IJobFS CreateJob(string className, string jobName, string groupName)
+        public IJobFS CreateJob(string className, string jobName, string groupName, JobDataExecutingModel jobDataExecutingModel)
         {
             var jobDetail = new JobDetailImpl(className, typeof(ExecuteJob));
 
             var job = JobBuilder.Create(jobDetail.JobType)
                .WithIdentity(jobName, groupName)
+               .UsingJobData("JobData", jobDataExecutingModel.ToString())
                .Build();
 
             this.Job = job;

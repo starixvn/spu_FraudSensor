@@ -50,6 +50,7 @@
     <Compile Include="Environment.cs" />
     <Compile Include="FraudCaseHealth.cs" />
     <Compile Include="FraudCaseMessage.cs" />
+    <Compile Include="JobDataExecutingModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReportModel.cs" />
   </ItemGroup>
