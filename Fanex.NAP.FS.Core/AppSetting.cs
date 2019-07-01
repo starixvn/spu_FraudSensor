@@ -75,7 +75,7 @@
 
         public static string FraudCaseConsoleRootPath => ConfigurationManager.AppSettings["FraudCaseConsole.RootPath"];
 
-        public static string FraudCaseConsoleAssembly => ConfigurationManager.AppSettings["FraudCaseConsole.Assembly"];
+        public static string FraudCaseConsoleInstance => ConfigurationManager.AppSettings["FraudCaseConsole.Instance"];
 
         public static string FraudCaseConsoleType => ConfigurationManager.AppSettings["FraudCaseConsole.Type"];
 

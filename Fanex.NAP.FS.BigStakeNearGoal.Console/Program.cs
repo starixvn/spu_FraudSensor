@@ -1,4 +1,4 @@
-namespace Fanex.NAP.FS.CheckBet.Console
+﻿namespace Fanex.NAP.FS.BigStakeNearGoal.Console
 {
     using Fanex.Logging;
     using Fanex.Logging.Extensions;
@@ -9,9 +9,9 @@ namespace Fanex.NAP.FS.CheckBet.Console
     using System;
     using System.Collections.Generic;
 
-    public static class Run
+    static class Program
     {
-        public static void Start ()
+        static void Main(string[] args)
         {
             try
             {
@@ -43,7 +43,7 @@ namespace Fanex.NAP.FS.CheckBet.Console
                     .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
                     .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
 
-                LogService.Error($"Check Bet service - Start Exeption {logMessage}");
+                LogService.Error($"Big Stake Near Goal Service - Start Exeption {logMessage}");
             }
         }
     }

@@ -1,4 +1,4 @@
-namespace Fanex.NAP.FS.Arbitrage.Console
+﻿namespace Fanex.NAP.FS.DailyDataCapture.Console
 {
     using Fanex.Logging;
     using Fanex.Logging.Extensions;
@@ -9,9 +9,9 @@ namespace Fanex.NAP.FS.Arbitrage.Console
     using System;
     using System.Collections.Generic;
 
-    public static class Run
+    static class Program
     {
-        public static void Start()
+        static void Main(string[] args)
         {
             try
             {
@@ -36,6 +36,7 @@ namespace Fanex.NAP.FS.Arbitrage.Console
                     .CleanResult()
                     .Precondition()
                     .Rule();
+
             }
             catch (Exception ex)
             {
@@ -43,8 +44,8 @@ namespace Fanex.NAP.FS.Arbitrage.Console
                     .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
                     .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
 
-                LogService.Error($"Arbitrage service - Start Exeption {logMessage}");
-            }
+                LogService.Error($"Daily Data Capture service - Start Exeption {logMessage}");
+            }            
         }
     }
 }

@@ -1,4 +1,4 @@
-namespace Fanex.NAP.FS.DailyDataCapture.Console
+﻿namespace Fanex.NAP.FS.DelayGoal.Console
 {
     using Fanex.Logging;
     using Fanex.Logging.Extensions;
@@ -9,9 +9,9 @@ namespace Fanex.NAP.FS.DailyDataCapture.Console
     using System;
     using System.Collections.Generic;
 
-    public static class Run
+    static class Program
     {
-        public static void Start ()
+        static void Main(string[] args)
         {
             try
             {
@@ -43,7 +43,7 @@ namespace Fanex.NAP.FS.DailyDataCapture.Console
                     .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
                     .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
 
-                LogService.Error($"Daily Data Capture service - Start Exeption {logMessage}");
+                LogService.Error($"Delay Goal service - Start Exeption {logMessage}");
             }
         }
     }

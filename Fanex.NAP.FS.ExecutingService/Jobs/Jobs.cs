@@ -9,8 +9,7 @@
 
     [DisallowConcurrentExecution]
     public abstract class Jobs : IJobs
-    {
-        private const string Method = "Start";
+    {      
         public abstract string GetFraudCase();
 
         public abstract IJobDetail CreateJob(string name, string groupName, string description);
@@ -20,17 +19,20 @@
             try
             {
                 string fraudCase = GetFraudCase();
-
+                Process process = new Process();
+                
                 var rootPath = string.Format(AppSetting.FraudCaseConsoleRootPath, fraudCase);
-                var assemblyName = string.Format(AppSetting.FraudCaseConsoleAssembly, fraudCase);
-                var assembly = Assembly.LoadFrom(rootPath + assemblyName);
+                var instance = string.Format(AppSetting.FraudCaseConsoleInstance, fraudCase);
 
-                var type = assembly.GetType(string.Format(AppSetting.FraudCaseConsoleType, fraudCase));
-                var methodInfo = type.GetMethod(Method);
+                process.StartInfo.UseShellExecute = false;
+                process.StartInfo.RedirectStandardOutput = true;
+                process.StartInfo.FileName = rootPath + instance;
+                process.Start();
 
-                methodInfo.Invoke(null, new object[] { });
+                process.StandardOutput.ReadToEnd();
+                process.WaitForExit();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Debug.WriteLine(ex.ToString());
             }

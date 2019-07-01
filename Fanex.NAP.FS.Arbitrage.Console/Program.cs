@@ -1,4 +1,4 @@
-namespace Fanex.NAP.FS.BetNearGoal.Console
+﻿namespace Fanex.NAP.FS.Arbitrage.Console
 {
     using Fanex.Logging;
     using Fanex.Logging.Extensions;
@@ -9,9 +9,9 @@ namespace Fanex.NAP.FS.BetNearGoal.Console
     using System;
     using System.Collections.Generic;
 
-    public static class Run
+    static class Program
     {
-        public static void Start()
+        static void Main(string[] args)
         {
             try
             {
@@ -40,10 +40,10 @@ namespace Fanex.NAP.FS.BetNearGoal.Console
             catch (Exception ex)
             {
                 var logMessage = new LogMessage(ex.Message)
-                    .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
-                    .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
+                     .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
+                     .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
 
-                LogService.Error($"Bet Near Goal service - Start Exeption {logMessage}");
+                LogService.Error($"Arbitrage service - Start Exeption {logMessage}");
             }
         }
     }

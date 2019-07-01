@@ -84,7 +84,7 @@
             var job = CreateJob(fraudCase);
 
             var schedule = new SchedulesFS(scheduler)
-                                .CreateTrigger(fraudCase.FraudCaseName, fraudCase.FraudCaseInterval)
+                                .CreateTrigger(fraudCase.FraudCaseName, fraudCase.FraudCaseInterval)                                
                                 .Schedule(job);
 
             schedulesFS.Add(schedule);

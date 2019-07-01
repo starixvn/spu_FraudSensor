@@ -1,4 +1,4 @@
-namespace Fanex.NAP.FS.DelayGoal.Console
+﻿namespace Fanex.NAP.FS.BetNearGoal.Console
 {
     using Fanex.Logging;
     using Fanex.Logging.Extensions;
@@ -9,9 +9,9 @@ namespace Fanex.NAP.FS.DelayGoal.Console
     using System;
     using System.Collections.Generic;
 
-    public static class Run
+    static class Program
     {
-        public static void Start()
+        static void Main(string[] args)
         {
             try
             {
@@ -43,7 +43,7 @@ namespace Fanex.NAP.FS.DelayGoal.Console
                     .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
                     .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
 
-                LogService.Error($"Delay Goal service - Start Exeption {logMessage}");
+                LogService.Error($"Bet Near Goal service - Start Exeption {logMessage}");
             }
         }
     }

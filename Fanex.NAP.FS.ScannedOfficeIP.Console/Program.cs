@@ -1,16 +1,30 @@
-﻿namespace Fanex.NAP.FS.FlaggedAccount.Console
+﻿namespace Fanex.NAP.FS.ScannedOfficeIP.Console
 {
     using Fanex.Logging;
     using Fanex.Logging.Extensions;
     using Fanex.Logging.Extensions.Database;
+    using Fanex.Logging.Sentry.RavenClient;
+    using Fanex.NAP.FS.Core;
+    using SharpRaven;
     using System;
+    using System.Collections.Generic;
 
-    public static class Run
+    static class Program
     {
-        public static void Start()
+        static void Main(string[] args)
         {
             try
             {
+                LogManager
+                    .SetDefaultLogCategory(AppSetting.FanexLogCategory)
+                    .Use(new List<ILogEngine>
+                    {
+                        new SentryLogging(new SentryEngineOptions
+                        {
+                            Dsn = new Dsn(AppSetting.SentryLogging)
+                        })
+                    });
+
                 var _service = new Service();
 
                 if (_service.CheckUM())
@@ -29,7 +43,7 @@
                     .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
                     .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
 
-                LogService.Error($"Flagged Account service - Start Exeption {logMessage}");
+                LogService.Error($"Scanned Office IP service - Start Exeption {logMessage}");
             }
         }
     }

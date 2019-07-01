@@ -1,16 +1,16 @@
-﻿using Fanex.Data;
-using Fanex.Data.ConnectionStringProvider20;
-using Fanex.Logging;
-using Fanex.Logging.Sentry.RavenClient;
-using Fanex.NAP.FS.Core;
-using SharpRaven;
-using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.ServiceProcess;
-
-namespace Fanex.NAP.FS.ExecutingService
+﻿namespace Fanex.NAP.FS.ExecutingService
 {
+    using Fanex.Data;
+    using Fanex.Data.ConnectionStringProvider20;
+    using Fanex.Logging;
+    using Fanex.Logging.Sentry.RavenClient;
+    using Fanex.NAP.FS.Core;
+    using SharpRaven;
+    using System;
+    using System.Collections.Generic;
+    using System.Reflection;
+    using System.ServiceProcess;
+
     static class Program
     {
         /// <summary>
