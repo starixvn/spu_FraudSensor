@@ -1,22 +1,17 @@
 ﻿namespace Fanex.NAP.FS.ExecutingService
 {
     using Fanex.Logging;
-    using Quartz;
-    using Quartz.Impl;
     using System;
-    using System.ServiceProcess;
-    using System.Threading.Tasks;
-    using Fanex.NAP.FS.ExecutingService.Jobs;
+    using System.ServiceProcess;    
     using Fanex.NAP.FS.Service;
+    using Fanex.NAP.FS.Model;
     using Fanex.NAP.FS.ExecutingService.Models;
-    using Fanex.NAP.FS.ExecutingService.Schedules;
-    using System.Collections.Generic;
+    using Fanex.NAP.FS.Core;    
 
     public partial class Runner : ServiceBase
     {
-        private const string ProjectName = "Fraud Sensor Service";
         private const string GroupName = "FraudCaseGroup";
-        private List<ISchedulesFS> schedulesFS;
+        private JobsMap jobsMap;
 
         public Runner()
         {
@@ -27,7 +22,14 @@
         {
             try
             {
-                schedulesFS = new List<ISchedulesFS>();
+                jobsMap = GetJobsMap();
+
+                if (jobsMap == null)
+                {
+                    LogService.Info($"Executing service is error message: JobsMap null");
+
+                    return;
+                }
 
                 ExecuteJobs();
 
@@ -43,13 +45,12 @@
         {
             try
             {
-                schedulesFS.ForEach(x => x.Shutdown());
+                // TO DO ...
 
                 LogService.Info($"Executing service is STOP at {DateTime.Now}");
             }
             catch (Exception ex)
             {
-
                 LogService.Info($"Executing service is STOP error message: { ex.ToString() } at {DateTime.Now}");
             }
         }
@@ -77,12 +78,40 @@
                 var className = string.Format("{0}Job", fraudCaseName);
                 var jobName = className;
                 var triggerName = string.Format("{0}Trigger", fraudCaseName);
+                var mapping = GetJobData(fraudCase.FraudCaseId.ToString());
 
-                job.CreateJob(className, jobName, GroupName, null)
+                job.CreateJob(className, jobName, GroupName, mapping)
                     .CreateTrigger(triggerName, fraudCase.FraudCaseInterval)
                     .CreateSchedule()
                     .Run();
             }
+        }
+
+        private JobsMap GetJobsMap()
+        {
+            try
+            {
+                var xmlPath = System.AppDomain.CurrentDomain.BaseDirectory + @"App_Data\JobDataExecuting.xml";
+                return Serializer.Deserialize<JobsMap>(xmlPath);
+            }
+            catch (Exception ex)
+            {
+                LogService.Info($"Executing service - GetDataMap error message: { ex.ToString() } at {DateTime.Now}");
+            }
+
+            return new JobsMap();
+        }
+
+        private string GetJobData(string id)
+        {
+            var item = jobsMap.JobDataExecutingModel.Find(c => c.Id.Equals(id));
+
+            if (item != null)
+            {
+                return item.Path;
+            }
+
+            return null;
         }
     }
 }

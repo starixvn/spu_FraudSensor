@@ -1,6 +1,7 @@
 ﻿namespace Fanex.NAP.FS.ExecutingService.Jobs
 {
     using Fanex.NAP.FS.Core;
+    using Fanex.NAP.FS.Model;
     using Quartz;
     using System;
     using System.Diagnostics;
@@ -11,15 +12,12 @@
         {
             try
             {
-                string fraudCase = "";
-                Process process = new Process();
-
-                var rootPath = string.Format(AppSetting.FraudCaseConsoleRootPath, fraudCase);
-                var instance = string.Format(AppSetting.FraudCaseConsoleInstance, fraudCase);
+                Process process = new Process();         
+                var instance = context.JobDetail.JobDataMap.GetString("JobData");
 
                 process.StartInfo.UseShellExecute = false;
                 process.StartInfo.RedirectStandardOutput = true;
-                process.StartInfo.FileName = rootPath + instance;
+                process.StartInfo.FileName = instance;
                 process.Start();
 
                 process.StandardOutput.ReadToEnd();

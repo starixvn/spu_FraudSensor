@@ -1,15 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Fanex.NAP.FS.Model
+﻿namespace Fanex.NAP.FS.Model
 {
-   public class JobDataExecutingModel
+    using System.Xml.Serialization;
+
+    [XmlRoot(ElementName = "JobDataExecutingModel")]
+    public class JobDataExecutingModel
     {
+        [XmlAttribute(AttributeName = "Id")]
+        public string Id { get; set; }
+
+        [XmlAttribute(AttributeName = "Name")]
         public string Name { get; set; }
 
+        [XmlAttribute(AttributeName = "Path")]
         public string Path { get; set; }
     }
 }

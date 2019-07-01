@@ -197,6 +197,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IJobFS.cs" />
+    <Compile Include="JobFS.cs" />
     <Compile Include="Jobs\ArbitrageJob.cs" />
     <Compile Include="Jobs\BetNearGoalJob.cs" />
     <Compile Include="Jobs\BigStakeNearGoalJob.cs" />
@@ -205,8 +207,6 @@
     <Compile Include="Jobs\DelayGoalJob.cs" />
     <Compile Include="Jobs\ExecuteJob.cs" />
     <Compile Include="Jobs\FlaggedAccountJob.cs" />
-    <Compile Include="Jobs\IJobFS.cs" />
-    <Compile Include="Jobs\JobFS.cs" />
     <Compile Include="Jobs\ScannedOfficeIPJob.cs" />
     <Compile Include="Models\FraudCase.cs" />
     <Compile Include="Models\FraudCaseId.cs" />
@@ -218,8 +218,6 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Schedules\SchedulesFS.cs" />
-    <Compile Include="Schedules\ISchedulesFS.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -241,7 +239,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Data\JobDataExecuting.xml" />
+    <Content Include="App_Data\JobDataExecuting.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="App_Data\NAPFSNames.LOCAL.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

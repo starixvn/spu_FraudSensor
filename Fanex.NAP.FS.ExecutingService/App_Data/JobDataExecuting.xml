@@ -1,5 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<Jobs>
-  <Job Id="10" Name="Arbitrage" Path="D:\Projects\FraudSensor\Fanex.NAP.FS.Arbitrage.Console\bin\Debug\abc.exe"></Job>
-  <Job Id="11" Name="BigStakeNearGoal" Path="D:\Projects\FraudSensor\Fanex.NAP.FS.Arbitrage.Console\bin\Debug\abc.exe"></Job>
-</Jobs>
+<JobsMap>
+  <JobDataExecutingModel Id="1" Name="BSNG" Path="D:\Projects\FraudSensor\Fanex.NAP.FS.BigStakeNearGoal.Console\bin\Debug\Fanex.NAP.FS.BigStakeNearGoal.Console.exe"></JobDataExecutingModel>
+  <JobDataExecutingModel Id="2" Name="ScannedOfficeIP" Path="D:\Projects\FraudSensor\Fanex.NAP.FS.ScannedOfficeIP.Console\bin\Debug\Fanex.NAP.FS.ScannedOfficeIP.Console.exe"></JobDataExecutingModel>
+  <JobDataExecutingModel Id="3" Name="CheckBet" Path="D:\Projects\FraudSensor\Fanex.NAP.FS.CheckBet.Console\bin\Debug\Fanex.NAP.FS.CheckBet.Console.exe"></JobDataExecutingModel>
+  <JobDataExecutingModel Id="4" Name="DailyDataCapture" Path="D:\Projects\FraudSensor\Fanex.NAP.FS.DailyDataCapture.Console\bin\Debug\Fanex.NAP.FS.DailyDataCapture.Console.exe"></JobDataExecutingModel>
+  <JobDataExecutingModel Id="6" Name="FlaggedAccount" Path="D:\Projects\FraudSensor\Fanex.NAP.FS.FlaggedAccount.Console\bin\Debug\Fanex.NAP.FS.FlaggedAccount.Console.exe"></JobDataExecutingModel>
+  <JobDataExecutingModel Id="8" Name="DelayedGoal" Path="D:\Projects\FraudSensor\Fanex.NAP.FS.DelayGoal.Console\bin\Debug\Fanex.NAP.FS.DelayGoal.Console.exe"></JobDataExecutingModel>
+  <JobDataExecutingModel Id="10" Name="Arbitrage" Path="D:\Projects\FraudSensor\Fanex.NAP.FS.Arbitrage.Console\bin\Debug\Fanex.NAP.FS.Arbitrage.Console.exe"></JobDataExecutingModel>
+  <JobDataExecutingModel Id="11" Name="BetsNearGoal" Path="D:\Projects\FraudSensor\Fanex.NAP.FS.BetNearGoal.Console\bin\Debug\Fanex.NAP.FS.BetNearGoal.Console"></JobDataExecutingModel>
+</JobsMap>
