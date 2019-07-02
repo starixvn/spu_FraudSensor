@@ -32,7 +32,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <CodeAnalysisRuleSet>Fanex.NAP.FS.BigStakeNearGoalService-1.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>Fanex.NAP.FS.BigStakeNearGoalService.Release.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject />
@@ -85,6 +85,7 @@
       <DependentUpon>App.config</DependentUpon>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="Fanex.NAP.FS.BigStakeNearGoalService.Release.ruleset" />
     <None Include="Fanex.NAP.FS.BigStakeNearGoalService.ruleset" />
   </ItemGroup>
   <ItemGroup>

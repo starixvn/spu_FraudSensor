@@ -1,0 +1,5 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RuleSet Name="SonarQube - SPU / Fraud Sensor Nexcel CSharp" ToolsVersion="16.0">
+  <Include Path="..\sonarqube\spufraudsensorcsharp.ruleset" Action="Default" />
+  <Include Path="fanex.nap.fs.arbitrageservice-1.ruleset" Action="Default" />
+</RuleSet>

@@ -103,7 +103,7 @@
         {
             ExecuteBySeparatedThreads();
 
-            _baseService.MonitoringServiceLog(5);
+            _baseService.MonitoringServiceLog();
         }
 
         private void CleanResult()

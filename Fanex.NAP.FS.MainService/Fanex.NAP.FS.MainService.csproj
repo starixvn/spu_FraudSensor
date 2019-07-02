@@ -32,7 +32,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <CodeAnalysisRuleSet>Fanex.NAP.FS.MainService-1.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>Fanex.NAP.FS.MainService.Release.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject />
@@ -88,6 +88,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
+    <None Include="Fanex.NAP.FS.MainService.Release.ruleset" />
     <None Include="Fanex.NAP.FS.MainService.ruleset" />
   </ItemGroup>
   <ItemGroup>

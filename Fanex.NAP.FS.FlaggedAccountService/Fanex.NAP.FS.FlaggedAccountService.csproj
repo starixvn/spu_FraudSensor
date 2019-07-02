@@ -46,7 +46,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <CodeAnalysisRuleSet>Fanex.NAP.FS.FlaggedAccountService-1.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>Fanex.NAP.FS.FlaggedAccountService.Release.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject />
@@ -99,6 +99,7 @@
       <DependentUpon>App.config</DependentUpon>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="Fanex.NAP.FS.FlaggedAccountService.Release.ruleset" />
     <None Include="Fanex.NAP.FS.FlaggedAccountService.ruleset" />
   </ItemGroup>
   <ItemGroup>

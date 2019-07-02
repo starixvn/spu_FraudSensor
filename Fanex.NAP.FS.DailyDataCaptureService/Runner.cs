@@ -67,7 +67,7 @@
                 }  
                 else
                 {
-                    _baseService.MonitoringServiceLog(5);
+                    _baseService.MonitoringServiceLog();
                 }
             }
             catch (Exception ex)
