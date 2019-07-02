@@ -7,6 +7,8 @@
     using Fanex.Logging;
     using Fanex.Logging.Extensions;
     using Fanex.Logging.Extensions.Database;
+    using Fanex.NAP.FS.Core;
+    using Fanex.NAP.FS.Library.Core.Helpers.Api;
     using Fanex.NAP.FS.Library.Core.Helpers.Xml;
     using Fanex.NAP.FS.Library.Core.Utilities;
     using Fanex.NAP.FS.Library.DTO;
@@ -16,7 +18,7 @@
     public class Service : BaseService
     {
         private IEnumerable<Match> _matches;
-        private readonly IEnumerable<FlaggedCustomer> _flaggedCustomers;
+        private IEnumerable<FlaggedCustomer> _flaggedCustomers;
         protected readonly FS.Service.FlaggedAccountService FlaggedAccountService;
         private const int ChunkSize = 100;
         private const int SleepSize = 2;
@@ -24,8 +26,21 @@
         public Service() : base(Library.Models.FraudCaseId.FlaggedAccount)
         {
             _matches = new List<Match>();
+
             _flaggedCustomers = new List<FlaggedCustomer>();
+
             FlaggedAccountService = new FS.Service.FlaggedAccountService();
+        }
+
+        private IEnumerable<FlaggedCustomer> GetFlaggedCustomer()
+        {
+            var param = new CustomerEvidenceList
+            {
+                CustIdList = string.Empty,
+                EvidenceCodeList = string.Empty
+            };
+
+            return ApiHelper.Post<IEnumerable<FlaggedCustomer>>(AppSetting.CustomerEvidenceApi, param).Result;
         }
 
         public override BaseService CleanResult()
@@ -49,6 +64,8 @@
 
         public override BaseService Rule()
         {
+            _flaggedCustomers = GetFlaggedCustomer();
+
             ExecuteBySeparatedThreads();
 
             return base.Rule();
