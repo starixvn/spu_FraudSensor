@@ -4,6 +4,7 @@
     using System;
     using System.Diagnostics;
     using System.Threading.Tasks;
+    using Fanex.Logging;
 
     [PersistJobDataAfterExecution]
     [DisallowConcurrentExecution]
@@ -21,8 +22,14 @@
                 process.StartInfo.FileName = instance;
                 process.Start();
 
-                process.StandardOutput.ReadToEnd();
+                var errorMessage = process.StandardError.ReadToEnd();
+                            
                 process.WaitForExit();
+
+                if(string.IsNullOrWhiteSpace(errorMessage))
+                {
+                    throw new JobExecutionException(errorMessage);
+                }
             }
 
             catch (Exception ex)

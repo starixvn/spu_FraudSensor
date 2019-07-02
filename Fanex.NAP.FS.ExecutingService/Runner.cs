@@ -43,16 +43,7 @@
 
         protected override void OnStop()
         {
-            try
-            {
-                // TO DO ...
-
-                LogService.Info($"Executing service is STOP at {DateTime.Now}");
-            }
-            catch (Exception ex)
-            {
-                LogService.Info($"Executing service is STOP error message: { ex.ToString() } at {DateTime.Now}");
-            }
+            LogService.Info($"Executing service is STOP at {DateTime.Now}");
         }
 
         private void ExecuteJobs()

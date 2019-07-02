@@ -9,6 +9,7 @@
     public class ListenerJob : IJobListener
     {
         private readonly string _jobName;
+
         public string Name => _jobName;
 
 
@@ -18,10 +19,9 @@
         }
 
         public Task JobExecutionVetoed(IJobExecutionContext context, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            var logMessage = context.JobDetail.Key + " - " + context.JobDetail.Description;
+        {            
             
-            LogService.Info($"Executing service - ListenerJob JobExecutionVetoed message: { logMessage }");
+            LogService.Error($"{context.JobDetail.Key} - JobExecutionVetoed - Job is Vetoed.");
 
             return Task.FromResult(true);
         }
@@ -36,14 +36,10 @@
             if (jobException == null)
             {
                 return Task.FromResult(true);
-            }
-
-            var logMessage = context.JobDetail.Key + " - " + jobException.Message;
+            }                        
             
-            LogService.Info($"Executing service - ListenerJob JobWasExecuted message: { logMessage }");
-
-            Console.WriteLine(logMessage);
-
+            LogService.Error($"{context.JobDetail.Key} - JobWasExecuted - Exception: { jobException.Message }");
+                        
             return Task.FromResult(false);
         }
     }
