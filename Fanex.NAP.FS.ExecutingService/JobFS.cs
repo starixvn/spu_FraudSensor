@@ -55,7 +55,7 @@
 
         public IJobFS CreateListenerJob()
         {
-            var listener = new ListenerJob();
+            var listener = new ListenerJob(this.Job.Key.Name);
             IMatcher<JobKey> matcher = KeyMatcher<JobKey>.KeyEquals(this.Job.Key);
             this.Schedule.ListenerManager.AddJobListener(listener, matcher);
 

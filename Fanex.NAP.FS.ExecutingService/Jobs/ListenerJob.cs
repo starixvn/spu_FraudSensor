@@ -8,7 +8,14 @@
 
     public class ListenerJob : IJobListener
     {
-        public string Name => "ListenerJob";
+        private readonly string _jobName;
+        public string Name => _jobName;
+
+
+        public ListenerJob(string jobName)
+        {
+            _jobName = jobName;
+        }
 
         public Task JobExecutionVetoed(IJobExecutionContext context, CancellationToken cancellationToken = default(CancellationToken))
         {
