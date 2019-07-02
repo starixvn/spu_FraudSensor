@@ -98,6 +98,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <Content Include="Commands\TaskKill.bat">
+      <DependentUpon>TaskKill.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <DesignTime>True</DesignTime>
+    </Content>
     <None Include="Fanex.NAP.FS.CheckBet.Console.ruleset" />
     <None Include="packages.config" />
   </ItemGroup>
@@ -133,6 +139,13 @@
     <Content Include="App_Data\NAPFSNames.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Commands\TaskKill.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>TaskKill.bat</LastGenOutput>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
