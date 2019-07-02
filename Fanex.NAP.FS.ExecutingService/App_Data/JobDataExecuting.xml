@@ -7,5 +7,5 @@
   <JobDataExecutingModel Id="6" Name="FlaggedAccount" Path="D:\Projects\FraudSensor\Fanex.NAP.FS.FlaggedAccount.Console\bin\Debug\Fanex.NAP.FS.FlaggedAccount.Console.exe"></JobDataExecutingModel>
   <JobDataExecutingModel Id="8" Name="DelayedGoal" Path="D:\Projects\FraudSensor\Fanex.NAP.FS.DelayGoal.Console\bin\Debug\Fanex.NAP.FS.DelayGoal.Console.exe"></JobDataExecutingModel>
   <JobDataExecutingModel Id="10" Name="Arbitrage" Path="D:\Projects\FraudSensor\Fanex.NAP.FS.Arbitrage.Console\bin\Debug\Fanex.NAP.FS.Arbitrage.Console.exe"></JobDataExecutingModel>
-  <JobDataExecutingModel Id="11" Name="BetsNearGoal" Path="D:\Projects\FraudSensor\Fanex.NAP.FS.BetNearGoal.Console\bin\Debug\Fanex.NAP.FS.BetNearGoal.Console"></JobDataExecutingModel>
+  <JobDataExecutingModel Id="11" Name="BetsNearGoal" Path="D:\Projects\FraudSensor\Fanex.NAP.FS.BetNearGoal.Console\bin\Debug\Fanex.NAP.FS.BetNearGoal.Console.exe"></JobDataExecutingModel>
 </JobsMap>

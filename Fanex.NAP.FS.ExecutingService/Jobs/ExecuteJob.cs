@@ -1,5 +1,6 @@
 ﻿namespace Fanex.NAP.FS.ExecutingService.Jobs
-{   
+{
+    using Fanex.NAP.FS.Core;
     using Quartz;
     using System;
     using System.Diagnostics;
@@ -9,12 +10,19 @@
     [DisallowConcurrentExecution]
     public class ExecuteJob : IJob
     {
+        private const string NotExistsFileConsole = "Does not exists a file console";
+
         public Task Execute(IJobExecutionContext context)
         {
             try
             {
-                Process process = new Process();
+                var process = new Process();
                 var instance = context.JobDetail.JobDataMap.GetString("JobData");
+
+                if (!Ultilities.CheckFileExist(instance))
+                {
+                    throw new JobExecutionException(NotExistsFileConsole);
+                }
 
                 process.StartInfo.UseShellExecute = false;
                 process.StartInfo.RedirectStandardOutput = true;

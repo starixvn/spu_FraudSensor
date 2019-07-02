@@ -82,5 +82,14 @@ namespace Fanex.NAP.FS.Core
             return result;
         }
 
+        public static bool CheckFileExist(string path)
+        {
+            if (string.IsNullOrEmpty(path) || !File.Exists(path))
+            {
+                return false;
+            }
+
+            return true;
+        }
     }
 }
