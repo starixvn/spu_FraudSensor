@@ -3,6 +3,7 @@
     using Fanex.NAP.FS.ExecutingService.Jobs;    
     using Quartz;
     using Quartz.Impl;
+    using Quartz.Impl.Matchers;
 
     [DisallowConcurrentExecution]
     public class JobFS : IJobFS
@@ -38,7 +39,7 @@
             this.Trigger = trigger;
 
             return this;
-        }
+        }        
 
         public IJobFS CreateSchedule()
         {
@@ -48,6 +49,15 @@
             {
                 this.Schedule.ScheduleJob(this.Job, this.Trigger);
             }            
+
+            return this;
+        }
+
+        public IJobFS CreateListenerJob()
+        {
+            var listener = new ListenerJob();
+            IMatcher<JobKey> matcher = KeyMatcher<JobKey>.KeyEquals(this.Job.Key);
+            this.Schedule.ListenerManager.AddJobListener(listener, matcher);
 
             return this;
         }

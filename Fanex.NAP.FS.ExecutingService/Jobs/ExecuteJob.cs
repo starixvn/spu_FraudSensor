@@ -1,12 +1,11 @@
 ﻿namespace Fanex.NAP.FS.ExecutingService.Jobs
-{
-    using Fanex.NAP.FS.Core;
-    using Fanex.NAP.FS.Model;
+{   
     using Quartz;
     using System;
     using System.Diagnostics;
     using System.Threading.Tasks;
 
+    [PersistJobDataAfterExecution]
     [DisallowConcurrentExecution]
     public class ExecuteJob : IJob
     {
@@ -25,12 +24,15 @@
                 process.StandardOutput.ReadToEnd();
                 process.WaitForExit();
             }
+
             catch (Exception ex)
             {
-                Debug.WriteLine(ex.ToString());
+                Console.WriteLine(ex.Message);
+                JobExecutionException jex = new JobExecutionException(ex);
+                throw jex;
             }
 
             return Task.FromResult(true);
-        }        
+        }
     }
 }

@@ -83,6 +83,7 @@
                 job.CreateJob(className, jobName, GroupName, mapping)
                     .CreateTrigger(triggerName, fraudCase.FraudCaseInterval)
                     .CreateSchedule()
+                    .CreateListenerJob()
                     .Run();
             }
         }

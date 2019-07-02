@@ -200,6 +200,7 @@
     <Compile Include="IJobFS.cs" />
     <Compile Include="JobFS.cs" />
     <Compile Include="Jobs\ExecuteJob.cs" />
+    <Compile Include="Jobs\ListenerJob.cs" />
     <Compile Include="Models\FraudCase.cs" />
     <Compile Include="Models\FraudCaseId.cs" />
     <Compile Include="Runner.cs">

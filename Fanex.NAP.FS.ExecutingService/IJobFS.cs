@@ -6,9 +6,11 @@ namespace Fanex.NAP.FS.ExecutingService
     {
         IJobFS CreateJob(string className, string jobName, string groupName, string jobData);
 
-        IJobFS CreateTrigger(string triggerName, int interval);
+        IJobFS CreateTrigger(string triggerName, int interval);        
 
         IJobFS CreateSchedule();
+
+        IJobFS CreateListenerJob();
 
         void Run();
     }
