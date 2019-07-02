@@ -103,7 +103,6 @@
     <Content Include="App_Data\Scripts\GroupCustomer.scrypt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <None Include="Fanex.NAP.FS.ArbitrageService-1.ruleset" />
     <None Include="Fanex.NAP.FS.ArbitrageService.ruleset" />
   </ItemGroup>
   <ItemGroup>
