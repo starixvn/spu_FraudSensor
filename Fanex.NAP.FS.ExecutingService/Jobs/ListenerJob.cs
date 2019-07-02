@@ -4,6 +4,7 @@
     using System.Threading.Tasks;
     using Quartz;
     using Fanex.Logging;
+    using System;
 
     public class ListenerJob : IJobListener
     {
@@ -31,8 +32,10 @@
             }
 
             var logMessage = context.JobDetail.Key + " - " + jobException.Message;
-
+            
             LogService.Info($"Executing service - ListenerJob JobWasExecuted message: { logMessage }");
+
+            Console.WriteLine(logMessage);
 
             return Task.FromResult(false);
         }

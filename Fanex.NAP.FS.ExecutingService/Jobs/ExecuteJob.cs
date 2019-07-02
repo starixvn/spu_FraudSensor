@@ -27,9 +27,7 @@
 
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
-                JobExecutionException jex = new JobExecutionException(ex);
-                throw jex;
+                throw new JobExecutionException(ex);
             }
 
             return Task.FromResult(true);
