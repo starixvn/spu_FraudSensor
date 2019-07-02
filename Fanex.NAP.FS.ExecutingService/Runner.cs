@@ -37,7 +37,7 @@
             }
             catch (Exception ex)
             {
-                LogService.Info($"Executing service is START error message: { ex.ToString() } at {DateTime.Now}");
+                LogService.Error($"Executing service is START error message: { ex.ToString() } at {DateTime.Now}");
             }
         }
 
@@ -63,7 +63,7 @@
                 {
                     continue;
                 }
-
+                
                 var job = new JobFS();
                 var fraudCaseName = Enum.GetName(typeof(FraudCaseId), fraudCase.FraudCaseId);
                 var className = string.Format("{0}Job", fraudCaseName);
