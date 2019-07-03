@@ -69,7 +69,7 @@
                 var className = string.Format("{0}Job", fraudCaseName);
                 var jobName = className;
                 var triggerName = string.Format("{0}Trigger", fraudCaseName);
-                var mapping = GetJobData(fraudCase.FraudCaseId.ToString());
+                var mapping = GetJobData(fraudCase.FraudCaseId);
 
                 job.CreateJob(className, jobName, GroupName, mapping)
                     .CreateTrigger(triggerName, fraudCase.FraudCaseInterval)
@@ -94,16 +94,11 @@
             return new JobsMap();
         }
 
-        private string GetJobData(string id)
+        private JobDataExecutingModel GetJobData(int id)
         {
-            var item = jobsMap.JobDataExecutingModel.Find(c => c.Id.Equals(id));
+            var item = jobsMap.JobDataExecutingModels.Find(c => c.Id.Equals(id));
 
-            if (item != null)
-            {
-                return item.Path;
-            }
-
-            return null;
+            return item ?? new JobDataExecutingModel();
         }
     }
 }

@@ -7,6 +7,6 @@
     public class JobsMap
     {
         [XmlElement(ElementName = "JobDataExecutingModel")]
-        public List<JobDataExecutingModel> JobDataExecutingModel { get; set; }
+        public List<JobDataExecutingModel> JobDataExecutingModels { get; set; }
     }
 }

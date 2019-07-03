@@ -6,6 +6,7 @@
     using Quartz;
     using System;
     using System.Diagnostics;
+    using System.Threading;
     using System.Threading.Tasks;
 
     [PersistJobDataAfterExecution]
@@ -18,26 +19,17 @@
         {
             try
             {
-                var instance = context.JobDetail.JobDataMap.GetString("JobData");
-                if (!Ultilities.CheckFileExist(instance))
+                if (!CheckActive(context) || !CheckFileExist(context))
                 {
-                    var msg = $"{context.JobDetail.Key} - Execute: does not exists a file - Path: {instance}";
-                    LogService.Error(msg);
-
-                    if (!context.JobDetail.JobDataMap.Contains(FlagNotExistsFile))
-                    {
-                        new LetstalkService().Error(msg);
-                        context.JobDetail.JobDataMap.Put(FlagNotExistsFile, true);
-                    }                    
-
                     return Task.FromResult(false);
                 }
 
+                var path = context.JobDetail.JobDataMap.GetString("Path");
                 var process = new Process();
                 process.StartInfo.UseShellExecute = false;
                 process.StartInfo.RedirectStandardOutput = true;
                 process.StartInfo.RedirectStandardError = true;
-                process.StartInfo.FileName = instance;
+                process.StartInfo.FileName = path;
                 process.Start();
                 
                 var errorMessage = process.StandardError.ReadToEnd();
@@ -46,7 +38,7 @@
 
                 if (!string.IsNullOrWhiteSpace(errorMessage))
                 {
-                    throw new JobExecutionException(errorMessage);
+                    return Task.FromException(new JobExecutionException(errorMessage));
                 }
             }
 
@@ -57,5 +49,40 @@
 
             return Task.FromResult(true);
         }
+
+        private bool CheckActive(IJobExecutionContext context)
+        {
+            var active = context.JobDetail.JobDataMap.GetBoolean("Active");
+
+            if (!active)
+            {
+                var msg = $"{context.JobDetail.Key} - Execute: not activate";
+                LogService.Error(msg);
+            }
+
+            return active;
+        }
+
+        private bool CheckFileExist(IJobExecutionContext context)
+        {
+            var path = context.JobDetail.JobDataMap.GetString("Path");
+
+            if (!Ultilities.CheckFileExist(path))
+            {
+                var msg = $"{context.JobDetail.Key} - Execute: does not exists a file - Path: {path}";
+                LogService.Error(msg);
+
+                if (!context.JobDetail.JobDataMap.Contains(FlagNotExistsFile))
+                {
+                    new LetstalkService().Error(msg);
+                    context.JobDetail.JobDataMap.Put(FlagNotExistsFile, true);
+                }
+
+                return false;
+            }
+
+            return true;
+        }
+        
     }
 }
