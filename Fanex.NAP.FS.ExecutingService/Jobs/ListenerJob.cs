@@ -11,7 +11,6 @@
     {
         private const string TriesKey = "TriesKey";
         private const int MaxRetries = 3;
-        private const string NotExistsFileConsole = "Does not exists a file console";
         private readonly string _jobName;
         private readonly LetstalkService _letstalkService;
 
@@ -53,14 +52,6 @@
 
             var errorMessage = $"{context.JobDetail.Key} - JobWasExecuted - Exception: { jobException.Message }";
             LogService.Error(errorMessage);
-            
-            if (jobException.Message.Equals(NotExistsFileConsole) && !context.JobDetail.JobDataMap.Contains(NotExistsFileConsole))
-            {
-                context.JobDetail.JobDataMap.Put(NotExistsFileConsole, 1);
-                _letstalkService.Error(errorMessage);
-                
-                return Task.FromResult(true);
-            }
 
             var numTries = context.JobDetail.JobDataMap.GetIntValue(TriesKey);
             if (numTries < MaxRetries)

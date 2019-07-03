@@ -1,6 +1,8 @@
 ﻿namespace Fanex.NAP.FS.ExecutingService.Jobs
 {
+    using Fanex.Logging;
     using Fanex.NAP.FS.Core;
+    using Fanex.NAP.FS.Service;
     using Quartz;
     using System;
     using System.Diagnostics;
@@ -10,20 +12,28 @@
     [DisallowConcurrentExecution]
     public class ExecuteJob : IJob
     {
-        private const string NotExistsFileConsole = "Does not exists a file console";
+        private const string FlagNotExistsFile = "FlagNotExistsFile";
 
         public Task Execute(IJobExecutionContext context)
         {
             try
             {
-                var process = new Process();
                 var instance = context.JobDetail.JobDataMap.GetString("JobData");
-
                 if (!Ultilities.CheckFileExist(instance))
                 {
-                    throw new JobExecutionException(NotExistsFileConsole);
+                    var msg = $"{context.JobDetail.Key} - Execute: does not exists a file - Path: {instance}";
+                    LogService.Error(msg);
+
+                    if (!context.JobDetail.JobDataMap.Contains(FlagNotExistsFile))
+                    {
+                        new LetstalkService().Error(msg);
+                        context.JobDetail.JobDataMap.Put(FlagNotExistsFile, true);
+                    }                    
+
+                    return Task.FromResult(false);
                 }
 
+                var process = new Process();
                 process.StartInfo.UseShellExecute = false;
                 process.StartInfo.RedirectStandardOutput = true;
                 process.StartInfo.RedirectStandardError = true;
