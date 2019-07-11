@@ -4,7 +4,7 @@
 
     public class CheckBetReportUpdateNoteCriteria : CriteriaBase
     {
-        public long TransId { get; set; }
+        public string TransIds { get; set; }
 
         public int UserId { get; set; }
 

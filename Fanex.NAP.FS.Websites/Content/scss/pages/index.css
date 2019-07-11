@@ -1740,6 +1740,25 @@ table.dataTable tbody tr.selected td {
 .table .icon-note.active {
   color: #2197ff; }
 
+.table .icon-cell-disable {
+    pointer-events: none;
+    opacity: 0.5;
+    background: #CCC;
+}
+
+.table .text-disable {
+    opacity: 0.5;
+    background: #CCC;
+}
+
+.table .icon-hide {
+    display: none !important;
+}
+
+.table .icon-notebook.active {
+    color: #2197ff;
+}
+
 .table [class^="icon"] {
   font-size: 20px; }
 
