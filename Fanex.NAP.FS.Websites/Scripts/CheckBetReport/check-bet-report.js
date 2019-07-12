@@ -5,6 +5,7 @@
         icon_copy_note = $(".icon-notebook");
 
     icon_copy_note.removeClass('active');
+    
     var noteMaxLength = 500;
     var noteLengthCollapse = 180;    
 
@@ -270,9 +271,19 @@
             var url = common.modifyRelativeUrl("/CheckBetReport/UpdateNote");
             noteNew = splitString(inputContent, noteNew, noteMaxLength);
 
-            $.get(url, { Note: noteNew, TransIds: transIds }, function (result) {
+            $.post(url, { Note: noteNew, TransIds: transIds }, function (result) {
                 if (result.ErrorCode == 0) {
-                    generate_report();
+                    if (isEnabledNoteCopy) {
+                        generate_report();
+                    }
+                    else {
+                        var noteWrap = wrapString(noteNew, noteLengthCollapse);
+                        $(content).html(noteWrap);
+
+                        $(".note-ellipsis", cell).click(() => expandNote(cell));
+
+                        common.showSuccess('Note updated!');
+                    }
                 } else {
                     console.log(result.ErrorCode);
                     common.showError('Note fail!');
@@ -299,15 +310,16 @@
             icon_copy_note.addClass('active');
 
             if ($(".icon-note-save").length) {
-                $(".icon-note-text").addClass('icon-cell-disable');
+                $(".icon-note-text").addClass('icon-hide');
+                $(".note-content").click(e => addRemoveNoteCopyForCell(e.target));
             }
             else {
-                $(".icon-note-text:not(:first)").addClass('icon-cell-disable');
+                $(".icon-note-text:not(:first)").addClass('icon-hide');
                 $(".icon-note-text").first().click();
+                $(".note-content:not(:first)").click(e => addRemoveNoteCopyForCell(e.target));
             }
 
             $(".note-content").addClass('text-disable');
-            $(".container-note:not(:first)").click(e => addRemoveNoteCopyForCell(e.target));
         }
         else {
             freeAllElementsForNoteCopy();
@@ -316,15 +328,14 @@
 
     function freeAllElementsForNoteCopy() {
         icon_copy_note.removeClass('active');
-        $(".container-note:not(:first)").unbind();
-        $(".icon-note-text").removeClass('icon-cell-disable');
+        $(".note-content").unbind();
+        $(".icon-note-text").removeClass('icon-hide');
         $(".note-content").removeClass('text-disable');
     }
 
     function addRemoveNoteCopyForCell(targetElement) {
         var isEnabledNoteCopy = icon_copy_note.hasClass('active');
-        var targetObject = $(targetElement);
-        var targetNextSiblingObject = $(targetElement.nextSibling);
+        var targetObject = $(targetElement).hasClass('container-note') ? $(targetElement) : $(targetElement).parent().find('.note-content');
 
         if (isEnabledNoteCopy != false) {
             if (targetObject.hasClass('text-disable')) {
