@@ -16,15 +16,13 @@
 
 .header {
     @include align-items(grid);
-    grid-template-columns: 216px 1fr;
+    grid-template-columns: 128px 1fr;
     grid-template-rows: 70px;
     background-color: $primary-color;
     font-size: 16px;
 
     .logo {
         @include align-items($justify-content: center);
-        height: 70px;
-        border-right: 1px solid #000;
     }
 
     .header-right {
@@ -36,8 +34,11 @@
     position: relative;
 
     &:hover .sub-menu {
+        display: table;
         z-index: 111;
-        opacity: 1;        
+        opacity: 1;
+        height: auto;
+        transform: scaleY(1);
     }
 
     .icon {
@@ -49,14 +50,19 @@
     .sub-menu {
         position: absolute;
         top: 100%;
+        bottom: 0;
         left: 0;
+        height: 0;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
         min-width: 190px;
+        transform: scaleY(0.8);
+        transition: transform .2s .1s ease-out, opacity .2s .1s ease-out;
+        transform-origin: 0 0;
         border: 1px solid #d0d0d0;
         box-shadow: 0 0 4px rgba(0,0,0, .3);
-        background-color: #fff;        
+        background-color: #fff;
         opacity: 0;
         z-index: -1;
 
@@ -80,21 +86,9 @@
 
 .main-menu {
     @include align-items($justify-content: flex-start);
-    margin-left: 14px;
 
     .menu-item {
         @extend %has-sub-menu;
-
-        &:hover .sub-menu {
-            transform: scaleY(1);
-        }
-
-        .sub-menu {
-            transform: scaleY(0.8);
-            transition: transform .2s .1s ease-out,
-                        opacity .2s .1s ease-out;
-            transform-origin: 0 0;
-        }
 
         .link.has-child:after {
             display: inline-block;
@@ -110,7 +104,7 @@
         padding-left: 20px;
         padding-right: 20px;
         line-height: 70px;
-        color: #909bad;
+        color: #9AA2B5;
 
         &:hover {
             color: #fff;
@@ -126,18 +120,69 @@
     @include align-items;
     margin-right: 20px;
 
+    .search-component {
+        position: relative;
+        display: grid;
+        flex-direction: row;
+        grid-template-columns: 1fr 164px;
+        grid-template-rows: 30px;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #fff;
+        border-radius: 3px;
+        height: 30px;
+        width: 370px;
+
+        .icon-magnify {
+            position: absolute;
+            left: 8px;
+            color: #868686;
+        }
+
+        .search-text {
+            border: none;
+            color: #545454;
+            padding-left: 24px;
+
+            &:focus {
+                box-shadow: none;
+            }
+        }
+
+        .search-option {
+            @extend %has-sub-menu;
+            padding-left: 10px;
+            line-height: 26px;
+            margin-right: 2px;
+            border-radius: 3px;
+            color: #333333;
+            background-color: #CDDCF9;
+            cursor: pointer;
+
+            &:after {
+                display: inline-block;
+                margin-left: 6px;
+                font-family: 'Fraud-Sensor';
+                content: "\e90c";
+                font-size: 14px;
+            }
+
+            .sub-menu {
+                min-width: 164px;
+            }
+
+            .link {
+                line-height: 12px;
+            }
+        }
+    }
+
     .username {
         @extend %has-sub-menu;
         padding-left: 30px;
         line-height: 70px;
         color: #fff;
         cursor: pointer;
-
-        &:hover .sub-menu {
-            display: block;
-            height: auto;
-            transition: height .2s .1s ease-out; 
-        }        
 
         &:after {
             display: inline-block;
@@ -148,17 +193,11 @@
         }
 
         .sub-menu {
-            display: none;
-            top: auto;
-            bottom: -27px;
             left: auto;
             right: -18px;
-            opacity: 1;
-            height: 0;
             line-height: 1;
             position: absolute;
             background: #fff;
-            transition: height .2s .1s ease-in-out;     
         }
 
         .sub-menu:before {

@@ -910,66 +910,64 @@ table.dataTable tbody tr.selected td {
   display: grid;
   justify-content: space-between;
   align-items: center;
-  grid-template-columns: 216px 1fr;
+  grid-template-columns: 128px 1fr;
   grid-template-rows: 70px;
   background-color: #1d2e4f;
   font-size: 16px; }
   .header .logo {
     display: flex;
     justify-content: center;
-    align-items: center;
-    height: 70px;
-    border-right: 1px solid #000; }
+    align-items: center; }
   .header .header-right {
     display: flex;
     justify-content: space-between;
     align-items: center; }
 
-.main-menu .menu-item, .header-info .username {
+.main-menu .menu-item, .header-info .search-component .search-option, .header-info .username {
   position: relative; }
-  .main-menu .menu-item:hover .sub-menu, .header-info .username:hover .sub-menu {
+  .main-menu .menu-item:hover .sub-menu, .header-info .search-component .search-option:hover .sub-menu, .header-info .username:hover .sub-menu {
+    display: table;
     z-index: 111;
-    opacity: 1; }
-  .main-menu .menu-item .icon, .header-info .username .icon {
+    opacity: 1;
+    height: auto;
+    transform: scaleY(1); }
+  .main-menu .menu-item .icon, .header-info .search-component .search-option .icon, .header-info .username .icon {
     margin-right: 6px;
     position: relative;
     top: 1px; }
-  .main-menu .menu-item .sub-menu, .header-info .username .sub-menu {
+  .main-menu .menu-item .sub-menu, .header-info .search-component .search-option .sub-menu, .header-info .username .sub-menu {
     position: absolute;
     top: 100%;
+    bottom: 0;
     left: 0;
+    height: 0;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     min-width: 190px;
+    transform: scaleY(0.8);
+    transition: transform .2s .1s ease-out, opacity .2s .1s ease-out;
+    transform-origin: 0 0;
     border: 1px solid #d0d0d0;
     box-shadow: 0 0 4px rgba(0, 0, 0, 0.3);
     background-color: #fff;
     opacity: 0;
     z-index: -1; }
-    .main-menu .menu-item .sub-menu .sub-menu-item > .link, .header-info .username .sub-menu .sub-menu-item > .link {
+    .main-menu .menu-item .sub-menu .sub-menu-item > .link, .header-info .search-component .search-option .sub-menu .sub-menu-item > .link, .header-info .username .sub-menu .sub-menu-item > .link {
       display: block;
       padding: 10px 20px;
       color: #545454;
       font-size: 14px; }
-    .main-menu .menu-item .sub-menu .sub-menu-item > .link:hover, .header-info .username .sub-menu .sub-menu-item > .link:hover {
+    .main-menu .menu-item .sub-menu .sub-menu-item > .link:hover, .header-info .search-component .search-option .sub-menu .sub-menu-item > .link:hover, .header-info .username .sub-menu .sub-menu-item > .link:hover {
       background-color: #1d2e4f;
       color: #fff; }
-    .main-menu .menu-item .sub-menu.-small, .header-info .username .sub-menu.-small {
+    .main-menu .menu-item .sub-menu.-small, .header-info .search-component .search-option .sub-menu.-small, .header-info .username .sub-menu.-small {
       min-width: 160px; }
 
 .main-menu {
   display: flex;
   justify-content: flex-start;
-  align-items: center;
-  margin-left: 14px; }
-  .main-menu .menu-item:hover .sub-menu {
-    transform: scaleY(1); }
-  .main-menu .menu-item .sub-menu {
-    transform: scaleY(0.8);
-    transition: transform .2s .1s ease-out,
- opacity .2s .1s ease-out;
-    transform-origin: 0 0; }
+  align-items: center; }
   .main-menu .menu-item .link.has-child:after {
     display: inline-block;
     margin-left: 6px;
@@ -981,7 +979,7 @@ table.dataTable tbody tr.selected td {
     padding-left: 20px;
     padding-right: 20px;
     line-height: 70px;
-    color: #909bad; }
+    color: #9AA2B5; }
     .main-menu .menu-item > .link:hover {
       color: #fff; }
     .main-menu .menu-item > .link.active {
@@ -992,15 +990,51 @@ table.dataTable tbody tr.selected td {
   justify-content: space-between;
   align-items: center;
   margin-right: 20px; }
+  .header-info .search-component {
+    position: relative;
+    display: grid;
+    flex-direction: row;
+    grid-template-columns: 1fr 164px;
+    grid-template-rows: 30px;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #fff;
+    border-radius: 3px;
+    height: 30px;
+    width: 370px; }
+    .header-info .search-component .icon-magnify {
+      position: absolute;
+      left: 8px;
+      color: #868686; }
+    .header-info .search-component .search-text {
+      border: none;
+      color: #545454;
+      padding-left: 24px; }
+      .header-info .search-component .search-text:focus {
+        box-shadow: none; }
+    .header-info .search-component .search-option {
+      padding-left: 10px;
+      line-height: 26px;
+      margin-right: 2px;
+      border-radius: 3px;
+      color: #333333;
+      background-color: #CDDCF9;
+      cursor: pointer; }
+      .header-info .search-component .search-option:after {
+        display: inline-block;
+        margin-left: 6px;
+        font-family: 'Fraud-Sensor';
+        content: "\e90c";
+        font-size: 14px; }
+      .header-info .search-component .search-option .sub-menu {
+        min-width: 164px; }
+      .header-info .search-component .search-option .link {
+        line-height: 12px; }
   .header-info .username {
     padding-left: 30px;
     line-height: 70px;
     color: #fff;
     cursor: pointer; }
-    .header-info .username:hover .sub-menu {
-      display: block;
-      height: auto;
-      transition: height .2s .1s ease-out; }
     .header-info .username:after {
       display: inline-block;
       margin-left: 6px;
@@ -1008,17 +1042,11 @@ table.dataTable tbody tr.selected td {
       content: "\e90c";
       font-size: 14px; }
     .header-info .username .sub-menu {
-      display: none;
-      top: auto;
-      bottom: -27px;
       left: auto;
       right: -18px;
-      opacity: 1;
-      height: 0;
       line-height: 1;
       position: absolute;
-      background: #fff;
-      transition: height .2s .1s ease-in-out; }
+      background: #fff; }
     .header-info .username .sub-menu:before {
       position: absolute;
       right: 17px;
