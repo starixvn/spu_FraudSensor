@@ -1,0 +1,66 @@
+﻿body {
+  background-color: #f0f3f8; }
+
+.dashboard .col {
+  float: left;
+  width: 304px;
+  margin-right: 18px;
+  padding: 16px 12px;
+  background-color: #FFF;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+  border-radius: 3px; }
+
+.dashboard .col-tile {
+  font-size: 15px;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: #346BFC;
+  line-height: 18px;
+  margin-bottom: 16px; }
+  .dashboard .col-tile [class^="icon"] {
+    position: relative;
+    top: 6px;
+    margin-right: 4px; }
+  .dashboard .col-tile [class^="icon"]:before {
+    color: #346BFC; }
+  .dashboard .col-tile .icon-account-device {
+    font-size: 25px; }
+  .dashboard .col-tile .icon-warning {
+    font-size: 22px;
+    top: 4px; }
+  .dashboard .col-tile .icon-chart-scatterplot-hexbin {
+    font-size: 24px; }
+  .dashboard .col-tile .icon-settings {
+    font-size: 26px; }
+
+.dashboard .block-title {
+  font-size: 16px;
+  margin-bottom: 10px;
+  color: #2F4A7D; }
+
+.dashboard .block-content {
+  line-height: 19px;
+  font-size: 12px;
+  color: #545454; }
+
+.dashboard .block {
+  padding: 12px;
+  border: 1px solid #CBCFD7;
+  box-sizing: border-box;
+  border-radius: 5px;
+  margin-bottom: 12px;
+  background-color: #fff;
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 0 0 transparent;
+  transform: scale(1); }
+  .dashboard .block:hover {
+    background-color: #346BFC;
+    cursor: pointer;
+    border-color: #346BFC;
+    transform: scale(1.05);
+    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2); }
+    .dashboard .block:hover .block-title,
+    .dashboard .block:hover .block-content {
+      color: #fff; }
+  .dashboard .block:last-child {
+    margin-bottom: 0; }

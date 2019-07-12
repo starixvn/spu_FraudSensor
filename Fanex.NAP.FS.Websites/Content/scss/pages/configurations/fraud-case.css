@@ -1,4 +1,4 @@
-.switch {
+﻿.switch {
   display: inline-block;
   text-align: center;
   outline: 0;
@@ -20,12 +20,7 @@
     position: relative;
     width: 35px;
     height: 18px;
-    -webkit-transition: all 0.25s ease-out;
-    -o-transition: all 0.25s ease-out;
-    -moz-transition: all 0.25s ease-out;
     transition: all 0.25s ease-out;
-    -webkit-border-radius: 40px;
-    -moz-border-radius: 40px;
     border-radius: 40px;
     color: inherit;
     font-weight: inherit; }
@@ -40,15 +35,9 @@
     width: 16px;
     left: 1px;
     top: 1px;
-    -webkit-transition: all 0.25s ease-out;
-    -o-transition: all 0.25s ease-out;
-    -moz-transition: all 0.25s ease-out;
     transition: all 0.25s ease-out;
     -webkit-transform: translate3d(0, 0, 0);
-    -moz-transform: translate3d(0, 0, 0);
     transform: translate3d(0, 0, 0);
-    -webkit-border-radius: 50%;
-    -moz-border-radius: 50%;
     border-radius: 50%; }
   .switch input:checked ~ .switch-paddle {
     background: #52c04f; }
@@ -75,8 +64,6 @@
   .ui-tabs.ui-widget-content .ui-tabs-nav li {
     position: relative;
     border-color: #d6d6d6;
-    -webkit-border-radius: 0;
-    -moz-border-radius: 0;
     border-radius: 0;
     background-color: #f0f0f0; }
   .ui-tabs.ui-widget-content .ui-tabs-nav li.ui-tabs-active {
@@ -111,17 +98,7 @@
   top: -1px; }
 
 .info {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -moz-box;
-  display: -ms-flexbox;
   display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-  -webkit-flex-direction: column;
-  -moz-box-orient: vertical;
-  -moz-box-direction: normal;
-  -ms-flex-direction: column;
   flex-direction: column;
   width: 650px;
   margin-bottom: 56px;
@@ -213,15 +190,11 @@
   padding: 0;
   border-color: #d3d3d3;
   color: #555;
-  -webkit-border-radius: 2px;
-  -moz-border-radius: 2px;
   border-radius: 2px; }
 
 .form-filter.-add-recipient .ms-drop {
   color: #555;
   border-color: #d3d3d3;
-  -webkit-border-radius: 0 0 4px 4px;
-  -moz-border-radius: 0 0 4px 4px;
   border-radius: 0 0 4px 4px; }
 
 .form-filter.-add-recipient .ms-drop ul {
@@ -231,8 +204,6 @@
   line-height: 26px; }
 
 .form-filter.-add-recipient input[type="checkbox"] + span:before {
-  -webkit-border-radius: 2px;
-  -moz-border-radius: 2px;
   border-radius: 2px;
   border-color: #696969;
   top: 2px;
@@ -245,7 +216,3 @@
   left: 4px;
   height: 4px;
   width: 7px; }
-
-.internal-account-list {
-    display:none;
-}

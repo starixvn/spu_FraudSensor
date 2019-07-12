@@ -1,0 +1,30 @@
+﻿[
+  {
+    "outputFile": "Content/scss/pages/dashboard/dashboard.css",
+    "inputFile": "Content/scss/pages/dashboard/dashboard.scss"
+  },
+  {
+    "outputFile": "Content/scss/pages/index.css",
+    "inputFile": "Content/scss/pages/index.scss"
+  },
+  {
+    "outputFile": "Content/scss/pages/suspicious-customer/suspicious-customer.css",
+    "inputFile": "Content/scss/pages/suspicious-customer/suspicious-customer.scss"
+  },
+  {
+    "outputFile": "Content/scss/pages/login/login.css",
+    "inputFile": "Content/scss/pages/login/login.scss"
+  },
+  {
+    "outputFile": "Content/scss/pages/errors/errors.css",
+    "inputFile": "Content/scss/pages/errors/errors.scss"
+  },
+  {
+    "outputFile": "Content/scss/pages/customer-monitor/customer-monitor.css",
+    "inputFile": "Content/scss/pages/customer-monitor/customer-monitor.scss"
+  },
+  {
+    "outputFile": "Content/scss/pages/configurations/fraud-case.css",
+    "inputFile": "Content/scss/pages/configurations/fraud-case.scss"
+  }
+]

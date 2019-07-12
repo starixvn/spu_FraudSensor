@@ -1,4 +1,4 @@
-body {
+﻿body {
   font-family: 'Lato', Arial; }
 
 .page {
@@ -21,8 +21,6 @@ body {
   padding-left: 36px;
   padding-right: 36px;
   border: none;
-  -webkit-border-radius: 2px;
-  -moz-border-radius: 2px;
   border-radius: 2px;
   line-height: 32px;
   background-color: #4f971f;

@@ -419,11 +419,35 @@
     <Content Include="Content\scss\images\UM.svg" />
     <Content Include="Content\scss\MultipleSelect\jquery.multiselect.filter.css" />
     <Content Include="Content\scss\pages\configurations\fraud-case.css" />
+    <Content Include="Content\scss\pages\configurations\fraud-case.min.css">
+      <DependentUpon>fraud-case.css</DependentUpon>
+    </Content>
     <Content Include="Content\scss\pages\customer-monitor\customer-monitor.css" />
+    <Content Include="Content\scss\pages\customer-monitor\customer-monitor.min.css">
+      <DependentUpon>customer-monitor.css</DependentUpon>
+    </Content>
+    <Content Include="Content\scss\pages\dashboard\dashboard.css">
+      <DependentUpon>dashboard.scss</DependentUpon>
+    </Content>
+    <Content Include="Content\scss\pages\dashboard\dashboard.min.css">
+      <DependentUpon>dashboard.css</DependentUpon>
+    </Content>
     <Content Include="Content\scss\pages\errors\errors.css" />
+    <Content Include="Content\scss\pages\errors\errors.min.css">
+      <DependentUpon>errors.css</DependentUpon>
+    </Content>
     <Content Include="Content\scss\pages\index.css" />
+    <Content Include="Content\scss\pages\index.min.css">
+      <DependentUpon>index.css</DependentUpon>
+    </Content>
     <Content Include="Content\scss\pages\login\login.css" />
+    <Content Include="Content\scss\pages\login\login.min.css">
+      <DependentUpon>login.css</DependentUpon>
+    </Content>
     <Content Include="Content\scss\pages\suspicious-customer\suspicious-customer.css" />
+    <Content Include="Content\scss\pages\suspicious-customer\suspicious-customer.min.css">
+      <DependentUpon>suspicious-customer.css</DependentUpon>
+    </Content>
     <Content Include="Content\scss\pages\um\um.css" />
     <Content Include="Content\scss\vendors\bootstrap-theme.css" />
     <Content Include="Content\scss\vendors\bootstrap-theme.min.css" />
@@ -832,6 +856,11 @@
     <Content Include="Content\scss\pages\customer-monitor\customer-monitor.scss" />
     <Content Include="Content\scss\MultipleSelect\jquery.multiselect.css" />
     <Content Include="Fanex.NAP.FS.Websites-1.ruleset" />
+    <Content Include="Content\scss\pages\dashboard\dashboard.scss" />
+    <None Include="compilerconfig.json" />
+    <None Include="compilerconfig.json.defaults">
+      <DependentUpon>compilerconfig.json</DependentUpon>
+    </None>
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile2.pubxml" />
