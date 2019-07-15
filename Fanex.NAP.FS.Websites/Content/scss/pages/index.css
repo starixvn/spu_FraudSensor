@@ -911,7 +911,7 @@ table.dataTable tbody tr.selected td {
   justify-content: space-between;
   align-items: center;
   grid-template-columns: 128px 1fr;
-  grid-template-rows: 70px;
+  grid-template-rows: 60px;
   background-color: #1d2e4f;
   font-size: 16px; }
   .header .logo {
@@ -978,7 +978,7 @@ table.dataTable tbody tr.selected td {
     display: block;
     padding-left: 20px;
     padding-right: 20px;
-    line-height: 70px;
+    line-height: 60px;
     color: #9AA2B5; }
     .main-menu .menu-item > .link:hover {
       color: #fff; }
@@ -1032,7 +1032,7 @@ table.dataTable tbody tr.selected td {
         line-height: 12px; }
   .header-info .username {
     padding-left: 30px;
-    line-height: 70px;
+    line-height: 60px;
     color: #fff;
     cursor: pointer; }
     .header-info .username:after {

@@ -17,7 +17,7 @@
 .header {
     @include align-items(grid);
     grid-template-columns: 128px 1fr;
-    grid-template-rows: 70px;
+    grid-template-rows: 60px;
     background-color: $primary-color;
     font-size: 16px;
 
@@ -103,7 +103,7 @@
         display: block;
         padding-left: 20px;
         padding-right: 20px;
-        line-height: 70px;
+        line-height: 60px;
         color: #9AA2B5;
 
         &:hover {
@@ -180,7 +180,7 @@
     .username {
         @extend %has-sub-menu;
         padding-left: 30px;
-        line-height: 70px;
+        line-height: 60px;
         color: #fff;
         cursor: pointer;
 
