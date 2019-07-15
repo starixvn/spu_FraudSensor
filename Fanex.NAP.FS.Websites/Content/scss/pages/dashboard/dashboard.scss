@@ -68,14 +68,12 @@
         border-radius: 5px;
         margin-bottom: 12px;
         background-color: #fff;
-        transition: background .2s linear;
         box-shadow: 0 0 0 rgba(0,0,0,0);
-        
+
         &:hover {
             background-color: #346BFC;
             cursor: pointer;
-            border-color: #346BFC;            
-            transition: all .01s linear;
+            border-color: #346BFC;
             box-shadow: 4px 4px 8px rgba(0,0,0,0.2);
 
             .block-title,

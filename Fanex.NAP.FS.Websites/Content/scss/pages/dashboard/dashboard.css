@@ -50,13 +50,11 @@
   border-radius: 5px;
   margin-bottom: 12px;
   background-color: #fff;
-  transition: background .2s linear;
   box-shadow: 0 0 0 transparent; }
   .dashboard .block:hover {
     background-color: #346BFC;
     cursor: pointer;
     border-color: #346BFC;
-    transition: all .01s linear;
     box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2); }
     .dashboard .block:hover .block-title,
     .dashboard .block:hover .block-content {
