@@ -42,6 +42,7 @@
             RegisterDailyDataCaptureBundles(bundles);
             RegisterCheckBetReportBundles(bundles);
             RegisterCustomerMonitorBundles(bundles);
+            RegisterSubscriberAssignment(bundles);
         }
 
         private static void RegisterFSCoreBundles(BundleCollection bundles)
@@ -125,6 +126,11 @@
             bundles.Add(new ScriptBundle("~/scripts/customer-monitor").Include("~/scripts/customermonitor/*.js"));
 
             bundles.Add(new ScriptBundle("~/scripts/customer-monitor/customer-details").Include("~/scripts/customermonitor/customerdetails/*.js"));
+        }
+
+        private static void RegisterSubscriberAssignment(BundleCollection bundles)
+        {
+            bundles.Add(new ScriptBundle("~/scripts/subscriber-assignment").Include("~/scripts/SubscriberAssignment/*.js"));
         }
     }
 }

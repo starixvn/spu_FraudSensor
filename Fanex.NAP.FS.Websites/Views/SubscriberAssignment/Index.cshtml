@@ -1,0 +1,71 @@
+﻿@using Fanex.NAP.FS.Library.Models.Subscriber;
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1 class="title">Subcriber Assignment</h1>
+
+@section styles{
+    <link href="~/Content/scss/MultipleSelect/jquery.multiselect.filter.css" rel="stylesheet" />
+    <link href="~/Content/scss/MultipleSelect/jquery.multiselect.css" rel="stylesheet" />
+}
+
+<div class="form-filter">
+    <div class="group width-100">
+        <label class="text">Username</label>
+    </div>
+    <div class="group width-220">
+        <input type="text" id="username" class="control" />
+    </div>
+    <button class="button -primary" id="btnSearch">Search</button>
+</div>
+
+<div class="form-filter">
+    <div class="group width-220">
+        <div class="group width-100">
+        </div>
+        <div class="group width-220">
+            <label class="checkbox">
+                <input type="checkbox" checked id="chkMasterSubcriber" />
+                <span>Set as Master Subscriber</span>
+            </label>
+        </div>
+    </div>
+</div>
+
+<div class="form-filter">
+    <div class="group width-100">
+        <label class="text">Subscribers</label>
+    </div>
+    <div class="group width-220">
+        <div class="edit-field col_9">
+            <select id="ddlSubscriber" multiple="multiple">
+            </select>
+        </div>
+    </div>
+
+    <div class="group width-100">
+        <label class="text">Status</label>
+    </div>
+    <div class="group width-220">
+        <select class="control" id="cbbStatus">
+            <option>All</option>
+            <option value="assigned" selected>Assigned</option>
+            <option value="unassigned">Unassigned</option>
+        </select>
+    </div>
+
+    <button class="button -primary" id="btnSubmit">Submit</button>
+</div>
+
+<div id="content-subscribers" class="form-filter">
+
+</div>
+
+@section scripts{
+    <script src="~/Scripts/MultipleSelect/jquery.multiselect.filter.js"></script>
+    <script src="~/Scripts/MultipleSelect/jquery.multiselect.js"></script>
+
+    @Scripts.Render("~/scripts/subscriber-assignment")
+}

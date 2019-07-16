@@ -284,6 +284,7 @@
     <Compile Include="Criteria\Notification\UserMessageGetCriteria.cs" />
     <Compile Include="Criteria\ScannedOfficeIP\TicketFromOfficeIpGetCriteria.cs" />
     <Compile Include="Criteria\Notification\UserMessageUnreadCounterGetCriteria.cs" />
+    <Compile Include="Criteria\SubscriberAssignment\SubscriberGetCriteria.cs" />
     <Compile Include="Criteria\SuspiciousCustomerDetails\SuspiciousCustomerDetailsGeneralCriteria.cs" />
     <Compile Include="Criteria\SuspiciousCustomerDetails\SuspiciousCustomerDetailsStatisticsGetCriteria.cs" />
     <Compile Include="Criteria\SuspiciousCustomer\SuspiciousCustomerAssigneeGetCriteria.cs" />
@@ -372,6 +373,7 @@
     <Compile Include="Models\MatchMonitor\FraudCaseDetails\TicketInfo.cs" />
     <Compile Include="Models\MatchMonitor\League.cs" />
     <Compile Include="Models\MatchMonitor\Match.cs" />
+    <Compile Include="Models\Subscriber\Subscriber.cs" />
     <Compile Include="Models\SuspiciousCustomerDetails\FraudCaseViolated.cs" />
     <Compile Include="Models\SuspiciousCustomerDetails\Statistics.cs" />
     <Compile Include="Models\SuspiciousCustomer\DataTableAjaxPostModel.cs" />
@@ -391,6 +393,7 @@
     <Compile Include="Services\Implement\DailyCaptureDataService.cs" />
     <Compile Include="Services\Implement\DelayGoalAccountService.cs" />
     <Compile Include="Services\Implement\FraudCaseDetailsService.cs" />
+    <Compile Include="Services\Implement\SubscriberAssignmentService.cs" />
     <Compile Include="Services\Interface\ICustomerMonitorService.cs" />
     <Compile Include="Services\Implement\NotificationRecipientService.cs" />
     <Compile Include="Services\Implement\NotificationService.cs" />
@@ -410,6 +413,7 @@
     <Compile Include="Services\Interface\INotificationService.cs" />
     <Compile Include="Services\Interface\IOfficeIPService.cs" />
     <Compile Include="Services\Interface\IScannedOfficeIpReportService.cs" />
+    <Compile Include="Services\Interface\ISubscriberAssignmentService.cs" />
     <Compile Include="Services\Interface\ISuspiciousCustomerReportDetailsService.cs" />
     <Compile Include="Services\Interface\ISuspiciousCustomerReportService.cs" />
     <Compile Include="Services\Interface\IFlaggedAccountService.cs" />
