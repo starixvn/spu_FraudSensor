@@ -1,12 +1,53 @@
-﻿@{
+﻿@model IList<Fanex.NAP.Core.Models.MenuItem>
+@{
     ViewBag.Title = "Home Page";
-}
 
+    Func<string, string> iconLookup = menuName =>
+    {
+        switch (menuName)
+        {
+            case "Account & Device Search":
+                return "<span class='icon-account-device'></span>";
+            case "Suspicious Bets":
+                return "<span class='icon-warning'></span>";
+            case "Reports":
+                return "<span class='icon-chart-scatterplot-hexbin'></span>";
+            case "Settings":
+                return "<span class='icon-settings'></span>";
+            default:
+                return "";
+        }
+    };
+}
 @section styles{
-<link href="~/Content/scss/pages/dashboard/dashboard.min.css" rel="stylesheet" />
+    <link href="~/Content/scss/pages/dashboard/dashboard.min.css" rel="stylesheet" />
 }
-
 <div class="dashboard">
+    @foreach (var menu in Model.Where(m => m.Parent == null && m.IsActive && m.Name != "Home").OrderBy(m => m.DisplayOrder))
+    {
+        var subMenus = Model.Where(m => m.Parent != null && m.IsActive && m.Parent.Id == menu.Id).OrderBy(m => m.DisplayOrder);
+
+    <div class="col">
+        <h1 class="col-tile">@Html.Raw(iconLookup(menu.Name)) @menu.Name</h1>
+        @if (subMenus.Any())
+        {
+            foreach (var subMenu in subMenus)
+            {
+        
+        <div class="block">
+            <a href="@Url.Content(subMenu.ValidUrl)">
+                <h2 class="block-title">@subMenu.Name</h2>
+                <p class="block-content">@subMenu.Description</p>
+            </a>
+        </div>
+        
+            }
+        }
+    </div>
+    }
+</div>
+
+@*<div class="dashboard">
     <div class="col">
         <h1 class="col-tile"><span class="icon-account-device"></span> Account & Device Search</h1>
         <div class="block">
@@ -83,4 +124,4 @@
             <p class="block-content">≪Description...>></p>
         </div>
     </div>
-</div>
+</div>*@

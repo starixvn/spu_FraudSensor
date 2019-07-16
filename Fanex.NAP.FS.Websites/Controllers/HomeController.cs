@@ -8,7 +8,7 @@
     {
         public ActionResult Index()
         {
-            return View();
+            return View(CurrentSession.MenuItemList);
         }
 
         public ActionResult Menu(string activeMenu)
