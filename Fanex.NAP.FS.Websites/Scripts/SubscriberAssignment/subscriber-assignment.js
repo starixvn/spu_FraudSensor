@@ -74,7 +74,7 @@
         var parent = $(group).parent();
 
         if (!$(parent).find('[data-letter="0-9"]').length) {
-            $(parent).append('<div class="form-filter" data-letter="0-9"><div><label class="text">0-9</label></div><br /></div>');
+            $(parent).append('<div class="" data-letter="0-9"><div><label class="text">0-9</label></div></div>');
         }
 
         $(parent).find('[data-letter="0-9"]').append(group);
@@ -84,7 +84,7 @@
         var parent = $(group).parent();
 
         if (!$(parent).find('[data-letter="' + letter + '"]').length) {
-            $(parent).append('<div class="form-filter" data-letter="' + letter + '"><label class="text">' + letter + '</label><br /></div>');
+            $(parent).append('<div class="" data-letter="' + letter + '"><div><label class="text">' + letter + '</label><div></div>');
         }
 
         $(parent).find('[data-letter="' + letter + '"]').append(group);
