@@ -1,4 +1,5 @@
 ﻿function subscriber_assignment() {
+    var inputUserName = $('#username');
     var btnSearch = $('#btnSearch');
     var btnSubmit = $('#btnSubmit');
     var ddlSubscriber = $('#ddlSubscriber');
@@ -8,31 +9,42 @@
     function init() {
         $("#ddlSubscriber").multiselect({
             menuWidth: 225,
-            menuHeight: 350,          
-            click: ClickEffectSubscribers,
-            checkAll: CheckAllEffectSubscribers,
-            uncheckAll: UnCheckAllEffectSubscribers
+            menuHeight: 350,            
+            click: ClickItemSubscriber,
+            checkAll: CheckAllSubscribers,
+            uncheckAll: UnCheckAllSubscribers
         }).multiselectfilter({
             width: 140,
             placeholder: 'Enter key words...'
         });
     }
 
-    function GetSubscribers() {
-        var userId = $("#username").val().trim();
+    function GetUserId() {
+        var userName = inputUserName.val().trim();
 
-        if (userId.length == 0) {
+        if (userName.length == 0) {
             return;
         }
 
+        var url = common.modifyRelativeUrl('/SubscriberAssignment/GetUserId');
+
+        $.get(url, { userName: userName }, function (data) {
+            if (data == null) {
+                var span = inputUserName.next('span');
+                span.text('The username is not valid').show();
+            }
+
+            GetSubscribers(data);
+        });
+    }
+
+    function GetSubscribers(userId) {
         var url = common.modifyRelativeUrl('/SubscriberAssignment/GetSubscribers');
 
         $.get(url, { userId: userId }, function (data) {
-
             BindSubscribersToControl(data);
 
             BindSubscribersToHtml(data);
-
         });
     }
 
@@ -40,9 +52,9 @@
         ddlSubscriber.multiselect().empty();
 
         for (var i = 0; i < data.length; i++) {
-            ddlSubscriber.append(`<option value='${data[i].Id}' selected='selected'>${data[i].Name}</option>`);
+            ddlSubscriber.append('<option value="' + data[i].Id + '" selected>' + data[i].Name + '</option>');
         }
-        
+
         ddlSubscriber.multiselect('refresh');
     }
 
@@ -60,7 +72,7 @@
 
     function GroupItemSubscribers() {        
 
-        var letter = $('#item-subscriber', this).val().charAt(0); 
+        var letter = $('#item-subscriber-btn', this).text().charAt(0); 
 
         if (regex.test(letter)) {
             GroupWithNumber(this, letter);
@@ -74,23 +86,34 @@
         var parent = $(group).parent();
 
         if (!$(parent).find('[data-letter="0-9"]').length) {
-            $(parent).append('<div class="" data-letter="0-9"><div><label class="text">0-9</label></div></div>');
+
+            var html = '<div class="" data-letter="0-9">';
+            html += '<div><label class="text">0-9</label></div>';
+            html += '<div class="form-filter"></div>';
+            html += '</div>';
+
+            $(parent).append(html);
         }
 
-        $(parent).find('[data-letter="0-9"]').append(group);
+        $(parent).find('[data-letter="0-9"]').find('.form-filter').append(group);
     }
 
     function GroupWithCharacter(group, letter) {
         var parent = $(group).parent();
 
         if (!$(parent).find('[data-letter="' + letter + '"]').length) {
-            $(parent).append('<div class="" data-letter="' + letter + '"><div><label class="text">' + letter + '</label><div></div>');
+
+            var html = '<div class="" data-letter="' + letter + '">';
+            html += '<div><label class="text">' + letter + '</label></div>';
+            html += '</div>';
+
+            $(parent).append(html);
         }
 
         $(parent).find('[data-letter="' + letter + '"]').append(group);
     }
 
-    function ClickEffectSubscribers(event, ui) {
+    function ClickItemSubscriber(event, ui) {
         if (ui.checked) {
             AddItemToGroup(ui.text);
         }
@@ -103,7 +126,7 @@
         contentSubscribers.after(SubscriberToHtml(name));
 
         $(".group", contentSubscribers).each((index, group) => {
-            var letter = $('#item-subscriber', group).val().charAt(0); 
+            var letter = $('#item-subscriber-btn', group).text().charAt(0); 
 
             if (regex.test(letter)) {
                 GroupWithNumber($(group), letter);
@@ -116,7 +139,7 @@
 
     function RemoveItemFromGroup(name) {
         $(".group", contentSubscribers).each((index, group) => {
-            var result = $(group).find('[value="' + name + '"]');
+            var result = $(group).find('[name="' + name + '"]');
 
             if (result.length) {
                 $(result).remove();
@@ -124,17 +147,17 @@
         });
     }
 
-    function CheckAllEffectSubscribers() {
-       
+    function CheckAllSubscribers() {
+          
     }
 
-    function UnCheckAllEffectSubscribers() {
+    function UnCheckAllSubscribers() {
         
     }
 
     function SubscriberToHtml(name) {
         var htmlString = "<div class='group width-100' id='" + name + "'>";
-        htmlString += "<button class='button - primary' id='item-subscriber' value='" + name + "'>" + name + "</button>";
+        htmlString += "<button class='button - primary' id='item-subscriber-btn' name='" + name + "'>" + name + "</button>";
         htmlString += "</div>";
 
         return htmlString;
@@ -144,7 +167,11 @@
 
     }
 
-    btnSearch.click(GetSubscribers);
+    inputUserName.keyup(() => {
+        $(this).next('span').hide();
+    });
+
+    btnSearch.click(GetUserId);
 
     btnSubmit.click(Save);
 

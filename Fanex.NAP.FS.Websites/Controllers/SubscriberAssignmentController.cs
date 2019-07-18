@@ -8,17 +8,14 @@
     using System.Configuration;
     using System.Web.Mvc;
 
+    [NapAuth(FunctionKey = FSFunctionKeys.SubscriberAssignment, Policy = Core.Business.Constant.Policy.Read)]
     public class SubscriberAssignmentController : BaseController
     {
-        private readonly ISubscriberAssignmentService _subscriberAssignmentService;
-        private bool IsShowSpecialCurrencies;
+        private readonly ISubscriberAssignmentService _subscriberAssignmentService;      
 
         public SubscriberAssignmentController()
         {
             _subscriberAssignmentService = new SubscriberAssignmentService();
-
-            var permission = new UserService().GetPermission(CurrentSession.UserId, SiteId, FSFunctionKeys.SpecialCurrencies);
-            IsShowSpecialCurrencies = permission > 0;
         }
      
         public ActionResult Index()
@@ -27,6 +24,20 @@
             ViewBag.Environment = int.Parse(ConfigurationManager.AppSettings["Environment"]);
 
             return View();
+        }
+
+        public ActionResult GetUserId(string userName)
+        {
+            var userService = new UserService();
+
+            var user = userService.Get(userName);
+
+            if(user != null && userService.HasAnyPermission(user.Id, SiteId, Environment))
+            {
+                return Json(user.Id, JsonRequestBehavior.AllowGet);
+            }
+
+            return Json(null, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult GetSubscribers(string userId)
