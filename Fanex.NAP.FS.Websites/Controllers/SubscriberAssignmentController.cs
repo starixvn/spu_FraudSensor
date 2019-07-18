@@ -47,5 +47,12 @@
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
+        [HttpPost]
+        public ActionResult AssignSubscribers(string userId, string subscribers)
+        {
+
+            return new JsonResult();
+        }
+
     }
 }

@@ -1,13 +1,13 @@
 ﻿function subscriber_assignment() {
     var inputUserName = $('#username');
-    var btnSearch = $('#btnSearch');
-    var btnSubmit = $('#btnSubmit');
     var ddlSubscriber = $('#ddlSubscriber');
     var contentSubscribers = $("#content-subscribers");
     var regex = new RegExp("[0-9]");
+    var currentUserId = '';
+    var subscribersAssigned = [];
 
     function init() {
-        $("#ddlSubscriber").multiselect({
+        ddlSubscriber.multiselect({
             menuWidth: 225,
             menuHeight: 350,            
             click: CheckSubscriberItem,
@@ -20,6 +20,7 @@
     }
 
     function GetUserId() {
+        currentUserId = '';
         var userName = inputUserName.val().trim();
 
         if (userName.length == 0) {
@@ -40,14 +41,17 @@
         });
     }
 
-    function GetSubscribers(userId) {
+    function GetSubscribers(id) {
+        
         var url = common.modifyRelativeUrl('/SubscriberAssignment/GetSubscribers');
 
-        $.get(url, { userId: userId }, function (data) {
+        $.get(url, { userId: id }, function (data) {            
             BindSubscribersToControl(data);
 
             BindSubscribersToHtml(data);
         });
+
+        currentUserId = id;
     }
 
     function BindSubscribersToControl(data) {
@@ -73,8 +77,7 @@
     }
 
     function GroupSubscribersItem() {
-        var item = $('#item-subscriber-btn', this);
-        var letter = $(item).text().charAt(0);
+        var letter = $('#item-subscriber-btn', this).text().charAt(0);
 
         if (regex.test(letter)) {
             GroupWithNumber(this, letter);
@@ -162,17 +165,37 @@
 
     function ClickHandleSubscriberItem(event) {
         var item = $(event.target);
-
         var name = $(item).text();
 
         if ($(item).hasClass('btn-assign')) {
+            if (subscribersAssigned.indexOf(name) >= 0) {
+                subscribersAssigned.remove(name);
+            }
+
             $(item).removeClass('btn-assign').addClass('.btn-default');
-            console.log(name + ' is unassigned');
         }
         else {
+            if (subscribersAssigned.indexOf(name) < 0) {
+                subscribersAssigned.push(name);
+            }
+            
             $(item).removeClass('.btn-default').addClass('btn-assign');
-            console.log(name + ' is assigned');
         }
+    }
+
+    function CheckHandleIsMaster(event) {
+        $(".group", contentSubscribers).each((index, group) => {            
+            var items = $(group).find('#item-subscriber-btn');
+
+            $(items).each((index, item) => {         
+                
+                if ($(event.target).is(':checked')) {
+                    $(item).addClass('disabled');
+                } else {
+                    $(item).removeClass('disabled');
+                }
+            });
+        });
     }
 
     function ToHtmlSubscriberItem(name) {
@@ -184,7 +207,20 @@
     }
 
     function Save() {
+        var subscribers = subscribersAssigned.join(';');
+        var url = common.modifyRelativeUrl('/SubscriberAssignment/AssignSubscribers');
 
+        $.ajax(url, {
+            type: 'POST',
+            data: { userId: currentUserId, subscribers: subscribers },
+            success: function (response) {
+                common.showSuccess('Assigned subscribers!');
+            },
+            error: function (errorMessage) {
+                console.log(errorMessage);
+                common.showError('Assign subscribers fail!');
+            }
+        });
     }
 
     function ClearResult() {
@@ -195,9 +231,11 @@
         inputUserName.next('span').hide();
     });
 
-    btnSearch.click(GetUserId);
+    $('#chkMasterSubcriber').change(CheckHandleIsMaster);
 
-    btnSubmit.click(Save);
+    $('#btnSearch').click(GetUserId);
+
+    $('#btnSubmit').click(Save);
 
     init();
 }
