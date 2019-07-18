@@ -37,7 +37,7 @@
                 return Json(user.Id, JsonRequestBehavior.AllowGet);
             }
 
-            return Json(null, JsonRequestBehavior.AllowGet);
+            return Json(string.Empty, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult GetSubscribers(string userId)

@@ -29,12 +29,13 @@
         var url = common.modifyRelativeUrl('/SubscriberAssignment/GetUserId');
 
         $.get(url, { userName: userName }, function (data) {
-            if (data == null) {
+            if (data == '') {
                 var span = inputUserName.next('span');
                 span.text('The username is not valid').show();
             }
-
-            GetSubscribers(data);
+            else {
+                GetSubscribers(data);
+            }            
         });
     }
 
@@ -105,12 +106,13 @@
 
             var html = '<div class="" data-letter="' + letter + '">';
             html += '<div><label class="text">' + letter + '</label></div>';
+            html += '<div class="form-filter"></div>';
             html += '</div>';
 
             $(parent).append(html);
         }
 
-        $(parent).find('[data-letter="' + letter + '"]').append(group);
+        $(parent).find('[data-letter="' + letter + '"]').find('.form-filter').append(group);
     }
 
     function ClickItemSubscriber(event, ui) {
@@ -156,7 +158,7 @@
     }
 
     function SubscriberToHtml(name) {
-        var htmlString = "<div class='group width-100' id='" + name + "'>";
+        var htmlString = "<div class='group width-80' id='" + name + "'>";
         htmlString += "<button class='button - primary' id='item-subscriber-btn' name='" + name + "'>" + name + "</button>";
         htmlString += "</div>";
 
@@ -168,7 +170,7 @@
     }
 
     inputUserName.keyup(() => {
-        $(this).next('span').hide();
+        inputUserName.next('span').hide();        
     });
 
     btnSearch.click(GetUserId);
