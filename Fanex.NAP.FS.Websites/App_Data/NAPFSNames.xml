@@ -267,4 +267,14 @@
          SpName="FS_Tbl_SuspiciousCustomerNotes_Update"
          DbName="DBFS.bodb_FraudSensor.bodbSPUNet"/>
   </Function>
+
+  <Function name="SubscriberAssignment">
+    <Setting Key="FPS_AD_InsertSubscriberByUser"
+        SpName="FPS_AD_InsertSubscriberByUser"
+        DbName="MySQL.FPS_Admin"/>
+
+    <Setting Key="FPS_AD_GetSubscriberByAssignedStatus"
+        SpName="FPS_AD_GetSubscriberByAssignedStatus"
+        DbName="MySQL.FPS_Admin"/>
+  </Function>
 </Functions>

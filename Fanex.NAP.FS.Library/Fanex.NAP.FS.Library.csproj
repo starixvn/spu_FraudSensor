@@ -302,6 +302,7 @@
     <Compile Include="Criteria\ScannedOfficeIP\TicketFromOfficeIpGetCriteria.cs" />
     <Compile Include="Criteria\Notification\UserMessageUnreadCounterGetCriteria.cs" />
     <Compile Include="Criteria\SubscriberAssignment\SubscriberGetCriteria.cs" />
+    <Compile Include="Criteria\SubscriberAssignment\SubscribersUpdateCriteria.cs" />
     <Compile Include="Criteria\SuspiciousCustomerDetails\SuspiciousCustomerDetailsGeneralCriteria.cs" />
     <Compile Include="Criteria\SuspiciousCustomerDetails\SuspiciousCustomerDetailsStatisticsGetCriteria.cs" />
     <Compile Include="Criteria\SuspiciousCustomer\SuspiciousCustomerAssigneeGetCriteria.cs" />

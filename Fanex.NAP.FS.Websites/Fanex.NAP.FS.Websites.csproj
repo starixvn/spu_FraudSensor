@@ -360,6 +360,7 @@
     </Compile>
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Content Include="Scripts\SubscriberAssignment\subscriber.js" />
     <Compile Include="Service\Utilities\AppSession.cs" />
     <Compile Include="Service\Utilities\PermissionService.cs" />
     <Compile Include="Service\Utilities\SessionManager.cs" />

@@ -18,12 +18,12 @@
         color: white;
     }
 
-.btn-assign {
+.btn-assigned {
     background-color: #E8A317;
     color: white;
 }
 
-    .btn-assign:hover {
+    .btn-assigned:hover {
         background-color: #DCDCDC;
         color: black;
     }

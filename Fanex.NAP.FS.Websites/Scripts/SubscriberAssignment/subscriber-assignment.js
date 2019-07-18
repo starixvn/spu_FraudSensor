@@ -5,6 +5,7 @@
     var regex = new RegExp("[0-9]");
     var currentUserId = '';
     var subscribersAssigned = [];
+    var subscribersUnAssign = [];
 
     function init() {
         ddlSubscriber.multiselect({
@@ -21,6 +22,9 @@
 
     function GetUserId() {
         currentUserId = '';
+        subscribersAssigned = [];
+        subscribersUnAssign = [];
+
         var userName = inputUserName.val().trim();
 
         if (userName.length == 0) {
@@ -48,7 +52,7 @@
         $.get(url, { userId: id }, function (data) {            
             BindSubscribersToControl(data);
 
-            BindSubscribersToHtml(data);
+            BindSubscribersToHtml(subscribersAssigned, subscribersUnAssign);
         });
 
         currentUserId = id;
@@ -58,18 +62,31 @@
         ddlSubscriber.multiselect().empty();
 
         for (var i = 0; i < data.length; i++) {
-            ddlSubscriber.append('<option value="' + data[i].Id + '" selected>' + data[i].Name + '</option>');
+            var subscriber = new Subscriber(data[i].SubscriberID, data[i].SubscriberName, data[i].isAssigned);
+
+            ddlSubscriber.append('<option value="' + subscriber.id + '" selected>' + subscriber.name + '</option>');
+
+            if (subscriber.isAssigned) {
+                subscribersAssigned.push(subscriber);
+            }
+            else {
+                subscribersUnAssign.push(subscriber);
+            }
         }
 
         ddlSubscriber.multiselect('refresh');
     }
 
-    function BindSubscribersToHtml(data) {
-        var html = '';
+    function BindSubscribersToHtml(dataAssigned, dataUnAssign) {
+        var html = '';       
 
-        for (var i = 0; i < data.length; i++) {
-            html += ToHtmlSubscriberItem(data[i].Name);
-        }
+        $(dataAssigned).each((index, item) => {
+            html += ToHtmlSubscriberItem(item, 'btn-assigned');
+        });
+
+        $(dataUnAssign).each((index, item) => {
+            html += ToHtmlSubscriberItem(item, 'btn-default');
+        });
 
         contentSubscribers.html(html);
 
@@ -165,21 +182,21 @@
 
     function ClickHandleSubscriberItem(event) {
         var item = $(event.target);
-        var name = $(item).text();
+        var value = $(item).val();
 
-        if ($(item).hasClass('btn-assign')) {
-            if (subscribersAssigned.indexOf(name) >= 0) {
-                subscribersAssigned.remove(name);
-            }
+        if ($(item).hasClass('btn-assigned')) {
+            var subscriber = FindObjectById(subscribersAssigned, "id", value);
+            subscribersAssigned.splice(subscribersAssigned.indexOf(subscriber), 1);
+            subscribersUnAssign.push(subscriber);         
 
-            $(item).removeClass('btn-assign').addClass('.btn-default');
+            $(item).removeClass('btn-assigned').addClass('.btn-default');
         }
-        else {
-            if (subscribersAssigned.indexOf(name) < 0) {
-                subscribersAssigned.push(name);
-            }
-            
-            $(item).removeClass('.btn-default').addClass('btn-assign');
+        else {          
+            var subscriber = FindObjectById(subscribersUnAssign, "id", value);
+            subscribersUnAssign.splice(subscribersUnAssign.indexOf(subscriber), 1);
+            subscribersAssigned.push(subscriber);
+
+            $(item).removeClass('.btn-default').addClass('btn-assigned');
         }
     }
 
@@ -198,21 +215,49 @@
         });
     }
 
-    function ToHtmlSubscriberItem(name) {
-        var htmlString = "<div class='group width-50' id='" + name + "'>";
-        htmlString += "<button class='button btn-default' id='item-subscriber-btn' name='" + name + "'>" + name + "</button>";        
+    function ToHtmlSubscriberItem(item, btnClassName) {
+        var htmlString = "<div class='group width-50' id='" + item.name + "'>";
+        htmlString += "<button class='button " + btnClassName + "' id='item-subscriber-btn' value='" + item.id + "' name='" + item.name + "'>" + item.name + "</button>";        
         htmlString += "</div>";
       
         return htmlString;
     }
 
+    function FindObjectById(array, key, value) {
+        for (var i = 0; i < array.length; i++) {
+            var object = array[i];
+
+            if (object[key] == value) {
+                return object;
+            }
+        }
+
+        return null;
+    }
+
+    function JoinIds(array) {
+        var ids = [];
+        for (var i = 0; i < array.length; i++) {
+            var object = array[i];
+            ids.push(object.id);
+        }
+
+        return ids.join(',');
+    }
+
     function Save() {
-        var subscribers = subscribersAssigned.join(';');
+        var subscriberIds = JoinIds(subscribersAssigned);
+        var isMasterSub = $('#chkMasterSubcriber').is(':checked');
+
         var url = common.modifyRelativeUrl('/SubscriberAssignment/AssignSubscribers');
 
         $.ajax(url, {
             type: 'POST',
-            data: { userId: currentUserId, subscribers: subscribers },
+            data: {
+                userId: currentUserId,
+                subscriberIds: subscriberIds,
+                isMasterSub: isMasterSub
+            },
             success: function (response) {
                 common.showSuccess('Assigned subscribers!');
             },

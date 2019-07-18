@@ -40,7 +40,7 @@
             return Json(string.Empty, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult GetSubscribers(string userId)
+        public ActionResult GetSubscribers(long userId)
         {
             var data = _subscriberAssignmentService.GetSubscribers(userId);
 
@@ -48,10 +48,11 @@
         }
 
         [HttpPost]
-        public ActionResult AssignSubscribers(string userId, string subscribers)
+        public ActionResult AssignSubscribers(int userId, string subscriberIds, bool isMasterSub)
         {
+            var data = _subscriberAssignmentService.UpdateSubscribers(isMasterSub, userId, subscriberIds, CurrentSession.UserId);
 
-            return new JsonResult();
+            return Json(data, JsonRequestBehavior.AllowGet);
         }
 
     }

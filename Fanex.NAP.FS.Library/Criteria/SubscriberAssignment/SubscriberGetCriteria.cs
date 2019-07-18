@@ -4,9 +4,9 @@
 
     public class SubscriberGetCriteria : CriteriaBase
     {
-        public long UserId { get; set; }
+        public long ip_userId { get; set; }
 
-        public override string GetSettingKey() => "";
+        public override string GetSettingKey() => "FPS_AD_GetSubscriberByAssignedStatus";
 
         public override bool IsValid() => true;
 

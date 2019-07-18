@@ -1,42 +1,53 @@
 ﻿namespace Fanex.NAP.FS.Library.Services
 {
+    using Fanex.NAP.FS.Library.Core.BaseClasses;
+    using Fanex.NAP.FS.Library.Criteria.SubscriberAssignment;
     using Fanex.NAP.FS.Library.Models.Subscriber;
-    using System;
+    using System.Linq;
     using System.Collections.Generic;
+    using System;
+    using Fanex.NAP.FS.Library.Models;
 
     public class SubscriberAssignmentService : ISubscriberAssignmentService
     {
-        public IEnumerable<Subscriber> GetSubscribers(string userId)
+        public IEnumerable<Subscriber> GetSubscribers(long userId)
         {
+            var criteria = new SubscriberGetCriteria
+            {
+                ip_userId = userId
+            };
 
-
-            return GetSubscribers_Test();
+            return DataService.GetData<Subscriber>(criteria).OrderBy(c=>c.SubscriberName);
         }
 
-        private List<Subscriber> GetSubscribers_Test()
+        public DBResult UpdateSubscribers(bool isMasterSub, int userId, string subscriberIds, int createdBy)
         {
-            var i = 1;
-
-            var subscribers = new List<Subscriber>();
+            var criteria = new SubscribersUpdateCriteria
             {
-                subscribers.Add(new Subscriber { Id = i++, Name = "1 bet" });
-                subscribers.Add(new Subscriber { Id = i++, Name = "2 bet" });
-                subscribers.Add(new Subscriber { Id = i++, Name = "3 bet" });
-                subscribers.Add(new Subscriber { Id = i++, Name = "4 bet" });
-                subscribers.Add(new Subscriber { Id = i++, Name = "Alligator" });
-                subscribers.Add(new Subscriber { Id = i++, Name = "Boar" });
-                subscribers.Add(new Subscriber { Id = i++, Name = "Bat" });
-                subscribers.Add(new Subscriber { Id = i++, Name = "Crocodile" });
-                subscribers.Add(new Subscriber { Id = i++, Name = "Cat" });
-                subscribers.Add(new Subscriber { Id = i++, Name = "Dog 1" });
-                subscribers.Add(new Subscriber { Id = i++, Name = "Dog 2" });
-                subscribers.Add(new Subscriber { Id = i++, Name = "Dog 3" });
-                subscribers.Add(new Subscriber { Id = i++, Name = "Elephant" });
-                subscribers.Add(new Subscriber { Id = i++, Name = "Fish" });
-                subscribers.Add(new Subscriber { Id = i, Name = "Koala bear" });
+                ip_isMasterSub = isMasterSub,
+                ip_subscriberIds = subscriberIds,
+                ip_userId = userId,
+                ip_createdBy = createdBy
+            };
+
+            try
+            {
+                DataService.Execute(criteria);
+            }
+            catch (Exception ex)
+            {
+                return new DBResult
+                {
+                    ErrorCode = 1,
+                    ErrorMsg = ex.ToString()
+                };
             }
 
-            return subscribers;
+            return new DBResult
+            {
+                ErrorCode = 0,
+                ErrorMsg = string.Empty
+            };
         }
     }
 }

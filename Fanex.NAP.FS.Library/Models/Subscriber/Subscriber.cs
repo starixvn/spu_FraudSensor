@@ -2,8 +2,10 @@
 {
     public class Subscriber
     {
-        public int Id { get; set; }
+        public int SubscriberID { get; set; }
 
-        public string Name { get; set; }
+        public string SubscriberName { get; set; }
+
+        public int isAssigned { get; set; }
     }
 }
