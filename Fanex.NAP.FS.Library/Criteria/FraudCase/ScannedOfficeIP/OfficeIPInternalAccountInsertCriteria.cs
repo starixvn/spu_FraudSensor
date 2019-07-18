@@ -1,7 +1,9 @@
 ﻿namespace Fanex.NAP.FS.Library.Criteria.FraudCase.ScannedOfficeIP
 {
     using Fanex.Data.Repository;
-    public class OfficeIPInternalAccountInsertCriteria : CriteriaBase
+    using Fanex.NAP.FS.Library.Core.BaseClasses;
+
+    public class OfficeIPInternalAccountInsertCriteria : CommandBase
     {
         public int UserId { get; set; }
 

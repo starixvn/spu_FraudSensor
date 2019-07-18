@@ -1,8 +1,9 @@
 ﻿namespace Fanex.NAP.FS.Library.Criteria.SuspiciousCustomer
 {
     using Fanex.Data.Repository;
+    using Fanex.NAP.FS.Library.Core.BaseClasses;
 
-    public class SuspiciousCustomerNoteDeleteCriteria : CriteriaBase
+    public class SuspiciousCustomerNoteDeleteCriteria : CommandBase
     {
         public int CustomerLogId { get; set; }
 

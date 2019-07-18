@@ -99,8 +99,11 @@
         {
             criteria.UserId = CurrentSession.UserId;
             criteria.Notes = criteria.Notes ?? string.Empty;
+            criteria.ErrCode = 0;
 
-            return Json(_matchMonitorService.UpdateMatchNote(criteria));
+            var result = _matchMonitorService.UpdateMatchNote(criteria);
+
+            return Json(result);
         }
 
         public ActionResult GetLast7DaysTicket(int custId)

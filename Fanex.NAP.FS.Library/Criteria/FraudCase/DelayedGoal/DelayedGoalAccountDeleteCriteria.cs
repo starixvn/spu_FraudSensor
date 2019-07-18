@@ -1,8 +1,9 @@
 ﻿namespace Fanex.NAP.FS.Library.Criteria.FraudCase.DelayedGoal
 {
     using Fanex.Data.Repository;
+    using Fanex.NAP.FS.Library.Core.BaseClasses;
 
-    public class DelayedGoalAccountDeleteCriteria : CriteriaBase
+    public class DelayedGoalAccountDeleteCriteria : CommandBase
     {
         public int CustId { get; set; }
 

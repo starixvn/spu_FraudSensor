@@ -1,6 +1,7 @@
 ﻿namespace Fanex.NAP.FS.Websites.Service.MatchMonitor
 {
     using Fanex.Data;
+    using Fanex.NAP.FS.Library;
     using Fanex.NAP.FS.Library.Core.ExportExcel;
     using Fanex.NAP.FS.Library.Criteria.MatchMonitor;
     using Fanex.NAP.FS.Library.ExcelConfig.MatchMonitor;
@@ -17,7 +18,7 @@
     {
         public MatchList GetMatches(MatchGetAllCriteria criteria)
         {
-            using (var db = new ObjectDb(criteria.GetSettingKey()))
+            using (var db = ObjectDbFactory.CreateInstance(criteria.GetSettingKey()))
             {
                 using (var query = db.QueryMultiple(criteria))
                 {
@@ -70,7 +71,7 @@
         }
 
         public DBResult UpdateMatchNote(MatchNoteUpdateCriteria criteria)
-        {
+        {           
             return DataService.UpdateData(criteria, "MatchMonitor");
         }
 

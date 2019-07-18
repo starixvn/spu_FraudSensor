@@ -1,8 +1,9 @@
 ﻿namespace Fanex.NAP.FS.Library.Criteria.FraudCase
 {
     using Fanex.Data.Repository;
+    using Fanex.NAP.FS.Library.Core.BaseClasses;
 
-    public class UpdateFraudCaseStatusCriteria : CriteriaBase
+    public class UpdateFraudCaseStatusCriteria : CommandBase
     {
         public int FraudCaseId { get; set; }
 

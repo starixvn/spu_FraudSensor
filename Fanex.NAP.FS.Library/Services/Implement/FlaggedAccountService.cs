@@ -6,12 +6,12 @@
 
     public class FlaggedAccountService : IFlaggedAccountService
     {
-        public DBResult InsertAccounts(CriteriaBase criteria)
+        public DBResult InsertAccounts(CommandBase criteria)
         {
             return DataService.UpdateData(criteria, "Insert Flagged Account");
         }
 
-        public DBResult DeleteAccounts(CriteriaBase criteria)
+        public DBResult DeleteAccounts(CommandBase criteria)
         {
             return DataService.UpdateData(criteria, "Delete Flagged Account");
         }

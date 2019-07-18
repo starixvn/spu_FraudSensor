@@ -1,8 +1,9 @@
 ﻿namespace Fanex.NAP.FS.Library.Criteria.CheckBetReport
 {
-    using Fanex.Data.Repository;    
+    using Fanex.Data.Repository;
+    using Fanex.NAP.FS.Library.Core.BaseClasses;
 
-    public class CheckBetReportUpdateNoteCriteria : CriteriaBase
+    public class CheckBetReportUpdateNoteCriteria : CommandBase
     {
         public long TransId { get; set; }
 

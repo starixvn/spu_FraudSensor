@@ -1,12 +1,13 @@
 ﻿namespace Fanex.NAP.FS.Library.Services
 {
     using Data.Repository;
+    using Fanex.NAP.FS.Library.Core.BaseClasses;
     using Models;
 
     public interface IFlaggedAccountService
     {
-        DBResult InsertAccounts(CriteriaBase criteria);
+        DBResult InsertAccounts(CommandBase criteria);
 
-        DBResult DeleteAccounts(CriteriaBase criteria);
+        DBResult DeleteAccounts(CommandBase criteria);
     }
 }

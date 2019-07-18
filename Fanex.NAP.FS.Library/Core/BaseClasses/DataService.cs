@@ -11,7 +11,12 @@
     {
         public static IEnumerable<T> GetData<T>(CriteriaBase criteria)
         {
-            using (var db = new ObjectDb(criteria.GetSettingKey()))
+            //using (var db = new ObjectDb(criteria.GetSettingKey()))
+            //{
+            //    return db.Query<T>(criteria);
+            //}
+
+            using (var db = ObjectDbFactory.CreateInstance(criteria.GetSettingKey()))
             {
                 return db.Query<T>(criteria);
             }
@@ -19,69 +24,39 @@
 
         public static void Execute(CriteriaBase criteria)
         {
-            using (var db = new ObjectDb(criteria.GetSettingKey()))
+            //using (var db = new ObjectDb(criteria.GetSettingKey()))
+            //{
+            //    var param = criteria.GetSpParams();
+            //    db.ExecuteNonQuery(param);
+            //}
+
+            using (var db = ObjectDbFactory.CreateInstance(criteria.GetSettingKey()))
             {
-                var param = criteria.GetSpParams();
-                db.ExecuteNonQuery(param);
+                db.ExecuteNonQuery(criteria);
             }
         }
 
-        public static DBResult UpdateData(CriteriaBase criteria, string prefix)
+        public static DBResult UpdateData(CommandBase criteria, string prefix)
         {
-            using (var db = new ObjectDb(criteria.GetSettingKey()))
+            var repository = new DynamicRepository();
+
+            repository.Execute(criteria);
+
+            var intCode = (criteria.ErrCode is DBNull) ? 0 : Convert.ToInt32(criteria.ErrCode);
+
+            return new DBResult
             {
-                var param = criteria.GetSpParams();
-
-                db.ExecuteNonQuery(param);
-
-                var code = param["ErrCode"];
-                var intCode = (code is DBNull) ? 0 : Convert.ToInt32(code);
-
-                return new DBResult
-                {
-                    ErrorCode = intCode,
-                    ErrorMsg = ErrorLookup.GetValue(prefix + "_" + intCode),
-                    OutParam = param
-                };
-            }
+                ErrorCode = intCode,
+                ErrorMsg = ErrorLookup.GetValue(prefix + "_" + intCode)
+            };           
         }
 
         public static T GetSingle<T>(CriteriaBase criteria)
         {
-            using (var db = new ObjectDb(criteria.GetSettingKey()))
+            using (var db = ObjectDbFactory.CreateInstance(criteria.GetSettingKey()))
             {
                 return db.QueryEntity<T>(criteria);
             }
-        }
-
-        public static void QueryMultiple(CriteriaBase criteria, params Action<IMultiResultReader>[] extractors)
-        {
-            using (var db = new ObjectDb(criteria.GetSettingKey()))
-            using (var query = db.QueryMultiple(criteria))
-            {
-                for (int i = 0; i < extractors.Length; i++)
-                {
-                    extractors[i](query);
-                }
-            }
-        }
-
-        public static Tuple<IEnumerable<T>, IEnumerable<R>> QueryMultiple<T, R>(CriteriaBase criteria)
-        {
-            using (var db = new ObjectDb(criteria.GetSettingKey()))
-            using (var query = db.QueryMultiple(criteria))
-            {
-                return Tuple.Create(query.Read<T>(), query.Read<R>());
-            }
-        }
-
-        public static Tuple<IEnumerable<T>, IEnumerable<R>, IEnumerable<U>> QueryMultiple<T, R, U>(CriteriaBase criteria)
-        {
-            using (var db = new ObjectDb(criteria.GetSettingKey()))
-            using (var query = db.QueryMultiple(criteria))
-            {
-                return Tuple.Create(query.Read<T>(), query.Read<R>(), query.Read<U>());
-            }
-        }
+        }       
     }
 }

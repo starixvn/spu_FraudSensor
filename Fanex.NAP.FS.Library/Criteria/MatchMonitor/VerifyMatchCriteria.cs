@@ -1,8 +1,9 @@
 ﻿namespace Fanex.NAP.FS.Library.Criteria.MatchMonitor
 {
     using Fanex.Data.Repository;
+    using Fanex.NAP.FS.Library.Core.BaseClasses;
 
-    public class VerifyMatchCriteria : CriteriaBase
+    public class VerifyMatchCriteria : CommandBase
     {
         public bool IsVerified { get; set; }
 

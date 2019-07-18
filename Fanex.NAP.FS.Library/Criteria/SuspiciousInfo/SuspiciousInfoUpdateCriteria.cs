@@ -1,9 +1,10 @@
 ﻿namespace Fanex.NAP.FS.Library.Criteria.SuspiciousInfo
 {
     using Fanex.Data.Repository;
+    using Fanex.NAP.FS.Library.Core.BaseClasses;
     using System;
 
-    public class SuspiciousInfoUpdateCriteria : CriteriaBase
+    public class SuspiciousInfoUpdateCriteria : CommandBase
     {
         public int UserId { get; set; }
 

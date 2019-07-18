@@ -1,8 +1,9 @@
 ﻿namespace Fanex.NAP.FS.Library.Criteria.SuspiciousCustomer
 {
     using Fanex.Data.Repository;
+    using Fanex.NAP.FS.Library.Core.BaseClasses;
 
-    public class SuspiciousCustomerAssigneeUpdateCriteria : CriteriaBase
+    public class SuspiciousCustomerAssigneeUpdateCriteria : CommandBase
     {
         public int CustId { get; set; }
 

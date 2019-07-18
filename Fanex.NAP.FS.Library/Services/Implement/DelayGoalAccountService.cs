@@ -8,7 +8,7 @@
 
     public class DelayGoalAccountService : IDelayGoalAccountService
     {
-        public DBResult InsertAccounts(CriteriaBase criteria)
+        public DBResult InsertAccounts(CommandBase criteria)
         {
             return DataService.UpdateData(criteria, "Insert Delay Goal Account");
         }

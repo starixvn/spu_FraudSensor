@@ -1,8 +1,9 @@
 ﻿namespace Fanex.NAP.FS.Library.Criteria.FraudCase.DelayedGoal
 {
     using Data.Repository;
+    using Fanex.NAP.FS.Library.Core.BaseClasses;
 
-    public class DelayGoalAssociationAccountInsertCriteria : CriteriaBase
+    public class DelayGoalAssociationAccountInsertCriteria : CommandBase
     {
         public string CustomerAssociationXML { get; set; }
 

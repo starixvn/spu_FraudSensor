@@ -1,8 +1,9 @@
 ﻿namespace Fanex.NAP.FS.Library.Criteria.FraudCase.DelayedGoal
 {
     using Fanex.Data.Repository;
+    using Fanex.NAP.FS.Library.Core.BaseClasses;
 
-    public class DelayedGoalAccountInsertCriteria : CriteriaBase
+    public class DelayedGoalAccountInsertCriteria : CommandBase
     {
         public string Username { get; set; }
 

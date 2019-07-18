@@ -1,8 +1,9 @@
 ﻿namespace Fanex.NAP.FS.Library.Criteria.CustomerMonitor
 {
     using Fanex.Data.Repository;
+    using Fanex.NAP.FS.Library.Core.BaseClasses;
 
-    public class UpdateNoteCriteria : CriteriaBase
+    public class UpdateNoteCriteria : CommandBase
     {
         public int UserId { get; set; }
 

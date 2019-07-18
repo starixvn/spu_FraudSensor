@@ -1,8 +1,9 @@
 ﻿namespace Fanex.NAP.FS.Library.Criteria.Notification
 {
     using Fanex.Data.Repository;
+    using Fanex.NAP.FS.Library.Core.BaseClasses;
 
-    public class RecipientRemoveCriteria : CriteriaBase
+    public class RecipientRemoveCriteria : CommandBase
     {
         public int RecipientId { get; set; }
 

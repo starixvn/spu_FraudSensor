@@ -1,8 +1,9 @@
 ﻿namespace Fanex.NAP.FS.Library.Criteria.Api
 {
     using Fanex.Data.Repository;
+    using Fanex.NAP.FS.Library.Core.BaseClasses;
 
-    public class FlaggedAccountInsertCriteria : CriteriaBase
+    public class FlaggedAccountInsertCriteria : CommandBase
     {
         public string EviCode { get; set; }
 

@@ -1,7 +1,9 @@
 ﻿namespace Fanex.NAP.FS.Library.Criteria.FraudCase.ScannedOfficeIP
 {    
     using Fanex.Data.Repository;
-    public class OfficeIPInternalAccountDeleteCriteria : CriteriaBase
+    using Fanex.NAP.FS.Library.Core.BaseClasses;
+
+    public class OfficeIPInternalAccountDeleteCriteria : CommandBase
     {
         public int CustId { get; set; }
 
