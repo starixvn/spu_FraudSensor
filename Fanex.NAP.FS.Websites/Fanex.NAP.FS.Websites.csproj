@@ -445,6 +445,7 @@
     <Content Include="Content\scss\pages\login\login.min.css">
       <DependentUpon>login.css</DependentUpon>
     </Content>
+    <Content Include="Content\scss\pages\subscriber-assignment\subscriber-assignment.css" />
     <Content Include="Content\scss\pages\suspicious-customer\suspicious-customer.css" />
     <Content Include="Content\scss\pages\suspicious-customer\suspicious-customer.min.css">
       <DependentUpon>suspicious-customer.css</DependentUpon>

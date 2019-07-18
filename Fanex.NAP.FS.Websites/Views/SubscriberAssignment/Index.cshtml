@@ -9,10 +9,11 @@
 @section styles{
     <link href="~/Content/scss/MultipleSelect/jquery.multiselect.filter.css" rel="stylesheet" />
     <link href="~/Content/scss/MultipleSelect/jquery.multiselect.css" rel="stylesheet" />
+    <link href="~/Content/scss/pages/subscriber-assignment/subscriber-assignment.css" rel="stylesheet" />
 }
 
 <div class="form-filter">
-    <div class="group width-100">
+    <div class="group" width="100px;" style="padding-right: 32px;">
         <label class="text">Username</label>
     </div>
     <div class="group width-220">
@@ -23,26 +24,23 @@
 </div>
 
 <div class="form-filter">
+    <div class="group" style="margin-right: 70px;">
+    </div>
     <div class="group width-220">
-        <div class="group width-100">
-        </div>
-        <div class="group width-220">
-            <label class="checkbox">
-                <input type="checkbox" id="chkMasterSubcriber" />
-                <span>Set as Master Subscriber</span>
-            </label>
-        </div>
+        <label class="checkbox">
+            <input type="checkbox" id="chkMasterSubcriber" />
+            <span>Set as Master Subscriber</span>
+        </label>
     </div>
 </div>
 
 <div class="form-filter">
-    <div class="group width-100">
+    <div class="group" width="100px;">
         <label class="text">Subscribers</label>
     </div>
     <div class="group width-220">
         <div class="edit-field col_9">
-            <select id="ddlSubscriber" multiple="multiple">
-            </select>
+            <select id="ddlSubscriber" multiple="multiple"></select>
         </div>
     </div>
 
@@ -51,18 +49,16 @@
     </div>
     <div class="group width-220">
         <select class="control" id="cbbStatus">
-            <option>All</option>
-            <option value="assigned" selected>Assigned</option>
+            <option value="all" selected>All</option>
+            <option value="assigned">Assigned</option>
             <option value="unassigned">Unassigned</option>
         </select>
     </div>
 
-    <button class="button -primary" id="btnSubmit">Submit</button>
+    <button class="button btn-submit" id="btnSubmit">Submit</button>
 </div>
 
-<div id="content-subscribers">
-
-</div>
+<div id="content-subscribers" style="padding-left:90px;"></div>
 
 @section scripts{
     <script src="~/Scripts/MultipleSelect/jquery.multiselect.filter.js"></script>

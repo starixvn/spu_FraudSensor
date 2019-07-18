@@ -1,0 +1,29 @@
+﻿.btn-submit {
+    background-color: #4682B4;
+    color: white;
+}
+
+    .btn-submit:hover {
+        background-color: #5CB3FF;
+        color: white;
+    }
+
+.btn-default {
+    background-color: #DCDCDC;
+    color: black;
+}
+
+    .btn-default:hover {
+        background-color: #E8A317;
+        color: white;
+    }
+
+.btn-assign {
+    background-color: #E8A317;
+    color: white;
+}
+
+    .btn-assign:hover {
+        background-color: #DCDCDC;
+        color: black;
+    }

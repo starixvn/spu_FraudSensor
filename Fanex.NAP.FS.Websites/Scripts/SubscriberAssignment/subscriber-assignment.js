@@ -10,7 +10,7 @@
         $("#ddlSubscriber").multiselect({
             menuWidth: 225,
             menuHeight: 350,            
-            click: ClickItemSubscriber,
+            click: CheckSubscriberItem,
             checkAll: CheckAllSubscribers,
             uncheckAll: UnCheckAllSubscribers
         }).multiselectfilter({
@@ -30,8 +30,9 @@
 
         $.get(url, { userName: userName }, function (data) {
             if (data == '') {
-                var span = inputUserName.next('span');
-                span.text('The username is not valid').show();
+                inputUserName.next('span').text('The username is not valid').show();
+
+                ClearResult();
             }
             else {
                 GetSubscribers(data);
@@ -63,17 +64,17 @@
         var html = '';
 
         for (var i = 0; i < data.length; i++) {
-            html += SubscriberToHtml(data[i].Name);
+            html += ToHtmlSubscriberItem(data[i].Name);
         }
 
         contentSubscribers.html(html);
 
-        $(".group", contentSubscribers).each(GroupItemSubscribers);
+        $(".group", contentSubscribers).each(GroupSubscribersItem);
     }
 
-    function GroupItemSubscribers() {        
-
-        var letter = $('#item-subscriber-btn', this).text().charAt(0); 
+    function GroupSubscribersItem() {
+        var item = $('#item-subscriber-btn', this);
+        var letter = $(item).text().charAt(0);
 
         if (regex.test(letter)) {
             GroupWithNumber(this, letter);
@@ -81,6 +82,8 @@
         else {
             GroupWithCharacter(this, letter);
         }
+
+        $('#item-subscriber-btn', this).click(ClickHandleSubscriberItem);
     }
 
     function GroupWithNumber(group, letter) {
@@ -115,7 +118,7 @@
         $(parent).find('[data-letter="' + letter + '"]').find('.form-filter').append(group);
     }
 
-    function ClickItemSubscriber(event, ui) {
+    function CheckSubscriberItem(event, ui) {
         if (ui.checked) {
             AddItemToGroup(ui.text);
         }
@@ -125,7 +128,7 @@
     }
 
     function AddItemToGroup(name) {        
-        contentSubscribers.after(SubscriberToHtml(name));
+        contentSubscribers.after(ToHtmlSubscriberItem(name));
 
         $(".group", contentSubscribers).each((index, group) => {
             var letter = $('#item-subscriber-btn', group).text().charAt(0); 
@@ -150,18 +153,33 @@
     }
 
     function CheckAllSubscribers() {
-          
-    }
-
-    function UnCheckAllSubscribers() {
         
     }
 
-    function SubscriberToHtml(name) {
-        var htmlString = "<div class='group width-80' id='" + name + "'>";
-        htmlString += "<button class='button - primary' id='item-subscriber-btn' name='" + name + "'>" + name + "</button>";
-        htmlString += "</div>";
+    function UnCheckAllSubscribers() {
+        ClearResult();
+    }
 
+    function ClickHandleSubscriberItem(event) {
+        var item = $(event.target);
+
+        var name = $(item).text();
+
+        if ($(item).hasClass('btn-assign')) {
+            $(item).removeClass('btn-assign').addClass('.btn-default');
+            console.log(name + ' is unassigned');
+        }
+        else {
+            $(item).removeClass('.btn-default').addClass('btn-assign');
+            console.log(name + ' is assigned');
+        }
+    }
+
+    function ToHtmlSubscriberItem(name) {
+        var htmlString = "<div class='group width-50' id='" + name + "'>";
+        htmlString += "<button class='button btn-default' id='item-subscriber-btn' name='" + name + "'>" + name + "</button>";        
+        htmlString += "</div>";
+      
         return htmlString;
     }
 
@@ -169,8 +187,12 @@
 
     }
 
+    function ClearResult() {
+        contentSubscribers.html('');
+    }
+
     inputUserName.keyup(() => {
-        inputUserName.next('span').hide();        
+        inputUserName.next('span').hide();
     });
 
     btnSearch.click(GetUserId);
