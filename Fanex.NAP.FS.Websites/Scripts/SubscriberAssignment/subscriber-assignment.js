@@ -314,7 +314,11 @@
         return htmlString;
     }
 
-    function Save() {   
+    function Save() {  
+        if (currentUserId == '') {
+            return;
+        }
+
         var url = common.modifyRelativeUrl('/SubscriberAssignment/AssignSubscribers');
         var isMasterSub = $('#chkMasterSubcriber').is(':checked');
         var subscriberIds = isMasterSub ? '' : JoinIds(subscribersAssigned);        
