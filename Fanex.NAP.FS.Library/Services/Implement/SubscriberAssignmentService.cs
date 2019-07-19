@@ -17,7 +17,7 @@
                 ip_userId = userId
             };
 
-            return DataService.GetData<Subscriber>(criteria).OrderBy(c => c.SubscriberName);
+            return DataService.GetData<Subscriber>(criteria).OrderBy(c => c.SubscriberName).ThenBy(c=>c.SubscriberID);
         }
 
         public DBResult UpdateSubscribers(bool isMasterSub, int userId, string subscriberIds, int createdBy)

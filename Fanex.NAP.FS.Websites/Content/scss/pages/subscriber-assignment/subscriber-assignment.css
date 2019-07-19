@@ -1,4 +1,25 @@
-﻿.btn-submit {
+﻿.group-subscriber {
+    width: 180px;
+    padding-left: 0px;
+    padding-right: 0px !important;
+    padding-bottom: 5px !important;
+    margin: 0px !important;
+}
+
+.margin-top-10 {
+    margin-top: 10px;
+}
+
+.margin-top-20 {
+    margin-top: 20px;
+}
+
+.letter {   
+    font-weight: 400;
+    font-size: 25px;
+}
+
+.btn-submit {
     background-color: #4682B4;
     color: white;
 }
@@ -11,8 +32,9 @@
 .btn-default {
     background-color: #DCDCDC;
     color: black;
-    width: 120px;
+    width: 150px;
     display: inline-block;
+    text-transform: none !important;
 }
 
     .btn-default:hover {
@@ -23,8 +45,9 @@
 .btn-assigned {
     background-color: #E8A317;
     color: white;
-    width: 120px;
+    width: 150px;
     display: inline-block;
+    text-transform: none !important;
 }
 
     .btn-assigned:hover {

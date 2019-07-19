@@ -22,13 +22,10 @@
             width: 140,
             placeholder: 'Enter key words...'
         });
-    }
+    }    
 
     function Generate() {
-        currentUserId = '';
-        subscribersAssigned = [];
-        subscribersUnAssign = [];
-        subscriberHidden = [];
+        ClearResult();
 
         var userName = inputUserName.val().trim();
 
@@ -46,28 +43,35 @@
             }
             else {
                 GetSubscribers(data);
-            }            
+            }
         });
     }
 
     function GetSubscribers(id) {        
         var url = common.modifyRelativeUrl('/SubscriberAssignment/GetSubscribers');
 
-        $.get(url, { userId: id }, function (data) {            
+        $.get(url, { userId: id }, function (data) {
             BindSubscribersToControl(data);
 
             BindSubscribersToHtml(subscribersAssigned, subscribersUnAssign);
         });
-
+        
         currentUserId = id;
     }
 
     function BindSubscribersToControl(data) {
         ddlSubscriber.multiselect().empty();
+        var isMaster = false;
 
         for (var i = 0; i < data.length; i++) {
-            var subscriber = new Subscriber(data[i].SubscriberID, data[i].SubscriberName, data[i].isAssigned);
 
+            if (data[i].SubscriberID == 0 && data[i].isAssigned == 1) {
+                isMaster = true;
+                continue;
+            }
+
+            var subscriber = new Subscriber(data[i].SubscriberID, data[i].SubscriberName, data[i].isAssigned);
+            
             ddlSubscriber.append('<option value="' + subscriber.id + '">' + subscriber.name + '</option>');            
 
             if (subscriber.isAssigned) {
@@ -79,6 +83,11 @@
         }
         
         ddlSubscriber.multiselect('refresh').multiselect("checkAll");
+
+        if (isMaster) {
+            $('#chkMasterSubcriber').prop("checked", true);
+            HandleIsMaster(isMaster);
+        }
     }
 
     function BindSubscribersToHtml(dataAssigned, dataUnAssign) {
@@ -101,22 +110,22 @@
         var letter = $('#item-subscriber-btn', this).text().charAt(0);
 
         if (regex.test(letter)) {
-            GroupWithNumber(this, letter);
+            GroupWithNumber(this);
         }
         else {
-            GroupWithCharacter(this, letter);
+            GroupWithCharacter(this, letter.toUpperCase());
         }
 
         $('#item-subscriber-btn', this).click(ClickHandleSubscriberItem);
     }
 
-    function GroupWithNumber(group, letter) {
+    function GroupWithNumber(group) {
         var parent = $(group).parent();
 
         if (!$(parent).find('[data-letter="0-9"]').length) {
 
-            var html = '<div class="" data-letter="0-9">';
-            html += '<div><label class="text">0-9</label></div>';
+            var html = '<div class="margin-top-10" data-letter="0-9">';
+            html += '<div><label class="text letter">0-9</label></div>';
             html += '<div class="form-filter"></div>';
             html += '</div>';
 
@@ -131,8 +140,8 @@
 
         if (!$(parent).find('[data-letter="' + letter + '"]').length) {
 
-            var html = '<div class="" data-letter="' + letter + '">';
-            html += '<div><label class="text">' + letter + '</label></div>';
+            var html = '<div class="margin-top-10" data-letter="' + letter + '">';
+            html += '<div><label class="text letter">' + letter + '</label></div>';
             html += '<div class="form-filter"></div>';
             html += '</div>';
 
@@ -159,18 +168,16 @@
         if (subs != null) {
             subscriberHidden.splice(subscriberHidden.indexOf(subs), 1);
 
-            contentSubscribers.after(ToHtmlSubscriberItem(subs, "btn-default"));
+            var group = ToHtmlSubscriberItem(subs, "btn-default");          
 
-            $(".group", contentSubscribers).each((index, group) => {
-                var letter = $('#item-subscriber-btn', group).text().charAt(0);
+            var letter = $('#item-subscriber-btn', group).text().charAt(0);
 
-                if (regex.test(letter)) {
-                    GroupWithNumber($(group), letter);
-                }
-                else {
-                    GroupWithCharacter($(group), letter);
-                }
-            });
+            if (regex.test(letter)) {
+                $(contentSubscribers).find('[data-letter="0-9"]').find('.form-filter').append(group);
+            }
+            else {
+                $(contentSubscribers).find('[data-letter="' + letter.toUpperCase() + '"]').find('.form-filter').append(group);
+            }
         }
     }
 
@@ -184,7 +191,7 @@
                 var result = $(group).find('[value="' + subs.id + '"]');
 
                 if (result.length) {
-                    $(result).remove();
+                    $(result).parent().remove();
                 }
             });
         }
@@ -201,18 +208,21 @@
     }
 
     function ClickHandleSubscriberItem(event) {
+        if ($('#chkMasterSubcriber').is(':checked')) {
+            return;
+        }
+
         var item = $(event.target);
-        var value = $(item).val();
 
         if ($(item).hasClass('btn-assigned')) {
-            var subs = FindObjectByKey(subscribersAssigned, "id", value);
+            var subs = FindObjectByKey(subscribersAssigned, "id", $(item).val());
             subscribersAssigned.splice(subscribersAssigned.indexOf(subs), 1);
-            subscribersUnAssign.push(subs);         
+            subscribersUnAssign.push(subs);
 
-            $(item).removeClass('btn-assigned').addClass('.btn-default');
+            $(item).removeClass('btn-assigned').addClass('btn-default');
         }
-        else {          
-            var subs = FindObjectByKey(subscribersUnAssign, "id", value);
+        else {
+            var subs = FindObjectByKey(subscribersUnAssign, "id", $(item).val());
             subscribersUnAssign.splice(subscribersUnAssign.indexOf(subs), 1);
             subscribersAssigned.push(subs);
 
@@ -221,17 +231,27 @@
     }
 
     function CheckHandleIsMaster(event) {
-        var disabled = $(event.target).is(':checked');
+        var checked = $(event.target).is(':checked');
 
-        $(ddlSubscriber).attr("disabled", disabled);
-        $(cbbStatus).attr("disabled", disabled);
+        HandleIsMaster(checked);
+    }
 
-        $(".group", contentSubscribers).each((index, group) => {            
+    function HandleIsMaster(checked) {
+        $(ddlSubscriber).multiselect(checked ? 'disable' : 'enable');
+        $(cbbStatus).attr("disabled", checked);
+
+        $(".group", contentSubscribers).each((index, group) => {
             var items = $(group).find('#item-subscriber-btn');
 
             $(items).each((index, item) => {
-                if (disabled) {
-                    $(item).addClass('disabled');
+                if (checked) {
+                    $(item).addClass('disabled').addClass('btn-default').removeClass('btn-assigned');
+
+                    var subs = FindObjectByKey(subscribersAssigned, "id", $(item).val());
+                    if (subs != null) {
+                        subscribersAssigned.splice(subscribersAssigned.indexOf(subs), 1);
+                        subscribersUnAssign.push(subs);
+                    }
                 } else {
                     $(item).removeClass('disabled');
                 }
@@ -253,15 +273,7 @@
             BindSubscribersToHtml(subscribersAssigned, subscribersUnAssign);
         }
     }
-
-    function ToHtmlSubscriberItem(item, btnClassName) {
-        var htmlString = "<div class='group width-50' id='" + item.name + "'>";
-        htmlString += "<button class='button " + btnClassName + "' id='item-subscriber-btn' value='" + item.id + "'>" + item.name + "</button>";        
-        htmlString += "</div>";
-      
-        return htmlString;
-    }
-
+    
     function FindObject(array1, array2, key, value) {
         var object = FindObjectByKey(array1, key, value);
 
@@ -294,11 +306,18 @@
         return ids.join(',');
     }
 
-    function Save() {
-        var subscriberIds = JoinIds(subscribersAssigned);
-        var isMasterSub = $('#chkMasterSubcriber').is(':checked');
+    function ToHtmlSubscriberItem(item, btnClassName) {
+        var htmlString = "<div class='group group-subscriber' id='" + item.name + "'>";
+        htmlString += "<button class='button " + btnClassName + "' id='item-subscriber-btn' value='" + item.id + "'>" + item.name + "</button>";
+        htmlString += "</div>";
 
+        return htmlString;
+    }
+
+    function Save() {   
         var url = common.modifyRelativeUrl('/SubscriberAssignment/AssignSubscribers');
+        var isMasterSub = $('#chkMasterSubcriber').is(':checked');
+        var subscriberIds = isMasterSub ? '' : JoinIds(subscribersAssigned);        
 
         $.ajax(url, {
             type: 'POST',
@@ -308,7 +327,12 @@
                 isMasterSub: isMasterSub
             },
             success: function (response) {
-                common.showSuccess('Assigned subscribers!');
+                if (response.ErrorCode == 0) {  
+                    common.showSuccess('Assigned subscribers!');
+                }
+                else {
+                    common.showError(response.ErrorMsg);
+                }
             },
             error: function (errorMessage) {
                 console.log(errorMessage);
@@ -316,6 +340,15 @@
             }
         });
     }   
+
+    function ClearResult() {
+        $('#chkMasterSubcriber').prop("checked", false);
+        currentUserId = '';
+        contentSubscribers.html('');        
+        subscribersAssigned = [];
+        subscribersUnAssign = [];
+        subscriberHidden = [];
+    }
 
     inputUserName.keyup(function(e) {
         inputUserName.next('span').hide();
