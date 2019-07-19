@@ -11,6 +11,8 @@
 .btn-default {
     background-color: #DCDCDC;
     color: black;
+    width: 120px;
+    display: inline-block;
 }
 
     .btn-default:hover {
@@ -21,6 +23,8 @@
 .btn-assigned {
     background-color: #E8A317;
     color: white;
+    width: 120px;
+    display: inline-block;
 }
 
     .btn-assigned:hover {

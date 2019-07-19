@@ -17,7 +17,7 @@
                 ip_userId = userId
             };
 
-            return DataService.GetData<Subscriber>(criteria).OrderBy(c=>c.SubscriberName);
+            return DataService.GetData<Subscriber>(criteria).OrderBy(c => c.SubscriberName);
         }
 
         public DBResult UpdateSubscribers(bool isMasterSub, int userId, string subscriberIds, int createdBy)
@@ -39,7 +39,7 @@
                 return new DBResult
                 {
                     ErrorCode = 1,
-                    ErrorMsg = ex.ToString()
+                    ErrorMsg = ex.Message
                 };
             }
 

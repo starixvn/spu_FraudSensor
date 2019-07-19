@@ -1,29 +1,34 @@
 ﻿function subscriber_assignment() {
     var inputUserName = $('#username');
     var ddlSubscriber = $('#ddlSubscriber');
+    var cbbStatus = $('#cbbStatus');
     var contentSubscribers = $("#content-subscribers");
     var regex = new RegExp("[0-9]");
     var currentUserId = '';
     var subscribersAssigned = [];
     var subscribersUnAssign = [];
+    var subscriberHidden = [];
 
     function init() {
         ddlSubscriber.multiselect({
             menuWidth: 225,
-            menuHeight: 350,            
+            menuHeight: 350,         
+            selectedText: "# of # subscribers selected",
+            noneSelectedText: "Select subscribers",
             click: CheckSubscriberItem,
             checkAll: CheckAllSubscribers,
-            uncheckAll: UnCheckAllSubscribers
+            uncheckAll: UnCheckAllSubscribers,            
         }).multiselectfilter({
             width: 140,
             placeholder: 'Enter key words...'
         });
     }
 
-    function GetUserId() {
+    function Generate() {
         currentUserId = '';
         subscribersAssigned = [];
         subscribersUnAssign = [];
+        subscriberHidden = [];
 
         var userName = inputUserName.val().trim();
 
@@ -37,7 +42,7 @@
             if (data == '') {
                 inputUserName.next('span').text('The username is not valid').show();
 
-                ClearResult();
+                contentSubscribers.html('');
             }
             else {
                 GetSubscribers(data);
@@ -45,8 +50,7 @@
         });
     }
 
-    function GetSubscribers(id) {
-        
+    function GetSubscribers(id) {        
         var url = common.modifyRelativeUrl('/SubscriberAssignment/GetSubscribers');
 
         $.get(url, { userId: id }, function (data) {            
@@ -64,7 +68,7 @@
         for (var i = 0; i < data.length; i++) {
             var subscriber = new Subscriber(data[i].SubscriberID, data[i].SubscriberName, data[i].isAssigned);
 
-            ddlSubscriber.append('<option value="' + subscriber.id + '" selected>' + subscriber.name + '</option>');
+            ddlSubscriber.append('<option value="' + subscriber.id + '">' + subscriber.name + '</option>');            
 
             if (subscriber.isAssigned) {
                 subscribersAssigned.push(subscriber);
@@ -73,8 +77,8 @@
                 subscribersUnAssign.push(subscriber);
             }
         }
-
-        ddlSubscriber.multiselect('refresh');
+        
+        ddlSubscriber.multiselect('refresh').multiselect("checkAll");
     }
 
     function BindSubscribersToHtml(dataAssigned, dataUnAssign) {
@@ -139,45 +143,61 @@
     }
 
     function CheckSubscriberItem(event, ui) {
+        var value = ui.text.trim();
+
         if (ui.checked) {
-            AddItemToGroup(ui.text);
+            AddSubscriberToGroup("name", value);
         }
         else {
-            RemoveItemFromGroup(ui.text);
+            RemoveSubscriberFromGroup("name", value);
         }
     }
 
-    function AddItemToGroup(name) {        
-        contentSubscribers.after(ToHtmlSubscriberItem(name));
+    function AddSubscriberToGroup(key, value) {
+        var subs = FindObjectByKey(subscriberHidden, key, value);
 
-        $(".group", contentSubscribers).each((index, group) => {
-            var letter = $('#item-subscriber-btn', group).text().charAt(0); 
+        if (subs != null) {
+            subscriberHidden.splice(subscriberHidden.indexOf(subs), 1);
 
-            if (regex.test(letter)) {
-                GroupWithNumber($(group), letter);
-            }
-            else {
-                GroupWithCharacter($(group), letter);
-            }
-        });
+            contentSubscribers.after(ToHtmlSubscriberItem(subs, "btn-default"));
+
+            $(".group", contentSubscribers).each((index, group) => {
+                var letter = $('#item-subscriber-btn', group).text().charAt(0);
+
+                if (regex.test(letter)) {
+                    GroupWithNumber($(group), letter);
+                }
+                else {
+                    GroupWithCharacter($(group), letter);
+                }
+            });
+        }
     }
 
-    function RemoveItemFromGroup(name) {
-        $(".group", contentSubscribers).each((index, group) => {
-            var result = $(group).find('[name="' + name + '"]');
+    function RemoveSubscriberFromGroup(key, value) {
+        var subs = FindObject(subscribersAssigned, subscribersUnAssign, key, value);
 
-            if (result.length) {
-                $(result).remove();
-            }
-        });
+        if (subs != null) {
+            subscriberHidden.push(subs);
+
+            $(".group", contentSubscribers).each((index, group) => {
+                var result = $(group).find('[value="' + subs.id + '"]');
+
+                if (result.length) {
+                    $(result).remove();
+                }
+            });
+        }
     }
 
     function CheckAllSubscribers() {
-        
+        contentSubscribers.html('');
+
+        BindSubscribersToHtml(subscribersAssigned, subscribersUnAssign);
     }
 
     function UnCheckAllSubscribers() {
-        ClearResult();
+        contentSubscribers.html('');
     }
 
     function ClickHandleSubscriberItem(event) {
@@ -185,28 +205,32 @@
         var value = $(item).val();
 
         if ($(item).hasClass('btn-assigned')) {
-            var subscriber = FindObjectById(subscribersAssigned, "id", value);
-            subscribersAssigned.splice(subscribersAssigned.indexOf(subscriber), 1);
-            subscribersUnAssign.push(subscriber);         
+            var subs = FindObjectByKey(subscribersAssigned, "id", value);
+            subscribersAssigned.splice(subscribersAssigned.indexOf(subs), 1);
+            subscribersUnAssign.push(subs);         
 
             $(item).removeClass('btn-assigned').addClass('.btn-default');
         }
         else {          
-            var subscriber = FindObjectById(subscribersUnAssign, "id", value);
-            subscribersUnAssign.splice(subscribersUnAssign.indexOf(subscriber), 1);
-            subscribersAssigned.push(subscriber);
+            var subs = FindObjectByKey(subscribersUnAssign, "id", value);
+            subscribersUnAssign.splice(subscribersUnAssign.indexOf(subs), 1);
+            subscribersAssigned.push(subs);
 
             $(item).removeClass('.btn-default').addClass('btn-assigned');
         }
     }
 
     function CheckHandleIsMaster(event) {
+        var disabled = $(event.target).is(':checked');
+
+        $(ddlSubscriber).attr("disabled", disabled);
+        $(cbbStatus).attr("disabled", disabled);
+
         $(".group", contentSubscribers).each((index, group) => {            
             var items = $(group).find('#item-subscriber-btn');
 
-            $(items).each((index, item) => {         
-                
-                if ($(event.target).is(':checked')) {
+            $(items).each((index, item) => {
+                if (disabled) {
                     $(item).addClass('disabled');
                 } else {
                     $(item).removeClass('disabled');
@@ -214,16 +238,41 @@
             });
         });
     }
+   
+    function ChangeStatus(event) {
+        contentSubscribers.html('');
+        var value = $(event.target).val();
+       
+        if (value == 1) {            
+            BindSubscribersToHtml(subscribersAssigned, []);
+
+        } else if (value == 2) {            
+            BindSubscribersToHtml([], subscribersUnAssign);
+        }
+        else {
+            BindSubscribersToHtml(subscribersAssigned, subscribersUnAssign);
+        }
+    }
 
     function ToHtmlSubscriberItem(item, btnClassName) {
         var htmlString = "<div class='group width-50' id='" + item.name + "'>";
-        htmlString += "<button class='button " + btnClassName + "' id='item-subscriber-btn' value='" + item.id + "' name='" + item.name + "'>" + item.name + "</button>";        
+        htmlString += "<button class='button " + btnClassName + "' id='item-subscriber-btn' value='" + item.id + "'>" + item.name + "</button>";        
         htmlString += "</div>";
       
         return htmlString;
     }
 
-    function FindObjectById(array, key, value) {
+    function FindObject(array1, array2, key, value) {
+        var object = FindObjectByKey(array1, key, value);
+
+        if (object == null) {
+            object = FindObjectByKey(array2, key, value);
+        }
+
+        return object;
+    }
+
+    function FindObjectByKey(array, key, value) {
         for (var i = 0; i < array.length; i++) {
             var object = array[i];
 
@@ -266,21 +315,23 @@
                 common.showError('Assign subscribers fail!');
             }
         });
-    }
+    }   
 
-    function ClearResult() {
-        contentSubscribers.html('');
-    }
-
-    inputUserName.keyup(() => {
+    inputUserName.keyup(function(e) {
         inputUserName.next('span').hide();
+
+        if (e.which == 13) {
+            Generate();
+        }
     });
 
     $('#chkMasterSubcriber').change(CheckHandleIsMaster);
 
-    $('#btnSearch').click(GetUserId);
+    $('#btnSearch').click(Generate);
 
     $('#btnSubmit').click(Save);
+
+    $('#cbbStatus').change(ChangeStatus);
 
     init();
 }
