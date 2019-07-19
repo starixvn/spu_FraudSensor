@@ -32,7 +32,7 @@
 
             try
             {
-                DataService.Execute(criteria);
+                return DataService.UpdateData(criteria, "SubscriberAssignment");
             }
             catch (Exception ex)
             {
@@ -42,12 +42,6 @@
                     ErrorMsg = ex.Message
                 };
             }
-
-            return new DBResult
-            {
-                ErrorCode = 0,
-                ErrorMsg = string.Empty
-            };
         }
     }
 }
