@@ -1,13 +1,16 @@
 ﻿function subscriber_assignment() {
     var inputUserName = $('#username');
+    var captionError = $('#caption-error');
     var ddlSubscriber = $('#ddlSubscriber');
     var cbbStatus = $('#cbbStatus');
     var contentSubscribers = $("#content-subscribers");
     var regex = new RegExp("[0-9]");
     var currentUserId = '';
+    var isMaster = false;
     var subscribersAssigned = [];
     var subscribersUnAssign = [];
-    var subscriberHidden = [];
+    var subscribersAssignedHidden = [];
+    var subscribersUnAssignHidden = [];
 
     function Init() {
         ddlSubscriber.multiselect({
@@ -32,19 +35,26 @@
 
         if (userName.length == 0) {
             HiddenFilter();
-            alert("Please, input the Username!"); return;            
+            $('span', captionError).text('Please, input the Username!');
+            $(captionError).show();
+
+            return;
         }
 
         if (ContainSpecialCharacter(userName)) {
-            HiddenFilter();
-            alert("There is a special character in the Username input. Please correct!"); return;            
+            HiddenFilter();                        
+            $('span', captionError).text('There is a special character in the Username input. Please correct!');
+            $(captionError).show();
+            
+            return;            
         }
 
         var url = common.modifyRelativeUrl('/SubscriberAssignment/GetUserId');
 
         $.get(url, { userName: userName }, function (data) {
             if (data == '') {
-                inputUserName.next('span').text('The username is not valid').show();
+                $('span', captionError).text('The Username is not valid!');
+                $(captionError).show();
 
                 contentSubscribers.html('');
                 HiddenFilter();
@@ -64,6 +74,12 @@
             BindSubscribersToControl(data);
 
             BindSubscribersContentToHtml(subscribersAssigned, subscribersUnAssign);
+
+            if (isMaster) {
+                $('#chkMasterSubcriber').prop("checked", true);
+            }
+            
+            HandleIsMaster(isMaster);
         });
         
         currentUserId = id;
@@ -71,7 +87,7 @@
 
     function BindSubscribersToControl(data) {
         ddlSubscriber.multiselect().empty();
-        var isMaster = false;
+        isMaster = false;
 
         for (var i = 0; i < data.length; i++) {
 
@@ -92,25 +108,19 @@
             }
         }
         
-        ddlSubscriber.multiselect('refresh').multiselect("checkAll");
-
-        if (isMaster) {
-            $('#chkMasterSubcriber').prop("checked", true);
-            HandleIsMaster(isMaster);
-        }
+        ddlSubscriber.multiselect('refresh').multiselect("checkAll");        
     }
 
     function BindSubscribersContentToHtml(dataAssigned, dataUnAssign) {
-        var html = '';        
+        dataAssigned = dataAssigned.concat(dataUnAssign);
+        dataAssigned.sort(Compare);
+
+        var html = '';
 
         $(dataAssigned).each((index, item) => {
-            html += ToHtmlSubscriberItem(item, 'btn-assigned');
+            html += ToHtmlSubscriberItem(item);
         });
-
-        $(dataUnAssign).each((index, item) => {
-            html += ToHtmlSubscriberItem(item, 'btn-default');
-        });
-
+        
         contentSubscribers.html(html);
 
         $(".group", contentSubscribers).each(GroupSubscribersItem);
@@ -142,18 +152,25 @@
     }
 
     function AddSubscriberToGroup(key, value) {
-        var subs = FindObjectByKey(subscriberHidden, key, value);
+        var subs = FindObjectByKey(subscribersAssignedHidden, key, value);
+        
+        if (subs != null) {
+            subscribersAssignedHidden.splice(subscribersAssignedHidden.indexOf(subs), 1);
+            subscribersAssigned.push(subs);
+            subscribersAssigned.sort(Compare);
+        }
+
+        subs = FindObjectByKey(subscribersUnAssignHidden, key, value);
 
         if (subs != null) {
-            subscriberHidden.splice(subscriberHidden.indexOf(subs), 1);
-
+            subscribersUnAssignHidden.splice(subscribersUnAssignHidden.indexOf(subs), 1);
             subscribersUnAssign.push(subs);
             subscribersUnAssign.sort(Compare);
-
-            contentSubscribers.html('');
-
-            BindSubscribersContentToHtml(subscribersAssigned, subscribersUnAssign);
         }
+
+        contentSubscribers.html('');
+
+        BindSubscribersContentToHtml(subscribersAssigned, subscribersUnAssign);
     }
 
     function AppendSubscriberToHtml(letter, group, parent) {
@@ -175,11 +192,22 @@
     }
 
     function RemoveSubscriberFromGroup(key, value) {
-        var subs = FindObject(subscribersAssigned, subscribersUnAssign, key, value);
+        var subs = FindObjectByKey(subscribersAssigned, key, value);
 
         if (subs != null) {
-            subscriberHidden.push(subs);
+            subscribersAssignedHidden.push(subs);
+            subscribersAssigned.splice(subscribersAssigned.indexOf(subs), 1);
+        }
+        else {
+            subs = FindObjectByKey(subscribersUnAssign, key, value);
 
+            if (subs != null) {
+                subscribersUnAssignHidden.push(subs);
+                subscribersUnAssign.splice(subscribersUnAssign.indexOf(subs), 1);
+            }
+        }
+
+        if (subs != null) {
             $(".group", contentSubscribers).each((index, group) => {
                 var result = $(group).find('[value="' + subs.id + '"]');
 
@@ -192,16 +220,23 @@
 
     function CheckAllSubscribers() {
         contentSubscribers.html('');
-        subscribersUnAssign = subscribersUnAssign.concat(subscriberHidden);
-        subscriberHidden = [];
+
+        subscribersAssigned = subscribersAssigned.concat(subscribersAssignedHidden);
+        subscribersUnAssign = subscribersUnAssign.concat(subscribersUnAssignHidden);
+
+        subscribersAssignedHidden = [];
+        subscribersUnAssignHidden = [];
 
         BindSubscribersContentToHtml(subscribersAssigned, subscribersUnAssign);
     }
 
     function UnCheckAllSubscribers() {
-        subscriberHidden = subscriberHidden.concat(subscribersAssigned, subscribersUnAssign);
+        subscribersAssignedHidden = subscribersAssignedHidden.concat(subscribersAssigned);
+        subscribersUnAssignHidden = subscribersUnAssignHidden.concat(subscribersUnAssign);
+
         subscribersAssigned = [];
         subscribersUnAssign = [];
+
         contentSubscribers.html('');
     }
 
@@ -214,6 +249,8 @@
 
         if ($(item).hasClass('btn-assigned')) {
             var subs = FindObjectByKey(subscribersAssigned, "id", $(item).val());
+            subs.SetAssign(false);
+
             subscribersAssigned.splice(subscribersAssigned.indexOf(subs), 1);
             subscribersUnAssign.push(subs);
 
@@ -221,6 +258,8 @@
         }
         else {
             var subs = FindObjectByKey(subscribersUnAssign, "id", $(item).val());
+            subs.SetAssign(true);
+
             subscribersUnAssign.splice(subscribersUnAssign.indexOf(subs), 1);
             subscribersAssigned.push(subs);
 
@@ -243,13 +282,7 @@
 
             $(items).each((index, item) => {
                 if (checked) {
-                    $(item).addClass('disabled').addClass('btn-default').removeClass('btn-assigned');
-
-                    var subs = FindObjectByKey(subscribersAssigned, "id", $(item).val());
-                    if (subs != null) {
-                        subscribersAssigned.splice(subscribersAssigned.indexOf(subs), 1);
-                        subscribersUnAssign.push(subs);
-                    }
+                    $(item).addClass('disabled');
                 } else {
                     $(item).removeClass('disabled');
                 }
@@ -271,17 +304,7 @@
             BindSubscribersContentToHtml(subscribersAssigned, subscribersUnAssign);
         }
     }
-    
-    function FindObject(array1, array2, key, value) {
-        var object = FindObjectByKey(array1, key, value);
-
-        if (object == null) {
-            object = FindObjectByKey(array2, key, value);
-        }
-
-        return object;
-    }
-
+        
     function FindObjectByKey(array, key, value) {
         for (var i = 0; i < array.length; i++) {
             var object = array[i];
@@ -326,9 +349,11 @@
         return false;
     }
 
-    function ToHtmlSubscriberItem(item, btnClassName) {
+    function ToHtmlSubscriberItem(item) {
+        var className = item.isAssigned ? 'btn-assigned' : 'btn-default';
+
         var htmlString = "<div class='group group-subscriber' id='" + item.name + "'>";
-        htmlString += "<button class='button " + btnClassName + "' id='item-subscriber-btn' value='" + item.id + "'>" + item.name + "</button>";
+        htmlString += "<button class='button " + className + "' id='item-subscriber-btn' value='" + item.id + "'>" + item.name + "</button>";
         htmlString += "</div>";
 
         return htmlString;
@@ -372,7 +397,7 @@
         contentSubscribers.html('');
         subscribersAssigned = [];
         subscribersUnAssign = [];
-        subscriberHidden = [];
+        subscribersUnAssignHidden = [];
     }
 
     function DisplayFilter() {
@@ -386,12 +411,15 @@
     }
 
     inputUserName.keyup(function(e) {
-        inputUserName.next('span').hide();
+        $('span', captionError).text('Please, input the Username!');
+        $(captionError).hide();
 
         if (e.which == 13) {
             GenerateContent();
         }
     });
+
+    $(captionError).hide();
 
     $('#chkMasterSubcriber').change(CheckHandleIsMaster);
 
