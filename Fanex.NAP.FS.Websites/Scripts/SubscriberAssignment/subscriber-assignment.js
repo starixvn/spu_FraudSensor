@@ -346,9 +346,10 @@
     }   
 
     function ClearResult() {
-        $('#chkMasterSubcriber').prop("checked", false);
+        $('#chkMasterSubcriber').prop('checked', false);
+        $('#cbbStatus').val('0');
         currentUserId = '';
-        contentSubscribers.html('');        
+        contentSubscribers.html('');
         subscribersAssigned = [];
         subscribersUnAssign = [];
         subscriberHidden = [];
