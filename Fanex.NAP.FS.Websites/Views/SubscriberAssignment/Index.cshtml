@@ -13,7 +13,7 @@
 }
 
 <div class="form-filter">
-    <div class="group" width="100px;" style="padding-right: 32px;">
+    <div class="group" width="100px;" style="padding-right: 33px;">
         <label class="text">Username</label>
     </div>
     <div class="group width-220">
@@ -23,8 +23,8 @@
     <button class="button -primary" id="btnSearch">Search</button>
 </div>
 
-<div class="form-filter">
-    <div class="group" style="margin-right: 70px;">
+<div class="form-filter" id="filter-ismaster">
+    <div class="group" style="margin-right: 72px;">
     </div>
     <div class="group width-220">
         <label class="checkbox">
@@ -34,7 +34,7 @@
     </div>
 </div>
 
-<div class="form-filter">
+<div class="form-filter" id="filter-subs">
     <div class="group" width="100px;">
         <label class="text">Subscribers</label>
     </div>
@@ -58,7 +58,7 @@
     <button class="button btn-submit" id="btnSubmit">Submit</button>
 </div>
 
-<div id="content-subscribers" style="padding-left:90px;"></div>
+<div id="content-subscribers"></div>
 
 @section scripts{
     <script src="~/Scripts/MultipleSelect/jquery.multiselect.filter.js"></script>

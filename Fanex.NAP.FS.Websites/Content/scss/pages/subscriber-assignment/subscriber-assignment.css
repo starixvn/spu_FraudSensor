@@ -1,4 +1,9 @@
-﻿.group-subscriber {
+﻿#content-subscribers {
+    padding-left: 96px;
+    padding-right: 20px;
+}
+
+.group-subscriber {
     width: 162px;
     padding-left: 0px;
     padding-right: 0px !important;
@@ -37,11 +42,6 @@
     text-transform: none !important;
 }
 
-    .btn-default:hover {
-        background-color: #E8A317;
-        color: white;
-    }
-
 .btn-assigned {
     background-color: #E8A317;
     color: white;
@@ -49,11 +49,6 @@
     display: inline-block;
     text-transform: none !important;
 }
-
-    .btn-assigned:hover {
-        background-color: #DCDCDC;
-        color: black;
-    }
 
 .disabled {
     opacity: 0.6;

@@ -9,7 +9,7 @@
     var subscribersUnAssign = [];
     var subscriberHidden = [];
 
-    function init() {
+    function Init() {
         ddlSubscriber.multiselect({
             menuWidth: 225,
             menuHeight: 350,         
@@ -24,13 +24,20 @@
         });
     }    
 
-    function Generate() {
+    function GenerateContent() {
         ClearResult();
 
         var userName = inputUserName.val().trim();
+        var specialCharacter = ContainSpecialCharacter(userName);
 
         if (userName.length == 0) {
-            return;
+            HiddenFilter();
+            alert("Please, input the Username!"); return;            
+        }
+
+        if (ContainSpecialCharacter(userName)) {
+            HiddenFilter();
+            alert("There is a special character in the Username input. Please correct!"); return;            
         }
 
         var url = common.modifyRelativeUrl('/SubscriberAssignment/GetUserId');
@@ -40,6 +47,7 @@
                 inputUserName.next('span').text('The username is not valid').show();
 
                 contentSubscribers.html('');
+                HiddenFilter();
             }
             else {
                 GetSubscribers(data);
@@ -51,13 +59,15 @@
         var url = common.modifyRelativeUrl('/SubscriberAssignment/GetSubscribers');
 
         $.get(url, { userId: id }, function (data) {
+            DisplayFilter();
+
             BindSubscribersToControl(data);
 
-            BindSubscribersToHtml(subscribersAssigned, subscribersUnAssign);
+            BindSubscribersContentToHtml(subscribersAssigned, subscribersUnAssign);
         });
         
         currentUserId = id;
-    }
+    }    
 
     function BindSubscribersToControl(data) {
         ddlSubscriber.multiselect().empty();
@@ -72,7 +82,7 @@
 
             var subscriber = new Subscriber(data[i].SubscriberID, data[i].SubscriberName, data[i].isAssigned);
             
-            ddlSubscriber.append('<option value="' + subscriber.id + '">' + subscriber.name + '</option>');            
+            ddlSubscriber.append('<option value="' + subscriber.id + '">' + subscriber.name + '</option>');
 
             if (subscriber.isAssigned) {
                 subscribersAssigned.push(subscriber);
@@ -90,8 +100,8 @@
         }
     }
 
-    function BindSubscribersToHtml(dataAssigned, dataUnAssign) {
-        var html = '';       
+    function BindSubscribersContentToHtml(dataAssigned, dataUnAssign) {
+        var html = '';        
 
         $(dataAssigned).each((index, item) => {
             html += ToHtmlSubscriberItem(item, 'btn-assigned');
@@ -108,47 +118,16 @@
 
     function GroupSubscribersItem() {
         var letter = $('#item-subscriber-btn', this).text().charAt(0);
+        var parent = $(this).parent();
 
-        if (regex.test(letter)) {
-            GroupWithNumber(this);
+        if (regex.test(letter)) {           
+            AppendSubscriberToHtml("0-9", this, parent);
         }
-        else {
-            GroupWithCharacter(this, letter.toUpperCase());
+        else {            
+            AppendSubscriberToHtml(letter.toUpperCase(), this, parent);
         }
 
         $('#item-subscriber-btn', this).click(ClickHandleSubscriberItem);
-    }
-
-    function GroupWithNumber(group) {
-        var parent = $(group).parent();
-
-        if (!$(parent).find('[data-letter="0-9"]').length) {
-
-            var html = '<div class="margin-top-10" data-letter="0-9">';
-            html += '<div><label class="text letter">0-9</label></div>';
-            html += '<div class="form-filter"></div>';
-            html += '</div>';
-
-            $(parent).append(html);
-        }
-
-        $(parent).find('[data-letter="0-9"]').find('.form-filter').append(group);
-    }
-
-    function GroupWithCharacter(group, letter) {
-        var parent = $(group).parent();
-
-        if (!$(parent).find('[data-letter="' + letter + '"]').length) {
-
-            var html = '<div class="margin-top-10" data-letter="' + letter + '">';
-            html += '<div><label class="text letter">' + letter + '</label></div>';
-            html += '<div class="form-filter"></div>';
-            html += '</div>';
-
-            $(parent).append(html);
-        }
-
-        $(parent).find('[data-letter="' + letter + '"]').find('.form-filter').append(group);
     }
 
     function CheckSubscriberItem(event, ui) {
@@ -168,17 +147,31 @@
         if (subs != null) {
             subscriberHidden.splice(subscriberHidden.indexOf(subs), 1);
 
-            var group = ToHtmlSubscriberItem(subs, "btn-default");          
+            subscribersUnAssign.push(subs);
+            subscribersUnAssign.sort(Compare);
 
-            var letter = $('#item-subscriber-btn', group).text().charAt(0);
+            contentSubscribers.html('');
 
-            if (regex.test(letter)) {
-                $(contentSubscribers).find('[data-letter="0-9"]').find('.form-filter').append(group);
-            }
-            else {
-                $(contentSubscribers).find('[data-letter="' + letter.toUpperCase() + '"]').find('.form-filter').append(group);
-            }
+            BindSubscribersContentToHtml(subscribersAssigned, subscribersUnAssign);
         }
+    }
+
+    function AppendSubscriberToHtml(letter, group, parent) {
+        if (!$(parent).length) {
+            parent = contentSubscribers;
+        }
+
+        if (!$(parent).find('[data-letter="' + letter + '"]').length) {
+
+            var html = '<div class="margin-top-10" data-letter="' + letter + '">';
+            html += '<div><label class="text letter">' + letter + '</label></div>';
+            html += '<div class="form-filter"></div>';
+            html += '</div>';
+
+            $(parent).append(html);
+        }
+
+        $(parent).find('[data-letter="' + letter + '"]').find('.form-filter').append(group);
     }
 
     function RemoveSubscriberFromGroup(key, value) {
@@ -199,11 +192,16 @@
 
     function CheckAllSubscribers() {
         contentSubscribers.html('');
+        subscribersUnAssign = subscribersUnAssign.concat(subscriberHidden);
+        subscriberHidden = [];
 
-        BindSubscribersToHtml(subscribersAssigned, subscribersUnAssign);
+        BindSubscribersContentToHtml(subscribersAssigned, subscribersUnAssign);
     }
 
     function UnCheckAllSubscribers() {
+        subscriberHidden = subscriberHidden.concat(subscribersAssigned, subscribersUnAssign);
+        subscribersAssigned = [];
+        subscribersUnAssign = [];
         contentSubscribers.html('');
     }
 
@@ -264,13 +262,13 @@
         var value = $(event.target).val();
        
         if (value == 1) {            
-            BindSubscribersToHtml(subscribersAssigned, []);
+            BindSubscribersContentToHtml(subscribersAssigned, []);
 
         } else if (value == 2) {            
-            BindSubscribersToHtml([], subscribersUnAssign);
+            BindSubscribersContentToHtml([], subscribersUnAssign);
         }
         else {
-            BindSubscribersToHtml(subscribersAssigned, subscribersUnAssign);
+            BindSubscribersContentToHtml(subscribersAssigned, subscribersUnAssign);
         }
     }
     
@@ -304,6 +302,28 @@
         }
 
         return ids.join(',');
+    }     
+
+    function Compare(subsA, subsB) {
+        if (subsA.name < subsB.name) {
+            return -1;
+        }
+        if (subsA.name > subsB.name) {
+            return 1;
+        }
+        return 0;
+    }
+
+    function ContainSpecialCharacter(obj) {
+        if (obj != null && obj.length > 0) {
+            var regex = new RegExp("^[a-zA-Z0-9$ ]*$");
+            if (!regex.test(obj)) {
+
+                return true;
+            }
+        }
+
+        return false;
     }
 
     function ToHtmlSubscriberItem(item, btnClassName) {
@@ -314,7 +334,7 @@
         return htmlString;
     }
 
-    function Save() {  
+    function SaveSubscribers() {  
         if (currentUserId == '') {
             return;
         }
@@ -355,23 +375,35 @@
         subscriberHidden = [];
     }
 
+    function DisplayFilter() {
+        $('#filter-ismaster').show();
+        $('#filter-subs').show();
+    }
+
+    function HiddenFilter() {
+        $('#filter-ismaster').hide();
+        $('#filter-subs').hide();
+    }
+
     inputUserName.keyup(function(e) {
         inputUserName.next('span').hide();
 
         if (e.which == 13) {
-            Generate();
+            GenerateContent();
         }
     });
 
     $('#chkMasterSubcriber').change(CheckHandleIsMaster);
 
-    $('#btnSearch').click(Generate);
+    $('#btnSearch').click(GenerateContent);
 
-    $('#btnSubmit').click(Save);
+    $('#btnSubmit').click(SaveSubscribers);
 
     $('#cbbStatus').change(ChangeStatus);
 
-    init();
+    HiddenFilter();
+
+    Init();
 }
 
 $(subscriber_assignment);
