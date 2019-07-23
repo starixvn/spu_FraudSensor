@@ -132,23 +132,6 @@
         $('#item-subscriber-btn', this).click(ClickHandleSubscriberItem);
     }
 
-    function CheckSubscriberItem(event, ui) {
-        var value = ui.text.trim();
-
-        if (ui.checked) {
-            AddSubscriberToGroup("name", value);
-        }
-        else {
-            RemoveSubscriberFromGroup("name", value);
-        }
-    }
-
-    function AddSubscriberToGroup(key, value) {
-        var subs = FindObjectByKey(subscribersOriginal, key, value);                
-
-        EffectAllSubscribers(subs);
-    }
-
     function AppendSubscriberToHtml(letter, group, parent) {
         if (!$(parent).length) {
             parent = contentSubscribers;
@@ -167,27 +150,21 @@
         $(parent).find('[data-letter="' + letter + '"]').find('.form-filter').append(group);
     }
 
-    function RemoveSubscriberFromGroup(key, value) {
-        var subs = FindObjectByKey(subscribersOriginal, key, value);
+    function CheckSubscriberItem(event, ui) {
+        var value = ui.text.trim();
+        var subs = FindObjectByKey(subscribersOriginal, "name", value);
 
-        if (subs != null) {
-            $(".group", contentSubscribers).each((index, group) => {
-                var result = $(group).find('[value="' + subs.id + '"]');
-
-                if (result.length) {
-                    $(result).parent().remove();
-                }
-            });
+        if (ui.checked) {
+            EffectAllSubscribers(subs, "add");
         }
-    }
+        else {
+            EffectAllSubscribers(subs);
+        }
+    } 
 
-    function EffectAllSubscribers(subsCurrent) {
+    function EffectAllSubscribers(subsCurrent, action) {
         $(contentSubscribers).empty();
-        var dataRefresh = [];
-
-        if (subsCurrent instanceof Subscriber) {
-            dataRefresh.push(subsCurrent);
-        }
+        var dataRefresh = [];        
         
         $('option:selected', ddlSubscriber).each(function (idx, ele) {
             var subs = FindObjectByKey(subscribersOriginal, "id", $(ele).val());
@@ -196,6 +173,15 @@
                 dataRefresh.push(subs);                
             }
         });
+
+        if (subsCurrent instanceof Subscriber) {
+            if (action == "add") {
+                dataRefresh.push(subsCurrent);
+            }
+            else {
+                dataRefresh.splice(dataRefresh.indexOf(subsCurrent), 1);
+            }
+        }
 
         BindSubscribersContentToHtml(dataRefresh);
     }
