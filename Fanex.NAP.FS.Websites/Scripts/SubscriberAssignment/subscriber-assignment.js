@@ -19,8 +19,8 @@
             selectedText: "# of # selected",
             noneSelectedText: "Select options",
             click: CheckSubscriberItem,
-            checkAll: CheckAllSubscribers,
-            uncheckAll: UnCheckAllSubscribers
+            checkAll: EffectAllSubscribers,
+            uncheckAll: EffectAllSubscribers
         }).multiselectfilter({
             width: 150,
             placeholder: ''
@@ -218,26 +218,28 @@
         }
     }
 
-    function CheckAllSubscribers() {
+    function EffectAllSubscribers() {
         $(contentSubscribers).empty();
+        var dataRefresh = [];
 
-        subscribersAssigned = subscribersAssigned.concat(subscribersAssignedHidden);
-        subscribersUnAssign = subscribersUnAssign.concat(subscribersUnAssignHidden);
+        var data = subscribersAssigned.concat(subscribersAssignedHidden, subscribersUnAssign, subscribersUnAssignHidden);
+              
+        $('option:selected', ddlSubscriber).each(function (idx, ele) {
+            var subs = FindObjectByKey(data, "id", $(ele).val());
 
-        subscribersAssignedHidden = [];
-        subscribersUnAssignHidden = [];
+            if (subs != null && CompareWithStatus(subs)) {
+                dataRefresh.push(subs);
 
-        BindSubscribersContentToHtml(subscribersAssigned, subscribersUnAssign);
-    }
+                if (subscribersAssignedHidden.includes(subs)) {
+                    subscribersAssignedHidden.splice(subscribersAssignedHidden.indexOf(subs), 1);
+                }
+                else if (subscribersUnAssignHidden.includes(subs)) {
+                    subscribersUnAssignHidden.splice(subscribersUnAssignHidden.indexOf(subs), 1);
+                }                
+            }
+        });
 
-    function UnCheckAllSubscribers() {
-        subscribersAssignedHidden = subscribersAssignedHidden.concat(subscribersAssigned);
-        subscribersUnAssignHidden = subscribersUnAssignHidden.concat(subscribersUnAssign);
-
-        subscribersAssigned = [];
-        subscribersUnAssign = [];
-
-        $(contentSubscribers).empty();
+        BindSubscribersContentToHtml(dataRefresh, []);
     }
 
     function ClickHandleSubscriberItem(event) {
@@ -289,22 +291,7 @@
             });
         });
     }
-   
-    function ChangeStatus(event) {
-        $(contentSubscribers).empty();
-        var value = $(event.target).val();
        
-        if (value == 1) {            
-            BindSubscribersContentToHtml(subscribersAssigned, []);
-
-        } else if (value == 2) {            
-            BindSubscribersContentToHtml([], subscribersUnAssign);
-        }
-        else {
-            BindSubscribersContentToHtml(subscribersAssigned, subscribersUnAssign);
-        }
-    }
-        
     function FindObjectByKey(array, key, value) {
         for (var i = 0; i < array.length; i++) {
             var object = array[i];
@@ -416,6 +403,20 @@
         $('#filter-subs').hide();
     }
 
+    function CompareWithStatus(subs) {
+        var status = $('#cbbStatus').val();
+ 
+        if (status == '0') {
+            return true;
+        }
+        else if ((status == '1' && subs.isAssigned)
+            || (status == '2' && !subs.isAssigned)) {
+            return true;
+        }
+
+        return false;
+    }
+
     inputUserName.keyup(function(e) {
         $('span', captionError).text('Please, input the Username!');
         $(captionError).hide();
@@ -433,7 +434,7 @@
 
     $('#btnSubmit').click(SaveSubscribers);
 
-    $('#cbbStatus').change(ChangeStatus);
+    $('#cbbStatus').change(EffectAllSubscribers);
 
     HiddenFilter();
 
