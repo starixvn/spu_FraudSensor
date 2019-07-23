@@ -16,16 +16,16 @@
         ddlSubscriber.multiselect({
             menuWidth: 225,
             menuHeight: 350,         
-            selectedText: "# of # subscribers selected",
-            noneSelectedText: "Select subscribers",
+            selectedText: "# of # selected",
+            noneSelectedText: "Select options",
             click: CheckSubscriberItem,
             checkAll: CheckAllSubscribers,
-            uncheckAll: UnCheckAllSubscribers,            
+            uncheckAll: UnCheckAllSubscribers
         }).multiselectfilter({
-            width: 140,
-            placeholder: 'Enter key words...'
+            width: 150,
+            placeholder: ''
         });
-    }    
+    }
 
     function GenerateContent() {
         ClearResult();
@@ -47,7 +47,7 @@
             $(captionError).show();
             
             return;            
-        }
+        }      
 
         var url = common.modifyRelativeUrl('/SubscriberAssignment/GetUserId');
 
@@ -55,8 +55,7 @@
             if (data == '') {
                 $('span', captionError).text('The Username is not valid!');
                 $(captionError).show();
-
-                contentSubscribers.html('');
+                
                 HiddenFilter();
             }
             else {
@@ -69,7 +68,7 @@
         var url = common.modifyRelativeUrl('/SubscriberAssignment/GetSubscribers');
 
         $.get(url, { userId: id }, function (data) {
-            DisplayFilter();
+            DisplayFilter();           
 
             BindSubscribersToControl(data);
 
@@ -88,6 +87,8 @@
     function BindSubscribersToControl(data) {
         ddlSubscriber.multiselect().empty();
         isMaster = false;
+        subscribersAssigned = [];
+        subscribersUnAssign = [];
 
         for (var i = 0; i < data.length; i++) {
 
@@ -112,16 +113,16 @@
     }
 
     function BindSubscribersContentToHtml(dataAssigned, dataUnAssign) {
-        dataAssigned = dataAssigned.concat(dataUnAssign);
-        dataAssigned.sort(Compare);
-
+        var data = dataAssigned.concat(dataUnAssign);
+        data.sort(Compare);
+     
         var html = '';
 
-        $(dataAssigned).each((index, item) => {
+        $(dataUnAssign).each((index, item) => {
             html += ToHtmlSubscriberItem(item);
         });
         
-        contentSubscribers.html(html);
+        $(contentSubscribers).html(html);
 
         $(".group", contentSubscribers).each(GroupSubscribersItem);
     }
@@ -168,7 +169,7 @@
             subscribersUnAssign.sort(Compare);
         }
 
-        contentSubscribers.html('');
+        $(contentSubscribers).empty();
 
         BindSubscribersContentToHtml(subscribersAssigned, subscribersUnAssign);
     }
@@ -219,7 +220,7 @@
     }
 
     function CheckAllSubscribers() {
-        contentSubscribers.html('');
+        $(contentSubscribers).empty();
 
         subscribersAssigned = subscribersAssigned.concat(subscribersAssignedHidden);
         subscribersUnAssign = subscribersUnAssign.concat(subscribersUnAssignHidden);
@@ -237,7 +238,7 @@
         subscribersAssigned = [];
         subscribersUnAssign = [];
 
-        contentSubscribers.html('');
+        $(contentSubscribers).empty();
     }
 
     function ClickHandleSubscriberItem(event) {
@@ -291,7 +292,7 @@
     }
    
     function ChangeStatus(event) {
-        contentSubscribers.html('');
+        $(contentSubscribers).empty();
         var value = $(event.target).val();
        
         if (value == 1) {            
@@ -378,6 +379,8 @@
             success: function (response) {
                 if (response.ErrorCode == 0) {  
                     common.showSuccess('Assigned subscribers!');
+
+                    GenerateContent();
                 }
                 else {
                     common.showError(response.ErrorMsg);
@@ -394,9 +397,10 @@
         $('#chkMasterSubcriber').prop('checked', false);
         $('#cbbStatus').val('0');
         currentUserId = '';
-        contentSubscribers.html('');
-        subscribersAssigned = [];
+        $(contentSubscribers).empty();
+        subscribersAssigned = [];        
         subscribersUnAssign = [];
+        subscribersUnAssignHidden = [];
         subscribersUnAssignHidden = [];
     }
 
