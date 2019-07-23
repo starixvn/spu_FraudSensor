@@ -144,15 +144,9 @@
     }
 
     function AddSubscriberToGroup(key, value) {
-        var subs = FindObjectByKey(subscribersOriginal, key, value);
-        
-        if (subs != null) {
-            subscribersOriginal.splice(subscribersOriginal.indexOf(subs), 1);
-            subscribersOriginal.push(subs);
-            subscribersOriginal.sort(Compare);
-        }       
+        var subs = FindObjectByKey(subscribersOriginal, key, value);                
 
-        EffectAllSubscribers();
+        EffectAllSubscribers(subs);
     }
 
     function AppendSubscriberToHtml(letter, group, parent) {
@@ -187,9 +181,13 @@
         }
     }
 
-    function EffectAllSubscribers() {
+    function EffectAllSubscribers(subsCurrent) {
         $(contentSubscribers).empty();
         var dataRefresh = [];
+
+        if (subsCurrent instanceof Subscriber) {
+            dataRefresh.push(subsCurrent);
+        }
         
         $('option:selected', ddlSubscriber).each(function (idx, ele) {
             var subs = FindObjectByKey(subscribersOriginal, "id", $(ele).val());
