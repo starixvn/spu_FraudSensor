@@ -109,7 +109,7 @@
             }
         }
         
-        ddlSubscriber.multiselect('refresh').multiselect("checkAll");        
+        ddlSubscriber.multiselect('refresh').multiselect("checkAll");
     }
 
     function BindSubscribersContentToHtml(dataAssigned, dataUnAssign) {
@@ -118,7 +118,7 @@
      
         var html = '';
 
-        $(dataUnAssign).each((index, item) => {
+        $(data).each((index, item) => {
             html += ToHtmlSubscriberItem(item);
         });
         
