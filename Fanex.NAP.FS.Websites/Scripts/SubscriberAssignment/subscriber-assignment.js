@@ -7,10 +7,7 @@
     var regex = new RegExp("[0-9]");
     var currentUserId = '';
     var isMaster = false;
-    var subscribersAssigned = [];
-    var subscribersUnAssign = [];
-    var subscribersAssignedHidden = [];
-    var subscribersUnAssignHidden = [];
+    var subscribersOriginal = [];   
 
     function Init() {
         ddlSubscriber.multiselect({
@@ -71,7 +68,7 @@
 
             BindSubscribersToControl(data);
 
-            BindSubscribersContentToHtml(subscribersAssigned, subscribersUnAssign);
+            BindSubscribersContentToHtml(subscribersOriginal);
 
             if (isMaster) {
                 $('#chkMasterSubcriber').prop("checked", true);
@@ -86,8 +83,7 @@
     function BindSubscribersToControl(data) {
         ddlSubscriber.multiselect().empty();
         isMaster = false;
-        subscribersAssigned = [];
-        subscribersUnAssign = [];
+        subscribersOriginal = [];
 
         for (var i = 0; i < data.length; i++) {
 
@@ -100,19 +96,13 @@
             
             ddlSubscriber.append('<option value="' + subscriber.id + '">' + subscriber.name + '</option>');
 
-            if (subscriber.isAssigned) {
-                subscribersAssigned.push(subscriber);
-            }
-            else {
-                subscribersUnAssign.push(subscriber);
-            }
+            subscribersOriginal.push(subscriber);
         }
         
         ddlSubscriber.multiselect('refresh').multiselect("checkAll");
     }
 
-    function BindSubscribersContentToHtml(dataAssigned, dataUnAssign) {
-        var data = dataAssigned.concat(dataUnAssign);
+    function BindSubscribersContentToHtml(data) {        
         data.sort(Compare);
      
         var html = '';
@@ -152,25 +142,15 @@
     }
 
     function AddSubscriberToGroup(key, value) {
-        var subs = FindObjectByKey(subscribersAssignedHidden, key, value);
+        var subs = FindObjectByKey(subscribersOriginal, key, value);
         
         if (subs != null) {
-            subscribersAssignedHidden.splice(subscribersAssignedHidden.indexOf(subs), 1);
-            subscribersAssigned.push(subs);
-            subscribersAssigned.sort(Compare);
-        }
+            subscribersOriginal.splice(subscribersOriginal.indexOf(subs), 1);
+            subscribersOriginal.push(subs);
+            subscribersOriginal.sort(Compare);
+        }       
 
-        subs = FindObjectByKey(subscribersUnAssignHidden, key, value);
-
-        if (subs != null) {
-            subscribersUnAssignHidden.splice(subscribersUnAssignHidden.indexOf(subs), 1);
-            subscribersUnAssign.push(subs);
-            subscribersUnAssign.sort(Compare);
-        }
-
-        $(contentSubscribers).empty();
-
-        BindSubscribersContentToHtml(subscribersAssigned, subscribersUnAssign);
+        EffectAllSubscribers();
     }
 
     function AppendSubscriberToHtml(letter, group, parent) {
@@ -192,20 +172,7 @@
     }
 
     function RemoveSubscriberFromGroup(key, value) {
-        var subs = FindObjectByKey(subscribersAssigned, key, value);
-
-        if (subs != null) {
-            subscribersAssignedHidden.push(subs);
-            subscribersAssigned.splice(subscribersAssigned.indexOf(subs), 1);
-        }
-        else {
-            subs = FindObjectByKey(subscribersUnAssign, key, value);
-
-            if (subs != null) {
-                subscribersUnAssignHidden.push(subs);
-                subscribersUnAssign.splice(subscribersUnAssign.indexOf(subs), 1);
-            }
-        }
+        var subs = FindObjectByKey(subscribersOriginal, key, value);
 
         if (subs != null) {
             $(".group", contentSubscribers).each((index, group) => {
@@ -221,25 +188,16 @@
     function EffectAllSubscribers() {
         $(contentSubscribers).empty();
         var dataRefresh = [];
-
-        var data = subscribersAssigned.concat(subscribersAssignedHidden, subscribersUnAssign, subscribersUnAssignHidden);
-              
+        
         $('option:selected', ddlSubscriber).each(function (idx, ele) {
-            var subs = FindObjectByKey(data, "id", $(ele).val());
+            var subs = FindObjectByKey(subscribersOriginal, "id", $(ele).val());
 
             if (subs != null && CompareWithStatus(subs)) {
-                dataRefresh.push(subs);
-
-                if (subscribersAssignedHidden.includes(subs)) {
-                    subscribersAssignedHidden.splice(subscribersAssignedHidden.indexOf(subs), 1);
-                }
-                else if (subscribersUnAssignHidden.includes(subs)) {
-                    subscribersUnAssignHidden.splice(subscribersUnAssignHidden.indexOf(subs), 1);
-                }                
+                dataRefresh.push(subs);                
             }
         });
 
-        BindSubscribersContentToHtml(dataRefresh, []);
+        BindSubscribersContentToHtml(dataRefresh);
     }
 
     function ClickHandleSubscriberItem(event) {
@@ -248,25 +206,19 @@
         }
 
         var item = $(event.target);
+        var subs = FindObjectByKey(subscribersOriginal, "id", $(item).val());
 
         if ($(item).hasClass('btn-assigned')) {
-            var subs = FindObjectByKey(subscribersAssigned, "id", $(item).val());
             subs.SetAssign(false);
-
-            subscribersAssigned.splice(subscribersAssigned.indexOf(subs), 1);
-            subscribersUnAssign.push(subs);
-
             $(item).removeClass('btn-assigned').addClass('btn-default');
         }
         else {
-            var subs = FindObjectByKey(subscribersUnAssign, "id", $(item).val());
             subs.SetAssign(true);
-
-            subscribersUnAssign.splice(subscribersUnAssign.indexOf(subs), 1);
-            subscribersAssigned.push(subs);
-
             $(item).removeClass('.btn-default').addClass('btn-assigned');
         }
+
+        subscribersOriginal.splice(subscribersOriginal.indexOf(subs), 1);
+        subscribersOriginal.push(subs);
     }
 
     function CheckHandleIsMaster(event) {
@@ -336,6 +288,20 @@
         return false;
     }
 
+    function GetAssgined(data) {
+        var dataResult = [];
+
+        for (var i = 0; i < data.length; i++) {
+            var subs = data[i];
+
+            if (subs.isAssigned) {
+                dataResult.push(subs);
+            }
+        }
+
+        return dataResult;
+    }
+
     function ToHtmlSubscriberItem(item) {
         var className = item.isAssigned ? 'btn-assigned' : 'btn-default';
 
@@ -353,7 +319,7 @@
 
         var url = common.modifyRelativeUrl('/SubscriberAssignment/AssignSubscribers');
         var isMasterSub = $('#chkMasterSubcriber').is(':checked');
-        var subscriberIds = isMasterSub ? '' : JoinIds(subscribersAssigned);        
+        var subscriberIds = isMasterSub ? '' : JoinIds(GetAssgined(subscribersOriginal));
 
         $.ajax(url, {
             type: 'POST',
@@ -383,11 +349,7 @@
         $('#chkMasterSubcriber').prop('checked', false);        
         $('#cbbStatus').val('0');
         currentUserId = '';
-        $(contentSubscribers).empty();
-        subscribersAssigned = [];        
-        subscribersUnAssign = [];
-        subscribersUnAssignHidden = [];
-        subscribersUnAssignHidden = [];
+        $(contentSubscribers).empty();        
 
         $('span', captionError).text('');
         $(captionError).hide();
