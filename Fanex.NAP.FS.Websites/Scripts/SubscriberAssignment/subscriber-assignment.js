@@ -28,14 +28,13 @@
     }
 
     function GenerateContent() {
-        ClearResult();
-
+        ClearResult();        
         var userName = inputUserName.val().trim();
         var specialCharacter = ContainSpecialCharacter(userName);
 
         if (userName.length == 0) {
             HiddenFilter();
-            $('span', captionError).text('Please, input the Username!');
+            $('span', captionError).text('The Username is not valid!');
             $(captionError).show();
 
             return;
@@ -43,7 +42,7 @@
 
         if (ContainSpecialCharacter(userName)) {
             HiddenFilter();                        
-            $('span', captionError).text('There is a special character in the Username input. Please correct!');
+            $('span', captionError).text('The Username is not valid!');
             $(captionError).show();
             
             return;            
@@ -58,7 +57,7 @@
                 
                 HiddenFilter();
             }
-            else {
+            else {                
                 GetSubscribers(data);
             }
         });
@@ -394,7 +393,7 @@
     }   
 
     function ClearResult() {
-        $('#chkMasterSubcriber').prop('checked', false);
+        $('#chkMasterSubcriber').prop('checked', false);        
         $('#cbbStatus').val('0');
         currentUserId = '';
         $(contentSubscribers).empty();
@@ -402,6 +401,9 @@
         subscribersUnAssign = [];
         subscribersUnAssignHidden = [];
         subscribersUnAssignHidden = [];
+
+        $('span', captionError).text('');
+        $(captionError).hide();
     }
 
     function DisplayFilter() {
