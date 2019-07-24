@@ -1,6 +1,8 @@
 ﻿#content-subscribers {
     padding-left: 96px;
     padding-right: 20px;
+    overflow-y: scroll;
+    height: 700px;
 }
 
 .group-subscriber {
