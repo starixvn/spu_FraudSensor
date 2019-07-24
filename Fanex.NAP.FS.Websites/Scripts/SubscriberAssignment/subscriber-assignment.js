@@ -86,19 +86,12 @@
         subscribersOriginal = [];
 
         for (var i = 0; i < data.length; i++) {
-
-            if (data[i].SubscriberID == 0) {
-                if (data[i].isAssigned == 1) {
-                    isMaster = true;
-                }
-                continue;
-            }
-            
-            var subscriber = new Subscriber(data[i].SubscriberID, data[i].SubscriberName, data[i].isAssigned);
-            
-            ddlSubscriber.append('<option value="' + subscriber.id + '">' + subscriber.name + '</option>');
-
+            var subscriber = new Subscriber(data[i].SubscriberID, data[i].SubscriberName, data[i].isAssigned, data[i].IsMaster);        
             subscribersOriginal.push(subscriber);
+
+            ddlSubscriber.append('<option value="' + subscriber.id + '">' + subscriber.name + '</option>');
+            
+            isMaster = subscriber.isMaster == 1;
         }
         
         ddlSubscriber.multiselect('refresh').multiselect("checkAll");

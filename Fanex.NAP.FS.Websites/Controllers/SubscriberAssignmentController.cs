@@ -2,9 +2,7 @@
 {
     using Fanex.NAP.Core.Service.Impl;
     using Fanex.NAP.Core.Web.Attribute;
-    using Fanex.NAP.Core.Web.Session;
     using Fanex.NAP.FS.Library.Services;
-    using System;
     using System.Configuration;
     using System.Web.Mvc;
 
