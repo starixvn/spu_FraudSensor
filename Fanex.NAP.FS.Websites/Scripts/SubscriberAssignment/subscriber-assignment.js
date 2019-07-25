@@ -12,7 +12,7 @@
     function Init() {
         ddlSubscriber.multiselect({
             menuWidth: 225,
-            menuHeight: 350,         
+            menuHeight: 350,
             selectedText: "# of # selected",
             noneSelectedText: "Select options",
             click: CheckSubscriberItem,
@@ -21,7 +21,7 @@
         }).multiselectfilter({
             width: 150,
             placeholder: ''
-        });
+            });        
     }
 
     function GenerateContent() {
@@ -56,6 +56,8 @@
             }
             else {                
                 GetSubscribers(data);
+
+                ResizePage();
             }
         });
     }
@@ -356,6 +358,35 @@
         }
 
         return false;
+    }    
+
+    function ResizePage() {
+        var pageWidth = $(window).width();
+        var pageHeight = $(window).height();
+        var height = '700';
+
+        if (pageWidth <= 1024) {
+            height = '380';
+        }
+        else if (pageWidth <= 1280) {          
+            if (pageHeight <= 720) {
+                height = '400';
+            } 
+            else if (pageHeight <= 800) {
+                height = '550';
+            }
+            else if (pageHeight <= 960) {
+                height = '580';
+            }
+            else if (pageHeight <= 1024) {
+                height = '640';
+            }
+            else {
+                height = '700';
+            }
+        } 
+
+        $(document).find(contentSubscribers).css('height', height);
     }
 
     inputUserName.keyup(function(e) {
