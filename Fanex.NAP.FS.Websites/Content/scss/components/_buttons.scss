@@ -51,6 +51,15 @@
     }
 }
 
+.btn-search {
+    background-color: #396EF8;
+    color: $btn-primary-color;
+
+    &:hover:not(:disabled) {
+        background-color: #5081ff;
+    }
+}
+
 a.button, a.button:hover {
     text-decoration: none;
 }

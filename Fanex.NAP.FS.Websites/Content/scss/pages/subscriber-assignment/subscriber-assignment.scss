@@ -1,0 +1,103 @@
+﻿body {
+    background-color: #f0f3f8;
+}
+
+.content {
+    padding: 0;
+}
+
+.title {
+    padding: 9px 16px;
+    background: #DDE2E5;
+    font-weight: bold;
+}
+
+.filter {
+    padding: 0 16px 16px;
+
+    .control-label {
+        margin-bottom: 5px;
+    }
+
+    .button {
+        margin-bottom: 0;
+    }
+
+    .form-control {
+        margin-right: 16px;
+        display: inline-block;
+        vertical-align: top;
+    }
+
+    .button-group {
+        margin-top: 19px;
+    }
+
+    .input-field {
+        width: 220px;
+        border-color: #e5e5e5;
+    }
+}
+
+#content-subscribers {
+    padding-left: 96px;
+    padding-right: 20px;
+    height: 700px;
+}
+
+.group-subscriber {
+    width: 162px;
+    padding-left: 0px;
+    padding-right: 0px !important;
+    padding-bottom: 0px !important;
+    margin: 0px !important;
+}
+
+.margin-top-10 {
+    margin-top: 10px;
+}
+
+.margin-top-20 {
+    margin-top: 20px;
+}
+
+.letter {
+    font-weight: 400;
+    font-size: 25px;
+}
+
+.btn-submit {
+    background-color: #4682B4;
+    color: white;
+}
+
+.btn-submit:hover {
+    background-color: #5CB3FF;
+    color: white;
+}
+
+.btn-default {
+    background-color: #DCDCDC;
+    color: black;
+    width: 150px;
+    display: inline-block;
+    text-transform: none !important;
+}
+
+.btn-assigned {
+    background-color: #E8A317;
+    color: white;
+    width: 150px;
+    display: inline-block;
+    text-transform: none !important;
+}
+
+.disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.disabled:hover {
+    opacity: 0.6;
+    cursor: not-allowed;
+}

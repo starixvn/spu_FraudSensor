@@ -26,5 +26,9 @@
   {
     "outputFile": "Content/scss/pages/configurations/fraud-case.css",
     "inputFile": "Content/scss/pages/configurations/fraud-case.scss"
+  },
+  {
+    "outputFile": "Content/scss/pages/subscriber-assignment/subscriber-assignment.css",
+    "inputFile": "Content/scss/pages/subscriber-assignment/subscriber-assignment.scss"
   }
 ]

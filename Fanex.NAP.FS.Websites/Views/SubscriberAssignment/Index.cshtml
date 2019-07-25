@@ -12,18 +12,18 @@
     <link href="~/Content/scss/pages/subscriber-assignment/subscriber-assignment.css" rel="stylesheet" />
 }
 
-<div class="form-filter">
-    <div class="group" width="100px;" style="padding-right: 33px;">
-        <label class="text">Username</label>
-    </div>
-    <div class="group width-220">
-        <input type="text" id="username" class="control" />
-    </div>    
-    <button class="button -primary" id="btnSearch">Search</button>
-</div>
+<div class="filter">
+    <div class="form-control">
+        <div class="control-label">Username</div>
+        <input type="text" id="username" class="control input-field" />
 
-<div class="form-filter" id="caption-error" style="margin-bottom: 3px;">
-    <span style="color:red"></span>
+        <div id="caption-error" style="margin-top: 3px;">
+            <span style="color:red"></span>
+        </div>
+    </div>
+    <div class="form-control button-group">
+        <button class="button btn-search" id="btnSearch">Search</button>
+    </div>
 </div>
 
 <div class="form-filter" id="filter-ismaster">
