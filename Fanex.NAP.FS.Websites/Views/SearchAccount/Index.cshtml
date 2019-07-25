@@ -28,13 +28,23 @@
         </div>
         <div class="group width-220">
             <div class="edit-field col_9">
-                <input type="text" name="txtAccount" />
+                <input type="text" id="txtAccount" />
             </div>
         </div>
         <button class="button -primary" id="btnSearch">Search</button>
     </div>
 </fieldset>
-<div id="search-content"></div>
+<table id="account-content-table" class="table width-100per">
+    <thead>
+        <tr>
+            <th>No.</th>
+            <th>Subscriber</th>
+            <th>Username1</th>
+            <th>Username2</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
 
 @section scripts{
     <script src="~/Scripts/MultipleSelect/jquery.multiselect.filter.js"></script>

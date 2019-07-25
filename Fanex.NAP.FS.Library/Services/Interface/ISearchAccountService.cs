@@ -6,5 +6,7 @@
     public interface ISearchAccountService
     {
         IEnumerable<Subscriber> GetSubscribers();
+
+        IEnumerable<SubscriberAccount> SearchSubscriberAccounts(string key, string subscribers);
     }
 }

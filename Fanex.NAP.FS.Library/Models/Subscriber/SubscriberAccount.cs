@@ -1,0 +1,13 @@
+﻿namespace Fanex.NAP.FS.Library.Models.Subscriber
+{
+    public class SubscriberAccount
+    {
+        public int SubscriberID { get; set; }
+
+        public string SubscriberName { get; set; }
+
+        public string UserName1 { get; set; }
+
+        public string UserName2 { get; set; }
+    }
+}

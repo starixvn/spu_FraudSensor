@@ -28,5 +28,12 @@
 
             return Json(data, JsonRequestBehavior.AllowGet);
         }
+
+        public ActionResult SearchSubscriberAccount(string key, string subscribers)
+        {
+            var data = _searchAccountService.SearchSubscriberAccounts(key, subscribers);
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
     }
 }

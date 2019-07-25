@@ -392,6 +392,7 @@
     <Compile Include="Models\MatchMonitor\League.cs" />
     <Compile Include="Models\MatchMonitor\Match.cs" />
     <Compile Include="Models\Subscriber\Subscriber.cs" />
+    <Compile Include="Models\Subscriber\SubscriberAccount.cs" />
     <Compile Include="Models\Subscriber\SubscriberAssignment.cs" />
     <Compile Include="Models\SuspiciousCustomerDetails\FraudCaseViolated.cs" />
     <Compile Include="Models\SuspiciousCustomerDetails\Statistics.cs" />
