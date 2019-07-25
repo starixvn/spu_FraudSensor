@@ -1,0 +1,44 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1 class="title">Account Search</h1>
+
+@section styles{
+    <link href="~/Content/scss/MultipleSelect/jquery.multiselect.filter.css" rel="stylesheet" />
+    <link href="~/Content/scss/MultipleSelect/jquery.multiselect.css" rel="stylesheet" />
+    <link href="~/Content/scss/pages/search/search.css" rel="stylesheet" />
+}
+<fieldset class="fieldset-search">
+    <legend>Search Information</legend>
+    <div class="form-filter">
+        <div class="group" width="100px;">
+            <label class="text">Subscribers</label>
+        </div>
+        <div class="group width-220">
+            <div class="edit-field col_9">
+                <select id="ddlSubscriber" multiple="multiple"></select>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-filter">
+        <div class="group" width="100px;">
+            <label class="text">Account</label>
+        </div>
+        <div class="group width-220">
+            <div class="edit-field col_9">
+                <input type="text" name="txtAccount" />
+            </div>
+        </div>
+        <button class="button -primary" id="btnSearch">Search</button>
+    </div>
+</fieldset>
+<div id="search-content"></div>
+
+@section scripts{
+    <script src="~/Scripts/MultipleSelect/jquery.multiselect.filter.js"></script>
+    <script src="~/Scripts/MultipleSelect/jquery.multiselect.js"></script>
+
+    @Scripts.Render("~/scripts/search-account")
+}

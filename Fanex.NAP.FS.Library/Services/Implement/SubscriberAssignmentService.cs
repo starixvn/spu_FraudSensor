@@ -10,14 +10,14 @@
 
     public class SubscriberAssignmentService : ISubscriberAssignmentService
     {
-        public IEnumerable<Subscriber> GetSubscribers(long userId)
+        public IEnumerable<SubscriberAssignment> GetSubscribers(long userId)
         {
             var criteria = new SubscriberGetCriteria
             {
                 ip_userId = userId
             };
 
-            return DataService.GetData<Subscriber>(criteria).OrderBy(c => c.SubscriberName).ThenBy(c=>c.SubscriberID);
+            return DataService.GetData<SubscriberAssignment>(criteria).OrderBy(c => c.SubscriberName).ThenBy(c=>c.SubscriberID);
         }
 
         public DBResult UpdateSubscribers(bool isMasterSub, int userId, string subscriberIds, int createdBy)

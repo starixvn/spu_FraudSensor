@@ -345,6 +345,7 @@
     <Compile Include="Controllers\FraudCaseController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ScannedOfficeIpReportController.cs" />
+    <Compile Include="Controllers\SearchAccountController.cs" />
     <Compile Include="Controllers\SubscriberAssignmentController.cs" />
     <Compile Include="Controllers\SuspiciousCustomerController.cs" />
     <Compile Include="Controllers\MatchMonitorController.cs" />
@@ -360,6 +361,8 @@
     </Compile>
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Content Include="Content\scss\pages\search\search.css" />
+    <Content Include="Scripts\Search\Account\search-account.js" />
     <Content Include="Scripts\SubscriberAssignment\subscriber.js" />
     <Compile Include="Service\Utilities\AppSession.cs" />
     <Compile Include="Service\Utilities\PermissionService.cs" />
@@ -1131,6 +1134,7 @@
     <Content Include="Views\FraudCase\Index.cshtml" />
     <Content Include="Views\FraudCase\ScannedOfficeIP\InternalAccountDialog.cshtml" />
     <Content Include="Views\SubscriberAssignment\Index.cshtml" />
+    <Content Include="Views\SearchAccount\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />

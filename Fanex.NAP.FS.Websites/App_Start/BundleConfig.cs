@@ -43,6 +43,7 @@
             RegisterCheckBetReportBundles(bundles);
             RegisterCustomerMonitorBundles(bundles);
             RegisterSubscriberAssignment(bundles);
+            RegisterSearchBundles(bundles);
         }
 
         private static void RegisterFSCoreBundles(BundleCollection bundles)
@@ -131,6 +132,11 @@
         private static void RegisterSubscriberAssignment(BundleCollection bundles)
         {
             bundles.Add(new ScriptBundle("~/scripts/subscriber-assignment").Include("~/scripts/SubscriberAssignment/*.js"));
+        }
+
+        private static void RegisterSearchBundles(BundleCollection bundles)
+        {
+            bundles.Add(new ScriptBundle("~/scripts/search-account").Include("~/scripts/Search/Account/*.js"));
         }
     }
 }

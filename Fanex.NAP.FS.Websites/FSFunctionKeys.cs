@@ -64,5 +64,7 @@ public static class FSFunctionKeys
         public const string CustomerMonitor = "CustomerMonitor";
 
         public const string SubscriberAssignment = "SubscriberAssignment";
+
+        public const string SearchAccount = "SearchAccount";
 }
  
