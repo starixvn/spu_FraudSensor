@@ -136,8 +136,8 @@
 
         if (!$(parent).find('[data-letter="' + letter + '"]').length) {
 
-            var html = '<div class="margin-top-10" data-letter="' + letter + '">';
-            html += '<div><label class="text letter">' + letter + '</label></div>';
+            var html = '<div class="group-letter" data-letter="' + letter + '">';
+            html += '<div class="letter"><label class="text">' + letter + '</label></div>';
             html += '<div class="form-filter"></div>';
             html += '</div>';
 
@@ -371,7 +371,7 @@
 
         var pageWidth = $(window).width();
         var pageHeight = $(window).height();
-        var height = '700';
+        var height = '600';
 
         if (pageWidth <= 1024) {
             height = '380';
@@ -390,7 +390,7 @@
                 height = '640';
             }
             else {
-                height = '700';
+                height = '600';
             }
         } 
 

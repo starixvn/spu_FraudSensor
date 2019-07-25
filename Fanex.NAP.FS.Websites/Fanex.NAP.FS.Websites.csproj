@@ -362,6 +362,9 @@
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Content Include="Content\scss\pages\search\search.css" />
+    <Content Include="Content\scss\pages\subscriber-assignment\subscriber-assignment.min.css">
+      <DependentUpon>subscriber-assignment.css</DependentUpon>
+    </Content>
     <Content Include="Scripts\Search\Account\search-account.js" />
     <Content Include="Scripts\SubscriberAssignment\subscriber.js" />
     <Compile Include="Service\Utilities\AppSession.cs" />
@@ -884,6 +887,7 @@
     <None Include="compilerconfig.json.defaults">
       <DependentUpon>compilerconfig.json</DependentUpon>
     </None>
+    <Content Include="Content\scss\pages\subscriber-assignment\subscriber-assignment.scss" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile2.pubxml" />

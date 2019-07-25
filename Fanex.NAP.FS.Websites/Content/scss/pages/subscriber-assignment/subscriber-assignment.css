@@ -2,7 +2,8 @@
   background-color: #f0f3f8; }
 
 .content {
-  padding: 0; }
+  padding: 0;
+  padding-bottom: 20px; }
 
 .title {
   padding: 9px 16px;
@@ -12,7 +13,8 @@
 .filter {
   padding: 0 16px 16px; }
   .filter .control-label {
-    margin-bottom: 5px; }
+    margin-bottom: 5px;
+    color: #474747; }
   .filter .button {
     margin-bottom: 0; }
   .filter .form-control {
@@ -25,17 +27,31 @@
     width: 220px;
     border-color: #e5e5e5; }
 
-#content-subscribers {
-  padding-left: 96px;
-  padding-right: 20px;
-  height: 700px; }
+.content-subscribers {
+  max-width: 1800px;
+  padding: 0 16px; }
+  .content-subscribers .form-filter {
+    padding: 6px; }
 
 .group-subscriber {
-  width: 162px;
-  padding-left: 0px;
-  padding-right: 0px !important;
-  padding-bottom: 0px !important;
-  margin: 0px !important; }
+  padding: 6px 10px; }
+  .group-subscriber .button {
+    margin: 0; }
+
+.group-letter {
+  display: flex;
+  flex: 0 1 auto;
+  background: #fff;
+  border-left: 1px solid #C4D6F8;
+  border-right: 1px solid #C4D6F8;
+  border-top: 1px solid #C4D6F8; }
+  .group-letter:first-child {
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px; }
+  .group-letter:last-child {
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
+    border-bottom: 1px solid #C4D6F8; }
 
 .margin-top-10 {
   margin-top: 10px; }
@@ -44,16 +60,16 @@
   margin-top: 20px; }
 
 .letter {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 0 0 auto;
+  flex-basis: 60px;
+  max-width: 60px;
   font-weight: 400;
-  font-size: 25px; }
-
-.btn-submit {
-  background-color: #4682B4;
-  color: white; }
-
-.btn-submit:hover {
-  background-color: #5CB3FF;
-  color: white; }
+  font-size: 25px;
+  background: #E2ECFF;
+  color: #545454; }
 
 .btn-default {
   background-color: #DCDCDC;
@@ -63,7 +79,7 @@
   text-transform: none !important; }
 
 .btn-assigned {
-  background-color: #E8A317;
+  background-color: #4F971F;
   color: white;
   width: 150px;
   display: inline-block;

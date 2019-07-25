@@ -26,10 +26,8 @@
     </div>
 </div>
 
-<div class="form-filter" id="filter-ismaster">
-    <div class="group" style="margin-right: 72px;">
-    </div>
-    <div class="group width-220">
+<div class="filter" id="filter-ismaster">    
+    <div class="group">
         <label class="checkbox">
             <input type="checkbox" id="chkMasterSubcriber" />
             <span>Set as Master Subscriber</span>
@@ -37,31 +35,23 @@
     </div>
 </div>
 
-<div class="form-filter" id="filter-subs">
-    <div class="group" width="100px;">
-        <label class="text">Subscribers</label>
-    </div>
-    <div class="group width-220">
-        <div class="edit-field col_9">
-            <select id="ddlSubscriber" multiple="multiple"></select>
-        </div>
-    </div>
-
-    <div class="group width-100">
-        <label class="text">Status</label>
-    </div>
-    <div class="group width-220">
+<div class="filter" id="filter-subs">
+    <div class="form-control">
+        <div class="control-label">Subscribers</div>
+        <select id="ddlSubscriber" multiple="multiple"></select>
+    </div>   
+    <div class="form-control">
+        <div class="control-label">Status</div>
         <select class="control" id="cbbStatus">
             <option value="0" selected>All</option>
             <option value="1">Assigned</option>
             <option value="2">Unassigned</option>
         </select>
-    </div>
-
-    <button class="button btn-submit" id="btnSubmit">Submit</button>
+    </div>    
+    <div class="form-control button-group"><button class="button btn-submit" id="btnSubmit">Submit</button></div>    
 </div>
 
-<div id="content-subscribers"></div>
+<div class="content-subscribers" id="content-subscribers"></div>
 
 @section scripts{
     <script src="~/Scripts/MultipleSelect/jquery.multiselect.filter.js"></script>

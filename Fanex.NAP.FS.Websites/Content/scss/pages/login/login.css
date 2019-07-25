@@ -98,10 +98,10 @@ input, button {
     .button.-cancel:hover:not(:disabled) {
       background-color: #929292; }
 
-.btn-search {
+.btn-search, .btn-submit {
   background-color: #396EF8;
   color: #fff; }
-  .btn-search:hover:not(:disabled) {
+  .btn-search:hover:not(:disabled), .btn-submit:hover:not(:disabled) {
     background-color: #5081ff; }
 
 a.button, a.button:hover {
