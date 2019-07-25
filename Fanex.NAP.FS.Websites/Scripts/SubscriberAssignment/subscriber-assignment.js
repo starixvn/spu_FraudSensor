@@ -25,7 +25,9 @@
     }
 
     function GenerateContent() {
-        ClearResult();        
+        ClearResult();
+        ResizePage(true);
+
         var userName = inputUserName.val().trim();
         var specialCharacter = ContainSpecialCharacter(userName);
 
@@ -52,12 +54,12 @@
                 $('span', captionError).text('The Username is not valid!');
                 $(captionError).show();
                 
-                HiddenFilter();
+                HiddenFilter();                
             }
             else {                
                 GetSubscribers(data);
 
-                ResizePage();
+                ResizePage(false);
             }
         });
     }
@@ -360,7 +362,13 @@
         return false;
     }    
 
-    function ResizePage() {
+    function ResizePage(initPage) {
+        if (initPage) {
+            $(document).find(contentSubscribers).css('overflow-y', 'hidden');
+
+            return;
+        }
+
         var pageWidth = $(window).width();
         var pageHeight = $(window).height();
         var height = '700';
@@ -368,7 +376,7 @@
         if (pageWidth <= 1024) {
             height = '380';
         }
-        else if (pageWidth <= 1280) {          
+        else if (pageWidth <= 1280) {
             if (pageHeight <= 720) {
                 height = '400';
             } 
@@ -386,7 +394,7 @@
             }
         } 
 
-        $(document).find(contentSubscribers).css('height', height);
+        $(document).find(contentSubscribers).css('height', height).css('overflow-y', 'scroll');
     }
 
     inputUserName.keyup(function(e) {
