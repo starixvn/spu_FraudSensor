@@ -1,8 +1,10 @@
 ﻿function search_account() {
     var ddlSubscriber = $('#ddlSubscriber');
     var btnSearch = $('#btnSearch');
-    var inputAccount = $('#txtAccount');
-    var content_table = $("#account-content-table");
+    var inputAccount = $('#account');
+    var captionError = $('#caption-error');
+    var table = $("#table-account");
+    var regex = new RegExp("^[a-zA-Z0-9$ ]*$");
 
     function Init() {
         ddlSubscriber.multiselect({
@@ -14,6 +16,9 @@
             width: 150,
             placeholder: ''
         });
+
+        $(captionError).hide();
+        $(table).hide();
 
         GetSubscribers();
     }
@@ -35,6 +40,11 @@
     }
 
     function SearchSubscriberAccount(key) {
+
+        if (!ValidateInput(key)) {
+            return;
+        }
+
         var subscribers = [];
 
         $('option:selected', ddlSubscriber).each(function (idx, ele) {            
@@ -51,7 +61,7 @@
                 key: key,
                 subscribers: subscribers.join(',')
             },
-            success: function (data) {               
+            success: function (data) {
                 GenerateContent(data);
             },
             error: function (errorMessage) {
@@ -63,13 +73,15 @@
     }
 
     function GenerateContent(data) {
+        $(table).show();
+
         GenerateGrid();
 
         BindAccountToGrid(data);
     }
 
     function GenerateGrid() {
-        content_table.DataTable({
+        table.DataTable({
             dom: "t<'pagination'<'page-size'lp>i>",
             language: {
                 lengthMenu: "Page size _MENU_",
@@ -96,24 +108,49 @@
                 { targets: [2], width: "30%" }              
             ],
             columns: [
-                { data: obj => "No1" },
+                { data: (row, type, set, meta) => meta.row + 1 },
                 { data: obj => obj.SubscriberName },
-                { data: obj => obj.UserName1 },
-                { data: obj => obj.UserName2 }
+                { data: obj => RenderUserName(obj, obj.UserName1) },
+                { data: obj => RenderUserName(obj, obj.UserName2) }
             ]
         });
     }
 
     function BindAccountToGrid(data) {
 
-        content_table.DataTable().clear().rows.add(data).draw();
+        table.DataTable().clear().rows.add(data).draw();
 
-        content_table.DataTable().columns.adjust();
+        table.DataTable().columns.adjust();
 
         common.closeLoading();
     }
 
+    function RenderUserName(obj, userName) {
+
+        return `<a class='info-bng' 
+                    href='SearchAccount/GetAccountDetail?accountID=${obj.AccountID}'
+                    target='_blank'>${userName}
+                </a>`;
+    }
+
+    function ValidateInput(input) {
+
+        if (input == null || input.length < 3 || regex.test(input)) {
+
+            $('span', captionError).text('The Account is not valid!');
+            $(captionError).show();
+
+            return false;
+        }       
+
+        $(captionError).hide();
+
+        return true;
+    }
+
     inputAccount.keyup((e) => {
+        $(captionError).hide();
+
         if (e.which == 13) {
             SearchSubscriberAccount($(e.target).val());
         }

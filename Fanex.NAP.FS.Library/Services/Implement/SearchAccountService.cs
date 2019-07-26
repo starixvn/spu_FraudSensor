@@ -1,6 +1,7 @@
 ﻿namespace Fanex.NAP.FS.Library.Services
 {
     using Fanex.NAP.FS.Library.Models.Subscriber;
+    using Fanex.NAP.FS.Library.ViewModels.SubscriberAccount;
     using System.Collections.Generic;
 
     public class SearchAccountService : ISearchAccountService
@@ -13,6 +14,11 @@
         public IEnumerable<SubscriberAccount> SearchSubscriberAccounts(string key, string subscribers)
         {
             return GetSubscriberAccounts_Test(key, subscribers);
+        }
+
+        public SubscriberAccountDetail GetSubscriberAccountDetail(int accountID)
+        {
+            return new SubscriberAccountDetail();
         }
 
         private List<Subscriber> GetSubscribers_Test()
@@ -47,21 +53,21 @@
 
             var accounts = new List<SubscriberAccount>();
             {
-                accounts.Add(new SubscriberAccount { SubscriberID = i++, SubscriberName = "11bet", UserName1 = "abc", UserName2 ="xyz" });
-                accounts.Add(new SubscriberAccount { SubscriberID = i++, SubscriberName = "11bet", UserName1 = "abc", UserName2 = "xyz" });
-                accounts.Add(new SubscriberAccount { SubscriberID = i++, SubscriberName = "11bet", UserName1 = "abc", UserName2 = "xyz" });
-                accounts.Add(new SubscriberAccount { SubscriberID = i++, SubscriberName = "11bet", UserName1 = "abc", UserName2 = "xyz" });
-                accounts.Add(new SubscriberAccount { SubscriberID = i++, SubscriberName = "11bet", UserName1 = "abc", UserName2 = "xyz" });
-                accounts.Add(new SubscriberAccount { SubscriberID = i++, SubscriberName = "11bet", UserName1 = "abc", UserName2 = "xyz" });
-                accounts.Add(new SubscriberAccount { SubscriberID = i++, SubscriberName = "11bet", UserName1 = "abc", UserName2 = "xyz" });
-                accounts.Add(new SubscriberAccount { SubscriberID = i++, SubscriberName = "11bet", UserName1 = "abc", UserName2 = "xyz" });
-                accounts.Add(new SubscriberAccount { SubscriberID = i++, SubscriberName = "11bet", UserName1 = "abc", UserName2 = "xyz" });
-                accounts.Add(new SubscriberAccount { SubscriberID = i++, SubscriberName = "11bet", UserName1 = "abc", UserName2 = "xyz" });
-                accounts.Add(new SubscriberAccount { SubscriberID = i++, SubscriberName = "12bet", UserName1 = "abc", UserName2 = "xyz" });
-                accounts.Add(new SubscriberAccount { SubscriberID = i++, SubscriberName = "12bet", UserName1 = $"cn88@abc", UserName2 = "xyz" });
-                accounts.Add(new SubscriberAccount { SubscriberID = i++, SubscriberName = "12bet", UserName1 = $"cn88@abc", UserName2 = "xyz" });
-                accounts.Add(new SubscriberAccount { SubscriberID = i++, SubscriberName = "12bet", UserName1 = $"cn88@abc", UserName2 = "xyz" });
-                accounts.Add(new SubscriberAccount { SubscriberID = i, SubscriberName = "12bet", UserName1 = $"cn88@abc", UserName2 = "xyz" });
+                accounts.Add(new SubscriberAccount { SubscriberID = i++, SubscriberName = "11bet", AccountID = i, UserName1 = "abc", UserName2 ="xyz" });
+                accounts.Add(new SubscriberAccount { SubscriberID = i++, SubscriberName = "11bet", AccountID = i, UserName1 = "abc", UserName2 = "xyz" });
+                accounts.Add(new SubscriberAccount { SubscriberID = i++, SubscriberName = "11bet", AccountID = i, UserName1 = "abc", UserName2 = "xyz" });
+                accounts.Add(new SubscriberAccount { SubscriberID = i++, SubscriberName = "11bet", AccountID = i, UserName1 = "abc", UserName2 = "xyz" });
+                accounts.Add(new SubscriberAccount { SubscriberID = i++, SubscriberName = "11bet", AccountID = i, UserName1 = "abc", UserName2 = "xyz" });
+                accounts.Add(new SubscriberAccount { SubscriberID = i++, SubscriberName = "11bet", AccountID = i, UserName1 = "abc", UserName2 = "xyz" });
+                accounts.Add(new SubscriberAccount { SubscriberID = i++, SubscriberName = "11bet", AccountID = i, UserName1 = "abc", UserName2 = "xyz" });
+                accounts.Add(new SubscriberAccount { SubscriberID = i++, SubscriberName = "11bet", AccountID = i, UserName1 = "abc", UserName2 = "xyz" });
+                accounts.Add(new SubscriberAccount { SubscriberID = i++, SubscriberName = "11bet", AccountID = i, UserName1 = "abc", UserName2 = "xyz" });
+                accounts.Add(new SubscriberAccount { SubscriberID = i++, SubscriberName = "11bet", AccountID = i, UserName1 = "abc", UserName2 = "xyz" });
+                accounts.Add(new SubscriberAccount { SubscriberID = i++, SubscriberName = "12bet", AccountID = i, UserName1 = "abc", UserName2 = "xyz" });
+                accounts.Add(new SubscriberAccount { SubscriberID = i++, SubscriberName = "12bet", AccountID = i, UserName1 = $"cn88@abc", UserName2 = "xyz" });
+                accounts.Add(new SubscriberAccount { SubscriberID = i++, SubscriberName = "12bet", AccountID = i, UserName1 = $"cn88@abc", UserName2 = "xyz" });
+                accounts.Add(new SubscriberAccount { SubscriberID = i++, SubscriberName = "12bet", AccountID = i, UserName1 = $"cn88@abc", UserName2 = "xyz" });
+                accounts.Add(new SubscriberAccount { SubscriberID = i, SubscriberName = "12bet", AccountID = i, UserName1 = $"cn88@abc", UserName2 = "xyz" });
             }
 
             return accounts;

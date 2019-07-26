@@ -1,10 +1,41 @@
-﻿.fieldset-search {
-    border-radius: 3px 3px 3px 3px;
-    border: 1px solid #CECECE;
-    margin: 0 0 1.3em;
-    padding: 0.5em 1.2em 1.2em;
-}
+﻿body {
+  background-color: #f0f3f8; }
 
-#account-content-table{
-    width: 600px;
-}
+.content {
+  padding: 0;
+  padding-bottom: 20px; }
+
+.title {
+  padding: 9px 16px;
+  background: #DDE2E5;
+  font-weight: bold; }
+
+.filter {
+  padding: 0 16px 16px; }
+  .filter .control-label {
+    margin-bottom: 5px;
+    color: #474747; }
+  .filter .button {
+    margin-top: 10px;
+    margin-bottom: 0; }
+  .filter .form-control {
+    margin-right: 16px;
+    display: inline-block;
+    vertical-align: top; }
+  .filter .button-group {
+    margin-top: 9px; }
+  .filter .input-field {
+    width: 220px;
+    border-color: #e5e5e5; }
+
+.fieldset-search {
+  border-radius: 3px 3px 3px 3px;
+  border: 1px solid #CECECE;
+  margin: 0 0.5em 1em;
+  padding: 0.5em 1.2em 1.2em; }
+
+.caption-error {
+  margin-top: 3px; }
+
+.content-account {
+  width: 800px; }

@@ -391,8 +391,10 @@
     <Compile Include="Models\MatchMonitor\FraudCaseDetails\TicketInfo.cs" />
     <Compile Include="Models\MatchMonitor\League.cs" />
     <Compile Include="Models\MatchMonitor\Match.cs" />
+    <Compile Include="Models\Subscriber\SubscriberAccountInfo.cs" />
     <Compile Include="Models\Subscriber\Subscriber.cs" />
-    <Compile Include="Models\Subscriber\SubscriberAccount.cs" />
+    <Compile Include="ViewModels\SubscriberAccount\SubscriberAccount.cs" />
+    <Compile Include="ViewModels\SubscriberAccount\SubscriberAccountDetail.cs" />
     <Compile Include="Models\Subscriber\SubscriberAssignment.cs" />
     <Compile Include="Models\SuspiciousCustomerDetails\FraudCaseViolated.cs" />
     <Compile Include="Models\SuspiciousCustomerDetails\Statistics.cs" />

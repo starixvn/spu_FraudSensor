@@ -24,6 +24,8 @@
     <Use64BitIISExpress />
     <UseGlobalApplicationHostFile />
     <TargetFrameworkProfile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
     <!--     <TypeScriptToolsVersion>2.5</TypeScriptToolsVersion> -->
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -361,7 +363,13 @@
     </Compile>
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Content Include="Content\scss\pages\search\search.css" />
+    <Content Include="Content\scss\pages\search\search.css">
+      <DependentUpon>search.scss</DependentUpon>
+    </Content>
+    <Content Include="Content\scss\pages\search\search.min.css">
+      <DependentUpon>search.css</DependentUpon>
+    </Content>
+    <Content Include="Content\scss\pages\search\search.scss" />
     <Content Include="Content\scss\pages\subscriber-assignment\subscriber-assignment.min.css">
       <DependentUpon>subscriber-assignment.css</DependentUpon>
     </Content>
@@ -1204,6 +1212,13 @@
       </FlavorProperties>
     </VisualStudio>
   </ProjectExtensions>
+  <Import Project="..\packages\BuildWebCompiler.1.12.394\build\BuildWebCompiler.targets" Condition="Exists('..\packages\BuildWebCompiler.1.12.394\build\BuildWebCompiler.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\BuildWebCompiler.1.12.394\build\BuildWebCompiler.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\BuildWebCompiler.1.12.394\build\BuildWebCompiler.targets'))" />
+  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

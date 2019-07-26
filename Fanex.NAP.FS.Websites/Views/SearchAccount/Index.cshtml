@@ -9,42 +9,44 @@
     <link href="~/Content/scss/MultipleSelect/jquery.multiselect.css" rel="stylesheet" />
     <link href="~/Content/scss/pages/search/search.css" rel="stylesheet" />
 }
+
 <fieldset class="fieldset-search">
     <legend>Search Information</legend>
-    <div class="form-filter">
-        <div class="group" width="100px;">
-            <label class="text">Subscribers</label>
-        </div>
-        <div class="group width-220">
-            <div class="edit-field col_9">
-                <select id="ddlSubscriber" multiple="multiple"></select>
-            </div>
+    <div class="filter">
+        <div class="form-control">
+            <div class="control-label">Subscribers</div>
+            <select id="ddlSubscriber" multiple="multiple"></select>
         </div>
     </div>
 
-    <div class="form-filter">
-        <div class="group" width="100px;">
-            <label class="text">Account</label>
-        </div>
-        <div class="group width-220">
-            <div class="edit-field col_9">
-                <input type="text" id="txtAccount" />
+    <div class="filter">
+        <div class="form-control">
+            <div class="control-label">Account</div>
+            <input type="text" id="account" class="control input-field" />
+
+            <div id="caption-error" class="caption-error">
+                <span style="color:red"></span>
             </div>
         </div>
-        <button class="button -primary" id="btnSearch">Search</button>
+        <div class="form-control button-group">
+            <button class="button btn-search" id="btnSearch">Search</button>
+        </div>
     </div>
 </fieldset>
-<table id="account-content-table" class="table width-100per">
-    <thead>
-        <tr>
-            <th>No.</th>
-            <th>Subscriber</th>
-            <th>Username1</th>
-            <th>Username2</th>
-        </tr>
-    </thead>
-    <tbody></tbody>
-</table>
+
+<div class="content-account">
+    <table id="table-account" class="table table-striped" style="width: 100%">
+        <thead>
+            <tr>
+                <th>No.</th>
+                <th>Subscriber</th>
+                <th>Username1</th>
+                <th>Username2</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
 
 @section scripts{
     <script src="~/Scripts/MultipleSelect/jquery.multiselect.filter.js"></script>

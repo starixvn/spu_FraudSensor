@@ -35,5 +35,12 @@
 
             return Json(data, JsonRequestBehavior.AllowGet);
         }
+
+        public ActionResult GetSubscriberAccountDetail(int accountID)
+        {
+            var data = _searchAccountService.GetSubscriberAccountDetail(accountID);
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
     }
 }
