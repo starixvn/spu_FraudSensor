@@ -1025,7 +1025,7 @@ table.dataTable tbody tr.selected td {
     .header-info .search-component .search-option {
       flex: 0 0 auto;
       flex-basis: 164px;
-      max-width: 164px;
+      max-width: 150px;
       padding-left: 10px;
       line-height: 26px;
       margin-right: 2px;

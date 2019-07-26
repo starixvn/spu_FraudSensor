@@ -3,7 +3,8 @@
     var btnSearch = $('#btnSearch');
     var inputAccount = $('#account');
     var captionError = $('#caption-error');
-    var table = $("#table-account");
+    var table = $('#table-account');
+    var content = $('.content-account');
     var regex = new RegExp("^[a-zA-Z0-9$ ]*$");
 
     function Init() {
@@ -17,10 +18,11 @@
             placeholder: ''
         });
 
-        $(captionError).hide();
-        $(table).hide();
+        $(captionError).hide();        
 
         GetSubscribers();
+
+        GenerateGrid();
     }
 
     function GetSubscribers() {
@@ -61,8 +63,10 @@
                 key: key,
                 subscribers: subscribers.join(',')
             },
-            success: function (data) {
-                GenerateContent(data);
+            success: function (data) {                
+                $(content).show();
+
+                BindDataToGrid(data);
             },
             error: function (errorMessage) {
                 common.closeLoading();
@@ -70,14 +74,6 @@
                 common.showError('Search Account fail!');
             }
         });
-    }
-
-    function GenerateContent(data) {
-        $(table).show();
-
-        GenerateGrid();
-
-        BindAccountToGrid(data);
     }
 
     function GenerateGrid() {
@@ -114,9 +110,11 @@
                 { data: obj => RenderUserName(obj, obj.UserName2) }
             ]
         });
+
+        $(content).hide();
     }
 
-    function BindAccountToGrid(data) {
+    function BindDataToGrid(data) {
 
         table.DataTable().clear().rows.add(data).draw();
 
@@ -135,10 +133,11 @@
 
     function ValidateInput(input) {
 
-        if (input == null || input.length < 3 || regex.test(input)) {
+        if (input == null || input.length < 3 || !regex.test(input)) {
 
             $('span', captionError).text('The Account is not valid!');
             $(captionError).show();
+            $(content).hide();
 
             return false;
         }       
