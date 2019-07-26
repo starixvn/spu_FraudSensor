@@ -1002,27 +1002,30 @@ table.dataTable tbody tr.selected td {
   margin-right: 20px; }
   .header-info .search-component {
     position: relative;
-    display: grid;
+    display: flex;
+    flex: 0 1 auto;
     flex-direction: row;
-    grid-template-columns: 1fr 164px;
-    grid-template-rows: 30px;
     justify-content: space-between;
     align-items: center;
     background-color: #fff;
     border-radius: 3px;
     height: 30px;
-    width: 370px; }
+    width: 340px; }
     .header-info .search-component .icon-magnify {
       position: absolute;
       left: 8px;
       color: #868686; }
     .header-info .search-component .search-text {
+      width: 100%;
       border: none;
       color: #545454;
       padding-left: 24px; }
       .header-info .search-component .search-text:focus {
         box-shadow: none; }
     .header-info .search-component .search-option {
+      flex: 0 0 auto;
+      flex-basis: 164px;
+      max-width: 164px;
       padding-left: 10px;
       line-height: 26px;
       margin-right: 2px;
@@ -1036,8 +1039,6 @@ table.dataTable tbody tr.selected td {
         font-family: 'Fraud-Sensor';
         content: "\e90c";
         font-size: 14px; }
-      .header-info .search-component .search-option .sub-menu {
-        min-width: 164px; }
       .header-info .search-component .search-option .link {
         line-height: 12px; }
   .header-info .username {
