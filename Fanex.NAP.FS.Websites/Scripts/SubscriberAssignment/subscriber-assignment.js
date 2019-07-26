@@ -68,7 +68,7 @@
         var url = common.modifyRelativeUrl('/SubscriberAssignment/GetSubscribers');
 
         $.get(url, { userId: id }, function (data) {
-            DisplayFilter();           
+            DisplayFilter();
 
             BindSubscribersToControl(data);
 
@@ -341,11 +341,13 @@
     function DisplayFilter() {
         $('#filter-ismaster').show();
         $('#filter-subs').show();
+        $(contentSubscribers).css({ 'display': '' });
     }
 
     function HiddenFilter() {
         $('#filter-ismaster').hide();
         $('#filter-subs').hide();
+        $(contentSubscribers).css({ 'display': 'none' });
     }
 
     function CompareWithStatus(subs) {
