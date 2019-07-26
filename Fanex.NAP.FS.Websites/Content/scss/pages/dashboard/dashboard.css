@@ -9,6 +9,8 @@
   background-color: #FFF;
   box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
   border-radius: 3px; }
+  .dashboard .col:last-child {
+    margin-right: 0; }
 
 .dashboard .col-tile {
   font-size: 15px;
@@ -61,3 +63,7 @@
       color: #fff; }
   .dashboard .block:last-child {
     margin-bottom: 0; }
+
+@media screen and (max-width: 1366px) {
+  .dashboard .col {
+    width: 280px; } }

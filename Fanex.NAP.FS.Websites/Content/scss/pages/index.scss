@@ -113,6 +113,11 @@
         &.active {
             color: #fff;
         }
+
+        @media screen and (max-width: 1366px) {
+            padding-left: 12px;
+            padding-right: 12px;
+        }
     }
 }
 

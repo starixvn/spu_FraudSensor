@@ -990,6 +990,10 @@ table.dataTable tbody tr.selected td {
       color: #fff; }
     .main-menu .menu-item > .link.active {
       color: #fff; }
+    @media screen and (max-width: 1366px) {
+      .main-menu .menu-item > .link {
+        padding-left: 12px;
+        padding-right: 12px; } }
 
 .header-info {
   display: flex;

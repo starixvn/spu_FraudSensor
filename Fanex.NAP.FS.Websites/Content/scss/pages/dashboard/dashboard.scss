@@ -11,6 +11,10 @@
         background-color: #FFF;
         box-shadow: 0 0 2px rgba(0,0,0,.2);
         border-radius: 3px;
+
+        &:last-child {
+            margin-right: 0;
+        }
     }
 
     .col-tile {
@@ -84,6 +88,12 @@
 
         &:last-child {
             margin-bottom: 0;
+        }
+    }
+
+    @media screen and (max-width: 1366px) {
+        .col {
+            width: 280px;
         }
     }
 }
