@@ -23,6 +23,12 @@
         GetSubscribers();
 
         GenerateGrid();
+
+        var inputValue = $(inputAccount).val();
+
+        if (inputValue != '') {
+            SearchSubscriberAccount(inputValue);
+        }
     }
 
     function GetSubscribers() {        

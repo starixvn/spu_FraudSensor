@@ -1,5 +1,5 @@
 ﻿function search() {
-    var btnSearch = $('#button-search');
+    var common = new UICommon();  
     var input = $('#txt-search');
     var option = $('#search-option');
     var linkItem = $('#link-item');
@@ -9,8 +9,17 @@
             return;
         }
 
-        var optionValue = $(option).attr('key');
-        
+        var itemKey = $(option).attr('item-key');
+
+        switch (itemKey) {
+            case 'search-account':               
+                window.location.href = common.modifyRelativeUrl('/SearchAccount/SearchAccount?key=' + key);
+                break;
+            case 'search-device':
+                break;
+            default:
+                break;
+        }
     }
 
     function ChangeItem(e) {
@@ -24,9 +33,7 @@
         if (e.which == 13) {
             SearchAction($(e.target).val());
         }
-    });
-
-    btnSearch.click(SearchAction($(input).val()));
+    });   
 }
 
 $(search);

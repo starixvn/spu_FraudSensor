@@ -21,12 +21,19 @@
 
             return View();
         }
-        
+
         public ActionResult GetSubscribers()
         {
             var data = _searchAccountService.GetSubscribers();
 
             return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult SearchAccount(string key)
+        {
+            ViewBag.KeySearch = key;
+
+            return View("Index");
         }
 
         public ActionResult SearchSubscriberAccount(string key, string subscribers)

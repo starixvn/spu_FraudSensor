@@ -79,13 +79,19 @@
                 data.Add(new SubscriberAccount { SubscriberID = i++, SubscriberName = "CN88", AccountID = i, UserName1 = "ruangoc@abc", UserName2 = "xyz" });
                 data.Add(new SubscriberAccount { SubscriberID = i, SubscriberName = "CN88", AccountID = i, UserName1 = "ruangoc2@abc", UserName2 = "xyz" });
             }
-         
-            var accounts = data.Where(a => a.UserName1.Contains(key) && arrSubs.Contains(a.SubscriberID.ToString()))
+
+            if (arrSubs.Length > 1)
+            {
+                return data.Where(a => a.UserName1.Contains(key) && arrSubs.Contains(a.SubscriberID.ToString()))
                         .OrderBy(a => a.SubscriberName)
                         .ThenBy(a => a.UserName1)
                         .ToList();
+            }
 
-            return accounts;
+            return data.Where(a => a.UserName1.Contains(key))
+                        .OrderBy(a => a.SubscriberName)
+                        .ThenBy(a => a.UserName1)
+                        .ToList();
         }
     }
 }

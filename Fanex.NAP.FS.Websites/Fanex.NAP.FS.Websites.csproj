@@ -348,6 +348,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ScannedOfficeIpReportController.cs" />
     <Compile Include="Controllers\SearchAccountController.cs" />
+    <Compile Include="Controllers\SearchDeviceController.cs" />
     <Compile Include="Controllers\SubscriberAssignmentController.cs" />
     <Compile Include="Controllers\SuspiciousCustomerController.cs" />
     <Compile Include="Controllers\MatchMonitorController.cs" />
@@ -1178,6 +1179,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Areas\UserLogin\Models\" />
+    <Folder Include="Views\SearchDevice\" />
     <Folder Include="Views\UM\" />
   </ItemGroup>
   <ItemGroup>
