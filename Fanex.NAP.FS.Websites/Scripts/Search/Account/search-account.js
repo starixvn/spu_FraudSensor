@@ -25,18 +25,18 @@
         GenerateGrid();
     }
 
-    function GetSubscribers() {
+    function GetSubscribers() {        
         var url = common.modifyRelativeUrl('/SearchAccount/GetSubscribers');
 
         $.get(url, function (data) {
             if (data != '') {
                 ddlSubscriber.multiselect().empty();
-
+                
                 for (var i = 0; i < data.length; i++) {
                     ddlSubscriber.append('<option value="' + data[i].SubscriberID + '">' + data[i].SubscriberName + '</option>');
                 }
 
-                ddlSubscriber.multiselect('refresh').multiselect("checkAll");
+                ddlSubscriber.multiselect('refresh').multiselect("checkAll");               
             }
         });
     }
@@ -131,7 +131,7 @@
                 </a>`;
     }
 
-    function ValidateInput(input) {
+    function ValidateInput(input) {        
 
         if (input == null || input.length < 3 || !regex.test(input)) {
 

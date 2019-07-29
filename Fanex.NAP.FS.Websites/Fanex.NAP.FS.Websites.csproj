@@ -373,6 +373,7 @@
     <Content Include="Content\scss\pages\subscriber-assignment\subscriber-assignment.min.css">
       <DependentUpon>subscriber-assignment.css</DependentUpon>
     </Content>
+    <Content Include="Scripts\search.js" />
     <Content Include="Scripts\Search\Account\search-account.js" />
     <Content Include="Scripts\SubscriberAssignment\subscriber.js" />
     <Compile Include="Service\Utilities\AppSession.cs" />

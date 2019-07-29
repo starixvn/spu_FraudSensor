@@ -1,6 +1,5 @@
 ﻿namespace Fanex.NAP.FS.Library.Services
 {
-    using Fanex.NAP.FS.Library.Core.Helpers;    
     using Fanex.NAP.FS.Library.Models.Subscriber;
     using Fanex.NAP.FS.Library.ViewModels.SubscriberAccount;
     using System.Linq;
