@@ -1244,3 +1244,70 @@ table.dataTable tbody tr.selected td {
 
 .info-value {
   padding: 10px; }
+
+.toggle-btn {
+  display: none; }
+
+@media only screen and (max-width: 1279px) {
+  .toggle-btn {
+    -webkit-transition: linear .2s;
+    -moz-transition: linear .2s;
+    -o-transition: linear .2s;
+    transition: linear .2s;
+    position: fixed;
+    z-index: 999;
+    display: block;
+    top: 5px;
+    left: 5px;
+    width: 50px;
+    height: 50px;
+    padding: 0;
+    margin: 0;
+    border: none;
+    outline: 0;
+    line-height: 50px;
+    cursor: pointer;
+    text-align: center; }
+    .toggle-btn .lines {
+      background: #fff;
+      width: 20px;
+      height: 2px;
+      display: inline-block;
+      position: relative;
+      vertical-align: middle; }
+      .toggle-btn .lines:before, .toggle-btn .lines:after {
+        content: "";
+        position: absolute;
+        left: 0;
+        background: #fff;
+        width: 20px;
+        height: 2px;
+        display: inline-block;
+        transition: linear .2s; }
+      .toggle-btn .lines:before {
+        top: 5px; }
+      .toggle-btn .lines:after {
+        top: -5px; }
+  .header {
+    grid-template-columns: 183px 1fr; }
+    .header .header-right {
+      justify-content: flex-end; }
+  .main-menu {
+    position: fixed;
+    display: block;
+    left: 0;
+    top: 0;
+    width: 264px;
+    z-index: 10;
+    height: 100%;
+    background: #2f323a;
+    padding-top: 60px;
+    margin: 0;
+    -webkit-transition: left .25s ease;
+    -moz-transition: left .25s ease;
+    -o-transition: left .25s ease;
+    transition: left .25s ease;
+    /*&.visible {
+            left: 0;
+            transition: left .25s ease;
+        }*/ } }
