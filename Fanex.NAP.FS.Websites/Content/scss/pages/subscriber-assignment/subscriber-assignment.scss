@@ -43,8 +43,9 @@
 
 
 .content-subscribers {
-    max-width: 1800px;
-    padding: 0 16px;    
+    margin: 0 16px;     
+    border: 1px solid #C4D6F8;
+    border-radius: 2px;
 
     .form-filter {
         padding: 6px;
@@ -62,21 +63,19 @@
 .group-letter {
     display: flex;
     flex: 0 1 auto;
-    background: #fff;
-    border-left: 1px solid #C4D6F8;
+    background: #fff;   
     border-right: 1px solid #C4D6F8;
     border-top: 1px solid #C4D6F8;
 
     &:first-child {
-        border-top-left-radius: 3px;
-        border-top-right-radius: 3px;
+        border-top: 0;
     }
 
-    &:last-child {
+    /*&:last-child {
         border-bottom-left-radius: 3px;
         border-bottom-right-radius: 3px;
         border-bottom: 1px solid #C4D6F8;
-    }
+    }*/
 }
 
 .margin-top-10 {
