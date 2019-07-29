@@ -15,16 +15,27 @@
             case 'search-account':               
                 window.location.href = common.modifyRelativeUrl('/SearchAccount/SearchAccount?key=' + key);
                 break;
+                
             case 'search-device':
+                window.location.href = common.modifyRelativeUrl('/SearchDevice/SearchDevice?key=' + key);
                 break;
+
             default:
                 break;
         }
     }
 
     function ChangeItem(e) {
-        var value = $(this.target);
-        
+        var itemKey = $(e.target).attr('item-key');
+        var itemText = $(e.target).text();
+        var optionKey = $(option).attr('item-key');
+        var optionText = $('span', option).text();
+
+        $(linkItem).text(optionText);
+        $(linkItem).attr('item-key', optionKey);
+
+        $('span', option).text(itemText);
+        $(option).attr('item-key', itemKey);
     }
 
     linkItem.click((e) => ChangeItem(e));

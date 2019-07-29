@@ -18,6 +18,10 @@
         {
             ViewBag.Username = this.User.Identity.Name;
             ViewBag.Environment = int.Parse(ConfigurationManager.AppSettings["Environment"]);
+            ViewBag.ItemKeySelect = "search-account";
+            ViewBag.ItemKeyNonSelect = "search-device";
+            ViewBag.OptionSelect = "Search account";
+            ViewBag.OptionNonSelect = "Search device";
 
             return View();
         }
@@ -31,7 +35,7 @@
 
         public ActionResult SearchAccount(string key)
         {
-            ViewBag.KeySearch = key;
+            ViewBag.KeySearch = key;            
 
             return View("Index");
         }

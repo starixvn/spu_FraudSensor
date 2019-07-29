@@ -1,13 +1,21 @@
 ﻿@using Microsoft.AspNet.Identity
+
+@{ 
+    var itemKeySelect = ViewBag.ItemKeySelect ?? "search-account";
+    var itemKeyNonSelect = ViewBag.ItemKeyNonSelect ?? "search-device";
+    var optionSelect = ViewBag.OptionSelect ?? "Search account";
+    var optionNonSelect = ViewBag.OptionNonSelect ?? "Search device";
+}
 <div class="header-info">
     <div class="search-component">
         <span class="icon-magnify" id="button-search"></span>
         <input type="text" class="search-text" id="txt-search" value=@ViewBag.KeySearch />
-        <div class="search-option" id="search-option" item-key="search-account">
-            Search account
+        <div class="search-option" id="search-option" item-key=@itemKeySelect>
+
+            <span>@optionSelect</span>
             <ul class="sub-menu">
                 <li class="sub-menu-item">
-                    <a href="#" class="link" id="link-item" item-key="search-device">Search device</a>
+                    <a href="#" class="link" id="link-item" item-key=@itemKeyNonSelect>@optionNonSelect</a>
                 </li>
             </ul>
         </div>
