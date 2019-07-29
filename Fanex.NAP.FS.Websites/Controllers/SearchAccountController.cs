@@ -38,7 +38,7 @@
             ViewBag.KeySearch = key;            
 
             return View("Index");
-        }
+        }       
 
         public ActionResult SearchSubscriberAccount(string key, string subscribers)
         {
@@ -47,11 +47,11 @@
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult GetSubscriberAccountDetail(int accountID)
+        public ActionResult DetailAccount(int id)
         {
-            var data = _searchAccountService.GetSubscriberAccountDetail(accountID);
+            var data = _searchAccountService.GetSubscriberAccountDetail(id);
 
-            return Json(data, JsonRequestBehavior.AllowGet);
+            return View("Detail", data);
         }
     }
 }

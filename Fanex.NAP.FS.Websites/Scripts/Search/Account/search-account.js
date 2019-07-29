@@ -121,12 +121,17 @@
     }
 
     function BindDataToGrid(data) {
+        if (data != null) {
+            if (data.length > 1) {
+                table.DataTable().clear().rows.add(data).draw();
+                table.DataTable().columns.adjust();
 
-        table.DataTable().clear().rows.add(data).draw();
+                common.closeLoading();
 
-        table.DataTable().columns.adjust();
-
-        common.closeLoading();
+            } else {
+                window.location.href = common.modifyRelativeUrl('/SearchAccount/DetailAccount?id=' + data[0].AccountID);
+            }
+        }        
     }
 
     function RenderUserName(obj, userName) {

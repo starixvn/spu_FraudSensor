@@ -85,12 +85,14 @@
                 return data.Where(a => a.UserName1.Contains(key) && arrSubs.Contains(a.SubscriberID.ToString()))
                         .OrderBy(a => a.SubscriberName)
                         .ThenBy(a => a.UserName1)
+                        .Take(1)
                         .ToList();
             }
 
             return data.Where(a => a.UserName1.Contains(key))
                         .OrderBy(a => a.SubscriberName)
                         .ThenBy(a => a.UserName1)
+                        .Take(1)
                         .ToList();
         }
     }

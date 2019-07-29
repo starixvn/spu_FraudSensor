@@ -1150,6 +1150,7 @@
     <Content Include="Views\SubscriberAssignment\Index.cshtml" />
     <Content Include="Views\SearchAccount\Index.cshtml" />
     <Content Include="Views\SearchDevice\Index.cshtml" />
+    <Content Include="Views\SearchAccount\Detail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
