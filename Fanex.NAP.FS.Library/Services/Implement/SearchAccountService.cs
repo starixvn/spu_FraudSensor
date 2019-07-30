@@ -4,6 +4,7 @@
     using Fanex.NAP.FS.Library.ViewModels.SubscriberAccount;
     using System.Linq;
     using System.Collections.Generic;
+    using System;
 
     public class SearchAccountService : ISearchAccountService
     {
@@ -19,7 +20,18 @@
 
         public SubscriberAccountDetail GetSubscriberAccountDetail(int accountID)
         {
-            return new SubscriberAccountDetail();
+            var data = new SubscriberAccountDetail();
+            {
+                data.AccountInfo = new SubscriberAccountInfo();
+                {
+                    data.AccountInfo.AccountID = accountID;
+                    data.AccountInfo.FirstLogin = DateTime.Now;
+                    data.AccountInfo.LastLogin = DateTime.Now;
+                    data.AccountInfo.FrequencyLogin = 1;
+                }
+            }
+
+            return data;
         }
 
         private List<Subscriber> GetSubscribers_Test()
@@ -84,15 +96,13 @@
             {
                 return data.Where(a => a.UserName1.Contains(key) && arrSubs.Contains(a.SubscriberID.ToString()))
                         .OrderBy(a => a.SubscriberName)
-                        .ThenBy(a => a.UserName1)
-                        .Take(1)
+                        .ThenBy(a => a.UserName1)                       
                         .ToList();
             }
 
             return data.Where(a => a.UserName1.Contains(key))
                         .OrderBy(a => a.SubscriberName)
-                        .ThenBy(a => a.UserName1)
-                        .Take(1)
+                        .ThenBy(a => a.UserName1)                       
                         .ToList();
         }
     }

@@ -32,7 +32,7 @@
     "inputFile": "Content/scss/pages/subscriber-assignment/subscriber-assignment.scss"
   },
   {
-    "outputFile": "Content/scss/pages/search/search.css",
-    "inputFile": "Content/scss/pages/search/search.scss"
+    "outputFile": "Content/scss/pages/search/account.css",
+    "inputFile": "Content/scss/pages/search/account.scss"
   }
 ]

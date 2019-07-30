@@ -35,7 +35,7 @@
 
         public ActionResult SearchAccount(string key)
         {
-            ViewBag.KeySearch = key;            
+            ViewBag.KeySearch = key;
 
             return View("Index");
         }       
@@ -47,11 +47,50 @@
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
+        #region Detail
+
         public ActionResult DetailAccount(int id)
         {
             var data = _searchAccountService.GetSubscriberAccountDetail(id);
 
             return View("Detail", data);
         }
+
+        public ActionResult ChainsToEvidence(string keySearch)
+        {
+            var model = "ChainsToEvidence Content";
+
+            return PartialView("Detail/ChainsToEvidence", model);
+        }
+
+        public ActionResult RetractAndException(string keySearch)
+        {
+            var model = "RetractAndException Content";
+
+            return PartialView("Detail/RetractAndException", model);
+        }
+
+        public ActionResult AssociatedAccount(string keySearch)
+        {
+            var model = "RetractAndException Content";
+
+            return PartialView("Detail/AssociatedAccount", model);
+        }
+
+        public ActionResult AssociatedDevice(string keySearch)
+        {
+            var model = "RetractAndException Content";
+
+            return PartialView("Detail/AssociatedDevice", model);
+        }
+
+        public ActionResult TransactionHistory(string keySearch)
+        {
+            var model = "RetractAndException Content";
+
+            return PartialView("Detail/TransactionHistory", model);
+        }
+
+        #endregion
     }
 }

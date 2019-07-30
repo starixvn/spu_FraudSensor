@@ -1,0 +1,40 @@
+﻿
+@{
+    ViewBag.Title = "AccountInfo";
+}
+
+<h2 class="title">Account/hoangkim1980</h2>
+
+<fieldset class="fieldset-search">
+    <div class="filter">
+        <div class="form-control">
+            <div class="control-label">1. Login Information</div>
+            <div class="control-label">First Login: @Model.AccountInfo.FirstLogin</div>
+            <div class="control-label">Last Login: @Model.AccountInfo.LastLogin</div>
+            <div class="control-label">Login Frequency: @Model.AccountInfo.FrequencyLogin</div>
+        </div>
+    </div>
+
+    <div class="filter">
+        <div class="form-control">
+            <div class="control-label">2. Association</div>
+            <div class="control-label">Associated Accounts: </div>
+            <div class="control-label">Associated Devices: </div>
+            <div class="control-label">Shared Devices: </div>
+            <div class="control-label">No-Shared Devices: </div>
+            <div class="control-label">Account Exceptions: </div>
+        </div>
+    </div>
+
+    <div class="filter">
+        <div class="form-control">
+            <div class="control-label">3. Fraud Infomation</div>
+            <div class="control-label">Evidence: </div>
+            <div class="control-label">Problem Account: </div>
+            <div class="control-label">Abnormal: </div>
+            <div class="control-label">Dangerous Level: </div>
+            <div class="control-label">Auto Suspend: </div>
+            <div class="control-label">Commited Fraud Cases: </div>
+        </div>
+    </div>
+</fieldset>

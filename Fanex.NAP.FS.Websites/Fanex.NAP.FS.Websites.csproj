@@ -364,17 +364,18 @@
     </Compile>
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Content Include="Content\scss\pages\search\search.css">
-      <DependentUpon>search.scss</DependentUpon>
+    <Content Include="Content\scss\pages\search\account.css">
+      <DependentUpon>account.scss</DependentUpon>
     </Content>
-    <Content Include="Content\scss\pages\search\search.min.css">
-      <DependentUpon>search.css</DependentUpon>
+    <Content Include="Content\scss\pages\search\account.min.css">
+      <DependentUpon>account.css</DependentUpon>
     </Content>
-    <Content Include="Content\scss\pages\search\search.scss" />
+    <Content Include="Content\scss\pages\search\account.scss" />
     <Content Include="Content\scss\pages\subscriber-assignment\subscriber-assignment.min.css">
       <DependentUpon>subscriber-assignment.css</DependentUpon>
     </Content>
     <Content Include="Scripts\search.js" />
+    <Content Include="Scripts\Search\Account\detail-account.js" />
     <Content Include="Scripts\Search\Account\search-account.js" />
     <Content Include="Scripts\SubscriberAssignment\subscriber.js" />
     <Compile Include="Service\Utilities\AppSession.cs" />
@@ -1151,6 +1152,12 @@
     <Content Include="Views\SearchAccount\Index.cshtml" />
     <Content Include="Views\SearchDevice\Index.cshtml" />
     <Content Include="Views\SearchAccount\Detail.cshtml" />
+    <Content Include="Views\SearchAccount\Detail\ChainsToEvidence.cshtml" />
+    <Content Include="Views\SearchAccount\Detail\AccountInfo.cshtml" />
+    <Content Include="Views\SearchAccount\Detail\RetractAndException.cshtml" />
+    <Content Include="Views\SearchAccount\Detail\AssociatedAccount.cshtml" />
+    <Content Include="Views\SearchAccount\Detail\AssociatedDevice.cshtml" />
+    <Content Include="Views\SearchAccount\Detail\TransactionHistory.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />

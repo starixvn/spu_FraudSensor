@@ -137,7 +137,7 @@
     function RenderUserName(obj, userName) {
 
         return `<a class='info-bng' 
-                    href='SearchAccount/GetAccountDetail?accountID=${obj.AccountID}'
+                    href='SearchAccount/DetailAccount?id=${obj.AccountID}'
                     target='_blank'>${userName}
                 </a>`;
     }

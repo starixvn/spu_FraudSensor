@@ -136,7 +136,7 @@
 
         private static void RegisterSearchBundles(BundleCollection bundles)
         {
-            bundles.Add(new ScriptBundle("~/scripts/search-account").Include("~/scripts/Search/Account/*.js"));
+            bundles.Add(new ScriptBundle("~/scripts/account").Include("~/scripts/Search/Account/*.js"));
         }
     }
 }

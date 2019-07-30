@@ -3,11 +3,54 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 @section styles{
-    <link href="~/Content/scss/pages/search/search.css" rel="stylesheet" />
+    <link href="~/Content/scss/pages/search/account.css" rel="stylesheet" />
 }
 
-<h2>Account Detail</h2>
+@Html.Partial("Detail/AccountInfo")
+
+<fieldset class="fieldset-search">
+    <legend>
+        Account Detail 
+        <span class="expand-all">Expand All</span>
+    </legend>
+    <div id="assosiation_report">
+        <h3 class="head" id="chains_evidence_h3" ref="chains_evidence" active="0">
+            <a href="#">Chains To Evidence</a>
+        </h3>
+        <div id="chains_evidence" class="report-cont">
+        </div>
+
+        <h3 class="head" id="retract_evidence_h3" ref="retract_evidence" active="1">
+            <a href="#">Retracted Evidence And Exceptions</a>
+        </h3>
+        <div id="retract_evidence" class="report-cont">
+        </div>
+
+        <h3 class="head" id="associated_account_h3" ref="associated_account" active="2">
+            <a href="#">Associated Accounts</a>
+        </h3>
+        <div id="associated_account" class="report-cont">
+        </div>
+
+        <h3 class="head" id="associated_device_h3" ref="associated_device" active="3">
+            <a href="#">Associated Devices</a>
+        </h3>
+        <div id="associated_device" class="report-cont">
+        </div>
+
+        <h3 class="head" id="transaction_history_h3" ref="transaction_history" active="4">
+            <a href="#">Transaction History</a>
+        </h3>
+        <div id="transaction_history" class="report-cont">
+        </div>
+    </div>
+</fieldset>
 
 @section scripts{
-    @Scripts.Render("~/scripts/search-account")
+    <script type="text/javascript">
+        var KEY_SEARCH = '@ViewBag.KeySearch';
+    </script>
+    <script src="~/Scripts/MultipleSelect/jquery.multiselect.filter.js"></script>
+    <script src="~/Scripts/MultipleSelect/jquery.multiselect.js"></script>
+    @Scripts.Render("~/scripts/account")
 }
