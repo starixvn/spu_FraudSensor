@@ -29,7 +29,7 @@ namespace Fanex.NAP.FS.ArbitrageService
         private readonly Service.ArbitrageService _arbitrageService;
         private readonly MicroService _baseService;
         private bool _isRunning = false;
-        
+
         private DateTime _lastExecuted;
 
         public Runner()
@@ -67,7 +67,7 @@ namespace Fanex.NAP.FS.ArbitrageService
                     var isUm = _baseService.CheckUM();
 
                     if (!isUm)
-                    {                      
+                    {
                         if (!_isRunning)
                         {
                             _isRunning = true;
@@ -100,26 +100,6 @@ namespace Fanex.NAP.FS.ArbitrageService
 
                 Report(false, exception, "Fraud Case is executed at " + DateTime.Now);
             }
-        }       
-
-        private List<ArbitrageCustomer> GroupCustomer(List<int> custIds)
-        {
-            var arbitrageCustomers = custIds.Chunk(500).ToList();
-
-            var taskCustomers = new List<Task<IEnumerable<ArbitrageCustomer>>>();
-
-            foreach (var arbitrageCustomer in arbitrageCustomers)
-            {
-                var taskCustomer = GroupCustomer(arbitrageCustomer);
-
-                taskCustomers.Add(taskCustomer);
-
-                Thread.Sleep(10);
-            }
-
-            Task.WaitAll(taskCustomers.ToArray());
-
-            return taskCustomers.SelectMany(t => t.Result).ToList();
         }
 
         private void ExecuteGroupCustomer(int matchId, List<ArbitrageCustomer> associations, List<ArbitrageTicket> matchIds)
@@ -145,7 +125,7 @@ namespace Fanex.NAP.FS.ArbitrageService
             }
         }
 
-        private async Task<IEnumerable<ArbitrageCustomer>> GroupCustomer(IEnumerable<int> custids)
+        private async Task<IEnumerable<ArbitrageCustomer>> GetGroupCustomerFromGraphDB(IEnumerable<int> custids)
         {
             try
             {
@@ -197,21 +177,19 @@ namespace Fanex.NAP.FS.ArbitrageService
                     ArbitrageTicketList = x.ToList()
                 }).ToList();
 
-            var options = new ParallelOptions() { MaxDegreeOfParallelism = 2 };
-
-            Parallel.ForEach(ticketGroupBy, options, ticket =>
+            foreach (var ticket in ticketGroupBy)
             {
                 var custIds = ticket.ArbitrageTicketList
                     .Select(t => t.CustId)
                     .Distinct()
                     .ToList();
 
-                var groupCustomer = GroupCustomer(custIds);
+                List<ArbitrageCustomer> groupCustomer = GetGroupCustomerFromGraphDB(custIds).Result.ToList();
 
                 ExecuteGroupCustomer(ticket.MatchId, groupCustomer, ticket.ArbitrageTicketList);
 
                 Thread.Sleep(10);
-            });
+            }
 
             _baseService.MonitoringServiceLog();
         }

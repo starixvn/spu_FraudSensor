@@ -52,6 +52,8 @@
 
         public static string GroupCustomerPath => ConfigurationManager.AppSettings["MS-WebAPI-GroupCustomer"];
 
+        public static string GroupCustomerOneLevelPath => ConfigurationManager.AppSettings["MS-WebAPI-GroupCustomerOneLevel"];
+
         public static string CustomerEvidenceApi => ConfigurationManager.AppSettings["FPS-WebAPI-Get-CustomerEvidence"];
 
         public static string SentryLogging => ConfigurationManager.AppSettings["Log-SentryLogging-Config"];
