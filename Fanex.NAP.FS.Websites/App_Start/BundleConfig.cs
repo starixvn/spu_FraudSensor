@@ -57,7 +57,9 @@
                 "~/Scripts/DataTables/jquery.datatables.js",
                 "~/Scripts/toast/jquery.toast.js",
                 "~/Scripts/numeral/numeral.min.js",
-                "~/scripts/multiple-select.js"));
+                "~/scripts/multiple-select.js",
+                "~/Scripts/search.js",
+                "~/Scripts/toogle.js"));
 
             bundles.Add(new ScriptBundle("~/finalize").Include("~/scripts/finalize.js"));
         }

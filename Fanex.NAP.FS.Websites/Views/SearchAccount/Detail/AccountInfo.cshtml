@@ -1,4 +1,4 @@
-﻿
+﻿@model Fanex.NAP.FS.Library.ViewModels.SubscriberAccount.SubscriberAccountDetail
 @{
     ViewBag.Title = "AccountInfo";
 }
@@ -18,23 +18,23 @@
     <div class="filter">
         <div class="form-control">
             <div class="control-label">2. Association</div>
-            <div class="control-label">Associated Accounts: </div>
-            <div class="control-label">Associated Devices: </div>
-            <div class="control-label">Shared Devices: </div>
-            <div class="control-label">No-Shared Devices: </div>
-            <div class="control-label">Account Exceptions: </div>
+            <div class="control-label">Associated Accounts: @Model.AccountInfo.AssociatedAccounts</div>
+            <div class="control-label">Associated Devices: @Model.AccountInfo.AssociatedDevices</div>
+            <div class="control-label">Shared Devices: @Model.AccountInfo.SharedDevices</div>
+            <div class="control-label">No-Shared Devices: @Model.AccountInfo.NoSharedDevices</div>
+            <div class="control-label">Account Exceptions: @Model.AccountInfo.AccountExceptions</div>
         </div>
     </div>
 
     <div class="filter">
         <div class="form-control">
             <div class="control-label">3. Fraud Infomation</div>
-            <div class="control-label">Evidence: </div>
-            <div class="control-label">Problem Account: </div>
-            <div class="control-label">Abnormal: </div>
-            <div class="control-label">Dangerous Level: </div>
-            <div class="control-label">Auto Suspend: </div>
-            <div class="control-label">Commited Fraud Cases: </div>
+            <div class="control-label">Evidence: @Model.AccountInfo.Evidence</div>
+            <div class="control-label">Problem Account: @Model.AccountInfo.ProblemAccount</div>
+            <div class="control-label">Abnormal: @Model.AccountInfo.Abnormal</div>
+            <div class="control-label">Dangerous Level: @Model.AccountInfo.DangerousLevel</div>
+            <div class="control-label">Auto Suspend: @Model.AccountInfo.AutoSuspend</div>
+            <div class="control-label">Commited Fraud Cases: @Model.AccountInfo.CommitedFraudCase</div>
         </div>
     </div>
 </fieldset>

@@ -1051,6 +1051,7 @@
     <Content Include="Scripts\SuspiciousCustomerDetails\suspicious-customer-details.js" />
     <Content Include="Scripts\SuspiciousCustomer\suspicious-customer.js" />
     <Content Include="Scripts\toast\jquery.toast.js" />
+    <Content Include="Scripts\toogle.js" />
     <Content Include="Scripts\umd\popper-utils.js" />
     <Content Include="Scripts\umd\popper-utils.min.js" />
     <Content Include="Scripts\umd\popper.js" />
