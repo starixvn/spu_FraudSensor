@@ -506,7 +506,6 @@
         if (n != 0) {
             $("#DataTables_Table_0_info").text(`Displaying 1 to ${n} of ${n} item(s)`);
         }
-        common.closeLoading();      
     };
 
     function renderArbitrageTicketDetailByGroup(json) {       
@@ -675,17 +674,18 @@
             scrollCollapse: true,
             columnDefs: [
                 { targets: "_all", defaultContent: "-" },
-                { targets: [-5, -4, -3, -2, 6, 7, 8, 9, 18, 19, 20, 21], className: "text-right" },
-                { targets: [-1, 2, 4, 16], className: "text-center" },            
-                { targets: [0, 12], width: "170px" },
-                { targets: [1, 13], width: "145px" },
-                { targets: [2, 14], width: "91px" },
-                { targets: [3, 15], width: "90px" },
-                { targets: [4, 16], width: "75px" },
-                { targets: [5, 17], width: "107px" },
-                { targets: [6, 18], width: "49px" },
-                { targets: [7, 8, 9, 19, 20, 21], width: "70px" },
-                { targets: [10, 22], width: "105px" }
+                { targets: [-5, -4, -3, -2, 6, 7, 8, 9, 19, 20, 21, 22], className: "text-right" },
+                { targets: [-1, 2, 4, 17], className: "text-center" },            
+                { targets: [0, 13], width: "170px" },
+                { targets: [1, 14], width: "145px" },
+                { targets: [2, 15], width: "91px" },
+                { targets: [3, 16], width: "90px" },
+                { targets: [4, 17], width: "75px" },
+                { targets: [5, 18], width: "107px" },
+                { targets: [6, 19], width: "49px" },
+                { targets: [7, 8, 9, 20, 21, 22], width: "70px" },
+                { targets: [10, 23], width: "105px" },
+                { targets: [11, 24], width: "105px" }
             ],
             columns: [
                 { data: obj => obj.Home.Username },
@@ -699,6 +699,7 @@
                 { data: obj => common.formatGridNumber((obj.Home.Stake || {}).ComPT) },
                 { data: obj => common.formatGridNumber((obj.Home.Stake || {}).Full) },
                 { data: obj => obj.Home.TransDate },
+                { data: obj => obj.Home.IP },
                 { data: obj => "", className: "plit-table", width: "5px" },
                 { data: obj => obj.Away.Username },
                 { data: obj => common.makeWrapString((obj.Away.Evidences || []).join(", "), 16), width: "40px" },
@@ -710,7 +711,8 @@
                 { data: obj => common.formatGridNumber((obj.Away.Stake || {}).Virtual) },
                 { data: obj => common.formatGridNumber((obj.Away.Stake || {}).ComPT) },
                 { data: obj => common.formatGridNumber((obj.Away.Stake || {}).Full) },
-                { data: obj => obj.Away.TransDate }
+                { data: obj => obj.Away.TransDate },
+                { data: obj => obj.Away.IP }
             ],
             createdRow: function (row, obj) {
                 if (obj.key) {
@@ -891,17 +893,19 @@
 
     function loadArbitrageTicketGroups(criteria) {       
         var urlGroup = common.modifyRelativeUrl("/MatchMonitor/GetArbitrageTicketsGroupSummary");
-
-        common.showLoading();
         ticket_grid.DataTable().clear();
 
         $.ajax({
             type: 'POST',
             url: urlGroup,
             data: criteria,
+            beforeSend: function() {
+                common.showLoading();
+            },
             success: function (response) {
                 if (response != null) {
                     renderArbitrageGroups(response.Content);
+                    common.closeLoading();
                 }
             },
             error: function (err) {
@@ -1071,7 +1075,10 @@
             liveAwayScore: liveAwayScore,
             handicap: handicap,
             matchId: parameters.matchId,
-            eventDate: parameters.eventDate
+            eventDate: parameters.eventDate,
+            odds: $("#txtOdds").val(),
+            isOnlyCN88: $("#chkOnlyCN88:checked").length > 0,
+            isByIPAndDevice: $("#chkByIPAndDevice:checked").length > 0
         };
 
         return criteria;

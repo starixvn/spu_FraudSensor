@@ -12,55 +12,55 @@
     <link href="~/Content/scss/MultipleSelect/jquery.multiselect.filter.css" rel="stylesheet" />
     <link href="~/Content/scss/MultipleSelect/jquery.multiselect.css" rel="stylesheet" />
     <style>
-    .ui-slider-handle.ui-corner-all.ui-state-default {
-        background: #465262;
-        width: 20px;
-        height: 20px;
-        cursor:pointer;
-    }
+        .ui-slider-handle.ui-corner-all.ui-state-default {
+            background: #465262;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
 
-    .ui-slider.ui-corner-all.ui-slider-horizontal.ui-widget.ui-widget-content{
-        height:5px;
-    }
+        .ui-slider.ui-corner-all.ui-slider-horizontal.ui-widget.ui-widget-content {
+            height: 5px;
+        }
 
-    .ui_tpicker_hour, .ui_tpicker_minute, .ui_tpicker_second {
-        margin-bottom: 15px !important;
-    }
+        .ui_tpicker_hour, .ui_tpicker_minute, .ui_tpicker_second {
+            margin-bottom: 15px !important;
+        }
 
-    .ui-state-active {
-        border: 1px solid #465262;
-        background: #465262;
-        font-weight: normal;
-        color: #fff;
-    }
+        .ui-state-active {
+            border: 1px solid #465262;
+            background: #465262;
+            font-weight: normal;
+            color: #fff;
+        }
 
-    .ui-datepicker.ui-widget-content .ui-state-default.ui-state-hover {
-        background-color: none !important;
-    }
+        .ui-datepicker.ui-widget-content .ui-state-default.ui-state-hover {
+            background-color: none !important;
+        }
 
-    button.ui-datepicker-close.ui-state-default.ui-priority-primary.ui-corner-all.ui-state-hover{
-        background:none;
-    }
+        button.ui-datepicker-close.ui-state-default.ui-priority-primary.ui-corner-all.ui-state-hover {
+            background: none;
+        }
 
-    button.ui-datepicker-current.ui-state-default.ui-priority-secondary.ui-corner-all {
-        background: none;
-    }
+        button.ui-datepicker-current.ui-state-default.ui-priority-secondary.ui-corner-all {
+            background: none;
+        }
 
-    #ddlEvidence_ms {
+        #ddlEvidence_ms {
             width: 345px !important;
-    }
+        }
 
-    #ddlSite_ms {
-        width: 220px !important;
-    }
+        #ddlSite_ms {
+            width: 220px !important;
+        }
 
-    #ddlCurrency_ms {
-        width: 140px !important;
-    }
+        #ddlCurrency_ms {
+            width: 140px !important;
+        }
 
-    .table thead tr th, .table tbody tr td {
-        padding: 8px 4px;
-    }      
+        .table thead tr th, .table tbody tr td {
+            padding: 8px 4px;
+        }
     </style>
 }
 <h1 class="title">@ViewBag.Title</h1>
@@ -105,7 +105,7 @@
                 </select>
             </div>
         </div>
-        <div class="group" style="width:335px;">
+        <div class="group" style="width:365px;">
             <label class="text">Evidence</label>
             <div class="edit-field col_9">
                 <select id="ddlEvidence" multiple="multiple">
@@ -116,6 +116,15 @@
                 </select>
             </div>
         </div>
+        @if ((FraudCaseId)Model.FraudCaseId == FraudCaseId.Arbitrage)
+        {
+            <div class="group" style="width:235px;">
+                <label class="text">Score/HDP</label>
+                <div class="edit-field col_9" style="width: 225px;">
+                    <select class="control" id="scoreHDP"></select>
+                </div>
+            </div>
+        }
     </div>
     <div class="form-filter">
         <div class="group width-160" style="width: 140px;">
@@ -140,15 +149,8 @@
             </div>
         </div>
 
-        @if((FraudCaseId)Model.FraudCaseId == FraudCaseId.Arbitrage)
+        @if ((FraudCaseId)Model.FraudCaseId != FraudCaseId.Arbitrage)
         {
-            <div class="group" style="width:235px;">
-                <label class="text">Score/HDP</label>
-                <div class="edit-field col_9" style="width: 225px;">
-                    <select class="control" id="scoreHDP"></select>
-                </div>
-            </div>
-        } else {
             <div class="group" style="width:235px;">
                 <label class="text">Bet Type</label>
                 <div class="edit-field col_9" style="width: 225px;">
@@ -157,8 +159,29 @@
             </div>
         }
 
-        <button class="button -primary" id="generate">Generate</button>
+        @if ((FraudCaseId)Model.FraudCaseId == FraudCaseId.Arbitrage)
+        {
+            <div class="group" style="width:190px;">
+                <label class="text">Odds >=</label>
+                <div class="edit-field col_9" style="width:174px;">
+                    <input type="number" id="txtOdds" class="form-control" />
+                </div>
+            </div>
+            <div class="group">
+                <label class="checkbox">
+                    <input type="checkbox" checked id="chkOnlyCN88" />
+                    <span>Show Only CN88 Group</span>
+                </label>
+            </div>
+            <div class="group">
+                <label class="checkbox">
+                    <input type="checkbox" id="chkByIPAndDevice" />
+                    <span>By IP & Device</span>
+                </label>
+            </div>
+        }
 
+        <button class="button -primary" id="generate">Generate</button>
     </div>
 }
 
@@ -176,7 +199,7 @@
     <script src="~/Scripts/jquery-ui-1.12.1.min.js"></script>
     <script src="~/Scripts/jquery-ui-timepicker-addon.min.js"></script>
     <script src="~/Scripts/MultipleSelect/jquery.multiselect.filter.js"></script>
-    <script src="~/Scripts/MultipleSelect/jquery.multiselect.js"></script>    
+    <script src="~/Scripts/MultipleSelect/jquery.multiselect.js"></script>
     <script>
         var parameters =
             {

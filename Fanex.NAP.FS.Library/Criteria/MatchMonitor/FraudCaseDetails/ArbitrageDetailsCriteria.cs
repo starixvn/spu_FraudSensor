@@ -82,6 +82,16 @@
         [SpParam(Ignored = true)]
         public int TotalTicket { get; set; }
 
+        [SpParam(Ignored = true)]
+        public bool IsOnlyCN88 { get; set; }
+
+        [SpParam(Ignored = true)]
+        public bool IsByIPAndDevice { get; set; }
+
+        public string Site { get; set; }
+
+        public double? Odds { get; set; }
+
         public override string GetSettingKey()
         {
             return string.Empty;

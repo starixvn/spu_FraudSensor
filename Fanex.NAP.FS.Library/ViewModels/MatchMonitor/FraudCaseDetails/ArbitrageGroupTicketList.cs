@@ -21,5 +21,7 @@
         public decimal Handicap { get; set; }
 
         public int GroupId { get; set; }
+
+        public string IP { get; set; }
     }
 }

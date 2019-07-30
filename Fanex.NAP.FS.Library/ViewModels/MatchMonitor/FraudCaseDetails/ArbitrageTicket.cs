@@ -34,5 +34,7 @@
         public string Score { get; set; }
 
         public bool IsIPFraud { get; set; }
+
+        public string IP { get; set; }
     }
 }

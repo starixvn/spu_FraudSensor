@@ -842,10 +842,12 @@
             IEnumerable<ArbitrageGroupTicketList> ticketDetails;
             var otherEvidenceCodes = AppSettings.Get("FPS_GET_OTHER_EVIDENCES");
 
+            if (criteria.IsOnlyCN88)
+            {
+                criteria.Site = "CN88";
+            }
             var rawTickets = DataService.GetData<TicketInfo>(criteria);
-
-            var sites = criteria.Sites != "All" ? criteria.Sites : null;
-            
+            var sites = criteria.Sites != "All" ? criteria.Sites : null;            
             var custOfSites = FilterCustomersBySites(rawTickets, sites);
 
             if (!custOfSites.Any())
@@ -915,7 +917,8 @@
                     },                   
                     Handicap = (double)(t.Handicap1 - t.Handicap2),
                     Score = $"{t.LiveHomeScore} - {t.LiveAwayScore}",
-                    IsIPFraud = t.IsIPFraud
+                    IsIPFraud = t.IsIPFraud,
+                    IP = t.IP
                 })
                    .OrderBy(g => g.Key.Item1).ThenBy(g => g.Key.Item3).ThenBy(g => g.Key.Item4).ThenBy(g => g.Key.Item2)
                     .Select(g =>
@@ -958,7 +961,7 @@
             var data = rawData
                 .AsParallel()
                 .Where(c => conditionExtract(c.CustId) && conditionSubcriber(c.CustId))
-                .GroupBy(t => Tuple.Create(t.BetTypeId, t.Handicap1 - t.Handicap2, t.LiveHomeScore, t.LiveAwayScore, t.GroupId), t => new ArbitrageTicket
+                .GroupBy(t => Tuple.Create(t.BetTypeId, t.Handicap1 - t.Handicap2, t.LiveHomeScore, t.LiveAwayScore, t.GroupId, t.IP), t => new ArbitrageTicket
                 {
                     BetId = t.TransId,
                     Currency = t.CurrencyName,
@@ -977,9 +980,10 @@
                     },                                       
                     Handicap = (double)(t.Handicap1 - t.Handicap2),
                     Score = $"{t.LiveHomeScore} - {t.LiveAwayScore}",
-                    IsIPFraud = t.IsIPFraud
+                    IsIPFraud = t.IsIPFraud,
+                    IP = t.IP
                 })
-                .OrderBy(g => g.Key.Item1).ThenBy(g=>g.Key.Item3).ThenBy(g=>g.Key.Item4).ThenBy(g => g.Key.Item2)
+                .OrderBy(g => g.Key.Item1).ThenBy(g=>g.Key.Item3).ThenBy(g=>g.Key.Item4).ThenBy(g=>g.Key.Item6).ThenBy(g => g.Key.Item2)
                 .Select(g =>
                 {
                     var tmp = g.OrderBy(t => t.RawTransDate).ThenBy(t => t.Username).ToList();
@@ -993,7 +997,8 @@
                         Score = $"{g.Key.Item3} - {g.Key.Item4}",
                         LiveHomeScore = g.Key.Item3,
                         LiveAwayScore = g.Key.Item4,
-                        GroupId = g.Key.Item5
+                        GroupId = g.Key.Item5,
+                        IP = g.Key.Item6
                     };
                 }).ToList();
 
