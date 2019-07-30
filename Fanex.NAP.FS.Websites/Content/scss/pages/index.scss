@@ -518,6 +518,24 @@
                 top: -5px;
             }
         }
+
+        &.toggle-close {
+            .lines {
+                background: 0 0;
+            }
+
+            .lines:before {
+                top: 0;
+                transform-origin: 50% 50%;
+                transform: rotate3d(0,0,1,45deg);
+            }
+
+            .lines:after {
+                top: 0;
+                transform-origin: 50% 50%;
+                transform: rotate3d(0,0,1,-45deg);
+            }
+        }
     }
 
     .header {
@@ -530,24 +548,102 @@
 
     .main-menu {
         position: fixed;
-        display:block;
-        //left: -264px;
-        left: 0;
+        display: block;
+        left: -264px;
         top: 0;
         width: 264px;
         z-index: 10;
         height: 100%;
         background: #2f323a;
         padding-top: 60px;
-        margin: 0;
-        -webkit-transition: left .25s ease;
-        -moz-transition: left .25s ease;
-        -o-transition: left .25s ease;
+        margin: 0;        
         transition: left .25s ease;
 
-        /*&.visible {
+        .menu-item {
+            .icon {
+                width: 15px;
+            }
+
+            .sub-menu {
+                position: static;
+                display: block;
+                height: 0;
+                max-height: 0;
+                opacity: 1;
+                transform: scale(1);
+                transition: max-height 0.7s;
+                visibility: hidden;
+                overflow: hidden;
+                background: transparent;
+                box-shadow: none;
+                border: none;
+
+                .sub-menu-item > .link {
+                    color: #9AA2B5;
+                    padding-left: 44px;
+
+                    &:hover {
+                        background: transparent;
+                    }
+                }
+            }
+
+            &:target {
+                .sub-menu {
+                    height: auto;
+                    max-height: 15rem;
+                    visibility: visible;
+                    overflow: hidden;
+                    transition: max-height 0.7s;
+                }
+
+                > .link.has-child:after {
+                    transform: rotate(0);
+                    transition: transform .3s ease;
+                }
+            }
+
+            &:hover {
+                .sub-menu {
+                    position: static;
+                    display: block;
+                }
+            }
+
+            > .link {
+                background: #2f323a;
+                padding-left: 20px;
+                padding-right: 20px;
+                position: relative;
+                line-height: 50px;
+
+                &.has-child:after {
+                    position: absolute;
+                    right: 15px;
+                    transform: rotate(-90deg);
+                    transition: transform .3s ease;
+                }
+            }
+        }
+
+        &.visible {
             left: 0;
             transition: left .25s ease;
-        }*/
+        }
+    }
+
+    .cover-bg {
+        display: none;
+        background: rgba(0,0,0,.5);
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 9;
+
+        &.visible {
+            display: block;
+        }
     }
 }
