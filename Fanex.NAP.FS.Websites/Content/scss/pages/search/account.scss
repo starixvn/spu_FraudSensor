@@ -56,3 +56,26 @@
 .content-account {
     width: 800px;
 }
+
+.box-header-title {
+    font-weight: bold;
+    padding: 5px;
+}
+
+.expand-all {
+    padding: 0px 5px 2px 15px;
+    background: url('../../../images/expand_all.png') no-repeat left bottom transparent;
+    font-weight: normal;
+    cursor: pointer;
+}
+
+.collapse-all {
+    padding: 0px 5px 2px 15px;
+    background: url('../../../images/collapse_all.png') no-repeat left bottom transparent;
+    font-weight: normal;
+    cursor: pointer;
+}
+
+.red {
+    color: red;
+}

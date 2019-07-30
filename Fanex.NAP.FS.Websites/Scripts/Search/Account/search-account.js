@@ -122,14 +122,13 @@
 
     function BindDataToGrid(data) {
         if (data != null) {
-            if (data.length > 1) {
+            if (data.length == 1) {
+                window.location.href = common.modifyRelativeUrl('/SearchAccount/DetailAccount?id=' + data[0].AccountID);               
+            } else {
                 table.DataTable().clear().rows.add(data).draw();
                 table.DataTable().columns.adjust();
 
                 common.closeLoading();
-
-            } else {
-                window.location.href = common.modifyRelativeUrl('/SearchAccount/DetailAccount?id=' + data[0].AccountID);
             }
         }        
     }

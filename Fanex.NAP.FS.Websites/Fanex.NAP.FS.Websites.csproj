@@ -364,6 +364,9 @@
     </Compile>
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Content Include="Content\images\ajax-loader.gif" />
+    <Content Include="Content\images\collapse_all.png" />
+    <Content Include="Content\images\expand_all.png" />
     <Content Include="Content\scss\pages\search\account.css">
       <DependentUpon>account.scss</DependentUpon>
     </Content>
