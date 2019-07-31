@@ -364,9 +364,16 @@
     </Compile>
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Content Include="Content\images\account_not_flagged_with_evidence.png" />
+    <Content Include="Content\images\affected_account_by_link_to_evidence.png" />
+    <Content Include="Content\images\affected_device_by_link_to_evidence.png" />
     <Content Include="Content\images\ajax-loader.gif" />
     <Content Include="Content\images\collapse_all.png" />
+    <Content Include="Content\images\dashed_double_arrow.png" />
+    <Content Include="Content\images\double_arrow.png" />
+    <Content Include="Content\images\double_arrow_with_slash.png" />
     <Content Include="Content\images\expand_all.png" />
+    <Content Include="Content\images\flagged_device_by_evidence.png" />
     <Content Include="Content\scss\pages\search\account.css">
       <DependentUpon>account.scss</DependentUpon>
     </Content>
