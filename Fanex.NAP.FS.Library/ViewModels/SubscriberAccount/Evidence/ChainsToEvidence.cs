@@ -9,9 +9,7 @@
 
         public List<EvidenceAccount> Evidences { get; set; }
 
-        public List<ChainLevel> Level1 { get; set; }
-
-        public List<ChainLevel> Level2 { get; set; }
+        public List<ChainNode> Chains { get; set; }      
 
         public string Subscriber { get; set; }
 

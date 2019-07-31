@@ -1,6 +1,6 @@
 ﻿@model Fanex.NAP.FS.Library.ViewModels.SubscriberAccount.Evidence.ChainsToEvidence
 
-<table cellspacing="5">
+<table cellspacing="5" class="table-chains">
     @foreach (var chains in Model.Evidences)
     {
         <tr class="chain-row">
@@ -16,43 +16,44 @@
             </td>
             <td>
                 <div class="chain-evidence">
-                    <a href="#">@chains.CentralPoint</a>
+                    <a href="#">@chains.Evidence.EvidenceName</a>
                 </div>
-            </td>           
+            </td>
         </tr>
     }
 
-    @foreach (var level1 in Model.Level1)
+    @foreach (var chains in Model.Chains)
     {
         <tr class="chain-row">
             <td>
                 <div class="chain-central">
-                    <a href="#">@Model.CentralPoint</a>
-                </div>
-            </td>
-            <td>
-                <div class="chain-relation">                  
-                </div>
-            </td>
-            <td>
-                <div class="chain-device">
-                    <a href="#">@Model.CentralPoint</a>
+                    <a href="#">@chains.NodeParentName</a>
                 </div>
             </td>
             <td>
                 <div class="chain-place">
-                    <span>&nbsp;</span>
+                    <span>&nbsp;&nbsp;</span>
+                </div>
+            </td>
+            <td>
+                <div class="chain-central">
+                    <a href="#">@chains.NodeName</a>
+                </div>
+            </td>
+            <td>
+                <div class="chain-place-dashed">
+                    <span>&nbsp;&nbsp;</span>
                 </div>
             </td>
             <td>
                 <div class="chain-evidence">
-                    <a href="#">@Model.CentralPoint</a>
+                    <a href="#">@chains.Evidence.EvidenceName</a>
                 </div>
             </td>
-            <td></td>
-            <td></td>
         </tr>
     }
 
-  
+
 </table>
+
+<script src="~/Scripts/Evidence/chains-to-evidence.js"></script>

@@ -374,6 +374,12 @@
     <Content Include="Content\images\double_arrow_with_slash.png" />
     <Content Include="Content\images\expand_all.png" />
     <Content Include="Content\images\flagged_device_by_evidence.png" />
+    <Content Include="Content\scss\pages\evidence\evidence.css">
+      <DependentUpon>evidence.scss</DependentUpon>
+    </Content>
+    <Content Include="Content\scss\pages\evidence\evidence.min.css">
+      <DependentUpon>evidence.css</DependentUpon>
+    </Content>
     <Content Include="Content\scss\pages\search\account.css">
       <DependentUpon>account.scss</DependentUpon>
     </Content>
@@ -384,6 +390,8 @@
     <Content Include="Content\scss\pages\subscriber-assignment\subscriber-assignment.min.css">
       <DependentUpon>subscriber-assignment.css</DependentUpon>
     </Content>
+    <Content Include="Scripts\Evidence\chains-to-evidence.js" />
+    <Content Include="Scripts\Evidence\retracted-exception-evidence.js" />
     <Content Include="Scripts\search.js" />
     <Content Include="Scripts\Search\Account\detail-account.js" />
     <Content Include="Scripts\Search\Account\search-account.js" />
@@ -909,6 +917,7 @@
       <DependentUpon>compilerconfig.json</DependentUpon>
     </None>
     <Content Include="Content\scss\pages\subscriber-assignment\subscriber-assignment.scss" />
+    <Content Include="Content\scss\pages\evidence\evidence.scss" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile2.pubxml" />

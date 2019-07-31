@@ -394,7 +394,7 @@
     <Compile Include="Models\MatchMonitor\FraudCaseDetails\TicketInfo.cs" />
     <Compile Include="Models\MatchMonitor\League.cs" />
     <Compile Include="Models\MatchMonitor\Match.cs" />
-    <Compile Include="Models\Subscriber\ChainLevel.cs" />
+    <Compile Include="Models\Subscriber\ChainNode.cs" />
     <Compile Include="Models\Subscriber\EvidenceAccount.cs" />
     <Compile Include="Models\Subscriber\SubscriberAccountInfo.cs" />
     <Compile Include="Models\Subscriber\Subscriber.cs" />

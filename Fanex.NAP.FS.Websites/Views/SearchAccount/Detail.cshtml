@@ -4,6 +4,7 @@
 }
 @section styles{
     <link href="~/Content/scss/pages/search/account.css" rel="stylesheet" />
+    <link href="~/Content/scss/pages/evidence/evidence.css" rel="stylesheet" />
 }
 
 @Html.Partial("Detail/AccountInfo")
@@ -17,7 +18,8 @@
     <div id="assosiation_report" class="ui-accordion ui-widget ui-helper-reset ui-accordion-icons">
         <h3 class="head ui-accordion-header ui-helper-reset ui-state-default ui-corner-all" ref="chains_evidence">
             <span class="ui-icon ui-icon-triangle-1-e"></span>
-            <a href="#">Chains To Evidence 
+            <a href="#">
+                Chains To Evidence
                 <span class="red">(@Model.TotalChainsToEvidence)</span>
             </a>
         </h3>
@@ -27,8 +29,9 @@
 
         <h3 class="head ui-accordion-header ui-helper-reset ui-state-default ui-corner-all" ref="retract_evidence">
             <span class="ui-icon ui-icon-triangle-1-e"></span>
-            <a href="#">Retracted Evidence 
-                <span class="red">(@Model.TotalRetractedEvidence)</span> And Exceptions 
+            <a href="#">
+                Retracted Evidence
+                <span class="red">(@Model.TotalRetractedEvidence)</span> And Exceptions
                 <span class="red">(@Model.TotalException)</span>
             </a>
         </h3>
@@ -38,8 +41,9 @@
 
         <h3 class="head ui-accordion-header ui-helper-reset ui-state-default ui-corner-all" ref="associated_account">
             <span class="ui-icon ui-icon-triangle-1-e"></span>
-            <a href="#">Associated Accounts 
-                <span class="red">(@Model.TotalAssociatedAcount)</span> 
+            <a href="#">
+                Associated Accounts
+                <span class="red">(@Model.TotalAssociatedAcount)</span>
             </a>
         </h3>
         <div id="associated_account" class="report-cont" hidden>
@@ -48,7 +52,8 @@
 
         <h3 class="head ui-accordion-header ui-helper-reset ui-state-default ui-corner-all" ref="associated_device">
             <span class="ui-icon ui-icon-triangle-1-e"></span>
-            <a href="#">Associated Devices 
+            <a href="#">
+                Associated Devices
                 <span class="red">(@Model.TotalAssociatedDevice)</span>
             </a>
         </h3>
@@ -58,7 +63,8 @@
 
         <h3 class="head ui-accordion-header ui-helper-reset ui-state-default ui-corner-all" ref="transaction_history">
             <span class="ui-icon ui-icon-triangle-1-e"></span>
-            <a href="#">Transaction History 
+            <a href="#">
+                Transaction History
                 <span class="red">(@Model.TotalTransactionHistory)</span>
             </a>
         </h3>

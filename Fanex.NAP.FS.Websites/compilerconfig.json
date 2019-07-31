@@ -34,5 +34,9 @@
   {
     "outputFile": "Content/scss/pages/search/account.css",
     "inputFile": "Content/scss/pages/search/account.scss"
+  },
+  {
+    "outputFile": "Content/scss/pages/evidence/evidence.css",
+    "inputFile": "Content/scss/pages/evidence/evidence.scss"
   }
 ]

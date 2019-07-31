@@ -34,7 +34,7 @@
         $.ajax(url, {
             type: 'POST',
             data: {
-                keySearch: ACCOUNTID
+                accountId: ACCOUNTID
             },
             success: function (response) {
                 AppendToHtml('#' + name, response);
@@ -58,7 +58,7 @@
     function AppendToHtml(container, data) {
         $(container).show();
         $(container).html(data);
-    } 
+    }
 
     function ExpandAll() {
         $(assosiation_report).find('.head').each(GetDetail);

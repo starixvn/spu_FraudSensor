@@ -5,6 +5,7 @@
     using System;    
     using System.Collections.Generic;
     using Fanex.NAP.FS.Library.Models.Subscriber;
+    using Fanex.NAP.FS.Library.Models.Account;
 
     public class EvidenceService : IEvidenceService
     {
@@ -21,55 +22,47 @@
         #region Test
         private ChainsToEvidence GetChainsToEvidence_Test(int accountId)
         {
+            var account = new Account();
+            account.Id = accountId;
+            account.UserName = "fpsa_pgmthai";
+            account.UserName2 = "fpsa_pgmthai";
+
             var evidenceAccounts = new List<EvidenceAccount>();
             {
-                for (int i = 0; i < 5; i++)
+                var item = new EvidenceAccount();
                 {
-                    var item = new EvidenceAccount();
+                    item.Id = account.Id;
+                    item.AffectedDate = DateTime.Now;
+                    item.CentralPoint = account.UserName;
+                    item.Comment = "Comment";
+                    item.Evidence = new Evidence { EvidenceCode = "1.1", EvidenceName = "abc" };
+                }
+
+                evidenceAccounts.Add(item);
+            }
+
+            var chains = new List<ChainNode>();
+            {
+                for (int i = 1; i < 10; i++)
+                {
+                    var node = new ChainNode();
                     {
-                        item.Id = 100 + i;
-                        item.AffectedDate = DateTime.Now;
-                        item.CentralPoint = "CentralPoint";
-                        item.Comment = "Comment";
-                        item.EvidenceKey = new Evidence { EvidenceCode = "1.1", EvidenceName = "abc" };
+                        node.Evidence = new Evidence { EvidenceCode = "1." + i, EvidenceName = "xyz_" + i};
+                        node.NodeName = "fpsw_pgmthai_" + i;
+                        node.NodeParentName = account.UserName;
                     }
 
-                    evidenceAccounts.Add(item);
+                    chains.Add(node);
                 }
-            }
-
-            var listChainLevel1 = new List<ChainLevel>();
-            {
-                var level = new ChainLevel();
-                {
-                    level.EvidenceKey = new Evidence { EvidenceCode = "1.1", EvidenceName = "abc" };
-                    level.OL1 = string.Empty;
-                    level.OL2 = "level1";
-                }
-
-                listChainLevel1.Add(level);
-            }
-
-            var listChainLevel2 = new List<ChainLevel>();
-            {
-                var level = new ChainLevel();
-                {
-                    level.EvidenceKey = new Evidence { EvidenceCode = "1.2", EvidenceName = "xyz" };
-                    level.OL1 = "level1";
-                    level.OL2 = "level2";
-                }
-
-                listChainLevel2.Add(level);
             }
 
             var data = new ChainsToEvidence();
             {
-                data.CentralPoint = accountId.ToString();
+                data.CentralPoint = "fpsa_pgmthai";
                 data.Subscriber = "Subscriber";
                 data.ChainsEvidenceType = "Account";
                 data.Evidences = evidenceAccounts;
-                data.Level1 = listChainLevel1;
-                data.Level2 = listChainLevel2;
+                data.Chains = chains;
             }
 
             return data;

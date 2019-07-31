@@ -1,0 +1,49 @@
+﻿body {
+    background-color: #f0f3f8;
+}
+
+.table-chains {
+    padding: 10px;
+
+    td {
+        height: 24px;
+    }
+
+    .chain-central {
+        a {
+            cursor: pointer;
+            text-decoration: underline;
+            color: #000;
+        }
+    }
+
+    .chain-evidence {
+        a {
+            cursor: pointer;
+            text-decoration: underline;
+            color: #000;
+        }
+    }
+
+    .chain-place {
+        padding-top: 5px;
+
+        span {
+            background: url('../../../images/double_arrow.png') no-repeat left center transparent;
+            float: left;
+            padding: 0 15px;
+            color: #000;
+        }
+    }
+
+    .chain-place-dashed {
+        padding-top: 5px;
+
+        span {
+            background: url('../../../images/dashed_double_arrow.png') no-repeat left center transparent;
+            float: left;
+            padding: 0 15px;
+            color: #000;
+        }
+    }
+}
