@@ -12,6 +12,14 @@
     <link href="~/Content/scss/MultipleSelect/jquery.multiselect.filter.css" rel="stylesheet" />
     <link href="~/Content/scss/MultipleSelect/jquery.multiselect.css" rel="stylesheet" />
     <style>
+        input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[type=number] {
+            -moz-appearance: textfield; /* Firefox */
+        }
         .ui-slider-handle.ui-corner-all.ui-state-default {
             background: #465262;
             width: 20px;
@@ -61,6 +69,7 @@
         .table thead tr th, .table tbody tr td {
             padding: 8px 4px;
         }
+
     </style>
 }
 <h1 class="title">@ViewBag.Title</h1>
@@ -161,10 +170,10 @@
 
         @if ((FraudCaseId)Model.FraudCaseId == FraudCaseId.Arbitrage)
         {
-            <div class="group" style="width:190px;">
+            <div class="group" style="width:100px;">
                 <label class="text">Odds >=</label>
-                <div class="edit-field col_9" style="width:174px;">
-                    <input type="number" id="txtOdds" class="form-control" />
+                <div class="edit-field col_9" >
+                    <input type="number" step="0.01" id="txtOdds" class="form-control" style="width:100%"/>
                 </div>
             </div>
             <div class="group">

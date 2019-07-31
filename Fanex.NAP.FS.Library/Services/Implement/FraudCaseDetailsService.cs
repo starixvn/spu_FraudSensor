@@ -847,6 +847,7 @@
             {
                 criteria.Site = "CN88";
             }
+
             var rawTickets = DataService.GetData<TicketInfo>(criteria);
             var sites = criteria.Sites != "All" ? criteria.Sites : null;
             var custOfSites = FilterCustomersBySites(rawTickets, sites);

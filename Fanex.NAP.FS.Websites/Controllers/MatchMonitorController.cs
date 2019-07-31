@@ -246,6 +246,11 @@
         public JsonResult GetFraudCaseArbitrageCustomerDetails(GetArbitrageCustomerCriteria criteria)
         {
             criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
+            if (criteria.IsOnlyCN88)
+            {
+                criteria.Site = "CN88";
+            }
+
             var data = _fraudCaseDetailService.GetArbitrageCustomerDetails(criteria);
 
             return Json(data, JsonRequestBehavior.AllowGet);

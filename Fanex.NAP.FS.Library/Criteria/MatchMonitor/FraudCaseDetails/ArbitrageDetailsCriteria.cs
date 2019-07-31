@@ -7,6 +7,9 @@
     [Serializable]
     public class ArbitrageDetailsCriteria : CriteriaBase
     {
+        private double? odds;
+        private string site;
+
         public int MatchId { get; set; }
 
         public DateTime EventDate { get; set; }
@@ -91,9 +94,17 @@
         [SpParam(Ignored = true)]
         public string IP { get; set; }
 
-        public string Site { get; set; }
+        public string Site
+        {
+            get { return site ?? string.Empty; }
+            set { site = value; }
+        }
 
-        public double? Odds { get; set; }
+        public double? Odds
+        {
+            get { return odds ?? -1; }
+            set { odds = value; }
+        }
 
         public override string GetSettingKey()
         {

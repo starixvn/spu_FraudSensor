@@ -129,7 +129,7 @@ namespace Fanex.NAP.FS.ArbitrageService
         {
             try
             {
-                return await ApiHelper.Post<IEnumerable<ArbitrageCustomer>>(AppSetting.GroupCustomerPath, custids);
+                return await ApiHelper.Post<IEnumerable<ArbitrageCustomer>>(AppSetting.GroupCustomerOneLevelPath, custids);
             }
             catch (Exception ex)
             {

@@ -97,7 +97,7 @@
                     row.GetCell(idx - 1).CellStyle = _cellStyleCurrency;
                     row.CreateCell(idx).SetCellValue(DateTime.Parse(dataAway.Current.TransDate.Replace("<br/>", "")));
                     row.GetCell(idx).CellStyle = _cellStyleDate;
-                    row.CreateCell(idx + 1).SetCellValue(string.Join(",", dataHome.Current.IP));
+                    row.CreateCell(idx + 1).SetCellValue(string.Join(",", dataAway.Current.IP));
                 }
 
                 hasHome = dataHome.MoveNext();
