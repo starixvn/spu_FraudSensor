@@ -508,7 +508,7 @@
         }
     };
 
-    function renderArbitrageTicketDetailByGroup(json) {       
+    function renderArbitrageTicketDetailByGroup(json) {
         ticket_grid.DataTable().clear();
 
         var n = (json || []).reduce((total, obj) => total + Math.max(obj.Home.length, obj.Away.length), 0);
@@ -518,7 +518,7 @@
         var keyName = "";
         var data = (json || []).reduce(function (arr, obj) {
             obj.key = true;          
-            keyName = obj.Score + " " + obj.BettypeName + " " + obj.Handicap + " " + obj.GroupId;
+            keyName = obj.Score + " " + obj.BettypeName + " " + obj.Handicap + " " + obj.GroupId + " " + obj.IP;
             
             if (obj.Home.length + obj.Away.length < 1000) {
 
@@ -541,9 +541,9 @@
         //each list group
         var dataGroup = [];
         $.each(arrGroupTicket, function (index, value) {
-            var keyTemp = value.Score + " " + value.BettypeName + " " + value.Handicap + " " + value.GroupId;
+            var keyTemp = value.Score + " " + value.BettypeName + " " + value.Handicap + " " + value.GroupId + " " + value.IP;
             dataGroup.push(value);
-            if (keyName == keyTemp) {                
+            if (keyName == keyTemp) {
                 var newArray = $.merge(dataGroup, data);
                 dataGroup = newArray;
             }           
@@ -573,11 +573,8 @@
 
                 for (var i = 0; i < n; i++) {
                     var a = {};
-
                     a.Home = obj.Home[i] || {};
-
                     a.Away = obj.Away[i] || {};
-
                     arr.push(a);
                 }
             }
@@ -586,9 +583,7 @@
         }, []);
 
         var n = (json || []).reduce((total, obj) => total + Math.max(obj.Home.length, obj.Away.length), 0);
-
         var t = (json || []).reduce((total, obj) => total + obj.Home.length + obj.Away.length, 0);
-
         ticket_grid.DataTable().rows.add(data).draw();
   
         $("#tickets").text(`By Tickets (${t})`);
@@ -625,6 +620,7 @@
                 groupId: obj.GroupId,
                 bettype: obj.BettypeId,
                 score: obj.Score,
+                ip: obj.IP,
                 liveHomeScore: obj.LiveHomeScore,
                 liveAwayScore: obj.LiveAwayScore,
                 handicap: obj.Handicap
@@ -638,6 +634,7 @@
             criteria.liveHomeScore = obj.LiveHomeScore;
             criteria.liveAwayScore = obj.LiveAwayScore;
             criteria.handicap = obj.Handicap;
+            criteria.ip = obj.IP;
         }
                     
         $.ajax({
@@ -719,14 +716,14 @@
                     var totalTicket = obj.Home.length + obj.Away.length;
                     var td = "";
                     if (totalTicket > 1000) {
-                        td = $(`<td colspan='23' class='group' style='cursor: initial'><span class='icon-chevron-down'></span> <span class='bage'>${obj.BettypeName} ${obj.Handicap}</span> <span class="bage">${obj.Score}</span> <span class='bage'>Tickets: ${totalTicket}</span> <span class="bage muchdata" style="color:red;">Too much data. Export Excel file instead!</span> <button class="button -export"><span class="icon-export-excel"></span></button></td>`);
+                        td = $(`<td colspan='25' class='group' style='cursor: initial'><span class='icon-chevron-down'></span> <span class='bage'>${obj.BettypeName} ${obj.Handicap}</span> <span class="bage">${obj.Score}</span> <span class='bage'>Tickets: ${totalTicket}</span> <span class="bage muchdata" style="color:red;">Too much data. Export Excel file instead!</span> <button class="button -export"><span class="icon-export-excel"></span></button></td>`);
                     }
                     else {
-                        var keyName = obj.Score + " " + obj.BettypeName + " " + obj.Handicap + " " + obj.GroupId;
+                        var keyName = obj.Score + " " + obj.BettypeName + " " + obj.Handicap + " " + obj.GroupId + " " + obj.IP;
                         if (groupExpand == keyName) {
-                            td = $(`<td colspan='23' class='group' style='cursor: initial'><span class='icon-chevron-up' style='cursor: pointer;'></span><span class='bage' style='cursor: pointer;'>${obj.BettypeName} ${obj.Handicap}</span> <span class='bage' style='cursor: pointer;'>${obj.Score}</span> <span class='bage' style='cursor: pointer;'>Tickets: ${totalTicket}</span><button class="button -export"><span class="icon-export-excel"></span></button></td>`);
+                            td = $(`<td colspan='25' class='group' style='cursor: initial'><span class='icon-chevron-up' style='cursor: pointer;'></span><span class='bage' style='cursor: pointer;'>${obj.BettypeName} ${obj.Handicap}</span> <span class='bage' style='cursor: pointer;'>${obj.Score}</span> <span class='bage' style='cursor: pointer;'>Tickets: ${totalTicket}</span><button class="button -export"><span class="icon-export-excel"></span></button></td>`);
                         } else {
-                            td = $(`<td colspan='23' class='group' style='cursor: initial'><span class='icon-chevron-down' style='cursor: pointer;'></span><span class='bage' style='cursor: pointer;'>${obj.BettypeName} ${obj.Handicap}</span> <span class='bage' style='cursor: pointer;'>${obj.Score}</span> <span class='bage' style='cursor: pointer;'>Tickets: ${totalTicket}</span><button class="button -export"><span class="icon-export-excel"></span></button></td>`);
+                            td = $(`<td colspan='25' class='group' style='cursor: initial'><span class='icon-chevron-down' style='cursor: pointer;'></span><span class='bage' style='cursor: pointer;'>${obj.BettypeName} ${obj.Handicap}</span> <span class='bage' style='cursor: pointer;'>${obj.Score}</span> <span class='bage' style='cursor: pointer;'>Tickets: ${totalTicket}</span><button class="button -export"><span class="icon-export-excel"></span></button></td>`);
                         }
                     }                  
                     $(".button.-export", td).click(obj, exportGroupTickets);
@@ -734,16 +731,16 @@
                     
                 }
                 else if (obj.Home.Username == null) {
-                    var td = $("<td colspan='11'></td>");
+                    var td = $("<td colspan='13'></td>");
 
-                    $("td:lt(11)", row).remove();
+                    $("td:lt(13)", row).remove();
 
                     $(row).prepend(td);
                 }
                 else if (obj.Away.Username == null) {
-                    var td = $("<td colspan='11'></td>");
+                    var td = $("<td colspan='13'></td>");
 
-                    $("td:gt(11)", row).remove();
+                    $("td:gt(13)", row).remove();
 
                     $(row).append(td);
                 }              
@@ -919,7 +916,6 @@
             if (groupExportExcel == 0) {
                 var table = ticket_grid.DataTable();
                 var data = table.row(this).data();
-
                 if (data.key == true) {
                     var spanTicketMuch1000 = $('td .muchdata', this);
 
@@ -948,7 +944,7 @@
 
         var url = common.modifyRelativeUrl("/MatchMonitor/GetArbitrageTickets");
         
-        var keyName = obj.Score + " " + obj.BettypeName + " " + obj.Handicap + " " + obj.GroupId;
+        var keyName = obj.Score + " " + obj.BettypeName + " " + obj.Handicap + " " + obj.GroupId + " " + obj.IP;
         groupExpand = keyName;
         
         var criteria = {};
@@ -968,6 +964,7 @@
                 liveAwayScore: obj.LiveAwayScore,
                 groupId: obj.GroupId,
                 score: obj.Score,
+                ip: obj.IP,
                 matchId: parameters.matchId,
                 eventDate: parameters.eventDate
             };
@@ -981,6 +978,7 @@
             criteria.liveAwayScore = obj.LiveAwayScore;
             criteria.groupId = obj.GroupId;
             criteria.score = obj.Score;
+            criteria.ip = obj.IP;
         }
 
         $.post(url, criteria, function (json) {

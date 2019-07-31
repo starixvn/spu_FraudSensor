@@ -88,6 +88,9 @@
         [SpParam(Ignored = true)]
         public bool IsByIPAndDevice { get; set; }
 
+        [SpParam(Ignored = true)]
+        public string IP { get; set; }
+
         public string Site { get; set; }
 
         public double? Odds { get; set; }

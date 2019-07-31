@@ -73,9 +73,10 @@
                     row.GetCell(idx - 1).CellStyle = _cellStyleCurrency;
                     row.CreateCell(idx).SetCellValue(DateTime.Parse(dataHome.Current.TransDate.Replace("<br/>", "")));
                     row.GetCell(idx).CellStyle = _cellStyleDate;
+                    row.CreateCell(idx + 1).SetCellValue(string.Join(",", dataHome.Current.IP));
                 }
 
-                idx = 13;
+                idx = 14;
                 if (hasAway)
                 {
                     var fraudByIP = dataAway.Current.IsIPFraud ? "Yes" : "";
@@ -96,6 +97,7 @@
                     row.GetCell(idx - 1).CellStyle = _cellStyleCurrency;
                     row.CreateCell(idx).SetCellValue(DateTime.Parse(dataAway.Current.TransDate.Replace("<br/>", "")));
                     row.GetCell(idx).CellStyle = _cellStyleDate;
+                    row.CreateCell(idx + 1).SetCellValue(string.Join(",", dataHome.Current.IP));
                 }
 
                 hasHome = dataHome.MoveNext();
