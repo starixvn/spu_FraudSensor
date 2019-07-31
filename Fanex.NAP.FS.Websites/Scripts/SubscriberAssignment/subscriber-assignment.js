@@ -341,12 +341,14 @@
     function DisplayFilter() {
         $('#filter-ismaster').show();
         $('#filter-subs').show();
+        $('#filter-submit').show();
         $(contentSubscribers).css({ 'display': '' });
     }
 
     function HiddenFilter() {
         $('#filter-ismaster').hide();
         $('#filter-subs').hide();
+        $('#filter-submit').hide();
         $(contentSubscribers).css({ 'display': 'none' });
     }
 
@@ -373,7 +375,7 @@
 
         var pageWidth = $(window).width();
         var pageHeight = $(window).height();
-        var height = '600';
+        var height = '580';
 
         if (pageWidth <= 1024) {
             height = '380';
@@ -383,16 +385,16 @@
                 height = '400';
             } 
             else if (pageHeight <= 800) {
-                height = '550';
+                height = '510';
             }
             else if (pageHeight <= 960) {
-                height = '580';
+                height = '530';
             }
             else if (pageHeight <= 1024) {
-                height = '640';
+                height = '550';
             }
             else {
-                height = '600';
+                height = '580';
             }
         } 
 

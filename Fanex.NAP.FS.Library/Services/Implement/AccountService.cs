@@ -1,12 +1,13 @@
 ﻿namespace Fanex.NAP.FS.Library.Services
 {
-    using Fanex.NAP.FS.Library.Models.Subscriber;
-    using Fanex.NAP.FS.Library.ViewModels.SubscriberAccount;
+    using System;
     using System.Linq;
     using System.Collections.Generic;
-    using System;
+    using Fanex.NAP.FS.Library.Models.Subscriber;
+    using Fanex.NAP.FS.Library.ViewModels.SubscriberAccount;
+    using Fanex.NAP.FS.Library.ViewModels.SubscriberAccount.Associated;
 
-    public class SearchAccountService : ISearchAccountService
+    public class AccountService : IAccountService
     {
         public IEnumerable<Subscriber> GetSubscribers()
         {
@@ -18,13 +19,13 @@
             return GetSubscriberAccounts_Test(key, subscribers);
         }
 
-        public SubscriberAccountDetail GetSubscriberAccountDetail(int accountID)
+        public SubscriberAccountDetail GetSubscriberAccountDetail(int accountId)
         {
             var data = new SubscriberAccountDetail();
             {
                 data.AccountInfo = new SubscriberAccountInfo();
                 {
-                    data.AccountInfo.AccountID = accountID;
+                    data.AccountInfo.AccountID = accountId;
                     data.AccountInfo.FirstLogin = DateTime.Now;
                     data.AccountInfo.LastLogin = DateTime.Now;
                     data.AccountInfo.FrequencyLogin = 1;
@@ -34,7 +35,13 @@
             return data;
         }
 
-        private List<Subscriber> GetSubscribers_Test()
+        public IEnumerable<AssociatedAccount> GetAssociatedAccount(int accountId)
+        {
+            return GetAssociatedAccount_Test(accountId);
+        }
+
+        #region Test
+        private IEnumerable<Subscriber> GetSubscribers_Test()
         {
             var i = 1;
 
@@ -60,7 +67,7 @@
             return data.OrderBy(s => s.SubscriberName).ToList();
         }
 
-        private List<SubscriberAccount> GetSubscriberAccounts_Test(string key, string subscribers)
+        private IEnumerable<SubscriberAccount> GetSubscriberAccounts_Test(string key, string subscribers)
         {
             var i = 1;
 
@@ -104,6 +111,12 @@
                         .OrderBy(a => a.SubscriberName)
                         .ThenBy(a => a.UserName1)                       
                         .ToList();
+        }       
+
+        private IEnumerable<AssociatedAccount> GetAssociatedAccount_Test(int accountId)
+        {
+            return new List<AssociatedAccount>();
         }
+        #endregion
     }
 }

@@ -1,7 +1,58 @@
-﻿
-@{
-    ViewBag.Title = "ChainsToEvidence";
-}
+﻿@model Fanex.NAP.FS.Library.ViewModels.SubscriberAccount.Evidence.ChainsToEvidence
 
-<h2>ChainsToEvidence</h2>
+<table cellspacing="5">
+    @foreach (var chains in Model.Evidences)
+    {
+        <tr class="chain-row">
+            <td>
+                <div class="chain-central">
+                    <a href="#">@chains.CentralPoint</a>
+                </div>
+            </td>
+            <td>
+                <div class="chain-place">
+                    <span>&nbsp;</span>
+                </div>
+            </td>
+            <td>
+                <div class="chain-evidence">
+                    <a href="#">@chains.CentralPoint</a>
+                </div>
+            </td>           
+        </tr>
+    }
 
+    @foreach (var level1 in Model.Level1)
+    {
+        <tr class="chain-row">
+            <td>
+                <div class="chain-central">
+                    <a href="#">@Model.CentralPoint</a>
+                </div>
+            </td>
+            <td>
+                <div class="chain-relation">                  
+                </div>
+            </td>
+            <td>
+                <div class="chain-device">
+                    <a href="#">@Model.CentralPoint</a>
+                </div>
+            </td>
+            <td>
+                <div class="chain-place">
+                    <span>&nbsp;</span>
+                </div>
+            </td>
+            <td>
+                <div class="chain-evidence">
+                    <a href="#">@Model.CentralPoint</a>
+                </div>
+            </td>
+            <td></td>
+            <td></td>
+        </tr>
+    }
+
+  
+</table>

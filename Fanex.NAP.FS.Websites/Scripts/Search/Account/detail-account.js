@@ -6,8 +6,8 @@
     var containers = [
         { name: "chains_evidence", url: common.modifyRelativeUrl('/SearchAccount/ChainsToEvidence') },
         { name: "retract_evidence", url: common.modifyRelativeUrl('/SearchAccount/RetractAndException') },
-        { name: "associated_account", url: common.modifyRelativeUrl('/SearchAccount/AssociatedAccount') },
-        { name: "associated_device", url: common.modifyRelativeUrl('/SearchAccount/AssociatedDevice') },
+        { name: "associated_account", url: common.modifyRelativeUrl('/SearchAccount/AssociatedAccountByAccount') },
+        { name: "associated_device", url: common.modifyRelativeUrl('/SearchAccount/AssociatedDeviceByAccount') },
         { name: "transaction_history", url: common.modifyRelativeUrl('/SearchAccount/TransactionHistory') }
     ];   
 
@@ -34,7 +34,7 @@
         $.ajax(url, {
             type: 'POST',
             data: {
-                keySearch: KEY_SEARCH
+                keySearch: ACCOUNTID
             },
             success: function (response) {
                 AppendToHtml('#' + name, response);

@@ -8,10 +8,15 @@
     [NapAuth(FunctionKey = FSFunctionKeys.SearchAccount, Policy = Core.Business.Constant.Policy.Read)]
     public class SearchAccountController : BaseController
     {
-        private readonly ISearchAccountService _searchAccountService;
+        private readonly IAccountService _accountService;
+        private readonly IEvidenceService _evidenceService;
+        private readonly ITransactionService _transactionService;
+
         public SearchAccountController()
         {
-            _searchAccountService = new SearchAccountService();
+            _accountService = new AccountService();
+            _evidenceService = new EvidenceService();
+            _transactionService = new TransactionService();
         }
 
         public ActionResult Index()
@@ -28,7 +33,7 @@
 
         public ActionResult GetSubscribers()
         {
-            var data = _searchAccountService.GetSubscribers();
+            var data = _accountService.GetSubscribers();
 
             return Json(data, JsonRequestBehavior.AllowGet);
         }
@@ -42,7 +47,7 @@
 
         public ActionResult SearchSubscriberAccount(string key, string subscribers)
         {
-            var data = _searchAccountService.SearchSubscriberAccounts(key, subscribers);
+            var data = _accountService.SearchSubscriberAccounts(key, subscribers);
 
             return Json(data, JsonRequestBehavior.AllowGet);
         }
@@ -51,44 +56,46 @@
 
         public ActionResult DetailAccount(int id)
         {
-            var data = _searchAccountService.GetSubscriberAccountDetail(id);
+            var data = _accountService.GetSubscriberAccountDetail(id);
+
+            ViewBag.AccountId = id;
 
             return View("Detail", data);
         }
 
-        public ActionResult ChainsToEvidence(string keySearch)
+        public ActionResult ChainsToEvidence(int accountId)
         {
-            var model = "ChainsToEvidence Content";
+            var data = _evidenceService.GetChainsToEvidence(accountId);
 
-            return PartialView("Detail/ChainsToEvidence", model);
+            return PartialView("Detail/ChainsToEvidence", data);
         }
 
-        public ActionResult RetractAndException(string keySearch)
+        public ActionResult RetractAndException(int accountId)
         {
-            var model = "RetractAndException Content";
+            var data = _evidenceService.GetRetractedEvidenceAndException(accountId);
 
-            return PartialView("Detail/RetractAndException", model);
+            return PartialView("Detail/RetractAndException", data);
         }
 
-        public ActionResult AssociatedAccount(string keySearch)
+        public ActionResult AssociatedAccountByAccount(int accountId)
         {
-            var model = "RetractAndException Content";
+            var data = _accountService.GetAssociatedAccount(accountId);
 
-            return PartialView("Detail/AssociatedAccount", model);
+            return PartialView("Detail/AssociatedAccount", data);
         }
 
-        public ActionResult AssociatedDevice(string keySearch)
+        public ActionResult AssociatedDeviceByAccount(int accountId)
         {
-            var model = "RetractAndException Content";
+            var data = _accountService.GetAssociatedAccount(accountId);
 
-            return PartialView("Detail/AssociatedDevice", model);
+            return PartialView("Detail/AssociatedDevice", data);
         }
 
-        public ActionResult TransactionHistory(string keySearch)
+        public ActionResult TransactionHistory(int accountId)
         {
-            var model = "RetractAndException Content";
+            var data = _transactionService.GetTransactionHistory(accountId);
 
-            return PartialView("Detail/TransactionHistory", model);
+            return PartialView("Detail/TransactionHistory", data);
         }
 
         #endregion
