@@ -1178,6 +1178,7 @@
     <Content Include="Views\SearchAccount\Detail\AssociatedAccount.cshtml" />
     <Content Include="Views\SearchAccount\Detail\AssociatedDevice.cshtml" />
     <Content Include="Views\SearchAccount\Detail\TransactionHistory.cshtml" />
+    <Content Include="Views\SearchAccount\Detail\FormException.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />

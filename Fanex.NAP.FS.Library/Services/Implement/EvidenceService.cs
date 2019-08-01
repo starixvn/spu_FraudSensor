@@ -33,7 +33,7 @@
                 {
                     item.Id = account.Id;
                     item.AffectedDate = DateTime.Now;
-                    item.CentralPoint = account.UserName;
+                    item.NodeRoot = account.UserName;
                     item.Comment = "Comment";
                     item.Evidence = new Evidence { EvidenceCode = "1.1", EvidenceName = "abc" };
                 }
@@ -48,8 +48,8 @@
                     var node = new ChainNode();
                     {
                         node.Evidence = new Evidence { EvidenceCode = "1." + i, EvidenceName = "xyz_" + i};
-                        node.NodeName = "fpsw_pgmthai_" + i;
-                        node.NodeParentName = account.UserName;
+                        node.NodeCurrent = "fpsw_pgmthai_" + i;
+                        node.NodeParent = account.UserName;
                     }
 
                     chains.Add(node);
@@ -58,7 +58,7 @@
 
             var data = new ChainsToEvidence();
             {
-                data.CentralPoint = "fpsa_pgmthai";
+                data.NodeRoot = "fpsa_pgmthai";
                 data.Subscriber = "Subscriber";
                 data.ChainsEvidenceType = "Account";
                 data.Evidences = evidenceAccounts;
@@ -70,7 +70,12 @@
 
         private RetractedEvidenceAndException GetRetractedEvidenceAndException_Test(int accountId)
         {
+            var chainException = GetChainsToEvidence_Test(accountId);
+            var chainRetracted = GetChainsToEvidence_Test(accountId);
+
             var data = new RetractedEvidenceAndException();
+            data.Exception = chainException;
+            data.Retracted = chainRetracted;
 
             return data;
         }

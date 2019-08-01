@@ -6,11 +6,11 @@
   .table-chains td {
     height: 24px; }
   .table-chains .chain-central a {
-    cursor: pointer;
+    cursor: text;
     text-decoration: underline;
     color: #000; }
   .table-chains .chain-evidence a {
-    cursor: pointer;
+    cursor: text;
     text-decoration: underline;
     color: #000; }
   .table-chains .chain-place {
@@ -19,11 +19,18 @@
       background: url("../../../images/double_arrow.png") no-repeat left center transparent;
       float: left;
       padding: 0 15px;
-      color: #000; }
+      color: #000;
+      cursor: pointer; }
   .table-chains .chain-place-dashed {
     padding-top: 5px; }
     .table-chains .chain-place-dashed span {
       background: url("../../../images/dashed_double_arrow.png") no-repeat left center transparent;
       float: left;
       padding: 0 15px;
-      color: #000; }
+      color: #000;
+      cursor: pointer; }
+
+.table-exception {
+  padding: 10px; }
+  .table-exception tr {
+    height: 28px; }

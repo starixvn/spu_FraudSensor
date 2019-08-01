@@ -6,7 +6,7 @@
         <tr class="chain-row">
             <td>
                 <div class="chain-central">
-                    <a href="#">@chains.CentralPoint</a>
+                    <a href="#">@chains.NodeRoot</a>
                 </div>
             </td>
             <td>
@@ -27,7 +27,7 @@
         <tr class="chain-row">
             <td>
                 <div class="chain-central">
-                    <a href="#">@chains.NodeParentName</a>
+                    <a href="#">@chains.NodeParent</a>
                 </div>
             </td>
             <td>
@@ -37,7 +37,7 @@
             </td>
             <td>
                 <div class="chain-central">
-                    <a href="#">@chains.NodeName</a>
+                    <a href="#">@chains.NodeCurrent</a>
                 </div>
             </td>
             <td>
@@ -53,7 +53,10 @@
         </tr>
     }
 
-
 </table>
 
-<script src="~/Scripts/Evidence/chains-to-evidence.js"></script>
+<script type="text/javascript">    
+    chains_to_evidence();
+</script>
+
+@Html.Partial("Detail/FormException")

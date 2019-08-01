@@ -6,8 +6,8 @@
     {
         public Evidence Evidence { get; set; }
 
-        public string NodeName { get; set; }
+        public string NodeCurrent { get; set; }
 
-        public string NodeParentName { get; set; }
+        public string NodeParent { get; set; }
     }
 }

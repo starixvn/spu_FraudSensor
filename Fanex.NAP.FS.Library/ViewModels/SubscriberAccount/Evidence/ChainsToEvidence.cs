@@ -5,7 +5,7 @@
 
     public class ChainsToEvidence
     {
-        public string CentralPoint { get; set; }
+        public string NodeRoot { get; set; }
 
         public List<EvidenceAccount> Evidences { get; set; }
 

@@ -1,7 +1,76 @@
-﻿
-@{
-    ViewBag.Title = "RetractAndException";
+﻿@model Fanex.NAP.FS.Library.ViewModels.SubscriberAccount.Evidence.RetractedEvidenceAndException
+
+@{ 
+    var listChains = new List<Fanex.NAP.FS.Library.ViewModels.SubscriberAccount.Evidence.ChainsToEvidence>();
+
+    if (Model != null)
+    {
+        if (Model.Retracted != null)
+        {
+            listChains.Add(Model.Retracted);
+        }
+        if (Model.Exception != null)
+        {
+            listChains.Add(Model.Exception);
+        }
+    }
 }
 
-<h2>RetractAndException</h2>
+<table cellspacing="5" class="table-chains">
+    @foreach (var chains in listChains)
+    {
+        foreach (var item in chains.Evidences)
+        {
+            <tr class="chain-row">
+                <td>
+                    <div class="chain-central">
+                        <a href="#">@item.NodeRoot</a>
+                    </div>
+                </td>
+                <td>
+                    <div class="chain-place">
+                        <span>&nbsp;</span>
+                    </div>
+                </td>
+                <td>
+                    <div class="chain-evidence">
+                        <a href="#">@item.Evidence.EvidenceName</a>
+                    </div>
+                </td>
+            </tr>
+        }
 
+        foreach (var item in chains.Chains)
+        {
+            <tr class="chain-row">
+                <td>
+                    <div class="chain-central">
+                        <a href="#">@item.NodeParent</a>
+                    </div>
+                </td>
+                <td>
+                    <div class="chain-place">
+                        <span>&nbsp;&nbsp;</span>
+                    </div>
+                </td>
+                <td>
+                    <div class="chain-central">
+                        <a href="#">@item.NodeCurrent</a>
+                    </div>
+                </td>
+                <td>
+                    <div class="chain-place-dashed">
+                        <span>&nbsp;&nbsp;</span>
+                    </div>
+                </td>
+                <td>
+                    <div class="chain-evidence">
+                        <a href="#">@item.Evidence.EvidenceName</a>
+                    </div>
+                </td>
+            </tr>
+        }
+    }
+</table>
+
+@*<script type="text/javascript"></script>*@

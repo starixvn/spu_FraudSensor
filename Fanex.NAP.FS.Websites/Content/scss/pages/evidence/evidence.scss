@@ -11,7 +11,7 @@
 
     .chain-central {
         a {
-            cursor: pointer;
+            cursor: text;
             text-decoration: underline;
             color: #000;
         }
@@ -19,7 +19,7 @@
 
     .chain-evidence {
         a {
-            cursor: pointer;
+            cursor: text;
             text-decoration: underline;
             color: #000;
         }
@@ -33,6 +33,7 @@
             float: left;
             padding: 0 15px;
             color: #000;
+            cursor: pointer;
         }
     }
 
@@ -44,6 +45,15 @@
             float: left;
             padding: 0 15px;
             color: #000;
+            cursor: pointer;
         }
+    }
+}
+
+.table-exception {
+    padding: 10px;
+
+    tr {
+        height: 28px;
     }
 }

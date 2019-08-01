@@ -12,7 +12,7 @@
 
         public Evidence Evidence { get; set; }
 
-        public string CentralPoint { get; set; }        
+        public string NodeRoot { get; set; }        
 
         public DateTime AffectedDate { get; set; }
 
