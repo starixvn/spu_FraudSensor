@@ -70,6 +70,13 @@
             return PartialView("Detail/ChainsToEvidence", data);
         }
 
+        public ActionResult AddException(int accountId, int exceptionAccountId, string comment)
+        {
+            var data = "";
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
         public ActionResult RetractAndException(int accountId)
         {
             var data = _evidenceService.GetRetractedEvidenceAndException(accountId);

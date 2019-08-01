@@ -2,8 +2,6 @@
 {
     public class RetractedEvidenceAndException
     {
-        public ChainsToEvidence Retracted { get; set; }
-
-        public ChainsToEvidence Exception { get; set; }
+        public ChainsToEvidence ChainsToEvidence { get; set; }
     }
 }

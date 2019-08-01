@@ -70,12 +70,8 @@
 
         private RetractedEvidenceAndException GetRetractedEvidenceAndException_Test(int accountId)
         {
-            var chainException = GetChainsToEvidence_Test(accountId);
-            var chainRetracted = GetChainsToEvidence_Test(accountId);
-
             var data = new RetractedEvidenceAndException();
-            data.Exception = chainException;
-            data.Retracted = chainRetracted;
+            data.ChainsToEvidence = GetChainsToEvidence_Test(accountId);
 
             return data;
         }

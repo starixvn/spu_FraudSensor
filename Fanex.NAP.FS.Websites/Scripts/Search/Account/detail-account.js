@@ -1,7 +1,8 @@
 ﻿function detail_account() {
     var assosiation_report = $('#assosiation_report');
     var collapseAll = ('.collapse-all');
-    var expandAll = $('.expand-all');
+    var expandAll = $('.expand-all');    
+    var chains_evidence;
 
     var containers = [
         { name: "chains_evidence", url: common.modifyRelativeUrl('/SearchAccount/ChainsToEvidence') },
@@ -58,7 +59,9 @@
     function AppendToHtml(container, data) {
         $(container).show();
         $(container).html(data);
-    }
+
+        InitTabsHelper(container);
+    }    
 
     function ExpandAll() {
         $(assosiation_report).find('.head').each(GetDetail);
@@ -78,11 +81,42 @@
         $(expandAll).show();        
     }
 
+    function InitTabsHelper(container) {
+        switch (container) {
+            case "#chains_evidence":
+                chains_evidence = new chains_to_evidence(ACCOUNTID);
+
+                $('span', $('.chain-place')).click(OpenAddException);
+                $('#btn_cancel').click(CloseException);
+                $('#btn_addException').click(AddException);              
+
+                break;
+            default:
+                break;
+        }
+    }
+
+    function CloseException() {
+        chains_evidence.CloseException();
+    }
+
+    function OpenAddException() {
+        chains_evidence.OpenAddException();
+    }    
+
+    function AddException() {
+        var id = 123;
+        chains_evidence.AddException(id);
+
+        GetInformation("chains_evidence", GetUrl("chains_evidence"));        
+    }
+
     $(assosiation_report).find('.head').each(function () {
         $(this).click(GetDetail);
     });
 
     $(expandAll).click(ExpandAll);
+
     $(collapseAll).click(CollapseAll);
 }
 
