@@ -161,7 +161,7 @@
 
         private void MergeRange(ISheet sheet, IRow row)
         {
-            sheet.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(row.RowNum, row.RowNum, 0, 24));
+            sheet.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(row.RowNum, row.RowNum, 0, 26));
         }
     }
 }

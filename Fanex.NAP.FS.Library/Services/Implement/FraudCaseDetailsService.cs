@@ -400,7 +400,7 @@
                 return new List<FlaggedAccountTicket>();
             }
 
-            var custOfEvidences = FilterCustomersByEvidences(custOfSites, evidenceList);
+            var custOfEvidences = GetCustomersEvidencesFromMS(custOfSites, evidenceList);
 
             if (criteria.EvidenceCodeList != null && criteria.EvidenceCodeList.Contains(otherEvidenceCodes))
             {
@@ -427,18 +427,14 @@
             return customersBySites.SelectMany(t => t.Result);
         }
 
-        private static IEnumerable<CustomerEvidence> FilterCustomersByEvidences(IEnumerable<CustomerSubcriber> customerBySites, string evidenceList)
+        private static IEnumerable<CustomerEvidence> GetCustomersEvidencesFromMS(IEnumerable<CustomerSubcriber> customerBySites, string evidenceList)
         {
             var urlCustEvidences = AppSettings.Get("FPS_WEBAPI_GET_CUSTOMER_EVIDENCE");
-
-            Logger.Log.Info("Call [FPS_WEBAPI_GET_CUSTOMER_EVIDENCE] - Start");
 
             var customerByEvidences = customerBySites.Select(c => c.CustId).Distinct().Chunk(500)
                                        .Select(q => ApiHelper.Post<IEnumerable<CustomerEvidence>>(urlCustEvidences, new CustomerEvidenceList { CustIdList = string.Join(",", q), EvidenceCodeList = evidenceList }))
                                        .ToArray();
             Task.WaitAll(customerByEvidences);
-
-            Logger.Log.Info("Call [FPS_WEBAPI_GET_CUSTOMER_EVIDENCE] - End");
 
             return customerByEvidences.SelectMany(t => t.Result);
         }
@@ -840,7 +836,7 @@
 
         public IEnumerable<ArbitrageGroupTicketList> GetArbitrageTickets(GetArbitrageTicketCriteria criteria, bool isSummary)
         {
-            IEnumerable<ArbitrageGroupTicketList> ticketDetails;
+            IEnumerable<ArbitrageGroupTicketList> ticketDetails = new List<ArbitrageGroupTicketList>();
             var otherEvidenceCodes = AppSettings.Get("FPS_GET_OTHER_EVIDENCES");
 
             if (criteria.IsOnlyCN88)
@@ -852,46 +848,44 @@
             var sites = criteria.Sites != "All" ? criteria.Sites : null;
             var custOfSites = FilterCustomersBySites(rawTickets, sites);
 
-            if (!custOfSites.Any())
+            if (custOfSites.Any())
             {
-                return new List<ArbitrageGroupTicketList>();
-            }
+                var evidenceCodes = CheckCriteriaEvidenceOthers(criteria.EvidenceCodeList, otherEvidenceCodes);
+                var custOfEvidences = GetCustomersEvidencesFromMS(custOfSites, evidenceCodes);
 
-            var evidenceCodes = CheckCriteriaEvidenceOthers(criteria.EvidenceCodeList, otherEvidenceCodes);
-
-            var custOfEvidences = FilterCustomersByEvidences(custOfSites, evidenceCodes);
-
-            if (criteria.EvidenceCodeList != null && criteria.EvidenceCodeList.Contains(otherEvidenceCodes))
-            {
-                ticketDetails = FilterArbitrageTicketsEvidenceOthers(rawTickets, custOfSites, custOfEvidences, criteria.EvidenceCodeList, criteria.IsByIPAndDevice);
-
-                if (!isSummary)
+                if (criteria.EvidenceCodeList != null && criteria.EvidenceCodeList.Contains(otherEvidenceCodes))
                 {
-                    ticketDetails = ticketDetails.Where(g => g.GroupId == criteria.GroupId && g.Score == criteria.Score && g.Handicap == (decimal)criteria.Handicap);
-                    if (criteria.IsByIPAndDevice)
+                    ticketDetails = FilterArbitrageTicketsEvidenceOthers(rawTickets, custOfSites, custOfEvidences, criteria.EvidenceCodeList, criteria.IsByIPAndDevice);
+                    if (!isSummary)
                     {
-                        ticketDetails = ticketDetails.Where(g => g.IP == criteria.IP);
+                        ticketDetails = ticketDetails.Where(g => g.GroupId == criteria.GroupId && g.Score == criteria.Score && g.Handicap == (decimal)criteria.Handicap);
+                        if (criteria.IsByIPAndDevice)
+                        {
+                            ticketDetails = ticketDetails.Where(g => g.IP == criteria.IP);
+                        }
                     }
                 }
-
-                return ticketDetails;
-            }
-
-            ticketDetails = FilterArbitrageTickets(rawTickets, custOfSites, custOfEvidences, string.IsNullOrEmpty(criteria.EvidenceCodeList), criteria.IsByIPAndDevice);
-
-            if (!isSummary)
-            {
-                ticketDetails = ticketDetails.Where(g => g.GroupId == criteria.GroupId && g.Score == criteria.Score && g.Handicap == (decimal)criteria.Handicap);
-                if (criteria.IsByIPAndDevice)
+                else
                 {
-                    ticketDetails = ticketDetails.Where(g => g.IP == criteria.IP);
+                    ticketDetails = FilterArbitrageTickets(rawTickets, custOfSites, custOfEvidences, string.IsNullOrEmpty(criteria.EvidenceCodeList), criteria.IsByIPAndDevice);
+                    if (!isSummary)
+                    {
+                        ticketDetails = ticketDetails.Where(g => g.GroupId == criteria.GroupId && g.Score == criteria.Score && g.Handicap == (decimal)criteria.Handicap);
+                        if (criteria.IsByIPAndDevice)
+                        {
+                            ticketDetails = ticketDetails.Where(g => g.IP == criteria.IP);
+                        }
+                    }
                 }
             }
 
             return ticketDetails;
         }
 
-        private IEnumerable<ArbitrageGroupTicketList> FilterArbitrageTicketsEvidenceOthers(IEnumerable<TicketInfo> rawData, IEnumerable<CustomerSubcriber> custSubcribers, IEnumerable<CustomerEvidence> evidences, string lstEvidenceSelected, bool isByIPAndDevice)
+        private IEnumerable<ArbitrageGroupTicketList> FilterArbitrageTicketsEvidenceOthers(
+            IEnumerable<TicketInfo> rawData, 
+            IEnumerable<CustomerSubcriber> custSubcribers, 
+            IEnumerable<CustomerEvidence> evidences, string lstEvidenceSelected, bool isByIPAndDevice)
         {
             // fiter by Sites
             var custIds = custSubcribers.Select(c => c.CustId);
@@ -904,7 +898,8 @@
             var lstEvidenceExtract = evidenceExtract.Select(c => (long)c.CustId).ToList();
 
             Func<long, bool> conditionExtract = f => !lstEvidenceExtract.Contains(f);
-
+            Func<IEnumerable<ArbitrageTicket>, IEnumerable<ArbitrageTicket>, bool> CheckArbitrageRule = (lstHome, lstAway)
+                    => lstHome.Count() > 0 && lstAway.Count() > 0 && lstHome.Sum(t => t.Stake.Full) > 500 && lstAway.Sum(t => t.Stake.Full) > 500;
             var data = new List<ArbitrageGroupTicketList>();
             if (isByIPAndDevice)
             {
@@ -950,7 +945,7 @@
                             GroupId = g.Key.Item5,
                             IP = g.Key.Item6
                         };
-                    }).ToList();
+                    }).Where(a => CheckArbitrageRule(a.Home, a.Away)).ToList();
             }
             else
             {
@@ -1018,7 +1013,9 @@
                 conditionExtract = f => listEvidenceByCus.Contains(f);
             }
 
-            var data = new List<ArbitrageGroupTicketList>();
+            Func<IEnumerable<ArbitrageTicket> ,IEnumerable<ArbitrageTicket>, bool> CheckArbitrageRule = (lstHome, lstAway) 
+                    => lstHome.Count() > 0 && lstAway.Count() > 0 && lstHome.Sum(t => t.Stake.Full) > 500 && lstAway.Sum(t => t.Stake.Full) > 500;
+            List<ArbitrageGroupTicketList> data = new List<ArbitrageGroupTicketList>();
             if (isByIPAndDevice)
             {
                 data = rawData.AsParallel().Where(c => conditionExtract(c.CustId) && conditionSubcriber(c.CustId))
@@ -1061,7 +1058,7 @@
                                 GroupId = g.Key.Item5,
                                 IP = g.Key.Item6
                             };
-                        }).ToList();
+                        }).Where(a => CheckArbitrageRule(a.Home,a.Away)).ToList();
             }
             else
             {
