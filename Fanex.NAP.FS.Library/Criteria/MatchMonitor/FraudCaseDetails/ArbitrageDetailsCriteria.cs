@@ -102,7 +102,7 @@
 
         public double? Odds
         {
-            get { return odds ?? -1; }
+            get { return odds ?? 0; }
             set { odds = value; }
         }
 

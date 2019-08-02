@@ -843,8 +843,8 @@
             {
                 criteria.Site = "CN88";
             }
-            
-            var rawTickets = DataService.GetData<TicketInfo>(criteria); 
+
+            var rawTickets = DataService.GetData<TicketInfo>(criteria);
             var sites = criteria.Sites != "All" ? criteria.Sites : null;
             var custOfSites = FilterCustomersBySites(rawTickets, sites);
 
@@ -883,8 +883,8 @@
         }
 
         private IEnumerable<ArbitrageGroupTicketList> FilterArbitrageTicketsEvidenceOthers(
-            IEnumerable<TicketInfo> rawData, 
-            IEnumerable<CustomerSubcriber> custSubcribers, 
+            IEnumerable<TicketInfo> rawData,
+            IEnumerable<CustomerSubcriber> custSubcribers,
             IEnumerable<CustomerEvidence> evidences, string lstEvidenceSelected, bool isByIPAndDevice, bool isOnlyCN88)
         {
             // fiter by Sites
@@ -999,8 +999,8 @@
         }
 
         private IEnumerable<ArbitrageGroupTicketList> FilterArbitrageTickets(
-            IEnumerable<TicketInfo> rawData, 
-            IEnumerable<CustomerSubcriber> custSubcribers, IEnumerable<CustomerEvidence> evidences, 
+            IEnumerable<TicketInfo> rawData,
+            IEnumerable<CustomerSubcriber> custSubcribers, IEnumerable<CustomerEvidence> evidences,
             bool isAllEvidence, bool isByIPAndDevice, bool isOnlyCN88)
         {
             // fiter by Sites
@@ -1018,9 +1018,9 @@
                 conditionExtract = f => listEvidenceByCus.Contains(f);
             }
 
-            Func<IEnumerable<ArbitrageTicket> ,IEnumerable<ArbitrageTicket>, bool, bool> CheckArbitrageRule = (lstHome, lstAway, onlyCN88) 
-                    => lstHome.Count() > 0 && lstAway.Count() > 0 && 
-                        lstHome.Sum(t => t.Stake.Full) > 500 && lstAway.Sum(t => t.Stake.Full) > 500 && 
+            Func<IEnumerable<ArbitrageTicket>, IEnumerable<ArbitrageTicket>, bool, bool> CheckArbitrageRule = (lstHome, lstAway, onlyCN88)
+                    => lstHome.Count() > 0 && lstAway.Count() > 0 &&
+                        lstHome.Sum(t => t.Stake.Full) > 500 && lstAway.Sum(t => t.Stake.Full) > 500 &&
                         ((onlyCN88 ? (lstHome.Where(t => t.Site == "CN88").Count() > 0) : true) || (onlyCN88 ? (lstAway.Where(t => t.Site == "CN88").Count() > 0) : true));
             List<ArbitrageGroupTicketList> data = new List<ArbitrageGroupTicketList>();
             if (isByIPAndDevice)
@@ -1066,7 +1066,7 @@
                                 GroupId = g.Key.Item5,
                                 IP = g.Key.Item6
                             };
-                        }).Where(a => CheckArbitrageRule(a.Home,a.Away, isOnlyCN88)).ToList();
+                        }).Where(a => CheckArbitrageRule(a.Home, a.Away, isOnlyCN88)).ToList();
             }
             else
             {
@@ -1223,12 +1223,16 @@
             return wb.ToBytes();
         }
 
-        public byte[] ExportExcelArbitrageCustomers(GetArbitrageCustomerCriteria criteria, string[] array, string templatePath)
+        public byte[] ExportExcelArbitrageCustomers(GetArbitrageCustomerCriteria criteria, string[] array, string templatePath, IEnumerable<long> listCustIdFromTickets)
         {
             var legend = GetInfo(criteria.MatchId, (int)FraudCaseId.Arbitrage, criteria.EventDate);
             legend.Filter = array;
 
             var customers = GetArbitrageCustomerDetails(criteria);
+            if (listCustIdFromTickets != null)
+            {
+                customers = customers.Where(c => listCustIdFromTickets.Contains(c.CustId));
+            }
             var wb = ExcelUtilities.GetWorkbook(templatePath)
                                     .RenderSheet(new CustomerDetailConfig(customers.Count(), true), legend, customers, null);
 

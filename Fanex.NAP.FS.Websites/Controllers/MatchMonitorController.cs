@@ -296,13 +296,20 @@
         [HttpPost]
         public ActionResult SaveFileArbitrageCustomers(GetArbitrageCustomerCriteria criteria)
         {
+            IEnumerable<long> lstCustId = null;
+            if (Session["ListCustId"] != null && criteria.IsByIPAndDevice)
+            {
+                lstCustId = (IEnumerable<long>)Session["ListCustId"];
+            }
+
             var templatePath = Server.MapPath("~/App_Data/Excel Template/MatchMonitor/FraudCaseDetail/arbitrage.xlsx");
 
             var fileName = string.Format("FraudCaseDetails_{0}", DateTime.Today.ToString("yyyyMMdd")) + ".xlsx";
 
             criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
             string[] filterInfo = GenerateFilterInfo(criteria);
-            var content = _fraudCaseDetailService.ExportExcelArbitrageCustomers(criteria, filterInfo, templatePath);
+
+            var content = _fraudCaseDetailService.ExportExcelArbitrageCustomers(criteria, filterInfo, templatePath, lstCustId);
             string fileId = Guid.NewGuid().ToString();
 
             TempData[fileId] = content;
@@ -342,7 +349,7 @@
             // Sites
             filterInfo[6] = criteria.Sites;
 
-            filterInfo[7] = criteria.Odds == -1 ? string.Empty : criteria.Odds.ToString() ;
+            filterInfo[7] = criteria.Odds == 0 ? string.Empty : criteria.Odds.ToString() ;
             filterInfo[8] = criteria.IsOnlyCN88 ? "Yes" : "No";
             filterInfo[9] = criteria.IsByIPAndDevice ? "Yes" : "No";
 
