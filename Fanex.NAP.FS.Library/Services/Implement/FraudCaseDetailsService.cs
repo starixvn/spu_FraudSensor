@@ -1014,7 +1014,9 @@
             }
 
             Func<IEnumerable<ArbitrageTicket> ,IEnumerable<ArbitrageTicket>, bool> CheckArbitrageRule = (lstHome, lstAway) 
-                    => lstHome.Count() > 0 && lstAway.Count() > 0 && lstHome.Sum(t => t.Stake.Full) > 500 && lstAway.Sum(t => t.Stake.Full) > 500;
+                    => lstHome.Count() > 0 && lstAway.Count() > 0 && 
+                        lstHome.Sum(t => t.Stake.Full) > 500 && lstAway.Sum(t => t.Stake.Full) > 500 && 
+                        (lstHome.Where(t => t.Site == "CN88").Count() > 0 || lstAway.Where(t => t.Site == "CN88").Count() > 0);
             List<ArbitrageGroupTicketList> data = new List<ArbitrageGroupTicketList>();
             if (isByIPAndDevice)
             {

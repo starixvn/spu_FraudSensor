@@ -293,7 +293,7 @@
         
         private string[] GenerateFilterInfo(ArbitrageDetailsCriteria criteria)
         {
-            string[] filterInfo = new string[7];
+            string[] filterInfo = new string[10];
 
             // get Market
             filterInfo[0] = criteria.LiveStatus == -1 ? "All" : (criteria.LiveStatus == 0 ? "Non-Live" : "Live");
@@ -322,6 +322,10 @@
 
             // Sites
             filterInfo[6] = criteria.Sites;
+
+            filterInfo[7] = criteria.Odds == -1 ? string.Empty : criteria.Odds.ToString() ;
+            filterInfo[8] = criteria.IsOnlyCN88 ? "Yes" : "No";
+            filterInfo[9] = criteria.IsByIPAndDevice ? "Yes" : "No";
 
             return filterInfo;
         }
