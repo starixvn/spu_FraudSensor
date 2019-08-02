@@ -1,14 +1,14 @@
 ﻿function detail_account() {
     var assosiation_report = $('#assosiation_report');
     var collapseAll = ('.collapse-all');
-    var expandAll = $('.expand-all');    
-    var chains_evidence;
+    var expandAll = $('.expand-all');
+    var formException;
 
     var containers = [
-        { name: "chains_evidence", url: common.modifyRelativeUrl('/SearchAccount/GetChainsToEvidence') },
-        { name: "retract_evidence", url: common.modifyRelativeUrl('/SearchAccount/GetRetractAndException') },
-        { name: "associated_account", url: common.modifyRelativeUrl('/SearchAccount/GetAssociatedAccountByAccount') },
-        { name: "associated_device", url: common.modifyRelativeUrl('/SearchAccount/GetAssociatedDeviceByAccount') },
+        { name: "chains_evidence", url: common.modifyRelativeUrl('/Account/GetChainsToEvidence') },
+        { name: "retract_evidence", url: common.modifyRelativeUrl('/Account/GetRetractAndException') },
+        { name: "associated_account", url: common.modifyRelativeUrl('/Account/GetAssociatedAccountByAccount') },
+        { name: "associated_device", url: common.modifyRelativeUrl('/Account/GetAssociatedDeviceByAccount') },
         { name: "transaction_history", url: common.modifyRelativeUrl('/Transaction/GetTransactionHistory') }
     ];   
 
@@ -84,11 +84,11 @@
     function InitTabsHelper(container) {
         switch (container) {
             case "#chains_evidence":
-                chains_evidence = new chains_to_evidence(ACCOUNTID);
+                formException = new form_exception(ACCOUNTID, USERNAME1);
 
                 $('span', $('.chain-place')).click(OpenAddException);
                 $('#btn_cancel').click(CloseException);
-                $('#btn_addException').click(AddException);              
+                $('#btn_addException').click(AddException);
 
                 break;
             default:
@@ -97,18 +97,21 @@
     }
 
     function CloseException() {
-        chains_evidence.CloseException();
+        formException.CloseException();
     }
 
     function OpenAddException() {
-        chains_evidence.OpenAddException();
-    }    
+        var nodeId = $(this).attr('node-id');
+        var nodeName = $(this).attr('node-name');
+        
+        formException.OpenAddException(nodeId, nodeName);
+    }
 
     function AddException() {
-        var id = 123;
-        chains_evidence.AddException(id);
+        formException.AddException();
 
-        GetInformation("chains_evidence", GetUrl("chains_evidence"));        
+        GetInformation("chains_evidence", GetUrl("chains_evidence"));
+        GetInformation("retract_evidence", GetUrl("retract_evidence"));
     }
 
     $(assosiation_report).find('.head').each(function () {

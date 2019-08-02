@@ -1,4 +1,4 @@
-﻿namespace Fanex.NAP.FS.Library.ViewModels.SubscriberAccount.Evidence
+﻿namespace Fanex.NAP.FS.Library.ViewModels.Account.Evidence
 {
     public class RetractedEvidenceAndException
     {

@@ -1,4 +1,4 @@
-﻿@model Fanex.NAP.FS.Library.ViewModels.SubscriberAccount.SubscriberAccountDetail
+﻿@model Fanex.NAP.FS.Library.ViewModels.Account.AccountDetail
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -7,7 +7,7 @@
     <link href="~/Content/scss/pages/evidence/evidence.css" rel="stylesheet" />
 }
 
-@Html.Partial("Detail/AccountInfo")
+@Html.Partial("DetailInfoAccount/AccountInfo", Model)
 
 <fieldset class="fieldset-search">
     <legend>
@@ -76,10 +76,11 @@
 
 @section scripts{
     <script type="text/javascript">
-        var ACCOUNTID = '@ViewBag.AccountId';
+        var ACCOUNTID = '@Model.AccountInfo.AccountId';
+        var USERNAME1 = '@Model.AccountInfo.UserName';
     </script>
     <script src="~/Scripts/MultipleSelect/jquery.multiselect.filter.js"></script>
     <script src="~/Scripts/MultipleSelect/jquery.multiselect.js"></script>  
-    <script src="~/Scripts/Evidence/chains-to-evidence.js"></script>
-    @Scripts.Render("~/scripts/account")    
+    <script src="~/Scripts/Evidence/form-exception.js"></script>
+    @Scripts.Render("~/scripts/account")
 }

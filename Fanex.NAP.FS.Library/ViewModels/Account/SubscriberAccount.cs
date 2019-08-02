@@ -1,4 +1,4 @@
-﻿namespace Fanex.NAP.FS.Library.ViewModels.SubscriberAccount
+﻿namespace Fanex.NAP.FS.Library.ViewModels.Account
 {
     public class SubscriberAccount
     {

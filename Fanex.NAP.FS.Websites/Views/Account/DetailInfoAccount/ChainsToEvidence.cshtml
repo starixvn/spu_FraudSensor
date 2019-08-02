@@ -1,43 +1,43 @@
-﻿@model Fanex.NAP.FS.Library.ViewModels.SubscriberAccount.Evidence.RetractedEvidenceAndException
+﻿@model Fanex.NAP.FS.Library.ViewModels.Account.Evidence.ChainsToEvidence
 
 <table cellspacing="5" class="table-chains">
-    @foreach (var item in Model.ChainsToEvidence.Evidences)
+    @foreach (var evidence in Model.Evidences)
     {
         <tr class="chain-row">
             <td>
                 <div class="chain-central">
-                    <a href="#">@item.NodeRoot</a>
+                    <a href="#">@evidence.NodeNameRoot</a>
                 </div>
             </td>
             <td>
-                <div class="chain-place">
-                    <span>&nbsp;</span>
+                <div class="chain-place-dashed">
+                    <span node-id="@evidence.NodeIdRoot" note-name="@evidence.NodeNameRoot">&nbsp;</span>
                 </div>
             </td>
             <td>
                 <div class="chain-evidence">
-                    <a href="#">@item.Evidence.EvidenceName</a>
+                    <a href="#">@evidence.Evidence.EvidenceName</a>
                 </div>
             </td>
         </tr>
     }
 
-    @foreach (var item in Model.ChainsToEvidence.Chains)
+    @foreach (var chains in Model.Chains)
     {
         <tr class="chain-row">
             <td>
                 <div class="chain-central">
-                    <a href="#">@item.NodeParent</a>
+                    <a href="#">@chains.NodeNameParent</a>
                 </div>
             </td>
             <td>
                 <div class="chain-place">
-                    <span>&nbsp;&nbsp;</span>
+                    <span node-id ="@chains.NodeIdCurrent" node-name="@chains.NodeNameCurrent">&nbsp;&nbsp;</span>
                 </div>
             </td>
             <td>
                 <div class="chain-central">
-                    <a href="#">@item.NodeCurrent</a>
+                    <a href="#">@chains.NodeNameCurrent</a>
                 </div>
             </td>
             <td>
@@ -47,11 +47,12 @@
             </td>
             <td>
                 <div class="chain-evidence">
-                    <a href="#">@item.Evidence.EvidenceName</a>
+                    <a href="#">@chains.Evidence.EvidenceName</a>
                 </div>
             </td>
         </tr>
     }
+
 </table>
 
-@*<script type="text/javascript"></script>*@
+@Html.Partial("DetailInfoAccount/FormException")

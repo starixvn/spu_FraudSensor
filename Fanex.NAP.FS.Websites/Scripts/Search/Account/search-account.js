@@ -123,7 +123,7 @@
     function BindDataToGrid(data) {
         if (data != null) {
             if (data.length == 1) {
-                window.location.href = common.modifyRelativeUrl('/SearchAccount/DetailAccount?id=' + data[0].AccountID);               
+                window.location.href = common.modifyRelativeUrl('/Account/DetailAccount?id=' + data[0].AccountID);               
             } else {
                 table.DataTable().clear().rows.add(data).draw();
                 table.DataTable().columns.adjust();
@@ -136,7 +136,7 @@
     function RenderUserName(obj, userName) {
 
         return `<a class='info-bng' 
-                    href='SearchAccount/DetailAccount?id=${obj.AccountID}'
+                    href='Account/DetailAccount?id=${obj.AccountID}'
                     target='_blank'>${userName}
                 </a>`;
     }

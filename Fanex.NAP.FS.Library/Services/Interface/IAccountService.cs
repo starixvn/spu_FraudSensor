@@ -1,9 +1,8 @@
 ﻿namespace Fanex.NAP.FS.Library.Services
 {
     using Fanex.NAP.FS.Library.Models.Subscriber;
-    using Fanex.NAP.FS.Library.ViewModels.SubscriberAccount;
-    using Fanex.NAP.FS.Library.ViewModels.SubscriberAccount.Associated;
-    using Fanex.NAP.FS.Library.ViewModels.SubscriberAccount.Evidence;
+    using Fanex.NAP.FS.Library.ViewModels.Account;
+    using Fanex.NAP.FS.Library.ViewModels.Account.Associated;
     using System.Collections.Generic;
 
     public interface IAccountService
@@ -12,7 +11,7 @@
 
         IEnumerable<SubscriberAccount> SearchSubscriberAccounts(string key, string subscribers);
 
-        SubscriberAccountDetail GetSubscriberAccountDetail(int accountId);
+        AccountDetail GetAccountDetail(int accountId);
 
         IEnumerable<AssociatedAccount> GetAssociatedAccount(int accountId);
     }

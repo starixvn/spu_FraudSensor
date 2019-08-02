@@ -9,12 +9,10 @@
     public class SearchAccountController : BaseController
     {
         private readonly IAccountService _accountService;
-        private readonly IEvidenceService _evidenceService;       
 
         public SearchAccountController()
         {
             _accountService = new AccountService();
-            _evidenceService = new EvidenceService();
         }
 
         public ActionResult Index()
@@ -49,58 +47,6 @@
 
             return Json(data, JsonRequestBehavior.AllowGet);
         }
-
-        #region Detail
-
-        public ActionResult DetailAccount(int id)
-        {
-            var data = _accountService.GetSubscriberAccountDetail(id);
-
-            ViewBag.AccountId = id;
-
-            return View("Detail", data);
-        }
-
-        [HttpPost]
-        public ActionResult GetChainsToEvidence(int accountId)
-        {
-            var data = _evidenceService.GetChainsToEvidence(accountId);
-
-            return PartialView("Detail/ChainsToEvidence", data);
-        }
-
-        [HttpPost]
-        public ActionResult AddException(int accountId, int exceptionAccountId, string comment)
-        {
-            var data = "";
-
-            return Json(data, JsonRequestBehavior.AllowGet);
-        }
-
-        [HttpPost]
-        public ActionResult GetRetractAndException(int accountId)
-        {
-            var data = _evidenceService.GetRetractedEvidenceAndException(accountId);
-
-            return PartialView("Detail/RetractAndException", data);
-        }
-
-        [HttpPost]
-        public ActionResult GetAssociatedAccountByAccount(int accountId)
-        {
-            var data = _accountService.GetAssociatedAccount(accountId);
-
-            return PartialView("Detail/AssociatedAccount", data);
-        }
-
-        [HttpPost]
-        public ActionResult GetAssociatedDeviceByAccount(int accountId)
-        {
-            var data = _accountService.GetAssociatedAccount(accountId);
-
-            return PartialView("Detail/AssociatedDevice", data);
-        }
        
-        #endregion
     }
 }

@@ -1,10 +1,9 @@
-﻿namespace Fanex.NAP.FS.Library.Models.Subscriber
+﻿namespace Fanex.NAP.FS.Library.Models.Account
 {
-    using Fanex.NAP.FS.Library.Models.MatchMonitor.FraudCaseDetails;
-    using Fanex.NAP.FS.Library.Models.Account;
+    using Fanex.NAP.FS.Library.Models.MatchMonitor.FraudCaseDetails;    
     using System;
 
-    public class EvidenceAccount
+    public class AccountEvidence
     {
         public int Id { get; set; }
 
@@ -12,7 +11,9 @@
 
         public Evidence Evidence { get; set; }
 
-        public string NodeRoot { get; set; }        
+        public int NodeIdRoot { get; set; }
+
+        public string NodeNameRoot { get; set; }        
 
         public DateTime AffectedDate { get; set; }
 

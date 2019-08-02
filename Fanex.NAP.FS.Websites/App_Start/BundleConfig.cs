@@ -44,6 +44,7 @@
             RegisterCustomerMonitorBundles(bundles);
             RegisterSubscriberAssignment(bundles);
             RegisterSearchBundles(bundles);
+            RegisterAccountBundles(bundles);
         }
 
         private static void RegisterFSCoreBundles(BundleCollection bundles)
@@ -138,7 +139,13 @@
 
         private static void RegisterSearchBundles(BundleCollection bundles)
         {
-            bundles.Add(new ScriptBundle("~/scripts/account").Include("~/scripts/Search/Account/*.js"));
+            bundles.Add(new ScriptBundle("~/scripts/search-account").Include("~/scripts/Search/Account/*.js"));
         }
+
+        private static void RegisterAccountBundles(BundleCollection bundles)
+        {
+            bundles.Add(new ScriptBundle("~/scripts/account").Include("~/scripts/Account/*.js"));
+        }
+        
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace Fanex.NAP.FS.Library.Services
 {
-    using Fanex.NAP.FS.Library.ViewModels.SubscriberAccount.Evidence;
+    using Fanex.NAP.FS.Library.ViewModels.Account.Evidence;
 
     public interface IEvidenceService
     {

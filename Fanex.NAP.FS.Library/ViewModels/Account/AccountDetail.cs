@@ -1,10 +1,10 @@
-﻿namespace Fanex.NAP.FS.Library.ViewModels.SubscriberAccount
+﻿namespace Fanex.NAP.FS.Library.ViewModels.Account
 {
-    using Fanex.NAP.FS.Library.Models.Subscriber;
+    using Fanex.NAP.FS.Library.Models.Account;
 
-    public class SubscriberAccountDetail
+    public class AccountDetail
     {
-        public SubscriberAccountInfo AccountInfo { get; set; }
+        public AccountInfo AccountInfo { get; set; }
 
         public int TotalChainsToEvidence { get; set; }
 

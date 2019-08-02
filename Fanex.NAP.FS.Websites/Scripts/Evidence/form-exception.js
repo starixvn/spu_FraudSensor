@@ -1,7 +1,11 @@
-﻿function chains_to_evidence(accountId) {
+﻿function form_exception(accountId, useName) {
     var form = $('#addException');
+    var exceptionAccountId, exceptionUserName;
    
-    this.OpenAddException = function () {
+    this.OpenAddException = function (_exceptionAccountId, _exceptionUserName) {
+        exceptionAccountId = _exceptionAccountId;
+        exceptionUserName = _exceptionUserName;
+
         if (form.is('dialog')) {
             form.dialog('open');
         } else {
@@ -12,12 +16,14 @@
                 draggable: false,
                 close: function () { $(this).dialog('close'); }
             })
-        }
+        } 
+
+        BindData();
     }
 
-    this.AddException = function (exceptionAccountId) {
+    this.AddException = function () {
         var comment = $('#comment').val();
-        var url = common.modifyRelativeUrl('/SearchAccount/AddException');
+        var url = common.modifyRelativeUrl('/Account/AddException');
 
         $.ajax(url, {
             type: 'POST',
@@ -40,5 +46,12 @@
 
     this.CloseException = function () {
         form.dialog('close');
+    }
+
+    function BindData() {
+        var noteText = "Note: Account " + useName + "is no longer infected Evidence from account " + exceptionUserName;
+        $('#note-caption').text(noteText);
+        $('#nodeRoot').text(useName);
+        $('#nodeException').text(exceptionUserName);
     }
 }

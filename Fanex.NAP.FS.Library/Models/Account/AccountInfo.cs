@@ -1,12 +1,12 @@
-﻿namespace Fanex.NAP.FS.Library.Models.Subscriber
+﻿namespace Fanex.NAP.FS.Library.Models.Account
 {
     using System;
 
-    public class SubscriberAccountInfo
+    public class AccountInfo
     {
-        public int AccountID { get; set; }
+        public int AccountId { get; set; }
 
-        public string UserName1 { get; set; }
+        public string UserName { get; set; }
 
         public string UserName2 { get; set; }
 

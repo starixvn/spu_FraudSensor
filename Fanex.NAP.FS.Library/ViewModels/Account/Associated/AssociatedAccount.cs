@@ -1,4 +1,4 @@
-﻿namespace Fanex.NAP.FS.Library.ViewModels.SubscriberAccount.Associated
+﻿namespace Fanex.NAP.FS.Library.ViewModels.Account.Associated
 {
     public class AssociatedAccount
     {

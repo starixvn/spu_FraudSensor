@@ -1,0 +1,64 @@
+﻿@model Fanex.NAP.FS.Library.ViewModels.Account.Evidence.RetractedEvidenceAndException
+
+<table cellspacing="5" class="table-exception">
+    @foreach (var item in Model.ChainsToEvidence.Evidences)
+    {
+        <tr class="chain-row">
+            <td>
+                <div class="chain-central">
+                    <a href="#">@item.NodeNameRoot</a>
+                </div>
+            </td>
+            <td>
+                <div class="chain-place">
+                    <span>&nbsp;</span>
+                </div>
+            </td>
+            <td>
+                <div class="chain-evidence">
+                    <a href="#">@item.Evidence.EvidenceName</a>
+                </div>
+            </td>
+        </tr>
+    }
+
+    @foreach (var item in Model.ChainsToEvidence.Chains)
+    {
+        var classNameChainPlace = "chain-place";
+        var classNameChainEvidence = "chain-evidence-dash";
+
+        if (item.NodeType == "Exception")
+        {
+            classNameChainPlace = "chain-place-slash";
+            classNameChainEvidence = "chain-evidence";
+        }
+
+        <tr class="chain-row">
+            <td>
+                <div class="chain-central">
+                    <a href="#">@item.NodeNameParent</a>
+                </div>
+            </td>
+            <td>           
+                <div class=@classNameChainPlace>
+                    <span>&nbsp;&nbsp;</span>
+                </div>
+            </td>
+            <td>
+                <div class="chain-central">
+                    <a href="#">@item.NodeNameCurrent</a>
+                </div>
+            </td>
+            <td>
+                <div class="chain-place-dashed">
+                    <span>&nbsp;&nbsp;</span>
+                </div>
+            </td>
+            <td>
+                <div class=@classNameChainEvidence>
+                    <a href="#">@item.Evidence.EvidenceName</a>
+                </div>
+            </td>
+        </tr>
+    }
+</table>

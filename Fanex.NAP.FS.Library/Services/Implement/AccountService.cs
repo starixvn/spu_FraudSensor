@@ -3,9 +3,10 @@
     using System;
     using System.Linq;
     using System.Collections.Generic;
+    using Fanex.NAP.FS.Library.Models.Account;
+    using Fanex.NAP.FS.Library.ViewModels.Account;
+    using Fanex.NAP.FS.Library.ViewModels.Account.Associated;
     using Fanex.NAP.FS.Library.Models.Subscriber;
-    using Fanex.NAP.FS.Library.ViewModels.SubscriberAccount;
-    using Fanex.NAP.FS.Library.ViewModels.SubscriberAccount.Associated;
 
     public class AccountService : IAccountService
     {
@@ -19,17 +20,25 @@
             return GetSubscriberAccounts_Test(key, subscribers);
         }
 
-        public SubscriberAccountDetail GetSubscriberAccountDetail(int accountId)
+        public AccountDetail GetAccountDetail(int accountId)
         {
-            var data = new SubscriberAccountDetail();
+            var data = new AccountDetail();
             {
-                data.AccountInfo = new SubscriberAccountInfo();
+                data.AccountInfo = new AccountInfo();
                 {
-                    data.AccountInfo.AccountID = accountId;
+                    data.AccountInfo.AccountId = accountId;
+                    data.AccountInfo.UserName = "fpsa_pgmthai";
+                    data.AccountInfo.UserName2 = "fpsa2_pgmthai";
                     data.AccountInfo.FirstLogin = DateTime.Now;
                     data.AccountInfo.LastLogin = DateTime.Now;
-                    data.AccountInfo.FrequencyLogin = 1;
+                    data.AccountInfo.FrequencyLogin = 1;                    
                 }
+                data.TotalChainsToEvidence = 5;
+                data.TotalRetractedEvidence = 3;
+                data.TotalException = 5;
+                data.TotalAssociatedAcount = 10;
+                data.TotalAssociatedDevice = 20;                              
+                data.TotalTransactionHistory = 100;
             }
 
             return data;
