@@ -8,7 +8,8 @@
     using Library.Service;
     using Service;
     using Service.MatchMonitor;
-    using System;    
+    using System;
+    using System.Collections.Generic;
     using System.Configuration;
     using System.Linq;
     using System.Web.Mvc;
@@ -226,20 +227,33 @@
 
         #region Arbitrage        
         [HttpPost]
-        public ActionResult GetArbitrageTicketsGroupSummary(GetArbitrageTicketCriteria criteria)
-        {
-            criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
-            var data = _fraudCaseDetailService.GetArbitrageTickets(criteria, true);
-            return new JsonResult { Data = new { Content = data }, MaxJsonLength = Int32.MaxValue };
-        }
-
-        [HttpPost]
         public ActionResult GetArbitrageTickets(GetArbitrageTicketCriteria criteria)
         {
             criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
             var data = _fraudCaseDetailService.GetArbitrageTickets(criteria, false);
-           
+
             return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public ActionResult GetArbitrageTicketsGroupSummary(GetArbitrageTicketCriteria criteria)
+        {
+            criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
+            var data = _fraudCaseDetailService.GetArbitrageTickets(criteria, true);
+            List<long> lstCustId = new List<long>();
+            foreach (var item in data.Select(a => a.Home.Select(t => t.CustId)))
+            {
+                lstCustId.AddRange(item);
+            }
+
+            foreach (var item in data.Select(a => a.Away.Select(t => t.CustId)))
+            {
+                lstCustId.AddRange(item);
+            }
+
+            Session["ListCustId"] = lstCustId.Distinct();
+
+            return new JsonResult { Data = new { Content = data }, MaxJsonLength = Int32.MaxValue };
         }
 
         [HttpPost]
@@ -252,6 +266,11 @@
             }
 
             var data = _fraudCaseDetailService.GetArbitrageCustomerDetails(criteria);
+            if (Session["ListCustId"] != null)
+            {
+                var lstCustId = (IEnumerable<long>)Session["ListCustId"];
+                data = data.Where(a => lstCustId.Contains(a.CustId));
+            }
 
             return Json(data, JsonRequestBehavior.AllowGet);
         }

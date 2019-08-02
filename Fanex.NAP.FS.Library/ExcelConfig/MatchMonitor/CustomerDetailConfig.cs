@@ -57,7 +57,7 @@
                .WriteBold("Date: ").Write(legend.EventDate.ToString("MMM dd, yyyy") + "\n")
                .WriteBold("HT/FT: ").Write(legend.HTScore + " / " + legend.FTScore + "\n")
                .WriteBold("Fraud Case: ").Write(legend.FraudCase + "\n")
-               .SetValue(cell1);                
+               .SetValue(cell1);
 
             if (arrFilter != null && arrFilter.Length >= 7)
             {
@@ -65,12 +65,15 @@
                    .WriteBold("Site: ").Write(arrFilter[6] + "\n")
                    .WriteBold("Currency: ").Write(arrFilter[1] + "\n")
                    .WriteBold("Evidence: ").Write(arrFilter[2] + "\n")
+                   .WriteBold("Score/HDP: ").Write(arrFilter[5] + "\n")
                    .SetValue(cell2);
 
                 new XSSFRichTextString()
                    .WriteBold("Market: ").Write(arrFilter[0] + "\n")
                    .WriteBold("Trans Date: ").Write(arrFilter[3] + " - " + arrFilter[4] + "\n")
-                   .WriteBold("Score/HDP: ").Write(arrFilter[5] + "\n")
+                   .WriteBold("Odds >=: ").Write(arrFilter[7] + " \n")
+                   .WriteBold("Show Only CN88 Group: ").Write(arrFilter[8] + " \n")
+                   .WriteBold("By IP & Device: ").Write(arrFilter[9] + " \n")
                    .SetValue(cell3);
             }
         }

@@ -843,8 +843,8 @@
             {
                 criteria.Site = "CN88";
             }
-
-            var rawTickets = DataService.GetData<TicketInfo>(criteria);
+            
+            var rawTickets = DataService.GetData<TicketInfo>(criteria); 
             var sites = criteria.Sites != "All" ? criteria.Sites : null;
             var custOfSites = FilterCustomersBySites(rawTickets, sites);
 
@@ -855,7 +855,7 @@
 
                 if (criteria.EvidenceCodeList != null && criteria.EvidenceCodeList.Contains(otherEvidenceCodes))
                 {
-                    ticketDetails = FilterArbitrageTicketsEvidenceOthers(rawTickets, custOfSites, custOfEvidences, criteria.EvidenceCodeList, criteria.IsByIPAndDevice);
+                    ticketDetails = FilterArbitrageTicketsEvidenceOthers(rawTickets, custOfSites, custOfEvidences, criteria.EvidenceCodeList, criteria.IsByIPAndDevice, criteria.IsOnlyCN88);
                     if (!isSummary)
                     {
                         ticketDetails = ticketDetails.Where(g => g.GroupId == criteria.GroupId && g.Score == criteria.Score && g.Handicap == (decimal)criteria.Handicap);
@@ -867,7 +867,7 @@
                 }
                 else
                 {
-                    ticketDetails = FilterArbitrageTickets(rawTickets, custOfSites, custOfEvidences, string.IsNullOrEmpty(criteria.EvidenceCodeList), criteria.IsByIPAndDevice);
+                    ticketDetails = FilterArbitrageTickets(rawTickets, custOfSites, custOfEvidences, string.IsNullOrEmpty(criteria.EvidenceCodeList), criteria.IsByIPAndDevice, criteria.IsOnlyCN88);
                     if (!isSummary)
                     {
                         ticketDetails = ticketDetails.Where(g => g.GroupId == criteria.GroupId && g.Score == criteria.Score && g.Handicap == (decimal)criteria.Handicap);
@@ -885,7 +885,7 @@
         private IEnumerable<ArbitrageGroupTicketList> FilterArbitrageTicketsEvidenceOthers(
             IEnumerable<TicketInfo> rawData, 
             IEnumerable<CustomerSubcriber> custSubcribers, 
-            IEnumerable<CustomerEvidence> evidences, string lstEvidenceSelected, bool isByIPAndDevice)
+            IEnumerable<CustomerEvidence> evidences, string lstEvidenceSelected, bool isByIPAndDevice, bool isOnlyCN88)
         {
             // fiter by Sites
             var custIds = custSubcribers.Select(c => c.CustId);
@@ -898,14 +898,16 @@
             var lstEvidenceExtract = evidenceExtract.Select(c => (long)c.CustId).ToList();
 
             Func<long, bool> conditionExtract = f => !lstEvidenceExtract.Contains(f);
-            Func<IEnumerable<ArbitrageTicket>, IEnumerable<ArbitrageTicket>, bool> CheckArbitrageRule = (lstHome, lstAway)
-                    => lstHome.Count() > 0 && lstAway.Count() > 0 && lstHome.Sum(t => t.Stake.Full) > 500 && lstAway.Sum(t => t.Stake.Full) > 500;
+            Func<IEnumerable<ArbitrageTicket>, IEnumerable<ArbitrageTicket>, bool, bool> CheckArbitrageRule = (lstHome, lstAway, onlyCN88)
+                    => lstHome.Count() > 0 && lstAway.Count() > 0 && lstHome.Sum(t => t.Stake.Full) > 500 && lstAway.Sum(t => t.Stake.Full) > 500 &&
+                    ((onlyCN88 ? (lstHome.Where(t => t.Site == "CN88").Count() > 0) : true) || (onlyCN88 ? (lstAway.Where(t => t.Site == "CN88").Count() > 0) : true));
+
             var data = new List<ArbitrageGroupTicketList>();
             if (isByIPAndDevice)
             {
                 data = rawData
                 .AsParallel()
-                .Where(c => conditionExtract(c.CustId) && conditionSubcriber(c.CustId))
+                .Where(c => conditionExtract(c.CustId) && conditionSubcriber(c.CustId) && !c.IsIPFraud)
                 .GroupBy(t => Tuple.Create(t.BetTypeId, t.Handicap1 - t.Handicap2, t.LiveHomeScore, t.LiveAwayScore, t.GroupId, t.IP), t => new ArbitrageTicket
                 {
                     BetId = t.TransId,
@@ -945,7 +947,7 @@
                             GroupId = g.Key.Item5,
                             IP = g.Key.Item6
                         };
-                    }).Where(a => CheckArbitrageRule(a.Home, a.Away)).ToList();
+                    }).Where(a => CheckArbitrageRule(a.Home, a.Away, isOnlyCN88)).ToList();
             }
             else
             {
@@ -996,7 +998,10 @@
             return data;
         }
 
-        private IEnumerable<ArbitrageGroupTicketList> FilterArbitrageTickets(IEnumerable<TicketInfo> rawData, IEnumerable<CustomerSubcriber> custSubcribers, IEnumerable<CustomerEvidence> evidences, bool isAllEvidence, bool isByIPAndDevice)
+        private IEnumerable<ArbitrageGroupTicketList> FilterArbitrageTickets(
+            IEnumerable<TicketInfo> rawData, 
+            IEnumerable<CustomerSubcriber> custSubcribers, IEnumerable<CustomerEvidence> evidences, 
+            bool isAllEvidence, bool isByIPAndDevice, bool isOnlyCN88)
         {
             // fiter by Sites
             var custIds = custSubcribers.Select(c => c.CustId);
@@ -1013,16 +1018,17 @@
                 conditionExtract = f => listEvidenceByCus.Contains(f);
             }
 
-            Func<IEnumerable<ArbitrageTicket> ,IEnumerable<ArbitrageTicket>, bool> CheckArbitrageRule = (lstHome, lstAway) 
+            Func<IEnumerable<ArbitrageTicket> ,IEnumerable<ArbitrageTicket>, bool, bool> CheckArbitrageRule = (lstHome, lstAway, onlyCN88) 
                     => lstHome.Count() > 0 && lstAway.Count() > 0 && 
                         lstHome.Sum(t => t.Stake.Full) > 500 && lstAway.Sum(t => t.Stake.Full) > 500 && 
-                        (lstHome.Where(t => t.Site == "CN88").Count() > 0 || lstAway.Where(t => t.Site == "CN88").Count() > 0);
+                        ((onlyCN88 ? (lstHome.Where(t => t.Site == "CN88").Count() > 0) : true) || (onlyCN88 ? (lstAway.Where(t => t.Site == "CN88").Count() > 0) : true));
             List<ArbitrageGroupTicketList> data = new List<ArbitrageGroupTicketList>();
             if (isByIPAndDevice)
             {
-                data = rawData.AsParallel().Where(c => conditionExtract(c.CustId) && conditionSubcriber(c.CustId))
+                data = rawData.AsParallel().Where(c => conditionExtract(c.CustId) && conditionSubcriber(c.CustId) && !c.IsIPFraud)
                         .GroupBy(t => Tuple.Create(t.BetTypeId, t.Handicap1 - t.Handicap2, t.LiveHomeScore, t.LiveAwayScore, t.GroupId, t.IP), t => new ArbitrageTicket
                         {
+                            CustId = t.CustId,
                             BetId = t.TransId,
                             Currency = t.CurrencyName,
                             DangerousLevel = t.DangerLevel,
@@ -1060,13 +1066,14 @@
                                 GroupId = g.Key.Item5,
                                 IP = g.Key.Item6
                             };
-                        }).Where(a => CheckArbitrageRule(a.Home,a.Away)).ToList();
+                        }).Where(a => CheckArbitrageRule(a.Home,a.Away, isOnlyCN88)).ToList();
             }
             else
             {
                 data = rawData.AsParallel().Where(c => conditionExtract(c.CustId) && conditionSubcriber(c.CustId))
                         .GroupBy(t => Tuple.Create(t.BetTypeId, t.Handicap1 - t.Handicap2, t.LiveHomeScore, t.LiveAwayScore, t.GroupId), t => new ArbitrageTicket
                         {
+                            CustId = t.CustId,
                             BetId = t.TransId,
                             Currency = t.CurrencyName,
                             DangerousLevel = t.DangerLevel,

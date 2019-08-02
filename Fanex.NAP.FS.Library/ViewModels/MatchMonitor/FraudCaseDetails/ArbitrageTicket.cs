@@ -5,6 +5,8 @@
 
     public class ArbitrageTicket
     {
+        public long CustId { get; set; }
+
         public string Username { get; set; }
 
         public IEnumerable<string> Evidences { get; set; }

@@ -888,7 +888,7 @@
         common.closeLoading();
     }
 
-    function loadArbitrageTicketGroups(criteria) {       
+    function loadReportArbitrage(criteria) {       
         var urlGroup = common.modifyRelativeUrl("/MatchMonitor/GetArbitrageTicketsGroupSummary");
         ticket_grid.DataTable().clear();
 
@@ -902,6 +902,7 @@
             success: function (response) {
                 if (response != null) {
                     renderArbitrageGroups(response.Content);
+                    loadCustomerGridArbitrage(criteria);
                     common.closeLoading();
                 }
             },
@@ -1024,9 +1025,8 @@
 
             if (isArbitrage) {
                 criteria = getCriteriaArbitrage();
-
-                loadCustomerGridArbitrage(criteria);
-                loadArbitrageTicketGroups(criteria);
+                
+                loadReportArbitrage(criteria);
             }
             else if (isFlaggedAccount) {
                 criteria = getCriteriaFlaggedAccounts();
