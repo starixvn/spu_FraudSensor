@@ -44,9 +44,14 @@
             return data;
         }
 
-        public IEnumerable<AssociatedAccount> GetAssociatedAccount(int accountId)
+        public IEnumerable<AssociatedAccountByAccount> GetAssociatedAccountByAccounts(AssociatedAccountByAccountFilter filter)
         {
-            return GetAssociatedAccount_Test(accountId);
+            return GetAssociatedAccountByAccounts_Test(filter);
+        }
+
+        public IEnumerable<AssociatedAccountByDevice> GetAssociatedAccountByDevices(AssociatedAccountByDeviceFilter filter)
+        {
+            return GetAssociatedAccountByDevices_Test(filter);
         }
 
         #region Test
@@ -122,9 +127,14 @@
                         .ToList();
         }       
 
-        private IEnumerable<AssociatedAccount> GetAssociatedAccount_Test(int accountId)
+        private IEnumerable<AssociatedAccountByAccount> GetAssociatedAccountByAccounts_Test(AssociatedAccountByAccountFilter filter)
         {
-            return new List<AssociatedAccount>();
+            return new List<AssociatedAccountByAccount>();
+        }
+
+        private IEnumerable<AssociatedAccountByDevice> GetAssociatedAccountByDevices_Test(AssociatedAccountByDeviceFilter filter)
+        {
+            return new List<AssociatedAccountByDevice>();
         }
         #endregion
     }

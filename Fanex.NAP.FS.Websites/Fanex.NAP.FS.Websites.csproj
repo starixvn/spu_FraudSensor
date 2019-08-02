@@ -1084,11 +1084,11 @@
     <Content Include="Views\CustomerMonitor\CustomerDetails\Index.cshtml" />
     <Content Include="Scripts\MultipleSelect\jquery.multiselect.js" />
     <Content Include="Views\Account\DetailInfoAccount\AccountInfo.cshtml" />
-    <Content Include="Views\Account\DetailInfoAccount\AssociatedAccount.cshtml" />
-    <Content Include="Views\Account\DetailInfoAccount\AssociatedDevice.cshtml" />
     <Content Include="Views\Account\DetailInfoAccount\ChainsToEvidence.cshtml" />
     <Content Include="Views\Account\DetailInfoAccount\FormException.cshtml" />
     <Content Include="Views\Account\DetailInfoAccount\RetractAndException.cshtml" />
+    <Content Include="Views\Account\Associated\AccountByAccount.cshtml" />
+    <Content Include="Views\Account\Associated\AccountByDevice.cshtml" />
     <None Include="Views\Errors\403.cshtml" />
     <None Include="Views\Errors\404.cshtml" />
     <None Include="Views\Errors\500.cshtml" />

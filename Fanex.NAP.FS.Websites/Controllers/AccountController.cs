@@ -1,6 +1,7 @@
 ﻿namespace Fanex.NAP.FS.Websites.Controllers
 {
     using Fanex.NAP.FS.Library.Services;
+    using Fanex.NAP.FS.Library.ViewModels.Account.Associated;
     using System.Web.Mvc;
 
     public class AccountController : Controller
@@ -54,17 +55,21 @@
         [HttpPost]
         public ActionResult GetAssociatedAccountByAccount(int accountId)
         {
-            var data = _accountService.GetAssociatedAccount(accountId);
+            return PartialView("Associated/AccountByAccount");
+        }
 
-            return PartialView("DetailInfoAccount/AssociatedAccount", data);
+        [HttpPost]
+        public ActionResult GetAssociatedAccountByAccountFilter(AssociatedAccountByAccountFilter filter)
+        {
+            var data = "";
+
+            return Json(data, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
         public ActionResult GetAssociatedDeviceByAccount(int accountId)
         {
-            var data = _accountService.GetAssociatedAccount(accountId);
-
-            return PartialView("DetailInfoAccount/AssociatedDevice", data);
+            return PartialView("Associated/AccountByDevice");
         }
         #endregion
     }

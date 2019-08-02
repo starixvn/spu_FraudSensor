@@ -13,6 +13,8 @@
 
         AccountDetail GetAccountDetail(int accountId);
 
-        IEnumerable<AssociatedAccount> GetAssociatedAccount(int accountId);
+        IEnumerable<AssociatedAccountByAccount> GetAssociatedAccountByAccounts(AssociatedAccountByAccountFilter filter);
+
+        IEnumerable<AssociatedAccountByDevice> GetAssociatedAccountByDevices(AssociatedAccountByDeviceFilter filter);
     }
 }

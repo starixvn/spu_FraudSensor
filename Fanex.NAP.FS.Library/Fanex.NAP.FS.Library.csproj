@@ -403,7 +403,10 @@
     <Compile Include="Services\Implement\TransactionService.cs" />
     <Compile Include="Services\Interface\IEvidenceService.cs" />
     <Compile Include="Services\Interface\ITransactionService.cs" />
-    <Compile Include="ViewModels\Account\Associated\AssociatedAccount.cs" />
+    <Compile Include="ViewModels\Account\Associated\AssociatedAccountByAccount.cs" />
+    <Compile Include="ViewModels\Account\Associated\AssociatedAccountByAccountFilter.cs" />
+    <Compile Include="ViewModels\Account\Associated\AssociatedAccountByDevice.cs" />
+    <Compile Include="ViewModels\Account\Associated\AssociatedAccountByDeviceFilter.cs" />
     <Compile Include="ViewModels\Account\Evidence\ChainsToEvidence.cs" />
     <Compile Include="ViewModels\Account\Evidence\RetractedEvidenceAndException.cs" />
     <Compile Include="ViewModels\Account\SubscriberAccount.cs" />
