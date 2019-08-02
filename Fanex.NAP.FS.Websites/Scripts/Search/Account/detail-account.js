@@ -5,11 +5,11 @@
     var chains_evidence;
 
     var containers = [
-        { name: "chains_evidence", url: common.modifyRelativeUrl('/SearchAccount/ChainsToEvidence') },
-        { name: "retract_evidence", url: common.modifyRelativeUrl('/SearchAccount/RetractAndException') },
-        { name: "associated_account", url: common.modifyRelativeUrl('/SearchAccount/AssociatedAccountByAccount') },
-        { name: "associated_device", url: common.modifyRelativeUrl('/SearchAccount/AssociatedDeviceByAccount') },
-        { name: "transaction_history", url: common.modifyRelativeUrl('/SearchAccount/TransactionHistory') }
+        { name: "chains_evidence", url: common.modifyRelativeUrl('/SearchAccount/GetChainsToEvidence') },
+        { name: "retract_evidence", url: common.modifyRelativeUrl('/SearchAccount/GetRetractAndException') },
+        { name: "associated_account", url: common.modifyRelativeUrl('/SearchAccount/GetAssociatedAccountByAccount') },
+        { name: "associated_device", url: common.modifyRelativeUrl('/SearchAccount/GetAssociatedDeviceByAccount') },
+        { name: "transaction_history", url: common.modifyRelativeUrl('/Transaction/GetTransactionHistory') }
     ];   
 
     function GetDetail() {  

@@ -354,6 +354,7 @@
     <Compile Include="Controllers\MatchMonitorController.cs" />
     <Compile Include="Controllers\ReportsController.cs" />
     <Compile Include="Controllers\SuspiciousCustomerDetailsController.cs" />
+    <Compile Include="Controllers\TransactionController.cs" />
     <Compile Include="FSFunctionKeys.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -1179,6 +1180,7 @@
     <Content Include="Views\SearchAccount\Detail\AssociatedDevice.cshtml" />
     <Content Include="Views\SearchAccount\Detail\TransactionHistory.cshtml" />
     <Content Include="Views\SearchAccount\Detail\FormException.cshtml" />
+    <Content Include="Views\Transaction\TransactionHistory.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
