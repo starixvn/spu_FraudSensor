@@ -32,8 +32,8 @@
     "inputFile": "Content/scss/pages/subscriber-assignment/subscriber-assignment.scss"
   },
   {
-    "outputFile": "Content/scss/pages/search/account.css",
-    "inputFile": "Content/scss/pages/search/account.scss"
+    "outputFile": "Content/scss/pages/account/account.css",
+    "inputFile": "Content/scss/pages/account/account.scss"
   },
   {
     "outputFile": "Content/scss/pages/evidence/evidence.css",

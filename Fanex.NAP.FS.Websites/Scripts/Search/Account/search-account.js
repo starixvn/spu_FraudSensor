@@ -83,8 +83,12 @@
     }
 
     function GenerateGrid() {
-        table.DataTable({
-            dom: "t<'pagination'<'page-size'lp>i>",
+        table.DataTable({            
+            searching: false,
+            paging: false,            
+            lengthMenu: [1000],
+            pageLength: 1000,
+            dom: "t<'pagination'<'page-size'lp>>",
             language: {
                 lengthMenu: "Page size _MENU_",
                 paginate: {
@@ -94,10 +98,7 @@
                 infoEmpty: "",
                 zeroRecords: "There's no data"
             },
-            searching: false,
             ordering: false,
-            lengthMenu: [10, 20, 50, 100, 500],
-            pageLength: 10,
             scrollY: "61vh",
             scrollX: true,
             scrollCollapse: true,

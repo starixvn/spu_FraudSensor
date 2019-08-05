@@ -129,7 +129,27 @@
 
         private IEnumerable<AssociatedAccountByAccount> GetAssociatedAccountByAccounts_Test(AssociatedAccountByAccountFilter filter)
         {
-            return new List<AssociatedAccountByAccount>();
+            var lstAssociated = new List<AssociatedAccountByAccount>();
+
+            for (int i = 1; i < 6; i++)
+            {
+                var accountAssociated = new AssociatedAccountByAccount();
+                accountAssociated.AccountAssociated = new Account();
+                accountAssociated.AccountAssociated.Id = i;
+                accountAssociated.AccountAssociated.UserName = "fpsa_pmgthai_" + i;
+                accountAssociated.AccountAssociated.UserName = "fpsa_pmgthai2_" + i;
+                accountAssociated.Status = "Active";
+                accountAssociated.AccountInfoAssociated = new AccountInfo();
+                accountAssociated.AccountInfoAssociated.FirstLogin = DateTime.Now;
+                accountAssociated.AccountInfoAssociated.LastLogin = DateTime.Now;
+                accountAssociated.TotalSharedDeviceLogin = 20;
+                accountAssociated.AssociatedDate = DateTime.Now;
+                accountAssociated.GraphURL = "url 123456";
+
+                lstAssociated.Add(accountAssociated);
+            }
+
+            return lstAssociated;
         }
 
         private IEnumerable<AssociatedAccountByDevice> GetAssociatedAccountByDevices_Test(AssociatedAccountByDeviceFilter filter)

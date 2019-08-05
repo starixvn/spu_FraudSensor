@@ -9,6 +9,8 @@
 
         public AccountInfo AccountInfoAssociated { get; set; }
 
+        public string Status { get; set; }
+
         public int TotalSharedDeviceLogin { get; set; }
 
         public DateTime AssociatedDate { get; set; }

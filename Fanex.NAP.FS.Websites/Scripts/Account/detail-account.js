@@ -60,7 +60,7 @@
         $(container).show();
         $(container).html(data);
 
-        InitTabsHelper(container);
+        InitForm(container);
     }    
 
     function ExpandAll() {
@@ -81,15 +81,17 @@
         $(expandAll).show();        
     }
 
-    function InitTabsHelper(container) {
+    function InitForm(container) {
         switch (container) {
             case "#chains_evidence":
-                formException = new form_exception(ACCOUNTID, USERNAME1);
+                formException = new form_exception(ACCOUNTID, USERNAME);
 
                 $('span', $('.chain-place')).click(OpenAddException);
                 $('#btn_cancel').click(CloseException);
                 $('#btn_addException').click(AddException);
-
+                break;
+            case "#associated_account":
+                account_by_account();
                 break;
             default:
                 break;

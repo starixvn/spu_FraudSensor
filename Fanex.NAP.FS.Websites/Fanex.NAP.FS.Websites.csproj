@@ -376,22 +376,24 @@
     <Content Include="Content\images\double_arrow_with_slash.png" />
     <Content Include="Content\images\expand_all.png" />
     <Content Include="Content\images\flagged_device_by_evidence.png" />
+    <Content Include="Content\images\graph_view.png" />
     <Content Include="Content\scss\pages\evidence\evidence.css">
       <DependentUpon>evidence.scss</DependentUpon>
     </Content>
     <Content Include="Content\scss\pages\evidence\evidence.min.css">
       <DependentUpon>evidence.css</DependentUpon>
     </Content>
-    <Content Include="Content\scss\pages\search\account.css">
+    <Content Include="Content\scss\pages\account\account.css">
       <DependentUpon>account.scss</DependentUpon>
     </Content>
-    <Content Include="Content\scss\pages\search\account.min.css">
+    <Content Include="Content\scss\pages\account\account.min.css">
       <DependentUpon>account.css</DependentUpon>
     </Content>
-    <Content Include="Content\scss\pages\search\account.scss" />
+    <Content Include="Content\scss\pages\account\account.scss" />
     <Content Include="Content\scss\pages\subscriber-assignment\subscriber-assignment.min.css">
       <DependentUpon>subscriber-assignment.css</DependentUpon>
     </Content>
+    <Content Include="Scripts\Account\Associated\account-by-account.js" />
     <Content Include="Scripts\Evidence\form-exception.js" />
     <Content Include="Scripts\search.js" />
     <Content Include="Scripts\Account\detail-account.js" />

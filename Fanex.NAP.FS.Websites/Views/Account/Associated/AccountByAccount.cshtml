@@ -1,19 +1,19 @@
 ﻿@{
     ViewBag.Title = "AccountAssociatedAccount";
 }
-<h2>Associated Account By Account Content</h2>
+
 <div id="account-by-account">
     <div id="account-by-account-filter">
         <div class="filter">
             <div class="group">
                 <label class="checkbox">
-                    <input type="checkbox" id="chk-divice-away-1" />
+                    <input type="checkbox" id="chk-device-away-1" />
                     <span>1 Device Away from "Account abc"</span>
                 </label>
             </div>
             <div class="form-control">
                 <div class="control-label">Status</div>
-                <select class="control" id="cbbStatus">
+                <select class="control" id="cbb-status">
                     <option value="0" selected>All</option>
                     <option value="1">Suspended</option>
                     <option value="2">Close</option>
@@ -24,13 +24,13 @@
         <div class="filter">
             <div class="group">
                 <label class="checkbox">
-                    <input type="checkbox" id="chk-divice-away-1" />
+                    <input type="checkbox" id="chk-device-away-2" />
                     <span>2 or more Device Away from "Account abc"</span>
                 </label>
             </div>
             <div class="form-control">
                 <div class="control-label">Fraud Status</div>
-                <select class="control" id="cbbStatus">
+                <select class="control" id="cbb-fraud-status">
                     <option value="0" selected>All</option>
                     <option value="1">Flagged</option>
                     <option value="2">Indirect Flagged</option>
@@ -38,7 +38,7 @@
                 </select>
             </div>
             <div class="form-control button-group">
-                <button class="button btn-search" id="btnSearch">Search</button>
+                <button class="button btn-search" id="btn-search">Search</button>
             </div>
         </div>
     </div>

@@ -3,8 +3,9 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 @section styles{
-    <link href="~/Content/scss/pages/search/account.css" rel="stylesheet" />
+    <link href="~/Content/scss/pages/account/account.css" rel="stylesheet" />
     <link href="~/Content/scss/pages/evidence/evidence.css" rel="stylesheet" />
+    
 }
 
 @Html.Partial("DetailInfoAccount/AccountInfo", Model)
@@ -77,10 +78,11 @@
 @section scripts{
     <script type="text/javascript">
         var ACCOUNTID = '@Model.AccountInfo.AccountId';
-        var USERNAME1 = '@Model.AccountInfo.UserName';
+        var USERNAME = '@Model.AccountInfo.UserName';
     </script>
     <script src="~/Scripts/MultipleSelect/jquery.multiselect.filter.js"></script>
-    <script src="~/Scripts/MultipleSelect/jquery.multiselect.js"></script>  
+    <script src="~/Scripts/MultipleSelect/jquery.multiselect.js"></script>
     <script src="~/Scripts/Evidence/form-exception.js"></script>
+    <script src="~/Scripts/Account/Associated/account-by-account.js"></script>
     @Scripts.Render("~/scripts/account")
 }
