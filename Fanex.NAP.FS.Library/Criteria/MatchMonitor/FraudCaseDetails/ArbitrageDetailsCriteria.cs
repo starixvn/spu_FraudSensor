@@ -100,11 +100,7 @@
             set { site = value; }
         }
 
-        public double? Odds
-        {
-            get { return odds ?? 0; }
-            set { odds = value; }
-        }
+        public double? Odds { get; set; }
 
         public override string GetSettingKey()
         {

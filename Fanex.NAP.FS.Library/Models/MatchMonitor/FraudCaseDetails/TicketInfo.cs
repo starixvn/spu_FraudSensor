@@ -24,6 +24,8 @@
 
         public int GroupId { get; set; }
 
+        public int GraphDBGroupId { get; set; }
+
         public bool IsIPFraud { get; set; }
     }
 }

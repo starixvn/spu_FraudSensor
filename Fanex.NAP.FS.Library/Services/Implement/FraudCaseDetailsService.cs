@@ -908,7 +908,7 @@
                 data = rawData
                 .AsParallel()
                 .Where(c => conditionExtract(c.CustId) && conditionSubcriber(c.CustId) && !c.IsIPFraud)
-                .GroupBy(t => Tuple.Create(t.BetTypeId, t.Handicap1 - t.Handicap2, t.LiveHomeScore, t.LiveAwayScore, t.GroupId, t.IP), t => new ArbitrageTicket
+                .GroupBy(t => Tuple.Create(t.BetTypeId, t.Handicap1 - t.Handicap2, t.LiveHomeScore, t.LiveAwayScore, t.GraphDBGroupId, t.IP), t => new ArbitrageTicket
                 {
                     BetId = t.TransId,
                     Currency = t.CurrencyName,
@@ -1026,7 +1026,7 @@
             if (isByIPAndDevice)
             {
                 data = rawData.AsParallel().Where(c => conditionExtract(c.CustId) && conditionSubcriber(c.CustId) && !c.IsIPFraud)
-                        .GroupBy(t => Tuple.Create(t.BetTypeId, t.Handicap1 - t.Handicap2, t.LiveHomeScore, t.LiveAwayScore, t.GroupId, t.IP), t => new ArbitrageTicket
+                        .GroupBy(t => Tuple.Create(t.BetTypeId, t.Handicap1 - t.Handicap2, t.LiveHomeScore, t.LiveAwayScore, t.GraphDBGroupId, t.IP), t => new ArbitrageTicket
                         {
                             CustId = t.CustId,
                             BetId = t.TransId,
