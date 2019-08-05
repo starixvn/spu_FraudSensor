@@ -555,7 +555,12 @@
             $("#DataTables_Table_0_info").text(`Displaying 1 to ${n} of ${n} item(s)`);
         }
 
-        ticket_grid.DataTable().columns.adjust();
+        ticket_grid.DataTable().columns.adjust();                
+
+        $('.dataTables_scrollBody').animate({
+            scrollTop: $('tr.cursor-index').offset().top - ($('.dataTables_scrollBody').height() / 2)
+        }, 100);
+
         common.closeLoading();     
     };
 
@@ -584,6 +589,7 @@
 
         var n = (json || []).reduce((total, obj) => total + Math.max(obj.Home.length, obj.Away.length), 0);
         var t = (json || []).reduce((total, obj) => total + obj.Home.length + obj.Away.length, 0);
+
         ticket_grid.DataTable().rows.add(data).draw();
   
         $("#tickets").text(`By Tickets (${t})`);
@@ -722,11 +728,13 @@
                         var keyName = obj.Score + " " + obj.BettypeName + " " + obj.Handicap + " " + obj.GroupId + " " + obj.IP;
                         if (groupExpand == keyName) {
                             td = $(`<td colspan='25' class='group' style='cursor: initial'><span class='icon-chevron-up' style='cursor: pointer;'></span><span class='bage' style='cursor: pointer;'>${obj.BettypeName} ${obj.Handicap}</span> <span class='bage' style='cursor: pointer;'>${obj.Score}</span> <span class='bage' style='cursor: pointer;'>Tickets: ${totalTicket}</span><button class="button -export"><span class="icon-export-excel"></span></button></td>`);
+                            $(row).addClass('cursor-index');
                         } else {
                             td = $(`<td colspan='25' class='group' style='cursor: initial'><span class='icon-chevron-down' style='cursor: pointer;'></span><span class='bage' style='cursor: pointer;'>${obj.BettypeName} ${obj.Handicap}</span> <span class='bage' style='cursor: pointer;'>${obj.Score}</span> <span class='bage' style='cursor: pointer;'>Tickets: ${totalTicket}</span><button class="button -export"><span class="icon-export-excel"></span></button></td>`);
                         }
                     }                  
                     $(".button.-export", td).click(obj, exportGroupTickets);
+                   
                     $(row).empty().html(td);
                     
                 }
@@ -736,6 +744,7 @@
                     $("td:lt(13)", row).remove();
 
                     $(row).prepend(td);
+
                 }
                 else if (obj.Away.Username == null) {
                     var td = $("<td colspan='13'></td>");
@@ -927,8 +936,9 @@
                     var span = $('td span:first', this);
 
                     if ($(span).is("span.icon-chevron-down")) {
-                        $(span).removeClass("icon-chevron-down").addClass("icon-chevron-up");
+                        $(span).removeClass("icon-chevron-down").addClass("icon-chevron-up");                        
                         expandGroup(data);
+                       // $(this).addClass('cursor-index');
                     }
                     else if ($(span).is("span.icon-chevron-up")) {
                         $(span).removeClass("icon-chevron-up").addClass("icon-chevron-down");
@@ -942,7 +952,7 @@
 
     function expandGroup(obj) {
         common.showLoading();
-
+        
         var url = common.modifyRelativeUrl("/MatchMonitor/GetArbitrageTickets");
         
         var keyName = obj.Score + " " + obj.BettypeName + " " + obj.Handicap + " " + obj.GroupId + " " + obj.IP;
@@ -984,6 +994,7 @@
 
         $.post(url, criteria, function (json) {
             if (json != null) {
+               
                 renderArbitrageTicketDetailByGroup(json);
             }
         });

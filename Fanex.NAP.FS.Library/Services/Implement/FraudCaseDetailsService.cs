@@ -898,6 +898,7 @@
             var lstEvidenceExtract = evidenceExtract.Select(c => (long)c.CustId).ToList();
 
             Func<long, bool> conditionExtract = f => !lstEvidenceExtract.Contains(f);
+
             Func<IEnumerable<ArbitrageTicket>, IEnumerable<ArbitrageTicket>, bool, bool> CheckArbitrageRule = (lstHome, lstAway, onlyCN88)
                     => lstHome.Count() > 0 && lstAway.Count() > 0 && lstHome.Sum(t => t.Stake.Full) > 500 && lstAway.Sum(t => t.Stake.Full) > 500 &&
                     ((onlyCN88 ? (lstHome.Where(t => t.Site == "CN88").Count() > 0) : true) || (onlyCN88 ? (lstAway.Where(t => t.Site == "CN88").Count() > 0) : true));
