@@ -349,7 +349,7 @@
             // Sites
             filterInfo[6] = criteria.Sites;
 
-            filterInfo[7] = criteria.Odds == 0 ? string.Empty : criteria.Odds.ToString() ;
+            filterInfo[7] = criteria.Odds == null ? string.Empty : criteria.Odds.ToString() ;
             filterInfo[8] = criteria.IsOnlyCN88 ? "Yes" : "No";
             filterInfo[9] = criteria.IsByIPAndDevice ? "Yes" : "No";
 
