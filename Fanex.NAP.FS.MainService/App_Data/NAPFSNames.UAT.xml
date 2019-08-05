@@ -1,7 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
-<Functions>
-  <Function Name="FraudCase">
-    <Setting Key="FS_FraudCase_GetAll" SpName="FS_FraudCase_GetAll_xtest" DbName="DBFS.bodb_FraudSensor.bodbSPUNet" />
-    <Setting Key="FS_FraudCase_GetById" SpName="FS_FraudCase_GetById_xtest" DbName="DBFS.bodb_FraudSensor.bodbSPUNet" />
-  </Function>  
-</Functions>
