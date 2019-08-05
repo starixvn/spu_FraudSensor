@@ -32,20 +32,29 @@
                 { targets: [4], width: "15%" },
                 { targets: [5], width: "15%" }
             ],
-            columns: [             
-                { data: obj => RenderUserName(obj) },
+            columns: [
+                { data: obj => RenderUserName(obj)},
                 { data: obj => obj.Status },
                 { data: obj => moment(obj.AccountInfoAssociated.FirstLogin).format("MMM DD, YYYY")},
                 { data: obj => moment(obj.AccountInfoAssociated.LastLogin).format("MMM DD, YYYY")},
                 { data: obj => obj.TotalSharedDeviceLogin },
                 { data: obj => moment(obj.AccountInfoAssociated.AssociatedDate).format("MMM DD, YYYY")},
-                { data: obj => RenderGraphImage() }
-            ]
+                { data: obj => RenderGraphImage()}
+            ],
+            headerCallback: function (thread) {
+                $("th", thread).eq(4).text('Total Logins on shared device with ' + USERNAME),
+                $("th", thread).eq(5).text('Associated with ' + USERNAME + ' on'),
+                $("th", thread).eq(6).text('Path to ' + USERNAME)
+            }
         });
     }
 
     function RenderUserName(obj) {
-        return '<a href="#">' + obj.AccountAssociated.UserName + "(" + obj.AccountAssociated.UserName2 + ")" + '</a>';
+        var html = '<div class="account-icon">';
+        html += '<a href="#">' + obj.AccountAssociated.UserName + "(" + obj.AccountAssociated.UserName2 + ")" + '</a>';
+        html += '</div>';
+
+        return html;
     }
 
     function RenderGraphImage() {
@@ -53,8 +62,8 @@
     }
 
     function GenerateReport() {
-        var deviceAwayOne = $('#chk-device-away-1').val();
-        var deviceAwayMore = $('#chk-device-away-2').val();
+        var deviceAwayOne = $('#chk-device-away-1').is(':checked');
+        var deviceAwayMore = $('#chk-device-away-2').is(':checked');
         var status = $('#cbb-status').val();
         var fraudStatus = $('#cbb-fraud-status').val();
         var url = common.modifyRelativeUrl('/Account/GetAssociatedAccountByAccountFilter');

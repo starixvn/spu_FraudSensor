@@ -137,7 +137,7 @@
                 accountAssociated.AccountAssociated = new Account();
                 accountAssociated.AccountAssociated.Id = i;
                 accountAssociated.AccountAssociated.UserName = "fpsa_pmgthai_" + i;
-                accountAssociated.AccountAssociated.UserName = "fpsa_pmgthai2_" + i;
+                accountAssociated.AccountAssociated.UserName2 = "fpsa_pmgthai2_" + i;
                 accountAssociated.Status = "Active";
                 accountAssociated.AccountInfoAssociated = new AccountInfo();
                 accountAssociated.AccountInfoAssociated.FirstLogin = DateTime.Now;
