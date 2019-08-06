@@ -1,5 +1,5 @@
 ﻿function detail_account() {
-    var assosiation_report = $('#assosiation_report');
+    var associated_report = $('#associated_report');
     var collapseAll = ('.collapse-all');
     var expandAll = $('.expand-all');
     var formException;
@@ -13,24 +13,28 @@
     ];   
 
     function GetDetail() {  
-        var name = $(this).attr('ref');
+        var refContainer = $(this).attr('ref');
+        var container = '#' + refContainer;
 
-        if (!$(this).hasClass('display')) {
-            $(this).addClass('display');           
+        RemoveHiddenInit(container);
 
-            $('#' + name).removeAttr('hidden').show();
-            $('span', $(this)).removeClass('ui-icon-triangle-1-e').addClass('ui-icon-triangle-1-s');
-            $(collapseAll).removeAttr('hidden');
+        if (!$(container).hasClass('display')) {
+            if (!$(container).hasClass('data-collected')) {
+                GetInformation(container, GetUrl(refContainer));
+            }
+            else {
+                $(container).addClass('display').show();
+            }
 
-            return GetInformation(name, GetUrl(name));
+            $('span', $(this)).removeClass('ui-icon-triangle-1-e').addClass('ui-icon-triangle-1-s');            
         }
-
-        $(this).removeClass('display');
-        $('span', $(this)).removeClass('ui-icon-triangle-1-s').addClass('ui-icon-triangle-1-e');
-        $('#' + name).hide();
+        else {
+            $('span', $(this)).removeClass('ui-icon-triangle-1-s').addClass('ui-icon-triangle-1-e');
+            $(container).removeClass('display').hide();
+        }
     }
 
-    function GetInformation(name, url) {
+    function GetInformation(container, url) {
         
         $.ajax(url, {
             type: 'POST',
@@ -38,10 +42,10 @@
                 accountId: ACCOUNTID
             },
             success: function (response) {
-                AppendToHtml('#' + name, response);
+                AppendToHtml(container, response);
             },
-            error: function (errorMessage) {
-                console.log(errorMessage);
+            error: function (errMsg) {
+                console.log(errMsg);
             }
         });
     }
@@ -57,6 +61,7 @@
     }
 
     function AppendToHtml(container, data) {
+        $(container).addClass('data-collected').addClass('display');
         $(container).show();
         $(container).html(data);
 
@@ -64,16 +69,16 @@
     }    
 
     function ExpandAll() {
-        $(assosiation_report).find('.head').each(GetDetail);
+        $(associated_report).find('.head').each(GetDetail);
 
         $(expandAll).hide();
         $(collapseAll).show();
     }
 
     function CollapseAll() {
-        $(assosiation_report).find('.head').each(function () {
-            var name = $(this).attr('ref');
-            $('#' + name).hide();
+        $(associated_report).find('.head').each(function () {
+            var container = '#' + $(this).attr('ref');
+            $(container).removeClass('display').hide();
             $('span', $(this)).removeClass('ui-icon-triangle-1-s').addClass('ui-icon-triangle-1-e');
         });
 
@@ -95,6 +100,9 @@
                 break;
             case "#associated_device":
                 device_by_account();
+                break;
+            case "#transaction_history":
+                transaction_history();
                 break;
             default:
                 break;
@@ -119,7 +127,12 @@
         GetInformation("retract_evidence", GetUrl("retract_evidence"));
     }
 
-    $(assosiation_report).find('.head').each(function () {
+    function RemoveHiddenInit(container) {
+        $(container).removeAttr('hidden');
+        $(collapseAll).removeAttr('hidden');
+    }
+
+    $(associated_report).find('.head').each(function () {
         $(this).click(GetDetail);
     });
 

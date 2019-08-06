@@ -144,7 +144,10 @@
 
         private static void RegisterAccountBundles(BundleCollection bundles)
         {
+            bundles.Add(new ScriptBundle("~/scripts/evidence").Include("~/scripts/Evidence/*.js"));
+            bundles.Add(new ScriptBundle("~/scripts/account/associated").Include("~/scripts/Account/Associated/*.js"));
             bundles.Add(new ScriptBundle("~/scripts/account").Include("~/scripts/Account/*.js"));
+            bundles.Add(new ScriptBundle("~/scripts/transaction/history").Include("~/scripts/Transaction/History/*.js"));
         }
         
     }

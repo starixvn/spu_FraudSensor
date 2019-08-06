@@ -16,7 +16,7 @@
         <span class="expand-all">Expand All</span>
         <span class="collapse-all" hidden="hidden">Collapse All</span>
     </legend>
-    <div id="assosiation_report" class="ui-accordion ui-widget ui-helper-reset ui-accordion-icons">
+    <div id="associated_report" class="ui-accordion ui-widget ui-helper-reset ui-accordion-icons">
         <h3 class="head ui-accordion-header ui-helper-reset ui-state-default ui-corner-all" ref="chains_evidence">
             <span class="ui-icon ui-icon-triangle-1-e"></span>
             <a href="#">
@@ -80,8 +80,9 @@
         var ACCOUNTID = '@Model.AccountInfo.AccountId';
         var USERNAME = '@Model.AccountInfo.UserName';
     </script>
-    <script src="~/Scripts/Evidence/form-exception.js"></script>
-    <script src="~/Scripts/Account/Associated/account-by-account.js"></script>
-    <script src="~/Scripts/Account/Associated/device-by-account.js"></script>
+
+    @Scripts.Render("~/scripts/evidence")
     @Scripts.Render("~/scripts/account")
+    @Scripts.Render("~/scripts/account/associated")
+    @Scripts.Render("~/scripts/transaction/history")
 }

@@ -2,6 +2,8 @@
 {
     public class AssociatedAccountByAccountFilter
     {
+        public int AccountId { get; set; }
+
         public bool DeviceAwayOne { get; set; }
 
         public bool DeviceAwayMore { get; set; }

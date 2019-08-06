@@ -1,6 +1,7 @@
 ﻿namespace Fanex.NAP.FS.Websites.Controllers
 {
     using Fanex.NAP.FS.Library.Services;
+    using Fanex.NAP.FS.Library.ViewModels.Transaction;
     using System.Web.Mvc;
 
     public class TransactionController : Controller
@@ -17,11 +18,18 @@
             return View();
         }
 
+        [HttpPost]
         public ActionResult GetTransactionHistory(int accountId)
         {
-            var data = _transactionService.GetTransactionHistory(accountId);
+            return PartialView("TransactionHistory");
+        }
 
-            return PartialView("TransactionHistory", data);
+        [HttpPost]
+        public ActionResult GetTransactionHistoryFilter(TransactionHistoryFilter filter)
+        {
+            var data = _transactionService.GetTransactionHistory(filter);
+
+            return Json(data, JsonRequestBehavior.AllowGet);
         }
     }
 }

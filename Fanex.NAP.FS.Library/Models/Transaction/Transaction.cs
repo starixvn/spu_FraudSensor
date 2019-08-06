@@ -8,7 +8,11 @@
     {
         public Account Account { get; set; }
 
+        public string RobotTracking { get; set; }
+
         public string ActionName { get; set; }
+
+        public string ActionResult { get; set; }
 
         public string City { get; set; }
 
@@ -18,21 +22,20 @@
 
         public Device Device { get; set; }
 
+        public string Browser { get; set; }
+
         public string Domain { get; set; }
 
         public DeviceFlagged Flagged { get; set; }
 
-        public string IP { get; set; }
+        public string IPAddress { get; set; }
 
         public string Isp { get; set; }
 
         public string Region { get; set; }
 
         public DateTime TransDate { get; set; }
-       
-        public string URL { get; set; }
 
-        public string UserAgent { get; set; }
-
+        public string ServiceProvider { get; set; }
     }
 }
