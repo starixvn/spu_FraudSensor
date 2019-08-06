@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'Fraud-Sensor';
-  src:  url('fonts/Fraud-Sensor.eot?j1ur5x');
-  src:  url('fonts/Fraud-Sensor.eot?j1ur5x#iefix') format('embedded-opentype'),
-    url('fonts/Fraud-Sensor.ttf?j1ur5x') format('truetype'),
-    url('fonts/Fraud-Sensor.woff?j1ur5x') format('woff'),
-    url('fonts/Fraud-Sensor.svg?j1ur5x#Fraud-Sensor') format('svg');
+  src:  url('fonts/Fraud-Sensor.eot?szauyx');
+  src:  url('fonts/Fraud-Sensor.eot?szauyx#iefix') format('embedded-opentype'),
+    url('fonts/Fraud-Sensor.ttf?szauyx') format('truetype'),
+    url('fonts/Fraud-Sensor.woff?szauyx') format('woff'),
+    url('fonts/Fraud-Sensor.svg?szauyx#Fraud-Sensor') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -24,6 +24,41 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.icon-device-clean:before {
+  content: "\e93c";
+  color: #396ef8;
+}
+.icon-connect-aa:before {
+  content: "\e939";
+}
+.icon-disconnect:before {
+  content: "\e93a";
+}
+.icon-device-fraud:before {
+  content: "\e93b";
+  color: #c1272d;
+}
+.icon-clean:before {
+  content: "\e935";
+  color: #396ef8;
+}
+.icon-fraud-flag:before {
+  content: "\e936";
+  color: #c1272d;
+}
+.icon-fraud:before {
+  content: "\e937";
+  color: #c1272d;
+}
+.icon-expand:before {
+  content: "\e938";
+}
+.icon-collapse:before {
+  content: "\e933";
+}
+.icon-connect:before {
+  content: "\e934";
+}
 .icon-account-device:before {
   content: "\e92e";
   color: #346bfc;
@@ -104,9 +139,26 @@
 .icon-calendar-text:before {
   content: "\e906";
 }
-.icon-chart-scatterplot-hexbin:before {
+.icon-chart-scatterplot-hexbin .path1:before {
   content: "\e907";
-  color: #9aa2b5;
+  color: rgb(154, 162, 181);
+}
+.icon-chart-scatterplot-hexbin .path2:before {
+  content: "\e930";
+  margin-left: -1em;
+  color: rgb(154, 162, 181);
+}
+.icon-chart-scatterplot-hexbin .path3:before {
+  content: "\e931";
+  margin-left: -1em;
+  color: rgb(154, 162, 181);
+  opacity: 0.6;
+}
+.icon-chart-scatterplot-hexbin .path4:before {
+  content: "\e932";
+  margin-left: -1em;
+  color: rgb(154, 162, 181);
+  opacity: 0.8;
 }
 .icon-checkbox-blank-outline:before {
   content: "\e909";
