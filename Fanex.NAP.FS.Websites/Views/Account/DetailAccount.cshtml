@@ -5,7 +5,7 @@
 @section styles{
     <link href="~/Content/scss/pages/account/account.css" rel="stylesheet" />
     <link href="~/Content/scss/pages/evidence/evidence.css" rel="stylesheet" />
-    
+
 }
 
 @Html.Partial("DetailInfoAccount/AccountInfo", Model)
@@ -80,9 +80,8 @@
         var ACCOUNTID = '@Model.AccountInfo.AccountId';
         var USERNAME = '@Model.AccountInfo.UserName';
     </script>
-    <script src="~/Scripts/MultipleSelect/jquery.multiselect.filter.js"></script>
-    <script src="~/Scripts/MultipleSelect/jquery.multiselect.js"></script>
     <script src="~/Scripts/Evidence/form-exception.js"></script>
     <script src="~/Scripts/Account/Associated/account-by-account.js"></script>
+    <script src="~/Scripts/Account/Associated/device-by-account.js"></script>
     @Scripts.Render("~/scripts/account")
 }

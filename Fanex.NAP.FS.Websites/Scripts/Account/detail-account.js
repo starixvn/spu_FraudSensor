@@ -93,6 +93,9 @@
             case "#associated_account":
                 account_by_account();
                 break;
+            case "#associated_device":
+                device_by_account();
+                break;
             default:
                 break;
         }

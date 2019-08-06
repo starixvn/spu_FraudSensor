@@ -69,8 +69,17 @@
         [HttpPost]
         public ActionResult GetAssociatedDeviceByAccount(int accountId)
         {
-            return PartialView("Associated/AccountByDevice");
+            return PartialView("Associated/DeviceByAccount");
         }
+
+        [HttpPost]
+        public ActionResult GetAssociatedDeviceByAccountFilter(AssociatedDeviceByAccountFilter filter)
+        {
+            var data = _accountService.GetAssociatedDevicesByAccount(filter);
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
         #endregion
     }
 }

@@ -394,6 +394,7 @@
       <DependentUpon>subscriber-assignment.css</DependentUpon>
     </Content>
     <Content Include="Scripts\Account\Associated\account-by-account.js" />
+    <Content Include="Scripts\Account\Associated\device-by-account.js" />
     <Content Include="Scripts\Evidence\form-exception.js" />
     <Content Include="Scripts\search.js" />
     <Content Include="Scripts\Account\detail-account.js" />
@@ -1090,7 +1091,7 @@
     <Content Include="Views\Account\DetailInfoAccount\FormException.cshtml" />
     <Content Include="Views\Account\DetailInfoAccount\RetractAndException.cshtml" />
     <Content Include="Views\Account\Associated\AccountByAccount.cshtml" />
-    <Content Include="Views\Account\Associated\AccountByDevice.cshtml" />
+    <Content Include="Views\Account\Associated\DeviceByAccount.cshtml" />
     <None Include="Views\Errors\403.cshtml" />
     <None Include="Views\Errors\404.cshtml" />
     <None Include="Views\Errors\500.cshtml" />

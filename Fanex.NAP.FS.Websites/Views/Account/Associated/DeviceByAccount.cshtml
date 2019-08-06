@@ -1,0 +1,52 @@
+﻿
+@{
+    ViewBag.Title = "AccountAssociatedDevice";
+}
+
+<div id="device-by-account">
+    <div id="device-by-account-filter">
+        <div class="filter">
+            <div class="form-control width-300">
+                <label class="checkbox">
+                    <input type="checkbox" id="chk-used-by-account-current" />
+                    <span>Used by</span><span class="username-span"></span>
+                </label>
+            </div>           
+        </div>
+        <div class="filter">
+            <div class="form-control width-300">
+                <label class="checkbox">
+                    <input type="checkbox" id="chk-used-by-account-associated" />
+                    <span>1 or more Accounts Away from </span><span class="username-span"></span>
+                </label>
+            </div>
+            <div class="form-control width-150">
+                <div class="control-label">Fraud Status</div>
+                <select class="control" id="cbb-fraud-status">
+                    <option value="0" selected>All</option>
+                    <option value="1">Flagged</option>
+                    <option value="2">Indirect Flagged</option>
+                    <option value="3">Clean</option>
+                </select>
+            </div>
+            <div class="form-control button-group">
+                <button class="button btn-search" id="btn-search">Search</button>
+            </div>
+        </div>
+    </div>
+    <div id="device-by-account-content">
+        <table id="device-by-account-table" class="table table-striped" style="width: 100%">
+            <thead>
+                <tr>
+                    <th>Device</th>
+                    <th>First Used</th>
+                    <th>Latest Used</th>
+                    <th></th>
+                    <th>Total Uses</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>

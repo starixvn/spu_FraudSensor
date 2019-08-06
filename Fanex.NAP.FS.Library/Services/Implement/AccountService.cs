@@ -49,9 +49,9 @@
             return GetAssociatedAccountByAccounts_Test(filter);
         }
 
-        public IEnumerable<AssociatedAccountByDevice> GetAssociatedAccountByDevices(AssociatedAccountByDeviceFilter filter)
+        public IEnumerable<AssociatedDeviceByAccount> GetAssociatedDevicesByAccount(AssociatedDeviceByAccountFilter filter)
         {
-            return GetAssociatedAccountByDevices_Test(filter);
+            return GetAssociatedDevicesByAccount_Test(filter);
         }
 
         #region Test
@@ -152,10 +152,26 @@
             return lstAssociated;
         }
 
-        private IEnumerable<AssociatedAccountByDevice> GetAssociatedAccountByDevices_Test(AssociatedAccountByDeviceFilter filter)
+        private IEnumerable<AssociatedDeviceByAccount> GetAssociatedDevicesByAccount_Test(AssociatedDeviceByAccountFilter filter)
         {
-            return new List<AssociatedAccountByDevice>();
+            var lstAssociated = new List<AssociatedDeviceByAccount>();
+
+            for (int i = 1; i < 6; i++)
+            {
+                var deviceAssociated = new AssociatedDeviceByAccount();
+                deviceAssociated.Device = "08d99c65629142b9903ab56b2f3511ba";
+                deviceAssociated.FirstUsed = DateTime.Now;
+                deviceAssociated.LastUsed = DateTime.Now;
+                deviceAssociated.AssociatedDate = DateTime.Now;
+                deviceAssociated.TotalUses = 100 + i;
+                deviceAssociated.GraphURL = "url 123456";
+
+                lstAssociated.Add(deviceAssociated);
+            }
+
+            return lstAssociated;
         }
+
         #endregion
     }
 }

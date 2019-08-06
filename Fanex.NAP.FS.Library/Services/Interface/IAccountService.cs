@@ -15,6 +15,6 @@
 
         IEnumerable<AssociatedAccountByAccount> GetAssociatedAccountByAccounts(AssociatedAccountByAccountFilter filter);
 
-        IEnumerable<AssociatedAccountByDevice> GetAssociatedAccountByDevices(AssociatedAccountByDeviceFilter filter);
+        IEnumerable<AssociatedDeviceByAccount> GetAssociatedDevicesByAccount(AssociatedDeviceByAccountFilter filter);
     }
 }

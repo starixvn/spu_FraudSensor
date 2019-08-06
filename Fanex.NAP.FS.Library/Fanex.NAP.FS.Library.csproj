@@ -405,8 +405,8 @@
     <Compile Include="Services\Interface\ITransactionService.cs" />
     <Compile Include="ViewModels\Account\Associated\AssociatedAccountByAccount.cs" />
     <Compile Include="ViewModels\Account\Associated\AssociatedAccountByAccountFilter.cs" />
-    <Compile Include="ViewModels\Account\Associated\AssociatedAccountByDevice.cs" />
-    <Compile Include="ViewModels\Account\Associated\AssociatedAccountByDeviceFilter.cs" />
+    <Compile Include="ViewModels\Account\Associated\AssociatedDeviceByAccount.cs" />
+    <Compile Include="ViewModels\Account\Associated\AssociatedDeviceByAccountFilter.cs" />
     <Compile Include="ViewModels\Account\Evidence\ChainsToEvidence.cs" />
     <Compile Include="ViewModels\Account\Evidence\RetractedEvidenceAndException.cs" />
     <Compile Include="ViewModels\Account\SubscriberAccount.cs" />

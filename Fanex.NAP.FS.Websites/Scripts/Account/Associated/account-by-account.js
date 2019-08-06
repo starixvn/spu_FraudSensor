@@ -1,6 +1,7 @@
 ﻿function account_by_account() {
     var btnSearch = $('#btn-search');
     var accountSearch = $('#account-search');
+    var usernameSpan = $('.username-span');
     var associatedTable = $('#acount-by-account-table');    
 
     function GenerateGrid() {
@@ -104,7 +105,7 @@
         });
     }
 
-    $('.username-span').text(USERNAME);
+    usernameSpan.text(USERNAME);
 
     btnSearch.click(GenerateReport);
 
