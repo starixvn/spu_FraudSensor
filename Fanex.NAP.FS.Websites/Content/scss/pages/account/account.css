@@ -80,3 +80,9 @@
 .account-status {
   float: left;
   padding-left: 5px; }
+
+.width-300 {
+  width: 300px; }
+
+.width-150 {
+  width: 150px; }

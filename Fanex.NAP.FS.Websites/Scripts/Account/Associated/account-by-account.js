@@ -1,6 +1,7 @@
 ﻿function account_by_account() {
     var btnSearch = $('#btn-search');
-    var associatedTable = $('#acount-by-account-table');
+    var accountSearch = $('#account-search');
+    var associatedTable = $('#acount-by-account-table');    
 
     function GenerateGrid() {
         associatedTable.DataTable({
@@ -14,7 +15,6 @@
                 infoEmpty: "",
                 zeroRecords: "There's no data"
             },
-            searching: true,
             ordering: false,
             lengthMenu: [10, 20, 50, 100, 200],
             pageLength: 10,
@@ -46,11 +46,11 @@
                 $("th", thread).eq(5).text('Associated with ' + USERNAME + ' on'),
                 $("th", thread).eq(6).text('Path to ' + USERNAME)
             }
-        });
+        });        
     }
 
     function RenderUserName(obj) {
-        var html = '<div class="account-icon">';
+        var html = '<div class="account-status">';
         html += '<a href="#">' + obj.AccountAssociated.UserName + "(" + obj.AccountAssociated.UserName2 + ")" + '</a>';
         html += '</div>';
 
@@ -59,7 +59,7 @@
 
     function RenderGraphImage() {
         return '<span class="graph" title="Grap View"></span>';
-    }
+    }    
 
     function GenerateReport() {
         var deviceAwayOne = $('#chk-device-away-1').is(':checked');
@@ -92,9 +92,25 @@
         associatedTable.DataTable().columns.adjust();
     }
 
+    function InitSearchOnGrid() {
+        associatedTable.DataTable().columns([0]).every(function () {
+            var column = this;
+
+            accountSearch.keyup(function () {
+                if (column.search() !== this.value) {
+                    column.search(this.value).draw();
+                }
+            });
+        });
+    }
+
+    $('.username-span').text(USERNAME);
+
     btnSearch.click(GenerateReport);
 
     GenerateGrid();
+
+    InitSearchOnGrid();
 }
 
 $(account_by_account);
