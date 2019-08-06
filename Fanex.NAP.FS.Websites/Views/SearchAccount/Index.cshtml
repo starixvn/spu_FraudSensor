@@ -10,29 +10,23 @@
     <link href="~/Content/scss/pages/account/account.css" rel="stylesheet" />
 }
 
-<fieldset class="fieldset-search">
-    <legend>Search Information</legend>
-    <div class="filter">
-        <div class="form-control">
-            <div class="control-label">Subscribers</div>
-            <select id="ddlSubscriber" multiple="multiple"></select>
+<div class="filter">
+    <div class="form-control">
+        <div class="control-label">Subscribers</div>
+        <select id="ddlSubscriber" multiple="multiple"></select>
+    </div>
+    <div class="form-control">
+        <div class="control-label">Account</div>
+        <input type="text" id="account" class="control input-field" value=@ViewBag.KeySearch />
+
+        <div id="caption-error" class="caption-error">
+            <span style="color:red"></span>
         </div>
     </div>
-
-    <div class="filter">
-        <div class="form-control">
-            <div class="control-label">Account</div>
-            <input type="text" id="account" class="control input-field" value=@ViewBag.KeySearch />
-
-            <div id="caption-error" class="caption-error">
-                <span style="color:red"></span>
-            </div>
-        </div>
-        <div class="form-control button-group">
-            <button class="button btn-search" id="btnSearch">Search</button>
-        </div>
+    <div class="form-control button-group">
+        <button class="button btn-search" id="btnSearch">Search</button>
     </div>
-</fieldset>
+</div>
 
 <div class="content-account">
     <table id="table-account" class="table table-striped" style="width: 100%">

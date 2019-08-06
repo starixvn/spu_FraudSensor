@@ -640,7 +640,7 @@ select[disabled] {
     vertical-align: middle; }
   .table thead th {
     border-bottom-width: 1px;
-    background-color: #465262;
+    background-color: #1D2E4F;
     color: #fff;
     text-align: center;
     font-weight: normal; }
@@ -716,7 +716,7 @@ table.dataTable {
     background-image: url(../images/sort_asc.png); }
 
 .dataTables_scrollHeadInner {
-  background-color: #465262; }
+  background-color: #1D2E4F; }
 
 .dataTables_wrapper.no-footer .dataTables_scrollBody {
   border-bottom: none; }
