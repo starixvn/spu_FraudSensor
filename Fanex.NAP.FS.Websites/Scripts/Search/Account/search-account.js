@@ -135,9 +135,10 @@
     }
 
     function RenderUserName(obj, userName) {
+        var url = common.modifyRelativeUrl('/Account/DetailAccount?id=' + obj.AccountID);
 
         return `<a class='info-bng' 
-                    href='Account/DetailAccount?id=${obj.AccountID}'
+                    href=${url}
                     target='_blank'>${userName}
                 </a>`;
     }
