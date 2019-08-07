@@ -1,7 +1,8 @@
 ﻿function device_by_account() {
-    var btnSearch = $('#btn-search');
+    var btnSearch = $('#btn-search-device');
     var usernameSpan = $('.username-span');
     var associatedTable = $('#device-by-account-table');
+    var associatedContent = $('#device-by-account-content');
 
     function GenerateGrid() {
         associatedTable.DataTable({
@@ -43,7 +44,7 @@
                 $("th", thread).eq(3).text('Associated with ' + USERNAME + ' on'),
                 $("th", thread).eq(5).text('Path to ' + USERNAME)
             }
-        });
+        });       
     }
 
     function RenderUserName(obj) {
@@ -83,6 +84,10 @@
     }
 
     function BindDataToGrid(data) {
+        if (associatedContent.is(':hidden')) {
+            associatedContent.removeAttr('hidden');
+        }
+        
         associatedTable.DataTable().clear().rows.add(data).draw();
         associatedTable.DataTable().columns.adjust();
     }

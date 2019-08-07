@@ -124,13 +124,12 @@
             color: #475A7C;
             font-size: 14px;
             font-weight: bold;
-            //border-right: 1px solid #fff;
+            border-right: 1px solid #fff;
         }
 
         .info-item:not(:last-child) {
             flex-basis: 350px;
             max-width: 350px;
-            border-right: 1px solid #C7C7C7;
         }
 
         .info-item:last-child {
@@ -141,10 +140,6 @@
             .info-title {
                 border-right: 0;
             }
-        }
-
-        .info-text {
-            padding-left: 12px;
         }
     }
 }

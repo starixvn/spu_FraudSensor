@@ -88,19 +88,17 @@
       background: #B3D2EF;
       color: #475A7C;
       font-size: 14px;
-      font-weight: bold; }
+      font-weight: bold;
+      border-right: 1px solid #fff; }
     .content-card .account-info .info-item:not(:last-child) {
       flex-basis: 350px;
-      max-width: 350px;
-      border-right: 1px solid #C7C7C7; }
+      max-width: 350px; }
     .content-card .account-info .info-item:last-child {
       flex-grow: 1;
       flex-basis: 0;
       max-width: 100%; }
       .content-card .account-info .info-item:last-child .info-title {
         border-right: 0; }
-    .content-card .account-info .info-text {
-      padding-left: 12px; }
 
 .fieldset-search {
   border-radius: 3px 3px 3px 3px;

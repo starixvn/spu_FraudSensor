@@ -1,8 +1,9 @@
 ﻿function account_by_account() {
-    var btnSearch = $('#btn-search');
+    var btnSearch = $('#btn-search-account');
     var accountSearch = $('#account-search');
     var usernameSpan = $('.username-span');
-    var associatedTable = $('#acount-by-account-table');    
+    var associatedTable = $('#account-by-account-table'); 
+    var associatedContent = $('#account-by-account-content'); 
 
     function GenerateGrid() {
         associatedTable.DataTable({
@@ -89,6 +90,10 @@
     }
 
     function BindDataToGrid(data) {
+        if (associatedContent.is(':hidden')) {
+            associatedContent.removeAttr('hidden');
+        }
+
         associatedTable.DataTable().clear().rows.add(data).draw();
         associatedTable.DataTable().columns.adjust();
     }

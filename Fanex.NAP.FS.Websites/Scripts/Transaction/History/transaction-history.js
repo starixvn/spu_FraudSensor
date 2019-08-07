@@ -1,6 +1,7 @@
 ﻿function transaction_history() {
-    var btnSearch = $('#btn-search');
+    var btnSearch = $('#btn-search-transaction');
     var transactionTable = $('#transaction-history-table');
+    var transactionContent = $('#transaction-history-content');
 
     function GenerateGrid() {
         transactionTable.DataTable({
@@ -62,6 +63,10 @@
     }
 
     function BindDataToGrid(data) {
+        if (transactionContent.is(':hidden')) {
+            transactionContent.removeAttr('hidden');
+        }
+
         transactionTable.DataTable().clear().rows.add(data).draw();
         transactionTable.DataTable().columns.adjust();
     }

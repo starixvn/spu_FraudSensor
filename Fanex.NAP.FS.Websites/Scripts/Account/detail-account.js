@@ -12,25 +12,27 @@
         { name: "transaction_history", url: common.modifyRelativeUrl('/Transaction/GetTransactionHistory') }
     ];   
 
-    function GetDetail() {  
+    function ToogleDetail() {  
         var refContainer = $(this).attr('ref');
         var container = '#' + refContainer;
 
-        RemoveHiddenInit(container);
+        RemoveHidden(container);
 
-        if (!$(container).hasClass('display')) {
-            if (!$(container).hasClass('data-collected')) {
-                GetInformation(container, GetUrl(refContainer));
-            }
-            else {
-                $(container).addClass('display').show();
-            }
-
-            $('span', $(this)).removeClass('ui-icon-triangle-1-e').addClass('ui-icon-triangle-1-s');            
-        }
-        else {
+        if ($(container).hasClass('display')) {
             $('span', $(this)).removeClass('ui-icon-triangle-1-s').addClass('ui-icon-triangle-1-e');
             $(container).removeClass('display').hide();
+        }
+        else {
+            if ($(container).hasClass('data-collected')) {
+                $(container).addClass('display').show();
+            }
+            else {
+                GetInformation(container, GetUrl(refContainer));
+            }
+
+            $('span', $(this)).removeClass('ui-icon-triangle-1-e').addClass('ui-icon-triangle-1-s');
+
+            ToogleExpandButton(false);
         }
     }
 
@@ -65,11 +67,11 @@
         $(container).show();
         $(container).html(data);
 
-        InitForm(container);
+        InitTabsForm(container);
     }    
 
     function ExpandAll() {
-        $(associated_report).find('.head').each(GetDetail);
+        $(associated_report).find('.head').each(ToogleDetail);
 
         $(expandAll).hide();
         $(collapseAll).show();
@@ -86,7 +88,7 @@
         $(expandAll).show();        
     }
 
-    function InitForm(container) {
+    function InitTabsForm(container) {
         switch (container) {
             case "#chains_evidence":
                 formException = new form_exception(ACCOUNTID, USERNAME);
@@ -124,16 +126,32 @@
         formException.AddException();
 
         GetInformation("chains_evidence", GetUrl("chains_evidence"));
-        GetInformation("retract_evidence", GetUrl("retract_evidence"));
+
+        if ($('#retract_evidence').hasClass('display')) {
+            GetInformation("retract_evidence", GetUrl("retract_evidence"));
+        }
     }
 
-    function RemoveHiddenInit(container) {
-        $(container).removeAttr('hidden');
-        $(collapseAll).removeAttr('hidden');
+    function RemoveHidden(container) {
+        if ($(container).is(':hidden')) {
+            $(container).removeAttr('hidden');
+            $(collapseAll).removeAttr('hidden');
+        }        
+    }
+
+    function ToogleExpandButton(isShow) {
+        if (isShow) {
+            $(expandAll).show();
+            $(collapseAll).hide();
+        }
+        else {
+            $(expandAll).hide();
+            $(collapseAll).show();
+        }
     }
 
     $(associated_report).find('.head').each(function () {
-        $(this).click(GetDetail);
+        $(this).click(ToogleDetail);
     });
 
     $(expandAll).click(ExpandAll);
