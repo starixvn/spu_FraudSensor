@@ -154,6 +154,8 @@
         }
     }
 
+    $(collapseAll).hide();
+
     $(associated_report).find('.head').each(function () {
         $(this).click(ToogleDetail);
     });
