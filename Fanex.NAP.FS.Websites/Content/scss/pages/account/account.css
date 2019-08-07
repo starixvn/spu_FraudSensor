@@ -12,6 +12,22 @@
   color: #545454;
   text-transform: capitalize; }
 
+.expand-all, .collapse-all {
+  display: inline-block;
+  width: 25px;
+  height: 20px;
+  line-height: 20px;
+  text-align: center;
+  cursor: pointer; }
+
+.expand-all:before {
+  font-family: 'Fraud-Sensor', sans-serif !important;
+  content: "\e938"; }
+
+.collapse-all:before {
+  font-family: 'Fraud-Sensor', sans-serif !important;
+  content: "\e933"; }
+
 .content {
   padding: 0;
   padding-bottom: 20px; }
@@ -126,6 +142,10 @@
 .report-item {
   background: #fff;
   box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.2); }
+  .report-item.expanded .ui-accordion-header {
+    background: #396EF8; }
+    .report-item.expanded .ui-accordion-header a {
+      color: #fff; }
 
 .report-cont {
   padding: 12px; }
@@ -147,30 +167,8 @@
   font-weight: bold;
   padding: 5px; }
 
-.expand-all {
-  padding: 0px 5px 2px 15px;
-  background: url("../../../images/expand_all.png") no-repeat left bottom transparent;
-  font-weight: normal;
-  cursor: pointer; }
-
-.collapse-all {
-  padding: 0px 5px 2px 15px;
-  background: url("../../../images/collapse_all.png") no-repeat left bottom transparent;
-  font-weight: normal;
-  cursor: pointer; }
-
 .red {
   color: red; }
-
-.report-cont {
-  position: relative;
-  margin: 0 0 5px 0;
-  padding: .5em .5em .5em .7em;
-  font-size: 100%;
-  background-color: #fff;
-  border-radius: 3px 3px 3px 3px;
-  border: 1px solid #CECECE;
-  width: inherit; }
 
 .graph {
   text-align: center;
