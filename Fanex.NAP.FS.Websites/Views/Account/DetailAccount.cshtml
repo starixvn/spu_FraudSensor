@@ -20,10 +20,9 @@
         
     </div>
 </div>
-
-<fieldset class="fieldset-search">
-    
-    <div id="associated_report" class="ui-accordion ui-widget ui-helper-reset ui-accordion-icons">
+  
+<div id="associated_report" class="ui-accordion ui-widget ui-helper-reset ui-accordion-icons">
+    <div class="report-item">
         <h3 class="head ui-accordion-header ui-helper-reset ui-state-default ui-corner-all" ref="chains_evidence">
             <span class="ui-icon ui-icon-triangle-1-e"></span>
             <a href="#">
@@ -34,7 +33,9 @@
         <div id="chains_evidence" class="report-cont" hidden>
             <img src="@Url.Content("~/Content/images/ajax-loader.gif")" alt="Loading ..." />
         </div>
+    </div>
 
+    <div class="report-item">
         <h3 class="head ui-accordion-header ui-helper-reset ui-state-default ui-corner-all" ref="retract_evidence">
             <span class="ui-icon ui-icon-triangle-1-e"></span>
             <a href="#">
@@ -46,7 +47,9 @@
         <div id="retract_evidence" class="report-cont" hidden>
             <img src="@Url.Content("~/Content/images/ajax-loader.gif")" alt="Loading ..." />
         </div>
+    </div>
 
+    <div class="report-item">
         <h3 class="head ui-accordion-header ui-helper-reset ui-state-default ui-corner-all" ref="associated_account">
             <span class="ui-icon ui-icon-triangle-1-e"></span>
             <a href="#">
@@ -57,7 +60,9 @@
         <div id="associated_account" class="report-cont" hidden>
             <img src="@Url.Content("~/Content/images/ajax-loader.gif")" alt="Loading ..." />
         </div>
+    </div>
 
+    <div class="report-item">
         <h3 class="head ui-accordion-header ui-helper-reset ui-state-default ui-corner-all" ref="associated_device">
             <span class="ui-icon ui-icon-triangle-1-e"></span>
             <a href="#">
@@ -68,7 +73,9 @@
         <div id="associated_device" class="report-cont" hidden>
             <img src="@Url.Content("~/Content/images/ajax-loader.gif")" alt="Loading ..." />
         </div>
+    </div>
 
+    <div class="report-item">
         <h3 class="head ui-accordion-header ui-helper-reset ui-state-default ui-corner-all" ref="transaction_history">
             <span class="ui-icon ui-icon-triangle-1-e"></span>
             <a href="#">
@@ -80,7 +87,7 @@
             <img src="@Url.Content("~/Content/images/ajax-loader.gif")" alt="Loading ..." />
         </div>
     </div>
-</fieldset>
+</div>
 
 @section scripts{
     <script type="text/javascript">
