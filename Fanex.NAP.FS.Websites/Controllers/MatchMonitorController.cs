@@ -7,7 +7,7 @@
     using Fanex.NAP.FS.Library.ViewModels.MatchMonitor.FraudCaseDetails;
     using Fanex.NAP.FS.Service.Utilities;
     using Library.Core.Helpers;
-    using Library.Criteria.MatchMonitor.FraudCaseDetails;    
+    using Library.Criteria.MatchMonitor.FraudCaseDetails;
     using Library.Service;
     using Service;
     using Service.MatchMonitor;
@@ -66,8 +66,8 @@
 
             return Json(_matchMonitorService.VerifyMatch(criteria));
         }
-     
-        [HttpPost]        
+
+        [HttpPost]
         public ActionResult GenerateExcel(MatchGetAllCriteria criteria)
         {
             criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
@@ -83,7 +83,7 @@
 
             return new JsonResult { JsonRequestBehavior = JsonRequestBehavior.AllowGet, Data = new { FileId = fileId, FileName = fileName } };
         }
-        
+
         public ActionResult DownloadExcel(string fileId, string fileName)
         {
             if (TempData[fileId] != null)
@@ -145,9 +145,9 @@
             {
                 ViewBag.SiteList = _fraudCaseDetailService.GetSites();
                 ViewBag.CurrencyList = _fraudCaseDetailService.GetAllCurrency(IsShowSpecialCurrencies);
-                ViewBag.EvidenceList = _fraudCaseDetailService.GetListEvidences();                
+                ViewBag.EvidenceList = _fraudCaseDetailService.GetListEvidences();
             }
-                      
+
             return View("FraudCaseDetails/Index", model);
         }
 
@@ -225,7 +225,7 @@
 
             return Json(data, JsonRequestBehavior.AllowGet);
         }
-       
+
         #endregion
 
         #region Arbitrage        
@@ -241,32 +241,22 @@
         [HttpPost]
         public ActionResult GetArbitrageTicketsGroupSummary(GetArbitrageTicketCriteria criteria)
         {
-            Logger.Log.Info("Start GetArbitrageTicketsGroupSummary");
             var data = new List<ArbitrageGroupTicketList>();
-            try
+            criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
+            data = _fraudCaseDetailService.GetArbitrageTickets(criteria, true).ToList();
+
+            var lstCustId = new List<long>();
+            foreach (var item in data.Select(a => a.Home.Select(t => t.CustId)))
             {
-                criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
-                data = _fraudCaseDetailService.GetArbitrageTickets(criteria, true).ToList();
-
-                var lstCustId = new List<long>();
-                foreach (var item in data.Select(a => a.Home.Select(t => t.CustId)))
-                {
-                    lstCustId.AddRange(item);
-                }
-
-                foreach (var item in data.Select(a => a.Away.Select(t => t.CustId)))
-                {
-                    lstCustId.AddRange(item);
-                }
-
-                SessionManager.Set("ListCustId", lstCustId.Distinct().ToList());
-
-                Logger.Log.Info("End GetArbitrageTicketsGroupSummary");
+                lstCustId.AddRange(item);
             }
-            catch (Exception ex)
+
+            foreach (var item in data.Select(a => a.Away.Select(t => t.CustId)))
             {
-                Logger.Log.Error("GetArbitrageTicketsGroupSummary - Exception: " + ex.Message);
+                lstCustId.AddRange(item);
             }
+
+            SessionManager.Set("ListCustId", lstCustId.Distinct().ToList());
 
             return new JsonResult { Data = new { Content = data }, MaxJsonLength = Int32.MaxValue };
         }
@@ -281,7 +271,7 @@
             }
 
             var data = _fraudCaseDetailService.GetArbitrageCustomerDetails(criteria);
-            
+
             if (SessionManager.Get<List<long>>("ListCustId") != null)
             {
                 var lstCustId = SessionManager.Get<List<long>>("ListCustId");
@@ -332,7 +322,7 @@
 
             return new JsonResult { JsonRequestBehavior = JsonRequestBehavior.AllowGet, Data = new { FileId = fileId, FileName = fileName } };
         }
-        
+
         private string[] GenerateFilterInfo(ArbitrageDetailsCriteria criteria)
         {
             string[] filterInfo = new string[10];
@@ -365,7 +355,7 @@
             // Sites
             filterInfo[6] = criteria.Sites;
 
-            filterInfo[7] = criteria.Odds == null ? string.Empty : criteria.Odds.ToString() ;
+            filterInfo[7] = criteria.Odds == null ? string.Empty : criteria.Odds.ToString();
             filterInfo[8] = criteria.IsOnlyCN88 ? "Yes" : "No";
             filterInfo[9] = criteria.IsByIPAndDevice ? "Yes" : "No";
 
