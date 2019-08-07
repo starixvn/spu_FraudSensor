@@ -21,10 +21,12 @@
         if ($(container).hasClass('display')) {
             $('span', $(this)).removeClass('ui-icon-triangle-1-s').addClass('ui-icon-triangle-1-e');
             $(container).removeClass('display').hide();
+            $(container).parent().removeClass('expanded');
         }
         else {
             if ($(container).hasClass('data-collected')) {
                 $(container).addClass('display').show();
+                $(container).parent().addClass('expanded');
             }
             else {
                 GetInformation(container, GetUrl(refContainer));
@@ -64,6 +66,7 @@
 
     function AppendToHtml(container, data) {
         $(container).addClass('data-collected').addClass('display');
+        $(container).parent().addClass('expanded');
         $(container).show();
         $(container).html(data);
 
@@ -81,6 +84,7 @@
         $(associated_report).find('.head').each(function () {
             var container = '#' + $(this).attr('ref');
             $(container).removeClass('display').hide();
+            $(container).parent().removeClass('expanded');
             $('span', $(this)).removeClass('ui-icon-triangle-1-s').addClass('ui-icon-triangle-1-e');
         });
 
