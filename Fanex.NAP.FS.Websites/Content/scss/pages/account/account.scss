@@ -75,6 +75,7 @@
 .content-card {
     position: relative;
     margin: 0 16px 16px;
+    padding-bottom: 1px;
     background: #fff;
     border-radius: 3px;
     box-shadow: 0 1px 1.5px 0 rgba(0,0,0,.12), 0 1px 2px 0 rgba(0,0,0,.12);
@@ -110,9 +111,8 @@
     }
 
     .account-info {
-        display: flex;
-        flex: 0 1 auto;
-        flex-direction: row;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
         margin: 12px;
         background: #fff;
         border: 1px solid #C7C7C7;
@@ -127,20 +127,43 @@
             border-right: 1px solid #fff;
         }
 
+        .info-item {
+            padding-bottom: 5px;
+        }
+
         .info-item:not(:last-child) {
-            flex-basis: 350px;
-            max-width: 350px;
         }
 
         .info-item:last-child {
-            flex-grow: 1;
-            flex-basis: 0;
             max-width: 100%;
+            grid-column: span 2;
 
             .info-title {
                 border-right: 0;
             }
         }
+            padding: 3px 12px;
+
+            > * {
+                display: inline-block;
+                vertical-align: middle;
+            }
+
+            label {
+                width: 150px;
+                font-weight: bold;
+                color: #404040;
+            }
+        }
+
+        @media screen and (max-width: 1199px) {
+            .info-item:not(:last-child) {
+                grid-column: span 2;                
+            }
+
+            .info-item:last-child {
+                grid-column: span 4;
+            }
     }
 }
 

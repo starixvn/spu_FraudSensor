@@ -52,6 +52,7 @@
 .content-card {
   position: relative;
   margin: 0 16px 16px;
+  padding-bottom: 1px;
   background: #fff;
   border-radius: 3px;
   box-shadow: 0 1px 1.5px 0 rgba(0, 0, 0, 0.12), 0 1px 2px 0 rgba(0, 0, 0, 0.12); }
@@ -76,9 +77,8 @@
       padding-right: 5px;
       vertical-align: top; }
   .content-card .account-info {
-    display: flex;
-    flex: 0 1 auto;
-    flex-direction: row;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
     margin: 12px;
     background: #fff;
     border: 1px solid #C7C7C7;
@@ -89,16 +89,27 @@
       color: #475A7C;
       font-size: 14px;
       font-weight: bold;
-      border-right: 1px solid #fff; }
+    .content-card .account-info .info-item {
+      padding-bottom: 5px; }
     .content-card .account-info .info-item:not(:last-child) {
-      flex-basis: 350px;
-      max-width: 350px; }
     .content-card .account-info .info-item:last-child {
-      flex-grow: 1;
-      flex-basis: 0;
-      max-width: 100%; }
+      max-width: 100%;
+      grid-column: span 2; }
       .content-card .account-info .info-item:last-child .info-title {
         border-right: 0; }
+      padding: 3px 12px; }
+      .content-card .account-info .info-text > * {
+        display: inline-block;
+        vertical-align: middle; }
+      .content-card .account-info .info-text label {
+        width: 150px;
+        font-weight: bold;
+        color: #404040; }
+    @media screen and (max-width: 1199px) {
+      .content-card .account-info .info-item:not(:last-child) {
+        grid-column: span 2; }
+      .content-card .account-info .info-item:last-child {
+        grid-column: span 4; } }
 
 .fieldset-search {
   border-radius: 3px 3px 3px 3px;
