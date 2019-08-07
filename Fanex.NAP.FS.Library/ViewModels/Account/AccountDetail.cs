@@ -4,7 +4,7 @@
 
     public class AccountDetail
     {
-        public AccountInfo AccountInfo { get; set; }
+        public Account AccountInfo { get; set; }       
 
         public int TotalChainsToEvidence { get; set; }
 

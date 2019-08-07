@@ -7,6 +7,7 @@
     using Fanex.NAP.FS.Library.ViewModels.Account;
     using Fanex.NAP.FS.Library.ViewModels.Account.Associated;
     using Fanex.NAP.FS.Library.Models.Subscriber;
+    using Fanex.NAP.FS.Library.Models;
 
     public class AccountService : IAccountService
     {
@@ -23,23 +24,20 @@
         public AccountDetail GetAccountDetail(int accountId)
         {
             var data = new AccountDetail();
-            {
-                data.AccountInfo = new AccountInfo();
-                {
-                    data.AccountInfo.AccountId = accountId;
-                    data.AccountInfo.UserName = "fpsa_pgmthai";
-                    data.AccountInfo.UserName2 = "fpsa2_pgmthai";
-                    data.AccountInfo.FirstLogin = DateTime.Now;
-                    data.AccountInfo.LastLogin = DateTime.Now;
-                    data.AccountInfo.FrequencyLogin = 1;                    
-                }
-                data.TotalChainsToEvidence = 5;
-                data.TotalRetractedEvidence = 3;
-                data.TotalException = 5;
-                data.TotalAssociatedAcount = 10;
-                data.TotalAssociatedDevice = 20;                              
-                data.TotalTransactionHistory = 100;
-            }
+            data.AccountInfo = new Account();
+            data.AccountInfo.Id = accountId;
+            data.AccountInfo.UserName = "fpsa_pgmthai";
+            data.AccountInfo.UserName2 = "fpsa2_pgmthai";
+            data.AccountInfo.Status = AccountStatus.Active.ToString();
+            data.AccountInfo.FirstLogin = DateTime.Now;
+            data.AccountInfo.LastLogin = DateTime.Now;
+            data.AccountInfo.FrequencyLogin = 1;
+            data.TotalChainsToEvidence = 5;
+            data.TotalRetractedEvidence = 3;
+            data.TotalException = 5;
+            data.TotalAssociatedAcount = 10;
+            data.TotalAssociatedDevice = 20;
+            data.TotalTransactionHistory = 100;
 
             return data;
         }
@@ -138,13 +136,21 @@
                 accountAssociated.AccountAssociated.Id = i;
                 accountAssociated.AccountAssociated.UserName = "fpsa_pmgthai_" + i;
                 accountAssociated.AccountAssociated.UserName2 = "fpsa_pmgthai2_" + i;
-                accountAssociated.Status = "Active";
-                accountAssociated.AccountInfoAssociated = new AccountInfo();
-                accountAssociated.AccountInfoAssociated.FirstLogin = DateTime.Now;
-                accountAssociated.AccountInfoAssociated.LastLogin = DateTime.Now;
+                if (i % 2 == 0)
+                {
+                    accountAssociated.AccountAssociated.FraudStatus = FraudStatus.Flagged.ToString();
+                }
+                else
+                {
+                    accountAssociated.AccountAssociated.FraudStatus = FraudStatus.Clean.ToString();
+                }
+                accountAssociated.AccountAssociated.Status = AccountStatus.Active.ToString();
+                
+                accountAssociated.AccountAssociated.FirstLogin = DateTime.Now;
+                accountAssociated.AccountAssociated.LastLogin = DateTime.Now;
                 accountAssociated.TotalSharedDeviceLogin = 20;
                 accountAssociated.AssociatedDate = DateTime.Now;
-                accountAssociated.GraphURL = "url 123456";
+                accountAssociated.GraphURL = "Graph URL";
 
                 lstAssociated.Add(accountAssociated);
             }
@@ -159,12 +165,20 @@
             for (int i = 1; i < 6; i++)
             {
                 var deviceAssociated = new AssociatedDeviceByAccount();
-                deviceAssociated.DeviceNo = "08d99c65629142b9903ab56b2f3511ba";
+                deviceAssociated.DeviceNo = "08d99c65629142b9903ab56b2f3511ba";                
                 deviceAssociated.FirstUsed = DateTime.Now;
                 deviceAssociated.LastUsed = DateTime.Now;
                 deviceAssociated.AssociatedDate = DateTime.Now;
                 deviceAssociated.TotalUses = 100 + i;
                 deviceAssociated.GraphURL = "url 123456";
+                if (i % 2 == 0)
+                {
+                    deviceAssociated.FraudStatus = FraudStatus.Flagged.ToString();
+                }
+                else
+                {
+                    deviceAssociated.FraudStatus = FraudStatus.Clean.ToString();
+                }
 
                 lstAssociated.Add(deviceAssociated);
             }

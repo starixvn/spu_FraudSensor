@@ -6,6 +6,8 @@
     {
         public string DeviceNo { get; set; }
 
+        public string FraudStatus { get; set; }
+
         public DateTime FirstUsed { get; set; }
 
         public DateTime LastUsed { get; set; }

@@ -1,5 +1,7 @@
 ﻿namespace Fanex.NAP.FS.Library.ViewModels.Account.Associated
 {
+    using Fanex.NAP.FS.Library.Models;
+
     public class AssociatedDeviceByAccountFilter
     {
         public int AccountId { get; set; }
@@ -8,6 +10,6 @@
 
         public bool UsedByAccountAssociated { get; set; }
 
-        public string FraudStatus { get; set; }        
+        public FraudStatus FraudStatus { get; set; }        
     }
 }

@@ -5,12 +5,8 @@
 
     public class AssociatedAccountByAccount
     {
-        public Account AccountAssociated { get; set; }
-
-        public AccountInfo AccountInfoAssociated { get; set; }
-
-        public string Status { get; set; }
-
+        public Account AccountAssociated { get; set; }     
+    
         public int TotalSharedDeviceLogin { get; set; }
 
         public DateTime AssociatedDate { get; set; }

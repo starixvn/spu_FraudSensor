@@ -49,8 +49,13 @@
 
     function RenderUserName(obj) {
         var url = common.modifyRelativeUrl('/Device/DetailDevice/' + obj.DeviceNo);
+        var className = 'icon-device-fraud';
 
-        var html = '<span class="device-status">';
+        if (obj.FraudStatus == 'Clean') {
+            className = 'icon-device-clean';
+        }        
+
+        var html = '<span class="' + className + '">';
         html += '<a class="info-bng" href="' + url + '" target="_blank">' + obj.DeviceNo + '</a>';
         html += '</span>';
 

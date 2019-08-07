@@ -1,4 +1,5 @@
-﻿@{
+﻿@using Fanex.NAP.FS.Library.Models;
+@{
     ViewBag.Title = "AccountAssociatedAccount";
 }
 
@@ -14,9 +15,10 @@
             <div class="form-control width-150">
                 <div class="control-label">Status</div>
                 <select class="control" id="cbb-status">
-                    <option value="0" selected>All</option>
-                    <option value="1">Suspended</option>
-                    <option value="2">Close</option>
+                    <option value="@AccountStatus.All" selected>All</option>
+                    <option value="@AccountStatus.Active">Active</option>
+                    <option value="@AccountStatus.Suspended">Suspended</option>
+                    <option value="@AccountStatus.Closed">Close</option>
                 </select>
             </div>
             <div class="form-control">
@@ -35,10 +37,10 @@
             <div class="form-control width-150">
                 <div class="control-label">Fraud Status</div>
                 <select class="control" id="cbb-fraud-status">
-                    <option value="0" selected>All</option>
-                    <option value="1">Flagged</option>
-                    <option value="2">Indirect Flagged</option>
-                    <option value="3">Clean</option>
+                    <option value="@FraudStatus.All" selected>All</option>
+                    <option value="@FraudStatus.Flagged">Flagged</option>
+                    <option value="@FraudStatus.IndirectFlagged">Indirect Flagged</option>
+                    <option value="@FraudStatus.Clean">Clean</option>
                 </select>
             </div>
             <div class="form-control button-group">               

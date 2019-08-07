@@ -1,5 +1,21 @@
 ﻿namespace Fanex.NAP.FS.Library.Models
 {
+    public enum AccountStatus
+    {
+        All,
+        Active,
+        Suspended,
+        Closed
+    }
+
+    public enum FraudStatus
+    {
+        All,
+        Flagged,
+        IndirectFlagged,
+        Clean
+    }
+
     public enum DeviceFlagged
     {
         /// <summary>

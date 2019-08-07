@@ -396,7 +396,6 @@
     <Compile Include="Models\MatchMonitor\Match.cs" />
     <Compile Include="Models\Account\ChainNode.cs" />
     <Compile Include="Models\Account\AccountEvidence.cs" />
-    <Compile Include="Models\Account\AccountInfo.cs" />
     <Compile Include="Models\Subscriber\Subscriber.cs" />
     <Compile Include="Models\Transaction\Transaction.cs" />
     <Compile Include="Services\Implement\EvidenceService.cs" />

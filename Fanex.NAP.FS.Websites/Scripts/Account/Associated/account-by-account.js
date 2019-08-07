@@ -35,12 +35,12 @@
                 { targets: [5], width: "15%" }
             ],
             columns: [
-                { data: obj => RenderUserName(obj)},
-                { data: obj => obj.Status },
-                { data: obj => moment(obj.AccountInfoAssociated.FirstLogin).format("MMM DD, YYYY")},
-                { data: obj => moment(obj.AccountInfoAssociated.LastLogin).format("MMM DD, YYYY")},
+                { data: obj => RenderUserName(obj) },
+                { data: obj => obj.AccountAssociated.Status },
+                { data: obj => moment(obj.AccountAssociated.FirstLogin).format("MMM DD, YYYY")},
+                { data: obj => moment(obj.AccountAssociated.LastLogin).format("MMM DD, YYYY")},
                 { data: obj => obj.TotalSharedDeviceLogin },
-                { data: obj => moment(obj.AccountInfoAssociated.AssociatedDate).format("MMM DD, YYYY")},
+                { data: obj => moment(obj.AccountAssociated.AssociatedDate).format("MMM DD, YYYY")},
                 { data: obj => RenderGraphImage()}
             ],
             headerCallback: function (thread) {
@@ -48,13 +48,18 @@
                 $("th", thread).eq(5).text('Associated with ' + USERNAME + ' on'),
                 $("th", thread).eq(6).text('Path to ' + USERNAME)
             }
-        });        
+        });
     }
 
     function RenderUserName(obj) {
         var url = common.modifyRelativeUrl('/Account/DetailAccount?id=' + obj.AccountAssociated.Id);
+        var className = 'icon-fraud';
 
-        var html = '<span class="account-status">';
+        if (obj.AccountAssociated.FraudStatus == 'Clean') {
+            className = 'icon-clean';
+        }
+
+        var html = '<span class="' + className + '">';
         html += '<a class="info-bng" href="' + url + '" target="_blank">' + obj.AccountAssociated.UserName + "(" + obj.AccountAssociated.UserName2 + ")" + '</a>';
         html += '</span>';
 
