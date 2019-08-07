@@ -1,8 +1,11 @@
 ﻿function check_bet_report() {
     var from_date = $("#from-date"),
         to_date = $("#to-date"),
-        ticket_table = $("#ticket-table");
+        ticket_table = $("#ticket-table"),
+        icon_copy_note = $(".icon-notebook");
 
+    icon_copy_note.removeClass('active');
+    
     var noteMaxLength = 500;
     var noteLengthCollapse = 180;    
 
@@ -21,6 +24,7 @@
     }
 
     function generate_report() {
+        freeAllElementsForNoteCopy();
         group = null;
         highlight = false;
 
@@ -28,7 +32,14 @@
 
         common.showLoading();
 
-        $.get(url, { fromDate: from_date.val(), toDate: to_date.val() }, function (json) {            
+        $.get(url, { fromDate: from_date.val(), toDate: to_date.val() }, function (json) {
+            if (json.length) {
+                icon_copy_note.removeClass('icon-hide');
+            }
+            else {
+                icon_copy_note.addClass('icon-hide');
+            }
+
             ticket_table.DataTable().clear().rows.add(json).draw();
             ticket_table.DataTable().columns.adjust();
             common.closeLoading();
@@ -89,7 +100,7 @@
     })
         .datepicker("setDate", new Date())
         .change(restrict_from_date);
-
+    
     ticket_table.DataTable({
         ordering: false,
         paging: false,
@@ -147,7 +158,7 @@
 
         return '<div class="outer-container"><div class="container-note">'
             + '<textarea class="input-note-content hide" rows="5">' + (row.Note != null ? row.Note : '') + '</textarea>'
-            + '<div class="note-content" id="note-content">' + noteWrap + '</div>'
+            + '<div class="note-content" id="note-content" data-betid="' + row.BetId + '">' + noteWrap + '</div>'
             + '<div class="icon-note-text icon-note" id="icon"></div>'
             + '</div></div>';
     }
@@ -249,28 +260,32 @@
 
     function saveNote(cell, row) {
 
-        var inputContent = $(cell).find('.input-note-content');        
+        var inputContent = $(cell).find('.input-note-content');    
         var content = $(cell).find("#note-content");
         var noteNew = $(inputContent).val().trim(); 
         noteNew = replaceSpecialCharacter(noteNew);
+        var isEnabledNoteCopy = icon_copy_note.hasClass('active');
+        var transIds = isEnabledNoteCopy ? GenerateTransIdList() : row.BetId;
 
         if ($(inputContent).hasClass('change')) {
             var url = common.modifyRelativeUrl("/CheckBetReport/UpdateNote");
             noteNew = splitString(inputContent, noteNew, noteMaxLength);
 
-            $.get(url, { Note: noteNew, TransId: row.BetId }, function (result) {
+            $.post(url, { Note: noteNew, TransIds: transIds }, function (result) {
                 if (result.ErrorCode == 0) {
-                    // wrap text on Note
-                    var noteWrap = wrapString(noteNew, noteLengthCollapse);
-                    $(content).html(noteWrap);
+                    if (isEnabledNoteCopy) {
+                        generate_report();
+                    }
+                    else {
+                        var noteWrap = wrapString(noteNew, noteLengthCollapse);
+                        $(content).html(noteWrap);
 
-                    $(".note-ellipsis", cell).click(() => expandNote(cell));
+                        $(".note-ellipsis", cell).click(() => expandNote(cell));
 
-                    common.showSuccess('Note updated!');
-
+                        common.showSuccess('Note updated!');
+                    }
                 } else {
                     console.log(result.ErrorCode);
-
                     common.showError('Note fail!');
                 }               
             });
@@ -281,13 +296,64 @@
 
         ticket_table.DataTable().columns.adjust();
         $(cell).find("#icon").removeClass('icon-note-save').addClass('icon-note-text').attr('title', 'edit');
+        freeAllElementsForNoteCopy();
     }    
+
+    function GenerateTransIdList() {
+        return $('.text-disable').map(function () { return $(this).data("betid"); }).get().join(',');
+    }
+
+    function renderNoteCopy() {
+        var isEnabledNoteCopy = icon_copy_note.hasClass('active');
+
+        if (isEnabledNoteCopy == false) {
+            icon_copy_note.addClass('active');
+
+            if ($(".icon-note-save").length) {
+                $(".icon-note-text").addClass('icon-hide');
+                $(".note-content").click(e => addRemoveNoteCopyForCell(e.target));
+            }
+            else {
+                $(".icon-note-text:not(:first)").addClass('icon-hide');
+                $(".icon-note-text").first().click();
+                $(".note-content:not(:first)").click(e => addRemoveNoteCopyForCell(e.target));
+            }
+
+            $(".note-content").addClass('text-disable');
+        }
+        else {
+            freeAllElementsForNoteCopy();
+        }
+    }
+
+    function freeAllElementsForNoteCopy() {
+        icon_copy_note.removeClass('active');
+        $(".note-content").unbind();
+        $(".icon-note-text").removeClass('icon-hide');
+        $(".note-content").removeClass('text-disable');
+    }
+
+    function addRemoveNoteCopyForCell(targetElement) {
+        var isEnabledNoteCopy = icon_copy_note.hasClass('active');
+        var targetObject = $(targetElement).hasClass('container-note') ? $(targetElement) : $(targetElement).parent().find('.note-content');
+
+        if (isEnabledNoteCopy != false) {
+            if (targetObject.hasClass('text-disable')) {
+                targetObject.removeClass('text-disable');
+            }
+            else {
+                targetObject.addClass('text-disable');
+            }
+        }
+    }
 
     $("#generate").click(generate_report);
 
     $("#export").click(generate_excel);
 
-    $(".icon-calendar-text").click(e => $(e.target).prev().focus());       
+    $(".icon-calendar-text").click(e => $(e.target).prev().focus());
+
+    $(".icon-notebook").click(() => renderNoteCopy());
 
     generate_report();
 }
