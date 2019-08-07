@@ -1,7 +1,8 @@
 ﻿function transaction_history() {
     var btnSearch = $('#btn-search-transaction');
+    var status = $('#cbb-fraud-status');
     var transactionTable = $('#transaction-history-table');
-    var transactionContent = $('#transaction-history-content');
+    var transactionContent = $('#transaction-history-content');    
 
     function GenerateGrid() {
         transactionTable.DataTable({
@@ -23,11 +24,12 @@
             scrollCollapse: true,
             columnDefs: [
                 { targets: "_all", defaultContent: "-" },
-                { targets: [-2, -1], className: "text-center" }
+                { targets: [-2, -1], className: "text-center" },
+                { targets: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], className: "text-center" }
             ],
             columns: [
                 { data: obj => moment(obj.TransDate).format("MMM DD, YYYY") },
-                { data: obj => obj.Device.DeviceNo },
+                { data: obj => RenderDevice(obj) },
                 { data: obj => obj.RobotTracking },
                 { data: obj => obj.Action },
                 { data: obj => obj.ActionResult },
@@ -43,14 +45,29 @@
         });
     }
 
+    function RenderDevice(obj) {
+        var url = common.modifyRelativeUrl('/Device/DetailDevice/' + obj.Device.DeviceNo);
+
+        var html = '<span class= "' + obj.Flagged + '">';
+        html += '<a class="info-bng" href="' + url + '" target="_blank">' + obj.Device.DeviceNo + '</a>';
+        html += '</span>';
+
+        return html;
+    }
+
+    function RenderRobotTracking(obj) {
+        return '<span class=robot-tracking>' + obj.RobotTracking + '</span>';
+    }
+
     function GenerateReport() {
         var url = common.modifyRelativeUrl('/Transaction/GetTransactionHistoryFilter');
+        var reportLength = $(status).val();
 
         $.ajax(url, {
             type: 'POST',
             data: {
                 AccountId: ACCOUNTID,
-                ReportLength: '24hours'
+                ReportLength: reportLength
             },
             success: function (response) {
                 BindDataToGrid(response);

@@ -4,7 +4,7 @@
 
     public class AssociatedDeviceByAccount
     {
-        public string Device { get; set; }
+        public string DeviceNo { get; set; }
 
         public DateTime FirstUsed { get; set; }
 

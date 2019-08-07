@@ -1,4 +1,4 @@
-﻿namespace Fanex.NAP.FS.Library.Models.Device
+﻿namespace Fanex.NAP.FS.Library.Models
 {
     public enum DeviceFlagged
     {
@@ -56,5 +56,13 @@
         /// Device collected from browserless transactions due to DeviceCode is invalid
         /// </summary>
         RedInvalidDeviceCode
+    }
+
+    public enum TransactionHistoryLength
+    {
+        Hours24,
+        Days7,
+        Days30,
+        Days180
     }
 }

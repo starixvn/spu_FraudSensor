@@ -1,4 +1,6 @@
-﻿@{
+﻿@using Fanex.NAP.FS.Library.Models;
+
+@{
     ViewBag.Title = "TransactionHistory";
 }
 
@@ -8,10 +10,10 @@
             <div class="form-control width-150">
                 <div class="control-label">Report Length</div>
                 <select class="control" id="cbb-fraud-status">
-                    <option value="24hours" selected>Last 24 hours</option>
-                    <option value="7days">Last 7 days</option>
-                    <option value="30days">Last 30 days</option>
-                    <option value="180days">Last 180 days</option>
+                    <option value="@TransactionHistoryLength.Hours24" selected>Last 24 hours</option>
+                    <option value="@TransactionHistoryLength.Days7">Last 7 days</option>
+                    <option value="@TransactionHistoryLength.Days30">Last 30 days</option>
+                    <option value="@TransactionHistoryLength.Days180">Last 180 days</option>
                 </select>
             </div>
             <div class="form-control button-group">

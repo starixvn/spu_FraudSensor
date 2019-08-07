@@ -48,9 +48,11 @@
     }
 
     function RenderUserName(obj) {
-        var html = '<div class="device-status">';
-        html += '<a href="#">' + obj.Device + '</a>';
-        html += '</div>';
+        var url = common.modifyRelativeUrl('/Device/DetailDevice/' + obj.DeviceNo);
+
+        var html = '<span class="device-status">';
+        html += '<a class="info-bng" href="' + url + '" target="_blank">' + obj.DeviceNo + '</a>';
+        html += '</span>';
 
         return html;
     }

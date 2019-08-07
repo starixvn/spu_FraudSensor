@@ -23,9 +23,9 @@
                 var transaction = new Transaction();
                 transaction.TransDate = DateTime.Now;
                 transaction.Device = new Device();
-                transaction.Device.DeviceNo = "d6e3d7efc7ca44e78d9e8f9603000835";
+                transaction.Device.DeviceNo = "d6e3d7efc7ca44e78d9e8f960300083" + i;
                 transaction.Device.OSName = "iPhone";
-                transaction.RobotTracking = "Human";
+                transaction.RobotTracking = "Human";                
                 transaction.ActionResult = "login->successfully";
                 transaction.Browser = "Safari";
                 transaction.Domain = "iphone.9999999.com";
@@ -34,6 +34,15 @@
                 transaction.Region = "Tianjin";
                 transaction.City = "Tianjin";
                 transaction.ServiceProvider = "China Unicorn Tianjin Province Network";
+
+                if (i % 2 == 0)
+                {
+                    transaction.Flagged = Models.DeviceFlagged.Green;
+                }
+                else
+                {
+                    transaction.Flagged = Models.DeviceFlagged.Gray;
+                }
 
                 transactions.Add(transaction);
             }

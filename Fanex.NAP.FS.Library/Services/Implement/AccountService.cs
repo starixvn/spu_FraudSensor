@@ -89,41 +89,41 @@
 
             var data = new List<SubscriberAccount>();
             {
-                data.Add(new SubscriberAccount { SubscriberID = i++, SubscriberName = "11bet", AccountID = i, UserName1 = "abc1", UserName2 = "xyz" });
-                data.Add(new SubscriberAccount { SubscriberID = i++, SubscriberName = "11bet", AccountID = i, UserName1 = "abc12", UserName2 = "xyz" });
-                data.Add(new SubscriberAccount { SubscriberID = i++, SubscriberName = "11bet", AccountID = i, UserName1 = "abc5", UserName2 = "xyz" });
-                data.Add(new SubscriberAccount { SubscriberID = i++, SubscriberName = "11bet", AccountID = i, UserName1 = "abc", UserName2 = "xyz" });                
-                data.Add(new SubscriberAccount { SubscriberID = i++, SubscriberName = "11bet", AccountID = i, UserName1 = "cn88@abc", UserName2 = "xyz" });
-                data.Add(new SubscriberAccount { SubscriberID = i++, SubscriberName = "11bet", AccountID = i, UserName1 = "abc66", UserName2 = "xyz" });
-                data.Add(new SubscriberAccount { SubscriberID = i++, SubscriberName = "11bet", AccountID = i, UserName1 = "abc44", UserName2 = "xyz" });
-                data.Add(new SubscriberAccount { SubscriberID = i++, SubscriberName = "11bet", AccountID = i, UserName1 = "abc", UserName2 = "xyz" });
-                data.Add(new SubscriberAccount { SubscriberID = i++, SubscriberName = "11bet", AccountID = i, UserName1 = "cn@abc", UserName2 = "xyz" });
+                data.Add(new SubscriberAccount { SubscriberId = i++, SubscriberName = "11bet", AccountId = i, UserName = "abc1", UserName2 = "xyz" });
+                data.Add(new SubscriberAccount { SubscriberId = i++, SubscriberName = "11bet", AccountId = i, UserName = "abc12", UserName2 = "xyz" });
+                data.Add(new SubscriberAccount { SubscriberId = i++, SubscriberName = "11bet", AccountId = i, UserName = "abc5", UserName2 = "xyz" });
+                data.Add(new SubscriberAccount { SubscriberId = i++, SubscriberName = "11bet", AccountId = i, UserName = "abc", UserName2 = "xyz" });                
+                data.Add(new SubscriberAccount { SubscriberId = i++, SubscriberName = "11bet", AccountId = i, UserName = "cn88@abc", UserName2 = "xyz" });
+                data.Add(new SubscriberAccount { SubscriberId = i++, SubscriberName = "11bet", AccountId = i, UserName = "abc66", UserName2 = "xyz" });
+                data.Add(new SubscriberAccount { SubscriberId = i++, SubscriberName = "11bet", AccountId = i, UserName = "abc44", UserName2 = "xyz" });
+                data.Add(new SubscriberAccount { SubscriberId = i++, SubscriberName = "11bet", AccountId = i, UserName = "abcd", UserName2 = "xyz" });
+                data.Add(new SubscriberAccount { SubscriberId = i++, SubscriberName = "11bet", AccountId = i, UserName = "cn@abc", UserName2 = "xyz" });
             }
             {
-                data.Add(new SubscriberAccount { SubscriberID = i++, SubscriberName = "TGO", AccountID = i, UserName1 = "bebong@abc", UserName2 = "xyz" });
-                data.Add(new SubscriberAccount { SubscriberID = i++, SubscriberName = "TGO", AccountID = i, UserName1 = "sieunhangao@abc", UserName2 = "xyz" });
-                data.Add(new SubscriberAccount { SubscriberID = i++, SubscriberName = "TGO", AccountID = i, UserName1 = "iloveyou@abc", UserName2 = "xyz" });
-                data.Add(new SubscriberAccount { SubscriberID = i++, SubscriberName = "TGO", AccountID = i, UserName1 = "abc@abc", UserName2 = "xyz" });
+                data.Add(new SubscriberAccount { SubscriberId = i++, SubscriberName = "TGO", AccountId = i, UserName = "bebong@abc", UserName2 = "xyz" });
+                data.Add(new SubscriberAccount { SubscriberId = i++, SubscriberName = "TGO", AccountId = i, UserName = "sieunhangao@abc", UserName2 = "xyz" });
+                data.Add(new SubscriberAccount { SubscriberId = i++, SubscriberName = "TGO", AccountId = i, UserName = "iloveyou@abc", UserName2 = "xyz" });
+                data.Add(new SubscriberAccount { SubscriberId = i++, SubscriberName = "TGO", AccountId = i, UserName = "abc@abc", UserName2 = "xyz" });
             }
             {
-                data.Add(new SubscriberAccount { SubscriberID = i++, SubscriberName = "CN88", AccountID = i, UserName1 = $"cn88@abc", UserName2 = "xyz" });
-                data.Add(new SubscriberAccount { SubscriberID = i++, SubscriberName = "CN88", AccountID = i, UserName1 = "heocon@abc", UserName2 = "xyz" });
-                data.Add(new SubscriberAccount { SubscriberID = i++, SubscriberName = "CN88", AccountID = i, UserName1 = "abc", UserName2 = "xyz" });
-                data.Add(new SubscriberAccount { SubscriberID = i++, SubscriberName = "CN88", AccountID = i, UserName1 = "ruangoc@abc", UserName2 = "xyz" });
-                data.Add(new SubscriberAccount { SubscriberID = i, SubscriberName = "CN88", AccountID = i, UserName1 = "ruangoc2@abc", UserName2 = "xyz" });
+                data.Add(new SubscriberAccount { SubscriberId = i++, SubscriberName = "CN88", AccountId = i, UserName = $"cn88@abc", UserName2 = "xyz" });
+                data.Add(new SubscriberAccount { SubscriberId = i++, SubscriberName = "CN88", AccountId = i, UserName = "heocon@abc", UserName2 = "xyz" });
+                data.Add(new SubscriberAccount { SubscriberId = i++, SubscriberName = "CN88", AccountId = i, UserName = "abc", UserName2 = "xyz" });
+                data.Add(new SubscriberAccount { SubscriberId = i++, SubscriberName = "CN88", AccountId = i, UserName = "ruangoc@abc", UserName2 = "xyz" });
+                data.Add(new SubscriberAccount { SubscriberId = i, SubscriberName = "CN88", AccountId = i, UserName = "ruangoc2@abc", UserName2 = "xyz" });
             }
 
             if (arrSubs.Length > 1)
             {
-                return data.Where(a => a.UserName1.Contains(key) && arrSubs.Contains(a.SubscriberID.ToString()))
+                return data.Where(a => a.UserName.Contains(key) && arrSubs.Contains(a.SubscriberId.ToString()))
                         .OrderBy(a => a.SubscriberName)
-                        .ThenBy(a => a.UserName1)                       
+                        .ThenBy(a => a.UserName)                       
                         .ToList();
             }
 
-            return data.Where(a => a.UserName1.Contains(key))
+            return data.Where(a => a.UserName.Contains(key))
                         .OrderBy(a => a.SubscriberName)
-                        .ThenBy(a => a.UserName1)                       
+                        .ThenBy(a => a.UserName)                       
                         .ToList();
         }       
 
@@ -159,7 +159,7 @@
             for (int i = 1; i < 6; i++)
             {
                 var deviceAssociated = new AssociatedDeviceByAccount();
-                deviceAssociated.Device = "08d99c65629142b9903ab56b2f3511ba";
+                deviceAssociated.DeviceNo = "08d99c65629142b9903ab56b2f3511ba";
                 deviceAssociated.FirstUsed = DateTime.Now;
                 deviceAssociated.LastUsed = DateTime.Now;
                 deviceAssociated.AssociatedDate = DateTime.Now;

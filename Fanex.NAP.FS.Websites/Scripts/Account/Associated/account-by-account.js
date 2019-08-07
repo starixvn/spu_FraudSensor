@@ -52,15 +52,17 @@
     }
 
     function RenderUserName(obj) {
-        var html = '<div class="account-status">';
-        html += '<a href="#">' + obj.AccountAssociated.UserName + "(" + obj.AccountAssociated.UserName2 + ")" + '</a>';
-        html += '</div>';
+        var url = common.modifyRelativeUrl('/Account/DetailAccount?id=' + obj.AccountAssociated.Id);
+
+        var html = '<span class="account-status">';
+        html += '<a class="info-bng" href="' + url + '" target="_blank">' + obj.AccountAssociated.UserName + "(" + obj.AccountAssociated.UserName2 + ")" + '</a>';
+        html += '</span>';
 
         return html;
     }
 
     function RenderGraphImage() {
-        return '<span class="graph" title="Grap View"></span>';
+        return '<span class="graph" title="Graph View"></span>';
     }    
 
     function GenerateReport() {

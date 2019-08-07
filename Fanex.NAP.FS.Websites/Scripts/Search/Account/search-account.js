@@ -113,7 +113,7 @@
             columns: [
                 { data: (row, type, set, meta) => meta.row + 1 },
                 { data: obj => obj.SubscriberName },
-                { data: obj => RenderUserName(obj, obj.UserName1) },
+                { data: obj => RenderUserName(obj, obj.UserName) },
                 { data: obj => RenderUserName(obj, obj.UserName2) }
             ]
         });
@@ -124,7 +124,7 @@
     function BindDataToGrid(data) {
         if (data != null) {
             if (data.length == 1) {
-                window.location.href = common.modifyRelativeUrl('/Account/DetailAccount?id=' + data[0].AccountID);               
+                window.location.href = common.modifyRelativeUrl('/Account/DetailAccount?id=' + data[0].AccountId);               
             } else {
                 table.DataTable().clear().rows.add(data).draw();
                 table.DataTable().columns.adjust();
@@ -135,7 +135,7 @@
     }
 
     function RenderUserName(obj, userName) {
-        var url = common.modifyRelativeUrl('/Account/DetailAccount?id=' + obj.AccountID);
+        var url = common.modifyRelativeUrl('/Account/DetailAccount?id=' + obj.AccountId);
 
         return `<a class='info-bng' 
                     href=${url}
