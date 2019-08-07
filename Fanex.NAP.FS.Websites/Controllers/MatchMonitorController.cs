@@ -1,8 +1,10 @@
 ﻿namespace Fanex.NAP.FS.Websites.Controllers
 {
     using Core.Service.Impl;
+    using Fanex.Logging;
     using Fanex.NAP.Core.Web.Attribute;
     using Fanex.NAP.FS.Library.Criteria.MatchMonitor;
+    using Fanex.NAP.FS.Library.ViewModels.MatchMonitor.FraudCaseDetails;
     using Library.Core.Helpers;
     using Library.Criteria.MatchMonitor.FraudCaseDetails;    
     using Library.Service;
@@ -238,20 +240,31 @@
         [HttpPost]
         public ActionResult GetArbitrageTicketsGroupSummary(GetArbitrageTicketCriteria criteria)
         {
-            criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
-            var data = _fraudCaseDetailService.GetArbitrageTickets(criteria, true);
-            List<long> lstCustId = new List<long>();
-            foreach (var item in data.Select(a => a.Home.Select(t => t.CustId)))
+            Logger.Log.Info("Start GetArbitrageTicketsGroupSummary");
+            var data = new List<ArbitrageGroupTicketList>();
+            try
             {
-                lstCustId.AddRange(item);
-            }
+                criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
+                data = _fraudCaseDetailService.GetArbitrageTickets(criteria, true).ToList();
+                List<long> lstCustId = new List<long>();
+                foreach (var item in data.Select(a => a.Home.Select(t => t.CustId)))
+                {
+                    lstCustId.AddRange(item);
+                }
 
-            foreach (var item in data.Select(a => a.Away.Select(t => t.CustId)))
+                foreach (var item in data.Select(a => a.Away.Select(t => t.CustId)))
+                {
+                    lstCustId.AddRange(item);
+                }
+
+                Session["ListCustId"] = lstCustId.Distinct();
+
+                Logger.Log.Info("End  GetArbitrageTicketsGroupSummary");
+            }
+            catch (Exception ex)
             {
-                lstCustId.AddRange(item);
+                Logger.Log.Error("GetArbitrageTicketsGroupSummary - Exception: " + ex.Message);
             }
-
-            Session["ListCustId"] = lstCustId.Distinct();
 
             return new JsonResult { Data = new { Content = data }, MaxJsonLength = Int32.MaxValue };
         }
