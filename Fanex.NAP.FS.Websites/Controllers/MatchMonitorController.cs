@@ -257,7 +257,7 @@
                     lstCustId.AddRange(item);
                 }
 
-                Session["ListCustId"] = lstCustId.Distinct();
+                //Session["ListCustId"] = lstCustId.Distinct();
 
                 Logger.Log.Info("End  GetArbitrageTicketsGroupSummary");
             }
@@ -279,11 +279,11 @@
             }
 
             var data = _fraudCaseDetailService.GetArbitrageCustomerDetails(criteria);
-            if (Session["ListCustId"] != null)
-            {
-                var lstCustId = (IEnumerable<long>)Session["ListCustId"];
-                data = data.Where(a => lstCustId.Contains(a.CustId));
-            }
+            //if (Session["ListCustId"] != null)
+            //{
+            //    var lstCustId = (IEnumerable<long>)Session["ListCustId"];
+            //    data = data.Where(a => lstCustId.Contains(a.CustId));
+            //}
 
             return Json(data, JsonRequestBehavior.AllowGet);
         }
