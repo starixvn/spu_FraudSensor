@@ -112,6 +112,24 @@
     .content-card .info-item:last-child {
       grid-column: span 4; } }
 
+.ui-accordion {
+  padding: 12px;
+  font-family: Lato, sans-serif; }
+  .ui-accordion .ui-accordion-header {
+    margin-top: 5px;
+    background: #fff;
+    border: 0;
+    font-weight: bold;
+    color: #475A7C;
+    font-size: 14px; }
+
+.report-item {
+  background: #fff;
+  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.2); }
+
+.report-cont {
+  padding: 12px; }
+
 .fieldset-search {
   border-radius: 3px 3px 3px 3px;
   border: 1px solid #CECECE;
@@ -143,16 +161,6 @@
 
 .red {
   color: red; }
-
-.report-cont {
-  position: relative;
-  margin: 0 0 5px 0;
-  padding: .5em .5em .5em .7em;
-  font-size: 100%;
-  background-color: #fff;
-  border-radius: 3px 3px 3px 3px;
-  border: 1px solid #CECECE;
-  width: inherit; }
 
 .graph {
   text-align: center;
