@@ -6,7 +6,7 @@
 
     function GenerateGrid() {
         associatedTable.DataTable({
-            dom: "t<'pagination'<'page-size'lp>i>",
+            dom: 't<"pagination"<"page-size"><"top"lp<"clear">>"i>t<"pagination"<"page-size"><"bottom"lp<"clear">>"i>',
             language: {
                 lengthMenu: "Page size _MENU_",
                 paginate: {
@@ -18,10 +18,9 @@
             },
             ordering: false,
             lengthMenu: [10, 20, 50, 100, 200],
-            pageLength: 10,
-            scrollY: "61vh",
-            scrollX: true,
-            scrollCollapse: true,
+            pageLength: 20,
+            scrollX: false,
+            scrollCollapse: false,
             columnDefs: [
                 { targets: "_all", defaultContent: "-" },
                 { targets: [-2, -1], className: "text-center" },
