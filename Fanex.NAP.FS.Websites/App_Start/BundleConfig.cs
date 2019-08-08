@@ -44,7 +44,9 @@
             RegisterCustomerMonitorBundles(bundles);
             RegisterSubscriberAssignment(bundles);
             RegisterSearchBundles(bundles);
-            RegisterAccountBundles(bundles);
+            RegisterAssociatedAccountBundles(bundles);
+            RegisterEvidenceBundles(bundles);
+            RegisterTransactionHistoryBundles(bundles);
         }
 
         private static void RegisterFSCoreBundles(BundleCollection bundles)
@@ -142,13 +144,21 @@
             bundles.Add(new ScriptBundle("~/scripts/search-account").Include("~/scripts/Search/Account/*.js"));
         }
 
-        private static void RegisterAccountBundles(BundleCollection bundles)
+        private static void RegisterAssociatedAccountBundles(BundleCollection bundles)
         {
-            bundles.Add(new ScriptBundle("~/scripts/evidence").Include("~/scripts/Evidence/*.js"));
             bundles.Add(new ScriptBundle("~/scripts/account/associated").Include("~/scripts/Account/Associated/*.js"));
             bundles.Add(new ScriptBundle("~/scripts/account").Include("~/scripts/Account/*.js"));
+        }
+
+        private static void RegisterEvidenceBundles(BundleCollection bundles)
+        {
+            bundles.Add(new ScriptBundle("~/scripts/evidence").Include("~/scripts/Evidence/*.js"));           
+        }
+
+        private static void RegisterTransactionHistoryBundles(BundleCollection bundles)
+        {
             bundles.Add(new ScriptBundle("~/scripts/transaction/history").Include("~/scripts/Transaction/History/*.js"));
         }
-        
+
     }
 }
