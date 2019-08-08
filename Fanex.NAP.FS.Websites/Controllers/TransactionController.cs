@@ -3,7 +3,9 @@
     using Fanex.NAP.FS.Library.Services;
     using Fanex.NAP.FS.Library.ViewModels.Transaction;
     using System.Web.Mvc;
+    using Fanex.NAP.Core.Web.Attribute;
 
+    [NapAuth(FunctionKey = FSFunctionKeys.TransactionHistory, Policy = Core.Business.Constant.Policy.Read)]
     public class TransactionController : Controller
     {
         private readonly ITransactionService _transactionService;

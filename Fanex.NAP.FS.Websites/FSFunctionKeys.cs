@@ -21,50 +21,52 @@ public static class FSFunctionKeys
 {
     public const string Administration = "Administration";
 
-        public const string AssignFunctionToGroup = "AssignFunctionToGroup";
+    public const string AssignFunctionToGroup = "AssignFunctionToGroup";
 
-        public const string AssignFunctionToUser = "AssignFunctionToUser";
+    public const string AssignFunctionToUser = "AssignFunctionToUser";
 
-        public const string AssignSiteToUser = "AssignSiteToUser";
+    public const string AssignSiteToUser = "AssignSiteToUser";
 
-        public const string CheckBetReport = "CheckBetReport";
+    public const string CheckBetReport = "CheckBetReport";
 
-        public const string Configurations = "Configurations";
+    public const string Configurations = "Configurations";
 
-        public const string DailyDataCapture = "DailyDataCapture";
+    public const string DailyDataCapture = "DailyDataCapture";
 
-        public const string FraudCase = "FraudCase";
+    public const string FraudCase = "FraudCase";
 
-        public const string Home = "Home";
+    public const string Home = "Home";
 
-        public const string ManageFunction = "ManageFunction";
+    public const string ManageFunction = "ManageFunction";
 
-        public const string ManageGroup = "ManageGroup";
+    public const string ManageGroup = "ManageGroup";
 
-        public const string ManageMenu = "ManageMenu";
+    public const string ManageMenu = "ManageMenu";
 
-        public const string ManageUser = "ManageUser";
+    public const string ManageUser = "ManageUser";
 
-        public const string MatchMonitoring = "MatchMonitoring";
+    public const string MatchMonitoring = "MatchMonitoring";
 
-        public const string Notification = "Notification";
+    public const string Notification = "Notification";
 
-        public const string Reports = "Reports";
+    public const string Reports = "Reports";
 
-        public const string ScannedOfficeIP = "ScannedOfficeIP";
+    public const string ScannedOfficeIP = "ScannedOfficeIP";
 
-        public const string SpecialCurrencies = "SpecialCurrencies";
+    public const string SpecialCurrencies = "SpecialCurrencies";
 
-        public const string SuspiciousCustomer = "SuspiciousCustomer";
+    public const string SuspiciousCustomer = "SuspiciousCustomer";
 
-        public const string SuspiciousCustomerDetails = "SuspiciousCustomerDetails";
+    public const string SuspiciousCustomerDetails = "SuspiciousCustomerDetails";
 
-        public const string SystemConfiguration = "SystemConfiguration";
+    public const string SystemConfiguration = "SystemConfiguration";
 
-        public const string CustomerMonitor = "CustomerMonitor";
+    public const string CustomerMonitor = "CustomerMonitor";
 
-        public const string SubscriberAssignment = "SubscriberAssignment";
+    public const string SubscriberAssignment = "SubscriberAssignment";
 
-        public const string SearchAccount = "SearchAccount";
+    public const string SearchAccount = "SearchAccount";
+
+    public const string TransactionHistory = "TransactionHistory";
 }
  

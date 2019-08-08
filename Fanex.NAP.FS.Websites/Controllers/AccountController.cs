@@ -3,7 +3,9 @@
     using Fanex.NAP.FS.Library.Services;
     using Fanex.NAP.FS.Library.ViewModels.Account.Associated;
     using System.Web.Mvc;
+    using Fanex.NAP.Core.Web.Attribute;
 
+    [NapAuth(FunctionKey = FSFunctionKeys.SearchAccount, Policy = Core.Business.Constant.Policy.Read)]
     public class AccountController : Controller
     {
         private readonly IAccountService _accountService;
