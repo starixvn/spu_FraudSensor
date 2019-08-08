@@ -5,7 +5,7 @@
     {
         <div class="chain-row">
             <div class="chain-central">
-                <a href="#">@evidence.NodeNameRoot</a>
+                <span>@evidence.NodeNameRoot</span>
             </div>
 
             <div class="chain-place-dashed">
@@ -13,33 +13,33 @@
             </div>
 
             <div class="chain-evidence">
-                <a href="#">@evidence.Evidence.EvidenceName</a>
+                <span>@evidence.Evidence.EvidenceName</span>
             </div>
         </div>
     }
 
     @foreach (var chains in Model.Chains)
     {
-        <div class="chain-row">           
+        <div class="chain-row">
             <div class="chain-central">
-                <a href="#">@chains.NodeNameParent</a>
+                <span>@chains.NodeNameParent</span>
             </div>
-            
+
             <div class="chain-place">
                 <span class="icon-connect-aa" node-id="@chains.NodeIdCurrent" node-name="@chains.NodeNameCurrent" title="Click to place an Exception"></span>
             </div>
-           
+
             <div class="chain-central">
-                <a href="#">@chains.NodeNameCurrent</a>
+                <span>@chains.NodeNameCurrent</span>
             </div>
-            
+
             <div class="chain-place-dashed">
                 <span class="icon-connect"></span>
             </div>
-            
+
             <div class="chain-evidence">
-                <a href="#">@chains.Evidence.EvidenceName</a>
-            </div>            
+                <span>@chains.Evidence.EvidenceName</span>
+            </div>
         </div>
     }
 </div>

@@ -8,21 +8,24 @@
         }
     }
 
-    .chain-central {
-        a {
+    .chain-evidence-dash {
+        text-decoration: line-through;
+    } 
+    
+    /*.chain-central {
+        span {
             cursor: text;
             text-decoration: underline;
             color: #444;
         }
-    }
+    }*/
 
-    .chain-evidence {
-        a {
+    /*.chain-evidence {
+        span {
             cursor: text;
-            text-decoration: underline;
             color: #444;
         }
-    }
+    }*/
 
     .chain-place, .chain-place-dashed, .chain-place-slash {
         color: #000;
@@ -31,7 +34,11 @@
         span {
             padding: 0 8px;
         }
-    }
+
+        .icon-connect-aa {
+            cursor: pointer;            
+        }
+    }    
 }
 
 /*.table-exception {
