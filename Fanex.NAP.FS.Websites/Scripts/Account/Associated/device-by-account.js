@@ -6,7 +6,7 @@
 
     function GenerateGrid() {
         associatedTable.DataTable({
-            dom: 't<"pagination"<"page-size"><"top"lp<"clear">>"i>t<"pagination"<"page-size"><"bottom"lp<"clear">>"i>',
+            dom: 't<"pagination"<"page-size"><"bottom"lp<"clear">>"i>',
             language: {
                 lengthMenu: "Page size _MENU_",
                 paginate: {

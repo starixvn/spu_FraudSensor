@@ -6,7 +6,7 @@
 
     function GenerateGrid() {
         transactionTable.DataTable({
-            dom: "t<'pagination'<'page-size'lp>i>",
+            dom: 't<"pagination"<"page-size"><"bottom"lp<"clear">>"i>',
             language: {
                 lengthMenu: "Page size _MENU_",
                 paginate: {
