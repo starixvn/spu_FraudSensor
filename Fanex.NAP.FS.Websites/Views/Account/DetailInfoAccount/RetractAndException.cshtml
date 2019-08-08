@@ -1,64 +1,56 @@
 ﻿@model Fanex.NAP.FS.Library.ViewModels.Account.Evidence.RetractedEvidenceAndException
 
-<table cellspacing="5" class="table-exception">
+<div class="chains-block">
     @foreach (var item in Model.ChainsToEvidence.Evidences)
     {
-        <tr class="chain-row">
-            <td>
-                <div class="chain-central">
-                    <a href="#">@item.NodeNameRoot</a>
-                </div>
-            </td>
-            <td>
-                <div class="chain-place">
-                    <span>&nbsp;</span>
-                </div>
-            </td>
-            <td>
-                <div class="chain-evidence">
-                    <a href="#">@item.Evidence.EvidenceName</a>
-                </div>
-            </td>
-        </tr>
+        <div class="chain-row">            
+            <div class="chain-central">
+                <a href="#">@item.NodeNameRoot</a>
+            </div>
+            
+            <div class="chain-place">
+                <span class="icon-connect-aa"></span>
+            </div>
+            
+            <div class="chain-evidence">
+                <a href="#">@item.Evidence.EvidenceName</a>
+            </div>            
+        </div>
     }
 
     @foreach (var item in Model.ChainsToEvidence.Chains)
     {
         var classNameChainPlace = "chain-place";
         var classNameChainEvidence = "chain-evidence-dash";
+        var classNameIcon = "icon-connect-aa";
 
         if (item.NodeType == "Exception")
         {
             classNameChainPlace = "chain-place-slash";
             classNameChainEvidence = "chain-evidence";
+            classNameIcon = "icon-disconnect";
         }
 
-        <tr class="chain-row">
-            <td>
-                <div class="chain-central">
-                    <a href="#">@item.NodeNameParent</a>
-                </div>
-            </td>
-            <td>           
-                <div class=@classNameChainPlace>
-                    <span>&nbsp;&nbsp;</span>
-                </div>
-            </td>
-            <td>
-                <div class="chain-central">
-                    <a href="#">@item.NodeNameCurrent</a>
-                </div>
-            </td>
-            <td>
-                <div class="chain-place-dashed">
-                    <span>&nbsp;&nbsp;</span>
-                </div>
-            </td>
-            <td>
-                <div class=@classNameChainEvidence>
-                    <a href="#">@item.Evidence.EvidenceName</a>
-                </div>
-            </td>
-        </tr>
+        <div class="chain-row">            
+            <div class="chain-central">
+                <a href="#">@item.NodeNameParent</a>
+            </div>
+                      
+            <div class=@classNameChainPlace>
+                <span class=@classNameIcon></span>
+            </div>
+            
+            <div class="chain-central">
+                <a href="#">@item.NodeNameCurrent</a>
+            </div>
+            
+            <div class="chain-place-dashed">
+                <span class="icon-connect"></span>
+            </div>
+           
+            <div class=@classNameChainEvidence>
+                <a href="#">@item.Evidence.EvidenceName</a>
+            </div>            
+        </div>
     }
-</table>
+</div>

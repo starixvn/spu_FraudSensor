@@ -24,17 +24,17 @@
         }
     }
 
-    .chain-place, .chain-place-dashed {       
+    .chain-place, .chain-place-dashed, .chain-place-slash {
         color: #000;
-        font-size: 12px;     
-        
+        font-size: 12px;
+
         span {
             padding: 0 8px;
         }
-    }    
+    }
 }
 
-.table-exception {
+/*.table-exception {
     padding: 10px;
 
     tr {
@@ -116,4 +116,4 @@
             color: #0026ff;
         }
     }
-}
+}*/

@@ -14,57 +14,92 @@
   text-decoration: underline;
   color: #444; }
 
-.chains-block .chain-place, .chains-block .chain-place-dashed {
+.chains-block .chain-place, .chains-block .chain-place-dashed, .chains-block .chain-place-slash {
   color: #000;
   font-size: 12px; }
-  .chains-block .chain-place span, .chains-block .chain-place-dashed span {
+  .chains-block .chain-place span, .chains-block .chain-place-dashed span, .chains-block .chain-place-slash span {
     padding: 0 8px; }
 
-.table-exception {
-  padding: 10px; }
-  .table-exception tr {
-    height: 28px; }
-  .table-exception .chain-central a {
-    cursor: text;
-    text-decoration: underline;
-    color: #000; }
-  .table-exception .chain-evidence a {
-    cursor: text;
-    text-decoration: underline;
-    color: #000; }
-  .table-exception .chain-evidence-dash a {
-    cursor: text;
-    text-decoration: line-through;
-    color: #000; }
-  .table-exception .chain-place {
-    padding-top: 5px; }
-    .table-exception .chain-place span {
-      background: url("../../../images/double_arrow.png") no-repeat left center transparent;
-      float: left;
-      padding: 0 15px;
-      color: #000;
-      cursor: pointer; }
-  .table-exception .chain-place-dashed {
-    padding-top: 5px; }
-    .table-exception .chain-place-dashed span {
-      background: url("../../../images/dashed_double_arrow.png") no-repeat left center transparent;
-      float: left;
-      padding: 0 15px;
-      color: #000;
-      cursor: pointer; }
-  .table-exception .chain-place-slash {
-    padding-top: 5px; }
-    .table-exception .chain-place-slash span {
-      background: url("../../../images/double_arrow_with_slash.png") no-repeat left center transparent;
-      float: left;
-      padding: 0 15px;
-      color: #000;
-      cursor: pointer; }
-  .table-exception .chain-central a {
-    cursor: pointer;
-    text-decoration: underline;
-    color: #000; }
-  .table-exception .chain-central-add a {
-    cursor: pointer;
-    text-decoration: underline;
-    color: #0026ff; }
+/*.table-exception {
+    padding: 10px;
+
+    tr {
+        height: 28px;
+    }
+
+    .chain-central {
+        a {
+            cursor: text;
+            text-decoration: underline;
+            color: #000;
+        }
+    }
+
+    .chain-evidence {
+        a {
+            cursor: text;
+            text-decoration: underline;
+            color: #000;
+        }
+    }
+
+    .chain-evidence-dash {
+        a {
+            cursor: text;
+            text-decoration: line-through;
+            color: #000;
+        }
+    }
+
+    .chain-place {
+        padding-top: 5px;
+
+        span {
+            background: url('../../../images/double_arrow.png') no-repeat left center transparent;
+            float: left;
+            padding: 0 15px;
+            color: #000;
+            cursor: pointer;
+        }
+    }
+
+    .chain-place-dashed {
+        padding-top: 5px;
+
+        span {
+            background: url('../../../images/dashed_double_arrow.png') no-repeat left center transparent;
+            float: left;
+            padding: 0 15px;
+            color: #000;
+            cursor: pointer;
+        }
+    }
+
+    .chain-place-slash {
+        padding-top: 5px;
+
+        span {
+            background: url('../../../images/double_arrow_with_slash.png') no-repeat left center transparent;
+            float: left;
+            padding: 0 15px;
+            color: #000;
+            cursor: pointer;
+        }
+    }
+
+    .chain-central {
+        a {
+            cursor: pointer;
+            text-decoration: underline;
+            color: #000;
+        }
+    }
+
+    .chain-central-add {
+        a {
+            cursor: pointer;
+            text-decoration: underline;
+            color: #0026ff;
+        }
+    }
+}*/
