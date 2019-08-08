@@ -1,58 +1,47 @@
 ﻿@model Fanex.NAP.FS.Library.ViewModels.Account.Evidence.ChainsToEvidence
 
-<table cellspacing="5" class="table-chains">
+<div class="chains-block">
     @foreach (var evidence in Model.Evidences)
     {
-        <tr class="chain-row">
-            <td>
-                <div class="chain-central">
-                    <a href="#">@evidence.NodeNameRoot</a>
-                </div>
-            </td>
-            <td>
-                <div class="chain-place-dashed">
-                    <span node-id="@evidence.NodeIdRoot" note-name="@evidence.NodeNameRoot">&nbsp;</span>
-                </div>
-            </td>
-            <td>
-                <div class="chain-evidence">
-                    <a href="#">@evidence.Evidence.EvidenceName</a>
-                </div>
-            </td>
-        </tr>
+        <div class="chain-row">
+            <div class="chain-central">
+                <a href="#">@evidence.NodeNameRoot</a>
+            </div>
+
+            <div class="chain-place-dashed">
+                <span class="icon-connect" node-id="@evidence.NodeIdRoot" note-name="@evidence.NodeNameRoot"></span>
+            </div>
+
+            <div class="chain-evidence">
+                <a href="#">@evidence.Evidence.EvidenceName</a>
+            </div>
+        </div>
     }
 
     @foreach (var chains in Model.Chains)
     {
-        <tr class="chain-row">
-            <td>
-                <div class="chain-central">
-                    <a href="#">@chains.NodeNameParent</a>
-                </div>
-            </td>
-            <td>
-                <div class="chain-place">
-                    <span node-id ="@chains.NodeIdCurrent" node-name="@chains.NodeNameCurrent" title="Click to place an Exception">&nbsp;&nbsp;</span>
-                </div>
-            </td>
-            <td>
-                <div class="chain-central">
-                    <a href="#">@chains.NodeNameCurrent</a>
-                </div>
-            </td>
-            <td>
-                <div class="chain-place-dashed">
-                    <span>&nbsp;&nbsp;</span>
-                </div>
-            </td>
-            <td>
-                <div class="chain-evidence">
-                    <a href="#">@chains.Evidence.EvidenceName</a>
-                </div>
-            </td>
-        </tr>
+        <div class="chain-row">           
+            <div class="chain-central">
+                <a href="#">@chains.NodeNameParent</a>
+            </div>
+            
+            <div class="chain-place">
+                <span class="icon-connect-aa" node-id="@chains.NodeIdCurrent" node-name="@chains.NodeNameCurrent" title="Click to place an Exception"></span>
+            </div>
+           
+            <div class="chain-central">
+                <a href="#">@chains.NodeNameCurrent</a>
+            </div>
+            
+            <div class="chain-place-dashed">
+                <span class="icon-connect"></span>
+            </div>
+            
+            <div class="chain-evidence">
+                <a href="#">@chains.Evidence.EvidenceName</a>
+            </div>            
+        </div>
     }
-
-</table>
+</div>
 
 @Html.Partial("DetailInfoAccount/FormException")

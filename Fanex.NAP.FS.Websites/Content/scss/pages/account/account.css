@@ -17,7 +17,6 @@
   width: 25px;
   height: 20px;
   line-height: 20px;
-  text-align: center;
   cursor: pointer; }
 
 .expand-all:before {
@@ -109,7 +108,8 @@
       padding-bottom: 8px;
       border-right: 1px solid #C7C7C7; }
     .content-card .account-info .info-item:last-child {
-      grid-column: span 2; }
+      grid-column: span 2;
+      border-right: 0; }
       .content-card .account-info .info-item:last-child .info-title {
         border-right: 0; }
     .content-card .account-info .info-text {
@@ -122,11 +122,13 @@
         width: 150px;
         font-weight: bold;
         color: #404040; }
-  @media screen and (max-width: 1199px) {
-    .content-card .info-item:not(:last-child) {
-      grid-column: span 2; }
-    .content-card .info-item:last-child {
-      grid-column: span 4; } }
+    @media screen and (max-width: 1199px) {
+      .content-card .account-info .info-item:nth-child(2) {
+        border-right: 0; }
+      .content-card .account-info .info-item:not(:last-child) {
+        grid-column: span 2; }
+      .content-card .account-info .info-item:last-child {
+        grid-column: span 4; } }
 
 .ui-accordion {
   padding: 12px;
@@ -139,12 +141,24 @@
     color: #475A7C;
     font-size: 14px; }
 
+.ui-state-default .ui-icon {
+  background: none;
+  text-indent: unset;
+  transform: rotate(0); }
+  .ui-state-default .ui-icon:before {
+    font-family: 'Fraud-Sensor', sans-serif !important;
+    content: "\e925"; }
+
 .report-item {
   background: #fff;
   box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.2); }
   .report-item.expanded .ui-accordion-header {
     background: #396EF8; }
     .report-item.expanded .ui-accordion-header a {
+      color: #fff; }
+    .report-item.expanded .ui-accordion-header .ui-icon {
+      margin-top: 0;
+      transform: rotate(90deg);
       color: #fff; }
 
 .report-cont {

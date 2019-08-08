@@ -24,7 +24,6 @@
     width: 25px;
     height: 20px;
     line-height: 20px;
-    text-align: center;
     cursor: pointer;
 }
 
@@ -152,6 +151,7 @@
 
         .info-item:last-child {
             grid-column: span 2;
+            border-right: 0;
 
             .info-title {
                 border-right: 0;
@@ -173,15 +173,19 @@
                 color: #404040;
             }
         }
-    }
 
-    @media screen and (max-width: 1199px) {
-        .info-item:not(:last-child) {
-            grid-column: span 2;
-        }
+        @media screen and (max-width: 1199px) {
+            .info-item:nth-child(2) {
+                border-right: 0;
+            }
 
-        .info-item:last-child {
-            grid-column: span 4;
+            .info-item:not(:last-child) {
+                grid-column: span 2;
+            }
+
+            .info-item:last-child {
+                grid-column: span 4;
+            }
         }
     }
 }
@@ -200,13 +204,34 @@
     }
 }
 
+.ui-state-default .ui-icon {
+    background: none;
+    text-indent: unset;
+    transform: rotate(0);
+    //transition: .2s ease;
+
+    &:before {
+        font-family: 'Fraud-Sensor', sans-serif !important;
+        content: "\e925";
+    }
+}
+
 .report-item {
     background: #fff;
     box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.2);
 
     &.expanded .ui-accordion-header {
         background: #396EF8;
-        a { color: #fff;}
+
+        a {
+            color: #fff;
+        }
+
+        .ui-icon {
+            margin-top: 0;
+            transform: rotate(90deg);
+            color: #fff;
+        }
     }
 }
 

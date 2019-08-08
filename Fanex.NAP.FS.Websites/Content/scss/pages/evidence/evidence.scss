@@ -1,15 +1,18 @@
-﻿.table-chains {
-    padding: 10px;
+﻿.chains-block {
+    .chain-row {
+        display: flex;
+        align-items: center;
 
-    td {
-        height: 24px;
+        &:not(:last-child) {
+            padding-bottom: 8px;
+        }
     }
 
     .chain-central {
         a {
             cursor: text;
             text-decoration: underline;
-            color: #000;
+            color: #444;
         }
     }
 
@@ -17,31 +20,16 @@
         a {
             cursor: text;
             text-decoration: underline;
-            color: #000;
+            color: #444;
         }
     }
 
-    .chain-place {
-        padding-top: 5px;
-
+    .chain-place, .chain-place-dashed {       
+        color: #000;
+        font-size: 12px;     
+        
         span {
-            background: url('../../../images/double_arrow.png') no-repeat left center transparent;
-            float: left;
-            padding: 0 15px;
-            color: #000;
-            cursor: pointer;
-        }
-    }
-
-    .chain-place-dashed {
-        padding-top: 5px;
-
-        span {
-            background: url('../../../images/dashed_double_arrow.png') no-repeat left center transparent;
-            float: left;
-            padding: 0 15px;
-            color: #000;
-            cursor: pointer;
+            padding: 0 8px;
         }
     }    
 }
