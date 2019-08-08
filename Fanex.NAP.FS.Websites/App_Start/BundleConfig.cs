@@ -141,23 +141,23 @@
 
         private static void RegisterSearchBundles(BundleCollection bundles)
         {
-            bundles.Add(new ScriptBundle("~/scripts/search-account").Include("~/scripts/Search/Account/*.js"));
+            bundles.Add(new ScriptBundle("~/search-account-scripts").Include("~/scripts/Search/Account/*.js"));
         }
 
         private static void RegisterAssociatedAccountBundles(BundleCollection bundles)
         {
-            bundles.Add(new ScriptBundle("~/scripts/account/associated").Include("~/scripts/Account/Associated/*.js"));
-            bundles.Add(new ScriptBundle("~/scripts/account").Include("~/scripts/Account/*.js"));
+            bundles.Add(new ScriptBundle("~/account/associated-scripts").Include("~/scripts/Account/Associated/*.js"));
+            bundles.Add(new ScriptBundle("~/account-scripts").Include("~/scripts/Account/*.js"));
         }
 
         private static void RegisterEvidenceBundles(BundleCollection bundles)
         {
-            bundles.Add(new ScriptBundle("~/scripts/evidence").Include("~/scripts/Evidence/*.js"));           
+            bundles.Add(new ScriptBundle("~/evidence-scripts").Include("~/scripts/Evidence/*.js"));           
         }
 
         private static void RegisterTransactionHistoryBundles(BundleCollection bundles)
         {
-            bundles.Add(new ScriptBundle("~/scripts/transaction/history").Include("~/scripts/Transaction/History/*.js"));
+            bundles.Add(new ScriptBundle("~/transaction/history-scripts").Include("~/scripts/Transaction/History/*.js"));
         }
 
     }

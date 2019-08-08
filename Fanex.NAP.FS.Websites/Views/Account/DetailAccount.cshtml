@@ -87,8 +87,8 @@
         var USERNAME = '@Model.AccountInfo.UserName';
     </script>
 
-    @Scripts.Render("~/scripts/evidence")
-    @Scripts.Render("~/scripts/account")
-    @Scripts.Render("~/scripts/account/associated")
-    @Scripts.Render("~/scripts/transaction/history")
+    @Scripts.Render("~/evidence-scripts"
+                    , "~/account-scripts"
+                    , "~/account/associated-scripts"
+                    , "~/transaction/history-scripts")
 }
