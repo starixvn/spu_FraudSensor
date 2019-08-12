@@ -16,48 +16,49 @@
         }).multiselectfilter({
             width: 150,
             placeholder: ''
-        });
-
-        $(captionError).hide();        
-
-        GetSubscribers();
-
+        });                
+       
         GenerateGrid();
 
-        var inputValue = $(inputAccount).val();
-
-        if (inputValue != '') {
-            SearchSubscriberAccount(inputValue);
-        }
+        GetSubscribers();
     }
 
-    function GetSubscribers() {        
+    function GetSubscribers() {
         var url = common.modifyRelativeUrl('/SearchAccount/GetSubscribers');
 
         $.get(url, function (data) {
             if (data != '') {
                 ddlSubscriber.multiselect().empty();
-                
+                var subscribers = [];
+
                 for (var i = 0; i < data.length; i++) {
                     ddlSubscriber.append('<option value="' + data[i].SubscriberID + '">' + data[i].SubscriberName + '</option>');
+                    subscribers.push(data[i].SubscriberID);
                 }
 
-                ddlSubscriber.multiselect('refresh').multiselect("checkAll");               
+                ddlSubscriber.multiselect('refresh').multiselect("checkAll");
+
+                var keySearch = $(inputAccount).val();
+                if (keySearch != '') {
+                    SearchSubscriberAccount(keySearch, subscribers);
+                }
             }
         });
     }
 
-    function SearchSubscriberAccount(key) {
+    function SearchSubscriberAccount(keySearch, subscribers) {
 
-        if (!ValidateInput(key)) {
+        if (!ValidateInput(keySearch)) {
             return;
         }
 
-        var subscribers = [];
+        if (subscribers == null) {
+            var subscribers = [];
 
-        $('option:selected', ddlSubscriber).each(function (idx, ele) {            
-            subscribers.push($(ele).val());
-        });
+            $('option:selected', ddlSubscriber).each(function (idx, ele) {
+                subscribers.push($(ele).val());
+            });
+        }
 
         common.showLoading();
 
@@ -66,7 +67,7 @@
         $.ajax(url, {
             type: 'POST',
             data: {
-                key: key,
+                key: keySearch,
                 subscribers: subscribers.join(',')
             },
             success: function (data) {
@@ -170,6 +171,8 @@
     $(btnSearch).click(() => {
         SearchSubscriberAccount($(inputAccount).val());
     });
+
+    $(captionError).hide();
 
     Init();
 }

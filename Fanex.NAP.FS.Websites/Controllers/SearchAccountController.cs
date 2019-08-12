@@ -34,11 +34,11 @@
 
         public ActionResult GetSubscribers()
         {
-            var user = _userService.Get(this.User.Identity.Name);
+            var userId = GetIdentityUserId();
 
-            if (user != null && _userService.HasAnyPermission(user.Id, SiteId, Environment))
+            if (userId > 0)
             {
-                var data = _accountService.GetSubscribers(user.Id);
+                var data = _accountService.GetSubscribers(userId);
 
                 return Json(data, JsonRequestBehavior.AllowGet);
             }
@@ -59,6 +59,18 @@
             var data = _accountService.SearchAccounts(key, subscribers);
 
             return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        private int GetIdentityUserId()
+        {
+            var user = _userService.Get(this.User.Identity.Name);
+
+            if (user != null && _userService.HasAnyPermission(user.Id, SiteId, Environment))
+            {
+                return user.Id;
+            }
+
+            return 0;
         }
     }
 }

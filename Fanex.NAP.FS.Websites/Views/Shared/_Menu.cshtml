@@ -7,6 +7,8 @@
     {
         switch (menuName)
         {
+            case "Home":
+                return "<span class='icon icon-warning'></span>";
             case "Account & Device Search":
                 return "<span class='icon icon-account-device'></span>";
             case "Suspicious Bets":
@@ -30,6 +32,8 @@
 }
 
 <ul class="main-menu">
+    <li class="menu-item" id="menu-home"><a href="@Url.Action("Index", "Home")" class="link">@Html.Raw(iconLookup("Home")) Home</a></li>
+    
     @foreach (var menu in Model.Where(m => m.Parent == null && m.IsActive && m.Name != "Home").OrderBy(m => m.DisplayOrder))
     {
         var subMenus = Model.Where(m => m.Parent != null && m.IsActive && m.Parent.Id == menu.Id).OrderBy(m => m.DisplayOrder);
