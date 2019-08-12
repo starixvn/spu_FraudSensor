@@ -58,9 +58,9 @@
             className = 'icon-clean';
         }
 
-        var html = '<span class="' + className + '">';
+        var html = '<span class="' + className + '"></span>';
         html += '<a class="info-bng" href="' + url + '" target="_blank">' + obj.AccountAssociated.UserName + "(" + obj.AccountAssociated.UserName2 + ")" + '</a>';
-        html += '</span>';
+        //html += '</span>';
 
         return html;
     }

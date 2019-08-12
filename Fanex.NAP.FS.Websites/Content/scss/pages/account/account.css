@@ -188,6 +188,8 @@
       font-family: inherit; }
       .table-report .search-box input[type="text"]:focus {
         box-shadow: none; }
+  .table-report [class^="icon"] {
+    font-size: 15px; }
 
 .fieldset-search {
   border-radius: 3px 3px 3px 3px;
