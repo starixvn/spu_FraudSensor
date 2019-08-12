@@ -6,15 +6,11 @@
 <div id="device-by-account">
     <div id="device-by-account-filter">
         <div class="filter">
-            <div class="form-control width-300">
+            <div class="form-control">
                 <label class="checkbox">
                     <input type="checkbox" id="chk-used-by-account-current" />
                     <span>Used by</span><span class="username-span"></span>
                 </label>
-            </div>           
-        </div>
-        <div class="filter">
-            <div class="form-control width-300">
                 <label class="checkbox">
                     <input type="checkbox" id="chk-used-by-account-associated" />
                     <span>1 or more Accounts Away from </span><span class="username-span"></span>
@@ -32,9 +28,9 @@
             <div class="form-control button-group">
                 <button class="button btn-search" id="btn-search-device">Search</button>
             </div>
-        </div>
+        </div>        
     </div>
-    <div id="device-by-account-content" hidden>
+    <div class="table-report" id="device-by-account-content" hidden>
         <table id="device-by-account-table" class="table table-striped" style="width: 100%">
             <thead>
                 <tr>

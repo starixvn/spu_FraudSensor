@@ -636,7 +636,7 @@ select[disabled] {
   .table thead tr th, .table tbody tr td {
     border: 1px solid #c1c1c1;
     line-height: 20px;
-    padding: 8px 6px;
+    padding: 6px;
     vertical-align: middle; }
   .table thead th {
     border-bottom-width: 1px;

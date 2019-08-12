@@ -190,7 +190,8 @@
       .table-report .search-box input[type="text"]:focus {
         box-shadow: none; }
   .table-report [class^="icon"] {
-    font-size: 15px; }
+    font-size: 15px;
+    padding-right: 5px; }
 
 .fieldset-search {
   border-radius: 3px 3px 3px 3px;
@@ -212,13 +213,8 @@
 .red {
   color: red; }
 
-.graph {
-  text-align: center;
-  cursor: pointer;
-  width: 30px;
-  height: 24px;
-  display: inline-block;
-  background: url("../../../images/graph_view.png") no-repeat left bottom transparent; }
+.icon-path {
+  cursor: pointer; }
 
 .account-status {
   float: left;

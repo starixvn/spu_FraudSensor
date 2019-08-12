@@ -24,8 +24,8 @@
             scrollCollapse: false,
             columnDefs: [
                 { targets: "_all", defaultContent: "-" },
-                { targets: [-2, -1], className: "text-center" },
-                { targets: [0, 1, 2, 3, 4, 5, 6], className: "text-center" },
+                { targets: [-2,-1], className: "text-center" },
+                { targets: [1, 2, 3, 4, 5, 6], className: "text-center" },
                 { targets: [0], width: "15%" },
                 { targets: [1], width: "15%" },
                 { targets: [2], width: "15%" },
@@ -66,7 +66,7 @@
     }
 
     function RenderGraphImage() {
-        return '<span class="graph" title="Graph View"></span>';
+        return '<span class="icon-path graph" title="Graph View"></span>';
     }    
 
     function GenerateReport() {

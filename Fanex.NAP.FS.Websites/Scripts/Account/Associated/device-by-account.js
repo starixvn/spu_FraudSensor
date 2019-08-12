@@ -24,7 +24,7 @@
             columnDefs: [
                 { targets: "_all", defaultContent: "-" },
                 { targets: [-2, -1], className: "text-center" },
-                { targets: [0, 1, 2, 3, 4], className: "text-center" },                
+                { targets: [1, 2, 3, 4], className: "text-center" },                
                 { targets: [1], width: "15%" },
                 { targets: [2], width: "15%" },
                 { targets: [3], width: "15%" },
@@ -54,15 +54,15 @@
             className = 'icon-device-clean';
         }        
 
-        var html = '<span class="' + className + '">';
+        var html = '<span class="' + className + '"></span>';
         html += '<a class="info-bng" href="' + url + '" target="_blank">' + obj.DeviceNo + '</a>';
-        html += '</span>';
+        //html += '</span>';
 
         return html;
     }
 
     function RenderGraphImage() {
-        return '<span class="graph" title="Grap View"></span>';
+        return '<span class="icon-path graph" title="Grap View"></span>';
     }
 
     function GenerateReport() {

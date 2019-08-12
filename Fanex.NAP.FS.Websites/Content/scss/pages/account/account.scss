@@ -281,6 +281,7 @@
 
     [class^="icon"] {
         font-size: 15px;
+        padding-right: 5px;
     }
 }
 
@@ -309,13 +310,8 @@
     color: red;
 }
 
-.graph {
-    text-align: center;
+.icon-path {   
     cursor: pointer;
-    width: 30px;
-    height: 24px;
-    display: inline-block;
-    background: url('../../../images/graph_view.png') no-repeat left bottom transparent;
 }
 
 .account-status {
