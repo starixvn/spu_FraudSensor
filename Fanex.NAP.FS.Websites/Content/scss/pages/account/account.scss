@@ -237,6 +237,46 @@
 
 .report-cont {
     padding: 12px;
+
+    .filter {
+        padding: 0;
+
+        .checkbox {
+            display: block;
+
+            &:not(:last-child) {
+                margin-bottom: 12px;
+            }
+        }
+
+        .button-group {
+            margin-top: 13px;
+        }
+    }
+}
+
+.table-report {
+    position: relative;
+    margin-top: 12px;
+
+    .search-box {
+        position: absolute;
+        right: 0;
+        top: -40px;
+        margin-bottom: 12px;
+        border: 1px solid #E5E5E5;
+        border-radius: 3px;
+        padding: 0 5px;
+
+        input[type="text"] {
+            border: 1px solid transparent;
+            font-family: inherit;
+
+            &:focus {
+                box-shadow: none;
+            }
+        }
+    }
 }
 
 .fieldset-search {

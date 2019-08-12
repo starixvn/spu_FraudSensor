@@ -6,13 +6,18 @@
 <div id="account-by-account">
     <div id="account-by-account-filter">
         <div class="filter">
-            <div class="form-control width-300">
+            <div class="form-control">
                 <label class="checkbox">
                     <input type="checkbox" id="chk-device-away-1" />
                     <span>1 Device Away from</span><span class="username-span"></span>
                 </label>
+                <label class="checkbox">
+                    <input type="checkbox" id="chk-device-away-2" />
+                    <span>2 or more Device Away from </span><span class="username-span"></span>
+                </label>
             </div>
-            <div class="form-control width-150">
+
+            <div class="form-control">
                 <div class="control-label">Status</div>
                 <select class="control" id="cbb-status">
                     <option value="@AccountStatus.All" selected>All</option>
@@ -21,20 +26,8 @@
                     <option value="@AccountStatus.Closed">Close</option>
                 </select>
             </div>
-            <div class="form-control">
-                <span>Search </span>
-                <input type="text" class="text" id="account-search" />
-            </div>
-        </div>
 
-        <div class="filter">
-            <div class="form-control width-300">
-                <label class="checkbox">
-                    <input type="checkbox" id="chk-device-away-2" />
-                    <span>2 or more Device Away from </span><span class="username-span"></span>
-                </label>
-            </div>
-            <div class="form-control width-150">
+            <div class="form-control">
                 <div class="control-label">Fraud Status</div>
                 <select class="control" id="cbb-fraud-status">
                     <option value="@FraudStatus.All" selected>All</option>
@@ -43,13 +36,17 @@
                     <option value="@FraudStatus.Clean">Clean</option>
                 </select>
             </div>
-            <div class="form-control button-group">               
+
+            <div class="form-control button-group">
                 <button class="button btn-search" id="btn-search-account">Search</button>
             </div>
-           
-        </div>        
+        </div>             
     </div>
-    <div id="account-by-account-content" hidden>
+    <div class="table-report" id="account-by-account-content" hidden>
+        <div class="search-box">    
+            <span class="icon-magnify"></span>
+            <input type="text" class="text" id="account-search" placeholder="Search..." />
+        </div>
         <table id="account-by-account-table" class="table table-striped" style="width: 100%">
             <thead>
                 <tr>

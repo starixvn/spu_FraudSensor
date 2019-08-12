@@ -163,6 +163,31 @@
 
 .report-cont {
   padding: 12px; }
+  .report-cont .filter {
+    padding: 0; }
+    .report-cont .filter .checkbox {
+      display: block; }
+      .report-cont .filter .checkbox:not(:last-child) {
+        margin-bottom: 12px; }
+    .report-cont .filter .button-group {
+      margin-top: 13px; }
+
+.table-report {
+  position: relative;
+  margin-top: 12px; }
+  .table-report .search-box {
+    position: absolute;
+    right: 0;
+    top: -40px;
+    margin-bottom: 12px;
+    border: 1px solid #E5E5E5;
+    border-radius: 3px;
+    padding: 0 5px; }
+    .table-report .search-box input[type="text"] {
+      border: 1px solid transparent;
+      font-family: inherit; }
+      .table-report .search-box input[type="text"]:focus {
+        box-shadow: none; }
 
 .fieldset-search {
   border-radius: 3px 3px 3px 3px;
