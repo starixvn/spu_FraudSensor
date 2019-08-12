@@ -7,9 +7,9 @@
 
     public interface IAccountService
     {
-        IEnumerable<Subscriber> GetSubscribers();
+        IEnumerable<Subscriber> GetSubscribers(long userId);
 
-        IEnumerable<SubscriberAccount> SearchSubscriberAccounts(string key, string subscribers);
+        IEnumerable<SubscriberAccount> SearchAccounts(string userName, string subscribers);
 
         AccountDetail GetAccountDetail(int accountId);
 

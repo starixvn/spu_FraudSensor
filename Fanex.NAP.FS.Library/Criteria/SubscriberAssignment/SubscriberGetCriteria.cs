@@ -6,7 +6,7 @@
     {
         public long ip_userId { get; set; }
 
-        public override string GetSettingKey() => "FPS_AD_GetSubscriberByAssignedStatus";
+        public override string GetSettingKey() => "FPS_AD_GetAllSubscribers";
 
         public override bool IsValid() => true;
 

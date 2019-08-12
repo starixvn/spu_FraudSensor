@@ -6,7 +6,11 @@
 
     public class Transaction
     {
-        public Account Account { get; set; }
+        public long TransID { get; set; }
+
+        public long AccountID { get; set; }
+
+        public long SubscriberID { get; set; }
 
         public string RobotTracking { get; set; }
 
@@ -20,7 +24,9 @@
 
         public string CountryCode { get; set; }
 
-        public Device Device { get; set; }
+        public long DeviceID { get; set; }
+
+        public string DeviceCode { get; set; }
 
         public string Browser { get; set; }
 
@@ -28,7 +34,7 @@
 
         public DeviceFlagged Flagged { get; set; }
 
-        public string IPAddress { get; set; }
+        public string IP { get; set; }
 
         public string Isp { get; set; }
 
@@ -37,5 +43,5 @@
         public DateTime TransDate { get; set; }
 
         public string ServiceProvider { get; set; }
-    }
+    }    
 }

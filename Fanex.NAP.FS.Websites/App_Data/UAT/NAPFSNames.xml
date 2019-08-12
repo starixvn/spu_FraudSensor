@@ -93,4 +93,11 @@
     <Setting Key="FS_Rpt_CustomerMonitor_Get" SpName="FS_Rpt_CustomerMonitor_Get_xtest" DbName="DBFS.bodb_FraudSensor.bodbSPUNet" />
     <Setting Key="FS_Tbl_SuspiciousCustomerNotes_Update" SpName="FS_Tbl_SuspiciousCustomerNotes_Update_xtest" DbName="DBFS.bodb_FraudSensor.bodbSPUNet"/>
   </Function>
+  <Function name="SubscriberAssignment">
+    <Setting Key="FPS_AD_InsertSubscriberByUser" SpName="FPS_AD_InsertSubscriberByUser_xtest" DbName="MySQL.FPS_Admin"/>
+    <Setting Key="FPS_AD_GetAllSubscribers" SpName="FPS_AD_GetAllSubscribers_xtest" DbName="MySQL.FPS_Admin"/>
+  </Function>
+  <Function name="SearchAccount">
+    <Setting Key="FPS_DC_SearchAccount" SpName="FPS_DC_SearchAccount_xtest" DbName="MySQL.FPS_DataCenter"/>
+  </Function>
 </Functions>

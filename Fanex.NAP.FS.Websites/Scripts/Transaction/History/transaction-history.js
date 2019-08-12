@@ -32,10 +32,10 @@
                 { data: obj => obj.RobotTracking },
                 { data: obj => obj.Action },
                 { data: obj => obj.ActionResult },
-                { data: obj => obj.Device.OSName },                                
+                { data: obj => obj.DeviceCode },                                
                 { data: obj => obj.Browser },
                 { data: obj => obj.Domain },
-                { data: obj => obj.IPAddress },
+                { data: obj => obj.IP },
                 { data: obj => obj.Country },
                 { data: obj => obj.Region },
                 { data: obj => obj.City },
@@ -45,10 +45,10 @@
     }
 
     function RenderDevice(obj) {
-        var url = common.modifyRelativeUrl('/Device/DetailDevice/' + obj.Device.DeviceNo);
+        var url = common.modifyRelativeUrl('/Device/DetailDevice/' + obj.DeviceID);
 
         var html = '<span class= "' + obj.Flagged + '">';
-        html += '<a class="info-bng" href="' + url + '" target="_blank">' + obj.Device.DeviceNo + '</a>';
+        html += '<a class="info-bng" href="' + url + '" target="_blank">' + obj.DeviceCode + '</a>';
         html += '</span>';
 
         return html;

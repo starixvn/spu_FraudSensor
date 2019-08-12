@@ -8,17 +8,33 @@
     using Fanex.NAP.FS.Library.ViewModels.Account.Associated;
     using Fanex.NAP.FS.Library.Models.Subscriber;
     using Fanex.NAP.FS.Library.Models;
+    using Fanex.NAP.FS.Library.Criteria.SubscriberAssignment;
+    using Fanex.NAP.FS.Library.Core.BaseClasses;
+    using Fanex.NAP.FS.Library.Criteria.Account;
 
     public class AccountService : IAccountService
     {
-        public IEnumerable<Subscriber> GetSubscribers()
+        public IEnumerable<Subscriber> GetSubscribers(long userId)
         {
-            return GetSubscribers_Test();
+            var criteria = new SubscriberGetCriteria
+            {
+                ip_userId = userId
+            };
+
+            return DataService.GetData<Subscriber>(criteria).OrderBy(c => c.SubscriberName).ThenBy(c => c.SubscriberID);
         }
 
-        public IEnumerable<SubscriberAccount> SearchSubscriberAccounts(string key, string subscribers)
+        public IEnumerable<SubscriberAccount> SearchAccounts(string userName, string subscribers)
         {
-            return GetSubscriberAccounts_Test(key, subscribers);
+            var criteria = new SearchAccountCriteria
+            {
+                ip_SubscriberIDs = subscribers,
+                ip_Username = userName
+            };
+
+            return DataService.GetData<SubscriberAccount>(criteria)
+                            .OrderBy(a => a.SubscriberName)
+                            .ThenBy(a => a.UserName);
         }
 
         public AccountDetail GetAccountDetail(int accountId)
@@ -87,33 +103,33 @@
 
             var data = new List<SubscriberAccount>();
             {
-                data.Add(new SubscriberAccount { SubscriberId = i++, SubscriberName = "11bet", AccountId = i, UserName = "abc1", UserName2 = "xyz" });
-                data.Add(new SubscriberAccount { SubscriberId = i++, SubscriberName = "11bet", AccountId = i, UserName = "abc12", UserName2 = "xyz" });
-                data.Add(new SubscriberAccount { SubscriberId = i++, SubscriberName = "11bet", AccountId = i, UserName = "abc5", UserName2 = "xyz" });
-                data.Add(new SubscriberAccount { SubscriberId = i++, SubscriberName = "11bet", AccountId = i, UserName = "abc", UserName2 = "xyz" });                
-                data.Add(new SubscriberAccount { SubscriberId = i++, SubscriberName = "11bet", AccountId = i, UserName = "cn88@abc", UserName2 = "xyz" });
-                data.Add(new SubscriberAccount { SubscriberId = i++, SubscriberName = "11bet", AccountId = i, UserName = "abc66", UserName2 = "xyz" });
-                data.Add(new SubscriberAccount { SubscriberId = i++, SubscriberName = "11bet", AccountId = i, UserName = "abc44", UserName2 = "xyz" });
-                data.Add(new SubscriberAccount { SubscriberId = i++, SubscriberName = "11bet", AccountId = i, UserName = "abcd", UserName2 = "xyz" });
-                data.Add(new SubscriberAccount { SubscriberId = i++, SubscriberName = "11bet", AccountId = i, UserName = "cn@abc", UserName2 = "xyz" });
+                data.Add(new SubscriberAccount { SubscriberID = i++, SubscriberName = "11bet", AccountID = i, UserName = "abc1", UserName2 = "xyz" });
+                data.Add(new SubscriberAccount { SubscriberID = i++, SubscriberName = "11bet", AccountID = i, UserName = "abc12", UserName2 = "xyz" });
+                data.Add(new SubscriberAccount { SubscriberID = i++, SubscriberName = "11bet", AccountID = i, UserName = "abc5", UserName2 = "xyz" });
+                data.Add(new SubscriberAccount { SubscriberID = i++, SubscriberName = "11bet", AccountID = i, UserName = "abc", UserName2 = "xyz" });                
+                data.Add(new SubscriberAccount { SubscriberID = i++, SubscriberName = "11bet", AccountID = i, UserName = "cn88@abc", UserName2 = "xyz" });
+                data.Add(new SubscriberAccount { SubscriberID = i++, SubscriberName = "11bet", AccountID = i, UserName = "abc66", UserName2 = "xyz" });
+                data.Add(new SubscriberAccount { SubscriberID = i++, SubscriberName = "11bet", AccountID = i, UserName = "abc44", UserName2 = "xyz" });
+                data.Add(new SubscriberAccount { SubscriberID = i++, SubscriberName = "11bet", AccountID = i, UserName = "abcd", UserName2 = "xyz" });
+                data.Add(new SubscriberAccount { SubscriberID = i++, SubscriberName = "11bet", AccountID = i, UserName = "cn@abc", UserName2 = "xyz" });
             }
             {
-                data.Add(new SubscriberAccount { SubscriberId = i++, SubscriberName = "TGO", AccountId = i, UserName = "bebong@abc", UserName2 = "xyz" });
-                data.Add(new SubscriberAccount { SubscriberId = i++, SubscriberName = "TGO", AccountId = i, UserName = "sieunhangao@abc", UserName2 = "xyz" });
-                data.Add(new SubscriberAccount { SubscriberId = i++, SubscriberName = "TGO", AccountId = i, UserName = "iloveyou@abc", UserName2 = "xyz" });
-                data.Add(new SubscriberAccount { SubscriberId = i++, SubscriberName = "TGO", AccountId = i, UserName = "abc@abc", UserName2 = "xyz" });
+                data.Add(new SubscriberAccount { SubscriberID = i++, SubscriberName = "TGO", AccountID = i, UserName = "bebong@abc", UserName2 = "xyz" });
+                data.Add(new SubscriberAccount { SubscriberID = i++, SubscriberName = "TGO", AccountID = i, UserName = "sieunhangao@abc", UserName2 = "xyz" });
+                data.Add(new SubscriberAccount { SubscriberID = i++, SubscriberName = "TGO", AccountID = i, UserName = "iloveyou@abc", UserName2 = "xyz" });
+                data.Add(new SubscriberAccount { SubscriberID = i++, SubscriberName = "TGO", AccountID = i, UserName = "abc@abc", UserName2 = "xyz" });
             }
             {
-                data.Add(new SubscriberAccount { SubscriberId = i++, SubscriberName = "CN88", AccountId = i, UserName = $"cn88@abc", UserName2 = "xyz" });
-                data.Add(new SubscriberAccount { SubscriberId = i++, SubscriberName = "CN88", AccountId = i, UserName = "heocon@abc", UserName2 = "xyz" });
-                data.Add(new SubscriberAccount { SubscriberId = i++, SubscriberName = "CN88", AccountId = i, UserName = "abc", UserName2 = "xyz" });
-                data.Add(new SubscriberAccount { SubscriberId = i++, SubscriberName = "CN88", AccountId = i, UserName = "ruangoc@abc", UserName2 = "xyz" });
-                data.Add(new SubscriberAccount { SubscriberId = i, SubscriberName = "CN88", AccountId = i, UserName = "ruangoc2@abc", UserName2 = "xyz" });
+                data.Add(new SubscriberAccount { SubscriberID = i++, SubscriberName = "CN88", AccountID = i, UserName = $"cn88@abc", UserName2 = "xyz" });
+                data.Add(new SubscriberAccount { SubscriberID = i++, SubscriberName = "CN88", AccountID = i, UserName = "heocon@abc", UserName2 = "xyz" });
+                data.Add(new SubscriberAccount { SubscriberID = i++, SubscriberName = "CN88", AccountID = i, UserName = "abc", UserName2 = "xyz" });
+                data.Add(new SubscriberAccount { SubscriberID = i++, SubscriberName = "CN88", AccountID = i, UserName = "ruangoc@abc", UserName2 = "xyz" });
+                data.Add(new SubscriberAccount { SubscriberID = i, SubscriberName = "CN88", AccountID = i, UserName = "ruangoc2@abc", UserName2 = "xyz" });
             }
 
             if (arrSubs.Length > 1)
             {
-                return data.Where(a => a.UserName.Contains(key) && arrSubs.Contains(a.SubscriberId.ToString()))
+                return data.Where(a => a.UserName.Contains(key) && arrSubs.Contains(a.SubscriberID.ToString()))
                         .OrderBy(a => a.SubscriberName)
                         .ThenBy(a => a.UserName)                       
                         .ToList();

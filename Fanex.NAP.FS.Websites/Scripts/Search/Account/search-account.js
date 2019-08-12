@@ -69,7 +69,7 @@
                 key: key,
                 subscribers: subscribers.join(',')
             },
-            success: function (data) {                
+            success: function (data) {
                 $(content).show();
 
                 BindDataToGrid(data);
@@ -124,7 +124,7 @@
     function BindDataToGrid(data) {
         if (data != null) {
             if (data.length == 1) {
-                window.location.href = common.modifyRelativeUrl('/Account/DetailAccount?id=' + data[0].AccountId);               
+                window.location.href = common.modifyRelativeUrl('/Account/DetailAccount?id=' + data[0].AccountID);               
             } else {
                 table.DataTable().clear().rows.add(data).draw();
                 table.DataTable().columns.adjust();
@@ -135,7 +135,7 @@
     }
 
     function RenderUserName(obj, userName) {
-        var url = common.modifyRelativeUrl('/Account/DetailAccount?id=' + obj.AccountId);
+        var url = common.modifyRelativeUrl('/Account/DetailAccount?id=' + obj.AccountID);
 
         return `<a class='info-bng' 
                     href=${url}
@@ -143,7 +143,7 @@
                 </a>`;
     }
 
-    function ValidateInput(input) {        
+    function ValidateInput(input) {
 
         if (input == null || input.length < 3 || !regex.test(input)) {
 
@@ -152,7 +152,7 @@
             $(content).hide();
 
             return false;
-        }       
+        }
 
         $(captionError).hide();
 

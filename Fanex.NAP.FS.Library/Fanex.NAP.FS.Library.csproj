@@ -226,6 +226,7 @@
     <Compile Include="Core\BaseClasses\CommandBase.cs" />
     <Compile Include="Core\BaseClasses\DataService.cs" />
     <Compile Include="Core\BaseClasses\FraudCaseAttribute.cs" />
+    <Compile Include="Core\Consts\Consts.cs" />
     <Compile Include="Core\ExportExcel\ExcelUtilities.cs" />
     <Compile Include="Core\ExportExcel\FSExcelConfig.cs" />
     <Compile Include="Core\ExportExcel\ExcelStream.cs" />
@@ -239,6 +240,7 @@
     <Compile Include="Core\Helpers\Xml\XNameAttribute.cs" />
     <Compile Include="Core\Utilities\ConfigSettings.cs" />
     <Compile Include="Core\Utilities\Extentions.cs" />
+    <Compile Include="Criteria\Account\SearchAccountCriteria.cs" />
     <Compile Include="Criteria\Api\FlaggedAccountDeleteCriteria.cs" />
     <Compile Include="Criteria\Api\FlaggedAccountInsertCriteria.cs" />
     <Compile Include="Criteria\CheckBetReport\CheckBetReportGetCriteria.cs" />
@@ -318,6 +320,7 @@
     <Compile Include="Criteria\SuspiciousCustomer\SuspiciousCustomerUpdateCriteria.cs" />
     <Compile Include="Criteria\SuspiciousCustomer\SuspiciousCustomerReportGetCriteria.cs" />
     <Compile Include="Criteria\SuspiciousInfo\SuspicousCustomerCurrencyGetCriteria.cs" />
+    <Compile Include="Criteria\Transaction\History\TransactionHistoryGetCriteria.cs" />
     <Compile Include="DTO\CustomerEvidence.cs" />
     <Compile Include="DTO\CustomerEvidenceList.cs" />
     <Compile Include="DTO\CustomerSubcriber.cs" />
