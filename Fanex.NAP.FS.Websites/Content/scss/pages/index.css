@@ -1260,7 +1260,7 @@ table.dataTable tbody tr.selected td {
 .toggle-btn {
   display: none; }
 
-@media only screen and (max-width: 1279px) {
+@media only screen and (max-width: 1407px) {
   .toggle-btn {
     -webkit-transition: linear .2s;
     -moz-transition: linear .2s;
