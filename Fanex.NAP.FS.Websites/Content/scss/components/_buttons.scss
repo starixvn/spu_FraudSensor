@@ -21,6 +21,15 @@
         }
     }
 
+    &.-add {
+        background-color: #396EF8;
+        color: $btn-primary-color;
+
+        &:hover:not(:disabled) {
+            background-color: #0047FF;
+        }
+    }
+
     &.-export {
         border: 1px solid $btn-primary-bg;
         background-color: #fff;
@@ -47,6 +56,17 @@
 
         &:hover:not(:disabled) {
             background-color: $btn-cancel-bg-hover;
+        }
+    }
+
+    &.btn-cancel-outline {
+        border: 1px solid #545454;
+        background-color: #fff;
+        color: #545454;
+
+        &:hover:not(:disabled) {
+            background-color: #545454;
+            color: #fff;
         }
     }
 }

@@ -1,56 +1,32 @@
 ﻿<div id="addException" style="display:none;">
     <div class="modal-dialog">
         <div class="modal-content">
-            <fieldset class="fieldset-search">
-                <legend>
-                    <label class="box-header-title">Add Exception</label>
-                </legend>
-                <div>
-                    <table class="table-exception" cellspacing="4">
-                        <tr>
-                            <td><strong>Exeption:</strong></td>
-                            <td>
-                                <div class="chain-central-add">
-                                    <a href="#" id="nodeRoot"></a>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="chain-place-slash">
-                                    <span>&nbsp;</span>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="chain-central-add">
-                                    <a href="#" id="nodeException"></a>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="4"><span id="note-caption"></span></td>
-                        </tr>
-                        <tr>
-                            <td colspan="4">
-                                <fieldset class="fieldset-search">
-                                    <legend>
-                                        <label class="box-header-title">Comment</label>
-                                    </legend>
-                                    <div class="form-control">                                        
-                                        <textarea style="width: 530px; height: 110px;" cols="12" rows="5" id="comment"></textarea>
-                                    </div>
-                                </fieldset>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="4">
-                                <div class="form-control">
-                                    <button class="button btn-primary" id="btn_addException">Add Exception</button>
-                                    <button class="button btn-primary" id="btn_cancel">Cancel</button>
-                                </div>
-                            </td>
-                        </tr>
-                    </table>
+            <div class="chains-block">
+                <span>Exception: </span>
+                <div class="chain-row">
+                    <div class="chain-central-add">
+                        <a style="color: #396EF8;" href="#" id="nodeRoot"></a>
+                    </div>
+                    <div class="chain-place-slash">
+                        <span class="icon-disconnect"></span>
+                    </div>
+                    <div class="chain-central-add">
+                        <a style="color: #396EF8;" href="#" id="nodeException"></a>
+                    </div>
                 </div>
-            </fieldset>            
+            </div>
+            <div style="margin-bottom: 5px;"><span id="note-caption"></span></div>
+            <div style="margin-bottom: 5px;">
+                <span>Comment: </span>
+                <div class="form-control">
+                    <textarea rows="5" class="comment-field" id="comment"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <button class="button btn-cancel-outline" id="btn_cancel">Cancel</button>
+            <button class="button -add" id="btn_addException">Add Exception</button>
         </div>
     </div>
 </div>

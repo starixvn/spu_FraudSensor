@@ -80,6 +80,11 @@ input, button {
     color: #fff; }
     .button.-primary:hover:not(:disabled) {
       background-color: #5bb023; }
+  .button.-add {
+    background-color: #396EF8;
+    color: #fff; }
+    .button.-add:hover:not(:disabled) {
+      background-color: #0047FF; }
   .button.-export {
     border: 1px solid #4f971f;
     background-color: #fff;
@@ -97,6 +102,13 @@ input, button {
     color: #fff; }
     .button.-cancel:hover:not(:disabled) {
       background-color: #929292; }
+  .button.btn-cancel-outline {
+    border: 1px solid #545454;
+    background-color: #fff;
+    color: #545454; }
+    .button.btn-cancel-outline:hover:not(:disabled) {
+      background-color: #545454;
+      color: #fff; }
 
 .btn-search, .btn-submit {
   background-color: #396EF8;
