@@ -11,6 +11,7 @@
     using Fanex.NAP.FS.Library.Criteria.SubscriberAssignment;
     using Fanex.NAP.FS.Library.Core.BaseClasses;
     using Fanex.NAP.FS.Library.Criteria.Account;
+    using Fanex.NAP.FS.Library.ViewModels.Account.Search;
 
     public class AccountService : IAccountService
     {
@@ -24,12 +25,13 @@
             return DataService.GetData<Subscriber>(criteria).OrderBy(c => c.SubscriberName).ThenBy(c => c.SubscriberID);
         }
 
-        public IEnumerable<SubscriberAccount> SearchAccounts(string userName, string subscribers)
+        public IEnumerable<SubscriberAccount> SearchAccounts(SearchAccountFilter filter)
         {
             var criteria = new SearchAccountCriteria
             {
-                ip_SubscriberIDs = subscribers,
-                ip_Username = userName
+                ip_SubscriberIDs = filter.Subscribers,
+                ip_Username = filter.Key,
+                ip_UserId = filter.UserId
             };
 
             return DataService.GetData<SubscriberAccount>(criteria)

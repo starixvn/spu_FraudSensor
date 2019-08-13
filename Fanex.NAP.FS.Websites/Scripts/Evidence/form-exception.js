@@ -12,6 +12,7 @@
             $("#addException").dialog({
                 modal: true,
                 width: '650px',
+                title: 'ADD EXCEPTION',
                 resizable: false,
                 draggable: false,
                 close: function () { $(this).dialog('close'); }

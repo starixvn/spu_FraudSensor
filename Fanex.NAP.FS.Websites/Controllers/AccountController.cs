@@ -6,7 +6,7 @@
     using Fanex.NAP.Core.Web.Attribute;
 
     [NapAuth(FunctionKey = FSFunctionKeys.SearchAccount, Policy = Core.Business.Constant.Policy.Read)]
-    public class AccountController : Controller
+    public class AccountController : BaseController
     {
         private readonly IAccountService _accountService;
         private readonly IEvidenceService _evidenceService;

@@ -2,7 +2,7 @@
 {
     using System.Web.Mvc;
 
-    public class SearchDeviceController : Controller
+    public class SearchDeviceController : BaseController
     {
         public ActionResult Index()
         {

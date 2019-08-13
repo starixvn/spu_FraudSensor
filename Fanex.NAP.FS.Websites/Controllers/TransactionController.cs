@@ -5,7 +5,7 @@
     using System.Web.Mvc;
     using Fanex.NAP.Core.Web.Attribute;
     
-    public class TransactionController : Controller
+    public class TransactionController : BaseController
     {
         private readonly ITransactionService _transactionService;
 

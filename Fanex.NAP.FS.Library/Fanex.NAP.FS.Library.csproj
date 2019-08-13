@@ -411,6 +411,7 @@
     <Compile Include="ViewModels\Account\Associated\AssociatedDeviceByAccountFilter.cs" />
     <Compile Include="ViewModels\Account\Evidence\ChainsToEvidence.cs" />
     <Compile Include="ViewModels\Account\Evidence\RetractedEvidenceAndException.cs" />
+    <Compile Include="ViewModels\Account\Search\SearchAccountFilter.cs" />
     <Compile Include="ViewModels\Account\SubscriberAccount.cs" />
     <Compile Include="ViewModels\Account\AccountDetail.cs" />
     <Compile Include="Models\Subscriber\SubscriberAssignment.cs" />

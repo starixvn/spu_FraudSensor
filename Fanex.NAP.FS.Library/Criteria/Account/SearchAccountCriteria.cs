@@ -6,7 +6,9 @@
     {
         public string ip_SubscriberIDs { get; set; }
 
-        public string ip_Username { get; set; }        
+        public string ip_Username { get; set; }
+
+        public int ip_UserId { get; set; }
 
         public override string GetSettingKey() => "FPS_DC_SearchAccount";
 

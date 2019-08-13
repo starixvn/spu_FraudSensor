@@ -3,13 +3,14 @@
     using Fanex.NAP.FS.Library.Models.Subscriber;
     using Fanex.NAP.FS.Library.ViewModels.Account;
     using Fanex.NAP.FS.Library.ViewModels.Account.Associated;
+    using Fanex.NAP.FS.Library.ViewModels.Account.Search;
     using System.Collections.Generic;
 
     public interface IAccountService
     {
         IEnumerable<Subscriber> GetSubscribers(long userId);
 
-        IEnumerable<SubscriberAccount> SearchAccounts(string userName, string subscribers);
+        IEnumerable<SubscriberAccount> SearchAccounts(SearchAccountFilter filter);
 
         AccountDetail GetAccountDetail(int accountId);
 

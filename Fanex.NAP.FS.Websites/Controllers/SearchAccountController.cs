@@ -5,6 +5,7 @@
     using Fanex.NAP.Core.Web.Attribute;
     using Fanex.NAP.FS.Library.Core.Consts;
     using Fanex.NAP.FS.Library.Services;
+    using Fanex.NAP.FS.Library.ViewModels.Account.Search;
     using System.Configuration;
     using System.Web.Mvc;
 
@@ -54,9 +55,11 @@
         }
 
         [HttpPost]
-        public ActionResult SearchSubscriberAccount(string key, string subscribers)
+        public ActionResult SearchSubscriberAccount(SearchAccountFilter filter)
         {
-            var data = _accountService.SearchAccounts(key, subscribers);
+            filter.UserId = GetIdentityUserId();
+
+            var data = _accountService.SearchAccounts(filter);
 
             return Json(data, JsonRequestBehavior.AllowGet);
         }
