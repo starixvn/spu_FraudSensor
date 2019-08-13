@@ -1,10 +1,11 @@
 ﻿body {
-  padding: 0;
-  margin: 0;
-  background-color: #fff;
-  font-size: 14px;
-  font-family: "Lato", Arial, Tahoma, sans-serif;
-  color: #666; }
+    padding: 0;
+    margin: 0;
+    background-color: #fff;
+    font-size: 14px;
+    font-family: "Lato", Arial, Tahoma, sans-serif;
+    color: #666;
+    overflow-y: visible !important;}
 
 *, :before, :after {
   box-sizing: border-box; }
