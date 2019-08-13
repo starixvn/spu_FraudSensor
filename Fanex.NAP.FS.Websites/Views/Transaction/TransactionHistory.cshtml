@@ -7,7 +7,7 @@
 <div id="transaction-history">
     <div id="transaction-history-filter">
         <div class="filter">
-            <div class="form-control width-150">
+            <div class="form-control">
                 <div class="control-label">Report Length</div>
                 <select class="control" id="cbb-fraud-status">
                     <option value="@TransactionHistoryLength.Hours24" selected>Last 24 hours</option>
@@ -22,7 +22,7 @@
         </div>
     </div>
 
-    <div id="transaction-history-content" hidden>
+    <div class="table-report" id="transaction-history-content" hidden>
         <table id="transaction-history-table" class="table table-striped" style="width: 100%">
             <thead>
                 <tr>
