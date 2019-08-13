@@ -37,7 +37,16 @@
                 transaction.DeviceID = 123456;
                 transaction.DeviceCode = "d6e3d7efc7ca44e78d9e8f960300083" + i;
                 //transaction.OSName = "iPhone";
-                transaction.RobotTracking = "Human";
+                if (i % 2 == 0)
+                {
+                    transaction.Tracking = "Human";
+                    transaction.IsRobot = false;
+                }
+                else
+                {
+                    transaction.Tracking = "Robot (83%)";
+                    transaction.IsRobot = true;
+                }
                 transaction.ActionResult = "login->successfully";
                 transaction.Browser = "Safari";
                 transaction.Domain = "iphone.9999999.com";

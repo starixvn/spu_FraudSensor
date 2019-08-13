@@ -29,7 +29,7 @@
             columns: [
                 { data: obj => moment(obj.TransDate).format("MMM DD, YYYY") },
                 { data: obj => RenderDevice(obj) },
-                { data: obj => obj.RobotTracking },
+                { data: obj => RenderTracking(obj) },
                 { data: obj => obj.Action },
                 { data: obj => obj.ActionResult },
                 { data: obj => obj.DeviceCode },                                
@@ -54,8 +54,12 @@
         return html;
     }
 
-    function RenderRobotTracking(obj) {
-        return '<span class=robot-tracking>' + obj.RobotTracking + '</span>';
+    function RenderTracking(obj) {
+        if (obj.IsRobot) {
+            return '<span class=tracking-robot>' + obj.Tracking + '</span>';
+        }
+
+        return '<span class=tracking-human>' + obj.Tracking + '</span>';
     }
 
     function GenerateReport() {

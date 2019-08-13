@@ -2,7 +2,8 @@
     var ddlSubscriber = $('#ddlSubscriber');
     var btnSearch = $('#btnSearch');
     var inputAccount = $('#account');
-    var captionError = $('#caption-error');
+    var captionErrorAccount = $('#caption-error-account');
+    var captionErrorSubscribers = $('#caption-error-subscribers');
     var table = $('#table-account');
     var content = $('.content-account');
     var regex = new RegExp("^[a-zA-Z0-9$ ]*$");
@@ -11,12 +12,15 @@
         ddlSubscriber.multiselect({
             menuWidth: 225,
             menuHeight: 350,
+            click: RemoveMessageError,
+            checkAll: RemoveMessageError,
+            uncheckAll: RemoveMessageError,
             selectedText: "# of # selected",
             noneSelectedText: "Select options"
         }).multiselectfilter({
             width: 150,
             placeholder: ''
-        });                
+        });
        
         GenerateGrid();
 
@@ -47,17 +51,16 @@
     }
 
     function SearchSubscriberAccount(keySearch, subscribers) {
-
-        if (!ValidateInput(keySearch)) {
-            return;
-        }
-
         if (subscribers == null) {
             var subscribers = [];
 
             $('option:selected', ddlSubscriber).each(function (idx, ele) {
                 subscribers.push($(ele).val());
             });
+        }
+
+        if (!ValidateInput(keySearch, subscribers)) {
+            return;
         }
 
         common.showLoading();
@@ -68,7 +71,7 @@
             type: 'POST',
             data: {
                 key: keySearch,
-                subscribers: subscribers.join(',')
+                subscribers: ConvertSubscribersToString(subscribers)
             },
             success: function (data) {
                 $(content).show();
@@ -81,6 +84,17 @@
                 common.showError('Search Account fail!');
             }
         });
+    }
+
+    function ConvertSubscribersToString(subscribers) {
+        var length = $('option', ddlSubscriber).length;
+
+        if (subscribers.length == length) {
+            return '-1';
+        }
+        else {
+            return subscribers.join(',');
+        }
     }
 
     function GenerateGrid() {
@@ -144,24 +158,38 @@
                 </a>`;
     }
 
-    function ValidateInput(input) {
+    function ValidateInput(keySearch, subscribers) {
+        var error = false;
 
-        if (input == null || input.length < 3 || !regex.test(input)) {
+        if (keySearch == null || keySearch.length < 3 || !regex.test(keySearch)) {
+            $('span', captionErrorAccount).text('The Account is not valid!');
+            $(captionErrorAccount).show();
+            error = true;
+        }
 
-            $('span', captionError).text('The Account is not valid!');
-            $(captionError).show();
+        if (subscribers.length == 0) {
+            $('span', captionErrorSubscribers).text('Subscribers is required select!');
+            $(captionErrorSubscribers).show();
+            error = true;
+        }
+
+        if (error) {
             $(content).hide();
-
             return false;
         }
 
-        $(captionError).hide();
+        $(captionErrorAccount).hide();
+        $(captionErrorSubscribers).hide();
 
         return true;
     }
 
+    function RemoveMessageError() {
+        $(captionErrorSubscribers).hide();
+    }
+
     inputAccount.keyup((e) => {
-        $(captionError).hide();
+        $(captionErrorAccount).hide();        
 
         if (e.which == 13) {
             SearchSubscriberAccount($(e.target).val());
@@ -172,7 +200,8 @@
         SearchSubscriberAccount($(inputAccount).val());
     });
 
-    $(captionError).hide();
+    $(captionErrorAccount).hide();
+    $(captionErrorSubscribers).hide();
 
     Init();
 }

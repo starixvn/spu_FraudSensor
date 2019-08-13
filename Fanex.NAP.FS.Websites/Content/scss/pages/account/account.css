@@ -1,6 +1,6 @@
 ﻿body {
   background-color: #f0f3f8;
-  overflow-y: hidden !important; }
+  overflow-y: visible !important; }
 
 .breadcrumb .link {
   color: #f76617; }

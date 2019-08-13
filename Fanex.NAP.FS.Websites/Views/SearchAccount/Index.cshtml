@@ -14,12 +14,15 @@
     <div class="form-control">
         <div class="control-label">Subscribers</div>
         <select id="ddlSubscriber" multiple="multiple"></select>
+        <div id="caption-error-subscribers" class="caption-error">
+            <span style="color:red"></span>
+        </div>
     </div>
     <div class="form-control">
         <div class="control-label">Account</div>
         <input type="text" id="account" class="control input-field" value=@ViewBag.KeySearch />
 
-        <div id="caption-error" class="caption-error">
+        <div id="caption-error-account" class="caption-error">
             <span style="color:red"></span>
         </div>
     </div>

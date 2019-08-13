@@ -1,7 +1,5 @@
 ﻿namespace Fanex.NAP.FS.Library.Models.Transaction
-{
-    using Fanex.NAP.FS.Library.Models.Account;
-    using Fanex.NAP.FS.Library.Models.Device;
+{    
     using System;    
 
     public class Transaction
@@ -12,7 +10,9 @@
 
         public long SubscriberID { get; set; }
 
-        public string RobotTracking { get; set; }
+        public string Tracking { get; set; }
+
+        public bool IsRobot { get; set; }
 
         public string ActionName { get; set; }
 
