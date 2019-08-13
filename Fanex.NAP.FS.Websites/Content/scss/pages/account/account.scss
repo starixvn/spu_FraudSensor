@@ -49,6 +49,13 @@
     font-weight: bold;
 }
 
+.badge-level {
+    padding: 2px 20px;
+    background: #ddd;
+    border-radius: 3px;
+    font-size: 12px;
+}
+
 .filter {
     padding: 0 16px 16px;
 
@@ -319,10 +326,29 @@
     padding-left: 5px;
 }
 
-.width-300 {
+/*.width-300 {
     width: 300px;
 }
 
 .width-150 {
     width: 150px;
+}*/
+
+.device-1 .info-bng {
+    color: #397F0A; //Green: recovered
+    text-decoration: underline;
+}
+
+.device-2 .info-bng {
+    color: #545454; //Black: old
+    text-decoration: underline;
+}
+
+.device-3 .info-bng {
+    color: #2053D9; //Blue: new
+    text-decoration: underline;
+}
+
+.tracking-robot {
+    color: #C1272D;
 }

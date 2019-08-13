@@ -37,6 +37,12 @@
   background: #DDE2E5;
   font-weight: bold; }
 
+.badge-level {
+  padding: 2px 20px;
+  background: #ddd;
+  border-radius: 3px;
+  font-size: 12px; }
+
 .filter {
   padding: 0 16px 16px; }
   .filter .control-label {
@@ -220,8 +226,24 @@
   float: left;
   padding-left: 5px; }
 
-.width-300 {
-  width: 300px; }
+/*.width-300 {
+    width: 300px;
+}
 
 .width-150 {
-  width: 150px; }
+    width: 150px;
+}*/
+.device-1 .info-bng {
+  color: #397F0A;
+  text-decoration: underline; }
+
+.device-2 .info-bng {
+  color: #545454;
+  text-decoration: underline; }
+
+.device-3 .info-bng {
+  color: #2053D9;
+  text-decoration: underline; }
+
+.tracking-robot {
+  color: #C1272D; }
