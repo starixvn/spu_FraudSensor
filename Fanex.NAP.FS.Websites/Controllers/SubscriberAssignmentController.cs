@@ -2,6 +2,7 @@
 {
     using Fanex.NAP.Core.Service.Impl;
     using Fanex.NAP.Core.Web.Attribute;
+    using Fanex.NAP.FS.Library.Core.Consts;
     using Fanex.NAP.FS.Library.Services;
     using System.Configuration;
     using System.Web.Mvc;
@@ -15,7 +16,9 @@
         {
             _subscriberAssignmentService = new SubscriberAssignmentService();
         }
-     
+
+        public override string BaseControllerName { get => Consts.MenuItemSettings; }
+
         public ActionResult Index()
         {
             ViewBag.Username = this.User.Identity.Name;

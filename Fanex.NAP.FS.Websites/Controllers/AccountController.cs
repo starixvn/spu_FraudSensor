@@ -4,6 +4,7 @@
     using Fanex.NAP.FS.Library.ViewModels.Account.Associated;
     using System.Web.Mvc;
     using Fanex.NAP.Core.Web.Attribute;
+    using Fanex.NAP.FS.Library.Core.Consts;
 
     [NapAuth(FunctionKey = FSFunctionKeys.SearchAccount, Policy = Core.Business.Constant.Policy.Read)]
     public class AccountController : BaseController

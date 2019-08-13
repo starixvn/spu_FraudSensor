@@ -2,6 +2,7 @@
 {
     using Fanex.NAP.Core.Service.Impl;
     using Fanex.NAP.Core.Web.Attribute;
+    using Fanex.NAP.FS.Library.Core.Consts;
     using Fanex.NAP.FS.Library.Criteria.CustomerMonitor;
     using Fanex.NAP.FS.Library.Criteria.CustomerMonitor.CustomerDetails;
     using Fanex.NAP.FS.Library.ExcelConfig.CustomerMonitor;
@@ -26,6 +27,8 @@
             var permission = new UserService().GetPermission(CurrentSession.UserId, SiteId, FSFunctionKeys.SpecialCurrencies);
             isSpecialCurrency = permission > 0;
         }
+
+        public override string BaseControllerName { get => Consts.MenuItemSuspiciousBets; }
 
         public ActionResult Index()
         {

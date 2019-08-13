@@ -2,6 +2,7 @@
 {
     using Core.Service.Impl;
     using Fanex.NAP.Core.Web.Attribute;
+    using Fanex.NAP.FS.Library.Core.Consts;
     using Fanex.NAP.FS.Library.Criteria.ScannedOfficeIP;
     using Fanex.NAP.FS.Library.ExcelConfig.ScannedOfficeIP;
     using Fanex.NAP.FS.Library.Services.Implement;
@@ -21,6 +22,8 @@
             var permission = new UserService().GetPermission(CurrentSession.UserId, SiteId, FSFunctionKeys.SpecialCurrencies);
             IsShowSpecialCurrencies = permission > 0;
         }
+
+        public override string BaseControllerName { get => Consts.MenuItemSuspiciousBets; }
 
         public ActionResult Index()
         {

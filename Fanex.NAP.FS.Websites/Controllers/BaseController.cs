@@ -7,6 +7,7 @@
     using Fanex.NAP.Core.Service.Interface;
     using Fanex.NAP.Core.Web.Context;
     using Fanex.NAP.Core.Web.Session;
+    using Fanex.NAP.FS.Library.Core.Consts;
     using Fanex.NAP.FS.Library.Core.ExportExcel;
     using NPOI.SS.UserModel;
     using System;
@@ -27,6 +28,8 @@
                 ViewBag.Session = CurrentSession;
             }
         }
+
+        public virtual string BaseControllerName { get => Consts.BaseController; }
 
         public int SiteId { get; } = NapSettings.Settings == null ? 0 : NapSettings.Settings.SiteId;
 

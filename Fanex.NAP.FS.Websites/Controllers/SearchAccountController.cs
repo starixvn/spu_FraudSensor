@@ -21,14 +21,16 @@
             _userService = new UserService();
         }
 
+        public override string BaseControllerName { get => Consts.MenuItemSearch;  }
+
         public ActionResult Index()
         {
             ViewBag.Username = this.User.Identity.Name;
             ViewBag.Environment = int.Parse(ConfigurationManager.AppSettings["Environment"]);
-            ViewBag.ItemKeySelect = Consts.SearchAccountItemKeySelect;
-            ViewBag.ItemKeyNonSelect = Consts.SearchAccountItemKeyNonSelect;
-            ViewBag.OptionSelect = Consts.SearchAccountOptionSelect;
-            ViewBag.OptionNonSelect = Consts.SearchAccountOptionNonSelect;
+            ViewBag.ItemKeySelect = Consts.SearchAccountKey;
+            ViewBag.ItemKeyNonSelect = Consts.SearchDeviceKey;
+            ViewBag.OptionSelect = Consts.SearchAccountOption;
+            ViewBag.OptionNonSelect = Consts.SearchDeviceOption;
 
             return View();
         }

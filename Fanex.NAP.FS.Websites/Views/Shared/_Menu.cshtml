@@ -1,4 +1,5 @@
 ﻿@using System.Collections.Generic;
+@using Fanex.NAP.FS.Library.Core.Consts;
 @using Fanex.NAP.Core.Models;
 @model IList<MenuItem>
 
@@ -32,7 +33,7 @@
 }
 
 <ul class="main-menu">
-    <li class="menu-item" id="menu-home"><a href="@Url.Action("Index", "Home")" class="link">@Html.Raw(iconLookup("Home")) Home</a></li>
+    <li class="menu-item" id="menu-home"><a href="@Url.Action("Index", "Home")" class="link @(controllerBaseType.Contains(Consts.MenuItemHome) ? "active" : "")">@Html.Raw(iconLookup("Home")) Home</a></li>
     
     @foreach (var menu in Model.Where(m => m.Parent == null && m.IsActive && m.Name != "Home").OrderBy(m => m.DisplayOrder))
     {

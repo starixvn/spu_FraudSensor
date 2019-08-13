@@ -1,6 +1,7 @@
 ﻿namespace Fanex.NAP.FS.Websites.Controllers
 {
     using Fanex.NAP.Core.Web.Attribute;
+    using Fanex.NAP.FS.Library.Core.Consts;
     using Fanex.NAP.FS.Library.Criteria.DailyDataCapture;
     using Fanex.NAP.FS.Library.ExcelConfig.DailyDataCapture;
     using Fanex.NAP.FS.Library.Services.Implement;
@@ -12,6 +13,8 @@
     public class DailyDataCaptureController : ReportsController
     {
         private readonly IDailyDataCaptureService _service = new DailyCaptureDataService();
+
+        public override string BaseControllerName { get => Consts.MenuItemSuspiciousBets; }
 
         // GET: DailyDataCapture
         public ActionResult Index()

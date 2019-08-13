@@ -1,6 +1,7 @@
 ﻿namespace Fanex.NAP.FS.Websites.Controllers
 {
     using Fanex.NAP.Core.Web.Attribute;
+    using Fanex.NAP.FS.Library.Core.Consts;
     using System.Web.Mvc;
 
     [NapSuperAuth]
@@ -11,9 +12,11 @@
             return View(CurrentSession.MenuItemList);
         }
 
+        public override string BaseControllerName { get => Consts.MenuItemHome; }
+
         public ActionResult Menu(string activeMenu)
         {
-            ViewBag.ActiveMenu = activeMenu;
+            ViewBag.ActiveMenu = activeMenu ?? this.BaseControllerName;
 
             return PartialView("~/Views/Shared/_Menu.cshtml", CurrentSession.MenuItemList);
         }

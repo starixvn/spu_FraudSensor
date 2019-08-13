@@ -4,6 +4,7 @@ namespace Fanex.NAP.FS.Websites.Controllers
 {
     using Core.Service.Impl;
     using Fanex.NAP.Core.Web.Attribute;
+    using Fanex.NAP.FS.Library.Core.Consts;
     using Fanex.NAP.FS.Library.Models.SuspiciousCustomerDetails;
     using Fanex.NAP.FS.Library.Services;
     using Library.ViewModels.SuspiciousCustomerDetails;
@@ -23,6 +24,8 @@ namespace Fanex.NAP.FS.Websites.Controllers
             var permission = new UserService().GetPermission(CurrentSession.UserId, SiteId, FSFunctionKeys.SpecialCurrencies);
             IsShowSpecialCurrencies = permission > 0;
         }
+
+        public override string BaseControllerName { get => Consts.MenuItemSuspiciousBets; }
 
         public ActionResult Index(int custId, string custName, DateTime from, DateTime to)
         {
