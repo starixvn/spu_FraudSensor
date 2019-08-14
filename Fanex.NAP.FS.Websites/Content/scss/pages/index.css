@@ -1,11 +1,10 @@
 ﻿body {
-    padding: 0;
-    margin: 0;
-    background-color: #fff;
-    font-size: 14px;
-    font-family: "Lato", Arial, Tahoma, sans-serif;
-    color: #666;
-    overflow-y: visible !important;}
+  padding: 0;
+  margin: 0;
+  background-color: #fff;
+  font-size: 14px;
+  font-family: "Lato", Arial, Tahoma, sans-serif;
+  color: #666; }
 
 *, :before, :after {
   box-sizing: border-box; }
@@ -924,6 +923,15 @@ table.dataTable tbody tr.selected td {
     box-shadow: 0 -14px 0 0 rgba(255, 255, 255, 0.1), 10px -10px 0 0 rgba(255, 255, 255, 0.2), 14px 0 0 0 rgba(255, 255, 255, 0.3), 10px 10px 0 0 rgba(255, 255, 255, 0.4), 0 14px 0 0 rgba(255, 255, 255, 0.6), -10px 10px 0 0 rgba(255, 255, 255, 0.8), -14px 0 0 0 white, -10px -10px 0 0 rgba(255, 255, 255, 0.05); }
   100% {
     box-shadow: 0 -14px 0 0 rgba(255, 255, 255, 0.05), 10px -10px 0 0 rgba(255, 255, 255, 0.1), 14px 0 0 0 rgba(255, 255, 255, 0.2), 10px 10px 0 0 rgba(255, 255, 255, 0.3), 0 14px 0 0 rgba(255, 255, 255, 0.4), -10px 10px 0 0 rgba(255, 255, 255, 0.6), -14px 0 0 0 rgba(255, 255, 255, 0.8), -10px -10px 0 0 white; } }
+
+body {
+  padding: 0;
+  margin: 0;
+  background-color: #fff;
+  font-size: 14px;
+  font-family: "Lato", Arial, Tahoma, sans-serif;
+  color: #666;
+  overflow-y: visible !important; }
 
 .header {
   display: grid;

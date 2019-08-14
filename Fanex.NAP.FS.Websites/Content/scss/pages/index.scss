@@ -13,6 +13,15 @@
 @import "../components/popup";
 @import "../components/loading";
 
+body {
+    padding: 0;
+    margin: 0;
+    background-color: #fff;
+    font-size: 14px;
+    font-family: "Lato", Arial, Tahoma, sans-serif;
+    color: #666;
+    overflow-y: visible !important;
+}
 
 .header {
     @include align-items(grid);
