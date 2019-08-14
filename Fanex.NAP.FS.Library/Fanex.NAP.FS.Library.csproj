@@ -320,7 +320,7 @@
     <Compile Include="Criteria\SuspiciousCustomer\SuspiciousCustomerUpdateCriteria.cs" />
     <Compile Include="Criteria\SuspiciousCustomer\SuspiciousCustomerReportGetCriteria.cs" />
     <Compile Include="Criteria\SuspiciousInfo\SuspicousCustomerCurrencyGetCriteria.cs" />
-    <Compile Include="Criteria\Transaction\History\TransactionHistoryGetCriteria.cs" />
+    <Compile Include="Criteria\Transaction\History\TransactionHistoryGetByCustIdCriteria.cs" />
     <Compile Include="DTO\CustomerEvidence.cs" />
     <Compile Include="DTO\CustomerEvidenceList.cs" />
     <Compile Include="DTO\CustomerSubcriber.cs" />

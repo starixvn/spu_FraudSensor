@@ -4,8 +4,8 @@
     var option = $('#search-option');
     var linkItem = $('#link-item');
 
-    function ActionSearch(key) {
-        if (key == null || key.length == 0) {
+    function ActionSearch(keySearch) {
+        if (keySearch == null || keySearch.trim().length == 0) {
             return;
         }
 
@@ -13,11 +13,11 @@
 
         switch (itemKey) {
             case 'search-account':
-                window.location.href = common.modifyRelativeUrl('/SearchAccount/SearchAccount?key=' + key);
+                window.location.href = common.modifyRelativeUrl('/SearchAccount/SearchAccount?key=' + keySearch);
                 break;
                 
             case 'search-device':
-                window.location.href = common.modifyRelativeUrl('/SearchDevice/SearchDevice?key=' + key);
+                window.location.href = common.modifyRelativeUrl('/SearchDevice/SearchDevice?key=' + keySearch);
                 break;
 
             default:

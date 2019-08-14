@@ -4,11 +4,7 @@
 
     public class TransactionHistoryFilter
     {
-        public int AccountId { get; set; }
-
-        public int ip_Skip { get; set; }
-
-        public int ip_Limit { get; set; }
+        public int AccountId { get; set; }    
 
         public TransactionHistoryLength ReportLength { get; set; }
     }

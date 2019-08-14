@@ -100,4 +100,7 @@
   <Function name="SearchAccount">
     <Setting Key="FPS_DC_SearchAccount" SpName="FPS_DC_SearchAccount_xtest" DbName="MySQL.FPS_DataCenter"/>
   </Function>
+  <Function name="AccountDetail">
+    <Setting Key="FPS_DC_GetTransactionHistoryByCustId" SpName="FPS_DC_GetTransactionHistoryByCustId_xtest" DbName="MySQL.FPS_DataCenter"/>
+  </Function>
 </Functions>

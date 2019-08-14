@@ -32,7 +32,7 @@
                 { data: obj => RenderTracking(obj) },
                 { data: obj => obj.Action },
                 { data: obj => obj.ActionResult },
-                { data: obj => obj.DeviceCode },                                
+                { data: obj => obj.DeviceType },                                
                 { data: obj => obj.Browser },
                 { data: obj => obj.Domain },
                 { data: obj => obj.IP },
@@ -45,7 +45,7 @@
     }
 
     function RenderDevice(obj) {
-        var url = common.modifyRelativeUrl('/Device/DetailDevice/' + obj.DeviceID);
+        var url = common.modifyRelativeUrl('/Device/DetailDevice/' + obj.DeviceCode);
 
         var html = '<span class= "device-' + obj.Flagged + '">';
         html += '<a class="info-bng" href="' + url + '" target="_blank">' + obj.DeviceCode + '</a>';
@@ -55,11 +55,11 @@
     }
 
     function RenderTracking(obj) {
-        if (obj.IsRobot) {
-            return '<span class=tracking-robot>' + obj.Tracking + '</span>';
+        if (obj.RobotTracking == 'Human') {
+            return '<span class=tracking-human>' + obj.RobotTracking + '</span>';
         }
 
-        return '<span class=tracking-human>' + obj.Tracking + '</span>';
+        return '<span class=tracking-robot>' + obj.RobotTracking + '</span>';
     }
 
     function GenerateReport() {

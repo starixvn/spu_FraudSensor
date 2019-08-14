@@ -76,9 +76,9 @@
 
     public enum TransactionHistoryLength
     {
-        Hours24,
-        Days7,
-        Days30,
-        Days180
+        Hours24 = 1,
+        Days7 = 7,
+        Days30 = 30,
+        Days180 = 180
     }
 }

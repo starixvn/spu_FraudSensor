@@ -70,7 +70,7 @@
         $.ajax(url, {
             type: 'POST',
             data: {
-                key: keySearch,
+                key: keySearch.trim(),
                 subscribers: ConvertSubscribersToString(subscribers)
             },
             success: function (data) {
@@ -148,7 +148,7 @@
             }
         }        
     }
-
+    
     function RenderUserName(obj, userName) {
         var url = common.modifyRelativeUrl('/Account/DetailAccount?id=' + obj.AccountID);
 
@@ -161,7 +161,7 @@
     function ValidateInput(keySearch, subscribers) {
         var error = false;
 
-        if (keySearch == null || keySearch.length < 3 || !regex.test(keySearch)) {
+        if (keySearch == null || keySearch.trim().length < 3 || !regex.test(keySearch)) {
             $('span', captionErrorAccount).text('The Account is not valid!');
             $(captionErrorAccount).show();
             error = true;

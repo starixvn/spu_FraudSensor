@@ -12,17 +12,13 @@
     {
         public IEnumerable<Transaction> GetTransactionHistory(TransactionHistoryFilter filter)
         {
-            //var criteria = new TransactionHistoryGetCriteria
-            //{
-            //    ip_AccountId = filter.AccountId,
-            //    ip_FromDate = new DateTime(2019, 6, 12),
-            //    ip_Skip = 0,
-            //    ip_Limit = 20
-            //};
+            var criteria = new TransactionHistoryGetByCustIdCriteria
+            {
+                ip_accountId = filter.AccountId,
+                ip_historyRange = (int)filter.ReportLength
+            };
 
-            //return DataService.GetData<Transaction>(criteria);
-
-            return GetTransactionHistory_Test(filter);
+            return DataService.GetData<Transaction>(criteria);
         }
 
         #region Test
@@ -39,13 +35,11 @@
                 //transaction.OSName = "iPhone";
                 if (i % 2 == 0)
                 {
-                    transaction.Tracking = "Human";
-                    transaction.IsRobot = false;
+                    transaction.RobotTracking = "Human";
                 }
                 else
                 {
-                    transaction.Tracking = "Robot (83%)";
-                    transaction.IsRobot = true;
+                    transaction.RobotTracking = "Robot (83%)";
                 }
                 transaction.ActionResult = "login->successfully";
                 transaction.Browser = "Safari";

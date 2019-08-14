@@ -281,5 +281,10 @@
     <Setting Key="FPS_DC_SearchAccount" 
              SpName="FPS_DC_SearchAccount" 
              DbName="MySQL.FPS_DataCenter"/>    
-  </Function>  
+  </Function>
+  <Function name="AccountDetail">
+    <Setting Key="FPS_DC_GetTransactionHistoryByCustId"
+             SpName="FPS_DC_GetTransactionHistoryByCustId"
+             DbName="MySQL.FPS_DataCenter"/>
+  </Function>
 </Functions>

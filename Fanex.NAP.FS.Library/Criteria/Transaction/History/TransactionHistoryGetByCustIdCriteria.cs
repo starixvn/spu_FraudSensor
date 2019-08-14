@@ -5,22 +5,18 @@
     using System;
     using System.Collections;
 
-    public class TransactionHistoryGetCriteria : CommandBase
+    public class TransactionHistoryGetByCustIdCriteria : CommandBase
     {
-        public int ip_AccountId { get; set; }
+        public int ip_accountId { get; set; }
 
-        public DateTime ip_FromDate { get; set; }
-
-        public int ip_Skip { get; set; }
-
-        public int ip_Limit { get; set; }
-
+        public int ip_historyRange { get; set; }
+   
         [SpParam(Ignored = true)]
         public override int ErrCode { get; set; }
 
         public override string GetSettingKey()
         {
-            return "FPS_DC_GetTransactionByAccount";
+            return "FPS_DC_GetTransactionHistoryByCustId";
         }
 
         public override bool IsValid()
