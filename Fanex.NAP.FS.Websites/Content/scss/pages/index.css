@@ -64,14 +64,16 @@ input, button {
 
 .button {
   display: inline-block;
+  font-family: 'Lato', Tahoma, sans-serif !important;
   height: 28px;
+  font-size: 14px !important;
+  font-weight: bold;
   line-height: 20px;
   padding-left: 12px;
   padding-right: 12px;
   border-radius: 2px;
   border: none;
   outline: none;
-  font-size: inherit;
   text-transform: capitalize;
   text-align: center;
   text-shadow: none; }
@@ -249,15 +251,19 @@ input[type="checkbox"] + .null {
 
 input[type="checkbox"]:checked + span:after {
   position: absolute;
-  top: 4px;
+  top: 5px;
   left: 4px;
   height: 5px;
-  width: 8px;
-  border: 2px solid #1d2e4f;
+  width: 9px;
+  border: 2px solid #fff;
   border-top: none;
   border-right: none;
   transform: rotate(-45deg);
   content: ""; }
+
+input[type="checkbox"]:checked + span:before {
+  background-color: #458A00;
+  border-color: #458A00; }
 
 input[type="checkbox"]:disabled + span {
   opacity: 0.5; }

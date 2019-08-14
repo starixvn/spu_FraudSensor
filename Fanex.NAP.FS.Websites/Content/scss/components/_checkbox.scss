@@ -28,18 +28,25 @@ input[type="checkbox"] + .null {
 // Box checked
 input[type="checkbox"]:checked + span:after {
   position: absolute;
-  top: 4px;
+  top: 5px;
   left: 4px;
   height: 5px;
-  width: 8px;
-  border: 2px solid $primary-color;
+  width: 9px;
+  border: 2px solid #fff;
   border-top: none;
   border-right: none;
   transform: rotate(-45deg);
   content: "";
 }
 
+input[type="checkbox"]:checked + span:before {
+    background-color: #458A00;
+    border-color: #458A00;
+}
+
 // Disabled state label.
 input[type="checkbox"]:disabled + span {
   opacity: 0.5;
 }
+
+
