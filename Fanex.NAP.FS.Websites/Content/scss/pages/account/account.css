@@ -280,6 +280,7 @@
 .body-content {
   margin-left: 16px;
   max-height: calc(100vh - 255px);
-  overflow: auto; }
+  overflow: auto;
+  width: 800px; }
   .body-content .grid-content span {
     padding: 8px 0; }
