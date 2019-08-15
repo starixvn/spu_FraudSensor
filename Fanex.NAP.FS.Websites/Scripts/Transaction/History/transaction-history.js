@@ -61,7 +61,7 @@
     function RenderDevice(obj) {
         var url = common.modifyRelativeUrl('/Device/DetailDevice/' + obj.DeviceCode);
 
-        var html = '<span class= "device-' + obj.Flagged + '">';
+        var html = '<span class= "device-' + obj.DeviceStatus + '">';
         html += '<a class="info-bng" href="' + url + '" target="_blank">' + obj.DeviceCode + '</a>';
         html += '</span>';
 
