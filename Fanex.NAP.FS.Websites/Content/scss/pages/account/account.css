@@ -198,12 +198,6 @@
     font-size: 15px;
     padding-right: 5px; }
 
-/*.fieldset-search {
-    border-radius: 3px 3px 3px 3px;
-    border: 1px solid #CECECE;
-    margin: 0 0.5em 1em;
-    padding: 0.5em 1.2em 1.2em;
-}*/
 .modal-content .chains-block {
   display: flex;
   margin-bottom: 10px; }
@@ -246,15 +240,8 @@
   float: left;
   padding-left: 5px; }
 
-/*.width-300 {
-    width: 300px;
-}
-
-.width-150 {
-    width: 150px;
-}*/
 .device-1 .info-bng {
-  color: #397F0A;
+  color: #2053D9;
   text-decoration: underline; }
 
 .device-2 .info-bng {
@@ -262,7 +249,7 @@
   text-decoration: underline; }
 
 .device-3 .info-bng {
-  color: #2053D9;
+  color: #397F0A;
   text-decoration: underline; }
 
 .tracking-robot {

@@ -759,7 +759,7 @@ table.dataTable {
     display: flex;
     justify-content: space-between; }
   .pagination .dataTables_info {
-    width: 200px; }
+    width: 250px; }
 
 .dataTables_wrapper .dataTables_paginate .paginate_button {
   padding: 2px 5px;

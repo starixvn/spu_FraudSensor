@@ -18,6 +18,8 @@
             _evidenceService = new EvidenceService();
         }
 
+        public override string BaseControllerName { get => Consts.MenuItemReports; }
+
         public ActionResult Index()
         {
             return View();

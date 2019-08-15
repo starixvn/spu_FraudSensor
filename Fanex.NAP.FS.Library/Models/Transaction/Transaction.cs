@@ -24,6 +24,8 @@
 
         public string DeviceType { get; set; }
 
+        public string DeviceStatus { get; set; }
+
         public string Browser { get; set; }
 
         public string Domain { get; set; }
@@ -37,8 +39,6 @@
         public string City { get; set; }
 
         public string ServiceProvider { get; set; }
-
-        public DeviceFlagged Flagged { get; set; }
         
     }
 }

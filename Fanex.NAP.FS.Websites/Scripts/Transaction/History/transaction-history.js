@@ -1,4 +1,5 @@
 ﻿function transaction_history() {
+    var loading = $('#loading-div');
     var btnSearch = $('#btn-search-transaction');
     var status = $('#cbb-fraud-status');
     var transactionTable = $('#transaction-history-table');
@@ -24,10 +25,23 @@
             columnDefs: [
                 { targets: "_all", defaultContent: "-" },
                 { targets: [-2, -1], className: "text-center" },
-                { targets: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], className: "text-center" }
+                { targets: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], className: "text-center" },
+                { targets: [0], width: "11%" },
+                { targets: [1], width: "10%" },
+                { targets: [2], width: "10%" },
+                { targets: [3], width: "8%" },
+                { targets: [4], width: "8%" },
+                { targets: [5], width: "5%" },
+                { targets: [6], width: "5%" },
+                { targets: [7], width: "10%" },
+                { targets: [8], width: "10%" },
+                { targets: [9], width: "5%" },
+                { targets: [10], width: "5%" },
+                { targets: [11], width: "5%" },
+                { targets: [12], width: "10%" }
             ],
             columns: [
-                { data: obj => moment(obj.TransDate).format("MMM DD, YYYY") },
+                { data: obj => moment(obj.TransDate).format("MMM DD, YYYY hh:mm:ss A") },
                 { data: obj => RenderDevice(obj) },
                 { data: obj => RenderTracking(obj) },
                 { data: obj => obj.Action },
@@ -63,6 +77,9 @@
     }
 
     function GenerateReport() {
+        transactionContent.hide();
+        loading.show();
+
         var url = common.modifyRelativeUrl('/Transaction/GetTransactionHistoryFilter');
         var reportLength = $(status).val();
 
@@ -83,13 +100,16 @@
     }
 
     function BindDataToGrid(data) {
-        if (transactionContent.is(':hidden')) {
-            transactionContent.removeAttr('hidden');
-        }
+        loading.hide();
+        transactionContent.show();
 
         transactionTable.DataTable().clear().rows.add(data).draw();
         transactionTable.DataTable().columns.adjust();
     }
+
+    loading.hide();
+
+    transactionContent.hide();
 
     btnSearch.click(GenerateReport);
 

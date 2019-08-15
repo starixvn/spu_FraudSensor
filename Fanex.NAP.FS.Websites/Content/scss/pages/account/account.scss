@@ -291,13 +291,6 @@
     }
 }
 
-/*.fieldset-search {
-    border-radius: 3px 3px 3px 3px;
-    border: 1px solid #CECECE;
-    margin: 0 0.5em 1em;
-    padding: 0.5em 1.2em 1.2em;
-}*/
-
 .modal-content {
     .chains-block {
         display: flex;
@@ -357,16 +350,8 @@
     padding-left: 5px;
 }
 
-/*.width-300 {
-    width: 300px;
-}
-
-.width-150 {
-    width: 150px;
-}*/
-
 .device-1 .info-bng {
-    color: #397F0A; //Green: recovered
+    color: #2053D9; //Blue: new
     text-decoration: underline;
 }
 
@@ -376,7 +361,7 @@
 }
 
 .device-3 .info-bng {
-    color: #2053D9; //Blue: new
+    color: #397F0A; //Green: recovered
     text-decoration: underline;
 }
 

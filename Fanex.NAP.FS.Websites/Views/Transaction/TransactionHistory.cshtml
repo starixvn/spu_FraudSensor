@@ -22,7 +22,11 @@
         </div>
     </div>
 
-    <div class="table-report" id="transaction-history-content" hidden>
+    <div id="loading-div" class="report-cont">
+        <img src="@Url.Content("~/Content/images/ajax-loader.gif")" alt="Loading ..." />
+    </div>
+
+    <div id="transaction-history-content" class="table-report">
         <table id="transaction-history-table" class="table table-striped" style="width: 100%">
             <thead>
                 <tr>
