@@ -383,3 +383,48 @@
 .tracking-robot {
     color: #C1272D;
 }
+
+.grid-content {
+    display: grid;
+    grid-template-columns: 50px repeat(3, 200px);
+
+    > * {
+        text-align: center;
+        border-bottom: 1px solid #C4C4C4;
+        border-left: 1px solid #C4C4C4;
+        background: #fff;
+
+        &:last-child {
+            border-right: 1px solid #C4C4C4;
+        }
+    }
+
+    &.header-content {
+        margin-left: 16px;
+
+        span {
+            color: #fff;
+            background: #1D2E4F;
+            padding: 15px 0;
+            font-weight: bold;
+
+            &:first-child {
+                border-left-color: #1D2E4F;
+            }
+
+            &:last-child {
+                border-right-color: #1D2E4F;
+            }
+        }
+    }
+}
+
+.body-content {
+    margin-left: 16px;
+    max-height: calc(100vh - 255px);
+    overflow: auto;
+
+    .grid-content span {
+        padding: 8px 0;
+    }
+}
