@@ -100,10 +100,9 @@
     function GenerateGrid() {
         table.DataTable({            
             searching: false,
-            paging: false,            
-            lengthMenu: [1000],
-            pageLength: 1000,
-            dom: "t<'pagination'<'page-size'lp>>",
+            lengthMenu: [50, 100, 200, 500],
+            pageLength: 100,
+            dom: 't<"pagination"<"page-size"><"bottom"lp<"clear">>"i>',
             language: {
                 lengthMenu: "Page size _MENU_",
                 paginate: {
