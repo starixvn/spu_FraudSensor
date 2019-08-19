@@ -757,7 +757,8 @@ table.dataTable {
   .pagination .bottom {
     width: 100%;
     display: flex;
-    justify-content: space-between; }
+    justify-content: space-between;
+    align-items: center; }
   .pagination .dataTables_info {
     width: 250px; }
 
