@@ -24,6 +24,7 @@
     <Setting Key="FS_Rpt_MatchMonitorVerification_Update" SpName="FS_Rpt_MatchMonitorVerification_Update_xtest" DbName="DBFS.bodb_FraudSensor.bodbSPUNet" />
     <Setting Key="Age_SelBalanceUpDay" SpName="Age_SelBalanceUpDay" DbName="DBACC.bodb02.bodbAdminNet" />
     <Setting Key="FS_Rpt_MatchMonitorNotes_Update" SpName="FS_Rpt_MatchMonitorNotes_Update_xtest" DbName="DBFS.bodb_FraudSensor.bodbSPUNet" />
+    <Setting Key="FS_Rpt_MatchMonitor_GetSuspiciousCustIDsByDate" SpName="FS_Rpt_MatchMonitor_GetSuspiciousCustIDsByDate_xtest" DbName="DBFS.bodb_FraudSensor.bodbSPUNet" />
   </Function>
   <Function Name="FraudCaseDetails">
     <Setting Key="FS_Rpt_MatchMonitor_Details_Get_MatchInfo" SpName="FS_Rpt_MatchMonitor_Details_Get_MatchInfo_xtest" DbName="DBFS.bodb_FraudSensor.bodbSPUNet" />

@@ -1,4 +1,5 @@
 ﻿@using Fanex.NAP.FS.Library.ViewModels.MatchMonitor
+@using Fanex.NAP.FS.Library.Models.MatchMonitor.FraudCaseDetails;
 @model Fanex.NAP.FS.Library.Models.MatchMonitor.BalanceUpDate
 
 @{
@@ -7,8 +8,10 @@
 }
 
 @section styles{
-    <style>
+    <link href="~/Content/scss/MultipleSelect/jquery.multiselect.filter.css" rel="stylesheet" />
+    <link href="~/Content/scss/MultipleSelect/jquery.multiselect.css" rel="stylesheet" />
 
+    <style>
         .table .container-note .note-content {
             word-wrap: normal !important;
             word-break: break-word;
@@ -46,6 +49,17 @@
 
 <h1 class="title">Match Monitor</h1>
 <div class="form-filter">
+    <div class="group" style="width: 250px">
+        <label class="text">Site</label>
+        <div class="edit-field col_9">
+            <select id="ddlSites" multiple="multiple">
+                @foreach (var item in (IEnumerable<Site>)ViewBag.Sites)
+                {
+                    <option value="@item.SiteId">@item.SiteName</option>
+                }
+            </select>
+        </div>
+    </div>
     <div class="group calendar">
         <label class="text">Event Date</label>
         <input type="text" id="event_date" class="control">
@@ -129,6 +143,8 @@
 </div>
 
 @section scripts{
+    <script src="~/Scripts/MultipleSelect/jquery.multiselect.filter.js"></script>
+    <script src="~/Scripts/MultipleSelect/jquery.multiselect.js"></script>
     <script>
         var balanceUpDay = new Date(@Model.BalanceUpDay.Year, @(Model.BalanceUpDay.Month - 1), @Model.BalanceUpDay.Day);
         var username = "@ViewBag.Username";

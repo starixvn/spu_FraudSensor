@@ -7,7 +7,7 @@
 
     public interface IMatchMonitorService
     {
-        MatchList GetMatches(MatchGetAllCriteria criteria);
+        MatchList GetMatches(MatchFilter filter);
 
         IEnumerable<Library.Models.MatchMonitor.League> GetLeagues(LeagueGetCriteria criteria);
 
@@ -15,7 +15,7 @@
 
         Library.Models.MatchMonitor.BalanceUpDate GetBalanceUpDate();
 
-        byte[] ExportExcel(MatchGetAllCriteria criteria, string template);
+        byte[] ExportExcel(MatchFilter filter, string template);
 
         DBResult UpdateMatchNote(MatchNoteUpdateCriteria criteria);
 

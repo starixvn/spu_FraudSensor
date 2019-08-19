@@ -644,8 +644,22 @@
             var selectedText = options.selectedText;
             var $inputs = this.$inputs;
             var inputCount = $inputs.length;
+
+            $inputs.each((index, item) => {
+                if ($(item).attr('type') == 'search') {
+                    inputCount = inputCount - 1;
+                }
+            });
+
             var $checked = $inputs.filter(':checked');
             var numChecked = $checked.length;
+
+            $checked.each((index, item) => {
+                if ($(item).attr('type') == 'search') {
+                    numChecked = numChecked - 1;
+                }
+            });
+
             var value;
 
             if (numChecked) {

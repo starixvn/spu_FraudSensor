@@ -274,6 +274,7 @@
     <Compile Include="Criteria\MatchMonitor\FraudCaseDetails\GetTicketCriteria.cs" />
     <Compile Include="Criteria\MatchMonitor\FraudCaseDetails\Last7DaysTicketGetCriteria.cs" />
     <Compile Include="Criteria\MatchMonitor\FraudCaseDetails\GetTicketByIPCriteria.cs" />
+    <Compile Include="Criteria\MatchMonitor\GetSuspiciousCustIDsByDateCriteria.cs" />
     <Compile Include="Criteria\MatchMonitor\LeagueGetCriteria.cs" />
     <Compile Include="Criteria\MatchMonitor\MatchGetAllCriteria.cs" />
     <Compile Include="Criteria\MatchMonitor\MatchNoteUpdateCriteria.cs" />
@@ -372,6 +373,7 @@
     <Compile Include="Models\MatchMonitor\FraudCaseDetails\TicketInfo.cs" />
     <Compile Include="Models\MatchMonitor\League.cs" />
     <Compile Include="Models\MatchMonitor\Match.cs" />
+    <Compile Include="Models\MatchMonitor\MatchCustomerBySite.cs" />
     <Compile Include="Models\SuspiciousCustomerDetails\FraudCaseViolated.cs" />
     <Compile Include="Models\SuspiciousCustomerDetails\Statistics.cs" />
     <Compile Include="Models\SuspiciousCustomer\DataTableAjaxPostModel.cs" />
@@ -437,6 +439,7 @@
     <Compile Include="ViewModels\MatchMonitor\FraudCaseDetails\Result.cs" />
     <Compile Include="ViewModels\MatchMonitor\FraudCaseDetails\TicketDetails.cs" />
     <Compile Include="ViewModels\MatchMonitor\Match.cs" />
+    <Compile Include="ViewModels\MatchMonitor\MatchFilter.cs" />
     <Compile Include="ViewModels\MatchMonitor\MatchList.cs" />
     <Compile Include="ViewModels\SuspiciousCustomerDetails\CustomerDetailsViewModel.cs" />
     <Compile Include="ViewModels\SuspiciousCustomerDetails\TicketDetails.cs" />

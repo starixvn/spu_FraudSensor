@@ -1,9 +1,9 @@
 ﻿namespace Fanex.NAP.FS.Websites.Controllers
 {
     using Core.Service.Impl;
-    using Fanex.Logging;
     using Fanex.NAP.Core.Web.Attribute;
     using Fanex.NAP.FS.Library.Criteria.MatchMonitor;
+    using Fanex.NAP.FS.Library.ViewModels.MatchMonitor;
     using Fanex.NAP.FS.Library.ViewModels.MatchMonitor.FraudCaseDetails;
     using Fanex.NAP.FS.Service.Utilities;
     using Library.Core.Helpers;
@@ -38,16 +38,17 @@
         {
             ViewBag.Username = this.User.Identity.Name;
             ViewBag.Environment = int.Parse(ConfigurationManager.AppSettings["Environment"]);
+            ViewBag.Sites = _fraudCaseDetailService.GetSites();
 
             return View(_matchMonitorService.GetBalanceUpDate());
         }
 
         #region Common
         [HttpPost]
-        public ActionResult GetMatches(MatchGetAllCriteria criteria)
+        public ActionResult GetMatches(MatchFilter filter)
         {
-            criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
-            var matchList = _matchMonitorService.GetMatches(criteria);
+            filter.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
+            var matchList = _matchMonitorService.GetMatches(filter);
 
             return Json(new { data = matchList.Matches }, JsonRequestBehavior.AllowGet);
         }
@@ -68,14 +69,14 @@
         }
 
         [HttpPost]
-        public ActionResult GenerateExcel(MatchGetAllCriteria criteria)
+        public ActionResult GenerateExcel(MatchFilter filter)
         {
-            criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
+            filter.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
             var templatePath = Server.MapPath("~/App_Data/Excel Template/MatchMonitor/template.xlsx");
 
             var fileName = "MatchMonitor_" + DateTime.Now.ToString("yyyyMMdd") + ".xlsx";
 
-            var content = _matchMonitorService.ExportExcel(criteria, templatePath);
+            var content = _matchMonitorService.ExportExcel(filter, templatePath);
 
             string fileId = Guid.NewGuid().ToString();
 

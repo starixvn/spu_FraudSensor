@@ -6,41 +6,30 @@
     using Fanex.NAP.FS.Library.ExcelConfig.MatchMonitor;
     using Fanex.NAP.FS.Library.Models;
     using Fanex.NAP.FS.Library.ViewModels.MatchMonitor;
-    using Library.Core;
+    using MatchModel = Fanex.NAP.FS.Library.Models.MatchMonitor;
     using Library.Core.BaseClasses;
-    using RemotingRef;
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading.Tasks;
+    using Fanex.NAP.FS.Library.Core.Helpers.Api;
+    using Fanex.NAP.FS.Library.Core.Helpers;
+    using Fanex.NAP.FS.Library.Core.Utilities;
+    using DTO = Fanex.NAP.FS.Library.DTO;
 
     public class MatchMonitorService : IMatchMonitorService
     {
-        public MatchList GetMatches(MatchGetAllCriteria criteria)
+        public MatchList GetMatches(MatchFilter filter)
         {
-            using (var db = new ObjectDb(criteria.GetSettingKey()))
-            {
-                using (var query = db.QueryMultiple(criteria))
-                {
-                    var fraudCases = query.Read<Library.Models.MatchMonitor.FraudCase>();
-                    var matches = query.Read<Library.Models.MatchMonitor.Match>();
+            var rawMatchesCustomers = GetSuspiciousCustIDsByDate(filter.EventDate);
 
-                    foreach(var item in fraudCases)
-                    {
-                        item.SuspiciousTicketsCount = item.SuspiciousTicketsCount == null ? 0 : item.SuspiciousTicketsCount;
-                    }
+            var customers = rawMatchesCustomers.Select(c => c.CustId);
 
-                    return new MatchList
-                    {
-                        Matches =
-                            matches
-                            .GroupJoin(fraudCases, m => m.MatchId, f => f.MatchId, GetMatch)
-                            .OrderBy(m => m.Status == "Running" ? 0 : 1)
-                            .ThenByDescending(m => m.FraudCases.Sum(f => f.Value.Violations.Value))
-                            .ThenBy(m => m.MatchId),
-                        FraudCases = fraudCases.GroupBy(f => f.FraudCaseName).Select(g => g.Key)
-                    };
-                }
-            }
+            var customersBySites = GetCustomersBySite(customers, filter.Sites);
+
+            var matchesCustomersBySites = JoinMatchesCustomers(rawMatchesCustomers, customersBySites);
+
+            return GetMatches(filter, matchesCustomersBySites);
         }
 
         public IEnumerable<Library.Models.MatchMonitor.League> GetLeagues(LeagueGetCriteria criteria)
@@ -60,11 +49,11 @@
             return DataService.GetData<Library.Models.MatchMonitor.BalanceUpDate>(new BalanceUpDateGetCriteria()).First();
         }
 
-        public byte[] ExportExcel(MatchGetAllCriteria criteria, string template)
+        public byte[] ExportExcel(MatchFilter filter, string template)
         {
-            var data = GetMatches(criteria);
+            var data = GetMatches(filter);
             var wb = ExcelUtilities.GetWorkbook(template);
-            new MatchMonitorExcelConfig().RenderExcel(wb, criteria, data.Matches, null);
+            new MatchMonitorExcelConfig().RenderExcel(wb, filter, data.Matches, null);
 
             return wb.ToBytes();
         }
@@ -101,5 +90,91 @@
                 Notes = string.IsNullOrEmpty(match.Notes) ? "-" : match.Notes
             };
         }
+
+        #region Private Methods
+
+        private IEnumerable<MatchModel.MatchCustomerBySite> GetSuspiciousCustIDsByDate(DateTime date)
+        {
+            var criteria = new GetSuspiciousCustIDsByDateCriteria
+            {
+                EventDate = date
+            };
+
+            return DataService.GetData<MatchModel.MatchCustomerBySite>(criteria);
+        }
+
+        private IEnumerable<DTO.CustomerSubcriber> GetCustomersBySite(IEnumerable<int> customers, string sites)
+        {
+            var urlCustSites = AppSettings.Get("FPS_WEBAPI_CUSTOMER_SUBSCRIBER");
+
+            var customersBySites = customers.Distinct().Chunk(500)
+                                    .Select(q => ApiHelper.Post<IEnumerable<DTO.CustomerSubcriber>>(urlCustSites, new DTO.CustomerSubcriberList { CustIds = string.Join(",", q), Subscribers = sites }))
+                                    .ToArray();
+
+            Task.WhenAll(customersBySites);
+
+            return customersBySites.SelectMany(c=>c.Result);
+        }
+
+        private IEnumerable<MatchModel.MatchCustomerBySite> JoinMatchesCustomers(IEnumerable<MatchModel.MatchCustomerBySite> matchesCustomers, IEnumerable<DTO.CustomerSubcriber> customersBySites)
+        {
+            return matchesCustomers.Join(customersBySites,
+                m => m.CustId,
+                s => s.CustId,
+                (matches, sites) => new MatchModel.MatchCustomerBySite
+                {
+                    CustId = matches.CustId,
+                    MatchId = matches.MatchId,
+                    Site = sites.SubscriberName
+                });
+        }
+
+        private MatchList GetMatches(MatchFilter filter, IEnumerable<MatchModel.MatchCustomerBySite> matchCustomerBySites)
+        {
+            var criteria = new MatchGetAllCriteria
+            {
+                EventDate = filter.EventDate,
+                IsVerified = filter.IsVerified,
+                MatchStatus = filter.MatchStatus,
+                LeagueIds = filter.LeagueIds,
+                IsMainMarket = filter.IsMainMarket,
+                IsShowSpecialCurrencies = filter.IsShowSpecialCurrencies,
+            };
+
+            using (var db = new ObjectDb(criteria.GetSettingKey()))
+            {
+                using (var query = db.QueryMultiple(criteria))
+                {
+                    var fraudCases = query.Read<MatchModel.FraudCase>();
+                    var matches = query.Read<MatchModel.Match>();
+
+                    var matchesBySites = FilterMatchBySites(matches, matchCustomerBySites);
+
+                    foreach (var item in fraudCases)
+                    {
+                        item.SuspiciousTicketsCount = item.SuspiciousTicketsCount ?? 0;
+                    }
+
+                    return new MatchList
+                    {
+                        Matches = matchesBySites
+                            .GroupJoin(fraudCases, m => m.MatchId, f => f.MatchId, GetMatch)
+                            .OrderBy(m => m.Status == "Running" ? 0 : 1)
+                            .ThenByDescending(m => m.FraudCases.Sum(f => f.Value.Violations.Value))
+                            .ThenBy(m => m.MatchId),
+                        FraudCases = fraudCases.GroupBy(f => f.FraudCaseName).Select(g => g.Key)
+                    };
+                }
+            }
+        }
+
+        private IEnumerable<MatchModel.Match> FilterMatchBySites(IEnumerable<MatchModel.Match> matches, IEnumerable<MatchModel.MatchCustomerBySite> matchCustomerBySites)
+        {
+            return matches.Join(matchCustomerBySites,
+                            m => m.MatchId,
+                            s => s.MatchId,
+                            (match, site) => match);
+        }
+        #endregion
     }
 }

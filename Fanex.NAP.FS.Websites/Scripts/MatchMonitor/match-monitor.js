@@ -13,6 +13,15 @@ function load_page_events() {
         minimumResultsForSearch: -1
     })
 
+    $("#ddlSites").multiselect({
+        menuWidth: 225,
+        menuHeight: 350
+    }).multiselect('checkAll')
+        .multiselectfilter({
+            width: 140,
+            placeholder: ''
+        });
+
     $("#event_date")
         .datepicker({
             dateFormat: "M dd, yy",
@@ -140,13 +149,19 @@ function load_page_events() {
 function buildGridParam() {
     var dto = {};
 
+    var sites = [];
+    $('option:selected', "#ddlSites").each(function (idx, ele) {
+        sites.push($(ele).val());
+    });
+
+    dto.Sites = sites.join(',');
     dto.EventDate = $("#event_date").val();
     dto.IsVerified = $("#is_verified").val();
     dto.MatchStatus = $("#match_status").val();
     dto.LeagueIds = $("#league").val();
     dto.IsMainMarket = $("#is_main_market:checked").length > 0;
 
-    return dto
+    return dto;
 }
 
 function renderVerifyCheckBox(obj) {
@@ -474,14 +489,8 @@ function mappingFraudCase(fraudCase = "") {
 function exportExcel() {
     var url = common.modifyRelativeUrl("/Matchmonitor/GenerateExcel");
     var urlDownload = common.modifyRelativeUrl("/Matchmonitor/DownloadExcel");
-    var dto = {};
-
-    dto.EventDate = $("#event_date").val();
-    dto.IsVerified = $("#is_verified").val();
-    dto.MatchStatus = $("#match_status").val();
-    dto.LeagueIds = $("#league").val();
-    dto.IsMainMarket = $("#is_main_market:checked").length > 0;    
-
+    var dto = buildGridParam();
+   
     $.ajax({      
         type: 'POST',
         url: url,
@@ -494,7 +503,7 @@ function exportExcel() {
         error: function (xhr, status, error) {           
             console.log('data of ' + xhr.responseText);
         }
-    });    
+    });
 }
 
 $(load_page_events);

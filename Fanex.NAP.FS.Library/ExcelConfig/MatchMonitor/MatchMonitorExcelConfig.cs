@@ -8,7 +8,7 @@
     using NPOI.XSSF.UserModel;
     using System.Collections.Generic;
 
-    public class MatchMonitorExcelConfig : FSExcelConfig<MatchGetAllCriteria, Match, object>
+    public class MatchMonitorExcelConfig : FSExcelConfig<MatchFilter, Match, object>
     {
         protected override int SheetIndex => 0;
 
@@ -102,7 +102,7 @@
             return string.Join(",", stack);
         }
 
-        protected override void FillLegend(IRow row, MatchGetAllCriteria legend)
+        protected override void FillLegend(IRow row, MatchFilter legend)
         {
             var legend0 = new XSSFRichTextString();
             var legend1 = new XSSFRichTextString();
