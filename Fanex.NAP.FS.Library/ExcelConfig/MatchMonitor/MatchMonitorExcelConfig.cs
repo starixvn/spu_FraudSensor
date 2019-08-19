@@ -2,7 +2,6 @@
 {
     using Fanex.NAP.FS.Library.Core.BaseClasses;
     using Fanex.NAP.FS.Library.Core.ExportExcel;
-    using Fanex.NAP.FS.Library.Criteria.MatchMonitor;
     using Fanex.NAP.FS.Library.ViewModels.MatchMonitor;
     using NPOI.SS.UserModel;
     using NPOI.XSSF.UserModel;
@@ -18,17 +17,18 @@
 
         protected override void FillData(IRow row, Match data)
         {
-            row.GetCell(0).SetCellValue(row.RowNum - 2);
-            row.GetCell(1).SetCellValue(data.Verified ? "Yes" : "No");
-            row.GetCell(2).SetCellValue(data.VerifiedBy ?? "-");
-            row.GetCell(3).SetCellValue(WriteEvent(data.Event));
-            row.GetCell(4).SetCellValue(data.Score);
-            row.GetCell(5).SetCellValue(data.Status);
-            row.GetCell(6).SetCellValue(WriteFraudCase(data.FraudCases.ContainsKey("1") ? data.FraudCases["1"] : null));
-            row.GetCell(7).SetCellValue(WriteFraudCase(data.FraudCases.ContainsKey("6") ? data.FraudCases["6"] : null));
-            row.GetCell(8).SetCellValue(WriteFraudCase(data.FraudCases.ContainsKey("8") ? data.FraudCases["8"] : null));
-            row.GetCell(9).SetCellValue(WriteFraudCase(data.FraudCases.ContainsKey("10") ? data.FraudCases["10"] : null));
-            row.GetCell(10).SetCellValue(data.Notes != null ? ReplaceSpecialCharacter(data.Notes) : "-");
+            int idx = 0;
+            row.GetCell(idx).SetCellValue(row.RowNum - 2);
+            row.GetCell(++idx).SetCellValue(data.Verified ? "Yes" : "No");
+            row.GetCell(++idx).SetCellValue(data.VerifiedBy ?? "-");
+            row.GetCell(++idx).SetCellValue(WriteEvent(data.Event));
+            row.GetCell(++idx).SetCellValue(data.Score);
+            row.GetCell(++idx).SetCellValue(data.Status);
+            row.GetCell(++idx).SetCellValue(WriteFraudCase(data.FraudCases.ContainsKey("1") ? data.FraudCases["1"] : null));
+            row.GetCell(++idx).SetCellValue(WriteFraudCase(data.FraudCases.ContainsKey("6") ? data.FraudCases["6"] : null));
+            row.GetCell(++idx).SetCellValue(WriteFraudCase(data.FraudCases.ContainsKey("8") ? data.FraudCases["8"] : null));
+            row.GetCell(++idx).SetCellValue(WriteFraudCase(data.FraudCases.ContainsKey("10") ? data.FraudCases["10"] : null));
+            row.GetCell(++idx).SetCellValue(data.Notes != null ? ReplaceSpecialCharacter(data.Notes) : "-");
         }
 
         private static IRichTextString WriteEvent(Event e)
@@ -107,6 +107,7 @@
             var legend0 = new XSSFRichTextString();
             var legend1 = new XSSFRichTextString();
 
+            WriteLegend(legend0, "Sites", legend.Sites);
             WriteLegend(legend0, "Event Date", legend.EventDate.ToString("MMM dd, yyyy"));
             WriteLegend(legend0, "Sport", "Soccer");
             WriteLegend(legend0, "Match Status", legend.MatchStatus);
@@ -130,6 +131,7 @@
             {
                 return obj.Replace("&amp;", "&").Replace("&gt;", ">").Replace("&lt;", "<");
             }
+
             return obj;
         }
     }

@@ -149,12 +149,7 @@ function load_page_events() {
 function buildGridParam() {
     var dto = {};
 
-    var sites = [];
-    $('option:selected', "#ddlSites").each(function (idx, ele) {
-        sites.push($(ele).val());
-    });
-
-    dto.Sites = sites.join(',');
+    dto.Sites = getSites();
     dto.EventDate = $("#event_date").val();
     dto.IsVerified = $("#is_verified").val();
     dto.MatchStatus = $("#match_status").val();
@@ -162,6 +157,22 @@ function buildGridParam() {
     dto.IsMainMarket = $("#is_main_market:checked").length > 0;
 
     return dto;
+}
+
+function getSites() {
+    var sites = [];
+    $('option:selected', "#ddlSites").each(function (idx, ele) {
+        sites.push($(ele).val());
+    });
+
+    var lengthSites = $("#ddlSites").children("option").length;
+
+    if (sites.length == lengthSites) {
+        return "All";
+    }
+    else {
+        return sites.join(",");
+    }
 }
 
 function renderVerifyCheckBox(obj) {

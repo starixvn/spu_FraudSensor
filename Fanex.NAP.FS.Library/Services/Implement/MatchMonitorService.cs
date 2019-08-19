@@ -25,7 +25,7 @@
 
             var customers = rawMatchesCustomers.Select(c => c.CustId);
 
-            var customersBySites = GetCustomersBySite(customers, filter.Sites);
+            var customersBySites = GetCustomersBySites(customers, filter.Sites);
 
             var matchesCustomersBySites = JoinMatchesCustomers(rawMatchesCustomers, customersBySites);
 
@@ -103,12 +103,13 @@
             return DataService.GetData<MatchModel.MatchCustomerBySite>(criteria);
         }
 
-        private IEnumerable<DTO.CustomerSubcriber> GetCustomersBySite(IEnumerable<int> customers, string sites)
+        private IEnumerable<DTO.CustomerSubcriber> GetCustomersBySites(IEnumerable<int> customers, string sites)
         {
             var urlCustSites = AppSettings.Get("FPS_WEBAPI_CUSTOMER_SUBSCRIBER");
 
             var customersBySites = customers.Distinct().Chunk(500)
-                                    .Select(q => ApiHelper.Post<IEnumerable<DTO.CustomerSubcriber>>(urlCustSites, new DTO.CustomerSubcriberList { CustIds = string.Join(",", q), Subscribers = sites }))
+                                    .Select(q => ApiHelper.Post<IEnumerable<DTO.CustomerSubcriber>>(urlCustSites, 
+                                                new DTO.CustomerSubcriberList { CustIds = string.Join(",", q), Subscribers = sites != "All" ? sites : null }))
                                     .ToArray();
 
             Task.WhenAll(customersBySites);
