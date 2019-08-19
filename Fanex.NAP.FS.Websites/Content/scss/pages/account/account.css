@@ -281,6 +281,8 @@
   margin-left: 16px;
   max-height: calc(100vh - 255px);
   overflow: auto;
-  width: 800px; }
+  width: 900px; }
   .body-content .grid-content span {
     padding: 8px 0; }
+  .body-content .dataTables_info {
+    width: 450px; }
