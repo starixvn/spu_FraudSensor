@@ -14,8 +14,6 @@
 
         public string RobotTracking { get; set; }
 
-        public string Action { get; set; }
-
         public string ActionResult { get; set; }
 
         public long DeviceID { get; set; }

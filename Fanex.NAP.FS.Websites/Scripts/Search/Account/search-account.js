@@ -6,7 +6,7 @@
     var captionErrorSubscribers = $('#caption-error-subscribers');
     var table = $('#table-account');
     var content = $('.content-account');
-    var regex = new RegExp("^[a-zA-Z0-9$ ]*$");
+    var regex = new RegExp("^[a-zA-Z0-9 $@#&_*.{}()+-]*$");
 
     function Init() {
         ddlSubscriber.multiselect({
