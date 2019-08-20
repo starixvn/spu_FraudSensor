@@ -44,13 +44,20 @@
         .col-note {
             overflow: auto;
         }
+
+        .ui-state-active {
+            border: 1px solid #465262;
+            background: #465262;
+            font-weight: normal;
+            color: #fff;
+        }
     </style>
 }
 
 <h1 class="title">Match Monitor</h1>
 <div class="form-filter">
     <div class="group" style="width: 250px">
-        <label class="text">Site</label>
+        <label class="text">Contain tickets from site</label>
         <div class="edit-field col_9">
             <select id="ddlSites" multiple="multiple">
                 @foreach (var item in (IEnumerable<Site>)ViewBag.Sites)
