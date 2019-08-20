@@ -21,15 +21,12 @@
     {
         public MatchList GetMatches(MatchFilter filter)
         {
-            var rawMatchesCustomers = GetSuspiciousCustIDsByDate(filter.EventDate);
+            if (filter.Sites != null || filter.Sites != "All")
+            {
+                return GetMatchBySite(filter);
+            }
 
-            var customers = rawMatchesCustomers.Select(c => c.CustId);
-
-            var customersBySites = GetCustomersBySites(customers, filter.Sites);
-
-            var matchesCustomersBySites = JoinMatchesCustomers(rawMatchesCustomers, customersBySites);
-
-            return GetMatches(filter, matchesCustomersBySites);
+            return GetMatches(filter, null);
         }
 
         public IEnumerable<Library.Models.MatchMonitor.League> GetLeagues(LeagueGetCriteria criteria)
@@ -92,6 +89,18 @@
         }
 
         #region Private Methods
+        private MatchList GetMatchBySite(MatchFilter filter)
+        {
+            var rawMatchesCustomers = GetSuspiciousCustIDsByDate(filter.EventDate);
+
+            var customers = rawMatchesCustomers.Select(c => c.CustId);
+
+            var customersBySites = GetCustomersBySites(customers, filter.Sites);
+
+            var matchesCustomersBySites = JoinMatchesCustomers(rawMatchesCustomers, customersBySites);
+
+            return GetMatches(filter, matchesCustomersBySites);
+        }
 
         private IEnumerable<MatchModel.MatchCustomerBySite> GetSuspiciousCustIDsByDate(DateTime date)
         {
@@ -149,7 +158,7 @@
                     var fraudCases = query.Read<MatchModel.FraudCase>();
                     var matches = query.Read<MatchModel.Match>();
 
-                    var matchesBySites = FilterMatchBySites(matches, matchCustomerBySites);
+                    var matchesBySites = matchCustomerBySites != null ? FilterMatchBySites(matches, matchCustomerBySites) : matches;
 
                     foreach (var item in fraudCases)
                     {
@@ -171,9 +180,11 @@
 
         private IEnumerable<MatchModel.Match> FilterMatchBySites(IEnumerable<MatchModel.Match> matches, IEnumerable<MatchModel.MatchCustomerBySite> matchCustomerBySites)
         {
-            return matches.Join(matchCustomerBySites,
+            var matchesCustomeres = matchCustomerBySites.Select(m => m.MatchId).Distinct();
+
+            return matches.Join(matchesCustomeres,
                             m => m.MatchId,
-                            s => s.MatchId,
+                            s => s,
                             (match, site) => match);
         }
         #endregion
