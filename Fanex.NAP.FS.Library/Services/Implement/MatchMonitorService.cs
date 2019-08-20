@@ -21,7 +21,7 @@
     {
         public MatchList GetMatches(MatchFilter filter)
         {
-            if (filter.Sites != null || filter.Sites != "All")
+            if (filter.Sites != null && filter.Sites != "All")
             {
                 return GetMatchBySite(filter);
             }
