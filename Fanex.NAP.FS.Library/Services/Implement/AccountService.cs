@@ -30,7 +30,7 @@
             var criteria = new SearchAccountCriteria
             {
                 ip_SubscriberIDs = filter.Subscribers,
-                ip_Username = filter.Key,
+                ip_Username = filter.Key.Replace("_", "\\_"),
                 ip_UserId = filter.UserId
             };
 

@@ -26,16 +26,16 @@
                 { targets: "_all", defaultContent: "-" },
                 { targets: [-2, -1], className: "text-center" },
                 { targets: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], className: "text-center" },
-                { targets: [0], width: "15%" },
+                { targets: [0], width: "12%" },
                 { targets: [1], width: "15%" },
                 { targets: [2], width: "10%" },               
                 { targets: [4], width: "10%" },
-                { targets: [5], width: "5%" },
-                { targets: [6], width: "10%" },
-                { targets: [7], width: "5%" },
-                { targets: [8], width: "5%" },
-                { targets: [9], width: "5%" },
-                { targets: [10], width: "15%" }
+                { targets: [5], width: "6%" },
+                { targets: [6], width: "8%" },
+                { targets: [7], width: "7%" },
+                { targets: [8], width: "6%" },
+                { targets: [9], width: "6%" },
+                { targets: [10], width: "20%" }
             ],
             columns: [
                 { data: obj => moment(obj.TransDate).format("MMM DD, YYYY hh:mm:ss A") },
@@ -43,7 +43,7 @@
                 { data: obj => obj.ActionResult },
                 { data: obj => obj.DeviceType },
                 { data: obj => obj.Browser },
-                { data: obj => obj.Domain },
+                { data: obj => RenderHostName(obj.Domain) },
                 { data: obj => obj.IP },
                 { data: obj => obj.Country },
                 { data: obj => obj.Region },
@@ -62,6 +62,11 @@
 
         return html;
     }  
+
+    function RenderHostName(url) {
+        var urlNew = new URL(url);
+        return urlNew.hostname;
+    }
 
     function GenerateReport() {
         transactionContent.hide();

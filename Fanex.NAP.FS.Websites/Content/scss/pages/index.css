@@ -760,7 +760,7 @@ table.dataTable {
     justify-content: space-between;
     align-items: center; }
   .pagination .dataTables_info {
-    width: 250px;
+    width: 400px;
     text-align: right; }
 
 .dataTables_wrapper .dataTables_paginate .paginate_button {
