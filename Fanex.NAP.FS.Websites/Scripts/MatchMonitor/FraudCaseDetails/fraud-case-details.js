@@ -49,7 +49,7 @@
         });
 
         $("#ddlEvidence").multiselect({
-            menuWidth: 350,
+            menuWidth: 345,
             menuHeight: 350            
         }).multiselectfilter({
             width: 270,
