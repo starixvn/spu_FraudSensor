@@ -15,14 +15,21 @@
 
     public class AccountService : IAccountService
     {
-        public IEnumerable<Subscriber> GetSubscribers(long userId)
+        public IEnumerable<SubscriberAssignment> GetSubscribers(long userId)
         {
             var criteria = new SubscriberGetCriteria
             {
                 ip_userId = userId
             };
 
-            return DataService.GetData<Subscriber>(criteria).OrderBy(c => c.SubscriberName).ThenBy(c => c.SubscriberID);
+            var rawSubscribers = DataService.GetData<SubscriberAssignment>(criteria).OrderBy(c => c.SubscriberName).ThenBy(c => c.SubscriberID);
+            
+            if (CheckIsMasterSubscriber(rawSubscribers))
+            {
+                return rawSubscribers;
+            }
+
+            return GetSubscribers(rawSubscribers);
         }
 
         public IEnumerable<SubscriberAccount> SearchAccounts(SearchAccountFilter filter)
@@ -69,6 +76,33 @@
         {
             return GetAssociatedDevicesByAccount_Test(filter);
         }
+
+        #region Private Methods
+        private bool CheckIsMasterSubscriber(IEnumerable<SubscriberAssignment> subscribers)
+        {
+            if (subscribers != null && subscribers.Any())
+            {
+                return subscribers.ToList()[0].IsMaster == 1;
+            }
+
+            return false;
+        }
+
+        private IEnumerable<SubscriberAssignment> GetSubscribers(IEnumerable<SubscriberAssignment> rawSubscribers)
+        {
+            var subscribers = new List<SubscriberAssignment>();
+
+            foreach (SubscriberAssignment subscriber in rawSubscribers)
+            {
+                if (subscriber.isAssigned == 1)
+                {
+                    subscribers.Add(subscriber);
+                }
+            }
+
+            return subscribers;
+        }
+        #endregion
 
         #region Test
 
