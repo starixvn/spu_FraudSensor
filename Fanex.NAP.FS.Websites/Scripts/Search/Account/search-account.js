@@ -76,7 +76,7 @@
             success: function (data) {
                 $(content).show();
 
-                BindDataToGrid(data);
+                BindDataToGrid(data, keySearch.trim());
             },
             error: function (errorMessage) {
                 common.closeLoading();
@@ -135,9 +135,16 @@
         $(content).hide();
     }
 
-    function BindDataToGrid(data) {
+    function BindDataToGrid(data, keySearch) {
         if (data != null) {
+            var redirect = false;
             if (data.length == 1) {
+                if (keySearch == data[0].UserName || keySearch == data[0].UserName2) {
+                    redirect = true;
+                }
+            } 
+
+            if (redirect) {
                 window.location.href = common.modifyRelativeUrl('/Account/DetailAccount?id=' + data[0].AccountID);               
             } else {
                 table.DataTable().clear().rows.add(data).draw();
@@ -145,7 +152,7 @@
 
                 common.closeLoading();
             }
-        }        
+        }
     }
     
     function RenderUserName(obj, userName) {
