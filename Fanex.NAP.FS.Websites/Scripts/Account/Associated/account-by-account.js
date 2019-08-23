@@ -60,8 +60,7 @@
 
         var html = '<span class="' + className + '"></span>';
         html += '<a class="info-bng" href="' + url + '" target="_blank">' + obj.AccountAssociated.UserName + "(" + obj.AccountAssociated.UserName2 + ")" + '</a>';
-        //html += '</span>';
-
+      
         return html;
     }
 
@@ -71,7 +70,6 @@
 
     function GenerateReport() {
         var deviceAwayOne = $('#chk-device-away-1').is(':checked');
-        var deviceAwayMore = $('#chk-device-away-2').is(':checked');
         var status = $('#cbb-status').val();
         var fraudStatus = $('#cbb-fraud-status').val();
         var url = common.modifyRelativeUrl('/Account/GetAssociatedAccountByAccountFilter');
@@ -80,8 +78,8 @@
             type: 'POST',
             data: {
                 AccountId: ACCOUNTID,
-                DeviceAwayOne: deviceAwayOne,
-                DeviceAwayMore: deviceAwayMore,
+                CustId: CUSTID,
+                DeviceAwayOne: deviceAwayOne,              
                 Status: status,
                 FraudStatus: fraudStatus
             },
@@ -117,6 +115,22 @@
     }
 
     usernameSpan.text(USERNAME);
+
+    $('#chk-device-away-1').on('click', function () {
+        if ($(this).is(':checked')) {
+            $('#chk-device-away-2').prop("checked", false);
+        } else {
+            $('#chk-device-away-2').prop("checked", true);
+        }
+    })
+
+    $('#chk-device-away-2').on('click', function () {
+        if ($(this).is(':checked')) {
+            $('#chk-device-away-1').prop("checked", false);
+        } else {
+            $('#chk-device-away-1').prop("checked", true);
+        }
+    })
 
     btnSearch.click(GenerateReport);
 

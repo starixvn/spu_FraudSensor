@@ -12,6 +12,9 @@
         public const string SearchAccountKey = "search-account";
         public const string SearchDeviceKey = "search-device";
         public const string SearchAccountOption = "Search account";
-        public const string SearchDeviceOption = "Search device";    
+        public const string SearchDeviceOption = "Search device";
+
+        public const string GraphDBGetAssociationOneLevel = "GraphDB_GetAssociationOneLevel";
+        public const string GraphDBGetAssociationNLevel = "GraphDB_GetAssociationNLevel";
     }
 }

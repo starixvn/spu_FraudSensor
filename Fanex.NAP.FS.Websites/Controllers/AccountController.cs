@@ -26,9 +26,9 @@
         }
 
         #region Detail
-        public ActionResult DetailAccount(int id)
+        public ActionResult DetailAccount(int id, int custId)
         {
-            var data = _accountService.GetAccountDetail(id);
+            var data = _accountService.GetAccountDetail(id, custId);
 
             return View("DetailAccount", data);
         }
@@ -58,7 +58,7 @@
         }
 
         [HttpPost]
-        public ActionResult GetAssociatedAccountByAccount(int accountId)
+        public ActionResult GetAssociatedAccountByAccount()
         {
             return PartialView("Associated/AccountByAccount");
         }
@@ -72,7 +72,7 @@
         }
 
         [HttpPost]
-        public ActionResult GetAssociatedDeviceByAccount(int accountId)
+        public ActionResult GetAssociatedDeviceByAccount()
         {
             return PartialView("Associated/DeviceByAccount");
         }

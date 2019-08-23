@@ -12,7 +12,7 @@
 
         IEnumerable<SubscriberAccount> SearchAccounts(SearchAccountFilter filter);
 
-        AccountDetail GetAccountDetail(int accountId);
+        AccountDetail GetAccountDetail(int accountId, int custId);
 
         IEnumerable<AssociatedAccountByAccount> GetAssociatedAccountByAccounts(AssociatedAccountByAccountFilter filter);
 

@@ -12,6 +12,10 @@
     using Fanex.NAP.FS.Library.Core.BaseClasses;
     using Fanex.NAP.FS.Library.Criteria.Account;
     using Fanex.NAP.FS.Library.ViewModels.Account.Search;
+    using Fanex.NAP.FS.Library.Core.Helpers;
+    using System.Threading.Tasks;
+    using Fanex.NAP.FS.Library.Core.Helpers.Api;
+    using Fanex.NAP.FS.Library.Core.Consts;
 
     public class AccountService : IAccountService
     {
@@ -46,11 +50,12 @@
                             .ThenBy(a => a.UserName);
         }
 
-        public AccountDetail GetAccountDetail(int accountId)
+        public AccountDetail GetAccountDetail(int accountId, int custId)
         {
             var data = new AccountDetail();
             data.AccountInfo = new Account();
             data.AccountInfo.Id = accountId;
+            data.AccountInfo.CustId = custId;
             data.AccountInfo.UserName = "fpsa_pgmthai";
             data.AccountInfo.UserName2 = "fpsa2_pgmthai";
             data.AccountInfo.Status = AccountStatus.Active.ToString();
@@ -69,6 +74,8 @@
 
         public IEnumerable<AssociatedAccountByAccount> GetAssociatedAccountByAccounts(AssociatedAccountByAccountFilter filter)
         {
+            var accounts = GetAssociatedAccountFromGraphDB(1, filter.DeviceAwayOne);
+
             return GetAssociatedAccountByAccounts_Test(filter);
         }
 
@@ -78,7 +85,7 @@
         }
 
         #region Private Methods
-        private bool CheckIsMasterSubscriber(IEnumerable<SubscriberAssignment> subscribers)
+        private static bool CheckIsMasterSubscriber(IEnumerable<SubscriberAssignment> subscribers)
         {
             if (subscribers != null && subscribers.Any())
             {
@@ -88,7 +95,7 @@
             return false;
         }
 
-        private IEnumerable<SubscriberAssignment> GetSubscribers(IEnumerable<SubscriberAssignment> rawSubscribers)
+        private static IEnumerable<SubscriberAssignment> GetSubscribers(IEnumerable<SubscriberAssignment> rawSubscribers)
         {
             var subscribers = new List<SubscriberAssignment>();
 
@@ -101,6 +108,19 @@
             }
 
             return subscribers;
+        }
+
+        private IEnumerable<CustomerByGraphDB> GetAssociatedAccountFromGraphDB(int custId, bool deviceAwayOne)
+        {
+            var configUrl = deviceAwayOne ? Consts.GraphDBGetAssociationOneLevel : Consts.GraphDBGetAssociationNLevel;
+
+            var url = AppSettings.Get(configUrl);
+
+            var accounts = ApiHelper.Post<IEnumerable<CustomerByGraphDB>>(url, custId);
+
+            Task.WhenAll(accounts);
+
+            return accounts.Result;
         }
         #endregion
 

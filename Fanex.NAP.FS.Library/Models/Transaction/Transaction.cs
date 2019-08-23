@@ -6,7 +6,7 @@
     {
         public long TransID { get; set; }
 
-        public DateTime TransDate { get; set; }
+        public DateTime TransDate { get; set; }        
 
         public long AccountID { get; set; }
 
@@ -37,6 +37,18 @@
         public string City { get; set; }
 
         public string ServiceProvider { get; set; }
-        
+
+        public string TransDateString
+        {
+            get
+            {
+                if (TransDate == DateTime.MinValue)
+                {
+                    return string.Empty;
+                }
+
+                return TransDate.ToString("MMM dd, yyyy hh: mm:ss tt");
+            }
+        }
     }
 }

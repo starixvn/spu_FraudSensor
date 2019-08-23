@@ -145,7 +145,7 @@
             } 
 
             if (redirect) {
-                window.location.href = common.modifyRelativeUrl('/Account/DetailAccount?id=' + data[0].AccountID);               
+                window.location.href = common.modifyRelativeUrl('/Account/DetailAccount?id=' + data[0].AccountID + '&custId=' + data[0].CustID);               
             } else {
                 table.DataTable().clear().rows.add(data).draw();
                 table.DataTable().columns.adjust();
@@ -156,7 +156,7 @@
     }
     
     function RenderUserName(obj, userName) {
-        var url = common.modifyRelativeUrl('/Account/DetailAccount?id=' + obj.AccountID);
+        var url = common.modifyRelativeUrl('/Account/DetailAccount?id=' + obj.AccountID + '&custId=' + obj.CustID);
 
         return `<a class='info-bng' 
                     href=${url}

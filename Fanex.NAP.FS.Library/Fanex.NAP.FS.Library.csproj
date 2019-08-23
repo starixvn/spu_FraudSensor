@@ -367,6 +367,7 @@
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Account\Account.cs" />
+    <Compile Include="Models\Account\CustomerByGraphDB.cs" />
     <Compile Include="Models\CheckBetReport\CheckBetHistory.cs" />
     <Compile Include="Models\CustomerMonitor\Customer.cs" />
     <Compile Include="Models\DailyDataCapture\CapturedMatch.cs" />
