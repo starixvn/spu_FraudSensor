@@ -85,6 +85,13 @@
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
+        public ActionResult GetEvidences()
+        {
+            var data = _accountService.GetEvidences();
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
         #endregion
     }
 }

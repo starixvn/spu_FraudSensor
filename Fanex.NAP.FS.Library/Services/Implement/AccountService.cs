@@ -16,6 +16,7 @@
     using System.Threading.Tasks;
     using Fanex.NAP.FS.Library.Core.Helpers.Api;
     using Fanex.NAP.FS.Library.Core.Consts;
+    using Fanex.NAP.FS.Library.ViewModels.Evidence;
 
     public class AccountService : IAccountService
     {
@@ -86,6 +87,11 @@
             return GetAssociatedDevicesByAccount_Test(filter);
         }
 
+        public IEnumerable<Evidence> GetEvidences()
+        {
+            return GetEvidences_Test().OrderBy(c=>c.EvidenceGroupID).ThenBy(c=>c.EvidenceTypeCode);
+        }
+
         #region Private Methods
         private static bool CheckIsMasterSubscriber(IEnumerable<SubscriberAssignment> subscribers)
         {
@@ -112,7 +118,7 @@
             return subscribers;
         }
 
-        private IEnumerable<CustomerByGraphDB> GetCustomersFromAPI(int custId, bool deviceAwayOne)
+        private static IEnumerable<CustomerByGraphDB> GetCustomersFromAPI(int custId, bool deviceAwayOne)
         {
             var configUrl = deviceAwayOne ? Consts.GraphDBGetAssociationOneLevel : Consts.GraphDBGetAssociationNLevel;
 
@@ -187,6 +193,37 @@
             }
 
             return lstAssociated;
+        }
+
+        private IEnumerable<Evidence> GetEvidences_Test()
+        {
+            var evidences = new List<Evidence>();
+
+            for (int i = 1; i < 6; i++)
+            {
+                evidences.Add(new Evidence
+                {
+                    EvidenceGroupID = 1,
+                    EvidenceGroupName = "Monitoring",
+                    EvidenceTypeID = i,
+                    EvidenceTypeCode = "1." + i,
+                    EvidenceTypeName = "VIP Smart Punter " + i
+                });
+            }
+
+            for (int i = 1; i < 5; i++)
+            {
+                evidences.Add(new Evidence
+                {
+                    EvidenceGroupID = 2,
+                    EvidenceGroupName = "Soccer Fraud",
+                    EvidenceTypeID = i,
+                    EvidenceTypeCode = "2." + i,
+                    EvidenceTypeName = "Abnormal Betting " + i
+                });
+            }
+
+            return evidences;
         }
 
         #endregion
