@@ -3,10 +3,12 @@
     ViewBag.Title = "AccountInfo";
 }
 
+@Html.Partial("../Evidence/FormAddEvidence")
+
 <h2 class="title">
     <span class="breadcrumb">
         <span><a href="@Url.Action("Index", "SearchAccount")" class="link">Search Account</a></span>
-        <span class="page">Account Detail</span>    
+        <span class="page">Account Detail</span>
     </span>
 </h2>
 
@@ -14,7 +16,7 @@
     <div class="status">
         <p class="info"><i class="icon-clean"></i><span>@Model.AccountInfo.UserName (@Model.AccountInfo.UserName2): This account is clean</span></p>
         <p class="bold">Account Status: <span class="badge-label badge-active">@Model.AccountInfo.Status</span></p>
-        <button class="button btn-add" type="button">Add Evidence</button>
+        <button class="button btn-add" type="button" id="btn-add-evidence">Add Evidence</button>
     </div>
 
     <div class="account-info">

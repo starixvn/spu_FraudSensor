@@ -3,6 +3,7 @@
     var collapseAll = ('.collapse-all');
     var expandAll = $('.expand-all');
     var formException;
+    var formAddEvidence = new form_add_evidence(ACCOUNTID);
 
     var containers = [
         { name: "chains_evidence", url: common.modifyRelativeUrl('/Account/GetChainsToEvidence') },
@@ -98,8 +99,7 @@
                 formException = new form_exception(ACCOUNTID, USERNAME);
 
                 $('span', $('.chain-place')).click(OpenAddException);
-                $('#btn_cancel').click(CloseException);
-                $('#btn_addException').click(AddException);
+                $('#btn-add-exception').click(AddException);
                 break;
             case "#associated_account":
                 account_by_account();
@@ -113,17 +113,13 @@
             default:
                 break;
         }
-    }
-
-    function CloseException() {
-        formException.CloseException();
-    }
+    }  
 
     function OpenAddException() {
         var nodeId = $(this).attr('node-id');
         var nodeName = $(this).attr('node-name');
         
-        formException.OpenAddException(nodeId, nodeName);
+        formException.OpenModal(nodeId, nodeName);
     }
 
     function AddException() {
@@ -134,6 +130,14 @@
         if ($('#retract_evidence').hasClass('display')) {
             GetInformation("retract_evidence", GetUrl("retract_evidence"));
         }
+    }
+
+    function OpenAddEvidence() {
+        formAddEvidence.OpenModal();
+    }
+
+    function AddEvidence() {
+        formAddEvidence.Submit();
     }
 
     function RemoveHidden(container) {
@@ -153,6 +157,10 @@
             $(collapseAll).show();
         }
     }
+
+    $('#btn-add-evidence').click(OpenAddEvidence);
+
+    $('#btn-submit-evidence').click(AddEvidence);
 
     $(collapseAll).hide();
 

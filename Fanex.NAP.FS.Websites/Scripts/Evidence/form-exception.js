@@ -1,15 +1,15 @@
-﻿function form_exception(accountId, useName) {
-    var form = $('#addException');
+﻿function form_exception(accountId, userName) {
+    var form = $('#form-exception');
     var exceptionAccountId, exceptionUserName;
    
-    this.OpenAddException = function (_exceptionAccountId, _exceptionUserName) {
+    this.OpenModal = function (_exceptionAccountId, _exceptionUserName) {
         exceptionAccountId = _exceptionAccountId;
         exceptionUserName = _exceptionUserName;
 
         if (form.is('dialog')) {
             form.dialog('open');
         } else {
-            $("#addException").dialog({
+            $(form).dialog({
                 modal: true,
                 width: '650px',
                 title: 'ADD EXCEPTION',
@@ -45,14 +45,16 @@
         form.dialog('close');
     }
 
-    this.CloseException = function () {
+    function CloseModal() {
         form.dialog('close');
     }
 
     function BindData() {
-        var noteText = "Note: Account " + useName + "is no longer infected Evidence from account " + exceptionUserName;
+        var noteText = "Note: Account " + userName + "is no longer infected Evidence from account " + exceptionUserName;
         $('#note-caption').text(noteText);
-        $('#nodeRoot').text(useName);
-        $('#nodeException').text(exceptionUserName);
+        $('#node-root').text(userName);
+        $('#node-exception').text(exceptionUserName);
     }
+
+    $('#btn-cancel-exception').click(CloseModal);
 }

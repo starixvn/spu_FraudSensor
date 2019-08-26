@@ -74,7 +74,9 @@
 
         public IEnumerable<AssociatedAccountByAccount> GetAssociatedAccountByAccounts(AssociatedAccountByAccountFilter filter)
         {
-            var accounts = GetAssociatedAccountFromGraphDB(1, filter.DeviceAwayOne);
+            var custid_test = 1;
+
+            var customers = GetCustomersFromAPI(custid_test, filter.DeviceAwayOne);
 
             return GetAssociatedAccountByAccounts_Test(filter);
         }
@@ -110,17 +112,17 @@
             return subscribers;
         }
 
-        private IEnumerable<CustomerByGraphDB> GetAssociatedAccountFromGraphDB(int custId, bool deviceAwayOne)
+        private IEnumerable<CustomerByGraphDB> GetCustomersFromAPI(int custId, bool deviceAwayOne)
         {
             var configUrl = deviceAwayOne ? Consts.GraphDBGetAssociationOneLevel : Consts.GraphDBGetAssociationNLevel;
 
             var url = AppSettings.Get(configUrl);
 
-            var accounts = ApiHelper.Post<IEnumerable<CustomerByGraphDB>>(url, custId);
+            var customers = ApiHelper.Post<IEnumerable<CustomerByGraphDB>>(url, custId);
 
-            Task.WhenAll(accounts);
+            Task.WhenAll(customers);
 
-            return accounts.Result;
+            return customers.Result;
         }
         #endregion
 
