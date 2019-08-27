@@ -87,9 +87,14 @@
             return GetAssociatedDevicesByAccount_Test(filter);
         }
 
-        public IEnumerable<Evidence> GetEvidences()
+        public IEnumerable<Evidence> GetAllEvidences()
         {
-            return GetEvidences_Test().OrderBy(c=>c.EvidenceGroupID).ThenBy(c=>c.EvidenceTypeCode);
+            return GetAllEvidences_Test().OrderBy(c=>c.EvidenceGroupID).ThenBy(c=>c.EvidenceTypeCode);
+        }
+
+        public IEnumerable<Evidence> GetEvidencesByAccount(int accountId)
+        {
+            return GetEvidencesByAccount_Test().OrderBy(c => c.EvidenceGroupID).ThenBy(c => c.EvidenceTypeCode);
         }
 
         #region Private Methods
@@ -195,7 +200,7 @@
             return lstAssociated;
         }
 
-        private IEnumerable<Evidence> GetEvidences_Test()
+        private IEnumerable<Evidence> GetAllEvidences_Test()
         {
             var evidences = new List<Evidence>();
 
@@ -210,7 +215,7 @@
                     EvidenceTypeName = "VIP Smart Punter " + i
                 });
             }
-
+            
             for (int i = 1; i < 5; i++)
             {
                 evidences.Add(new Evidence
@@ -222,6 +227,22 @@
                     EvidenceTypeName = "Abnormal Betting " + i
                 });
             }
+
+            return evidences;
+        }
+
+        private IEnumerable<Evidence> GetEvidencesByAccount_Test()
+        {
+            var evidences = new List<Evidence>();
+
+            evidences.Add(new Evidence
+            {
+                EvidenceGroupID = 1,
+                EvidenceGroupName = "Monitoring",
+                EvidenceTypeID = 6,
+                EvidenceTypeCode = "1.6",
+                EvidenceTypeName = "VIP Smart Punter 6"
+            });
 
             return evidences;
         }

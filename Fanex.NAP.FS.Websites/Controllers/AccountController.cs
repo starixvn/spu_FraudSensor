@@ -85,9 +85,16 @@
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult GetEvidences()
+        public ActionResult GetAllEvidences()
         {
-            var data = _accountService.GetEvidences();
+            var data = _accountService.GetAllEvidences();
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult GetEvidencesByAccount(int accountId)
+        {
+            var data = _accountService.GetEvidencesByAccount(accountId);
 
             return Json(data, JsonRequestBehavior.AllowGet);
         }

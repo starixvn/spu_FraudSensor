@@ -19,6 +19,8 @@
 
         IEnumerable<AssociatedDeviceByAccount> GetAssociatedDevicesByAccount(AssociatedDeviceByAccountFilter filter);
 
-        IEnumerable<Evidence> GetEvidences();
+        IEnumerable<Evidence> GetAllEvidences();
+
+        IEnumerable<Evidence> GetEvidencesByAccount(int accountId);
     }
 }

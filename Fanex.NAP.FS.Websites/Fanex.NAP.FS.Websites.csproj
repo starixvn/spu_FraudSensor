@@ -397,6 +397,7 @@
     <Content Include="Scripts\Account\Associated\device-by-account.js" />
     <Content Include="Scripts\Evidence\form-add-evidence.js" />
     <Content Include="Scripts\Evidence\form-exception.js" />
+    <Content Include="Scripts\Evidence\form-group-or-evidence.js" />
     <Content Include="Scripts\search.js" />
     <Content Include="Scripts\Account\detail-account.js" />
     <Content Include="Scripts\Search\Account\search-account.js" />
@@ -1186,6 +1187,7 @@
     <Content Include="Views\SearchDevice\Index.cshtml" />
     <Content Include="Views\Account\DetailAccount.cshtml" />
     <Content Include="Views\Transaction\TransactionHistory.cshtml" />
+    <Content Include="Views\Evidence\FormAddGroupOrEvidence.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />

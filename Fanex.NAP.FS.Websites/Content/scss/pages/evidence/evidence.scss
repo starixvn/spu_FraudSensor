@@ -31,8 +31,7 @@
     grid-template-columns: repeat(7, 1fr);    
 }
 
-.box {
-    display: grid;
+.box {   
     margin-top: 12px;
     background: #fff;
     border: 1px solid #C7C7C7;
@@ -61,7 +60,6 @@
     padding: 5px 10px;
 
     .group {
-        display: grid;
         margin-top: 12px;
 
         .group-heading {
@@ -77,8 +75,17 @@
 
             .item {
                 margin-top: 5px;
+                margin-bottom: 5px;
             }
         }
+
+        .icon-cursor {
+            cursor: pointer;
+        }
+    }
+
+    .selected {
+        background-color: #C7C7C7;
     }
 
     .search-box {
@@ -99,6 +106,7 @@
 
     .modify {
         margin-top: 20px;
+        height: 18px;
 
         .link {
             cursor: pointer;
@@ -106,6 +114,16 @@
             text-decoration: none;
         }
     }
+
+    .evidence-group-management {
+        margin-top: 10px;
+    }
+}
+
+.groups {
+    height: 260px;
+    overflow-x: auto;
+    text-align: justify;
 }
 
 .comment-field {
