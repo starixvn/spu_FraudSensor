@@ -85,17 +85,7 @@
         public IEnumerable<AssociatedDeviceByAccount> GetAssociatedDevicesByAccount(AssociatedDeviceByAccountFilter filter)
         {
             return GetAssociatedDevicesByAccount_Test(filter);
-        }
-
-        public IEnumerable<Evidence> GetAllEvidences()
-        {
-            return GetAllEvidences_Test().OrderBy(c=>c.EvidenceGroupID).ThenBy(c=>c.EvidenceTypeCode);
-        }
-
-        public IEnumerable<Evidence> GetEvidencesByAccount(int accountId)
-        {
-            return GetEvidencesByAccount_Test().OrderBy(c => c.EvidenceGroupID).ThenBy(c => c.EvidenceTypeCode);
-        }
+        }        
 
         #region Private Methods
         private static bool CheckIsMasterSubscriber(IEnumerable<SubscriberAssignment> subscribers)
@@ -199,54 +189,7 @@
 
             return lstAssociated;
         }
-
-        private IEnumerable<Evidence> GetAllEvidences_Test()
-        {
-            var evidences = new List<Evidence>();
-
-            for (int i = 1; i < 6; i++)
-            {
-                evidences.Add(new Evidence
-                {
-                    EvidenceGroupID = 1,
-                    EvidenceGroupName = "Monitoring",
-                    EvidenceTypeID = i,
-                    EvidenceTypeCode = "1." + i,
-                    EvidenceTypeName = "VIP Smart Punter " + i
-                });
-            }
-            
-            for (int i = 1; i < 5; i++)
-            {
-                evidences.Add(new Evidence
-                {
-                    EvidenceGroupID = 2,
-                    EvidenceGroupName = "Soccer Fraud",
-                    EvidenceTypeID = i,
-                    EvidenceTypeCode = "2." + i,
-                    EvidenceTypeName = "Abnormal Betting " + i
-                });
-            }
-
-            return evidences;
-        }
-
-        private IEnumerable<Evidence> GetEvidencesByAccount_Test()
-        {
-            var evidences = new List<Evidence>();
-
-            evidences.Add(new Evidence
-            {
-                EvidenceGroupID = 1,
-                EvidenceGroupName = "Monitoring",
-                EvidenceTypeID = 6,
-                EvidenceTypeCode = "1.6",
-                EvidenceTypeName = "VIP Smart Punter 6"
-            });
-
-            return evidences;
-        }
-
+        
         #endregion
     }
 }

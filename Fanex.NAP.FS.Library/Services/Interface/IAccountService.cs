@@ -4,7 +4,6 @@
     using Fanex.NAP.FS.Library.ViewModels.Account;
     using Fanex.NAP.FS.Library.ViewModels.Account.Associated;
     using Fanex.NAP.FS.Library.ViewModels.Account.Search;
-    using Fanex.NAP.FS.Library.ViewModels.Evidence;
     using System.Collections.Generic;
 
     public interface IAccountService
@@ -17,10 +16,6 @@
 
         IEnumerable<AssociatedAccountByAccount> GetAssociatedAccountByAccounts(AssociatedAccountByAccountFilter filter);
 
-        IEnumerable<AssociatedDeviceByAccount> GetAssociatedDevicesByAccount(AssociatedDeviceByAccountFilter filter);
-
-        IEnumerable<Evidence> GetAllEvidences();
-
-        IEnumerable<Evidence> GetEvidencesByAccount(int accountId);
+        IEnumerable<AssociatedDeviceByAccount> GetAssociatedDevicesByAccount(AssociatedDeviceByAccountFilter filter);        
     }
 }

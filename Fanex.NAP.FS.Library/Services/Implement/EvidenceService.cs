@@ -1,10 +1,13 @@
 ﻿namespace Fanex.NAP.FS.Library.Services
 {
-    using Fanex.NAP.FS.Library.ViewModels.Account.Evidence;    
-    using Models.MatchMonitor.FraudCaseDetails;
-    using System;    
+    using Fanex.NAP.FS.Library.ViewModels.Account.Evidence;
+    using Fanex.NAP.FS.Library.ViewModels.Evidence;
+    using System;
+    using FraudCaseEvidence = Models.MatchMonitor.FraudCaseDetails;
     using System.Collections.Generic;
     using Fanex.NAP.FS.Library.Models.Account;
+    using System.Linq;
+    using Fanex.NAP.FS.Library.Models;
 
     public class EvidenceService : IEvidenceService
     {
@@ -16,6 +19,43 @@
         public RetractedEvidenceAndException GetRetractedEvidenceAndException(int accountId)
         {
             return GetRetractedEvidenceAndException_Test(accountId);
+        }
+
+        public IEnumerable<Evidence> GetAllEvidences()
+        {
+            return GetAllEvidences_Test().OrderBy(c => c.EvidenceGroupID).ThenBy(c => c.EvidenceTypeCode);
+        }
+
+        public IEnumerable<Evidence> GetEvidencesByAccount(int accountId)
+        {
+            return GetEvidencesByAccount_Test().OrderBy(c => c.EvidenceGroupID).ThenBy(c => c.EvidenceTypeCode);
+        }
+
+        public DBResult InsertEvidenceGroup(string groupName)
+        {
+            return new DBResult
+            {
+                ErrorCode = 0,
+                ErrorMsg = string.Empty
+            };
+        }
+
+        public DBResult InsertEvidence(int groupId, string evidenceName)
+        {
+            return new DBResult
+            {
+                ErrorCode = 0,
+                ErrorMsg = string.Empty
+            };
+        }
+
+        public DBResult DeleteEvidence(int evidenceId)
+        {
+            return new DBResult
+            {
+                ErrorCode = 0,
+                ErrorMsg = string.Empty
+            };
         }
 
         #region Test
@@ -34,7 +74,7 @@
                     item.AffectedDate = DateTime.Now;
                     item.NodeNameRoot = account.UserName;
                     item.Comment = "Comment";
-                    item.Evidence = new Evidence { EvidenceCode = "1.1", EvidenceName = "abc" };
+                    item.Evidence = new FraudCaseEvidence.Evidence { EvidenceCode = "1.1", EvidenceName = "abc" };
                 }
 
                 evidenceAccounts.Add(item);
@@ -46,7 +86,7 @@
                 {
                     var node = new ChainNode();
                     {
-                        node.Evidence = new Evidence { EvidenceCode = "1." + i, EvidenceName = "xyz_" + i};
+                        node.Evidence = new FraudCaseEvidence.Evidence { EvidenceCode = "1." + i, EvidenceName = "xyz_" + i};
                         node.NodeIdCurrent = i;
                         node.NodeNameCurrent = "fpsw_pgmthai";
                         node.NodeIdParrent = account.Id;
@@ -61,7 +101,7 @@
                 {
                     var node = new ChainNode();
                     {
-                        node.Evidence = new Evidence { EvidenceCode = "1." + i, EvidenceName = "xxx_" + i };
+                        node.Evidence = new FraudCaseEvidence.Evidence { EvidenceCode = "1." + i, EvidenceName = "xxx_" + i };
                         node.NodeIdCurrent = i;
                         node.NodeNameCurrent = "fpsw_pgmthai_" + i;
                         node.NodeIdParrent = account.Id;
@@ -91,6 +131,53 @@
             data.ChainsToEvidence = GetChainsToEvidence_Test(accountId);
 
             return data;
+        }
+
+        private IEnumerable<Evidence> GetAllEvidences_Test()
+        {
+            var evidences = new List<Evidence>();
+
+            for (int i = 1; i < 6; i++)
+            {
+                evidences.Add(new Evidence
+                {
+                    EvidenceGroupID = 1,
+                    EvidenceGroupName = "Monitoring",
+                    EvidenceTypeID = i,
+                    EvidenceTypeCode = "1." + i,
+                    EvidenceTypeName = "VIP Smart Punter " + i
+                });
+            }
+
+            for (int i = 1; i < 5; i++)
+            {
+                evidences.Add(new Evidence
+                {
+                    EvidenceGroupID = 2,
+                    EvidenceGroupName = "Soccer Fraud",
+                    EvidenceTypeID = i,
+                    EvidenceTypeCode = "2." + i,
+                    EvidenceTypeName = "Abnormal Betting " + i
+                });
+            }
+
+            return evidences;
+        }
+
+        private IEnumerable<Evidence> GetEvidencesByAccount_Test()
+        {
+            var evidences = new List<Evidence>();
+
+            evidences.Add(new Evidence
+            {
+                EvidenceGroupID = 1,
+                EvidenceGroupName = "Monitoring",
+                EvidenceTypeID = 6,
+                EvidenceTypeCode = "1.6",
+                EvidenceTypeName = "VIP Smart Punter 6"
+            });
+
+            return evidences;
         }
 
         #endregion

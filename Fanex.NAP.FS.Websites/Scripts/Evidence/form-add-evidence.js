@@ -82,7 +82,7 @@
 
             var text = data[i].EvidenceTypeCode + " " + data[i].EvidenceTypeName;
 
-            html += ToHtmlEvidence(text, container);
+            html += ToHtmlEvidence(data[i].EvidenceTypeID, text, container);
 
             if (i == length - 1) {
                 html += '</div></div>';
@@ -117,10 +117,10 @@
         return html;
     }
 
-    function ToHtmlEvidence(text, container) {
+    function ToHtmlEvidence(evidenceId, text, container) {
         var html = '<div class="item">';
         if (container == evidences_groups_all) {
-            html += '<span class="icon-delete icon-cursor" title="Click to delete Evidence"></span>';
+            html += '<span class="icon-delete icon-cursor" title="Click to delete Evidence" id="' + evidenceId + '"></span>';
         }
         html += '<span class="evidence"> ' + text + '</span>';
         html += '</div>';
@@ -154,8 +154,10 @@
             var currentGroupId = $(ele).attr('group');
 
             if (groupId == currentGroupId) {
-                $(items).each(function(itemIdx, itemEle) {
-                    var html = ToHtmlEvidence($(itemEle).text())
+                $(items).each(function (itemIdx, itemEle) {
+                    var id = $(itemEle).attr('id');
+                    var text = $(itemEle).text();
+                    var html = ToHtmlEvidence(id, text)
                     $(ele).append(html);
                 });
             }
@@ -167,14 +169,10 @@
             $(this).toggleClass('selected');
         });
 
-        $(container).on('click', '.icon-plus', function () {
-            alert('open group popup');
-        });
+        $(container).on('click', '.icon-plus', OpenFormAddGroupOrEvidence);
 
-        $(container).on('click', '.icon-delete', function () {
-            alert('delete item evidence');
-        });
-    }    
+        $(container).on('click', '.icon-delete', DeleteEvidence);
+    }
 
     function ToogleEvidenceGroupManagement() {
         if ($(this).attr('id') == "show-div-evidence-group") {
@@ -205,8 +203,14 @@
         }
     }
 
-    function OpenAddGroupOrEvidence() {        
-        formGroupOrEvidence.OpenModal('NEW EVIDENCE GROUP');
+    function OpenFormAddGroupOrEvidence() {
+        if ($(this).attr('id') == '.icon-plus') {
+            var groupId = $(this).attr('group');
+            formGroupOrEvidence.OpenModal('NEW EVIDENCE', groupId);
+        } else {
+            formGroupOrEvidence.OpenModal('NEW EVIDENCE GROUP');
+        }
+
         $('#group-or-evidence-btn-add').click(AddGroupOrEvidence);
     }
 
@@ -214,11 +218,27 @@
         formGroupOrEvidence.AddGroupOrEvidence();
     }
 
+    function DeleteEvidence() {
+        var evidenceId = $(this).attr('id');
+
+        $.ajax({
+            url: common.modifyRelativeUrl("/Account/DeleteEvidence"),
+            type: 'GET',
+            data: { evidenceId: evidenceId },
+            success: function (response) {
+                common.showSuccess('The evidence has deleted!');
+            },
+            error: function (data) {
+                common.showError('The evidence delete fail!');
+            }
+        });
+    }
+
     $(div_evidence_group_management).hide();
 
     $(show_div_evidence_group).click(ToogleEvidenceGroupManagement);
 
-    $('#btn-add-evidence-group').click(OpenAddGroupOrEvidence);
+    $('#btn-add-evidence-group').click(OpenFormAddGroupOrEvidence);
 
     $('#btn-cancel-evidence-group').click(ToogleEvidenceGroupManagement);
 

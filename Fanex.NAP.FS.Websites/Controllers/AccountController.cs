@@ -87,14 +87,35 @@
 
         public ActionResult GetAllEvidences()
         {
-            var data = _accountService.GetAllEvidences();
+            var data = _evidenceService.GetAllEvidences();
 
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult GetEvidencesByAccount(int accountId)
         {
-            var data = _accountService.GetEvidencesByAccount(accountId);
+            var data = _evidenceService.GetEvidencesByAccount(accountId);
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult InsertGroupEvidence(string groupName)
+        {
+            var data = _evidenceService.InsertEvidenceGroup(groupName);
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult InsertEvidence(int groupId, string evidenceName)
+        {
+            var data = _evidenceService.InsertEvidence(groupId, evidenceName);
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult DeleteEvidence(int evidenceId)
+        {
+            var data = _evidenceService.DeleteEvidence(evidenceId);
 
             return Json(data, JsonRequestBehavior.AllowGet);
         }
