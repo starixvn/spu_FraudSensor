@@ -1,8 +1,11 @@
 ﻿function form_group_or_evidence() {
     var form = $('#form-add-group-or-evidence');
+    var name_input = $('#group-or-evidence-input');
     var groupId = 0;
 
-    this.OpenModal = function (captian, currentGroupId) {       
+    this.OpenModal = function (captian, currentGroupId) {
+        $(name_input).text() = '';
+
         if (form.is('dialog')) {
             form.dialog('open');
         } else {
@@ -20,7 +23,7 @@
     }
 
     this.AddGroupOrEvidence = function () {
-        var name = $('#group-or-evidence-input').val();
+        var name = $(name_input).text();
        
         if (groupId > 0) {
             var url = common.modifyRelativeUrl('/Account/InsertEvidence');

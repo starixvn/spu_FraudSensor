@@ -120,10 +120,17 @@
     }
 }
 
-.groups {
-    height: 260px;
+.groups {    
     overflow-x: auto;
     text-align: justify;
+}
+
+.group-left {
+    height: 260px;
+}
+
+.group-right {
+    height: 275px;
 }
 
 .comment-field {

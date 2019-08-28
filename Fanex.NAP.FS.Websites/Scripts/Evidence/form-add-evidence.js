@@ -5,13 +5,13 @@
     var evidences_groups_added = $('#evidences-groups-added');
     var show_div_evidence_group = $('#show-div-evidence-group');
     var div_link_modify = $('#div-link-modify');
-    var div_evidence_group_management = $('#div-evidence-group-management');
+    var div_evidence_group_management = $('#div-evidence-group-management');    
 
     this.OpenModal = function () {
-        $(evidences_groups_all).html('');
-        $(evidences_groups_added).html('');
+        $(evidences_groups_all).html(Loading);
+        $(evidences_groups_added).html(Loading);
 
-        if (form.is('dialog')) {            
+        if (form.is('dialog')) {
             form.dialog('open');
         } else {
             $(form).dialog({
@@ -26,7 +26,7 @@
 
         GetAllEvidences();
 
-        GetEvidencesByAccount();        
+        GetEvidencesByAccount();
     }
 
     this.Submit = function () {
@@ -78,7 +78,7 @@
 
         for (var i = 0; i < length; i++) {
 
-            html += ToHtmlGroup(data[i], groups, container);
+            html += ToHtmlGroups(data[i], groups, container);
 
             var text = data[i].EvidenceTypeCode + " " + data[i].EvidenceTypeName;
 
@@ -89,27 +89,22 @@
             }
         }
 
+        $('.loading', container).hide();
         $(container).append(html);
 
         HandleEventInContainer(container);
         ToogleIconEvidenceGroupManagement(false);
     }
 
-    function ToHtmlGroup(obj, groups, container) {
+    function ToHtmlGroups(obj, groups, container) {
         var html = '';
 
         if (groups.indexOf(obj.EvidenceGroupID) < 0) {
             if (groups.length > 0) {
                 html += '</div></div>';
-            }
-            html += '<div class="group">';
-            html += '<div class="group-heading">' + obj.EvidenceGroupName;
+            }            
 
-            if (container == evidences_groups_all) {
-                html += '<span class="icon-plus icon-cursor" title="Click to add Evidence"> (+) </span>';
-            }
-            html += '</div>';
-            html += '<div class="group-content" group="' + obj.EvidenceGroupID +'">';
+            html += ToHtmlGroup(obj.EvidenceGroupID, obj.EvidenceGroupName, container);
 
             groups.push(obj.EvidenceGroupID);
         }
@@ -117,11 +112,25 @@
         return html;
     }
 
+    function ToHtmlGroup(groupId, groupName, container) {
+        var html = '';
+        html += '<div class="group" id=' + groupId + '>';
+        html += '<div class="group-heading">' + groupName;
+
+        //if (container == evidences_groups_all) {
+        //    html += '<span class="icon-plus icon-cursor" title="Click to add Evidence"> (+) </span>';
+        //}
+        html += '</div>';
+        html += '<div class="group-content">';
+
+        return html;
+    }
+
     function ToHtmlEvidence(evidenceId, text, container) {
-        var html = '<div class="item">';
-        if (container == evidences_groups_all) {
-            html += '<span class="icon-delete icon-cursor" title="Click to delete Evidence" id="' + evidenceId + '"></span>';
-        }
+        var html = '<div class="item" id=' + evidenceId + '>';
+        //if (container == evidences_groups_all) {
+        //    html += '<span class="icon-delete icon-cursor" title="Click to delete Evidence" id="' + evidenceId + '"></span>';
+        //}
         html += '<span class="evidence"> ' + text + '</span>';
         html += '</div>';
 
@@ -137,31 +146,60 @@
             containerTo = evidences_groups_added;
         }
 
-        $('.group-content', containerFrom).each(function (idx, ele) {
-            var items = $('.selected', $(this));
+        $('.group', containerFrom).each(function (idx, eleGroup) {
+            var itemsSelected = $('.selected', $(eleGroup));
+            var items = $('.item', $(eleGroup));
 
-            if (items.length > 0) {
-                var groupId = $(this).attr('group');
-                AddItemsToGrid(groupId, items, containerTo);
+            if (itemsSelected.length > 0) {
+                var groupId = $(eleGroup).attr('id');
+                var groupName = $('.group-heading', eleGroup).text();
 
-                $(items).remove();
+                AddItemsToContainer(groupId, groupName, itemsSelected, containerTo);
+                RemoveItemsFromContainer(eleGroup, items, itemsSelected);
             }
         });
     }
 
-    function AddItemsToGrid(groupId, items, container) {
-        $('.group-content', container).each(function (idx, ele) {
-            var currentGroupId = $(ele).attr('group');
+    function AddItemsToContainer(groupId, groupName, itemsAdd, container) {
+        var newGroup = true;
+        $('.group', container).each(function (idx, eleGroup) {
+            var currentGroupId = $(eleGroup).attr('id');
 
             if (groupId == currentGroupId) {
-                $(items).each(function (itemIdx, itemEle) {
-                    var id = $(itemEle).attr('id');
-                    var text = $(itemEle).text();
-                    var html = ToHtmlEvidence(id, text)
-                    $(ele).append(html);
-                });
+                var html = ToHtmlItems(itemsAdd);
+                $('.group-content', eleGroup).append(html);
+
+                newGroup = false;
             }
         });
+
+        if (newGroup) {
+            var html = ToHtmlGroup(groupId, groupName, container);
+            html += ToHtmlItems(itemsAdd, html);
+            html += '</div></div>';
+            $(container).append(html);
+        }
+    }
+
+    function ToHtmlItems(itemsAdd) {
+        var html = '';
+
+        $(itemsAdd).each(function (itemIdx, eleItem) {
+            var id = $(eleItem).parent().attr('id');
+            var text = $(eleItem).text();
+            html += ToHtmlEvidence(id, text);
+        });
+
+        return html;
+    }
+
+    function RemoveItemsFromContainer(group, items, itemsSelected) {
+        if (itemsSelected.length == items.length) {
+            $(group).remove();
+        }
+        else {
+            $(itemsSelected).parent().remove();
+        }
     }
 
     function HandleEventInContainer(container) {
@@ -234,6 +272,17 @@
         });
     }
 
+    function Loading() {
+        return '<div class="loading"><img src="../../Content/images/ajax-loader.gif" alt="Loading ..." /></div>';
+    }
+
+    function FilterEvidence() {
+        var value = $(this).val().toLowerCase();
+        $('.group *', evidences_groups_all).filter(function () {
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+        });        
+    }
+
     $(div_evidence_group_management).hide();
 
     $(show_div_evidence_group).click(ToogleEvidenceGroupManagement);
@@ -248,5 +297,7 @@
 
     $('#btn-add').click(ToogleSelectEvidence);
 
-    $('#btn-remove').click(ToogleSelectEvidence);      
+    $('#btn-remove').click(ToogleSelectEvidence);
+
+    $('#txt-search-evidence').keyup(FilterEvidence);
 }
