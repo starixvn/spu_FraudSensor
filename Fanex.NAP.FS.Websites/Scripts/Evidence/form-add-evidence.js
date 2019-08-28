@@ -8,9 +8,6 @@
     var div_evidence_group_management = $('#div-evidence-group-management');    
 
     this.OpenModal = function () {
-        $(evidences_groups_all).html(Loading);
-        $(evidences_groups_added).html(Loading);
-
         if (form.is('dialog')) {
             form.dialog('open');
         } else {
@@ -24,6 +21,8 @@
             })
         }
 
+        Clear();
+
         GetAllEvidences();
 
         GetEvidencesByAccount();
@@ -31,20 +30,21 @@
 
     this.Submit = function () {
         var comment = $('#comment').val();
-        var url = common.modifyRelativeUrl('/Account/UpdateEvidence');
+        var url = common.modifyRelativeUrl('/Account/UpdateEvidenceByAccount');
 
         $.ajax(url, {
             type: 'POST',
             data: {
                 accountId: accountId,
+                evidences: GetEvidenceForUpdate(),
                 comment: comment
             },
             success: function (response) {
-                common.showSuccess('Add Evidence has added!');
+                common.showSuccess('The Evidence has added!');
             },
             error: function (errorMessage) {
                 console.log(errorMessage);
-                common.showError('Add Evidence add fail!');
+                common.showError('The Evidence add fail!');
             }
         });
 
@@ -53,7 +53,25 @@
 
     function CloseModal() {
         form.dialog('close');
-    }   
+    }
+
+    function Clear() {
+        $(evidences_groups_all).html(Loading);
+        $(evidences_groups_added).html(Loading);
+        $('#comment').html('');
+    }
+
+    function GetEvidenceForUpdate() {
+        var evidences = [];
+        var items = $('.item', evidences_groups_added);
+        
+        $(items).each((idx, eleItem) => {
+            var id = $(eleItem).attr('id');
+            evidences.push(id);
+        });
+
+        return evidences.join(',');
+    }
 
     function GetAllEvidences() {
         var url = common.modifyRelativeUrl("/Account/GetAllEvidences");
@@ -283,9 +301,13 @@
         });        
     }
 
+    $('#span-account').text(USERNAME);
+
+    $('#span-subscriber').text(SUBSCRIBER);
+
     $(div_evidence_group_management).hide();
 
-    $(show_div_evidence_group).click(ToogleEvidenceGroupManagement);
+    //$(show_div_evidence_group).click(ToogleEvidenceGroupManagement);
 
     $('#btn-add-evidence-group').click(OpenFormAddGroupOrEvidence);
 

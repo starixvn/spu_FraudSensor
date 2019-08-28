@@ -20,5 +20,7 @@
         DBResult InsertEvidence(int groupId, string evidenceName);
 
         DBResult DeleteEvidence(int evidenceId);
+
+        DBResult UpdateEvidenceByAccount(EvidenceByAccount evidenceByAccount);
     }
 }

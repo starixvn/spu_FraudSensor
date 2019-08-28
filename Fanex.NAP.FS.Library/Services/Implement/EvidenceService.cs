@@ -58,6 +58,15 @@
             };
         }
 
+        public DBResult UpdateEvidenceByAccount(EvidenceByAccount evidenceByAccount)
+        {
+            return new DBResult
+            {
+                ErrorCode = 0,
+                ErrorMsg = string.Empty
+            };
+        }
+
         #region Test
         private ChainsToEvidence GetChainsToEvidence_Test(int accountId)
         {

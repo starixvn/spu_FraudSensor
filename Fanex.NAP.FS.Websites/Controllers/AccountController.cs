@@ -5,6 +5,7 @@
     using System.Web.Mvc;
     using Fanex.NAP.Core.Web.Attribute;
     using Fanex.NAP.FS.Library.Core.Consts;
+    using Fanex.NAP.FS.Library.ViewModels.Evidence;
 
     [NapAuth(FunctionKey = FSFunctionKeys.SearchAccount, Policy = Core.Business.Constant.Policy.Read)]
     public class AccountController : BaseController
@@ -120,6 +121,13 @@
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
+        [HttpPost]
+        public ActionResult UpdateEvidenceByAccount(EvidenceByAccount evidenceByAccount)
+        {
+            var data = _evidenceService.UpdateEvidenceByAccount(evidenceByAccount);
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
         #endregion
     }
 }
