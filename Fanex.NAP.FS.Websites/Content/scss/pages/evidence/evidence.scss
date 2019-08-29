@@ -102,35 +102,13 @@
                 box-shadow: none;
             }
         }
-    }
-
-    .modify {
-        margin-top: 20px;
-        height: 18px;
-
-        .link {
-            cursor: pointer;
-            color: #2097fd;
-            text-decoration: none;
-        }
-    }
-
-    .evidence-group-management {
-        margin-top: 10px;
-    }
+    }   
 }
 
-.groups {    
+.groups {
     overflow-x: auto;
     text-align: justify;
-}
-
-.group-left {
-    height: 260px;
-}
-
-.group-right {
-    height: 275px;
+    height: 270px;
 }
 
 .comment-field {

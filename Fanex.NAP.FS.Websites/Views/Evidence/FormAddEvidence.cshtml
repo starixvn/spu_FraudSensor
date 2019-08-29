@@ -16,30 +16,21 @@
                         <span class="icon-magnify"></span>
                         <input type="text" class="text" id="txt-search-evidence" placeholder="Search here..." />
                     </div>
-                    <div id="evidences-groups-all" class="groups group-left"></div>
-                    <div class="modify" id="div-link-modify">
-                        <span>To modify Evidence List,</span>
-                        <span class="link" id="show-div-evidence-group">click here</span>
-                    </div>
-                    <div class="evidence-group-management" id="div-evidence-group-management">
-                        <button class="button -add" type="button" id="btn-add-evidence-group">Add Evidence Group</button>
-                        <button class="button btn-cancel-outline" id="btn-cancel-evidence-group">Cancel</button>
-                        <button class="button -add" id="btn-ok-evidence-group">Ok</button>
-                    </div>
+                    <div id="evidences-groups-all" class="groups"></div>
                 </div>
             </div>
 
             <div class="box box-center">
                 <div class="box-content">
-                    <button class="button -add" type="button" id="btn-add" style="width: 100%;">Add</button>
-                    <button class="button -add" type="button" id="btn-remove" style="width: 100%; margin-top:10px;">Remove</button>
+                    <button class="button -add" type="button" id="btn-add" style="width: 100%;">Add<span class="icon-select"></span></button>
+                    <button class="button -add" type="button" id="btn-remove" style="width: 100%; margin-top:10px;"><span class="icon-unselect"></span>Remove</button>
                 </div>
             </div>
 
             <div class="box box-3">
                 <div class="box-heading">Added Evidence</div>
                 <div class="box-content">
-                    <div id="evidences-groups-added" class="groups group-right"></div>
+                    <div id="evidences-groups-added" class="groups"></div>
                 </div>
             </div>
         </div>
@@ -57,5 +48,3 @@
         </div>
     </div>
 </div>
-
-@Html.Partial("../Evidence/FormAddGroupOrEvidence")

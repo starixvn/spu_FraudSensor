@@ -69,25 +69,11 @@
       font-family: inherit; }
       .box-content .search-box input[type="text"]:focus {
         box-shadow: none; }
-  .box-content .modify {
-    margin-top: 20px;
-    height: 18px; }
-    .box-content .modify .link {
-      cursor: pointer;
-      color: #2097fd;
-      text-decoration: none; }
-  .box-content .evidence-group-management {
-    margin-top: 10px; }
 
 .groups {
   overflow-x: auto;
-  text-align: justify; }
-
-.group-left {
-  height: 260px; }
-
-.group-right {
-  height: 275px; }
+  text-align: justify;
+  height: 270px; }
 
 .comment-field {
   width: 100%;
