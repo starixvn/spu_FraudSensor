@@ -31,8 +31,7 @@
                 <div class="control-label">Fraud Status</div>
                 <select class="control" id="cbb-fraud-status">
                     <option value="@FraudStatus.All" selected>All</option>
-                    <option value="@FraudStatus.Flagged">Flagged</option>
-                    <option value="@FraudStatus.IndirectFlagged">Indirect Flagged</option>
+                    <option value="@FraudStatus.Fraud">Fraud</option>
                     <option value="@FraudStatus.Clean">Clean</option>
                 </select>
             </div>
@@ -40,10 +39,13 @@
             <div class="form-control button-group">
                 <button class="button btn-search" id="btn-search-account">Search</button>
             </div>
-        </div>             
+        </div>
     </div>
-    <div class="table-report" id="account-by-account-content" hidden>
-        <div class="search-box">    
+    <div id="loading-div" class="report-cont">
+        <img src="@Url.Content("~/Content/images/ajax-loader.gif")" alt="Loading ..." />
+    </div>
+    <div class="table-report" id="account-by-account-content">
+        <div class="search-box">
             <span class="icon-magnify"></span>
             <input type="text" class="text" id="account-search" placeholder="Search..." />
         </div>

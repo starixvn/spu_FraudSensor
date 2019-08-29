@@ -11,8 +11,7 @@
     public enum FraudStatus
     {
         All,
-        Flagged,
-        IndirectFlagged,
+        Fraud,        
         Clean
     }
 

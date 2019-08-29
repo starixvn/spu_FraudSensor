@@ -281,8 +281,16 @@
     <Setting Key="FPS_DC_SearchAccount" 
              SpName="FPS_DC_SearchAccount" 
              DbName="MySQL.FPS_DataCenter"/>    
-  </Function>
+  </Function> 
   <Function name="AccountDetail">
+    <Setting Key="FPS_DC_Rpt_GetAssociatedAccountByAccount"
+            SpName="FPS_DC_Rpt_GetAssociatedAccountByAccount"
+            DbName="MySQL.FPS_DataCenter"/>
+    
+    <Setting Key="FS_CustomerFraudInfo_Get"
+            SpName="FS_CustomerFraudInfo_Get"
+            DbName="DBFS.bodb_FraudSensor.bodbSPUNet"/>
+    
     <Setting Key="FPS_DC_GetTransactionHistoryByCustId"
              SpName="FPS_DC_GetTransactionHistoryByCustId"
              DbName="MySQL.FPS_DataCenter"/>

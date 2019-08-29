@@ -1,4 +1,5 @@
 ﻿function account_by_account() {
+    var loading = $('#loading-div');
     var btnSearch = $('#btn-search-account');
     var accountSearch = $('#account-search');
     var usernameSpan = $('.username-span');
@@ -34,12 +35,12 @@
                 { targets: [5], width: "15%" }
             ],
             columns: [
-                { data: obj => RenderUserName(obj) },
-                { data: obj => obj.AccountAssociated.Status },
-                { data: obj => moment(obj.AccountAssociated.FirstLogin).format("MMM DD, YYYY")},
-                { data: obj => moment(obj.AccountAssociated.LastLogin).format("MMM DD, YYYY")},
-                { data: obj => obj.TotalSharedDeviceLogin },
-                { data: obj => moment(obj.AccountAssociated.AssociatedDate).format("MMM DD, YYYY")},
+                { data: obj => RenderUsername(obj) },
+                { data: obj => obj.Status },
+                { data: obj => moment(obj.FirstLogin).format("MMM DD, YYYY")},
+                { data: obj => moment(obj.LastLogin).format("MMM DD, YYYY")},
+                { data: obj => obj.TotalLoginWithRootAccount },
+                { data: obj => moment(obj.AssociatedWithRootAccountOn).format("MMM DD, YYYY")},
                 { data: obj => RenderGraphImage()}
             ],
             headerCallback: function (thread) {
@@ -50,16 +51,16 @@
         });
     }
 
-    function RenderUserName(obj) {
-        var url = common.modifyRelativeUrl('/Account/DetailAccount?id=' + obj.AccountAssociated.Id);
+    function RenderUsername(obj) {
+        var url = common.modifyRelativeUrl('/Account/DetailAccount?id=' + obj.AccountID);
         var className = 'icon-fraud';
 
-        if (obj.AccountAssociated.FraudStatus == 'Clean') {
+        if (obj.EvidenceLevel == 0) {
             className = 'icon-clean';
         }
 
         var html = '<span class="' + className + '"></span>';
-        html += '<a class="info-bng" href="' + url + '" target="_blank">' + obj.AccountAssociated.UserName + "(" + obj.AccountAssociated.UserName2 + ")" + '</a>';
+        html += '<a class="info-bng" href="' + url + '" target="_blank">' + obj.Username + "(" + obj.Username2 + ")" + '</a>';
       
         return html;
     }
@@ -69,6 +70,8 @@
     }    
 
     function GenerateReport() {
+        associatedContent.hide();
+        loading.show();
         var deviceAwayOne = $('#chk-device-away-1').is(':checked');
         var status = $('#cbb-status').val();
         var fraudStatus = $('#cbb-fraud-status').val();
@@ -94,9 +97,8 @@
     }
 
     function BindDataToGrid(data) {
-        if (associatedContent.is(':hidden')) {
-            associatedContent.removeAttr('hidden');
-        }
+        loading.hide();
+        associatedContent.show();
 
         associatedTable.DataTable().clear().rows.add(data).draw();
         associatedTable.DataTable().columns.adjust();
@@ -115,6 +117,8 @@
     }
 
     usernameSpan.text(USERNAME);
+
+    loading.hide();
 
     $('#chk-device-away-1').on('click', function () {
         if ($(this).is(':checked')) {

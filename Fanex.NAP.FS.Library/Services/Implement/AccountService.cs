@@ -3,6 +3,7 @@
     using System;
     using System.Linq;
     using System.Collections.Generic;
+    using System.Threading.Tasks;
     using Fanex.NAP.FS.Library.Models.Account;
     using Fanex.NAP.FS.Library.ViewModels.Account;
     using Fanex.NAP.FS.Library.ViewModels.Account.Associated;
@@ -12,11 +13,12 @@
     using Fanex.NAP.FS.Library.Core.BaseClasses;
     using Fanex.NAP.FS.Library.Criteria.Account;
     using Fanex.NAP.FS.Library.ViewModels.Account.Search;
-    using Fanex.NAP.FS.Library.Core.Helpers;
-    using System.Threading.Tasks;
+    using Fanex.NAP.FS.Library.Core.Helpers;    
     using Fanex.NAP.FS.Library.Core.Helpers.Api;
     using Fanex.NAP.FS.Library.Core.Consts;
     using Fanex.NAP.FS.Library.ViewModels.Evidence;
+    using Fanex.NAP.FS.Library.Criteria.Account.Associated;
+    using Fanex.Data;
 
     public class AccountService : IAccountService
     {
@@ -75,11 +77,24 @@
 
         public IEnumerable<AssociatedAccountByAccount> GetAssociatedAccountByAccounts(AssociatedAccountByAccountFilter filter)
         {
-            var custid_test = 1;
+            var custid_test = 1;            
 
-            var customers = GetCustomersFromAPI(custid_test, filter.DeviceAwayOne);
+            var customersFromAPI = GetCustomersFromAPI(custid_test, filter.DeviceAwayOne);
 
-            return GetAssociatedAccountByAccounts_Test(filter);
+            var customersIds = customersFromAPI.Select(c => c.CustId).Join();
+
+            var accountsByCustomers = GetAssociatedAccountByCustomers(filter.AccountId, customersIds);
+
+            var customerFraudSuspicious = GetCustomerFraudSuspicious(customersIds);
+
+            var accountCollected = new AccountsCollected
+            {
+                CustomersFromAPI = customersFromAPI,
+                AccountsByCustomers = accountsByCustomers,
+                CustomerFraudSuspicious = customerFraudSuspicious
+            };
+
+            return GetAssociatedAccountByAccount(accountCollected, filter);
         }
 
         public IEnumerable<AssociatedDeviceByAccount> GetAssociatedDevicesByAccount(AssociatedDeviceByAccountFilter filter)
@@ -115,52 +130,128 @@
 
         private static IEnumerable<CustomerByGraphDB> GetCustomersFromAPI(int custId, bool deviceAwayOne)
         {
-            var configUrl = deviceAwayOne ? Consts.GraphDBGetAssociationOneLevel : Consts.GraphDBGetAssociationNLevel;
+            //var configUrl = deviceAwayOne ? Consts.GraphDBGetAssociationOneLevel : Consts.GraphDBGetAssociationNLevel;
 
-            var url = AppSettings.Get(configUrl);
+            //var url = AppSettings.Get(configUrl);
 
-            var customers = ApiHelper.Post<IEnumerable<CustomerByGraphDB>>(url, custId);
+            //var customers = ApiHelper.Post<IEnumerable<CustomerByGraphDB>>(url, custId);
 
-            Task.WhenAll(customers);
+            //Task.WhenAll(customers);
 
-            return customers.Result;
+            //return customers.Result;
+
+            var listCustomers = new List<CustomerByGraphDB>();
+            listCustomers.Add(new CustomerByGraphDB { CustId = 28625904, Username = "A1", Username2 = "B1" });
+            listCustomers.Add(new CustomerByGraphDB { CustId = 28674088, Username = "A2", Username2 = "B2" });
+            listCustomers.Add(new CustomerByGraphDB { CustId = 29103223, Username = "A3", Username2 = "B3" });
+            listCustomers.Add(new CustomerByGraphDB { CustId = 29144584, Username = "A4", Username2 = "B4" });
+            listCustomers.Add(new CustomerByGraphDB { CustId = 29179473, Username = "A5", Username2 = "B5" });
+            listCustomers.Add(new CustomerByGraphDB { CustId = 29250278, Username = "A6", Username2 = "B6" });
+            listCustomers.Add(new CustomerByGraphDB { CustId = 29963945, Username = "A7", Username2 = "B7" });
+            listCustomers.Add(new CustomerByGraphDB { CustId = 29980403, Username = "A8", Username2 = "B8" });
+            listCustomers.Add(new CustomerByGraphDB { CustId = 29983429, Username = "A9", Username2 = "B9" });
+            listCustomers.Add(new CustomerByGraphDB { CustId = 29986217, Username = "A10", Username2 = "B10" });
+
+            return listCustomers;
+        }
+
+        private static IEnumerable<AssociatedAccountByCustomer> GetAssociatedAccountByCustomers(int accountId, string customerIds)
+        {
+            //var criteria = new GetAssociatedAccountByAccountCriteria
+            //{
+            //     custIds = customerIds,
+            //     rootAccountId = 2602
+            //};
+
+            //return DataService.GetData<AssociatedAccountByCustomer>(criteria);
+
+            var idx = accountId;
+            var now = DateTime.Now;
+            var listCustomers = new List<AssociatedAccountByCustomer>();
+            listCustomers.Add(new AssociatedAccountByCustomer { AccountID = idx++, CustID = 28625904, FirstLogin = now, LastLogin = now, AssociatedWithRootAccountOn = now, TotalLoginWithRootAccount = 1, EvidenceLevel = 0 });
+            listCustomers.Add(new AssociatedAccountByCustomer { AccountID = idx++, CustID = 28674088, FirstLogin = now, LastLogin = now, AssociatedWithRootAccountOn = now, TotalLoginWithRootAccount = 2, EvidenceLevel = 0 });
+            listCustomers.Add(new AssociatedAccountByCustomer { AccountID = idx++, CustID = 29103223, FirstLogin = now, LastLogin = now, AssociatedWithRootAccountOn = now, TotalLoginWithRootAccount = 3, EvidenceLevel = 0 });
+            listCustomers.Add(new AssociatedAccountByCustomer { AccountID = idx++, CustID = 29144584, FirstLogin = now, LastLogin = now, AssociatedWithRootAccountOn = now, TotalLoginWithRootAccount = 4, EvidenceLevel = 1 });
+            listCustomers.Add(new AssociatedAccountByCustomer { AccountID = idx++, CustID = 29179473, FirstLogin = now, LastLogin = now, AssociatedWithRootAccountOn = now, TotalLoginWithRootAccount = 5, EvidenceLevel = 3 });
+            listCustomers.Add(new AssociatedAccountByCustomer { AccountID = idx, CustID = 29250278, FirstLogin = now, LastLogin = now, TotalLoginWithRootAccount = 6, EvidenceLevel = 2 });
+
+            return listCustomers;
+        }
+
+        private CustomerFraudSuspicious GetCustomerFraudSuspicious(string customerIds)
+        {
+            var criteria = new GetCustomerFraudInfoCriteria
+            {
+                custIds = "28625904,28674088,29103223,29144584,29179473,29250278,29963945,29980403,29983429,29986217,30125119,30243383,30244853"
+            };
+
+            using (var db = ObjectDbFactory.CreateInstance(criteria.GetSettingKey()))
+            {
+                using (var query = db.QueryMultiple(criteria))
+                {
+                    var customerFrauds = query.Read<CustomerFraud>();
+
+                    var customerSuspiciouses = query.Read<CustomerSuspicious>();
+                   
+                    return new CustomerFraudSuspicious
+                    {
+                        CustomerFrauds = customerFrauds,
+                        CustomerSuspiciouses = customerSuspiciouses
+                    };
+                }
+            }
+        }
+
+        private static IEnumerable<AssociatedAccountByAccount> GetAssociatedAccountByAccount(AccountsCollected accountsCollected, AssociatedAccountByAccountFilter filter)
+        {
+            return accountsCollected.AccountsByCustomers
+                            .Where(customer=>customer.CompareFraudStatus(filter.FraudStatus)).AsEnumerable()
+                            .Join(accountsCollected.CustomersFromAPI,
+                                cusA => cusA.CustID,
+                                cusB => cusB.CustId,
+                                (cusA, cusB) => GetAssociatedAccount(cusA, cusB))
+                            .Join(accountsCollected.CustomerFraudSuspicious.CustomerFrauds
+                                .Where(customer=>customer.CompareStatus(filter.Status)),
+                                cusA => cusA.CustID,
+                                cusB => cusB.custid,
+                                (cusA, cusB) => GetAssociatedAccount(cusA, cusB));
+        }
+
+        private static AssociatedAccountByAccount GetAssociatedAccount(AssociatedAccountByCustomer cusA, CustomerByGraphDB cusB)
+        {
+            return new AssociatedAccountByAccount
+            {
+                AccountID = cusA.AccountID,
+                CustID = cusA.CustID,
+                Username = cusB.Username,
+                Username2 = cusB.Username2,
+                LastLogin = cusA.LastLogin,
+                FirstLogin = cusA.FirstLogin,
+                AssociatedWithRootAccountOn = cusA.AssociatedWithRootAccountOn,
+                TotalLoginWithRootAccount = cusA.TotalLoginWithRootAccount,
+                EvidenceLevel = cusA.EvidenceLevel
+            };
+        }
+
+        private static AssociatedAccountByAccount GetAssociatedAccount(AssociatedAccountByAccount cusA, CustomerFraud cusB)
+        {
+            return new AssociatedAccountByAccount
+            {
+                AccountID = cusA.AccountID,
+                CustID = cusA.CustID,
+                Username = cusA.Username,
+                Username2 = cusA.Username2,
+                LastLogin = cusA.LastLogin,
+                FirstLogin = cusA.FirstLogin,
+                AssociatedWithRootAccountOn = cusA.AssociatedWithRootAccountOn,
+                TotalLoginWithRootAccount = cusA.TotalLoginWithRootAccount,
+                EvidenceLevel = cusA.EvidenceLevel,
+                Status = cusB.GetStatusName()
+            };
         }
         #endregion
 
-        #region Test
-
-        private IEnumerable<AssociatedAccountByAccount> GetAssociatedAccountByAccounts_Test(AssociatedAccountByAccountFilter filter)
-        {
-            var lstAssociated = new List<AssociatedAccountByAccount>();
-
-            for (int i = 1; i < 6; i++)
-            {
-                var accountAssociated = new AssociatedAccountByAccount();
-                accountAssociated.AccountAssociated = new Account();
-                accountAssociated.AccountAssociated.Id = i;
-                accountAssociated.AccountAssociated.UserName = "fpsa_pmgthai_" + i;
-                accountAssociated.AccountAssociated.UserName2 = "fpsa_pmgthai2_" + i;
-                if (i % 2 == 0)
-                {
-                    accountAssociated.AccountAssociated.FraudStatus = FraudStatus.Flagged.ToString();
-                }
-                else
-                {
-                    accountAssociated.AccountAssociated.FraudStatus = FraudStatus.Clean.ToString();
-                }
-                accountAssociated.AccountAssociated.Status = AccountStatus.Active.ToString();
-                
-                accountAssociated.AccountAssociated.FirstLogin = DateTime.Now;
-                accountAssociated.AccountAssociated.LastLogin = DateTime.Now;
-                accountAssociated.TotalSharedDeviceLogin = 20;
-                accountAssociated.AssociatedDate = DateTime.Now;
-                accountAssociated.GraphURL = "Graph URL";
-
-                lstAssociated.Add(accountAssociated);
-            }
-
-            return lstAssociated;
-        }
+        #region Test       
 
         private IEnumerable<AssociatedDeviceByAccount> GetAssociatedDevicesByAccount_Test(AssociatedDeviceByAccountFilter filter)
         {
@@ -177,7 +268,7 @@
                 deviceAssociated.GraphURL = "url 123456";
                 if (i % 2 == 0)
                 {
-                    deviceAssociated.FraudStatus = FraudStatus.Flagged.ToString();
+                    deviceAssociated.FraudStatus = FraudStatus.Fraud.ToString();
                 }
                 else
                 {

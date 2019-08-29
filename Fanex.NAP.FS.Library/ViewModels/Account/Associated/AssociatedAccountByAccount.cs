@@ -1,17 +1,27 @@
 ﻿namespace Fanex.NAP.FS.Library.ViewModels.Account.Associated
 {
-    using Fanex.NAP.FS.Library.Models.Account;
-    using System;
+    using System;   
 
     public class AssociatedAccountByAccount
     {
-        public Account AccountAssociated { get; set; }     
-    
-        public int TotalSharedDeviceLogin { get; set; }
+        public int AccountID { get; set; }
 
-        public DateTime AssociatedDate { get; set; }
+        public int CustID { get; set; }
 
-        public string GraphURL { get; set; }
+        public string Username { get; set; }
 
+        public string Username2 { get; set; }
+
+        public DateTime LastLogin { get; set; }
+
+        public DateTime FirstLogin { get; set; }       
+
+        public DateTime AssociatedWithRootAccountOn { get; set; }
+
+        public int TotalLoginWithRootAccount { get; set; }
+
+        public int EvidenceLevel { get; set; }
+
+        public string Status { get; set; }
     }
 }

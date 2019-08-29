@@ -240,6 +240,8 @@
     <Compile Include="Core\Helpers\Xml\XNameAttribute.cs" />
     <Compile Include="Core\Utilities\ConfigSettings.cs" />
     <Compile Include="Core\Utilities\Extentions.cs" />
+    <Compile Include="Criteria\Account\Associated\GetAssociatedAccountByAccountCriteria.cs" />
+    <Compile Include="Criteria\Account\Associated\GetCustomerFraudInfoCriteria.cs" />
     <Compile Include="Criteria\Account\SearchAccountCriteria.cs" />
     <Compile Include="Criteria\Api\FlaggedAccountDeleteCriteria.cs" />
     <Compile Include="Criteria\Api\FlaggedAccountInsertCriteria.cs" />
@@ -406,10 +408,15 @@
     <Compile Include="Services\Implement\TransactionService.cs" />
     <Compile Include="Services\Interface\IEvidenceService.cs" />
     <Compile Include="Services\Interface\ITransactionService.cs" />
+    <Compile Include="ViewModels\Account\Associated\AssociatedAccountByCustomer.cs" />
+    <Compile Include="ViewModels\Account\CustomerFraudSuspicious.cs" />
+    <Compile Include="ViewModels\Account\AccountsCollected.cs" />
     <Compile Include="ViewModels\Account\Associated\AssociatedAccountByAccount.cs" />
     <Compile Include="ViewModels\Account\Associated\AssociatedAccountByAccountFilter.cs" />
     <Compile Include="ViewModels\Account\Associated\AssociatedDeviceByAccount.cs" />
     <Compile Include="ViewModels\Account\Associated\AssociatedDeviceByAccountFilter.cs" />
+    <Compile Include="ViewModels\Account\CustomerFraud.cs" />
+    <Compile Include="ViewModels\Account\CustomerSuspicious.cs" />
     <Compile Include="ViewModels\Account\Evidence\ChainsToEvidence.cs" />
     <Compile Include="ViewModels\Account\Evidence\RetractedEvidenceAndException.cs" />
     <Compile Include="ViewModels\Account\Search\SearchAccountFilter.cs" />
