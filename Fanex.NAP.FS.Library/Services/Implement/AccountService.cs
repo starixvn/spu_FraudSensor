@@ -77,23 +77,14 @@
 
         public IEnumerable<AssociatedAccountByAccount> GetAssociatedAccountByAccounts(AssociatedAccountByAccountFilter filter)
         {
-            var custid_test = 1;            
+            var accountCollected = new AccountsCollected();
 
-            var customersFromAPI = GetCustomersFromAPI(custid_test, filter.DeviceAwayOne);
+            accountCollected.CustomersFromAPI = GetCustomersFromAPI(filter.CustId, filter.DeviceAwayOne);
 
-            var customersIds = customersFromAPI.Select(c => c.CustId).Join();
+            accountCollected.AccountsByCustomers = GetAssociatedAccountByCustomers(filter.AccountId, accountCollected.CustomersFromAPI);
 
-            var accountsByCustomers = GetAssociatedAccountByCustomers(filter.AccountId, customersIds);
-
-            var customerFraudSuspicious = GetCustomerFraudSuspicious(customersIds);
-
-            var accountCollected = new AccountsCollected
-            {
-                CustomersFromAPI = customersFromAPI,
-                AccountsByCustomers = accountsByCustomers,
-                CustomerFraudSuspicious = customerFraudSuspicious
-            };
-
+            accountCollected.CustomerFraudSuspicious = GetCustomerFraud(accountCollected.CustomersFromAPI);
+           
             return GetAssociatedAccountByAccount(accountCollected, filter);
         }
 
@@ -130,76 +121,61 @@
 
         private static IEnumerable<CustomerByGraphDB> GetCustomersFromAPI(int custId, bool deviceAwayOne)
         {
-            //var configUrl = deviceAwayOne ? Consts.GraphDBGetAssociationOneLevel : Consts.GraphDBGetAssociationNLevel;
+            var configUrl = deviceAwayOne ? Consts.GraphDBGetAssociationOneLevel : Consts.GraphDBGetAssociationNLevel;
 
-            //var url = AppSettings.Get(configUrl);
+            var url = AppSettings.Get(configUrl);
 
-            //var customers = ApiHelper.Post<IEnumerable<CustomerByGraphDB>>(url, custId);
+            var customers = ApiHelper.Post<IEnumerable<CustomerByGraphDB>>(url, custId);
 
-            //Task.WhenAll(customers);
+            Task.WhenAll(customers);
 
-            //return customers.Result;
-
-            var listCustomers = new List<CustomerByGraphDB>();
-            listCustomers.Add(new CustomerByGraphDB { CustId = 28625904, Username = "A1", Username2 = "B1" });
-            listCustomers.Add(new CustomerByGraphDB { CustId = 28674088, Username = "A2", Username2 = "B2" });
-            listCustomers.Add(new CustomerByGraphDB { CustId = 29103223, Username = "A3", Username2 = "B3" });
-            listCustomers.Add(new CustomerByGraphDB { CustId = 29144584, Username = "A4", Username2 = "B4" });
-            listCustomers.Add(new CustomerByGraphDB { CustId = 29179473, Username = "A5", Username2 = "B5" });
-            listCustomers.Add(new CustomerByGraphDB { CustId = 29250278, Username = "A6", Username2 = "B6" });
-            listCustomers.Add(new CustomerByGraphDB { CustId = 29963945, Username = "A7", Username2 = "B7" });
-            listCustomers.Add(new CustomerByGraphDB { CustId = 29980403, Username = "A8", Username2 = "B8" });
-            listCustomers.Add(new CustomerByGraphDB { CustId = 29983429, Username = "A9", Username2 = "B9" });
-            listCustomers.Add(new CustomerByGraphDB { CustId = 29986217, Username = "A10", Username2 = "B10" });
-
-            return listCustomers;
+            return customers.Result;
         }
 
-        private static IEnumerable<AssociatedAccountByCustomer> GetAssociatedAccountByCustomers(int accountId, string customerIds)
+        private static IEnumerable<AssociatedAccountByCustomer> GetAssociatedAccountByCustomers(int accountId, IEnumerable<CustomerByGraphDB> customersFromAPI)
         {
-            //var criteria = new GetAssociatedAccountByAccountCriteria
-            //{
-            //     custIds = customerIds,
-            //     rootAccountId = 2602
-            //};
-
-            //return DataService.GetData<AssociatedAccountByCustomer>(criteria);
-
-            var idx = accountId;
-            var now = DateTime.Now;
-            var listCustomers = new List<AssociatedAccountByCustomer>();
-            listCustomers.Add(new AssociatedAccountByCustomer { AccountID = idx++, CustID = 28625904, FirstLogin = now, LastLogin = now, AssociatedWithRootAccountOn = now, TotalLoginWithRootAccount = 1, EvidenceLevel = 0 });
-            listCustomers.Add(new AssociatedAccountByCustomer { AccountID = idx++, CustID = 28674088, FirstLogin = now, LastLogin = now, AssociatedWithRootAccountOn = now, TotalLoginWithRootAccount = 2, EvidenceLevel = 0 });
-            listCustomers.Add(new AssociatedAccountByCustomer { AccountID = idx++, CustID = 29103223, FirstLogin = now, LastLogin = now, AssociatedWithRootAccountOn = now, TotalLoginWithRootAccount = 3, EvidenceLevel = 0 });
-            listCustomers.Add(new AssociatedAccountByCustomer { AccountID = idx++, CustID = 29144584, FirstLogin = now, LastLogin = now, AssociatedWithRootAccountOn = now, TotalLoginWithRootAccount = 4, EvidenceLevel = 1 });
-            listCustomers.Add(new AssociatedAccountByCustomer { AccountID = idx++, CustID = 29179473, FirstLogin = now, LastLogin = now, AssociatedWithRootAccountOn = now, TotalLoginWithRootAccount = 5, EvidenceLevel = 3 });
-            listCustomers.Add(new AssociatedAccountByCustomer { AccountID = idx, CustID = 29250278, FirstLogin = now, LastLogin = now, TotalLoginWithRootAccount = 6, EvidenceLevel = 2 });
-
-            return listCustomers;
-        }
-
-        private CustomerFraudSuspicious GetCustomerFraudSuspicious(string customerIds)
-        {
-            var criteria = new GetCustomerFraudInfoCriteria
+            if (customersFromAPI.Any())
             {
-                custIds = "28625904,28674088,29103223,29144584,29179473,29250278,29963945,29980403,29983429,29986217,30125119,30243383,30244853"
-            };
+                var customerIds = customersFromAPI.Select(c => c.CustId).Join();
 
-            using (var db = ObjectDbFactory.CreateInstance(criteria.GetSettingKey()))
-            {
-                using (var query = db.QueryMultiple(criteria))
+                var criteria = new GetAssociatedAccountByAccountCriteria
                 {
-                    var customerFrauds = query.Read<CustomerFraud>();
+                    custIds = customerIds,
+                    rootAccountId = accountId
+                };
 
-                    var customerSuspiciouses = query.Read<CustomerSuspicious>();
-                   
-                    return new CustomerFraudSuspicious
+                return DataService.GetData<AssociatedAccountByCustomer>(criteria);
+            }
+
+            return new List<AssociatedAccountByCustomer>();            
+        }
+
+        private CustomerFraudSuspicious GetCustomerFraud(IEnumerable<CustomerByGraphDB> customersFromAPI)
+        {
+            if (customersFromAPI.Any())
+            {
+                var customerIds = customersFromAPI.Select(c => c.CustId).Join();
+
+                var criteria = new GetCustomerFraudInfoCriteria
+                {
+                    custIds = customerIds
+                };
+
+                using (var db = ObjectDbFactory.CreateInstance(criteria.GetSettingKey()))
+                {
+                    using (var query = db.QueryMultiple(criteria))
                     {
-                        CustomerFrauds = customerFrauds,
-                        CustomerSuspiciouses = customerSuspiciouses
-                    };
+                        var customerFrauds = query.Read<CustomerFraud>();
+
+                        return new CustomerFraudSuspicious
+                        {
+                            CustomerFrauds = customerFrauds
+                        };
+                    }
                 }
             }
+
+            return new CustomerFraudSuspicious();
         }
 
         private static IEnumerable<AssociatedAccountByAccount> GetAssociatedAccountByAccount(AccountsCollected accountsCollected, AssociatedAccountByAccountFilter filter)

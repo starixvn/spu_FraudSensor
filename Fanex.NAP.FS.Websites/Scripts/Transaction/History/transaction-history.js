@@ -38,8 +38,7 @@
                 { targets: [10], width: "20%" }
             ],
             columns: [
-                //{ data: obj => moment(obj.TransDate).format("MMM DD, YYYY hh:mm:ss A") },
-                { data: obj => RenderTransDate(obj) },
+                { data: obj => obj.TransDateToString },
                 { data: obj => RenderDevice(obj) },
                 { data: obj => obj.ActionResult },
                 { data: obj => obj.DeviceType },
@@ -52,17 +51,6 @@
                 { data: obj => obj.ServiceProvider }
             ]
         });
-    }
-
-    var isLogged = false;
-    function RenderTransDate(obj) {
-        if (!isLogged) {
-            console.log("TransDate: " + obj.TransDate);
-            console.log("TransDateFormat: " + moment(obj.TransDate).format("MMM DD, YYYY hh:mm:ss A"));
-            isLogged = true;
-        }
-
-        return obj.TransDateString;
     }
 
     function RenderDevice(obj) {
@@ -95,6 +83,7 @@
             },
             success: function (response) {
                 BindDataToGrid(response);
+                AnimateContent();
             },
             error: function (errMsg) {
                 console.log(errMsg);
@@ -109,6 +98,12 @@
 
         transactionTable.DataTable().clear().rows.add(data).draw();
         transactionTable.DataTable().columns.adjust();
+    }
+
+    function AnimateContent() {
+        $('html, body').animate({
+            scrollTop: $(transactionContent).offset().top
+        }, 1500);
     }
 
     loading.hide();

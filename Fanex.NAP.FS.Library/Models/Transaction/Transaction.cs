@@ -1,5 +1,6 @@
 ﻿namespace Fanex.NAP.FS.Library.Models.Transaction
-{    
+{
+    using Fanex.NAP.FS.Library.Core.Consts;
     using System;    
 
     public class Transaction
@@ -38,7 +39,7 @@
 
         public string ServiceProvider { get; set; }
 
-        public string TransDateString
+        public string TransDateToString
         {
             get
             {
@@ -47,7 +48,7 @@
                     return string.Empty;
                 }
 
-                return TransDate.ToString("MMM dd, yyyy hh: mm:ss tt");
+                return TransDate.ToString(Consts.FormatDateToString_MMMddyyyyhhmmsstt);
             }
         }
     }

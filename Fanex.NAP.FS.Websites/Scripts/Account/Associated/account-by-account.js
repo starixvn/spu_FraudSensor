@@ -37,10 +37,10 @@
             columns: [
                 { data: obj => RenderUsername(obj) },
                 { data: obj => obj.Status },
-                { data: obj => moment(obj.FirstLogin).format("MMM DD, YYYY")},
-                { data: obj => moment(obj.LastLogin).format("MMM DD, YYYY")},
+                { data: obj => obj.FirstLoginToString},
+                { data: obj => obj.LastLoginToString},
                 { data: obj => obj.TotalLoginWithRootAccount },
-                { data: obj => moment(obj.AssociatedWithRootAccountOn).format("MMM DD, YYYY")},
+                { data: obj => obj.AssociatedWithRootAccountOnToString},
                 { data: obj => RenderGraphImage()}
             ],
             headerCallback: function (thread) {
@@ -88,6 +88,7 @@
             },
             success: function (response) {
                 BindDataToGrid(response);
+                AnimateContent();
             },
             error: function (errMsg) {
                 console.log(errMsg);
@@ -101,7 +102,13 @@
         associatedContent.show();
 
         associatedTable.DataTable().clear().rows.add(data).draw();
-        associatedTable.DataTable().columns.adjust();
+        associatedTable.DataTable().columns.adjust();        
+    }
+
+    function AnimateContent() {
+        $('html, body').animate({
+            scrollTop: $(associatedContent).offset().top
+        }, 1500);
     }
 
     function InitSearchOnGrid() {

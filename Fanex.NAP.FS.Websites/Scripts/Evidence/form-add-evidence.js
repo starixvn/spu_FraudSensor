@@ -55,7 +55,7 @@
     function Clear() {
         $(evidences_groups_all).html(Loading);
         $(evidences_groups_added).html(Loading);
-        $('#comment').html('');
+        $('#comment').val('');
     }
 
     function GetEvidenceForUpdate() {
