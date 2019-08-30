@@ -70,18 +70,18 @@
         #region Test
         private ChainsToEvidence GetChainsToEvidence_Test(int accountId)
         {
-            var account = new Account();
-            account.Id = accountId;
-            account.UserName = "fpsa_pgmthai";
-            account.UserName2 = "fpsa_pgmthai";
+            var account = new AccountGeneralInformation();
+            account.AccountId = accountId;
+            account.Username = "fpsa_pgmthai";
+            account.Username2 = "fpsa_pgmthai";
 
             var evidenceAccounts = new List<AccountEvidence>();
             {
                 var item = new AccountEvidence();
                 {
-                    item.Id = account.Id;
+                    item.Id = account.AccountId;
                     item.AffectedDate = DateTime.Now;
-                    item.NodeNameRoot = account.UserName;
+                    item.NodeNameRoot = account.Username;
                     item.Comment = "Comment";
                     item.Evidence = new FraudCaseEvidence.Evidence { EvidenceCode = "1.1", EvidenceName = "abc" };
                 }
@@ -98,8 +98,8 @@
                         node.Evidence = new FraudCaseEvidence.Evidence { EvidenceCode = "1." + i, EvidenceName = "xyz_" + i};
                         node.NodeIdCurrent = i;
                         node.NodeNameCurrent = "fpsw_pgmthai";
-                        node.NodeIdParrent = account.Id;
-                        node.NodeNameParent = account.UserName;
+                        node.NodeIdParrent = account.AccountId;
+                        node.NodeNameParent = account.Username;
                         node.NodeType = "Retracted";
                     }
 
@@ -113,8 +113,8 @@
                         node.Evidence = new FraudCaseEvidence.Evidence { EvidenceCode = "1." + i, EvidenceName = "xxx_" + i };
                         node.NodeIdCurrent = i;
                         node.NodeNameCurrent = "fpsw_pgmthai_" + i;
-                        node.NodeIdParrent = account.Id;
-                        node.NodeNameParent = account.UserName;
+                        node.NodeIdParrent = account.AccountId;
+                        node.NodeNameParent = account.Username;
                         node.NodeType = "Exception";
                     }
 

@@ -13,17 +13,17 @@
 
         public bool closed { get; set; }
 
-        public bool danger { get; set; }
+        public int danger { get; set; }
 
-        public bool danger2 { get; set; }
+        public int danger2 { get; set; }
 
-        public bool danger3 { get; set; }
+        public int danger3 { get; set; }
 
-        public bool autosuspend { get; set; }
+        public int autosuspend { get; set; }
 
-        public bool autosuspend2 { get; set; }
+        public int autosuspend2 { get; set; }
 
-        public bool Abnormal { get; set; }
+        public int Abnormal { get; set; }
 
         public AccountStatus GetStatus()
         {

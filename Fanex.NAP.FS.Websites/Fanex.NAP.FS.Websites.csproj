@@ -1089,7 +1089,7 @@
     <Content Include="Views\CustomerMonitor\MatchNote.cshtml" />
     <Content Include="Views\CustomerMonitor\CustomerDetails\Index.cshtml" />
     <Content Include="Scripts\MultipleSelect\jquery.multiselect.js" />
-    <Content Include="Views\Account\DetailInfoAccount\AccountInfo.cshtml" />
+    <Content Include="Views\Account\DetailInfoAccount\GeneralInformation.cshtml" />
     <Content Include="Views\Account\DetailInfoAccount\ChainsToEvidence.cshtml" />
     <Content Include="Views\Evidence\FormException.cshtml" />
     <Content Include="Views\Account\DetailInfoAccount\RetractAndException.cshtml" />

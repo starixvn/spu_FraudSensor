@@ -7,7 +7,7 @@
     {
         public int Id { get; set; }
 
-        public Account Account { get; set; }
+        public AccountGeneralInformation Account { get; set; }
 
         public Evidence Evidence { get; set; }
 

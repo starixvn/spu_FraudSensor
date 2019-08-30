@@ -179,6 +179,27 @@
                 font-weight: bold;
                 color: #404040;
             }
+
+            .line-item {
+                margin-left: 50px;
+                margin-right: 10px;
+            }
+
+            .line-item2 {
+                margin-right: 10px;
+            }
+
+            .width-50 {
+                width: 50px;
+            }
+
+            .width-90 {
+                width: 90px;
+            }
+
+            .width-140 {
+                width: 140px;
+            }
         }
 
         @media screen and (max-width: 1199px) {

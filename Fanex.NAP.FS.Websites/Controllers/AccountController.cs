@@ -27,9 +27,11 @@
         }
 
         #region Detail
-        public ActionResult DetailAccount(int id, int custId)
+        public ActionResult DetailAccount(int id, int custId, string subscriber)
         {
-            var data = _accountService.GetAccountDetail(id, custId);
+            var data = _accountService.GetAccountDetailGeneralInformation(id, custId);
+
+            ViewBag.SubscriberName = subscriber;
 
             return View("DetailAccount", data);
         }

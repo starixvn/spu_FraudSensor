@@ -1,10 +1,10 @@
-﻿namespace Fanex.NAP.FS.Library.ViewModels.Account
+﻿namespace Fanex.NAP.FS.Library.ViewModels.Account.Associated
 {
     using Fanex.NAP.FS.Library.Models.Account;
     using Fanex.NAP.FS.Library.ViewModels.Account.Associated;
     using System.Collections.Generic;
 
-    public class AccountsCollected
+    public class AssociatedAccountsCollected
     {
         public IEnumerable<CustomerByGraphDB> CustomersFromAPI { get; set; }
 

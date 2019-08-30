@@ -16,9 +16,11 @@
     using Fanex.NAP.FS.Library.Core.Helpers;    
     using Fanex.NAP.FS.Library.Core.Helpers.Api;
     using Fanex.NAP.FS.Library.Core.Consts;
-    using Fanex.NAP.FS.Library.ViewModels.Evidence;
     using Fanex.NAP.FS.Library.Criteria.Account.Associated;
     using Fanex.Data;
+    using Fanex.NAP.FS.Library.ViewModels.Account.GeneralInformation;
+    using Fanex.NAP.FS.Library.Criteria.Account.GeneralInformation;
+    using System.Text;
 
     public class AccountService : IAccountService
     {
@@ -53,31 +55,22 @@
                             .ThenBy(a => a.UserName);
         }
 
-        public AccountDetail GetAccountDetail(int accountId, int custId)
+        public AccountDetail GetAccountDetailGeneralInformation(int accountId, int custId)
         {
-            var data = new AccountDetail();
-            data.AccountInfo = new Account();
-            data.AccountInfo.Id = accountId;
-            data.AccountInfo.CustId = custId;
-            data.AccountInfo.UserName = "fpsa_pgmthai";
-            data.AccountInfo.UserName2 = "fpsa2_pgmthai";
-            data.AccountInfo.Status = AccountStatus.Active.ToString();
-            data.AccountInfo.FirstLogin = DateTime.Now;
-            data.AccountInfo.LastLogin = DateTime.Now;
-            data.AccountInfo.FrequencyLogin = 1;
-            data.TotalChainsToEvidence = 5;
-            data.TotalRetractedEvidence = 3;
-            data.TotalException = 5;
-            data.TotalAssociatedAcount = 10;
-            data.TotalAssociatedDevice = 20;
-            data.TotalTransactionHistory = 100;
+            var accountCollected = new GeneralAccountCollected();
 
-            return data;
+            accountCollected.CustomerInformation = GetGeneralCustomerInformation(accountId);
+
+            accountCollected.AssociatedByAccounts = GetAssociatedByAccounts(accountId);
+
+            accountCollected.CustomerFraudSuspicious = GetCustomerFraudSuspicious(custId.ToString());
+
+            return GetAccountDetailGeneralInformation(accountCollected, accountId, custId);
         }
 
         public IEnumerable<AssociatedAccountByAccount> GetAssociatedAccountByAccounts(AssociatedAccountByAccountFilter filter)
         {
-            var accountCollected = new AccountsCollected();
+            var accountCollected = new AssociatedAccountsCollected();
 
             accountCollected.CustomersFromAPI = GetCustomersFromAPI(filter.CustId, filter.DeviceAwayOne);
 
@@ -119,6 +112,125 @@
             return subscribers;
         }
 
+        #region General information
+        private static IEnumerable<CustomerInformation> GetGeneralCustomerInformation(int accountId)
+        {
+            var criteria = new GetCustomerGeneralInformationCriteria
+            {
+                 ip_accountId = accountId
+            };
+
+            return DataService.GetData<CustomerInformation>(criteria);
+        }
+
+        private static IEnumerable<AssociatedByAccount> GetAssociatedByAccounts(int accountId)
+        {
+            var criteria = new GetAssociationByAccountCriteria
+            {
+                accountId = accountId
+            };
+
+            return DataService.GetData<AssociatedByAccount>(criteria);
+        }
+
+        private CustomerFraudSuspicious GetCustomerFraudSuspicious(string customerId)
+        {
+            var criteria = new GetCustomerFraudInfoCriteria
+            {
+                custIds = customerId
+            };
+
+            using (var db = ObjectDbFactory.CreateInstance(criteria.GetSettingKey()))
+            {
+                using (var query = db.QueryMultiple(criteria))
+                {
+                    var customerFrauds = query.Read<CustomerFraud>();
+                    var customerSuspiciouses = query.Read<CustomerSuspicious>();
+
+                    return new CustomerFraudSuspicious
+                    {
+                        CustomerFrauds = customerFrauds,
+                        CustomerSuspiciouses = customerSuspiciouses
+                    };
+                }
+            }
+        }
+
+        private static AccountDetail GetAccountDetailGeneralInformation(GeneralAccountCollected accountsCollected, int accountId, int custId)
+        {
+            var accountDetail = new AccountDetail();
+            var generalInfo = new AccountGeneralInformation();
+
+            generalInfo.AccountId = accountId;
+            generalInfo.CustId = custId;
+
+            if (accountsCollected.CustomerInformation.Any())
+            {
+                var customerInformation = accountsCollected.CustomerInformation.ToList()[0];
+
+                GetLoginInformation(generalInfo, customerInformation);
+            }
+
+            if (accountsCollected.AssociatedByAccounts.Any())
+            {
+                var associated = accountsCollected.AssociatedByAccounts.ToList()[0];
+
+                GetAssociatedInformation(generalInfo, associated);
+            }
+
+            GetFraudInformation(generalInfo, accountsCollected.CustomerFraudSuspicious);
+
+            accountDetail.GeneralInfo = generalInfo;
+
+            return accountDetail;
+        }
+
+        private static void GetLoginInformation(AccountGeneralInformation generalInfo, CustomerInformation customerInformation)
+        {
+            generalInfo.FirstLogin = customerInformation.CreatedDate;
+            generalInfo.LastLogin = customerInformation.LastLoginDate;
+            generalInfo.FrequencyLogin = customerInformation.LoginCount;
+            generalInfo.Username = customerInformation.Username;
+            generalInfo.Username2 = customerInformation.Username2;
+            generalInfo.AccountStatus = customerInformation.AccountStatus;
+            generalInfo.AccountAge = customerInformation.AccountAge;
+        }
+
+        private static void GetAssociatedInformation(AccountGeneralInformation generalInfo, AssociatedByAccount associated)
+        {
+            generalInfo.AssociatedAccounts = associated.AssociatedAccount;
+            generalInfo.AssociatedDevices = associated.AssociatedDevice;
+            generalInfo.SharedDevices = associated.SharedDevices;
+            generalInfo.NoSharedDevices = associated.NonShareDevices;
+            generalInfo.AccountExceptions = associated.AccountException;
+        }
+
+        private static void GetFraudInformation(AccountGeneralInformation generalInfo, CustomerFraudSuspicious customerFraudSuspicious)
+        {
+            generalInfo.Evidence = "-";
+            generalInfo.ProblemAccount = "-";
+
+            if (customerFraudSuspicious.CustomerFrauds.Any())
+            {
+                var fraud = customerFraudSuspicious.CustomerFrauds.ToList()[0];
+                generalInfo.Abnormal = fraud.Abnormal;
+                generalInfo.DangerousOriginal = fraud.danger;
+                generalInfo.DangerousNonLive = fraud.danger2;
+                generalInfo.DangerousOtherSports = fraud.danger3;
+                generalInfo.AutoSuspend = fraud.autosuspend;
+                generalInfo.AutoSuspendSoccer = fraud.autosuspend2;
+            }
+
+            var fraudCase = new StringBuilder();
+            foreach (var item in customerFraudSuspicious.CustomerSuspiciouses)
+            {
+                fraudCase.Append(item.FraudCaseName + ",");
+            }
+            generalInfo.CommitedFraudCase = fraudCase.ToString().TrimEnd(',');
+        }
+        #endregion
+
+        #region Associated account by account
         private static IEnumerable<CustomerByGraphDB> GetCustomersFromAPI(int custId, bool deviceAwayOne)
         {
             var configUrl = deviceAwayOne ? Consts.GraphDBGetAssociationOneLevel : Consts.GraphDBGetAssociationNLevel;
@@ -137,17 +249,22 @@
             if (customersFromAPI.Any())
             {
                 var customerIds = customersFromAPI.Select(c => c.CustId).Join();
-
-                var criteria = new GetAssociatedAccountByAccountCriteria
-                {
-                    custIds = customerIds,
-                    rootAccountId = accountId
-                };
-
-                return DataService.GetData<AssociatedAccountByCustomer>(criteria);
+                
+                return GetAssociatedAccountByCustomers(accountId, customerIds);
             }
 
             return new List<AssociatedAccountByCustomer>();            
+        }
+
+        private static IEnumerable<AssociatedAccountByCustomer> GetAssociatedAccountByCustomers(int accountId, string customerIds)
+        {
+            var criteria = new GetAssociatedAccountByAccountCriteria
+            {
+                custIds = customerIds,
+                rootAccountId = accountId
+            };
+
+            return DataService.GetData<AssociatedAccountByCustomer>(criteria);
         }
 
         private CustomerFraudSuspicious GetCustomerFraud(IEnumerable<CustomerByGraphDB> customersFromAPI)
@@ -178,7 +295,7 @@
             return new CustomerFraudSuspicious();
         }
 
-        private static IEnumerable<AssociatedAccountByAccount> GetAssociatedAccountByAccount(AccountsCollected accountsCollected, AssociatedAccountByAccountFilter filter)
+        private static IEnumerable<AssociatedAccountByAccount> GetAssociatedAccountByAccount(AssociatedAccountsCollected accountsCollected, AssociatedAccountByAccountFilter filter)
         {
             return accountsCollected.AccountsByCustomers
                             .Where(customer=>customer.CompareFraudStatus(filter.FraudStatus)).AsEnumerable()
@@ -193,38 +310,41 @@
                                 (cusA, cusB) => GetAssociatedAccount(cusA, cusB));
         }
 
-        private static AssociatedAccountByAccount GetAssociatedAccount(AssociatedAccountByCustomer cusA, CustomerByGraphDB cusB)
+        private static AssociatedAccountByAccount GetAssociatedAccount(AssociatedAccountByCustomer customerA, CustomerByGraphDB customerB)
         {
             return new AssociatedAccountByAccount
             {
-                AccountID = cusA.AccountID,
-                CustID = cusA.CustID,
-                Username = cusB.Username,
-                Username2 = cusB.Username2,
-                LastLogin = cusA.LastLogin,
-                FirstLogin = cusA.FirstLogin,
-                AssociatedWithRootAccountOn = cusA.AssociatedWithRootAccountOn,
-                TotalLoginWithRootAccount = cusA.TotalLoginWithRootAccount,
-                EvidenceLevel = cusA.EvidenceLevel
+                AccountID = customerA.AccountID,
+                CustID = customerA.CustID,
+                Username = customerB.Username,
+                Username2 = customerB.Username2,
+                LastLogin = customerA.LastLogin,
+                FirstLogin = customerA.FirstLogin,
+                AssociatedWithRootAccountOn = customerA.AssociatedWithRootAccountOn,
+                TotalLoginWithRootAccount = customerA.TotalLoginWithRootAccount,
+                EvidenceLevel = customerA.EvidenceLevel
             };
         }
 
-        private static AssociatedAccountByAccount GetAssociatedAccount(AssociatedAccountByAccount cusA, CustomerFraud cusB)
+        private static AssociatedAccountByAccount GetAssociatedAccount(AssociatedAccountByAccount customerA, CustomerFraud customerB)
         {
             return new AssociatedAccountByAccount
             {
-                AccountID = cusA.AccountID,
-                CustID = cusA.CustID,
-                Username = cusA.Username,
-                Username2 = cusA.Username2,
-                LastLogin = cusA.LastLogin,
-                FirstLogin = cusA.FirstLogin,
-                AssociatedWithRootAccountOn = cusA.AssociatedWithRootAccountOn,
-                TotalLoginWithRootAccount = cusA.TotalLoginWithRootAccount,
-                EvidenceLevel = cusA.EvidenceLevel,
-                Status = cusB.GetStatusName()
+                AccountID = customerA.AccountID,
+                CustID = customerA.CustID,
+                Username = customerA.Username,
+                Username2 = customerA.Username2,
+                LastLogin = customerA.LastLogin,
+                FirstLogin = customerA.FirstLogin,
+                AssociatedWithRootAccountOn = customerA.AssociatedWithRootAccountOn,
+                TotalLoginWithRootAccount = customerA.TotalLoginWithRootAccount,
+                EvidenceLevel = customerA.EvidenceLevel,
+                Status = customerB.GetStatusName()
             };
         }
+
+        #endregion
+
         #endregion
 
         #region Test       

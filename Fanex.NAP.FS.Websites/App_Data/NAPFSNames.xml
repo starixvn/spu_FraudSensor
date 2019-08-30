@@ -283,6 +283,14 @@
              DbName="MySQL.FPS_DataCenter"/>    
   </Function> 
   <Function name="AccountDetail">
+    <Setting Key="FPS_DC_GetCustomerGeneralInfo"
+            SpName="FPS_DC_GetCustomerGeneralInfo"
+            DbName="MySQL.FPS_DataCenter"/>
+
+    <Setting Key="FPS_DC_Rpt_GetAssociationByAccount"
+            SpName="FPS_DC_Rpt_GetAssociationByAccount"
+            DbName="MySQL.FPS_DataCenter"/>
+    
     <Setting Key="FPS_DC_Rpt_GetAssociatedAccountByAccount"
             SpName="FPS_DC_Rpt_GetAssociatedAccountByAccount"
             DbName="MySQL.FPS_DataCenter"/>

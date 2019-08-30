@@ -7,7 +7,7 @@
     <link href="~/Content/scss/pages/evidence/evidence.css" rel="stylesheet" />
 }
 
-@Html.Partial("DetailInfoAccount/AccountInfo", Model)
+@Html.Partial("DetailInfoAccount/GeneralInformation", Model)
 
 <div class="content-card">
     <div class="status">
@@ -83,10 +83,10 @@
 
 @section scripts{
     <script type="text/javascript">
-        var ACCOUNTID = '@Model.AccountInfo.Id';
-        var CUSTID = '@Model.AccountInfo.CustId';
-        var USERNAME = '@Model.AccountInfo.UserName';
-        var SUBSCRIBER = 'FPS';
+        var ACCOUNTID = '@Model.GeneralInfo.AccountId';
+        var CUSTID = '@Model.GeneralInfo.CustId';
+        var USERNAME = '@Model.GeneralInfo.Username';
+        var SUBSCRIBER = '@ViewBag.SubscriberName';
     </script>
 
     @Scripts.Render("~/evidence-scripts"
