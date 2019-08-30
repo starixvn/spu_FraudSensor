@@ -168,24 +168,24 @@
             {
                 var customerInformation = accountsCollected.CustomerInformation.ToList()[0];
 
-                GetLoginInformation(generalInfo, customerInformation);
+                generalInfo = GetLoginInformation(generalInfo, customerInformation);
             }
 
             if (accountsCollected.AssociatedByAccounts.Any())
             {
                 var associated = accountsCollected.AssociatedByAccounts.ToList()[0];
 
-                GetAssociatedInformation(generalInfo, associated);
+                generalInfo = GetAssociatedInformation(generalInfo, associated);
             }
 
-            GetFraudInformation(generalInfo, accountsCollected.CustomerFraudSuspicious);
+            generalInfo = GetFraudInformation(generalInfo, accountsCollected.CustomerFraudSuspicious);
 
             accountDetail.GeneralInfo = generalInfo;
 
             return accountDetail;
         }
 
-        private static void GetLoginInformation(AccountGeneralInformation generalInfo, CustomerInformation customerInformation)
+        private static AccountGeneralInformation GetLoginInformation(AccountGeneralInformation generalInfo, CustomerInformation customerInformation)
         {
             generalInfo.FirstLogin = customerInformation.CreatedDate;
             generalInfo.LastLogin = customerInformation.LastLoginDate;
@@ -194,18 +194,22 @@
             generalInfo.Username2 = customerInformation.Username2;
             generalInfo.AccountStatus = customerInformation.AccountStatus;
             generalInfo.AccountAge = customerInformation.AccountAge;
+
+            return generalInfo;
         }
 
-        private static void GetAssociatedInformation(AccountGeneralInformation generalInfo, AssociatedByAccount associated)
+        private static AccountGeneralInformation GetAssociatedInformation(AccountGeneralInformation generalInfo, AssociatedByAccount associated)
         {
             generalInfo.AssociatedAccounts = associated.AssociatedAccount;
             generalInfo.AssociatedDevices = associated.AssociatedDevice;
             generalInfo.SharedDevices = associated.SharedDevices;
             generalInfo.NoSharedDevices = associated.NonShareDevices;
             generalInfo.AccountExceptions = associated.AccountException;
+
+            return generalInfo;
         }
 
-        private static void GetFraudInformation(AccountGeneralInformation generalInfo, CustomerFraudSuspicious customerFraudSuspicious)
+        private static AccountGeneralInformation GetFraudInformation(AccountGeneralInformation generalInfo, CustomerFraudSuspicious customerFraudSuspicious)
         {
             generalInfo.Evidence = "-";
             generalInfo.ProblemAccount = "-";
@@ -227,6 +231,8 @@
                 fraudCase.Append(item.FraudCaseName + ",");
             }
             generalInfo.CommitedFraudCase = fraudCase.ToString().TrimEnd(',');
+
+            return generalInfo;
         }
         #endregion
 
