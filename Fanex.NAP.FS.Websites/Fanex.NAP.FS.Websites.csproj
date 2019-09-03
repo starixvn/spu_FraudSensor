@@ -393,11 +393,16 @@
     <Content Include="Content\scss\pages\subscriber-assignment\subscriber-assignment.min.css">
       <DependentUpon>subscriber-assignment.css</DependentUpon>
     </Content>
+    <Content Include="Content\scss\vendors\popoto\font-icon-list.html" />
+    <Content Include="Content\scss\vendors\popoto\font\popoto\popoto.svg" />
+    <Content Include="Content\scss\vendors\popoto\popoto-svg.css" />
     <Content Include="Scripts\Account\Associated\account-by-account.js" />
     <Content Include="Scripts\Account\Associated\device-by-account.js" />
     <Content Include="Scripts\Evidence\form-add-evidence.js" />
     <Content Include="Scripts\Evidence\form-exception.js" />
     <Content Include="Scripts\Evidence\form-group-or-evidence.js" />
+    <Content Include="Scripts\popoto\d3.min.js" />
+    <Content Include="Scripts\popoto\popoto.min.js" />
     <Content Include="Scripts\search.js" />
     <Content Include="Scripts\Account\detail-account.js" />
     <Content Include="Scripts\Search\Account\search-account.js" />
@@ -924,6 +929,10 @@
     </None>
     <Content Include="Content\scss\pages\subscriber-assignment\subscriber-assignment.scss" />
     <Content Include="Content\scss\pages\evidence\evidence.scss" />
+    <Content Include="Content\scss\vendors\popoto\popoto.min.css" />
+    <Content Include="Content\scss\vendors\popoto\font\popoto\popoto.eot" />
+    <Content Include="Content\scss\vendors\popoto\font\popoto\popoto.ttf" />
+    <Content Include="Content\scss\vendors\popoto\font\popoto\popoto.woff" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile2.pubxml" />

@@ -47,6 +47,7 @@
             RegisterAssociatedAccountBundles(bundles);
             RegisterEvidenceBundles(bundles);
             RegisterTransactionHistoryBundles(bundles);
+            RegisterGraphVisualizeBundles(bundles);
         }
 
         private static void RegisterFSCoreBundles(BundleCollection bundles)
@@ -148,6 +149,13 @@
         {
             bundles.Add(new ScriptBundle("~/account/associated-scripts").Include("~/scripts/Account/Associated/*.js"));
             bundles.Add(new ScriptBundle("~/account-scripts").Include("~/scripts/Account/*.js"));
+        }
+
+        private static void RegisterGraphVisualizeBundles(BundleCollection bundles)
+        {
+            bundles.Add(new ScriptBundle("~/graph-visualize-lib").Include(
+                "~/Scripts/popoto/d3.min.js",
+                "~/Scripts/popoto/popoto.min.js"));
         }
 
         private static void RegisterEvidenceBundles(BundleCollection bundles)
