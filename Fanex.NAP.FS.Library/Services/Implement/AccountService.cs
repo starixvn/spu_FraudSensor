@@ -320,11 +320,11 @@
                 msgError = string.Empty;
 
                 return accountsCollected.AccountsByCustomers
-                                .Where(customer => customer.CompareFraudStatus(filter.FraudStatus))
+                                //.Where(customer => customer.CompareFraudStatus(filter.FraudStatus))
                                 .Join(accountsCollected.CustomersFromAPI,
                                     cusA => cusA.CustID,
                                     cusB => cusB.CustId,
-                                    (cusA, cusB) => GetAssociatedAccountByGraph(cusA, cusB));
+                                    (cusA, cusB) => GetAssociatedAccountByGraph(cusA, cusB)).ToList();
                                 //.Join(accountsCollected.CustomerFraudSuspicious.CustomerFrauds
                                 //    .Where(customer => customer.CompareStatus(filter.Status)),
                                 //    cusA => cusA.CustID,
