@@ -148,6 +148,19 @@
     GenerateGrid();
 
     InitSearchOnGrid();
+
+    $('#btn-ass-acc').click(OpenGraphRender);
+
+    function OpenGraphRender() {
+        $('#form-graph-render').dialog({
+            modal: true,
+            width: '1500px',
+            title: 'Graph visualization',
+            resizable: true,
+            draggable: true,
+            close: function () { $(this).dialog('close'); }
+        })
+    }
 }
 
 $(account_by_account);

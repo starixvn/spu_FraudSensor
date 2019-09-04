@@ -49,16 +49,6 @@
             <div id="associated_account" class="report-cont" hidden>
                 <img src="@Url.Content("~/Content/images/ajax-loader.gif")" alt="Loading ..." />
             </div>
-            <div class="ppt-body">
-                <section class="ppt-section-main">
-                    <div class="ppt-container-graph">
-                        <div id="popoto-graph" class="ppt-div-graph">
-                            <!-- Graph will be generated here-->
-                        </div>
-                    </div>
-
-                </section>
-            </div>
         </div>
         <div class="report-item">
             <h3 class="head ui-accordion-header ui-helper-reset ui-state-default ui-corner-all" ref="associated_device">
@@ -97,21 +87,4 @@
                     , "~/account/associated-scripts"
                     , "~/transaction/history-scripts"
                     , "~/graph-visualize-lib")
-
-    <script type="text/javascript">
-        popoto.rest.CYPHER_URL = "http://10.18.200.70:7474/db/data/transaction/commit";
-        popoto.rest.AUTHORIZATION = "Basic " + "bmVvNGo6MTIzNGFh"; // btoa("neo4j:password")
-        popoto.provider.node.Provider = {
-            "Customer": {
-                "returnAttributes": ["Username"],
-                "constraintAttribute": "Username",
-            }
-        };
-
-        popoto.query.RESULTS_PAGE_SIZE = 100;
-        popoto.query.USE_RELATION_DIRECTION = true;
-        popoto.logger.LEVEL = popoto.logger.LogLevels.ERROR;
-
-        popoto.start("Customer");
-    </script>
 }

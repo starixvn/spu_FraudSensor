@@ -2,23 +2,19 @@
 @{
     ViewBag.Title = "GeneralInformation";
 }
-
 @Html.Partial("../Evidence/FormAddEvidence")
-
 <h2 class="title">
     <span class="breadcrumb">
         <span><a href="@Url.Action("Index", "SearchAccount")" class="link">Search Account</a></span>
         <span class="page">Account Detail</span>
     </span>
 </h2>
-
 <div class="content-card">
     <div class="status">
         <p class="info"><i class="icon-clean"></i><span>@Model.GeneralInfo.Username (@Model.GeneralInfo.Username2): This account is clean</span></p>
         <p class="bold">Account Status: <span class="badge-label badge-active">@ViewBag.SubscriberName</span></p>
         <button class="button btn-add" type="button" id="btn-add-evidence">Add Evidence</button>
     </div>
-
     <div class="account-info">
         <div class="info-item">
             <div class="info-title">Login Information</div>
