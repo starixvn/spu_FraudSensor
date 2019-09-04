@@ -19,9 +19,9 @@
 
         public int danger3 { get; set; }
 
-        public int autosuspend { get; set; }
+        public bool autosuspend { get; set; }
 
-        public int autosuspend2 { get; set; }
+        public bool autosuspend2 { get; set; }
 
         public int Abnormal { get; set; }
 

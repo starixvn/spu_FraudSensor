@@ -52,9 +52,7 @@
 
         public int DangerousOtherSports { get; set; }
 
-        public int AutoSuspend { get; set; }
-
-        public int AutoSuspendSoccer { get; set; }
+        public string AutoSuspend { get; set; }        
 
         public string CommitedFraudCase { get; set; }
 

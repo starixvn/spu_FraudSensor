@@ -227,6 +227,7 @@
     <Compile Include="Core\BaseClasses\DataService.cs" />
     <Compile Include="Core\BaseClasses\FraudCaseAttribute.cs" />
     <Compile Include="Core\Consts\Consts.cs" />
+    <Compile Include="Core\Consts\ConstsResources.cs" />
     <Compile Include="Core\ExportExcel\ExcelUtilities.cs" />
     <Compile Include="Core\ExportExcel\FSExcelConfig.cs" />
     <Compile Include="Core\ExportExcel\ExcelStream.cs" />
@@ -238,6 +239,12 @@
     <Compile Include="Core\Helpers\Sequence.cs" />
     <Compile Include="Core\Helpers\Xml\XmlHelper.cs" />
     <Compile Include="Core\Helpers\Xml\XNameAttribute.cs" />
+    <Compile Include="Core\Resources\ResourcesManager.cs" />
+    <Compile Include="Core\Resources\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Core\Utilities\ConfigSettings.cs" />
     <Compile Include="Core\Utilities\Extentions.cs" />
     <Compile Include="Criteria\Account\Associated\GetAssociatedAccountByAccountCriteria.cs" />
@@ -528,6 +535,10 @@
     <EmbeddedResource Include="Core\Resources\Error.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Error.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Core\Resources\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

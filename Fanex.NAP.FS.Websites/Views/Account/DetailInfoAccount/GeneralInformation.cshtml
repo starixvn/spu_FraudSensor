@@ -2,19 +2,23 @@
 @{
     ViewBag.Title = "GeneralInformation";
 }
+
 @Html.Partial("../Evidence/FormAddEvidence")
+
 <h2 class="title">
     <span class="breadcrumb">
         <span><a href="@Url.Action("Index", "SearchAccount")" class="link">Search Account</a></span>
         <span class="page">Account Detail</span>
     </span>
 </h2>
+
 <div class="content-card">
     <div class="status">
         <p class="info"><i class="icon-clean"></i><span>@Model.GeneralInfo.Username (@Model.GeneralInfo.Username2): This account is clean</span></p>
         <p class="bold">Account Status: <span class="badge-label badge-active">@ViewBag.SubscriberName</span></p>
         <button class="button btn-add" type="button" id="btn-add-evidence">Add Evidence</button>
     </div>
+
     <div class="account-info">
         <div class="info-item">
             <div class="info-title">Login Information</div>
@@ -34,23 +38,25 @@
             <div class="info-title">Fraud Infomation</div>
             <div class="info-text"><label>Evidence:</label><span> @Model.GeneralInfo.Evidence</span></div>
             <div class="info-text"><label>Problem Account:</label><span> @Model.GeneralInfo.ProblemAccount</span></div>
-            <div class="info-text"><label>Abnormal:</label><span class="badge-level"> @Model.GeneralInfo.Abnormal</span></div>
+            <div class="info-text"><label>Abnormal:</label><span class="badge-level" id="abnormal"> @Model.GeneralInfo.Abnormal</span></div>
             <div class="info-text">
                 <label>Dangerous Level:</label>
                 <label class="line-item2 width-50">Original:</label>
-                <span class="badge-level"> @Model.GeneralInfo.DangerousOriginal</span>
+                <span class="badge-level" id="dangerous-level-original"> @Model.GeneralInfo.DangerousOriginal</span>
                 <label class="line-item width-50">NonLive:</label>
-                <span class="badge-level"> @Model.GeneralInfo.DangerousNonLive</span>
+                <span class="badge-level"  id="dangerous-level-non-live"> @Model.GeneralInfo.DangerousNonLive</span>
                 <label class="line-item width-90">Other Sports:</label>
-                <span class="badge-level"> @Model.GeneralInfo.DangerousOtherSports</span>
+                <span class="badge-level" id="dangerous-level-other-sports"> @Model.GeneralInfo.DangerousOtherSports</span>
             </div>
             <div class="info-text">
-                <label>Auto Suspend:</label>
-                <span class="badge-level"> @Model.GeneralInfo.AutoSuspend</span>
-                <label class="line-item width-140">Auto Suspend Soccer:</label>
-                <span class="badge-level"> @Model.GeneralInfo.AutoSuspendSoccer</span>
+                <label>Auto Suspend: </label>
+                <span> @Model.GeneralInfo.AutoSuspend</span>
             </div>
             <div class="info-text"><label>Commited Fraud Cases:</label><span> @Model.GeneralInfo.CommitedFraudCase</span></div>
         </div>
     </div>
 </div>
+
+@section scripts{
+    <script src="~/Scripts/Account/general-information.js"></script>  
+}

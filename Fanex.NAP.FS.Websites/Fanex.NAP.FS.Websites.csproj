@@ -407,6 +407,7 @@
     <Content Include="Scripts\Account\detail-account.js" />
     <Content Include="Scripts\Search\Account\search-account.js" />
     <Content Include="Scripts\SubscriberAssignment\subscriber.js" />
+    <Content Include="Scripts\Account\general-information.js" />
     <Compile Include="Service\Utilities\AppSession.cs" />
     <Compile Include="Service\Utilities\PermissionService.cs" />
     <Compile Include="Service\Utilities\SessionManager.cs" />

@@ -21,6 +21,7 @@
     using Fanex.NAP.FS.Library.ViewModels.Account.GeneralInformation;
     using Fanex.NAP.FS.Library.Criteria.Account.GeneralInformation;
     using System.Text;
+    using Fanex.NAP.FS.Library.Core.Resources;
 
     public class AccountService : IAccountService
     {
@@ -213,6 +214,7 @@
         {
             generalInfo.Evidence = "-";
             generalInfo.ProblemAccount = "-";
+            generalInfo.AutoSuspend = ResourcesManager.GetValue(ConstsResources.NONE);
 
             if (customerFraudSuspicious.CustomerFrauds.Any())
             {
@@ -221,8 +223,18 @@
                 generalInfo.DangerousOriginal = fraud.danger;
                 generalInfo.DangerousNonLive = fraud.danger2;
                 generalInfo.DangerousOtherSports = fraud.danger3;
-                generalInfo.AutoSuspend = fraud.autosuspend;
-                generalInfo.AutoSuspendSoccer = fraud.autosuspend2;
+                if (fraud.autosuspend)
+                {
+                    generalInfo.AutoSuspend = ResourcesManager.GetValue(ConstsResources.AUTO_SUSPEND_SOCCER);
+                }
+                else if (fraud.autosuspend2)
+                {
+                    generalInfo.AutoSuspend = ResourcesManager.GetValue(ConstsResources.AUTO_SUSPEND_OTHER_SPORTS);
+                }
+                else
+                {
+                    generalInfo.AutoSuspend = ResourcesManager.GetValue(ConstsResources.NONE);
+                }
             }
 
             var fraudCase = new StringBuilder();
