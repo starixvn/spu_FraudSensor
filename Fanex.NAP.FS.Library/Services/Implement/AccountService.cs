@@ -319,17 +319,19 @@
             {
                 msgError = string.Empty;
 
-                return accountsCollected.AccountsByCustomers
+                var data = accountsCollected.AccountsByCustomers
                                 //.Where(customer => customer.CompareFraudStatus(filter.FraudStatus))
                                 .Join(accountsCollected.CustomersFromAPI,
                                     cusA => cusA.CustID,
                                     cusB => cusB.CustId,
                                     (cusA, cusB) => GetAssociatedAccountByGraph(cusA, cusB)).ToList();
-                                //.Join(accountsCollected.CustomerFraudSuspicious.CustomerFrauds
-                                //    .Where(customer => customer.CompareStatus(filter.Status)),
-                                //    cusA => cusA.CustID,
-                                //    cusB => cusB.custid,
-                                //    (cusA, cusB) => GetAssociatedAccount(cusA, cusB));
+                //.Join(accountsCollected.CustomerFraudSuspicious.CustomerFrauds
+                //    .Where(customer => customer.CompareStatus(filter.Status)),
+                //    cusA => cusA.CustID,
+                //    cusB => cusB.custid,
+                //    (cusA, cusB) => GetAssociatedAccount(cusA, cusB));
+
+                return new List<AssociatedAccountByAccount>();
             }
             catch (Exception ex)
             {
