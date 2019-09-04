@@ -73,7 +73,7 @@
         {
             var accountCollected = new AssociatedAccountsCollected();
 
-            //accountCollected.CustomersFromAPI = GetCustomersFromAPI(filter.CustId, filter.DeviceAwayOne);
+            accountCollected.CustomersFromAPI = GetCustomersFromAPI(filter.CustId, filter.DeviceAwayOne);
 
             //accountCollected.AccountsByCustomers = GetAssociatedAccountByCustomers(filter.AccountId, accountCollected.CustomersFromAPI);
 
