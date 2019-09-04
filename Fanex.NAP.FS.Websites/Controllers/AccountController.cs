@@ -6,6 +6,8 @@
     using Fanex.NAP.Core.Web.Attribute;
     using Fanex.NAP.FS.Library.Core.Consts;
     using Fanex.NAP.FS.Library.ViewModels.Evidence;
+    using System.Net;
+    using System.Collections.Generic;
 
     [NapAuth(FunctionKey = FSFunctionKeys.SearchAccount, Policy = Core.Business.Constant.Policy.Read)]
     public class AccountController : BaseController
@@ -69,9 +71,13 @@
         [HttpPost]
         public ActionResult GetAssociatedAccountByAccountFilter(AssociatedAccountByAccountFilter filter)
         {
-            //var data = _accountService.GetAssociatedAccountByAccounts(filter);
+            var msgError = string.Empty;
+            var data = _accountService.GetAssociatedAccountByAccounts(filter, out msgError);
 
-            var data = "";
+            if (!string.IsNullOrEmpty(msgError))
+            {
+                return ResponseError(msgError);
+            }
 
             return Json(data, JsonRequestBehavior.AllowGet);
         }
@@ -110,6 +116,15 @@
             var data = _evidenceService.UpdateEvidenceByAccount(evidenceByAccount);
 
             return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        private ActionResult ResponseError(string msgError)
+        {
+            Response.StatusCode = (int)HttpStatusCode.BadRequest;
+            var errors = new List<string>();
+            errors.Add(msgError);
+
+            return Json(errors, JsonRequestBehavior.AllowGet);
         }
         #endregion
     }
