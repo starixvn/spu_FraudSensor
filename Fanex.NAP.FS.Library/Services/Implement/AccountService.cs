@@ -58,7 +58,7 @@
 
         public AccountDetail GetAccountDetailGeneralInformation(int accountId, int custId)
         {
-            var accountCollected = new GeneralAccountCollected();
+            var accountCollected = new GeneralAccountCollected();                       
 
             accountCollected.CustomerInformation = GetGeneralCustomerInformation(accountId);
 
@@ -121,7 +121,19 @@
                  ip_accountId = accountId
             };
 
-            return DataService.GetData<CustomerInformation>(criteria);
+            using (var db = ObjectDbFactory.CreateInstance(criteria.GetSettingKey()))
+            {
+                using (var query = db.QueryMultiple(criteria))
+                {
+                    query.Read();
+                    query.Read();
+                    query.Read();
+
+                    var data = query.Read<CustomerInformation>();
+
+                    return data;
+                }
+            }
         }
 
         private static IEnumerable<AssociatedByAccount> GetAssociatedByAccounts(int accountId)

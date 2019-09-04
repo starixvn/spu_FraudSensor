@@ -69,6 +69,8 @@
   border-radius: 3px; }
   .badge-label.badge-active {
     background: #4F971F; }
+  .badge-label.badge-flagged {
+    background: #ff0000; }
 
 .content-card {
   position: relative;

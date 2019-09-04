@@ -1,6 +1,7 @@
 ﻿@model Fanex.NAP.FS.Library.ViewModels.Account.AccountDetail
 @{
     ViewBag.Title = "GeneralInformation";
+    var accountClean = Model.GeneralInfo.FraudStatus == Fanex.NAP.FS.Library.Models.FraudStatus.Clean;
 }
 
 @Html.Partial("../Evidence/FormAddEvidence")
@@ -14,8 +15,36 @@
 
 <div class="content-card">
     <div class="status">
-        <p class="info"><i class="icon-clean"></i><span>@Model.GeneralInfo.Username (@Model.GeneralInfo.Username2): This account is clean</span></p>
-        <p class="bold">Account Status: <span class="badge-label badge-active">@ViewBag.SubscriberName</span></p>
+        @if (accountClean)
+        {
+            <p class="info">
+                <i class="icon-clean"></i>
+                <span>
+                    @Model.GeneralInfo.Username (@Model.GeneralInfo.Username2): <label>This account is clean</label>
+                </span>
+            </p>
+        }
+        else
+        {
+            <p class="info">
+                <i class="icon-fraud-flag"></i>
+                <span>
+                    @Model.GeneralInfo.Username (@Model.GeneralInfo.Username2): <label>This account is flagged</label>
+                </span>
+            </p>
+        }
+
+        <p class="bold">
+            Account Status:
+            @if (accountClean)
+            {
+                <span class="badge-label badge-active">@Enum.GetName(typeof(Fanex.NAP.FS.Library.Models.FraudStatus), Model.GeneralInfo.FraudStatus)</span>
+            }
+            else
+            {
+                <span class="badge-label badge-flagged">@Enum.GetName(typeof(Fanex.NAP.FS.Library.Models.FraudStatus), Model.GeneralInfo.FraudStatus)</span>
+            }
+        </p>
         <button class="button btn-add" type="button" id="btn-add-evidence">Add Evidence</button>
     </div>
 

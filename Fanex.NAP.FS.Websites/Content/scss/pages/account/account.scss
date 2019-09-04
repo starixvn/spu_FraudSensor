@@ -95,6 +95,10 @@
     &.badge-active {
         background: #4F971F;
     }
+
+    &.badge-flagged {
+        background: #ff0000;
+    }
 }
 
 .content-card {

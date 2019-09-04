@@ -20,7 +20,18 @@
 
         public string Status { get; set; }
 
-        public string FraudStatus { get; set; }
+        public FraudStatus FraudStatus
+        {
+            get
+            {
+                if (this.AccountStatus > 0)
+                {
+                    return FraudStatus.Fraud;
+                }
+
+                return FraudStatus.Clean;
+            }
+        }
 
         public DateTime FirstLogin { get; set; }
 
