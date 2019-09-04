@@ -319,12 +319,12 @@
             {
                 msgError = string.Empty;
 
-                var data = accountsCollected.AccountsByCustomers.AsEnumerable()
-                                //.Where(customer => customer.CompareFraudStatus(filter.FraudStatus))
-                                .Join(accountsCollected.CustomersFromAPI.AsEnumerable(),
-                                    cusA => cusA.CustID,
-                                    cusB => cusB.CustId,
-                                    (cusA, cusB) => GetAssociatedAccountByGraph(cusA, cusB)).ToList();
+                //var data = accountsCollected.AccountsByCustomers.AsEnumerable()
+                //                //.Where(customer => customer.CompareFraudStatus(filter.FraudStatus))
+                //                .Join(accountsCollected.CustomersFromAPI.AsEnumerable(),
+                //                    cusA => cusA.CustID,
+                //                    cusB => cusB.CustId,
+                //                    (cusA, cusB) => GetAssociatedAccountByGraph(cusA, cusB)).ToList();
                 //.Join(accountsCollected.CustomerFraudSuspicious.CustomerFrauds
                 //    .Where(customer => customer.CompareStatus(filter.Status)),
                 //    cusA => cusA.CustID,
