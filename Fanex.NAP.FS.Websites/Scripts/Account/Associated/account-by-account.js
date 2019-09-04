@@ -82,9 +82,9 @@
             data: {
                 AccountId: ACCOUNTID,
                 CustId: CUSTID,
-                DeviceAwayOne: deviceAwayOne,
-                Status: status,
-                FraudStatus: fraudStatus
+                DeviceAwayOne: deviceAwayOne
+                //Status: status,
+                //FraudStatus: fraudStatus
             },
             success: function (response) {
                 BindDataToGrid(response);

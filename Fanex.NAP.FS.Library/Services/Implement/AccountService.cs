@@ -319,9 +319,9 @@
             {
                 msgError = string.Empty;
 
-                var data = accountsCollected.AccountsByCustomers
+                var data = accountsCollected.AccountsByCustomers.AsEnumerable()
                                 //.Where(customer => customer.CompareFraudStatus(filter.FraudStatus))
-                                .Join(accountsCollected.CustomersFromAPI,
+                                .Join(accountsCollected.CustomersFromAPI.AsEnumerable(),
                                     cusA => cusA.CustID,
                                     cusB => cusB.CustId,
                                     (cusA, cusB) => GetAssociatedAccountByGraph(cusA, cusB)).ToList();
@@ -336,6 +336,7 @@
             catch (Exception ex)
             {
                 msgError = ex.Message;
+
                 return new List<AssociatedAccountByAccount>(); 
             }
         }
