@@ -77,7 +77,7 @@
 
             accountCollected.AccountsByCustomers = GetAssociatedAccountByCustomers(filter.AccountId, accountCollected.CustomersFromAPI);
 
-            //accountCollected.CustomerFraudSuspicious = GetCustomerFraud(accountCollected.CustomersFromAPI);
+            accountCollected.CustomerFraudSuspicious = GetCustomerFraud(accountCollected.CustomersFromAPI);
            
             return GetAssociatedAccountByAccount(accountCollected, filter);
         }
