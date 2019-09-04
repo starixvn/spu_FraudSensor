@@ -319,25 +319,23 @@
             {
                 msgError = string.Empty;
 
-                //var data = accountsCollected.AccountsByCustomers.AsEnumerable()
-                //                //.Where(customer => customer.CompareFraudStatus(filter.FraudStatus))
-                //                .Join(accountsCollected.CustomersFromAPI.AsEnumerable(),
-                //                    cusA => cusA.CustID,
-                //                    cusB => cusB.CustId,
-                //                    (cusA, cusB) => GetAssociatedAccountByGraph(cusA, cusB)).ToList();
-                //.Join(accountsCollected.CustomerFraudSuspicious.CustomerFrauds
-                //    .Where(customer => customer.CompareStatus(filter.Status)),
-                //    cusA => cusA.CustID,
-                //    cusB => cusB.custid,
-                //    (cusA, cusB) => GetAssociatedAccount(cusA, cusB));
-
-                return new List<AssociatedAccountByAccount>();
+                return accountsCollected.AccountsByCustomers.AsEnumerable()
+                                .Where(customer => customer.CompareFraudStatus(filter.FraudStatus))
+                                .Join(accountsCollected.CustomersFromAPI.AsEnumerable(),
+                                    cusA => cusA.CustID,
+                                    cusB => cusB.CustId,
+                                    (cusA, cusB) => GetAssociatedAccountByGraph(cusA, cusB))
+                                .Join(accountsCollected.CustomerFraudSuspicious.CustomerFrauds
+                                    .Where(customer => customer.CompareStatus(filter.Status)),
+                                    cusA => cusA.CustID,
+                                    cusB => cusB.custid,
+                                    (cusA, cusB) => GetAssociatedAccount(cusA, cusB));
             }
             catch (Exception ex)
             {
                 msgError = ex.Message;
 
-                return new List<AssociatedAccountByAccount>(); 
+                return new List<AssociatedAccountByAccount>();
             }
         }
 
