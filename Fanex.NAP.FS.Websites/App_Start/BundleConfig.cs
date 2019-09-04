@@ -137,35 +137,35 @@
 
         private static void RegisterSubscriberAssignment(BundleCollection bundles)
         {
-            bundles.Add(new ScriptBundle("~/scripts/subscriber-assignment").Include("~/scripts/SubscriberAssignment/*.js"));
+            bundles.Add(new ScriptBundle("~/scripts/subscriber-assignment").Include("~/Scripts/SubscriberAssignment/*.js"));
         }
 
         private static void RegisterSearchBundles(BundleCollection bundles)
         {
-            bundles.Add(new ScriptBundle("~/search-account-scripts").Include("~/scripts/Search/Account/*.js"));
+            bundles.Add(new ScriptBundle("~/search-account-scripts").Include("~/Scripts/Search/Account/*.js"));
         }
 
         private static void RegisterAssociatedAccountBundles(BundleCollection bundles)
         {
-            bundles.Add(new ScriptBundle("~/account/associated-scripts").Include("~/scripts/Account/Associated/*.js"));
+            bundles.Add(new ScriptBundle("~/account/associated-scripts").Include("~/Scripts/Account/Associated/*.js"));
             bundles.Add(new ScriptBundle("~/account-scripts").Include("~/scripts/Account/*.js"));
         }
 
         private static void RegisterGraphVisualizeBundles(BundleCollection bundles)
         {
-            //bundles.Add(new ScriptBundle("~/graph-visualize-lib").Include(
-            //    "~/Scripts/popoto/d3.min.js",
-            //    "~/Scripts/popoto/popoto.min.js"));
+            bundles.Add(new ScriptBundle("~/graph-visualize-lib").Include(
+                "~/Scripts/popoto/d3.min.js",
+                "~/Scripts/popoto/popoto.min.js"));
         }
 
         private static void RegisterEvidenceBundles(BundleCollection bundles)
         {
-            bundles.Add(new ScriptBundle("~/evidence-scripts").Include("~/scripts/Evidence/*.js"));           
+            bundles.Add(new ScriptBundle("~/evidence-scripts").Include("~/Scripts/Evidence/*.js"));           
         }
 
         private static void RegisterTransactionHistoryBundles(BundleCollection bundles)
         {
-            bundles.Add(new ScriptBundle("~/transaction/history-scripts").Include("~/scripts/Transaction/History/*.js"));
+            bundles.Add(new ScriptBundle("~/transaction/history-scripts").Include("~/Scripts/Transaction/History/*.js"));
         }
 
     }

@@ -82,7 +82,7 @@
             data: {
                 AccountId: ACCOUNTID,
                 CustId: CUSTID,
-                DeviceAwayOne: deviceAwayOne,              
+                DeviceAwayOne: deviceAwayOne,
                 Status: status,
                 FraudStatus: fraudStatus
             },

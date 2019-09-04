@@ -73,11 +73,11 @@
         {
             var accountCollected = new AssociatedAccountsCollected();
 
-            accountCollected.CustomersFromAPI = GetCustomersFromAPI(filter.CustId, filter.DeviceAwayOne);
+            //accountCollected.CustomersFromAPI = GetCustomersFromAPI(filter.CustId, filter.DeviceAwayOne);
 
-            accountCollected.AccountsByCustomers = GetAssociatedAccountByCustomers(filter.AccountId, accountCollected.CustomersFromAPI);
+            //accountCollected.AccountsByCustomers = GetAssociatedAccountByCustomers(filter.AccountId, accountCollected.CustomersFromAPI);
 
-            accountCollected.CustomerFraudSuspicious = GetCustomerFraud(accountCollected.CustomersFromAPI);
+            //accountCollected.CustomerFraudSuspicious = GetCustomerFraud(accountCollected.CustomersFromAPI);
            
             return GetAssociatedAccountByAccount(accountCollected, filter);
         }
@@ -315,17 +315,18 @@
 
         private static IEnumerable<AssociatedAccountByAccount> GetAssociatedAccountByAccount(AssociatedAccountsCollected accountsCollected, AssociatedAccountByAccountFilter filter)
         {
-            return accountsCollected.AccountsByCustomers
-                            .Where(customer=>customer.CompareFraudStatus(filter.FraudStatus)).AsEnumerable()
-                            .Join(accountsCollected.CustomersFromAPI,
-                                cusA => cusA.CustID,
-                                cusB => cusB.CustId,
-                                (cusA, cusB) => GetAssociatedAccount(cusA, cusB))
-                            .Join(accountsCollected.CustomerFraudSuspicious.CustomerFrauds
-                                .Where(customer=>customer.CompareStatus(filter.Status)),
-                                cusA => cusA.CustID,
-                                cusB => cusB.custid,
-                                (cusA, cusB) => GetAssociatedAccount(cusA, cusB));
+            return new List<AssociatedAccountByAccount>();
+            //return accountsCollected.AccountsByCustomers
+            //                .Where(customer=>customer.CompareFraudStatus(filter.FraudStatus)).AsEnumerable()
+            //                .Join(accountsCollected.CustomersFromAPI,
+            //                    cusA => cusA.CustID,
+            //                    cusB => cusB.CustId,
+            //                    (cusA, cusB) => GetAssociatedAccount(cusA, cusB))
+            //                .Join(accountsCollected.CustomerFraudSuspicious.CustomerFrauds
+            //                    .Where(customer=>customer.CompareStatus(filter.Status)),
+            //                    cusA => cusA.CustID,
+            //                    cusB => cusB.custid,
+            //                    (cusA, cusB) => GetAssociatedAccount(cusA, cusB));
         }
 
         private static AssociatedAccountByAccount GetAssociatedAccount(AssociatedAccountByCustomer customerA, CustomerByGraphDB customerB)

@@ -69,7 +69,9 @@
         [HttpPost]
         public ActionResult GetAssociatedAccountByAccountFilter(AssociatedAccountByAccountFilter filter)
         {
-            var data = _accountService.GetAssociatedAccountByAccounts(filter);
+            //var data = _accountService.GetAssociatedAccountByAccounts(filter);
+
+            var data = "";
 
             return Json(data, JsonRequestBehavior.AllowGet);
         }
