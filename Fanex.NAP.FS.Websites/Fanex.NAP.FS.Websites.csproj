@@ -400,7 +400,6 @@
     <Content Include="Scripts\Account\Associated\device-by-account.js" />
     <Content Include="Scripts\Evidence\form-add-evidence.js" />
     <Content Include="Scripts\Evidence\form-exception.js" />
-    <Content Include="Scripts\Evidence\form-group-or-evidence.js" />
     <Content Include="Scripts\popoto\d3.min.js" />
     <Content Include="Scripts\popoto\popoto.min.js" />
     <Content Include="Scripts\search.js" />
