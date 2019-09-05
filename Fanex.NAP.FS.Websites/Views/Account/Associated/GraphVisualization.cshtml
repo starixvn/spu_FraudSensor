@@ -1,8 +1,11 @@
 ﻿<div id="form-graph-render" style="display:none" class="ppt-body">
-    <section class="ppt-section-main">
+    <section class="ppt-section-main" style="height: 700px;">
         <div class="ppt-container-graph">
             <div id="popoto-graph" class="ppt-div-graph">
                 <!-- Graph will be generated here-->
+            </div>
+            <div id="vis" class="ppt-div-graph" style="margin-top: 20px">
+                <!-- Results visualization will be generated here -->
             </div>
         </div>
     </section>
@@ -10,18 +13,110 @@
 
 
 <script type="text/javascript">
-        popoto.rest.CYPHER_URL = "http://10.18.200.70:7474/db/data/transaction/commit";
-        popoto.rest.AUTHORIZATION = "Basic " + "bmVvNGo6MTIzNGFh"; // btoa("neo4j:password")
-        popoto.provider.node.Provider = {
-            "Customer": {
-                "returnAttributes": ["Username"],
-                "constraintAttribute": "Username",
+    popoto.rest.CYPHER_URL = "http://10.18.200.70:7474/db/data/transaction/commit";
+    popoto.rest.AUTHORIZATION = "Basic " + "bmVvNGo6MTIzNGFh"; // btoa("neo4j:password")
+    popoto.provider.node.Provider = {
+        "Customer": {
+            "returnAttributes": ["CustId", "Username","Username2"],
+            "constraintAttribute": "CustId",
+            "displayAttribute": "Username"
+        },
+        "Device": {
+            "returnAttributes": ["DeviceId"],
+            "constraintAttribute": "DeviceId",
+            "autoExpandRelations": true,
+            "isAutoLoadValue": true
+        },
+        "Group": {
+            "returnAttributes": ["GroupId", "CustomerQuantity"],
+            "constraintAttribute": "GroupId"
+        }
+    };
+
+    popoto.query.RESULTS_PAGE_SIZE = 100;
+    popoto.query.USE_RELATION_DIRECTION = true;
+    popoto.logger.LEVEL = popoto.logger.LogLevels.ERROR;
+
+    popoto.tools.TOGGLE_FIT_TEXT = true;
+    popoto.tools.SAVE_GRAPH = true;
+    popoto.tools.TOGGLE_VIEW_RELATION = true;
+
+    popoto.result.onGraphResultReceived(
+        function (graphResultObject) {
+            var nodes = convertNodes(graphResultObject.nodes);
+            var edges = convertEdges(graphResultObject.edges);
+            var container = document.getElementById('vis');
+            // provide the data in the vis format
+            var data = {
+                nodes: nodes,
+                edges: edges
+            };
+            var options = {
+                nodes: {
+                    shape: 'circle',
+                    borderWidth: 2,
+                    size: 20,
+                    font: {
+                        size: 10,
+                        color: '#ffffff'
+                    }
+                },
+                edges: {
+                    length: 200,
+                    font: {
+                        align: 'top',
+                        color: '#ffffff',
+                        strokeWidth: 0,
+                        size: 10
+                    },
+                    arrows: 'to'
+                },
+                groups: {
+                    "Customer": {
+                        color: { background: '#68BDF6', border: '#5CA8DB' }
+                    },
+                    "Device": {
+                        color: { background: '#FF756E', border: '#E06760' }
+                    }
+                }
+            };
+            // initialize the network
+            var network = new vis.Network(container, data, options);
+        }
+    );
+
+    function convertNodes(nodes) {
+        var convertedNodes = [];
+        nodes.forEach(function (node) {
+            var nodeLabel = node.labels[0];
+            convertedNodes.push({
+                id: node.id,
+                label: (nodeLabel === "Customer" ? node.properties["Username"] : node.properties[0]),
+                group: nodeLabel
+            })
+        });
+        return convertedNodes;
+    }
+    function convertEdges(edges) {
+        var convertedEdges = [];
+        edges.forEach(function (edge) {
+            convertedEdges.push({
+                from: edge.startNode,
+                to: edge.endNode,
+                label: edge.type
+            })
+        });
+        return convertedEdges;
+    }
+
+    var saves = {
+        "save-1": {
+            label: "Customer",
+            value: {
+                Username: "12BETEURO013194",
+                CustId: 2993612
             }
-        };
+        }};
 
-        popoto.query.RESULTS_PAGE_SIZE = 100;
-        popoto.query.USE_RELATION_DIRECTION = true;
-        popoto.logger.LEVEL = popoto.logger.LogLevels.ERROR;
-
-        popoto.start("Customer");
+    popoto.start(saves["save-1"]);
 </script>

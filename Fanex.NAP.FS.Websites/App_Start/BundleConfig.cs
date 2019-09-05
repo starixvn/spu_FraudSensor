@@ -155,7 +155,8 @@
         {
             bundles.Add(new ScriptBundle("~/graph-visualize-lib").Include(
                 "~/Scripts/popoto/d3.min.js",
-                "~/Scripts/popoto/popoto.min.js"));
+                "~/Scripts/popoto/popoto.min.js",
+                "~/Scripts/popoto/vis/vis-network.min.js"));
         }
 
         private static void RegisterEvidenceBundles(BundleCollection bundles)
