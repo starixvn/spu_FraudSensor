@@ -79,6 +79,7 @@
         var url = common.modifyRelativeUrl('/Account/GetAssociatedAccountByAccountFilter');
 
         if (!ValidateInputSearch(deviceAwayOne, deviceAwayMore)) {
+            associatedTable.DataTable().clear().draw();
             return;
         }
 
