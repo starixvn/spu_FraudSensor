@@ -3,7 +3,8 @@
     var btnSearch = $('#btn-search-transaction');
     var status = $('#cbb-fraud-status');
     var transactionTable = $('#transaction-history-table');
-    var transactionContent = $('#transaction-history-content');    
+    var transactionContent = $('#transaction-history-content');
+    var formIPInformation = new form_ip_information();
 
     function GenerateGrid() {
         transactionTable.DataTable({
@@ -25,17 +26,13 @@
             columnDefs: [
                 { targets: "_all", defaultContent: "-" },
                 { targets: [-2, -1], className: "text-center" },
-                { targets: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], className: "text-center" },
+                { targets: [0, 1, 2, 3, 4, 5, 6], className: "text-center" },
                 { targets: [0], width: "12%" },
                 { targets: [1], width: "15%" },
                 { targets: [2], width: "10%" },               
                 { targets: [4], width: "10%" },
                 { targets: [5], width: "6%" },
-                { targets: [6], width: "8%" },
-                { targets: [7], width: "7%" },
-                { targets: [8], width: "6%" },
-                { targets: [9], width: "6%" },
-                { targets: [10], width: "20%" }
+                { targets: [6], width: "8%" }
             ],
             columns: [
                 { data: obj => obj.TransDateToString },
@@ -44,13 +41,9 @@
                 { data: obj => obj.DeviceType },
                 { data: obj => obj.Browser },
                 { data: obj => RenderHostName(obj.Domain) },
-                { data: obj => obj.IP },
-                { data: obj => obj.Country },
-                { data: obj => obj.Region },
-                { data: obj => obj.City },
-                { data: obj => obj.ServiceProvider }
+                { data: obj => RenderIPInformation(obj) }                
             ]
-        });
+        });       
     }
 
     function RenderDevice(obj) {
@@ -66,6 +59,10 @@
     function RenderHostName(url) {
         var urlNew = new URL(url);
         return urlNew.hostname;
+    }
+
+    function RenderIPInformation(obj) {
+        return "<span class='link ip-link' id=" + obj.IPRangeLocationID + ">" + obj.IP + "</span>";
     }
 
     function GenerateReport() {
@@ -98,6 +95,14 @@
 
         transactionTable.DataTable().clear().rows.add(data).draw();
         transactionTable.DataTable().columns.adjust();
+
+        $('.ip-link').click(ShowFormIPInformation);
+    }
+
+    function ShowFormIPInformation() {
+        var valueIP = $(this).attr('id');
+
+        formIPInformation.OpenModal(valueIP);
     }
 
     function AnimateContent() {
@@ -108,11 +113,13 @@
 
     loading.hide();
 
+    $('#form-ip-information').hide();
+
     transactionContent.hide();
 
     btnSearch.click(GenerateReport);
 
-    GenerateGrid();
+    GenerateGrid();    
 }
 
 $(transaction_history);

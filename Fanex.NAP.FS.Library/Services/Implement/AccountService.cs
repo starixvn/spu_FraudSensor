@@ -357,6 +357,7 @@
             {
                 AccountID = customerA.AccountID,
                 CustID = customerA.CustID,
+                SubscriberName = "",
                 Username = customerB.Username,
                 Username2 = customerB.Username2,
                 LastLogin = customerA.LastLogin,
@@ -373,6 +374,7 @@
             {
                 AccountID = customerA.AccountID,
                 CustID = customerA.CustID,
+                SubscriberName = customerA.SubscriberName,
                 Username = customerA.Username,
                 Username2 = customerA.Username2,
                 LastLogin = customerA.LastLogin,

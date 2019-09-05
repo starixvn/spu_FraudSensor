@@ -13,9 +13,11 @@
 
         public string Username2 { get; set; }
 
+        public string SubscriberName { get; set; }
+
         public DateTime LastLogin { get; set; }
 
-        public DateTime FirstLogin { get; set; }       
+        public DateTime FirstLogin { get; set; }
 
         public DateTime AssociatedWithRootAccountOn { get; set; }       
 

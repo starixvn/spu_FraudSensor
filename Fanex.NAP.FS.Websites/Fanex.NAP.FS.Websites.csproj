@@ -1103,6 +1103,7 @@
     <Content Include="Scripts\SuspiciousCustomer\suspicious-customer.js" />
     <Content Include="Scripts\toast\jquery.toast.js" />
     <Content Include="Scripts\toogle.js" />
+    <Content Include="Scripts\Transaction\History\form-ip-information.js" />
     <Content Include="Scripts\Transaction\History\transaction-history.js" />
     <Content Include="Scripts\umd\popper-utils.js" />
     <Content Include="Scripts\umd\popper-utils.min.js" />
@@ -1215,6 +1216,7 @@
     <Content Include="Views\Account\DetailAccount.cshtml" />
     <Content Include="Views\Transaction\TransactionHistory.cshtml" />
     <Content Include="Views\Evidence\FormAddGroupOrEvidence.cshtml" />
+    <Content Include="Views\Transaction\IPInformation.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />

@@ -9,7 +9,7 @@
         if (form.is('dialog')) {
             form.dialog('open');
         } else {
-            $(form).dialog({
+            form.dialog({
                 modal: true,
                 width: '650px',
                 title: 'ADD EXCEPTION',

@@ -34,5 +34,17 @@
 
             return Json(data, JsonRequestBehavior.AllowGet);
         }
+
+        [HttpPost]
+        public ActionResult GetIPInformation(int ipRangeLocationId)
+        {
+            var data = new IPInformation();
+            data.ServiceProvider = "ServiceProvider";
+            data.Country = "Country";
+            data.Region = "Region";
+            data.City = "City";
+
+            return PartialView("IPInformation", data);
+        }
     }
 }

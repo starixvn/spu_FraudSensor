@@ -31,6 +31,8 @@
 
         public string IP { get; set; }
 
+        public int IPRangeLocationID { get; set; }
+
         public string Country { get; set; }
 
         public string Region { get; set; }

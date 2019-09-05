@@ -52,7 +52,9 @@
     }
 
     function RenderUsername(obj) {
-        var url = common.modifyRelativeUrl('/Account/DetailAccount?id=' + obj.AccountID);
+        var url = common.modifyRelativeUrl('/Account/DetailAccount?id=' + obj.AccountID
+            + '&custId=' + obj.CustID
+            + '&subscriber=' + obj.SubscriberName);
         var className = 'icon-fraud';
 
         if (obj.EvidenceLevel == 0) {

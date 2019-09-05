@@ -510,6 +510,7 @@
     <Compile Include="ViewModels\SuspiciousCustomerDetails\CustomerDetailsViewModel.cs" />
     <Compile Include="ViewModels\SuspiciousCustomerDetails\TicketDetails.cs" />
     <Compile Include="ViewModels\SuspiciousCustomer\SuspiciousCustomerNoteView.cs" />
+    <Compile Include="ViewModels\Transaction\IPInformation.cs" />
     <Compile Include="ViewModels\Transaction\TransactionHistory.cs" />
     <Compile Include="ViewModels\Transaction\TransactionHistoryFilter.cs" />
   </ItemGroup>
