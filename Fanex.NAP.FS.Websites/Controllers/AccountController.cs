@@ -76,6 +76,7 @@
         public ActionResult GetAssociatedAccountByAccountFilter(AssociatedAccountByAccountFilter filter)
         {
             var msgError = string.Empty;
+
             var data = _accountService.GetAssociatedAccountByAccounts(filter, out msgError);
 
             if (!string.IsNullOrEmpty(msgError))

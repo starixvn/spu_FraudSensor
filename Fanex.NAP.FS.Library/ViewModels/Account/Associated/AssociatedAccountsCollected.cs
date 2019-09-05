@@ -1,7 +1,6 @@
 ﻿namespace Fanex.NAP.FS.Library.ViewModels.Account.Associated
 {
     using Fanex.NAP.FS.Library.Models.Account;
-    using Fanex.NAP.FS.Library.ViewModels.Account.Associated;
     using System.Collections.Generic;
 
     public class AssociatedAccountsCollected

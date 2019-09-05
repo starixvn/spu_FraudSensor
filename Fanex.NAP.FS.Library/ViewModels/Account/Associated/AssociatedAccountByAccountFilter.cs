@@ -8,7 +8,9 @@
 
         public int CustId { get; set; }
 
-        public bool DeviceAwayOne { get; set; }       
+        public bool DeviceAwayOne { get; set; }
+
+        public bool DeviceAwayMore { get; set; }
 
         public AccountStatus Status { get; set; }
 

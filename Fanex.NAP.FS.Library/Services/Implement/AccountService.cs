@@ -73,11 +73,11 @@
         {
             var accountCollected = new AssociatedAccountsCollected();
 
-            accountCollected.CustomersFromAPI = GetCustomersFromAPI(filter.CustId, filter.DeviceAwayOne);
+            accountCollected.CustomersFromAPI = GetCustomersFromAPI(filter);
 
             accountCollected.AccountsByCustomers = GetAssociatedAccountByCustomers(filter.AccountId, accountCollected.CustomersFromAPI);
 
-            accountCollected.CustomerFraudSuspicious = GetCustomerFraud(accountCollected.CustomersFromAPI);
+            accountCollected.CustomerFraudSuspicious = GetCustomerFraud(accountCollected.AccountsByCustomers);
            
             return GetAssociatedAccountByAccount(accountCollected, filter, out msgError);
         }
@@ -261,17 +261,34 @@
         #endregion
 
         #region Associated account by account
-        private static IEnumerable<CustomerByGraphDB> GetCustomersFromAPI(int custId, bool deviceAwayOne)
+        private static IEnumerable<CustomerByGraphDB> GetCustomersFromAPI(AssociatedAccountByAccountFilter filter)
         {
-            var configUrl = deviceAwayOne ? Consts.GraphDBGetAssociationOneLevel : Consts.GraphDBGetAssociationNLevel;
+            var customers = new List<CustomerByGraphDB>();
+            var apiURLOneLevel = AppSettings.Get(Consts.GraphDBGetAssociationOneLevel);
+            var apiURLMoreLevel = AppSettings.Get(Consts.GraphDBGetAssociationOneLevel);
 
-            var url = AppSettings.Get(configUrl);
+            if (filter.DeviceAwayOne)
+            {
+                customers.AddRange(GetCustomersFromAPI(filter.CustId, apiURLOneLevel));
+            }
 
-            var customers = ApiHelper.Post<IEnumerable<CustomerByGraphDB>>(url, custId);
+            if (filter.DeviceAwayMore)
+            {
+                customers.AddRange(GetCustomersFromAPI(filter.CustId, apiURLMoreLevel));
+            }
 
-            Task.WhenAll(customers);
+            return customers;
+        }
 
-            return customers.Result;
+        private static IEnumerable<CustomerByGraphDB> GetCustomersFromAPI(int custId, string apiURL)
+        {
+            var data = ApiHelper.Post<IEnumerable<CustomerByGraphDB>>(apiURL, custId);
+
+            Task.WhenAll(data);
+
+            var customersAPI = data.Result;
+
+            return customersAPI ?? new List<CustomerByGraphDB>();
         }
 
         private static IEnumerable<AssociatedAccountByCustomer> GetAssociatedAccountByCustomers(int accountId, IEnumerable<CustomerByGraphDB> customersFromAPI)
@@ -297,11 +314,11 @@
             return DataService.GetData<AssociatedAccountByCustomer>(criteria);
         }
 
-        private CustomerFraudSuspicious GetCustomerFraud(IEnumerable<CustomerByGraphDB> customersFromAPI)
+        private CustomerFraudSuspicious GetCustomerFraud(IEnumerable<AssociatedAccountByCustomer> associatedCustomers)
         {
-            if (customersFromAPI.Any())
+            if (associatedCustomers.Any())
             {
-                var customerIds = customersFromAPI.Select(c => c.CustId).Join();
+                var customerIds = associatedCustomers.Select(c => c.CustID).Join();
 
                 var criteria = new GetCustomerFraudInfoCriteria
                 {
@@ -322,7 +339,10 @@
                 }
             }
 
-            return new CustomerFraudSuspicious();
+            return new CustomerFraudSuspicious
+            {
+                CustomerFrauds = new List<CustomerFraud>()
+            };
         }
 
         private static IEnumerable<AssociatedAccountByAccount> GetAssociatedAccountByAccount(AssociatedAccountsCollected accountsCollected, AssociatedAccountByAccountFilter filter, out string msgError)

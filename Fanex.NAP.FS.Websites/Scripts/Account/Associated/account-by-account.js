@@ -72,12 +72,18 @@
     }    
 
     function GenerateReport() {
-        associatedContent.hide();
-        loading.show();
         var deviceAwayOne = $('#chk-device-away-1').is(':checked');
+        var deviceAwayMore = $('#chk-device-away-2').is(':checked');
         var status = $('#cbb-status').val();
         var fraudStatus = $('#cbb-fraud-status').val();
         var url = common.modifyRelativeUrl('/Account/GetAssociatedAccountByAccountFilter');
+
+        if (!ValidateInputSearch(deviceAwayOne, deviceAwayMore)) {
+            return;
+        }
+
+        associatedContent.hide();
+        loading.show();
 
         $.ajax(url, {
             type: 'POST',
@@ -85,6 +91,7 @@
                 AccountId: ACCOUNTID,
                 CustId: CUSTID,
                 DeviceAwayOne: deviceAwayOne,
+                DeviceAwayMore: deviceAwayMore,
                 Status: status,
                 FraudStatus: fraudStatus
             },
@@ -125,25 +132,16 @@
         });
     }
 
+    function ValidateInputSearch(deviceAwayOne, deviceAwayMore) {
+        if (!deviceAwayOne && !deviceAwayMore) {
+            return false;
+        }
+        return true;
+    }
+
     usernameSpan.text(USERNAME);
 
-    loading.hide();
-
-    $('#chk-device-away-1').on('click', function () {
-        if ($(this).is(':checked')) {
-            $('#chk-device-away-2').prop("checked", false);
-        } else {
-            $('#chk-device-away-2').prop("checked", true);
-        }
-    })
-
-    $('#chk-device-away-2').on('click', function () {
-        if ($(this).is(':checked')) {
-            $('#chk-device-away-1').prop("checked", false);
-        } else {
-            $('#chk-device-away-1').prop("checked", true);
-        }
-    })
+    loading.hide(); 
 
     btnSearch.click(GenerateReport);
 
