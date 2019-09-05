@@ -9,7 +9,7 @@
         } else {
             form.dialog({
                 modal: true,                
-                width: '500px',
+                width: '550px',
                 title: 'IP INFORMATION',
                 resizable: false,
                 draggable: false,

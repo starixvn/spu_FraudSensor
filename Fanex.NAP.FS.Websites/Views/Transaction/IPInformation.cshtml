@@ -1,39 +1,36 @@
 ﻿@model Fanex.NAP.FS.Library.ViewModels.Transaction.IPInformation
 
-<div class="info-item" id="form-ip-information">
+<div id="form-ip-information">
     @if (Model != null)
     {
-        <div class="info-text">
+        <div class="ip-info-text">
             <label>Service Provider: </label>
-            <span>@Model.ServiceProvider</span>
+            <span>@Model.ISPName</span>
         </div>
-        <div class="info-text">
+        <div class="ip-info-text">
             <label>Country: </label>
-            <span>@Model.Country</span>
+            <span>@Model.CountryName</span>
         </div>
-        <div class="info-text">
+        <div class="ip-info-text">
             <label>Region: </label>
             <span>@Model.Region</span>
         </div>
-        <div class="info-text">
+        <div class="ip-info-text">
             <label>City: </label>
             <span>@Model.City</span>
         </div>
-    }
-    else
-    {
-        <div class="info-text">
-            <label>Service Provider: </label>           
+    } else {
+        <div class="ip-info-text">
+            <label>Service Provider: </label>
         </div>
-        <div class="info-text">
-            <label>Country: </label>            
+        <div class="ip-info-text">
+            <label>Country: </label>
         </div>
-        <div class="info-text">
-            <label>Region: </label>           
+        <div class="ip-info-text">
+            <label>Region: </label>
         </div>
-        <div class="info-text">
-            <label>City: </label>            
+        <div class="ip-info-text">
+            <label>City: </label>
         </div>
     }
-
 </div>

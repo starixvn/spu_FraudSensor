@@ -8,6 +8,7 @@
     using Fanex.NAP.FS.Library.ViewModels.Evidence;
     using System.Net;
     using System.Collections.Generic;
+    using Fanex.NAP.Core.Service.Impl;
 
     [NapAuth(FunctionKey = FSFunctionKeys.SearchAccount, Policy = Core.Business.Constant.Policy.Read)]
     public class AccountController : BaseController
@@ -31,9 +32,12 @@
         #region Detail
         public ActionResult DetailAccount(int id, int custId, string subscriber)
         {
+            var permissionIPLocation = new UserService().GetPermission(CurrentSession.UserId, SiteId, FSFunctionKeys.IPLocation);
+            
             var data = _accountService.GetAccountDetailGeneralInformation(id, custId);
 
             ViewBag.SubscriberName = subscriber;
+            ViewBag.IsPermissionIPLocation = permissionIPLocation > 0;
 
             return View("DetailAccount", data);
         }

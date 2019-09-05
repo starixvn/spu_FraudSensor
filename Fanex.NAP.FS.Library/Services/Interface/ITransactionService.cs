@@ -7,5 +7,7 @@
     public interface ITransactionService
     {
         IEnumerable<Transaction> GetTransactionHistory(TransactionHistoryFilter filter);
+
+        IPInformation GetIPInformation(int ipRangeLocationId);
     }
 }

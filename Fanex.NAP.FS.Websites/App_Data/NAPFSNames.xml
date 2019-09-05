@@ -302,5 +302,9 @@
     <Setting Key="FPS_DC_GetTransactionHistoryByCustId"
              SpName="FPS_DC_GetTransactionHistoryByCustId"
              DbName="MySQL.FPS_DataCenter"/>
+    
+    <Setting Key="FPS_DC_GetLocationInfobyIP"
+             SpName="FPS_DC_GetLocationInfobyIP"
+             DbName="MySQL.FPS_DataCenter"/>
   </Function>
 </Functions>

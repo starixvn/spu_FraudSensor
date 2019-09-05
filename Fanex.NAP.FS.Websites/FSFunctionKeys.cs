@@ -68,5 +68,7 @@ public static class FSFunctionKeys
     public const string SearchAccount = "SearchAccount";
 
     public const string TransactionHistory = "TransactionHistory";
+
+    public const string IPLocation = "IPLocation";
 }
  

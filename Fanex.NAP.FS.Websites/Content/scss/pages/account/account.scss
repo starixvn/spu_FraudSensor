@@ -455,3 +455,15 @@
     text-decoration: none;
     cursor: pointer;
 }
+
+.ip-info-text {
+    padding: 5px;  
+
+    label {
+        width: 130px;
+        font-weight: bold;
+        color: #404040;
+        display: inline-block;
+        vertical-align: middle;
+    }
+}

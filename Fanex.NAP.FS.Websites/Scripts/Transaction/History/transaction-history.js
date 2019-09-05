@@ -27,12 +27,17 @@
                 { targets: "_all", defaultContent: "-" },
                 { targets: [-2, -1], className: "text-center" },
                 { targets: [0, 1, 2, 3, 4, 5, 6], className: "text-center" },
-                { targets: [0], width: "12%" },
+                { targets: [0], width: "15%" },
                 { targets: [1], width: "15%" },
-                { targets: [2], width: "10%" },               
-                { targets: [4], width: "10%" },
-                { targets: [5], width: "6%" },
-                { targets: [6], width: "8%" }
+                { targets: [2], width: "15%" },
+                { targets: [3], width: "10%" },
+                { targets: [4], width: "15%" },
+                { targets: [5], width: "15%" },
+                {
+                    targets: [6],
+                    width: "15%",
+                    visible: IsPermissionIPLocation.toLowerCase() == 'true' ? true : false
+                }
             ],
             columns: [
                 { data: obj => obj.TransDateToString },
@@ -41,9 +46,9 @@
                 { data: obj => obj.DeviceType },
                 { data: obj => obj.Browser },
                 { data: obj => RenderHostName(obj.Domain) },
-                { data: obj => RenderIPInformation(obj) }                
+                { data: obj => RenderIPInformation(obj) }
             ]
-        });       
+        });
     }
 
     function RenderDevice(obj) {

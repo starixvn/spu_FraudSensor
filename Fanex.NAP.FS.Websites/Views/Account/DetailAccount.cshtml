@@ -112,12 +112,13 @@
     </div>
 </div>
 @section scripts{
-    <script type="text/javascript">
-        var ACCOUNTID = '@Model.GeneralInfo.AccountId';
-        var CUSTID = '@Model.GeneralInfo.CustId';
-        var USERNAME = '@Model.GeneralInfo.Username';
-        var SUBSCRIBER = '@ViewBag.SubscriberName';
-    </script>
+<script type="text/javascript">
+    var ACCOUNTID = '@Model.GeneralInfo.AccountId';
+    var CUSTID = '@Model.GeneralInfo.CustId';
+    var USERNAME = '@Model.GeneralInfo.Username';
+    var SUBSCRIBER = '@ViewBag.SubscriberName';
+    var IsPermissionIPLocation = '@ViewBag.IsPermissionIPLocation';
+</script>
 
     @Scripts.Render("~/evidence-scripts"
                     , "~/account-scripts"

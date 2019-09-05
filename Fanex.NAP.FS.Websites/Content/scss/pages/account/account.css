@@ -309,3 +309,12 @@
   color: #027ee8;
   text-decoration: none;
   cursor: pointer; }
+
+.ip-info-text {
+  padding: 5px; }
+  .ip-info-text label {
+    width: 130px;
+    font-weight: bold;
+    color: #404040;
+    display: inline-block;
+    vertical-align: middle; }

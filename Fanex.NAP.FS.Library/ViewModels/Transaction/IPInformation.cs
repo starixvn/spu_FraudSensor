@@ -2,9 +2,9 @@
 {
     public class IPInformation
     {
-        public string ServiceProvider { get; set; }
+        public string ISPName { get; set; }
 
-        public string Country { get; set; }
+        public string CountryName { get; set; }
 
         public string Region { get; set; }
 

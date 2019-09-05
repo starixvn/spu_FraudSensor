@@ -4,7 +4,7 @@
     using Fanex.NAP.FS.Library.ViewModels.Transaction;
     using System.Web.Mvc;
     using Fanex.NAP.Core.Web.Attribute;
-    
+
     public class TransactionController : BaseController
     {
         private readonly ITransactionService _transactionService;
@@ -38,11 +38,7 @@
         [HttpPost]
         public ActionResult GetIPInformation(int ipRangeLocationId)
         {
-            var data = new IPInformation();
-            data.ServiceProvider = "ServiceProvider";
-            data.Country = "Country";
-            data.Region = "Region";
-            data.City = "City";
+            var data = _transactionService.GetIPInformation(ipRangeLocationId);
 
             return PartialView("IPInformation", data);
         }
