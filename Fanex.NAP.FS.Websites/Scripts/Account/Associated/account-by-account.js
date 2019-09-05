@@ -1,5 +1,5 @@
 ﻿function account_by_account() {
-    var loading = $('#loading-div');
+    var loading = $('#associated-account-loading-div');
     var btnSearch = $('#btn-search-account');
     var accountSearch = $('#account-search');
     var usernameSpan = $('.username-span');

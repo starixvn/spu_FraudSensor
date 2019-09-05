@@ -1,5 +1,5 @@
 ﻿function transaction_history() {
-    var loading = $('#loading-div');
+    var loading = $('#transaction-loading-div');
     var btnSearch = $('#btn-search-transaction');
     var status = $('#cbb-fraud-status');
     var transactionTable = $('#transaction-history-table');

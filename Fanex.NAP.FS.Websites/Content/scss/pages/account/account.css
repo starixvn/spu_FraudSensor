@@ -48,8 +48,9 @@
     margin-bottom: 5px;
     color: #474747; }
   .filter .button {
-    /*margin-top: 10px;*/
     margin-bottom: 0; }
+  .filter .button-search {
+    margin-top: 10px; }
   .filter .form-control {
     margin-right: 16px;
     display: inline-block;

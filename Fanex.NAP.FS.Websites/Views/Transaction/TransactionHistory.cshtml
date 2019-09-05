@@ -4,6 +4,8 @@
     ViewBag.Title = "TransactionHistory";
 }
 
+@Html.Partial("IPInformation")
+
 <div id="transaction-history">
     <div id="transaction-history-filter">
         <div class="filter">
@@ -22,7 +24,7 @@
         </div>
     </div>
 
-    <div id="loading-div" class="report-cont">
+    <div id="transaction-loading-div" class="report-cont">
         <img src="@Url.Content("~/Content/images/ajax-loader.gif")" alt="Loading ..." />
     </div>
 
@@ -43,5 +45,3 @@
         </table>
     </div>
 </div>
-
-@Html.Partial("IPInformation")
