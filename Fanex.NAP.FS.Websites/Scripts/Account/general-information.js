@@ -49,7 +49,7 @@
                 $(abnormal).text('None');
                 $(abnormal).css({
                     'background-color': '#FFFFFF',                  
-                    'border-color': '#797370'
+                    'border': '1px solid #2f79ed'
                 });
                 break;
         }
@@ -124,7 +124,12 @@
                 break;
             default:
                 $(dangerousName).text('None');
-                $(dangerousName).css({ 'background-color': '#FFFFFF' });
+                $(dangerousName).css(
+                    {
+                        'background-color': '#FFFFFF',
+                        'border': '1px solid #2f79ed'
+                    }
+                );
                 break;
         }
     }   
