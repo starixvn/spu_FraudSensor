@@ -1,7 +1,6 @@
 ﻿namespace Fanex.NAP.FS.Library.Models.Account
 {
-    using Fanex.NAP.FS.Library.Core.Consts;
-    using Fanex.NAP.FS.Library.Models.Subscriber;
+    using Fanex.NAP.FS.Library.Core.Consts;    
     using System;
 
     public class AccountGeneralInformation
@@ -14,22 +13,18 @@
 
         public string Username2 { get; set; }
 
-        public Subscriber Subscriber { get; set; }
+        public AccountStatus AccountStatus { get; set; }
 
-        public int AccountStatus { get; set; }
-
-        public string Status { get; set; }
-
-        public FraudStatus FraudStatus
+        public EvidenceStatus EvidenceStatus
         {
             get
             {
-                if (this.AccountStatus > 0)
+                if (!string.IsNullOrEmpty(this.Evidence))
                 {
-                    return FraudStatus.Fraud;
+                    return EvidenceStatus.Affected;
                 }
 
-                return FraudStatus.Clean;
+                return EvidenceStatus.Clean;
             }
         }
 

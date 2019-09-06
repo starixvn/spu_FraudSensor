@@ -6,7 +6,7 @@
     {
         public string DeviceNo { get; set; }
 
-        public string FraudStatus { get; set; }
+        public string EvidenceStatus { get; set; }
 
         public DateTime FirstUsed { get; set; }
 

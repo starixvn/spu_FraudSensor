@@ -10,6 +10,6 @@
 
         public bool UsedByAccountAssociated { get; set; }
 
-        public FraudStatus FraudStatus { get; set; }        
+        public EvidenceStatus EvidenceStatus { get; set; }        
     }
 }

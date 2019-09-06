@@ -75,7 +75,7 @@
         var deviceAwayOne = $('#chk-device-away-1').is(':checked');
         var deviceAwayMore = $('#chk-device-away-2').is(':checked');
         var status = $('#cbb-status').val();
-        var fraudStatus = $('#cbb-fraud-status').val();
+        var evidenceStatus = $('#cbb-evidence-status-ass-account').val();
         var url = common.modifyRelativeUrl('/Account/GetAssociatedAccountByAccountFilter');
 
         if (!ValidateInputSearch(deviceAwayOne, deviceAwayMore)) {
@@ -94,7 +94,7 @@
                 DeviceAwayOne: deviceAwayOne,
                 DeviceAwayMore: deviceAwayMore,
                 Status: status,
-                FraudStatus: fraudStatus
+                EvidenceStatus: evidenceStatus
             },
             success: function (response) {
                 BindDataToGrid(response);

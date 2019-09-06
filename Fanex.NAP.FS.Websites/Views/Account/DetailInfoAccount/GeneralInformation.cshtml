@@ -1,7 +1,7 @@
 ﻿@model Fanex.NAP.FS.Library.ViewModels.Account.AccountDetail
 @{
     ViewBag.Title = "GeneralInformation";
-    var accountClean = Model.GeneralInfo.FraudStatus == Fanex.NAP.FS.Library.Models.FraudStatus.Clean;
+    var accountClean = Model.GeneralInfo.EvidenceStatus == Fanex.NAP.FS.Library.Models.EvidenceStatus.Clean;
 }
 
 @Html.Partial("../Evidence/FormAddEvidence")
@@ -36,14 +36,7 @@
 
         <p class="bold">
             Account Status:
-            @if (accountClean)
-            {
-                <span class="badge-label badge-active">@Enum.GetName(typeof(Fanex.NAP.FS.Library.Models.FraudStatus), Model.GeneralInfo.FraudStatus)</span>
-            }
-            else
-            {
-                <span class="badge-label badge-flagged">@Enum.GetName(typeof(Fanex.NAP.FS.Library.Models.FraudStatus), Model.GeneralInfo.FraudStatus)</span>
-            }
+            <span class="badge-label badge-active">@Enum.GetName(typeof(Fanex.NAP.FS.Library.Models.AccountStatus), Model.GeneralInfo.AccountStatus)</span>
         </p>
         <button class="button btn-add" type="button" id="btn-add-evidence">Add Evidence</button>
     </div>
@@ -67,7 +60,10 @@
             <div class="info-title">Fraud Infomation</div>
             <div class="info-text"><label>Evidence:</label><span> @Model.GeneralInfo.Evidence</span></div>
             <div class="info-text"><label>Problem Account:</label><span> @Model.GeneralInfo.ProblemAccount</span></div>
-            <div class="info-text"><label>Abnormal:</label><span class="badge-level" id="abnormal"> @Model.GeneralInfo.Abnormal</span></div>
+            <div class="info-text">
+                <label>Abnormal Level:</label>
+                <span class="badge-level" id="abnormal"> @Model.GeneralInfo.Abnormal</span>
+            </div>
             <div class="info-text">
                 <label>Dangerous Level:</label>
                 <label class="line-item2 width-50">Original:</label>
@@ -85,7 +81,3 @@
         </div>
     </div>
 </div>
-
-@section scripts{
-    <script src="~/Scripts/Account/general-information.js"></script>  
-}

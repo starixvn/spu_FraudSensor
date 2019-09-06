@@ -1,7 +1,7 @@
 ﻿function transaction_history() {
     var loading = $('#transaction-loading-div');
     var btnSearch = $('#btn-search-transaction');
-    var status = $('#cbb-fraud-status');
+    var reportLength = $('#cbb-report-length-transaction');
     var transactionTable = $('#transaction-history-table');
     var transactionContent = $('#transaction-history-content');
     var formIPInformation = new form_ip_information();
@@ -75,7 +75,7 @@
         loading.show();
 
         var url = common.modifyRelativeUrl('/Transaction/GetTransactionHistoryFilter');
-        var reportLength = $(status).val();
+        var reportLength = $(reportLength).val();
 
         $.ajax(url, {
             type: 'POST',

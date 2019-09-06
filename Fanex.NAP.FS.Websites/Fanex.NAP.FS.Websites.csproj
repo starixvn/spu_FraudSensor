@@ -1215,7 +1215,6 @@
     <Content Include="Views\SearchDevice\Index.cshtml" />
     <Content Include="Views\Account\DetailAccount.cshtml" />
     <Content Include="Views\Transaction\TransactionHistory.cshtml" />
-    <Content Include="Views\Evidence\FormAddGroupOrEvidence.cshtml" />
     <Content Include="Views\Transaction\IPInformation.cshtml" />
   </ItemGroup>
   <ItemGroup>

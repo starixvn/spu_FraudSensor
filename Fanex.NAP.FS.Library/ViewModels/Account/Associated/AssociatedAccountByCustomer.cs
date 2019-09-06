@@ -19,21 +19,21 @@
 
         public int EvidenceLevel { get; set; }
 
-        public FraudStatus GetFraudStatus()
+        public EvidenceStatus GetEvidenceStatus()
         {
-            return this.EvidenceLevel > 0 ? FraudStatus.Fraud : FraudStatus.Clean;
+            return this.EvidenceLevel > 0 ? EvidenceStatus.Affected : EvidenceStatus.Clean;
         }
 
-        public bool CompareFraudStatus(FraudStatus fraudStatus)
+        public bool CompareEvidenceStatus(EvidenceStatus evidenceStatus)
         {
-            if (fraudStatus == FraudStatus.All)
+            if (evidenceStatus == EvidenceStatus.All)
             {
                 return true;
             }
 
-            var currentFraudStatus = GetFraudStatus();
+            var currentFraudStatus = GetEvidenceStatus();
 
-            return currentFraudStatus.Equals(fraudStatus);
+            return currentFraudStatus.Equals(evidenceStatus);
         }
     }
 }

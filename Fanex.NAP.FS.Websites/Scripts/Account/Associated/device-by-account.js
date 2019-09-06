@@ -68,7 +68,7 @@
     function GenerateReport() {
         var usedByAccountCurrent = $('#chk-used-by-account-current').is(':checked');
         var usedByAccountAssociated = $('#chk-used-by-account-associated').is(':checked');       
-        var fraudStatus = $('#cbb-fraud-status').val();
+        var evidenceStatus = $('#cbb-evidence-status-ass-device').val();
         var url = common.modifyRelativeUrl('/Account/GetAssociatedDeviceByAccountFilter');
 
         $.ajax(url, {
@@ -77,7 +77,7 @@
                 AccountId: ACCOUNTID,
                 UsedByAccountCurrent: usedByAccountCurrent,
                 UsedByAccountAssociated: usedByAccountAssociated,
-                FraudStatus: fraudStatus
+                EvidenceStatus: evidenceStatus
             },
             success: function (response) {
                 BindDataToGrid(response);

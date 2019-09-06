@@ -205,7 +205,18 @@
             generalInfo.FrequencyLogin = customerInformation.LoginCount;
             generalInfo.Username = customerInformation.Username;
             generalInfo.Username2 = customerInformation.Username2;
-            generalInfo.AccountStatus = customerInformation.AccountStatus;
+            if (customerInformation.AccountStatus == 0)
+            {
+                generalInfo.AccountStatus = AccountStatus.Active;
+            }
+            else if(customerInformation.AccountStatus == 1)
+            {
+                generalInfo.AccountStatus = AccountStatus.Suspended;
+            }
+            else
+            {
+                generalInfo.AccountStatus = AccountStatus.Closed;
+            }
             generalInfo.AccountAge = customerInformation.AccountAge;
 
             return generalInfo;
@@ -224,8 +235,8 @@
 
         private static AccountGeneralInformation GetFraudInformation(AccountGeneralInformation generalInfo, CustomerFraudSuspicious customerFraudSuspicious)
         {
-            generalInfo.Evidence = "-";
-            generalInfo.ProblemAccount = "-";
+            generalInfo.Evidence = "";
+            generalInfo.ProblemAccount = "";
             generalInfo.AutoSuspend = ResourcesManager.GetValue(ConstsResources.NONE);
 
             if (customerFraudSuspicious.CustomerFrauds.Any())
@@ -252,9 +263,9 @@
             var fraudCase = new StringBuilder();
             foreach (var item in customerFraudSuspicious.CustomerSuspiciouses)
             {
-                fraudCase.Append(item.FraudCaseName + ",");
+                fraudCase.Append(item.FraudCaseName + ", ");
             }
-            generalInfo.CommitedFraudCase = fraudCase.ToString().TrimEnd(',');
+            generalInfo.CommitedFraudCase = fraudCase.ToString().TrimEnd(' ').TrimEnd(',');
 
             return generalInfo;
         }
@@ -352,7 +363,7 @@
                 msgError = string.Empty;
 
                 return accountsCollected.AccountsByCustomers.AsEnumerable()
-                                .Where(customer => customer.CompareFraudStatus(filter.FraudStatus))
+                                .Where(customer => customer.CompareEvidenceStatus(filter.EvidenceStatus))
                                 .Join(accountsCollected.CustomersFromAPI.AsEnumerable(),
                                     cusA => cusA.CustID,
                                     cusB => cusB.CustId,
@@ -427,11 +438,11 @@
                 deviceAssociated.GraphURL = "url 123456";
                 if (i % 2 == 0)
                 {
-                    deviceAssociated.FraudStatus = FraudStatus.Fraud.ToString();
+                    deviceAssociated.EvidenceStatus = EvidenceStatus.Affected.ToString();
                 }
                 else
                 {
-                    deviceAssociated.FraudStatus = FraudStatus.Clean.ToString();
+                    deviceAssociated.EvidenceStatus = EvidenceStatus.Clean.ToString();
                 }
 
                 lstAssociated.Add(deviceAssociated);
