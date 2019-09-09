@@ -251,6 +251,7 @@
     <Compile Include="Criteria\Account\Associated\GetCustomerFraudInfoCriteria.cs" />
     <Compile Include="Criteria\Account\GeneralInformation\GetAssociationByAccountCriteria.cs" />
     <Compile Include="Criteria\Account\GeneralInformation\GetCustomerGeneralInformationCriteria.cs" />
+    <Compile Include="Criteria\Account\GeneralInformation\GetEvidenceByTargetIdCriteria.cs" />
     <Compile Include="Criteria\Account\SearchAccountCriteria.cs" />
     <Compile Include="Criteria\Api\FlaggedAccountDeleteCriteria.cs" />
     <Compile Include="Criteria\Api\FlaggedAccountInsertCriteria.cs" />

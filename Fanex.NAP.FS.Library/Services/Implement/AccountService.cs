@@ -1,6 +1,7 @@
 ﻿namespace Fanex.NAP.FS.Library.Services
 {
     using System;
+    using System.Text;
     using System.Linq;
     using System.Collections.Generic;
     using System.Threading.Tasks;
@@ -20,7 +21,7 @@
     using Fanex.Data;
     using Fanex.NAP.FS.Library.ViewModels.Account.GeneralInformation;
     using Fanex.NAP.FS.Library.Criteria.Account.GeneralInformation;
-    using System.Text;
+    using Fanex.NAP.FS.Library.Core.Extensions;
     using Fanex.NAP.FS.Library.Core.Resources;
 
     public class AccountService : IAccountService
@@ -126,8 +127,7 @@
                 using (var query = db.QueryMultiple(criteria))
                 {
                     query.Read();
-                    query.Read();
-                    query.Read();
+                    query.Read();                    
 
                     var data = query.Read<CustomerInformation>();
 
@@ -246,18 +246,8 @@
                 generalInfo.DangerousOriginal = fraud.danger;
                 generalInfo.DangerousNonLive = fraud.danger2;
                 generalInfo.DangerousOtherSports = fraud.danger3;
-                if (fraud.autosuspend)
-                {
-                    generalInfo.AutoSuspend = ResourcesManager.GetValue(ConstsResources.AUTO_SUSPEND_SOCCER);
-                }
-                else if (fraud.autosuspend2)
-                {
-                    generalInfo.AutoSuspend = ResourcesManager.GetValue(ConstsResources.AUTO_SUSPEND_OTHER_SPORTS);
-                }
-                else
-                {
-                    generalInfo.AutoSuspend = ResourcesManager.GetValue(ConstsResources.NONE);
-                }
+                
+                generalInfo.AutoSuspend = GetAutoSuspend(fraud);
             }
 
             var fraudCase = new StringBuilder();
@@ -268,6 +258,22 @@
             generalInfo.CommitedFraudCase = fraudCase.ToString().TrimEnd(' ').TrimEnd(',');
 
             return generalInfo;
+        }
+
+        private static string GetAutoSuspend(CustomerFraud fraud)
+        {
+            var autoSuspend = new StringBuilder();
+
+            if (fraud.autosuspend)
+            {
+                autoSuspend.Append(ResourcesManager.GetValue(ConstsResources.AUTO_SUSPEND_SOCCER) + ", ");
+            }
+            if (fraud.autosuspend2)
+            {
+                autoSuspend.Append(ResourcesManager.GetValue(ConstsResources.AUTO_SUSPEND_OTHER_SPORTS));
+            }
+
+            return autoSuspend.ToString().TrimEnd(' ').TrimEnd(',');
         }
         #endregion
 
@@ -306,7 +312,7 @@
         {
             if (customersFromAPI.Any())
             {
-                var customerIds = customersFromAPI.Select(c => c.CustId).Join();
+                var customerIds = customersFromAPI.Select(c => c.CustId).Distinct().Join();
                 
                 return GetAssociatedAccountByCustomers(accountId, customerIds);
             }
@@ -364,7 +370,7 @@
 
                 return accountsCollected.AccountsByCustomers.AsEnumerable()
                                 .Where(customer => customer.CompareEvidenceStatus(filter.EvidenceStatus))
-                                .Join(accountsCollected.CustomersFromAPI.AsEnumerable(),
+                                .Join(accountsCollected.CustomersFromAPI.Distinct(c=>c.CustId).AsEnumerable(),
                                     cusA => cusA.CustID,
                                     cusB => cusB.CustId,
                                     (cusA, cusB) => GetAssociatedAccountByGraph(cusA, cusB))

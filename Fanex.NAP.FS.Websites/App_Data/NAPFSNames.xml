@@ -287,6 +287,10 @@
             SpName="FPS_DC_GetCustomerGeneralInfo"
             DbName="MySQL.FPS_DataCenter"/>
 
+    <Setting Key="FPS_DC_GetEvidenceByTargetId"
+            SpName="FPS_DC_GetEvidenceByTargetId"
+            DbName="MySQL.FPS_DataCenter"/>
+
     <Setting Key="FPS_DC_Rpt_GetAssociationByAccount"
             SpName="FPS_DC_Rpt_GetAssociationByAccount"
             DbName="MySQL.FPS_DataCenter"/>
