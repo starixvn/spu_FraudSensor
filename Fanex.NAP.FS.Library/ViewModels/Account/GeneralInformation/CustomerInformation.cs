@@ -8,7 +8,7 @@
 
         public int CustID { get; set; }
 
-        public int AccountStatus { get; set; }
+        public int AccountEvidenceStatus { get; set; }
 
         public string FirstLoginName { get; set; }
 

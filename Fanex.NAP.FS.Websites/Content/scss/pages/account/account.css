@@ -94,6 +94,8 @@
       margin-bottom: 8px;
       color: #475A7C;
       font-weight: bold; }
+    .content-card .status .red {
+      color: #ff0000; }
     .content-card .status .bold {
       margin-left: 20px; }
     .content-card .status .icon-clean {

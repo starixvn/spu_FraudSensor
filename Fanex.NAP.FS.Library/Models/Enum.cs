@@ -15,6 +15,13 @@
         Clean
     }
 
+    public enum AccountEvidenceStatus
+    {
+        Clean,
+        CentralPoint,
+        Flagged
+    }
+
     public enum TransactionHistoryLength
     {
         Hours24 = 1,

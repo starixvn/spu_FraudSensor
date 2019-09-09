@@ -19,6 +19,8 @@
 
         public AccountStatus AccountStatus { get; set; }
 
+        public AccountEvidenceStatus AccountEvidenceStatus { get; set; }
+
         public EvidenceStatus EvidenceStatus
         {
             get

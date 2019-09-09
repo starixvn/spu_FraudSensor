@@ -218,17 +218,19 @@
             generalInfo.FrequencyLogin = customerInformation.LoginCount;
             generalInfo.Username = customerInformation.Username;
             generalInfo.Username2 = customerInformation.Username2;
-            if (customerInformation.AccountStatus == 0)
+            generalInfo.AccountStatus = AccountStatus.Active;
+
+            if (customerInformation.AccountEvidenceStatus == 0)
             {
-                generalInfo.AccountStatus = AccountStatus.Active;
+                generalInfo.AccountEvidenceStatus = AccountEvidenceStatus.CentralPoint;
             }
-            else if(customerInformation.AccountStatus == 1)
+            else if(customerInformation.AccountEvidenceStatus == 1)
             {
-                generalInfo.AccountStatus = AccountStatus.Suspended;
+                generalInfo.AccountEvidenceStatus = AccountEvidenceStatus.Clean;
             }
             else
             {
-                generalInfo.AccountStatus = AccountStatus.Closed;
+                generalInfo.AccountEvidenceStatus = AccountEvidenceStatus.Flagged;
             }
             generalInfo.AccountAge = customerInformation.AccountAge;
 
@@ -250,7 +252,7 @@
         {
             var evidenceTypeCodes = evidenceByTargets.Select(e => e.EvidenceTypeCode).OrderBy(e => e);
 
-            generalInfo.EvidenceTypeCodes = evidenceTypeCodes.Join(", ");
+            generalInfo.EvidenceTypeCodes = evidenceTypeCodes.Join("; ");
 
             return generalInfo;
         }
