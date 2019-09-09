@@ -13,6 +13,10 @@
 
         public string Username2 { get; set; }
 
+        public int SubscriberID { get; set; }
+
+        public string SubscriberName { get; set; }
+
         public AccountStatus AccountStatus { get; set; }
 
         public EvidenceStatus EvidenceStatus

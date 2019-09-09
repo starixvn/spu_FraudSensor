@@ -53,8 +53,7 @@
 
     function RenderUsername(obj) {
         var url = common.modifyRelativeUrl('/Account/DetailAccount?id=' + obj.AccountID
-            + '&custId=' + obj.CustID
-            + '&subscriber=' + obj.SubscriberName);
+            + '&custId=' + obj.CustID);
         var className = 'icon-clean';
 
         if (obj.EvidenceLevel == "0") {

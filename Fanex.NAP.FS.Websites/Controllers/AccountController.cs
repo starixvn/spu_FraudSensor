@@ -30,13 +30,12 @@
         }
 
         #region Detail
-        public ActionResult DetailAccount(int id, int custId, string subscriber)
+        public ActionResult DetailAccount(int id, int custId)
         {
             var permissionIPLocation = new UserService().GetPermission(CurrentSession.UserId, SiteId, FSFunctionKeys.IPLocation);
             
             var data = _accountService.GetAccountDetailGeneralInformation(id, custId);
-
-            ViewBag.SubscriberName = subscriber;
+            
             ViewBag.IsPermissionIPLocation = permissionIPLocation > 0;
 
             return View("DetailAccount", data);

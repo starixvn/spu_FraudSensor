@@ -147,7 +147,6 @@
             if (redirect) {
                 window.location.href = common.modifyRelativeUrl('/Account/DetailAccount?id=' + data[0].AccountID
                     + '&custId=' + data[0].CustID
-                    + '&subscriber=' + data[0].SubscriberName
                 );               
             } else {
                 table.DataTable().clear().rows.add(data).draw();
@@ -159,7 +158,7 @@
     }
     
     function RenderUserName(obj, userName) {
-        var url = common.modifyRelativeUrl('/Account/DetailAccount?id=' + obj.AccountID + '&custId=' + obj.CustID + '&subscriber=' + obj.SubscriberName);
+        var url = common.modifyRelativeUrl('/Account/DetailAccount?id=' + obj.AccountID + '&custId=' + obj.CustID);
 
         return `<a class='info-bng' 
                     href=${url}
