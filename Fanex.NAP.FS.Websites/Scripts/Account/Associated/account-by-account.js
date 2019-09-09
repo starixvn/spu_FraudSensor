@@ -57,9 +57,9 @@
         var className = 'icon-clean';
 
         if (obj.EvidenceLevel == "0") {
-            className = 'icon-fraud';
-        } else if (obj.EvidenceLevel == "2") {
             className = 'icon-fraud-flag';
+        } else if (obj.EvidenceLevel == "2") {
+            className = 'icon-fraud';
         }
 
         var html = '<span class="' + className + '"></span>';
