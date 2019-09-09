@@ -59,9 +59,11 @@
 
         public AccountDetail GetAccountDetailGeneralInformation(int accountId, int custId)
         {
-            var accountCollected = new GeneralAccountCollected();                       
+            var accountCollected = new GeneralAccountCollected();
 
             accountCollected.CustomerInformation = GetGeneralCustomerInformation(accountId);
+
+            accountCollected.EvidenceByTargets = GetEvidenceByAccount(accountCollected.CustomerInformation);
 
             accountCollected.AssociatedByAccounts = GetAssociatedByAccounts(accountId);
 
@@ -122,18 +124,27 @@
                  ip_accountId = accountId
             };
 
-            using (var db = ObjectDbFactory.CreateInstance(criteria.GetSettingKey()))
+            return DataService.GetData<CustomerInformation>(criteria);
+        }
+
+        private static IEnumerable<EvidenceByTarget> GetEvidenceByAccount(IEnumerable<CustomerInformation> customerInformations)
+        {
+            if (customerInformations.Any())
             {
-                using (var query = db.QueryMultiple(criteria))
+                var customer = customerInformations.ToList()[0];
+
+                var criteria = new GetEvidenceByTargetIdCriteria
                 {
-                    query.Read();
-                    query.Read();                    
+                    targetId = customer.AccountID,
+                    objType = false,
+                    subIdList = customer.SubscriberID.ToString(),
+                    isMaster = false
+                };
 
-                    var data = query.Read<CustomerInformation>();
-
-                    return data;
-                }
+                return DataService.GetData<EvidenceByTarget>(criteria);
             }
+
+            return new List<EvidenceByTarget>();
         }
 
         private static IEnumerable<AssociatedByAccount> GetAssociatedByAccounts(int accountId)
@@ -191,6 +202,8 @@
                 generalInfo = GetAssociatedInformation(generalInfo, associated);
             }
 
+            generalInfo = GetEvidenceCodes(generalInfo, accountsCollected.EvidenceByTargets);
+
             generalInfo = GetFraudInformation(generalInfo, accountsCollected.CustomerFraudSuspicious);
 
             accountDetail.GeneralInfo = generalInfo;
@@ -233,9 +246,17 @@
             return generalInfo;
         }
 
+        private static AccountGeneralInformation GetEvidenceCodes(AccountGeneralInformation generalInfo, IEnumerable<EvidenceByTarget> evidenceByTargets)
+        {
+            var evidenceTypeCodes = evidenceByTargets.Select(e => e.EvidenceTypeCode).OrderBy(e => e);
+
+            generalInfo.EvidenceTypeCodes = evidenceTypeCodes.Join(", ");
+
+            return generalInfo;
+        }
+
         private static AccountGeneralInformation GetFraudInformation(AccountGeneralInformation generalInfo, CustomerFraudSuspicious customerFraudSuspicious)
         {
-            generalInfo.Evidence = "";
             generalInfo.ProblemAccount = "";
             generalInfo.AutoSuspend = ResourcesManager.GetValue(ConstsResources.NONE);
 

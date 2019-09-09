@@ -431,6 +431,7 @@
     <Compile Include="ViewModels\Account\Evidence\RetractedEvidenceAndException.cs" />
     <Compile Include="ViewModels\Account\GeneralInformation\AssociatedByAccount.cs" />
     <Compile Include="ViewModels\Account\GeneralInformation\CustomerInformation.cs" />
+    <Compile Include="ViewModels\Account\GeneralInformation\EvidenceByTarget.cs" />
     <Compile Include="ViewModels\Account\GeneralInformation\GeneralAccountCollected.cs" />
     <Compile Include="ViewModels\Account\Search\SearchAccountFilter.cs" />
     <Compile Include="ViewModels\Account\SubscriberAccount.cs" />

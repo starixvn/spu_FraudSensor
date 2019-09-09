@@ -19,7 +19,7 @@
         {
             get
             {
-                if (!string.IsNullOrEmpty(this.Evidence))
+                if (!string.IsNullOrEmpty(this.EvidenceTypeCodes))
                 {
                     return EvidenceStatus.Affected;
                 }
@@ -46,7 +46,7 @@
 
         public int AccountExceptions { get; set; }
 
-        public string Evidence { get; set; }
+        public string EvidenceTypeCodes { get; set; }
 
         public string ProblemAccount { get; set; }
 

@@ -17,11 +17,16 @@
 
         public int TotalLoginWithRootAccount { get; set; }
 
-        public int EvidenceLevel { get; set; }
+        public string EvidenceLevel { get; set; }
 
         public EvidenceStatus GetEvidenceStatus()
         {
-            return this.EvidenceLevel > 0 ? EvidenceStatus.Affected : EvidenceStatus.Clean;
+            if (!string.IsNullOrEmpty(this.EvidenceLevel))
+            {
+                return int.Parse(this.EvidenceLevel) >= 0 ? EvidenceStatus.Affected : EvidenceStatus.Clean;
+            }
+
+            return EvidenceStatus.Clean;
         }
 
         public bool CompareEvidenceStatus(EvidenceStatus evidenceStatus)

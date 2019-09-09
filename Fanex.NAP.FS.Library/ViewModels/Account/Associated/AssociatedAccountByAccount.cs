@@ -23,7 +23,7 @@
 
         public int TotalLoginWithRootAccount { get; set; }
 
-        public int EvidenceLevel { get; set; }
+        public string EvidenceLevel { get; set; }
 
         public string Status { get; set; }
 

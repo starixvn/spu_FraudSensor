@@ -6,6 +6,8 @@
     {
         public IEnumerable<CustomerInformation> CustomerInformation { get; set; }
 
+        public IEnumerable<EvidenceByTarget> EvidenceByTargets { get; set; }
+
         public IEnumerable<AssociatedByAccount> AssociatedByAccounts { get; set; }
 
         public CustomerFraudSuspicious CustomerFraudSuspicious { get; set; }

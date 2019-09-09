@@ -55,10 +55,12 @@
         var url = common.modifyRelativeUrl('/Account/DetailAccount?id=' + obj.AccountID
             + '&custId=' + obj.CustID
             + '&subscriber=' + obj.SubscriberName);
-        var className = 'icon-fraud';
+        var className = 'icon-clean';
 
-        if (obj.EvidenceLevel == 0) {
-            className = 'icon-clean';
+        if (obj.EvidenceLevel == "0") {
+            className = 'icon-fraud';
+        } else if (obj.EvidenceLevel == "2") {
+            className = 'icon-fraud-flag';
         }
 
         var html = '<span class="' + className + '"></span>';
