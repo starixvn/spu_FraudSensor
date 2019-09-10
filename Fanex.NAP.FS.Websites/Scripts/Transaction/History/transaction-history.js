@@ -75,13 +75,13 @@
         loading.show();
 
         var url = common.modifyRelativeUrl('/Transaction/GetTransactionHistoryFilter');
-        var reportLength = $(reportLength).val();
+        var lengthReport = $(reportLength).val();
 
         $.ajax(url, {
             type: 'POST',
             data: {
                 AccountId: ACCOUNTID,
-                ReportLength: reportLength
+                ReportLength: lengthReport
             },
             success: function (response) {
                 BindDataToGrid(response);
