@@ -8,6 +8,6 @@
     {
         IEnumerable<Transaction> GetTransactionHistory(TransactionHistoryFilter filter);
 
-        IPInformation GetIPInformation(int ipRangeLocationId);
+        IPInformation GetIPInformation(string ipAddress);
     }
 }

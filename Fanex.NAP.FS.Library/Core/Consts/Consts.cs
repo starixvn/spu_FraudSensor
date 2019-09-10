@@ -19,5 +19,7 @@
 
         public const string FormatDateToString_MMMddyyyy = "MMM dd, yyyy";
         public const string FormatDateToString_MMMddyyyyhhmmsstt = "MMM dd, yyyy hh: mm:ss tt";
+
+        public const string CurrentSubscriberAssignmentsKey = "CurrentSubscriberAssignmentsKey";
     }
 }

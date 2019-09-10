@@ -1,8 +1,8 @@
 ﻿function form_ip_information() {
     var form = $('#form-ip-information');
 
-    this.OpenModal = function (ipRangeLocationId) {
-        GetIPInformation(ipRangeLocationId);     
+    this.OpenModal = function (ip, offset) {
+        GetIPInformation(ip);     
 
         if (form.is('dialog')) {
             form.dialog('open');
@@ -18,13 +18,13 @@
         }        
     }
 
-    function GetIPInformation(ipRangeLocationId) {
+    function GetIPInformation(ip) {
         var url = common.modifyRelativeUrl('/Transaction/GetIPInformation');
 
         $.ajax(url, {
             type: 'POST',
             data: {
-                ipRangeLocationId: ipRangeLocationId               
+                ip: ip               
             },
             success: function (response) {
                 form.html(response);

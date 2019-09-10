@@ -6,9 +6,9 @@
     {
         public int targetId { get; set; }
 
-        public bool objType { get; set; }
+        public bool targetType { get; set; }
 
-        public string subIdList { get; set; }
+        public int userId { get; set; }
 
         public bool isMaster { get; set; }
 

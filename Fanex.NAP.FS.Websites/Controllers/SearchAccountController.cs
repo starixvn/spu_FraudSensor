@@ -6,6 +6,7 @@
     using Fanex.NAP.FS.Library.Core.Consts;
     using Fanex.NAP.FS.Library.Services;
     using Fanex.NAP.FS.Library.ViewModels.Account.Search;
+    using Fanex.NAP.FS.Service.Utilities;
     using System.Configuration;
     using System.Web.Mvc;
 
@@ -42,6 +43,8 @@
             if (userId > 0)
             {
                 var data = _accountService.GetSubscribers(userId);
+
+                AppSession.CurrentSubscriberAssignments = data;
 
                 return Json(data, JsonRequestBehavior.AllowGet);
             }

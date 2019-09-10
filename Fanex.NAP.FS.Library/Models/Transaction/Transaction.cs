@@ -29,9 +29,7 @@
 
         public string Domain { get; set; }
 
-        public string IP { get; set; }
-
-        public int IPRangeLocationID { get; set; }
+        public string IP { get; set; }      
 
         public string Country { get; set; }
 

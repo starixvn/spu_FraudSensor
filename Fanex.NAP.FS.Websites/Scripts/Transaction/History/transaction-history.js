@@ -32,7 +32,11 @@
                 { targets: [2], width: "15%" },
                 { targets: [3], width: "10%" },
                 { targets: [4], width: "15%" },
-                { targets: [5], width: "15%" },
+                {
+                    targets: [5],
+                    width: "15%",
+                    visible: IsPermissionIPLocation.toLowerCase() == 'true' ? true : false
+                },
                 {
                     targets: [6],
                     width: "15%",
@@ -67,7 +71,7 @@
     }
 
     function RenderIPInformation(obj) {
-        return "<span class='link ip-link' id=" + obj.IPRangeLocationID + ">" + obj.IP + "</span>";
+        return "<span class='link ip-link' id=" + obj.IP + ">" + obj.IP + "</span>";
     }
 
     function GenerateReport() {
@@ -107,7 +111,7 @@
     function ShowFormIPInformation() {
         var valueIP = $(this).attr('id');
 
-        formIPInformation.OpenModal(valueIP);
+        formIPInformation.OpenModal(valueIP, $(this).offset());
     }
 
     function AnimateContent() {

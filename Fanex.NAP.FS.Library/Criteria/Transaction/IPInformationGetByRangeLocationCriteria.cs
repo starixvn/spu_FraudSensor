@@ -4,7 +4,7 @@
 
     public class IPInformationGetByRangeLocationCriteria : CriteriaBase
     {
-        public int ip_IPRangeLocationID { get; set; }
+        public decimal ip_IP { get; set; }
 
         public override string GetSettingKey() => "FPS_DC_GetLocationInfobyIP";
 

@@ -46,5 +46,17 @@
                    AppSession.RoleAccess.ContainsKey(functionName) &&
                    AppSession.RoleAccess[functionName] == (int)Constant.Policy.Read;
         }
+
+        public static bool IsMasterSubscriberAssignment()
+        {
+            var currentSubscriberAssignments = AppSession.CurrentSubscriberAssignments;
+
+            if (currentSubscriberAssignments != null && currentSubscriberAssignments.Any())
+            {
+                return currentSubscriberAssignments.ToList()[0].IsMaster == 1;
+            }
+
+            return false;
+        }
     }
 }

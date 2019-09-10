@@ -2,13 +2,15 @@
 {
     using Fanex.NAP.FS.Library.Services;
     using Fanex.NAP.FS.Library.ViewModels.Account.Associated;
-    using System.Web.Mvc;
     using Fanex.NAP.Core.Web.Attribute;
     using Fanex.NAP.FS.Library.Core.Consts;
     using Fanex.NAP.FS.Library.ViewModels.Evidence;
-    using System.Net;
     using System.Collections.Generic;
     using Fanex.NAP.Core.Service.Impl;
+    using Fanex.NAP.FS.Library.ViewModels.Account.GeneralInformation;
+    using System.Net;
+    using System.Web.Mvc;
+    using Fanex.NAP.FS.Service.Utilities;
 
     [NapAuth(FunctionKey = FSFunctionKeys.SearchAccount, Policy = Core.Business.Constant.Policy.Read)]
     public class AccountController : BaseController
@@ -33,10 +35,12 @@
         public ActionResult DetailAccount(int id, int custId)
         {
             var permissionIPLocation = new UserService().GetPermission(CurrentSession.UserId, SiteId, FSFunctionKeys.IPLocation);
-            
-            var data = _accountService.GetAccountDetailGeneralInformation(id, custId);
-            
+
             ViewBag.IsPermissionIPLocation = permissionIPLocation > 0;
+
+            var filter = GenerateGeneralInformationFilter(id, custId);
+
+            var data = _accountService.GetAccountDetailGeneralInformation(filter);
 
             return View("DetailAccount", data);
         }
@@ -75,6 +79,10 @@
         public ActionResult GetAssociatedAccountByAccountFilter(AssociatedAccountByAccountFilter filter)
         {
             var msgError = string.Empty;
+
+            filter.userId = CurrentSession.UserId;
+
+            filter.isMasterSubscriberAssignment = PermissionService.IsMasterSubscriberAssignment();
 
             var data = _accountService.GetAssociatedAccountByAccounts(filter, out msgError);
 
@@ -130,6 +138,17 @@
 
             return Json(errors, JsonRequestBehavior.AllowGet);
         }
+
+        private GeneralInformationFilter GenerateGeneralInformationFilter(int id, int custId)
+        {
+            return new GeneralInformationFilter
+            {
+                AccountId = id,
+                CustId = custId,
+                IsMasterSubscriberAssignment = PermissionService.IsMasterSubscriberAssignment(),
+                UserId = CurrentSession.UserId
+            };
+        }        
         #endregion
     }
 }

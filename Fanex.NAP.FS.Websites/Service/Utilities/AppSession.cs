@@ -1,6 +1,8 @@
 ﻿namespace Fanex.NAP.FS.Service.Utilities
 {
     using Fanex.NAP.Core.Models;
+    using Fanex.NAP.FS.Library.Core.Consts;
+    using Fanex.NAP.FS.Library.Models.Subscriber;
     using Logging;
     using System;
     using System.Collections.Generic;
@@ -59,6 +61,26 @@
             set
             {
                 SessionManager.Set(CurrentUserRoleAccessKey, value);
+            }
+        }
+
+        public static IEnumerable<SubscriberAssignment> CurrentSubscriberAssignments
+        {
+            get
+            {
+                try
+                {
+                    return SessionManager.Get<IEnumerable<SubscriberAssignment>>(Consts.CurrentSubscriberAssignmentsKey);
+                }
+                catch (Exception exception)
+                {
+                    LogService.Error(exception.Message, exception);
+                    throw;
+                }
+            }
+            set
+            {
+                SessionManager.Set(Consts.CurrentSubscriberAssignmentsKey, value);
             }
         }
 

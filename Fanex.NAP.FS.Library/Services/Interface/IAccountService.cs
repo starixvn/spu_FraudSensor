@@ -3,6 +3,7 @@
     using Fanex.NAP.FS.Library.Models.Subscriber;
     using Fanex.NAP.FS.Library.ViewModels.Account;
     using Fanex.NAP.FS.Library.ViewModels.Account.Associated;
+    using Fanex.NAP.FS.Library.ViewModels.Account.GeneralInformation;
     using Fanex.NAP.FS.Library.ViewModels.Account.Search;
     using System.Collections.Generic;
 
@@ -12,7 +13,7 @@
 
         IEnumerable<SubscriberAccount> SearchAccounts(SearchAccountFilter filter);
 
-        AccountDetail GetAccountDetailGeneralInformation(int accountId, int custId);
+        AccountDetail GetAccountDetailGeneralInformation(GeneralInformationFilter filter);
 
         IEnumerable<AssociatedAccountByAccount> GetAssociatedAccountByAccounts(AssociatedAccountByAccountFilter filter, out string msgError);
 

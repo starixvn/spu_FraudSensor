@@ -57,19 +57,19 @@
                             .ThenBy(a => a.UserName);
         }
 
-        public AccountDetail GetAccountDetailGeneralInformation(int accountId, int custId)
+        public AccountDetail GetAccountDetailGeneralInformation(GeneralInformationFilter filter)
         {
             var accountCollected = new GeneralAccountCollected();
 
-            accountCollected.CustomerInformation = GetGeneralCustomerInformation(accountId);
+            accountCollected.CustomerInformation = GetGeneralCustomerInformation(filter);
 
-            accountCollected.EvidenceByTargets = GetEvidenceByAccount(accountCollected.CustomerInformation);
+            accountCollected.EvidenceByTargets = GetEvidenceByAccount(filter);
 
-            accountCollected.AssociatedByAccounts = GetAssociatedByAccounts(accountId);
+            accountCollected.AssociatedByAccounts = GetAssociatedByAccounts(filter.AccountId);
 
-            accountCollected.CustomerFraudSuspicious = GetCustomerFraudSuspicious(custId.ToString());
+            accountCollected.CustomerFraudSuspicious = GetCustomerFraudSuspicious(filter.CustId.ToString());
 
-            return GetAccountDetailGeneralInformation(accountCollected, accountId, custId);
+            return GetAccountDetailGeneralInformation(accountCollected, filter.AccountId, filter.CustId);
         }
 
         public IEnumerable<AssociatedAccountByAccount> GetAssociatedAccountByAccounts(AssociatedAccountByAccountFilter filter, out string msgError)
@@ -78,7 +78,7 @@
 
             accountCollected.CustomersFromAPI = GetCustomersFromAPI(filter);
 
-            accountCollected.AccountsByCustomers = GetAssociatedAccountByCustomers(filter.AccountId, accountCollected.CustomersFromAPI);
+            accountCollected.AccountsByCustomers = GetAssociatedAccountByCustomers(filter, accountCollected.CustomersFromAPI);
 
             accountCollected.CustomerFraudSuspicious = GetCustomerFraud(accountCollected.AccountsByCustomers);
            
@@ -117,34 +117,29 @@
         }
 
         #region General information
-        private static IEnumerable<CustomerInformation> GetGeneralCustomerInformation(int accountId)
+        private static IEnumerable<CustomerInformation> GetGeneralCustomerInformation(GeneralInformationFilter filter)
         {
             var criteria = new GetCustomerGeneralInformationCriteria
             {
-                 ip_accountId = accountId
+                ip_accountId = filter.AccountId,
+                ip_isMaster = filter.IsMasterSubscriberAssignment,
+                ip_userId = filter.UserId
             };
 
             return DataService.GetData<CustomerInformation>(criteria);
         }
 
-        private static IEnumerable<EvidenceByTarget> GetEvidenceByAccount(IEnumerable<CustomerInformation> customerInformations)
+        private static IEnumerable<EvidenceByTarget> GetEvidenceByAccount(GeneralInformationFilter filter)
         {
-            if (customerInformations.Any())
+            var criteria = new GetEvidenceByTargetIdCriteria
             {
-                var customer = customerInformations.ToList()[0];
+                targetId = filter.AccountId,
+                targetType = false,
+                userId = filter.UserId,
+                isMaster = filter.IsMasterSubscriberAssignment
+            };
 
-                var criteria = new GetEvidenceByTargetIdCriteria
-                {
-                    targetId = customer.AccountID,
-                    objType = false,
-                    subIdList = customer.SubscriberID.ToString(),
-                    isMaster = false
-                };
-
-                return DataService.GetData<EvidenceByTarget>(criteria);
-            }
-
-            return new List<EvidenceByTarget>();
+            return DataService.GetData<EvidenceByTarget>(criteria);
         }
 
         private static IEnumerable<AssociatedByAccount> GetAssociatedByAccounts(int accountId)
@@ -331,24 +326,26 @@
             return customersAPI ?? new List<CustomerByGraphDB>();
         }
 
-        private static IEnumerable<AssociatedAccountByCustomer> GetAssociatedAccountByCustomers(int accountId, IEnumerable<CustomerByGraphDB> customersFromAPI)
+        private static IEnumerable<AssociatedAccountByCustomer> GetAssociatedAccountByCustomers(AssociatedAccountByAccountFilter filter, IEnumerable<CustomerByGraphDB> customersFromAPI)
         {
             if (customersFromAPI.Any())
             {
                 var customerIds = customersFromAPI.Select(c => c.CustId).Distinct().Join();
                 
-                return GetAssociatedAccountByCustomers(accountId, customerIds);
+                return GetAssociatedAccountByCustomers(filter, customerIds);
             }
 
             return new List<AssociatedAccountByCustomer>();            
         }
 
-        private static IEnumerable<AssociatedAccountByCustomer> GetAssociatedAccountByCustomers(int accountId, string customerIds)
+        private static IEnumerable<AssociatedAccountByCustomer> GetAssociatedAccountByCustomers(AssociatedAccountByAccountFilter filter, string customerIds)
         {
             var criteria = new GetAssociatedAccountByAccountCriteria
             {
                 custIds = customerIds,
-                rootAccountId = accountId
+                rootAccountId = filter.AccountId,
+                userId = filter.userId,
+                isMaster = filter.isMasterSubscriberAssignment
             };
 
             return DataService.GetData<AssociatedAccountByCustomer>(criteria);

@@ -36,9 +36,9 @@
         }
 
         [HttpPost]
-        public ActionResult GetIPInformation(int ipRangeLocationId)
+        public ActionResult GetIPInformation(string ip)
         {
-            var data = _transactionService.GetIPInformation(ipRangeLocationId);
+            var data = _transactionService.GetIPInformation(ip);
 
             return PartialView("IPInformation", data);
         }

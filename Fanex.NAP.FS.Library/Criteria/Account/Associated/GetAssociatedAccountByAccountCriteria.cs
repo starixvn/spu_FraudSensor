@@ -9,6 +9,10 @@
 
         public int rootAccountId { get; set; }
 
+        public int userId { get; set; }
+
+        public bool isMaster { get; set; }
+
         [SpParam(Ignored = true)]
         public override int ErrCode { get; set; }
 
