@@ -158,6 +158,7 @@
             modal: true,
             width: '1500px',
             title: 'Graph visualization',
+            dialogClass: "modal-graph-render",
             resizable: true,
             draggable: true,
             close: function () { $(this).dialog('close'); }
