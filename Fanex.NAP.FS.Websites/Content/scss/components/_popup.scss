@@ -85,3 +85,19 @@
         font-size: 16px;
     }
 }
+
+// modal-graph-render
+.modal-graph-render {
+    top: 60px !important;
+    width: 95% !important;
+
+    .ppt-body {
+        margin: 5px;
+        padding: 0 !important;
+    }
+
+    .ppt-container-graph {
+        border-radius: 0;
+        height: 100%;
+    }
+}

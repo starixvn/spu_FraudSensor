@@ -873,6 +873,16 @@ table.dataTable tbody tr.selected td {
   padding: 32px 12px;
   font-size: 16px; }
 
+.modal-graph-render {
+  top: 60px !important;
+  width: 95% !important; }
+  .modal-graph-render .ppt-body {
+    margin: 5px;
+    padding: 0 !important; }
+  .modal-graph-render .ppt-container-graph {
+    border-radius: 0;
+    height: 100%; }
+
 .loader {
   width: 16px;
   height: 16px;
@@ -980,7 +990,6 @@ body {
   .main-menu .menu-item .sub-menu, .header-info .search-component .search-option .sub-menu, .header-info .username .sub-menu {
     position: absolute;
     top: 100%;
-    bottom: 0;
     left: 0;
     height: 0;
     display: flex;
