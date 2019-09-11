@@ -1,9 +1,31 @@
 ﻿function form_ip_information() {
-    var form = $('#form-ip-information');
+    var form = $('#form-ip-information');  
 
-    this.OpenModal = function (ip, targetElement) {
-        GetIPInformation(ip);     
-       
+    this.OpenModal = function (ip, targetElement) {        
+        var url = common.modifyRelativeUrl('/Transaction/GetIPInformation');
+
+        common.showLoading();
+
+        $.ajax(url, {
+            type: 'POST',
+            data: {
+                ip: ip
+            },
+            success: function (response) {
+                form.html(response);
+
+                common.closeLoading();
+
+                OpenForm(targetElement);
+            },
+            error: function (errorMessage) {
+                console.log(errorMessage);
+                common.showError('Get IP Information fail!');
+            }
+        });
+    }
+   
+    function OpenForm(targetElement) {
         if (form.is('dialog')) {
             form.dialog('open');
         } else {
@@ -25,25 +47,6 @@
         }
     }
 
-    function GetIPInformation(ip) {
-        var url = common.modifyRelativeUrl('/Transaction/GetIPInformation');
-
-        $.ajax(url, {
-            type: 'POST',
-            data: {
-                ip: ip               
-            },
-            success: function (response) {
-                form.html(response);
-                form.show();
-            },
-            error: function (errorMessage) {
-                console.log(errorMessage);
-                common.showError('Get IP Information fail!');
-            }
-        });
-    }
-
     function FlipPopup(obj, info) {
         if (info.vertical != "top") {
             $(this).addClass("flipped");
@@ -61,5 +64,5 @@
             left: obj.left + 'px',
             top: obj.top + 'px'
         });
-    }
+    }   
 }
