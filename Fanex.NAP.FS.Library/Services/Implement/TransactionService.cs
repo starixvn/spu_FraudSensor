@@ -31,7 +31,7 @@
 
             var criteria = new IPInformationGetByRangeLocationCriteria
             {
-                ip_IP = ipModel.IsIpV6 ? ipModel.IpNumber + 281470681743360 : ipModel.IpNumber
+                ip_IP = ipModel.IsIpV6 ? ipModel.IpNumber : ipModel.IpNumber + 281470681743360
             };
 
             var data = DataService.GetData<IPInformation>(criteria);
