@@ -31,7 +31,7 @@
 
             var criteria = new IPInformationGetByRangeLocationCriteria
             {
-                ip_IP = decimal.Parse(ipModel.IpNumber.ToString())
+                ip_IP = ipModel.IsIpV6 ? ipModel.IpNumber + 281470681743360 : ipModel.IpNumber
             };
 
             var data = DataService.GetData<IPInformation>(criteria);
@@ -68,7 +68,7 @@
 
                 return new IpModel
                 {
-                    IpNumber = ipnum,
+                    IpNumber = decimal.Parse(ipnum.ToString()),
                     IsIpV6 = true
                 };
             }
@@ -79,7 +79,7 @@
 
                 return new IpModel
                 {
-                    IpNumber = ipnum,
+                    IpNumber = decimal.Parse(ipnum.ToString()),
                     IsIpV6 = false
                 };
             }

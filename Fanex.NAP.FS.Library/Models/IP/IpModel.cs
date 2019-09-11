@@ -4,7 +4,7 @@
 
     public class IpModel
     {
-        public BigInteger IpNumber { get; set; }
+        public decimal IpNumber { get; set; }
 
         public bool IsIpV6 { get; set; }
     }
