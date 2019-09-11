@@ -111,7 +111,9 @@
     function ShowFormIPInformation() {
         var valueIP = $(this).text();
        
-        var targetIPAddress = "#" + $(this).attr("id");        
+        var targetIPAddress = "#" + $(this).attr("id");
+
+        console.log($(targetIPAddress).position());
 
         formIPInformation.OpenModal(valueIP, targetIPAddress);
     }
