@@ -13,8 +13,6 @@
 
         public long SubscriberID { get; set; }
 
-        public string RobotTracking { get; set; }
-
         public string ActionResult { get; set; }
 
         public long DeviceID { get; set; }
@@ -30,14 +28,6 @@
         public string Domain { get; set; }
 
         public string IP { get; set; }      
-
-        public string Country { get; set; }
-
-        public string Region { get; set; }
-
-        public string City { get; set; }
-
-        public string ServiceProvider { get; set; }
 
         public string TransDateToString
         {

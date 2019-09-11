@@ -1,21 +1,29 @@
 ﻿function form_ip_information() {
     var form = $('#form-ip-information');
 
-    this.OpenModal = function (ip, offset) {
-        GetIPInformation(ip);     
+    this.OpenModal = function (ip, targetElement) {
+        GetIPInformation(ip);              
 
+        var my = "left top+10";
+        var at = "left top+10";
+       
         if (form.is('dialog')) {
             form.dialog('open');
         } else {
             form.dialog({
-                modal: true,                
-                width: '550px',
+                modal: true,
+                width: '530px',
+                position: {
+                    my: my,
+                    at: at,
+                    of: targetElement
+                },
                 title: 'IP INFORMATION',
-                resizable: false,
-                draggable: false,
+                resizable: true,
+                draggable: true,
                 close: function () { $(this).dialog('close'); }
             })
-        }        
+        }
     }
 
     function GetIPInformation(ip) {

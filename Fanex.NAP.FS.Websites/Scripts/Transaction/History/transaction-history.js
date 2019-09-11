@@ -50,9 +50,11 @@
                 { data: obj => obj.DeviceType },
                 { data: obj => obj.Browser },
                 { data: obj => RenderHostName(obj.Domain) },
-                { data: obj => RenderIPInformation(obj) }
+                { data: (obj, type, set, meta) => RenderIPInformation(obj, meta.row + 1) }
             ]
         });
+
+        transactionTable.on('click', '.ip-link', ShowFormIPInformation);
     }
 
     function RenderDevice(obj) {
@@ -70,8 +72,8 @@
         return urlNew.hostname;
     }
 
-    function RenderIPInformation(obj) {
-        return "<span class='link ip-link' id=" + obj.IP + ">" + obj.IP + "</span>";
+    function RenderIPInformation(obj, rowIndex) {
+        return "<span class='link ip-link' id=ip-address-" + rowIndex + ">" + obj.IP + "</span>";
     }
 
     function GenerateReport() {
@@ -103,15 +105,15 @@
         transactionContent.show();
 
         transactionTable.DataTable().clear().rows.add(data).draw();
-        transactionTable.DataTable().columns.adjust();
-
-        $('.ip-link').click(ShowFormIPInformation);
+        transactionTable.DataTable().columns.adjust();        
     }
 
     function ShowFormIPInformation() {
-        var valueIP = $(this).attr('id');
+        var valueIP = $(this).text();
+       
+        var targetIPAddress = "#" + $(this).attr("id");        
 
-        formIPInformation.OpenModal(valueIP, $(this).offset());
+        formIPInformation.OpenModal(valueIP, targetIPAddress);
     }
 
     function AnimateContent() {
