@@ -113,8 +113,6 @@
        
         var targetIPAddress = "#" + $(this).attr("id");
 
-        console.log($(targetIPAddress).position());
-
         formIPInformation.OpenModal(valueIP, targetIPAddress);
     }
 
