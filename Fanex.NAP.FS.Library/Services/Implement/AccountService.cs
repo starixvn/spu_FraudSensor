@@ -125,16 +125,8 @@
                 ip_isMaster = filter.IsMasterSubscriberAssignment,
                 ip_userId = filter.UserId
             };
-          
-            using (var db = ObjectDbFactory.CreateInstance(criteria.GetSettingKey()))
-            {
-                using (var query = db.QueryMultiple(criteria))
-                {
-                    query.Read();
 
-                    return query.Read<CustomerInformation>();
-                }
-            }
+            return DataService.GetData<CustomerInformation>(criteria);
         }
 
         private static IEnumerable<EvidenceByTarget> GetEvidenceByAccount(GeneralInformationFilter filter)
