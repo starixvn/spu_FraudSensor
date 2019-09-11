@@ -294,7 +294,11 @@
     <Setting Key="FPS_DC_Rpt_GetAssociationByAccount"
             SpName="FPS_DC_Rpt_GetAssociationByAccount"
             DbName="MySQL.FPS_DataCenter"/>
-    
+
+    <Setting Key="FPS_DC_Rpt_ChainToEvidence" 
+             SpName="FPS_DC_Rpt_ChainToEvidence" 
+             DbName="MySQL.FPS_DataCenter"/>
+
     <Setting Key="FPS_DC_Rpt_GetAssociatedAccountByAccount"
             SpName="FPS_DC_Rpt_GetAssociatedAccountByAccount"
             DbName="MySQL.FPS_DataCenter"/>

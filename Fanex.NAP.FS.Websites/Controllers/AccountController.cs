@@ -11,6 +11,7 @@
     using System.Net;
     using System.Web.Mvc;
     using Fanex.NAP.FS.Service.Utilities;
+    using Fanex.NAP.FS.Library.ViewModels.Account.Evidence;
 
     [NapAuth(FunctionKey = FSFunctionKeys.SearchAccount, Policy = Core.Business.Constant.Policy.Read)]
     public class AccountController : BaseController
@@ -46,9 +47,13 @@
         }
 
         [HttpPost]
-        public ActionResult GetChainsToEvidence(int accountId)
+        public ActionResult GetChainsToEvidence(ChainsToEvidenceFilter filter)
         {
-            var data = _evidenceService.GetChainsToEvidence(accountId);
+            filter.UserId = CurrentSession.UserId;
+
+            filter.IsMasterSubscriberAssignment = PermissionService.IsMasterSubscriberAssignment();
+
+            var data = _evidenceService.GetChainsToEvidence(filter);
 
             return PartialView("DetailInfoAccount/ChainsToEvidence", data);
         }

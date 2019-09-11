@@ -1,36 +1,36 @@
 ﻿@model Fanex.NAP.FS.Library.ViewModels.Account.Evidence.ChainsToEvidence
 
 <div class="chains-block">
-    @foreach (var evidence in Model.Evidences)
+    @foreach (var chain in Model.ChainsRoot)
     {
         <div class="chain-row">
             <div class="chain-central">
-                <span>@evidence.NodeNameRoot</span>
+                <span>@chain.NodeName</span>
             </div>
 
             <div class="chain-place-dashed">
-                <span class="icon-connect" node-id="@evidence.NodeIdRoot" note-name="@evidence.NodeNameRoot"></span>
+                <span class="icon-connect" node-id="@chain.NodeId" note-name="@chain.NodeName"></span>
             </div>
 
             <div class="chain-evidence">
-                <span>@evidence.Evidence.EvidenceName</span>
+                <span>@chain.EvidenceName</span>
             </div>
         </div>
     }
 
-    @foreach (var chains in Model.Chains)
+    @foreach (var chain in Model.Chains)
     {
         <div class="chain-row">
             <div class="chain-central">
-                <span>@chains.NodeNameParent</span>
+                <span>@chain.NodeNameRoot</span>
             </div>
 
             <div class="chain-place">
-                <span class="icon-connect-aa" node-id="@chains.NodeIdCurrent" node-name="@chains.NodeNameCurrent" title="Click to place an Exception"></span>
+                <span class="icon-connect-aa" node-id="@chain.NodeId" node-name="@chain.NodeName" title="Click to place an Exception"></span>
             </div>
 
             <div class="chain-central">
-                <span>@chains.NodeNameCurrent</span>
+                <span>@chain.NodeName</span>
             </div>
 
             <div class="chain-place-dashed">
@@ -38,7 +38,7 @@
             </div>
 
             <div class="chain-evidence">
-                <span>@chains.Evidence.EvidenceName</span>
+                <span>@chain.EvidenceName</span>
             </div>
         </div>
     }

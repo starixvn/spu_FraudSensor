@@ -7,7 +7,7 @@
 
     public interface IEvidenceService
     {
-        ChainsToEvidence GetChainsToEvidence(int accountId);
+        ChainsToEvidence GetChainsToEvidence(ChainsToEvidenceFilter filter);
 
         RetractedEvidenceAndException GetRetractedEvidenceAndException(int accountId);
 
