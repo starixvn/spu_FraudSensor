@@ -1,56 +1,79 @@
-﻿@model Fanex.NAP.FS.Library.ViewModels.Account.Evidence.RetractedEvidenceAndException
+﻿@model Fanex.NAP.FS.Library.ViewModels.Account.Evidence.RetractedAndExceptionEvidence
 
 <div class="chains-block">
-    @foreach (var item in Model.ChainsToEvidence.Evidences)
+    @if (Model.ChainsDirectedRetractedEvidence != null)
     {
-        <div class="chain-row">            
-            <div class="chain-central">
-                <span>@item.NodeNameRoot</span>
+        foreach (var chain in Model.ChainsDirectedRetractedEvidence)
+        {
+            <div class="chain-row">
+                <div class="chain-central">
+                    <span>@chain.DirectedUserName</span>
+                </div>
+
+                <div class="chain-place">
+                    <span class="icon-connect-aa"></span>
+                </div>
+
+                <div class="chain-evidence">
+                    <span>@chain.EvidenceCode</span>
+                </div>
             </div>
-            
-            <div class="chain-place">
-                <span class="icon-connect-aa"></span>
-            </div>
-            
-            <div class="chain-evidence">
-                <span>@item.Evidence.EvidenceName</span>
-            </div>            
-        </div>
+        }
     }
 
-    @foreach (var item in Model.ChainsToEvidence.Chains)
+    @if (Model.ChainsAffectedRetractedEvidence != null)
     {
-        var classNameChainPlace = "chain-place";
-        var classNameChainEvidence = "chain-evidence-dash";
-        var classNameIcon = "icon-connect-aa";
-
-        if (item.NodeType == "Exception")
+        foreach (var chain in Model.ChainsAffectedRetractedEvidence)
         {
-            classNameChainPlace = "chain-place-slash";
-            classNameChainEvidence = "chain-evidence";
-            classNameIcon = "icon-disconnect";
-        }
+            <div class="chain-row">
+                <div class="chain-central">
+                    <span>@chain.AffectedUserName</span>
+                </div>
 
-        <div class="chain-row">            
-            <div class="chain-central">
-                <span>@item.NodeNameParent</span>
+                <div class="chain-place">
+                    <span class="icon-connect-aa"></span>
+                </div>
+
+                <div class="chain-central">
+                    <span>@chain.DirectedUserName</span>
+                </div>
+
+                <div class="chain-place-dashed">
+                    <span class="icon-connect"></span>
+                </div>
+
+                <div class="chain-evidence-dash">
+                    <span>@chain.EvidenceCode</span>
+                </div>
             </div>
-                      
-            <div class=@classNameChainPlace>
-                <span class=@classNameIcon></span>
+        }
+    }
+
+    @if (Model.ChainsExceptionEvidence != null)
+    {
+        foreach (var chain in Model.ChainsExceptionEvidence)
+        {
+            <div class="chain-row">
+                <div class="chain-central">
+                    <span>@chain.AffectedUserName</span>
+                </div>
+
+                <div class="chain-place-slash">
+                    <span class="icon-disconnect"></span>
+                </div>
+
+                <div class="chain-central">
+                    <span>@chain.DirectedUserName</span>
+                </div>
+
+                <div class="chain-place-dashed">
+                    <span class="icon-connect"></span>
+                </div>
+
+                <div class="chain-evidence">
+                    <span>@chain.EvidenceCode</span>
+                </div>
             </div>
-            
-            <div class="chain-central">
-                <span>@item.NodeNameCurrent</span>
-            </div>
-            
-            <div class="chain-place-dashed">
-                <span class="icon-connect"></span>
-            </div>
-           
-            <div class=@classNameChainEvidence>
-                <span>@item.Evidence.EvidenceName</span>
-            </div>            
-        </div>
+        }
     }
 </div>

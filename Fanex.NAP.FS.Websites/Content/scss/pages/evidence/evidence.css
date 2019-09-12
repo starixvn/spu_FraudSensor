@@ -110,10 +110,16 @@
   text-align: justify;
   height: 272px; }
 
-.ui-widget .comment-field {
+.ui-widget {
   width: 100%;
   resize: none;
   border: 0;
+  padding: 0;
+  font-family: 'Lato', Tahomam, sans-serif; }
+
+.comment-field {
+  width: 100%;
+  resize: none;
   padding: 0;
   font-family: 'Lato', Tahomam, sans-serif; }
 

@@ -4,8 +4,8 @@
 
     public class ChainsToEvidence
     {
-        public IEnumerable<ChainNodeRoot> ChainsRoot { get; set; }
+        public IEnumerable<ChainNode> ChainsDirected { get; set; }
 
-        public IEnumerable<ChainNode> Chains { get; set; }   
+        public IEnumerable<ChainNode> ChainsAffected { get; set; }   
     }
 }

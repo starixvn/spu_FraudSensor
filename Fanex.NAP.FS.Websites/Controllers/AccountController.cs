@@ -67,9 +67,13 @@
         }
 
         [HttpPost]
-        public ActionResult GetRetractAndException(int accountId)
+        public ActionResult GetRetractAndException(RetractedAndExceptionEvidenceFilter filter)
         {
-            var data = _evidenceService.GetRetractedEvidenceAndException(accountId);
+            filter.UserId = CurrentSession.UserId;
+
+            filter.IsMasterSubscriberAssignment = PermissionService.IsMasterSubscriberAssignment();
+
+            var data = _evidenceService.GetRetractedAndExceptionEvidence(filter);
 
             return PartialView("DetailInfoAccount/RetractAndException", data);
         }

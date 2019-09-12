@@ -250,7 +250,8 @@
     <Compile Include="Core\Utilities\Extentions.cs" />
     <Compile Include="Criteria\Account\Associated\GetAssociatedAccountByAccountCriteria.cs" />
     <Compile Include="Criteria\Account\Associated\GetCustomerFraudInfoCriteria.cs" />
-    <Compile Include="Criteria\Account\Evidence\GetAccountAffectedEvidence.cs" />
+    <Compile Include="Criteria\Account\Evidence\GetAccountEvidenceCriteria.cs" />
+    <Compile Include="Criteria\Account\Evidence\GetExceptionAccountEvidenceCriteria.cs" />
     <Compile Include="Criteria\Account\GeneralInformation\GetAssociationByAccountCriteria.cs" />
     <Compile Include="Criteria\Account\GeneralInformation\GetCustomerGeneralInformationCriteria.cs" />
     <Compile Include="Criteria\Account\GeneralInformation\GetEvidenceByTargetIdCriteria.cs" />
@@ -380,7 +381,8 @@
     <Compile Include="FSMQ\SendingType\SendingType.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
-    <Compile Include="ViewModels\Account\Evidence\ChainNodeRoot.cs" />
+    <Compile Include="Models\Account\Evidence\AccountEvidence.cs" />
+    <Compile Include="Models\Account\Evidence\AccountExceptionEvidence.cs" />
     <Compile Include="Models\Account\AccountGeneralInformation.cs" />
     <Compile Include="Models\Account\CustomerByGraphDB.cs" />
     <Compile Include="Models\CheckBetReport\CheckBetHistory.cs" />
@@ -430,10 +432,12 @@
     <Compile Include="ViewModels\Account\Associated\AssociatedDeviceByAccountFilter.cs" />
     <Compile Include="ViewModels\Account\CustomerFraud.cs" />
     <Compile Include="ViewModels\Account\CustomerSuspicious.cs" />
-    <Compile Include="ViewModels\Account\Evidence\AccountAffectedEvidence.cs" />
     <Compile Include="ViewModels\Account\Evidence\ChainsToEvidence.cs" />
     <Compile Include="ViewModels\Account\Evidence\ChainsToEvidenceFilter.cs" />
-    <Compile Include="ViewModels\Account\Evidence\RetractedEvidenceAndException.cs" />
+    <Compile Include="ViewModels\Account\Evidence\RetractedAndExceptionCollected.cs" />
+    <Compile Include="ViewModels\Account\Evidence\RetractedAndExceptionEvidenceFilter.cs" />
+    <Compile Include="ViewModels\Account\Evidence\RetractedAndExceptionEvidence.cs" />
+    <Compile Include="ViewModels\Account\Evidence\RetractedAndExceptionNode.cs" />
     <Compile Include="ViewModels\Account\GeneralInformation\AssociatedByAccount.cs" />
     <Compile Include="ViewModels\Account\GeneralInformation\CustomerInformation.cs" />
     <Compile Include="ViewModels\Account\GeneralInformation\EvidenceByTarget.cs" />

@@ -9,7 +9,7 @@
     {
         ChainsToEvidence GetChainsToEvidence(ChainsToEvidenceFilter filter);
 
-        RetractedEvidenceAndException GetRetractedEvidenceAndException(int accountId);
+        RetractedAndExceptionEvidence GetRetractedAndExceptionEvidence(RetractedAndExceptionEvidenceFilter filter);
 
         IEnumerable<Evidence> GetAllEvidences();
 

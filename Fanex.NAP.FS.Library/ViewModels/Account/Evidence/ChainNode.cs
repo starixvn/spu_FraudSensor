@@ -2,16 +2,14 @@
 {
     public class ChainNode
     {
-        public int NodeIdRoot { get; set; }
+        public int AffectedAccountId { get; set; }
 
-        public string NodeNameRoot { get; set; }
+        public string AffectedUserName { get; set; }
 
-        public int NodeId { get; set; }
+        public int DirectedAccountId { get; set; }
 
-        public string NodeName { get; set; }
+        public string DirectedUserName { get; set; }
 
         public string EvidenceCode { get; set; }
-
-        public string EvidenceName { get; set; }
     }
 }

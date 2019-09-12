@@ -50,7 +50,7 @@
     }
 
     function BindData() {
-        var noteText = "Note: Account " + userName + "is no longer infected Evidence from account " + exceptionUserName;
+        var noteText = "Note: Account " + userName + " is no longer infected Evidence from account " + exceptionUserName;
         $('#note-caption').text(noteText);
         $('#node-root').text(userName);
         $('#node-exception').text(exceptionUserName);

@@ -51,6 +51,8 @@
             },
             error: function (errMsg) {
                 console.log(errMsg);
+                var dataEmpty = '<div></div>';
+                AppendToHtml(container, dataEmpty);
             }
         });
     }
@@ -72,7 +74,7 @@
         $(container).html(data);
 
         InitTabsForm(container);
-    }    
+    }
 
     function ExpandAll() {
         $(associated_report).find('.head').each(ToogleDetail);

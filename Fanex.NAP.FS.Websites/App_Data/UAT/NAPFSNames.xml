@@ -105,6 +105,7 @@
     <Setting Key="FPS_DC_GetEvidenceByTargetId" SpName="FPS_DC_GetEvidenceByTargetId_xtest" DbName="MySQL.FPS_DataCenter"/>
     <Setting Key="FPS_DC_Rpt_GetAssociationByAccount" SpName="FPS_DC_Rpt_GetAssociationByAccount_xtest" DbName="MySQL.FPS_DataCenter"/>
     <Setting Key="FPS_DC_Rpt_ChainToEvidence" SpName="FPS_DC_Rpt_ChainToEvidence_xtest" DbName="MySQL.FPS_DataCenter"/>
+    <Setting Key="FPS_DC_Rpt_GetExceptionByAccountId" SpName="FPS_DC_Rpt_GetExceptionByAccountId_xtest" DbName="MySQL.FPS_DataCenter"/>
     <Setting Key="FPS_DC_Rpt_GetAssociatedAccountByAccount" SpName="FPS_DC_Rpt_GetAssociatedAccountByAccount_xtest" DbName="MySQL.FPS_DataCenter"/>
     <Setting Key="FS_CustomerFraudInfo_Get" SpName="FS_CustomerFraudInfo_Get_xtest" DbName="DBFS.bodb_FraudSensor.bodbSPUNet"/>
     <Setting Key="FPS_DC_GetTransactionHistoryByCustId" SpName="FPS_DC_GetTransactionHistoryByCustId_xtest" DbName="MySQL.FPS_DataCenter"/>

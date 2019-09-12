@@ -7,21 +7,181 @@
     using Fanex.NAP.FS.Library.Models;
     using Fanex.NAP.FS.Library.Criteria.Account.Evidence;
     using Fanex.NAP.FS.Library.Core.BaseClasses;
+    using Fanex.NAP.FS.Library.Models.Account.Evidence;
 
     public class EvidenceService : IEvidenceService
     {
+        #region Chains To Evidence
         public ChainsToEvidence GetChainsToEvidence(ChainsToEvidenceFilter filter)
         {
-            var accountAffectedEvidence = GetAccountAffectedEvidence(filter);
+            var accounts = GetAccountsEvidence(filter);
 
-            return GetChainsToEvidence(accountAffectedEvidence);
+            return GetChainsToEvidence(accounts);
         }
 
-        public RetractedEvidenceAndException GetRetractedEvidenceAndException(int accountId)
+        private static IEnumerable<AccountEvidence> GetAccountsEvidence(ChainsToEvidenceFilter filter)
         {
-            return new RetractedEvidenceAndException();
+            var criteria = new GetAccountEvidenceCriteria
+            {
+                ip_TargetId = filter.AccountId,
+                ip_TargetType = false,
+                ip_UserId = filter.UserId,
+                ip_IsMaster = filter.IsMasterSubscriberAssignment,
+                ip_IsActiveEvidence = true
+            };
+
+            return DataService.GetData<AccountEvidence>(criteria);
         }
 
+        private static ChainsToEvidence GetChainsToEvidence(IEnumerable<AccountEvidence> accounts)
+        {
+            var chainsToEvidence = new ChainsToEvidence();
+
+            chainsToEvidence.ChainsDirected = GetChainsDirected(accounts);
+
+            chainsToEvidence.ChainsAffected = GetChainsAffected(accounts);
+
+            return chainsToEvidence;
+        }
+
+        private static IEnumerable<ChainNode> GetChainsDirected(IEnumerable<AccountEvidence> accounts)
+        {
+            var chains = accounts.AsEnumerable()
+                .Where(c => c.MainAccount == c.RootAccount)
+                .Select(c => new ChainNode
+                {
+                    DirectedAccountId = c.MainAccountID,
+                    DirectedUserName = c.MainAccount,
+                    EvidenceCode = c.EvidenceCode
+                })
+                .OrderBy(c=>c.EvidenceCode);
+
+            return chains;
+        }
+
+        private static IEnumerable<ChainNode> GetChainsAffected(IEnumerable<AccountEvidence> accounts)
+        {
+            var chains = accounts.AsEnumerable()
+                .Where(c => c.MainAccount != c.RootAccount)
+                .Select(c => new ChainNode
+                {
+                    AffectedAccountId = c.MainAccountID,
+                    AffectedUserName = c.MainAccount,
+                    DirectedAccountId = c.RootAccountID,
+                    DirectedUserName = c.RootAccount,
+                    EvidenceCode = c.EvidenceCode
+                })
+                .OrderBy(c => c.DirectedUserName)
+                .ThenBy(c => c.EvidenceCode);
+
+            return chains;
+        }
+        #endregion
+
+        #region Retracted And Exception Evidence
+        public RetractedAndExceptionEvidence GetRetractedAndExceptionEvidence(RetractedAndExceptionEvidenceFilter filter)
+        {
+            var accountCollected = new RetractedAndExceptionCollected();
+
+            accountCollected.AccountsRetracted = GetAccountsRetractedEvidence(filter);
+
+            accountCollected.AccountsException = GetAccountsExceptionEvidence(filter);
+
+            return GetRetractedAndExceptionEvidence(accountCollected);
+        }
+
+        private static IEnumerable<AccountEvidence> GetAccountsRetractedEvidence(RetractedAndExceptionEvidenceFilter filter)
+        {
+            var criteria = new GetAccountEvidenceCriteria
+            {
+                ip_TargetId = filter.AccountId,
+                ip_TargetType = false,
+                ip_UserId = filter.UserId,
+                ip_IsMaster = filter.IsMasterSubscriberAssignment,
+                ip_IsActiveEvidence = false
+            };
+
+            return DataService.GetData<AccountEvidence>(criteria);
+        }
+
+        private static IEnumerable<AccountExceptionEvidence> GetAccountsExceptionEvidence(RetractedAndExceptionEvidenceFilter filter)
+        {
+            var criteria = new GetExceptionAccountEvidenceCriteria
+            {
+                ip_AccountId = filter.AccountId,
+                ip_UserId = filter.UserId,
+                ip_IsMaster = filter.IsMasterSubscriberAssignment
+            };
+
+            return DataService.GetData<AccountExceptionEvidence>(criteria);
+        }
+
+        private static RetractedAndExceptionEvidence GetRetractedAndExceptionEvidence(RetractedAndExceptionCollected accountCollected)
+        {
+            var accountEvidence = new RetractedAndExceptionEvidence();
+
+            accountEvidence.ChainsDirectedRetractedEvidence = GetDirectedRetractedEvidence(accountCollected.AccountsRetracted);
+
+            accountEvidence.ChainsAffectedRetractedEvidence = GetAffectedRetractedEvidence(accountCollected.AccountsRetracted);
+
+            accountEvidence.ChainsExceptionEvidence = GetExceptionEvidence(accountCollected.AccountsException);
+
+            return accountEvidence;
+        }
+
+        private static IEnumerable<RetractedAndExceptionNode> GetDirectedRetractedEvidence(IEnumerable<AccountEvidence> accounts)
+        {
+            var chains = accounts.AsEnumerable()
+                .Where(c => c.MainAccount == c.RootAccount)
+                .Select(c => new RetractedAndExceptionNode
+                {
+                    DirectedAccountId = c.MainAccountID,
+                    DirectedUserName = c.MainAccount,
+                    EvidenceCode = c.EvidenceCode                    
+                })
+                .OrderBy(c => c.EvidenceCode);
+
+            return chains;
+        }
+
+        private static IEnumerable<RetractedAndExceptionNode> GetAffectedRetractedEvidence(IEnumerable<AccountEvidence> accounts)
+        {
+            var chains = accounts.AsEnumerable()
+                 .Where(c => c.MainAccount != c.RootAccount)
+                 .Select(c => new RetractedAndExceptionNode
+                 {
+                     AffectedAccountId = c.MainAccountID,
+                     AffectedUserName = c.MainAccount,
+                     DirectedAccountId = c.RootAccountID,
+                     DirectedUserName = c.RootAccount,
+                     EvidenceCode = c.EvidenceCode,                     
+                 })
+                 .OrderBy(c => c.DirectedUserName)
+                 .ThenBy(c => c.EvidenceCode);
+
+            return chains;
+        }
+
+        private static IEnumerable<RetractedAndExceptionNode> GetExceptionEvidence(IEnumerable<AccountExceptionEvidence> accounts)
+        {
+            var chains = accounts.AsEnumerable()
+                .Select(c => new RetractedAndExceptionNode
+                {
+                    AffectedAccountId = c.MainAccountId,
+                    AffectedUserName = c.MainAccountUsername,
+                    DirectedAccountId = c.RootAccountId,
+                    DirectedUserName = c.RootAccountUsername,
+                    EvidenceCode = c.EviCode,
+                    IsActive = c.IsActive
+                })
+                .OrderBy(c => c.DirectedUserName)
+                .ThenBy(c => c.EvidenceCode);
+
+            return chains;
+        }
+        #endregion
+
+        #region Evidence Management
         public IEnumerable<Evidence> GetAllEvidences()
         {
             return new List<Evidence>();
@@ -32,63 +192,6 @@
             return new List<Evidence>();
         }
 
-        #region Chains To Evidence
-        private static IEnumerable<AccountAffectedEvidence> GetAccountAffectedEvidence(ChainsToEvidenceFilter filter)
-        {
-            var criteria = new GetAccountAffectedEvidence
-            {
-                targetId = filter.AccountId,
-                targetType = false,
-                userId = filter.UserId,
-                isMaster = filter.IsMasterSubscriberAssignment
-            };
-
-            return DataService.GetData<AccountAffectedEvidence>(criteria);
-        }
-
-        private static ChainsToEvidence GetChainsToEvidence(IEnumerable<AccountAffectedEvidence> accountAffectedEvidence)
-        {
-            var chainsToEvidence = new ChainsToEvidence();
-
-            chainsToEvidence.ChainsRoot = GetChainNodeRoots(accountAffectedEvidence);
-
-            chainsToEvidence.Chains = GetChainNodes(accountAffectedEvidence);
-
-            return chainsToEvidence;
-        }
-
-        private static IEnumerable<ChainNodeRoot> GetChainNodeRoots(IEnumerable<AccountAffectedEvidence> accountAffectedEvidence)
-        {
-            var chains = accountAffectedEvidence.AsEnumerable()
-                .Where(c => c.MainAccount == c.RootAccount)
-                .Select(c => new ChainNodeRoot
-                {
-                    NodeId = 1,
-                    NodeName = "fpsa_pgmthai",
-                    EvidenceCode = "1.1",
-                    EvidenceName = "1.1"
-                });
-
-            return chains;
-        }
-
-        private static IEnumerable<ChainNode> GetChainNodes(IEnumerable<AccountAffectedEvidence> accountAffectedEvidence)
-        {
-            var chains = accountAffectedEvidence.AsEnumerable()
-                .Where(c => c.MainAccount != c.RootAccount)
-                .Select(c => new ChainNode
-                {
-                    NodeId = 1,
-                    NodeName = "fpsa_pgmthai",
-                    EvidenceCode = "1.1",
-                    EvidenceName = "1.1"
-                });
-
-            return chains;
-        }
-        #endregion
-
-        #region Evidence Management
         public DBResult InsertEvidenceGroup(string groupName)
         {
             return new DBResult

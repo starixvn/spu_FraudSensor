@@ -1,47 +1,54 @@
 ﻿@model Fanex.NAP.FS.Library.ViewModels.Account.Evidence.ChainsToEvidence
 
 <div class="chains-block">
-    @foreach (var chain in Model.ChainsRoot)
+    @if (Model.ChainsDirected != null)
     {
-        <div class="chain-row">
-            <div class="chain-central">
-                <span>@chain.NodeName</span>
-            </div>
+        foreach (var chain in Model.ChainsDirected)
+        {
+            <div class="chain-row">
+                <div class="chain-central">
+                    <span>@chain.DirectedUserName</span>
+                </div>
 
-            <div class="chain-place-dashed">
-                <span class="icon-connect" node-id="@chain.NodeId" note-name="@chain.NodeName"></span>
-            </div>
+                <div class="chain-place-dashed">
+                    <span class="icon-connect" node-id="@chain.DirectedAccountId" note-name="@chain.DirectedUserName"></span>
+                </div>
 
-            <div class="chain-evidence">
-                <span>@chain.EvidenceName</span>
+                <div class="chain-evidence">
+                    <span>@chain.EvidenceCode</span>
+                </div>
             </div>
-        </div>
+        }
     }
 
-    @foreach (var chain in Model.Chains)
+    @if (Model.ChainsAffected != null)
     {
-        <div class="chain-row">
-            <div class="chain-central">
-                <span>@chain.NodeNameRoot</span>
-            </div>
+        foreach (var chain in Model.ChainsAffected)
+        {
+            <div class="chain-row">
+                <div class="chain-central">
+                    <span>@chain.AffectedUserName</span>
+                </div>
 
-            <div class="chain-place">
-                <span class="icon-connect-aa" node-id="@chain.NodeId" node-name="@chain.NodeName" title="Click to place an Exception"></span>
-            </div>
+                <div class="chain-place">
+                    <span class="icon-connect-aa" node-id="@chain.DirectedAccountId" node-name="@chain.DirectedUserName" title="Click to place an Exception"></span>
+                </div>
 
-            <div class="chain-central">
-                <span>@chain.NodeName</span>
-            </div>
+                <div class="chain-central">
+                    <span>@chain.DirectedUserName</span>
+                </div>
 
-            <div class="chain-place-dashed">
-                <span class="icon-connect"></span>
-            </div>
+                <div class="chain-place-dashed">
+                    <span class="icon-connect"></span>
+                </div>
 
-            <div class="chain-evidence">
-                <span>@chain.EvidenceName</span>
+                <div class="chain-evidence">
+                    <span>@chain.EvidenceCode</span>
+                </div>
             </div>
-        </div>
+        }
     }
+
 </div>
 
 @Html.Partial("../Evidence/FormException")
