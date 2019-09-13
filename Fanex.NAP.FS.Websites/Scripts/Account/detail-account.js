@@ -127,11 +127,7 @@
     function AddExceptionEvidence() {
         formException.AddException();
 
-        GetInformation("#chains_evidence", GetUrl("chains_evidence"));
-
-        if ($('#retract_evidence').hasClass('display')) {
-            GetInformation("#retract_evidence", GetUrl("retract_evidence"));
-        }
+        window.location.reload(true);
     }
 
     function OpenAddEvidence() {
