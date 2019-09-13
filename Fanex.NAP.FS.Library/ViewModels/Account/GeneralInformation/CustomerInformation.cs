@@ -22,6 +22,8 @@
 
         public int SubscriberID { get; set; }
 
+        public string SubscriberName { get; set; }
+
         public int RoleID { get; set; }
 
         public int IsDeposit { get; set; }

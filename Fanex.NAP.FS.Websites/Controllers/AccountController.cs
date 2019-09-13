@@ -1,17 +1,18 @@
 ﻿namespace Fanex.NAP.FS.Websites.Controllers
 {
+    using System.Net;
+    using System.Web.Mvc;
+    using System.Collections.Generic;
     using Fanex.NAP.FS.Library.Services;
     using Fanex.NAP.FS.Library.ViewModels.Account.Associated;
     using Fanex.NAP.Core.Web.Attribute;
     using Fanex.NAP.FS.Library.Core.Consts;
-    using Fanex.NAP.FS.Library.ViewModels.Evidence;
-    using System.Collections.Generic;
+    using Fanex.NAP.FS.Library.ViewModels.Evidence;    
     using Fanex.NAP.Core.Service.Impl;
-    using Fanex.NAP.FS.Library.ViewModels.Account.GeneralInformation;
-    using System.Net;
-    using System.Web.Mvc;
+    using Fanex.NAP.FS.Library.ViewModels.Account.GeneralInformation;    
     using Fanex.NAP.FS.Service.Utilities;
     using Fanex.NAP.FS.Library.ViewModels.Account.Evidence;
+    using Fanex.NAP.FS.Library.ViewModels.Account.Evidence.Exception;
 
     [NapAuth(FunctionKey = FSFunctionKeys.SearchAccount, Policy = Core.Business.Constant.Policy.Read)]
     public class AccountController : BaseController
@@ -59,9 +60,11 @@
         }
 
         [HttpPost]
-        public ActionResult AddException(int accountId, int exceptionAccountId, string comment)
+        public ActionResult AddExceptionEvidence(ExceptionEvidenceAdd exceptionEvidenceAdd)
         {
-            var data = "";
+            exceptionEvidenceAdd.UserId = CurrentSession.UserId;
+
+            var data = _evidenceService.AddExceptionEvidence(exceptionEvidenceAdd);
 
             return Json(data, JsonRequestBehavior.AllowGet);
         }

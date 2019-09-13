@@ -299,6 +299,10 @@
              SpName="FPS_DC_Rpt_ChainToEvidence" 
              DbName="MySQL.FPS_DataCenter"/>
 
+    <Setting Key="FPS_DC_InsertException"
+             SpName="FPS_DC_InsertException"
+             DbName="MySQL.FPS_DataCenter"/>
+
     <Setting Key="FPS_DC_Rpt_GetExceptionByAccountId"
              SpName="FPS_DC_Rpt_GetExceptionByAccountId"
              DbName="MySQL.FPS_DataCenter"/>

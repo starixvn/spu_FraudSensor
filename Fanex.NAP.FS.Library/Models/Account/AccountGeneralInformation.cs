@@ -54,7 +54,7 @@
 
         public string EvidenceTypeCodes { get; set; }
 
-        public string ProblemAccount { get; set; }
+        public ProblemAccountStatus ProblemAccount { get; set; }
 
         public int Abnormal { get; set; }
 

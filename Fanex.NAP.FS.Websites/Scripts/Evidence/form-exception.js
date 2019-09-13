@@ -1,10 +1,11 @@
-﻿function form_exception(accountId, userName) {
+﻿function form_exception(accountId, userName, subscriberId) {
     var form = $('#form-exception');
-    var exceptionAccountId, exceptionUserName;
+    var exceptionAccountId;
+    var exceptionUserName;
    
     this.OpenModal = function (_exceptionAccountId, _exceptionUserName) {
         exceptionAccountId = _exceptionAccountId;
-        exceptionUserName = _exceptionUserName;
+        exceptionUserName = _exceptionUserName;        
 
         if (form.is('dialog')) {
             form.dialog('open');
@@ -23,14 +24,15 @@
     }
 
     this.AddException = function () {
-        var comment = $('#comment').val();
-        var url = common.modifyRelativeUrl('/Account/AddException');
+        var comment = $('#add-exception-comment').val();
+        var url = common.modifyRelativeUrl('/Account/AddExceptionEvidence');
 
         $.ajax(url, {
             type: 'POST',
             data: {
                 accountId: accountId,
                 exceptionAccountId: exceptionAccountId,
+                subscriberId: subscriberId,
                 comment: comment
             },
             success: function (response) {

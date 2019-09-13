@@ -8,6 +8,7 @@
     using Fanex.NAP.FS.Library.Criteria.Account.Evidence;
     using Fanex.NAP.FS.Library.Core.BaseClasses;
     using Fanex.NAP.FS.Library.Models.Account.Evidence;
+    using Fanex.NAP.FS.Library.ViewModels.Account.Evidence.Exception;
 
     public class EvidenceService : IEvidenceService
     {
@@ -17,6 +18,20 @@
             var accounts = GetAccountsEvidence(filter);
 
             return GetChainsToEvidence(accounts);
+        }
+
+        public DBResult AddExceptionEvidence(ExceptionEvidenceAdd exceptionEvidenceAdd)
+        {
+            var criteria = new InsertExceptionEvidenceCriteria
+            {
+                ip_MainAccountId = exceptionEvidenceAdd.AccountId,
+                ip_RootAccountId = exceptionEvidenceAdd.ExceptionAccountId,
+                ip_SubscriberId = exceptionEvidenceAdd.SubscriberId,
+                ip_Remark = exceptionEvidenceAdd.Comment,
+                ip_CreatedBy = exceptionEvidenceAdd.UserId
+            };
+
+            return DataService.UpdateData(criteria, "Insert exception evidence");
         }
 
         private static IEnumerable<AccountEvidence> GetAccountsEvidence(ChainsToEvidenceFilter filter)

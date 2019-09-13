@@ -26,23 +26,7 @@
 
     public class AccountService : IAccountService
     {
-        public IEnumerable<SubscriberAssignment> GetSubscribers(long userId)
-        {
-            var criteria = new SubscriberGetCriteria
-            {
-                ip_userId = userId
-            };
-
-            var rawSubscribers = DataService.GetData<SubscriberAssignment>(criteria).OrderBy(c => c.SubscriberName).ThenBy(c => c.SubscriberID);
-            
-            if (CheckIsMasterSubscriber(rawSubscribers))
-            {
-                return rawSubscribers;
-            }
-
-            return GetSubscribers(rawSubscribers);
-        }
-
+        #region Search account
         public IEnumerable<SubscriberAccount> SearchAccounts(SearchAccountFilter filter)
         {
             var criteria = new SearchAccountCriteria
@@ -56,41 +40,26 @@
                             .OrderBy(a => a.SubscriberName)
                             .ThenBy(a => a.UserName);
         }
+        #endregion
 
-        public AccountDetail GetAccountDetailGeneralInformation(GeneralInformationFilter filter)
+        #region Subscribers to user
+        public IEnumerable<SubscriberAssignment> GetSubscribers(long userId)
         {
-            var accountCollected = new GeneralAccountCollected();
+            var criteria = new SubscriberGetCriteria
+            {
+                ip_userId = userId
+            };
 
-            accountCollected.CustomerInformation = GetGeneralCustomerInformation(filter);
+            var rawSubscribers = DataService.GetData<SubscriberAssignment>(criteria).OrderBy(c => c.SubscriberName).ThenBy(c => c.SubscriberID);
 
-            accountCollected.EvidenceByTargets = GetEvidenceByAccount(filter);
+            if (CheckIsMasterSubscriber(rawSubscribers))
+            {
+                return rawSubscribers;
+            }
 
-            accountCollected.AssociatedByAccounts = GetAssociatedByAccounts(filter.AccountId);
-
-            accountCollected.CustomerFraudSuspicious = GetCustomerFraudSuspicious(filter.CustId.ToString());
-
-            return GetAccountDetailGeneralInformation(accountCollected, filter.AccountId, filter.CustId);
+            return GetSubscribers(rawSubscribers);
         }
 
-        public IEnumerable<AssociatedAccountByAccount> GetAssociatedAccountByAccounts(AssociatedAccountByAccountFilter filter, out string msgError)
-        {
-            var accountCollected = new AssociatedAccountsCollected();
-
-            accountCollected.CustomersFromAPI = GetCustomersFromAPI(filter);
-
-            accountCollected.AccountsByCustomers = GetAssociatedAccountByCustomers(filter, accountCollected.CustomersFromAPI);
-
-            accountCollected.CustomerFraudSuspicious = GetCustomerFraud(accountCollected.AccountsByCustomers);
-           
-            return GetAssociatedAccountByAccount(accountCollected, filter, out msgError);
-        }
-
-        public IEnumerable<AssociatedDeviceByAccount> GetAssociatedDevicesByAccount(AssociatedDeviceByAccountFilter filter)
-        {
-            return GetAssociatedDevicesByAccount_Test(filter);
-        }        
-
-        #region Private Methods
         private static bool CheckIsMasterSubscriber(IEnumerable<SubscriberAssignment> subscribers)
         {
             if (subscribers != null && subscribers.Any())
@@ -115,8 +84,24 @@
 
             return subscribers;
         }
+        #endregion
 
         #region General information
+        public AccountDetail GetAccountDetailGeneralInformation(GeneralInformationFilter filter)
+        {
+            var accountCollected = new GeneralAccountCollected();
+
+            accountCollected.CustomerInformation = GetGeneralCustomerInformation(filter);
+
+            accountCollected.EvidenceByTargets = GetEvidenceByAccount(filter);
+
+            accountCollected.AssociatedByAccounts = GetAssociatedByAccounts(filter.AccountId);
+
+            accountCollected.CustomerFraudSuspicious = GetCustomerFraudSuspicious(filter.CustId.ToString());
+
+            return GetAccountDetailGeneralInformation(accountCollected, filter.AccountId, filter.CustId);
+        }
+
         private static IEnumerable<CustomerInformation> GetGeneralCustomerInformation(GeneralInformationFilter filter)
         {
             var criteria = new GetCustomerGeneralInformationCriteria
@@ -228,6 +213,8 @@
                 generalInfo.AccountEvidenceStatus = AccountEvidenceStatus.Flagged;
             }
             generalInfo.AccountAge = customerInformation.AccountAge;
+            generalInfo.SubscriberID = customerInformation.SubscriberID;
+            generalInfo.SubscriberName = customerInformation.SubscriberName;
 
             return generalInfo;
         }
@@ -254,12 +241,12 @@
 
         private static AccountGeneralInformation GetFraudInformation(AccountGeneralInformation generalInfo, CustomerFraudSuspicious customerFraudSuspicious)
         {
-            generalInfo.ProblemAccount = "";
             generalInfo.AutoSuspend = ResourcesManager.GetValue(ConstsResources.NONE);
 
             if (customerFraudSuspicious.CustomerFrauds.Any())
             {
                 var fraud = customerFraudSuspicious.CustomerFrauds.ToList()[0];
+                generalInfo.ProblemAccount = fraud.ProblemAccount ? ProblemAccountStatus.Yes : ProblemAccountStatus.No;
                 generalInfo.Abnormal = fraud.Abnormal;
                 generalInfo.DangerousOriginal = fraud.danger;
                 generalInfo.DangerousNonLive = fraud.danger2;
@@ -296,6 +283,19 @@
         #endregion
 
         #region Associated account by account
+        public IEnumerable<AssociatedAccountByAccount> GetAssociatedAccountByAccounts(AssociatedAccountByAccountFilter filter, out string msgError)
+        {
+            var accountCollected = new AssociatedAccountsCollected();
+
+            accountCollected.CustomersFromAPI = GetCustomersFromAPI(filter);
+
+            accountCollected.AccountsByCustomers = GetAssociatedAccountByCustomers(filter, accountCollected.CustomersFromAPI);
+
+            accountCollected.CustomerFraudSuspicious = GetCustomerFraud(accountCollected.AccountsByCustomers);
+
+            return GetAssociatedAccountByAccount(accountCollected, filter, out msgError);
+        }
+
         private static IEnumerable<CustomerByGraphDB> GetCustomersFromAPI(AssociatedAccountByAccountFilter filter)
         {
             var customers = new List<CustomerByGraphDB>();
@@ -445,18 +445,20 @@
 
         #endregion
 
-        #endregion
+        #region Associated device by account
+        public IEnumerable<AssociatedDeviceByAccount> GetAssociatedDevicesByAccount(AssociatedDeviceByAccountFilter filter)
+        {
+            return GetAssociatedDevicesByAccount_Test(filter);
+        }
 
-        #region Test       
-
-        private IEnumerable<AssociatedDeviceByAccount> GetAssociatedDevicesByAccount_Test(AssociatedDeviceByAccountFilter filter)
+        private static IEnumerable<AssociatedDeviceByAccount> GetAssociatedDevicesByAccount_Test(AssociatedDeviceByAccountFilter filter)
         {
             var lstAssociated = new List<AssociatedDeviceByAccount>();
 
             for (int i = 1; i < 6; i++)
             {
                 var deviceAssociated = new AssociatedDeviceByAccount();
-                deviceAssociated.DeviceNo = "08d99c65629142b9903ab56b2f3511ba";                
+                deviceAssociated.DeviceNo = "08d99c65629142b9903ab56b2f3511ba";
                 deviceAssociated.FirstUsed = DateTime.Now;
                 deviceAssociated.LastUsed = DateTime.Now;
                 deviceAssociated.AssociatedDate = DateTime.Now;
@@ -476,7 +478,6 @@
 
             return lstAssociated;
         }
-        
         #endregion
     }
 }

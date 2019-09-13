@@ -250,6 +250,7 @@
     <Compile Include="Core\Utilities\Extentions.cs" />
     <Compile Include="Criteria\Account\Associated\GetAssociatedAccountByAccountCriteria.cs" />
     <Compile Include="Criteria\Account\Associated\GetCustomerFraudInfoCriteria.cs" />
+    <Compile Include="Criteria\Account\Evidence\InsertExceptionEvidenceCriteria.cs" />
     <Compile Include="Criteria\Account\Evidence\GetAccountEvidenceCriteria.cs" />
     <Compile Include="Criteria\Account\Evidence\GetExceptionAccountEvidenceCriteria.cs" />
     <Compile Include="Criteria\Account\GeneralInformation\GetAssociationByAccountCriteria.cs" />
@@ -438,6 +439,7 @@
     <Compile Include="ViewModels\Account\Evidence\RetractedAndExceptionEvidenceFilter.cs" />
     <Compile Include="ViewModels\Account\Evidence\RetractedAndExceptionEvidence.cs" />
     <Compile Include="ViewModels\Account\Evidence\RetractedAndExceptionNode.cs" />
+    <Compile Include="ViewModels\Account\Evidence\Exception\ExceptionEvidenceAdd.cs" />
     <Compile Include="ViewModels\Account\GeneralInformation\AssociatedByAccount.cs" />
     <Compile Include="ViewModels\Account\GeneralInformation\CustomerInformation.cs" />
     <Compile Include="ViewModels\Account\GeneralInformation\EvidenceByTarget.cs" />

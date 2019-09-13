@@ -1,4 +1,5 @@
-﻿@model Fanex.NAP.FS.Library.ViewModels.Account.AccountDetail
+﻿@using Fanex.NAP.FS.Library.Models;
+@model Fanex.NAP.FS.Library.ViewModels.Account.AccountDetail
 @{
     ViewBag.Title = "GeneralInformation";
 }
@@ -14,7 +15,7 @@
 
 <div class="content-card">
     <div class="status">
-        @if (Model.GeneralInfo.AccountEvidenceStatus == Fanex.NAP.FS.Library.Models.AccountEvidenceStatus.Clean)
+        @if (Model.GeneralInfo.AccountEvidenceStatus == AccountEvidenceStatus.Clean)
         {
             <p class="info">
                 <i class="icon-clean"></i>
@@ -23,7 +24,7 @@
                 </span>
             </p>
         }
-        else if (Model.GeneralInfo.AccountEvidenceStatus == Fanex.NAP.FS.Library.Models.AccountEvidenceStatus.CentralPoint)
+        else if (Model.GeneralInfo.AccountEvidenceStatus == AccountEvidenceStatus.CentralPoint)
         {
             <p class="info red">
                 <i class="icon-fraud-flag"></i>
@@ -44,7 +45,7 @@
 
         <p class="bold">
             Account Status:
-            <span class="badge-label badge-active">@Enum.GetName(typeof(Fanex.NAP.FS.Library.Models.AccountStatus), Model.GeneralInfo.AccountStatus)</span>
+            <span class="badge-label badge-active">@Enum.GetName(typeof(AccountStatus), Model.GeneralInfo.AccountStatus)</span>
         </p>
         <button class="button btn-add" type="button" id="btn-add-evidence">Add Evidence</button>
     </div>
@@ -67,7 +68,7 @@
         <div class="info-item">
             <div class="info-title">Fraud Infomation</div>
             <div class="info-text"><label>Evidence:</label><span class="link"> @Model.GeneralInfo.EvidenceTypeCodes</span></div>
-            <div class="info-text"><label>Problem Account:</label><span> @Model.GeneralInfo.ProblemAccount</span></div>
+            <div class="info-text"><label>Problem Account:</label><span> @Enum.GetName(typeof(ProblemAccountStatus), Model.GeneralInfo.ProblemAccount)</span></div>
             <div class="info-text">
                 <label>Abnormal Level:</label>
                 <span class="badge-level" id="abnormal"> @Model.GeneralInfo.Abnormal</span>

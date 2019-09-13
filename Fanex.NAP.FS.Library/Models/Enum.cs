@@ -29,4 +29,10 @@
         Days30 = 30,
         Days180 = 180
     }
+
+    public enum ProblemAccountStatus
+    {
+        Yes,
+        No
+    }
 }

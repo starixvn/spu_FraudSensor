@@ -98,10 +98,10 @@
     function InitTabsForm(container) {
         switch (container) {
             case "#chains_evidence":
-                formException = new form_exception(ACCOUNTID, USERNAME);
+                formException = new form_exception(ACCOUNTID, USERNAME, SUBSCRIBERID);
 
-                $('span', $('.chain-place')).click(OpenAddException);
-                $('#btn-add-exception').click(AddException);
+                $('span', $('.chain-place')).click(OpenFormAddExceptionEvidence);
+                $('#btn-add-exception').click(AddExceptionEvidence);
                 break;
             case "#associated_account":
                 account_by_account();
@@ -117,20 +117,20 @@
         }
     }  
 
-    function OpenAddException() {
+    function OpenFormAddExceptionEvidence() {
         var nodeId = $(this).attr('node-id');
         var nodeName = $(this).attr('node-name');
         
         formException.OpenModal(nodeId, nodeName);
     }
 
-    function AddException() {
+    function AddExceptionEvidence() {
         formException.AddException();
 
-        GetInformation("chains_evidence", GetUrl("chains_evidence"));
+        GetInformation("#chains_evidence", GetUrl("chains_evidence"));
 
         if ($('#retract_evidence').hasClass('display')) {
-            GetInformation("retract_evidence", GetUrl("retract_evidence"));
+            GetInformation("#retract_evidence", GetUrl("retract_evidence"));
         }
     }
 

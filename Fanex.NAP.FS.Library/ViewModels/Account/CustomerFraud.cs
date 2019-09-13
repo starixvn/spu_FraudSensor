@@ -25,6 +25,8 @@
 
         public int Abnormal { get; set; }
 
+        public bool ProblemAccount { get; set; }
+
         public AccountStatus GetStatus()
         {
             var status = AccountStatus.Active;
