@@ -42,9 +42,7 @@
 
             if (userId > 0)
             {
-                var data = _accountService.GetSubscribers(userId);
-
-                AppSession.CurrentSubscriberAssignments = data;
+                var data = _accountService.GetSubscribers(userId);                
 
                 return Json(data, JsonRequestBehavior.AllowGet);
             }

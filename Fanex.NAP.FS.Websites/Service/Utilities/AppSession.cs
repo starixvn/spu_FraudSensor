@@ -64,13 +64,13 @@
             }
         }
 
-        public static IEnumerable<SubscriberAssignment> CurrentSubscriberAssignments
+        public static IList<SubscriberAssignment> CurrentSubscriberAssignments
         {
             get
             {
                 try
                 {
-                    return SessionManager.Get<IEnumerable<SubscriberAssignment>>(Consts.CurrentSubscriberAssignmentsKey);
+                    return SessionManager.Get<IList<SubscriberAssignment>>(Consts.CurrentSubscriberAssignmentsKey);
                 }
                 catch (Exception exception)
                 {

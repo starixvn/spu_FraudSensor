@@ -53,7 +53,7 @@
 
             if (currentSubscriberAssignments != null && currentSubscriberAssignments.Any())
             {
-                return currentSubscriberAssignments.ToList()[0].IsMaster == 1;
+                return currentSubscriberAssignments[0].IsMaster == 1;
             }
 
             return false;

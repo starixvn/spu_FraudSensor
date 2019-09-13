@@ -3,6 +3,7 @@
     using Fanex.NAP.Core.Models;
     using Fanex.NAP.Core.Models.ParameterObject;
     using Fanex.NAP.Core.Models.ValueObject;
+    using Fanex.NAP.FS.Library.Services;
     using Fanex.NAP.FS.Service.Utilities;
     using Fanex.NAP.FS.Websites.Controllers;
     using Logging;
@@ -158,7 +159,8 @@
 
                                     var currentFunction = _userService.GetPermissions(user.Id, NapSettings.Settings.SiteId, null, NapSettings.Settings.Environment);
                                     AppSession.CurrentUser = user;
-                                    AppSession.RoleAccess = PermissionService.GetRoleAccess(currentFunction);
+                                    AppSession.RoleAccess = PermissionService.GetRoleAccess(currentFunction);                                    
+                                    AppSession.CurrentSubscriberAssignments = new AccountService().GetSubscribers(user.Id).ToList();
 
                                     if (AppSession.CurrentUserMenu != null &&
                                         AppSession.CurrentUserMenu.Where(m => m.Parent == null).ToList().Count > 0)

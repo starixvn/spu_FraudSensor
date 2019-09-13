@@ -46,7 +46,7 @@
 
         private static IEnumerable<ChainNode> GetChainsDirected(IEnumerable<AccountEvidence> accounts)
         {
-            var chains = accounts.AsEnumerable()
+            return accounts.AsEnumerable()
                 .Where(c => c.MainAccount == c.RootAccount)
                 .Select(c => new ChainNode
                 {
@@ -55,13 +55,11 @@
                     EvidenceCode = c.EvidenceCode
                 })
                 .OrderBy(c=>c.EvidenceCode);
-
-            return chains;
         }
 
         private static IEnumerable<ChainNode> GetChainsAffected(IEnumerable<AccountEvidence> accounts)
         {
-            var chains = accounts.AsEnumerable()
+            return accounts.AsEnumerable()
                 .Where(c => c.MainAccount != c.RootAccount)
                 .Select(c => new ChainNode
                 {
@@ -73,8 +71,6 @@
                 })
                 .OrderBy(c => c.DirectedUserName)
                 .ThenBy(c => c.EvidenceCode);
-
-            return chains;
         }
         #endregion
 
@@ -131,7 +127,7 @@
 
         private static IEnumerable<RetractedAndExceptionNode> GetDirectedRetractedEvidence(IEnumerable<AccountEvidence> accounts)
         {
-            var chains = accounts.AsEnumerable()
+            return accounts.AsEnumerable()
                 .Where(c => c.MainAccount == c.RootAccount)
                 .Select(c => new RetractedAndExceptionNode
                 {
@@ -140,13 +136,11 @@
                     EvidenceCode = c.EvidenceCode                    
                 })
                 .OrderBy(c => c.EvidenceCode);
-
-            return chains;
         }
 
         private static IEnumerable<RetractedAndExceptionNode> GetAffectedRetractedEvidence(IEnumerable<AccountEvidence> accounts)
         {
-            var chains = accounts.AsEnumerable()
+            return accounts.AsEnumerable()
                  .Where(c => c.MainAccount != c.RootAccount)
                  .Select(c => new RetractedAndExceptionNode
                  {
@@ -158,13 +152,11 @@
                  })
                  .OrderBy(c => c.DirectedUserName)
                  .ThenBy(c => c.EvidenceCode);
-
-            return chains;
         }
 
         private static IEnumerable<RetractedAndExceptionNode> GetExceptionEvidence(IEnumerable<AccountExceptionEvidence> accounts)
         {
-            var chains = accounts.AsEnumerable()
+            return accounts.AsEnumerable()
                 .Select(c => new RetractedAndExceptionNode
                 {
                     AffectedAccountId = c.MainAccountId,
@@ -175,9 +167,7 @@
                     IsActive = c.IsActive
                 })
                 .OrderBy(c => c.DirectedUserName)
-                .ThenBy(c => c.EvidenceCode);
-
-            return chains;
+                .ThenBy(c => c.EvidenceCode);            
         }
         #endregion
 
