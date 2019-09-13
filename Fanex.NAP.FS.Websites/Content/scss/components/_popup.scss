@@ -97,7 +97,12 @@
     }
 
     .ppt-container-graph {
+        background: #2e3138;
         border-radius: 0;
         height: 100%;
+    }
+
+    .ppt-div-graph {
+        border-bottom: 5px solid #fff;
     }
 }

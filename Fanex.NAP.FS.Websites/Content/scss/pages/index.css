@@ -880,8 +880,11 @@ table.dataTable tbody tr.selected td {
     margin: 5px;
     padding: 0 !important; }
   .modal-graph-render .ppt-container-graph {
+    background: #2e3138;
     border-radius: 0;
     height: 100%; }
+  .modal-graph-render .ppt-div-graph {
+    border-bottom: 5px solid #fff; }
 
 .loader {
   width: 16px;
