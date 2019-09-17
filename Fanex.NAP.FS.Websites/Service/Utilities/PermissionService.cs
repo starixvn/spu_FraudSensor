@@ -1,6 +1,7 @@
 ﻿namespace Fanex.NAP.FS.Service.Utilities
 {
     using Fanex.NAP.Core.Models.ValueObject;
+    using Fanex.NAP.FS.Library.Core.Consts;
     using NAP.Core.Business;
     using System.Collections.Generic;
     using System.Linq;
@@ -49,11 +50,31 @@
 
         public static bool IsMasterSubscriberAssignment()
         {
-            var currentSubscriberAssignments = AppSession.CurrentSubscriberAssignments;
+            var subscribers = AppSession.CurrentSubscriberAssignments;
 
-            if (currentSubscriberAssignments != null && currentSubscriberAssignments.Any())
+            if (subscribers != null && subscribers.Any())
             {
-                return currentSubscriberAssignments[0].IsMaster == 1;
+                return subscribers[0].IsMaster == 1;
+            }
+
+            return false;
+        }
+
+        public static bool IsPermissionCN88()
+        {
+            var subscribers = AppSession.CurrentSubscriberAssignments;
+
+            foreach (var sub in subscribers)
+            {
+                if (sub.IsMaster == 1)
+                {
+                    return true;
+                }
+
+                if (sub.isAssigned == 1 && sub.SubscriberName.Contains(Consts.SubscriberNameCN88))
+                {
+                    return true;
+                }
             }
 
             return false;

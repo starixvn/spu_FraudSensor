@@ -117,6 +117,48 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ACCOUNT_STATUS_ALL" xml:space="preserve">
+    <value>All</value>
+  </data>
+  <data name="ACCOUNT_STATUS_CLOSED" xml:space="preserve">
+    <value>Closed</value>
+  </data>
+  <data name="ACCOUNT_STATUS_CN88_ACTIVE" xml:space="preserve">
+    <value>Active</value>
+  </data>
+  <data name="ACCOUNT_STATUS_CN88_INACTIVE" xml:space="preserve">
+    <value>Inactive</value>
+  </data>
+  <data name="ACCOUNT_STATUS_CN88_LOCKED" xml:space="preserve">
+    <value>Locked</value>
+  </data>
+  <data name="ACCOUNT_STATUS_CN88_NAME_ACTIVE" xml:space="preserve">
+    <value>Active (CN88)</value>
+  </data>
+  <data name="ACCOUNT_STATUS_CN88_NAME_INACTIVE" xml:space="preserve">
+    <value>Inactive (CN88)</value>
+  </data>
+  <data name="ACCOUNT_STATUS_CN88_NAME_LOCKED" xml:space="preserve">
+    <value>Locked (CN88)</value>
+  </data>
+  <data name="ACCOUNT_STATUS_CN88_NAME_SUSPENDED" xml:space="preserve">
+    <value>Suspended (CN88)</value>
+  </data>
+  <data name="ACCOUNT_STATUS_CN88_NAME_VIEW_ONLY" xml:space="preserve">
+    <value>View Only (CN88)</value>
+  </data>
+  <data name="ACCOUNT_STATUS_CN88_SUSPENDED" xml:space="preserve">
+    <value>Suspended</value>
+  </data>
+  <data name="ACCOUNT_STATUS_CN88_VIEW_ONLY" xml:space="preserve">
+    <value>View Only</value>
+  </data>
+  <data name="ACCOUNT_STATUS_OPEN" xml:space="preserve">
+    <value>Open</value>
+  </data>
+  <data name="ACCOUNT_STATUS_SUSPENDED" xml:space="preserve">
+    <value>Suspended</value>
+  </data>
   <data name="AUTO_SUSPEND_OTHER_SPORTS" xml:space="preserve">
     <value>Auto Suspend Other Sports</value>
   </data>

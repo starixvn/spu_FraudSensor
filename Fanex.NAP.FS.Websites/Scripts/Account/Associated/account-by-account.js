@@ -94,7 +94,7 @@
                 CustId: CUSTID,
                 DeviceAwayOne: deviceAwayOne,
                 DeviceAwayMore: deviceAwayMore,
-                Status: status,
+                Status: status.join(','),
                 EvidenceStatus: evidenceStatus
             },
             success: function (response) {
@@ -141,18 +141,6 @@
         return true;
     }
 
-    usernameSpan.text(USERNAME);
-
-    loading.hide(); 
-
-    btnSearch.click(GenerateReport);
-
-    GenerateGrid();
-
-    InitSearchOnGrid();
-
-    $('#btn-ass-acc').click(OpenGraphRender);
-
     function OpenGraphRender() {
         $('#form-graph-render').dialog({
             modal: true,
@@ -164,6 +152,25 @@
             close: function () { $(this).dialog('close'); }
         })
     }
+
+    GenerateGrid();
+
+    InitSearchOnGrid();
+
+    $("#cbb-status").multiselect({
+        menuWidth: 225,
+        menuHeight: 225,
+        selectedText: "# of # selected",
+        noneSelectedText: "Select options"
+    });
+
+    usernameSpan.text(USERNAME);
+
+    loading.hide(); 
+
+    btnSearch.click(GenerateReport);    
+
+    $('#btn-ass-acc').click(OpenGraphRender);    
 }
 
 $(account_by_account);

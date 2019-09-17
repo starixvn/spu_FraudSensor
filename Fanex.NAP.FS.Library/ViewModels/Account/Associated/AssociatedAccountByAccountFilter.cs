@@ -1,6 +1,7 @@
 ﻿namespace Fanex.NAP.FS.Library.ViewModels.Account.Associated
 {
     using Fanex.NAP.FS.Library.Models;
+    using System.Collections.Generic;
 
     public class AssociatedAccountByAccountFilter
     {
@@ -10,9 +11,9 @@
 
         public bool DeviceAwayOne { get; set; }
 
-        public bool DeviceAwayMore { get; set; }
+        public bool DeviceAwayMore { get; set; }        
 
-        public AccountStatus Status { get; set; }
+        public string Status { get; set; }
 
         public EvidenceStatus EvidenceStatus { get; set; }
 

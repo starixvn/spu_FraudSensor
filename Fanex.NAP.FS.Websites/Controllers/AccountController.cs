@@ -2,6 +2,7 @@
 {
     using System.Net;
     using System.Web.Mvc;
+    using System.Linq;
     using System.Collections.Generic;
     using Fanex.NAP.FS.Library.Services;
     using Fanex.NAP.FS.Library.ViewModels.Account.Associated;
@@ -13,6 +14,8 @@
     using Fanex.NAP.FS.Service.Utilities;
     using Fanex.NAP.FS.Library.ViewModels.Account.Evidence;
     using Fanex.NAP.FS.Library.ViewModels.Account.Evidence.Exception;
+    using Fanex.NAP.FS.Library.Models;
+    using Fanex.NAP.FS.Library.Core.Resources;
 
     [NapAuth(FunctionKey = FSFunctionKeys.SearchAccount, Policy = Core.Business.Constant.Policy.Read)]
     public class AccountController : BaseController
@@ -84,6 +87,8 @@
         [HttpPost]
         public ActionResult GetAssociatedAccountByAccount()
         {
+            ViewBag.AccountStatusList = GetAccountStatusList();
+
             return PartialView("Associated/AccountByAccount");
         }
 
@@ -160,7 +165,27 @@
                 IsMasterSubscriberAssignment = PermissionService.IsMasterSubscriberAssignment(),
                 UserId = CurrentSession.UserId
             };
-        }        
+        }                
+
+        private static Dictionary<AccountStatus, string> GetAccountStatusList()
+        {
+            var listStatus = new Dictionary<AccountStatus, string>();            
+            listStatus.Add(AccountStatus.Open, ResourcesManager.GetValue(ConstsResources.ACCOUNT_STATUS_OPEN));
+            listStatus.Add(AccountStatus.Suspended, ResourcesManager.GetValue(ConstsResources.ACCOUNT_STATUS_SUSPENDED));
+            listStatus.Add(AccountStatus.Closed, ResourcesManager.GetValue(ConstsResources.ACCOUNT_STATUS_CLOSED));
+
+            if (PermissionService.IsPermissionCN88())
+            {
+                listStatus.Add(AccountStatus.CN88_Active, ResourcesManager.GetValue(ConstsResources.ACCOUNT_STATUS_CN88_NAME_ACTIVE));
+                listStatus.Add(AccountStatus.CN88_ViewOnly, ResourcesManager.GetValue(ConstsResources.ACCOUNT_STATUS_CN88_NAME_VIEW_ONLY));
+                listStatus.Add(AccountStatus.CN88_Suspended, ResourcesManager.GetValue(ConstsResources.ACCOUNT_STATUS_CN88_NAME_SUSPENDED));
+                listStatus.Add(AccountStatus.CN88_Inactive, ResourcesManager.GetValue(ConstsResources.ACCOUNT_STATUS_CN88_NAME_INACTIVE));
+                listStatus.Add(AccountStatus.CN88_Locked, ResourcesManager.GetValue(ConstsResources.ACCOUNT_STATUS_CN88_NAME_LOCKED));
+            }
+
+            return listStatus;
+        }
+        
         #endregion
     }
 }

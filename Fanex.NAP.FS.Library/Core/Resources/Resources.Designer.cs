@@ -61,6 +61,132 @@ namespace Fanex.NAP.FS.Library.Core.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to All.
+        /// </summary>
+        internal static string ACCOUNT_STATUS_ALL {
+            get {
+                return ResourceManager.GetString("ACCOUNT_STATUS_ALL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Closed.
+        /// </summary>
+        internal static string ACCOUNT_STATUS_CLOSED {
+            get {
+                return ResourceManager.GetString("ACCOUNT_STATUS_CLOSED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Active.
+        /// </summary>
+        internal static string ACCOUNT_STATUS_CN88_ACTIVE {
+            get {
+                return ResourceManager.GetString("ACCOUNT_STATUS_CN88_ACTIVE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Inactive.
+        /// </summary>
+        internal static string ACCOUNT_STATUS_CN88_INACTIVE {
+            get {
+                return ResourceManager.GetString("ACCOUNT_STATUS_CN88_INACTIVE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Locked.
+        /// </summary>
+        internal static string ACCOUNT_STATUS_CN88_LOCKED {
+            get {
+                return ResourceManager.GetString("ACCOUNT_STATUS_CN88_LOCKED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Active (CN88).
+        /// </summary>
+        internal static string ACCOUNT_STATUS_CN88_NAME_ACTIVE {
+            get {
+                return ResourceManager.GetString("ACCOUNT_STATUS_CN88_NAME_ACTIVE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Inactive (CN88).
+        /// </summary>
+        internal static string ACCOUNT_STATUS_CN88_NAME_INACTIVE {
+            get {
+                return ResourceManager.GetString("ACCOUNT_STATUS_CN88_NAME_INACTIVE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Locked (CN88).
+        /// </summary>
+        internal static string ACCOUNT_STATUS_CN88_NAME_LOCKED {
+            get {
+                return ResourceManager.GetString("ACCOUNT_STATUS_CN88_NAME_LOCKED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Suspended (CN88).
+        /// </summary>
+        internal static string ACCOUNT_STATUS_CN88_NAME_SUSPENDED {
+            get {
+                return ResourceManager.GetString("ACCOUNT_STATUS_CN88_NAME_SUSPENDED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to View Only (CN88).
+        /// </summary>
+        internal static string ACCOUNT_STATUS_CN88_NAME_VIEW_ONLY {
+            get {
+                return ResourceManager.GetString("ACCOUNT_STATUS_CN88_NAME_VIEW_ONLY", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Suspended.
+        /// </summary>
+        internal static string ACCOUNT_STATUS_CN88_SUSPENDED {
+            get {
+                return ResourceManager.GetString("ACCOUNT_STATUS_CN88_SUSPENDED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to View Only.
+        /// </summary>
+        internal static string ACCOUNT_STATUS_CN88_VIEW_ONLY {
+            get {
+                return ResourceManager.GetString("ACCOUNT_STATUS_CN88_VIEW_ONLY", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open.
+        /// </summary>
+        internal static string ACCOUNT_STATUS_OPEN {
+            get {
+                return ResourceManager.GetString("ACCOUNT_STATUS_OPEN", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Suspended.
+        /// </summary>
+        internal static string ACCOUNT_STATUS_SUSPENDED {
+            get {
+                return ResourceManager.GetString("ACCOUNT_STATUS_SUSPENDED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Auto Suspend Other Sports.
         /// </summary>
         internal static string AUTO_SUSPEND_OTHER_SPORTS {

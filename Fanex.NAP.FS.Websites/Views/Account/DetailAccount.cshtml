@@ -3,6 +3,8 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 @section styles{
+    <link href="~/Content/scss/MultipleSelect/jquery.multiselect.filter.css" rel="stylesheet" />
+    <link href="~/Content/scss/MultipleSelect/jquery.multiselect.css" rel="stylesheet" />
     <link href="~/Content/scss/pages/account/account.css" rel="stylesheet" />
     <link href="~/Content/scss/pages/evidence/evidence.css" rel="stylesheet" />
     <link href="~/Content/scss/vendors/popoto/popoto.min.css" rel="stylesheet" />
@@ -112,15 +114,16 @@
     </div>
 </div>
 @section scripts{
-<script type="text/javascript">
+    <script type="text/javascript">
     var ACCOUNTID = '@Model.GeneralInfo.AccountId';
     var CUSTID = '@Model.GeneralInfo.CustId';
     var USERNAME = '@Model.GeneralInfo.Username';
     var SUBSCRIBERID = '@Model.GeneralInfo.SubscriberID';
     var SUBSCRIBER = '@Model.GeneralInfo.SubscriberName';
     var IsPermissionIPLocation = '@ViewBag.IsPermissionIPLocation';
-</script>
-
+    </script>
+    <script src="~/Scripts/MultipleSelect/jquery.multiselect.filter.js"></script>
+    <script src="~/Scripts/MultipleSelect/jquery.multiselect.js"></script>
     @Scripts.Render("~/evidence-scripts"
                     , "~/account-scripts"
                     , "~/account/associated-scripts"

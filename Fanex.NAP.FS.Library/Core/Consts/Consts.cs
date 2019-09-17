@@ -21,5 +21,6 @@
         public const string FormatDateToString_MMMddyyyyhhmmsstt = "MMM dd, yyyy hh: mm:ss tt";
 
         public const string CurrentSubscriberAssignmentsKey = "CurrentSubscriberAssignmentsKey";
+        public const string SubscriberNameCN88 = "CN88";
     }
 }

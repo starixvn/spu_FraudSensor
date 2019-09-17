@@ -3,9 +3,14 @@
     public enum AccountStatus
     {
         All,
-        Active,
+        Open,
         Suspended,
-        Closed
+        Closed,
+        CN88_Active,
+        CN88_ViewOnly,
+        CN88_Suspended,
+        CN88_Inactive,
+        CN88_Locked
     }
 
     public enum EvidenceStatus

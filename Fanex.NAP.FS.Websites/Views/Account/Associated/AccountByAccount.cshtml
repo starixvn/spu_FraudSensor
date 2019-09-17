@@ -2,7 +2,9 @@
 @{
     ViewBag.Title = "AccountAssociatedAccount";
 }
+
 @Html.Partial("./Associated/GraphVisualization")
+
 <div id="account-by-account">
     <div id="account-by-account-filter">
         <div class="filter">
@@ -18,11 +20,11 @@
             </div>
             <div class="form-control">
                 <div class="control-label">Status</div>
-                <select class="control" id="cbb-status">
-                    <option value="@AccountStatus.All" selected>All</option>
-                    <option value="@AccountStatus.Active">Active</option>
-                    <option value="@AccountStatus.Suspended">Suspended</option>
-                    <option value="@AccountStatus.Closed">Close</option>
+                <select class="control" id="cbb-status" multiple="multiple">
+                    @foreach (KeyValuePair<AccountStatus, string> status in ViewBag.AccountStatusList)
+                    {
+                        <option value="@status.Key">@status.Value</option>
+                    }
                 </select>
             </div>
             <div class="form-control">
@@ -34,7 +36,7 @@
                 </select>
             </div>
             <div class="form-control button-group">
-                <button class="button btn-search" id="btn-search-account">Search</button>                
+                <button class="button btn-search" id="btn-search-account">Search</button>
             </div>
         </div>
     </div>

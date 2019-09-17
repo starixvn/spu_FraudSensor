@@ -197,8 +197,7 @@
             generalInfo.LastLogin = customerInformation.LastLoginDate;
             generalInfo.FrequencyLogin = customerInformation.LoginCount;
             generalInfo.Username = customerInformation.Username;
-            generalInfo.Username2 = customerInformation.Username2;
-            generalInfo.AccountStatus = AccountStatus.Active;
+            generalInfo.Username2 = customerInformation.Username2;            
 
             if (customerInformation.AccountEvidenceStatus == 0)
             {
@@ -251,8 +250,8 @@
                 generalInfo.DangerousOriginal = fraud.danger;
                 generalInfo.DangerousNonLive = fraud.danger2;
                 generalInfo.DangerousOtherSports = fraud.danger3;
-                
                 generalInfo.AutoSuspend = GetAutoSuspend(fraud);
+                generalInfo.AccountStatus = fraud.GetStatus();
             }
 
             var fraudCase = new StringBuilder();
