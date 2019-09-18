@@ -54,7 +54,7 @@
         {
             if (string.IsNullOrEmpty(status))
             {
-                return false;
+                return true;
             }
 
             var listStatus = status.Split(',');
