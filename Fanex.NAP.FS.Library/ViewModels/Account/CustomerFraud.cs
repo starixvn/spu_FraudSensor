@@ -52,6 +52,11 @@
 
         public bool CompareStatus(string status)
         {
+            if (string.IsNullOrEmpty(status))
+            {
+                return false;
+            }
+
             var listStatus = status.Split(',');
 
             var currentStatus = Enum.GetName(typeof(AccountStatus), GetStatus());
@@ -90,6 +95,10 @@
                 case 3:
                     return AccountStatus.CN88_ViewOnly;
                 default:
+                    if (this.closed)
+                    {
+                        return AccountStatus.CN88_Locked;
+                    }
                     return AccountStatus.CN88_Active;
             }
         }

@@ -71,7 +71,7 @@
                     return true;
                 }
 
-                if (sub.isAssigned == 1 && sub.SubscriberName.Contains(Consts.SubscriberNameCN88))
+                if (sub.isAssigned == 1 && sub.SubscriberName.ToUpper().Contains(Consts.SubscriberNameCN88))
                 {
                     return true;
                 }
