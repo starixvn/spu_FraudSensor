@@ -3,12 +3,47 @@
     var dangerous_level_original = $('#dangerous-level-original');
     var dangerous_level_non_live = $('#dangerous-level-non-live');
     var dangerous_level_other_sports = $('#dangerous-level-other-sports');
+    var account_status = $('#lbl-account-status-general-info');
 
     function InitGeneralInformation() {
+        RenderAccountStatus();
         RenderAbnormal();
         RenderDangerousLevel(dangerous_level_original);
         RenderDangerousLevel(dangerous_level_non_live);
         RenderDangerousLevel(dangerous_level_other_sports);
+    }
+
+    function RenderAccountStatus() {
+        var statusValue = $(account_status).attr('status');
+        
+        switch (statusValue) {
+            case "Open":
+                //$(account_status).css('background-color', '#F0B2B2');
+                break;
+            case "Suspended":
+                $(account_status).css('background-color', '#4DEB35');
+                break;
+            case "Closed":
+                $(account_status).css('background-color', '#F2AA4C');
+                break;
+            case "CN88_Active":
+                $(account_status).css('background-color', '#246D17');
+                break;
+            case "CN88_ViewOnly":
+                $(account_status).css('background-color', '#554166');
+                break;
+            case "CN88_Suspended":
+                $(account_status).css('background-color', '#6B371D');
+                break;
+            case "CN88_Inactive":
+                $(account_status).css('background-color', '#797370');
+                break;
+            case "CN88_Locked":
+                $(account_status).css('background-color', '#35EBDC');
+                break;
+            default:
+                break;
+        }
     }
 
     function RenderAbnormal() {

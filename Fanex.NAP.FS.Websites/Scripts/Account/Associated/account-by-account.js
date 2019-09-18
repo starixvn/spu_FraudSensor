@@ -1,6 +1,6 @@
 ﻿function account_by_account() {
     var loading = $('#associated-account-loading-div');
-    var btnSearch = $('#btn-search-account');
+    var btnSearch = $('#btn-search-account-ass-account');
     var accountSearch = $('#account-search');
     var usernameSpan = $('.username-span');
     var associatedTable = $('#account-by-account-table'); 
@@ -75,7 +75,7 @@
     function GenerateReport() {
         var deviceAwayOne = $('#chk-device-away-1').is(':checked');
         var deviceAwayMore = $('#chk-device-away-2').is(':checked');
-        var status = $('#cbb-status').val();
+        var status = $('#cbb-status-ass-account').val();
         var evidenceStatus = $('#cbb-evidence-status-ass-account').val();
         var url = common.modifyRelativeUrl('/Account/GetAssociatedAccountByAccountFilter');
 
@@ -157,7 +157,7 @@
 
     InitSearchOnGrid();
 
-    $("#cbb-status").multiselect({
+    $("#cbb-status-ass-account").multiselect({
         menuWidth: 225,
         menuHeight: 225,
         selectedText: "# of # selected",

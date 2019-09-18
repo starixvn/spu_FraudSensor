@@ -1,6 +1,7 @@
 ﻿namespace Fanex.NAP.FS.Library.Models.Account
 {
-    using Fanex.NAP.FS.Library.Core.Consts;    
+    using Fanex.NAP.FS.Library.Core.Consts;
+    using Fanex.NAP.FS.Library.Core.Resources;
     using System;
 
     public class AccountGeneralInformation
@@ -92,6 +93,35 @@
                 }
 
                 return LastLogin.ToString(Consts.FormatDateToString_MMMddyyyy);
+            }
+        }
+
+        public string AccountStatusToString
+        {
+            get
+            {
+                switch (this.AccountStatus)
+                {                  
+                    case AccountStatus.Open:
+                        return ResourcesManager.GetValue(ConstsResources.ACCOUNT_STATUS_OPEN);                        
+                    case AccountStatus.Suspended:
+                        return ResourcesManager.GetValue(ConstsResources.ACCOUNT_STATUS_SUSPENDED);
+                    case AccountStatus.Closed:
+                        return ResourcesManager.GetValue(ConstsResources.ACCOUNT_STATUS_CLOSED);
+                    case AccountStatus.CN88_Active:
+                        return ResourcesManager.GetValue(ConstsResources.ACCOUNT_STATUS_CN88_ACTIVE);
+                    case AccountStatus.CN88_ViewOnly:
+                        return ResourcesManager.GetValue(ConstsResources.ACCOUNT_STATUS_CN88_VIEW_ONLY);
+                    case AccountStatus.CN88_Suspended:
+                        return ResourcesManager.GetValue(ConstsResources.ACCOUNT_STATUS_CN88_SUSPENDED);
+                    case AccountStatus.CN88_Inactive:
+                        return ResourcesManager.GetValue(ConstsResources.ACCOUNT_STATUS_CN88_INACTIVE);
+                    case AccountStatus.CN88_Locked:
+                        return ResourcesManager.GetValue(ConstsResources.ACCOUNT_STATUS_CN88_LOCKED);
+                    default:
+                        return string.Empty;
+                }
+                
             }
         }
     }

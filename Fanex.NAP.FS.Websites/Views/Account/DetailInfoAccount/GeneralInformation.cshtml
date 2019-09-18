@@ -45,7 +45,9 @@
 
         <p class="bold">
             Account Status:
-            <span class="badge-label badge-active">@Enum.GetName(typeof(AccountStatus), Model.GeneralInfo.AccountStatus)</span>
+            <span class="badge-label badge-active" id="lbl-account-status-general-info" status="@Enum.GetName(typeof(AccountStatus), Model.GeneralInfo.AccountStatus)">
+                @Model.GeneralInfo.AccountStatusToString
+            </span>
         </p>
         <button class="button btn-add" type="button" id="btn-add-evidence">Add Evidence</button>
     </div>
