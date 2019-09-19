@@ -180,7 +180,6 @@
                 listStatus.Add(AccountStatus.CN88_ViewOnly, ResourcesManager.GetValue(ConstsResources.ACCOUNT_STATUS_CN88_NAME_VIEW_ONLY));
                 listStatus.Add(AccountStatus.CN88_Suspended, ResourcesManager.GetValue(ConstsResources.ACCOUNT_STATUS_CN88_NAME_SUSPENDED));
                 listStatus.Add(AccountStatus.CN88_Inactive, ResourcesManager.GetValue(ConstsResources.ACCOUNT_STATUS_CN88_NAME_INACTIVE));
-                listStatus.Add(AccountStatus.CN88_Locked, ResourcesManager.GetValue(ConstsResources.ACCOUNT_STATUS_CN88_NAME_LOCKED));
             }
 
             return listStatus;

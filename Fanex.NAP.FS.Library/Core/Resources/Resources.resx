@@ -129,17 +129,11 @@
   <data name="ACCOUNT_STATUS_CN88_INACTIVE" xml:space="preserve">
     <value>Inactive</value>
   </data>
-  <data name="ACCOUNT_STATUS_CN88_LOCKED" xml:space="preserve">
-    <value>Locked</value>
-  </data>
   <data name="ACCOUNT_STATUS_CN88_NAME_ACTIVE" xml:space="preserve">
     <value>Active (CN88)</value>
   </data>
   <data name="ACCOUNT_STATUS_CN88_NAME_INACTIVE" xml:space="preserve">
     <value>Inactive (CN88)</value>
-  </data>
-  <data name="ACCOUNT_STATUS_CN88_NAME_LOCKED" xml:space="preserve">
-    <value>Locked (CN88)</value>
   </data>
   <data name="ACCOUNT_STATUS_CN88_NAME_SUSPENDED" xml:space="preserve">
     <value>Suspended (CN88)</value>
@@ -152,6 +146,9 @@
   </data>
   <data name="ACCOUNT_STATUS_CN88_VIEW_ONLY" xml:space="preserve">
     <value>View Only</value>
+  </data>
+  <data name="ACCOUNT_STATUS_NONE" xml:space="preserve">
+    <value>None</value>
   </data>
   <data name="ACCOUNT_STATUS_OPEN" xml:space="preserve">
     <value>Open</value>

@@ -2,7 +2,6 @@
 {
     public enum AccountStatus
     {
-        All,
         Open,
         Suspended,
         Closed,
@@ -10,7 +9,7 @@
         CN88_ViewOnly,
         CN88_Suspended,
         CN88_Inactive,
-        CN88_Locked
+        None
     }
 
     public enum EvidenceStatus

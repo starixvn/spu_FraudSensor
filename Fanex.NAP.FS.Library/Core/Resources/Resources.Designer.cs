@@ -97,15 +97,6 @@ namespace Fanex.NAP.FS.Library.Core.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Locked.
-        /// </summary>
-        internal static string ACCOUNT_STATUS_CN88_LOCKED {
-            get {
-                return ResourceManager.GetString("ACCOUNT_STATUS_CN88_LOCKED", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Active (CN88).
         /// </summary>
         internal static string ACCOUNT_STATUS_CN88_NAME_ACTIVE {
@@ -120,15 +111,6 @@ namespace Fanex.NAP.FS.Library.Core.Resources {
         internal static string ACCOUNT_STATUS_CN88_NAME_INACTIVE {
             get {
                 return ResourceManager.GetString("ACCOUNT_STATUS_CN88_NAME_INACTIVE", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Locked (CN88).
-        /// </summary>
-        internal static string ACCOUNT_STATUS_CN88_NAME_LOCKED {
-            get {
-                return ResourceManager.GetString("ACCOUNT_STATUS_CN88_NAME_LOCKED", resourceCulture);
             }
         }
         
@@ -165,6 +147,15 @@ namespace Fanex.NAP.FS.Library.Core.Resources {
         internal static string ACCOUNT_STATUS_CN88_VIEW_ONLY {
             get {
                 return ResourceManager.GetString("ACCOUNT_STATUS_CN88_VIEW_ONLY", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to None.
+        /// </summary>
+        internal static string ACCOUNT_STATUS_NONE {
+            get {
+                return ResourceManager.GetString("ACCOUNT_STATUS_NONE", resourceCulture);
             }
         }
         

@@ -14,12 +14,12 @@
 
         public const string ACCOUNT_STATUS_CN88_ACTIVE = "ACCOUNT_STATUS_CN88_ACTIVE";
         public const string ACCOUNT_STATUS_CN88_INACTIVE = "ACCOUNT_STATUS_CN88_INACTIVE";
-        public const string ACCOUNT_STATUS_CN88_LOCKED = "ACCOUNT_STATUS_CN88_LOCKED";
         public const string ACCOUNT_STATUS_CN88_SUSPENDED = "ACCOUNT_STATUS_CN88_SUSPENDED";
         public const string ACCOUNT_STATUS_CN88_VIEW_ONLY = "ACCOUNT_STATUS_CN88_VIEW_ONLY";
         public const string ACCOUNT_STATUS_ALL = "ACCOUNT_STATUS_ALL";
         public const string ACCOUNT_STATUS_OPEN = "ACCOUNT_STATUS_OPEN";
         public const string ACCOUNT_STATUS_SUSPENDED = "ACCOUNT_STATUS_SUSPENDED";
         public const string ACCOUNT_STATUS_CLOSED = "ACCOUNT_STATUS_CLOSED";
+        public const string ACCOUNT_STATUS_NONE = "ACCOUNT_STATUS_NONE";
     }
 }

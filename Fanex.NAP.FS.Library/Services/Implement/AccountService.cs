@@ -241,6 +241,7 @@
         private static AccountGeneralInformation GetFraudInformation(AccountGeneralInformation generalInfo, CustomerFraudSuspicious customerFraudSuspicious)
         {
             generalInfo.AutoSuspend = ResourcesManager.GetValue(ConstsResources.NONE);
+            generalInfo.AccountStatus = AccountStatus.None;
 
             if (customerFraudSuspicious.CustomerFrauds.Any())
             {

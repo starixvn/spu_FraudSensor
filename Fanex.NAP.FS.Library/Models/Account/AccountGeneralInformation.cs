@@ -115,11 +115,9 @@
                     case AccountStatus.CN88_Suspended:
                         return ResourcesManager.GetValue(ConstsResources.ACCOUNT_STATUS_CN88_SUSPENDED);
                     case AccountStatus.CN88_Inactive:
-                        return ResourcesManager.GetValue(ConstsResources.ACCOUNT_STATUS_CN88_INACTIVE);
-                    case AccountStatus.CN88_Locked:
-                        return ResourcesManager.GetValue(ConstsResources.ACCOUNT_STATUS_CN88_LOCKED);
+                        return ResourcesManager.GetValue(ConstsResources.ACCOUNT_STATUS_CN88_INACTIVE);                   
                     default:
-                        return string.Empty;
+                        return ResourcesManager.GetValue(ConstsResources.ACCOUNT_STATUS_NONE);
                 }
                 
             }

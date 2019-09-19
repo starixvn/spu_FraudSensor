@@ -42,7 +42,7 @@
 
         public AccountStatus GetStatus()
         {
-            if (cn88status == -1)
+            if (this.cn88status == -1)
             {
                 return GetAccountStatusForMBC();
             }
@@ -95,10 +95,6 @@
                 case 3:
                     return AccountStatus.CN88_ViewOnly;
                 default:
-                    if (this.closed)
-                    {
-                        return AccountStatus.CN88_Locked;
-                    }
                     return AccountStatus.CN88_Active;
             }
         }
