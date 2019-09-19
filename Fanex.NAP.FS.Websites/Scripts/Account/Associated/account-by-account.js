@@ -69,7 +69,7 @@
     }
 
     function RenderGraphImage() {
-        return '<span class="icon-path graph" title="Graph View"></span>';
+        return '<span class="icon-path graph" title="Graph View" onclick="OpenShortestPath()"></span>';
     }    
 
     function GenerateReport() {
@@ -174,3 +174,15 @@
 }
 
 $(account_by_account);
+
+function OpenShortestPath() {
+    $('#shortest-path-render').dialog({
+        modal: true,
+        width: '1500px',
+        title: 'Shortest Path',
+        dialogClass: "modal-graph-render",
+        resizable: true,
+        draggable: true,
+        close: function () { $(this).dialog('close'); }
+    })
+}
