@@ -35,10 +35,20 @@
                 ip_Username = filter.Key,
                 ip_UserId = filter.UserId
             };
+          
+            var dataCollected = DataService.GetData<SubscriberAccount>(criteria);
 
-            return DataService.GetData<SubscriberAccount>(criteria)
-                            .OrderBy(a => a.SubscriberName)
-                            .ThenBy(a => a.UserName);
+            return dataCollected.AsEnumerable()
+                      .Select(c => new SubscriberAccount
+                      {
+                          SubscriberID = c.SubscriberID,
+                          SubscriberName = c.SubscriberName,
+                          AccountID = c.AccountID,
+                          CustID = c.CustID,
+                          UserName = c.GetUserName(),
+                          UserName2 = c.UserName2,
+                      }).OrderBy(a => a.SubscriberName)
+                      .ThenBy(a => a.UserName);
         }
         #endregion
 

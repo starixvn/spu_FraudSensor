@@ -18,28 +18,20 @@
         
         switch (statusValue) {
             case "Open":
-                //$(account_status).css('background-color', '#F0B2B2');
+            case "CN88_Active":
+                $(account_status).css('background-color', '#4F971F');
                 break;
             case "Suspended":
-                $(account_status).css('background-color', '#4DEB35');
+            case "CN88_ViewOnly":
+                $(account_status).css('background-color', '#DB2222');
+                break;            
+            case "CN88_Suspended":
+                $(account_status).css('background-color', '#D34315');
                 break;
             case "Closed":
-                $(account_status).css('background-color', '#F2AA4C');
-                break;
-            case "CN88_Active":
-                $(account_status).css('background-color', '#246D17');
-                break;
-            case "CN88_ViewOnly":
-                $(account_status).css('background-color', '#554166');
-                break;
-            case "CN88_Suspended":
-                $(account_status).css('background-color', '#6B371D');
-                break;
             case "CN88_Inactive":
-                $(account_status).css('background-color', '#797370');
-                break;
-            case "CN88_Locked":
-                $(account_status).css('background-color', '#35EBDC');
+            case "None":
+                $(account_status).css('background-color', '#545454');
                 break;
             default:
                 break;

@@ -446,7 +446,7 @@
     <Compile Include="ViewModels\Account\GeneralInformation\GeneralAccountCollected.cs" />
     <Compile Include="ViewModels\Account\GeneralInformation\GeneralInformationFilter.cs" />
     <Compile Include="ViewModels\Account\Search\SearchAccountFilter.cs" />
-    <Compile Include="ViewModels\Account\SubscriberAccount.cs" />
+    <Compile Include="ViewModels\Account\Search\SubscriberAccount.cs" />
     <Compile Include="ViewModels\Account\AccountDetail.cs" />
     <Compile Include="Models\Subscriber\SubscriberAssignment.cs" />
     <Compile Include="Models\SuspiciousCustomerDetails\FraudCaseViolated.cs" />
