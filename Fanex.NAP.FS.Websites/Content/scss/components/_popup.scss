@@ -89,7 +89,7 @@
 // modal-graph-render
 .modal-graph-render {
     top: 60px !important;
-    width: 95% !important;
+    width: 99% !important;
 
     .ppt-body {
         margin: 5px;
@@ -104,5 +104,66 @@
 
     .ppt-div-graph {
         border-bottom: 5px solid #fff;
+    }
+
+    .ppt-node__back-text--choose,
+    .ppt-node__back-text--choose--value-selected,
+    .ppt-node__back-text--value,
+    .ppt-node__back-text--root,
+    .ppt-node__back-text--root--value-selected {
+        fill: #fff;
+        fill-opacity: 1;
+        transform: translateY(10px);
+    }
+
+    .ppt-node__text--choose, .ppt-node__text--choose--value-selected, .ppt-node__text--value, .ppt-node__text--root--value-selected, .ppt-node__text--root {
+        fill: #003546;
+        font-family: 'Lato', Tahoma, sans-serif;
+        transform: translateY(10px);
+    }
+
+    .ppt-donut-segments {
+        > g:last-child {
+            .ppt-segment {
+                fill: #35BAA3;
+            }
+        }
+    }
+
+    .ppt-link.ppt-USED, .ppt-link.ppt-BELONG_TO {
+        stroke-width: 3px;
+    }
+
+    .ppt-BELONG_TO {
+        stroke: #35BAA3;
+    }
+
+    /*.Customer {
+        &.ppt-node__back-text--root, &.ppt-node__text--root--value-selected, &.ppt-node__back-text--root--value-selected {
+            transform: translateY(10px);
+        }
+
+        &.ppt-node__text--root {
+            transform: translateY(10px);
+        }
+    }
+
+    .Device, .Group {
+        &.ppt-node__back-text--choose {
+            transform: translateY(10px);
+        }
+
+        &.ppt-node__text--choose {
+            transform: translateY(10px);
+        }
+    }*/
+
+    .ppt-g-node-foreground {
+        transform: translateX(-40px);
+    }
+
+    .ppt-count-box.value, .ppt-count-box.root {
+        fill-opacity: 1;
+        rx: 6;
     }
 }
