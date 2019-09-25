@@ -412,6 +412,11 @@
     <Content Include="Content\scss\vendors\popoto\vis\img\network\upArrow.png" />
     <Content Include="Content\scss\vendors\popoto\vis\img\network\zoomExtends.png" />
     <Content Include="Content\scss\vendors\popoto\vis\vis-network.min.css" />
+    <Content Include="images\graphrender\account.svg" />
+    <Content Include="images\graphrender\device_android.svg" />
+    <Content Include="images\graphrender\device_ios.svg" />
+    <Content Include="images\graphrender\device_pc.svg" />
+    <Content Include="images\graphrender\group.svg" />
     <Content Include="Scripts\Account\Associated\account-by-account.js" />
     <Content Include="Scripts\Account\Associated\device-by-account.js" />
     <Content Include="Scripts\Evidence\form-add-evidence.js" />

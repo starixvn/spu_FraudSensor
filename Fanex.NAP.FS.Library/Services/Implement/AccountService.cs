@@ -295,11 +295,12 @@
         #region Associated account by account
         public string GetShortestPath(int startCustId, int endCustId)
         {
-            var data = ApiHelper.Post<string>(AppSettings.Get(Consts.GraphDBGetShortestPath), new { StartCustId = startCustId, EndCustId = endCustId });
+            // var data = ApiHelper.Post<string>(AppSettings.Get(Consts.GraphDBGetShortestPath), new { StartCustId = startCustId, EndCustId = endCustId });
 
-            Task.WhenAll(data);
+            //Task.WhenAll(data);
 
-            var customersAPI = data.Result;
+            //var customersAPI = data.Result;
+            var customersAPI = string.Empty;
 
             return customersAPI;
         }

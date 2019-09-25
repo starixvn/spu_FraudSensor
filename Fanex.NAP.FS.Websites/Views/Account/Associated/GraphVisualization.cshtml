@@ -14,20 +14,38 @@
     popoto.rest.CYPHER_URL = "http://10.18.200.70:7474/db/data/transaction/commit";
     popoto.rest.AUTHORIZATION = "Basic " + "bmVvNGo6MTIzNGFh"; // btoa("neo4j:password")
     popoto.provider.node.Provider = {
-        "Customer": {
-            "returnAttributes": ["CustId", "Username","Username2"],
-            "constraintAttribute": "CustId",
-            "displayAttribute": "Username"
+        Customer: {
+            returnAttributes: ["CustId", "Username","Username2"],
+            constraintAttribute: "CustId",
+            displayAttribute: "Username",
+            getDisplayType: function () {
+                return popoto.provider.node.DisplayTypes.IMAGE;
+            },
+            getImagePath: function () {
+                return "../images/graphrender/account.svg";
+            }
         },
-        "Device": {
-            "returnAttributes": ["DeviceId"],
-            "constraintAttribute": "DeviceId",
-            "autoExpandRelations": true,
-            "isAutoLoadValue": true
+        Device: {
+            returnAttributes: ["DeviceId"],
+            constraintAttribute: "DeviceId",
+            autoExpandRelations: true,
+            isAutoLoadValue: true,
+            getDisplayType: function () {
+                return popoto.provider.node.DisplayTypes.IMAGE;
+            },
+            getImagePath: function () {
+                return "../images/graphrender/device_pc.svg";
+            }
         },
-        "Group": {
-            "returnAttributes": ["GroupId", "CustomerQuantity"],
-            "constraintAttribute": "GroupId"
+        Group: {
+            returnAttributes: ["GroupId", "CustomerQuantity"],
+            constraintAttribute: "GroupId",
+            getDisplayType: function () {
+                return popoto.provider.node.DisplayTypes.IMAGE;
+            },
+            getImagePath: function () {
+                return "../images/graphrender/group.svg";
+            }
         }
     };
 
