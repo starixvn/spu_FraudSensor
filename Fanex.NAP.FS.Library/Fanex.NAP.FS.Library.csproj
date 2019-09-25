@@ -387,11 +387,13 @@
     <Compile Include="Models\SuspiciousCustomer\SuspiciousCustomerReportModel.cs" />
     <Compile Include="Models\SuspiciousCustomer\SuspiciousCustomerNoteModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\Implement\AccountService.cs" />
     <Compile Include="Services\Implement\CheckBetReportService.cs" />
     <Compile Include="Services\Implement\CustomerMonitorService.cs" />
     <Compile Include="Services\Implement\DailyCaptureDataService.cs" />
     <Compile Include="Services\Implement\DelayGoalAccountService.cs" />
     <Compile Include="Services\Implement\FraudCaseDetailsService.cs" />
+    <Compile Include="Services\Interface\IAccountService.cs" />
     <Compile Include="Services\Interface\ICustomerMonitorService.cs" />
     <Compile Include="Services\Implement\NotificationRecipientService.cs" />
     <Compile Include="Services\Implement\NotificationService.cs" />
@@ -417,6 +419,11 @@
     <Compile Include="Services\Interface\IFraudSensorTaskService.cs" />
     <Compile Include="Services\Interface\IFraudCaseService.cs" />
     <Compile Include="Services\Interface\IMatchMonitorService.cs" />
+    <Compile Include="ViewModels\Account\Associated\AssociatedAccounts.cs" />
+    <Compile Include="ViewModels\Account\Associated\AssociatedAccountsCollected.cs" />
+    <Compile Include="ViewModels\Account\Associated\AssociatedAccountsFilter.cs" />
+    <Compile Include="ViewModels\Account\Associated\Evidence.cs" />
+    <Compile Include="ViewModels\Account\Associated\VerifyStatus.cs" />
     <Compile Include="ViewModels\CheckBetReport\CheckBetTicket.cs" />
     <Compile Include="ViewModels\CustomerMonitor\CustomerDetails\CustomerDetailsInfo.cs" />
     <Compile Include="ViewModels\CustomerMonitor\CustomerDetails\TicketDetails.cs" />

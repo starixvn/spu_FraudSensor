@@ -4,5 +4,11 @@
     "inputFiles": [
       "Content/scss/fonts/Fraud-Sensor/style.css"
     ]
+  },
+  {
+    "outputFileName": "Content/pages/account/account.min.css",
+    "inputFiles": [
+      "Content/pages/account/account.css"
+    ]
   }
 ]
