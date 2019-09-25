@@ -293,6 +293,17 @@
         #endregion
 
         #region Associated account by account
+        public string GetShortestPath(int startCustId, int endCustId)
+        {
+            var data = ApiHelper.Post<string>(AppSettings.Get(Consts.GraphDBGetShortestPath), new { StartCustId = startCustId, EndCustId = endCustId });
+
+            Task.WhenAll(data);
+
+            var customersAPI = data.Result;
+
+            return customersAPI;
+        }
+
         public IEnumerable<AssociatedAccountByAccount> GetAssociatedAccountByAccounts(AssociatedAccountByAccountFilter filter, out string msgError)
         {
             var accountCollected = new AssociatedAccountsCollected();

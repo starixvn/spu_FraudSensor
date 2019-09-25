@@ -68,10 +68,6 @@
         return html;
     }
 
-    function RenderGraphImage() {
-        return '<span class="icon-path graph" title="Graph View" onclick="OpenShortestPath()"></span>';
-    }    
-
     function GenerateReport() {
         var deviceAwayOne = $('#chk-device-away-1').is(':checked');
         var deviceAwayMore = $('#chk-device-away-2').is(':checked');
@@ -171,11 +167,15 @@
     btnSearch.click(GenerateReport);    
 
     $('#btn-ass-acc').click(OpenGraphRender);    
+
+    function RenderGraphImage() {
+        return '<span class="icon-path graph" title="Graph View" onclick="OpenShortestPath(22971808,4677919)"></span>';
+    }
 }
 
 $(account_by_account);
 
-function OpenShortestPath() {
+function OpenShortestPath(startCustId, endCustId) {
     $('#shortest-path-render').dialog({
         modal: true,
         width: '1500px',
@@ -183,6 +183,19 @@ function OpenShortestPath() {
         dialogClass: "modal-graph-render",
         resizable: true,
         draggable: true,
+        open: function () {
+            $.ajax({
+                type: "POST",
+                data: { startCustId: startCustId, endCustId: endCustId },
+                url: "GetShortestPath",
+                beforeSend: function() {
+                    alert('before send');
+                },
+                success: function () {
+
+                }
+            });
+        },
         close: function () { $(this).dialog('close'); }
     })
 }

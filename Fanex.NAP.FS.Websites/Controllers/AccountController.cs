@@ -8,9 +8,9 @@
     using Fanex.NAP.FS.Library.ViewModels.Account.Associated;
     using Fanex.NAP.Core.Web.Attribute;
     using Fanex.NAP.FS.Library.Core.Consts;
-    using Fanex.NAP.FS.Library.ViewModels.Evidence;    
+    using Fanex.NAP.FS.Library.ViewModels.Evidence;
     using Fanex.NAP.Core.Service.Impl;
-    using Fanex.NAP.FS.Library.ViewModels.Account.GeneralInformation;    
+    using Fanex.NAP.FS.Library.ViewModels.Account.GeneralInformation;
     using Fanex.NAP.FS.Service.Utilities;
     using Fanex.NAP.FS.Library.ViewModels.Account.Evidence;
     using Fanex.NAP.FS.Library.ViewModels.Account.Evidence.Exception;
@@ -112,6 +112,13 @@
         }
 
         [HttpPost]
+        public ActionResult GetShortestPath(int startCustId, int endCustId)
+        {
+            var data = _accountService.GetShortestPath(startCustId, endCustId);
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
         public ActionResult GetAssociatedDeviceByAccount()
         {
             return PartialView("Associated/DeviceByAccount");
@@ -137,7 +144,7 @@
             var data = _evidenceService.GetEvidencesByAccount(accountId);
 
             return Json(data, JsonRequestBehavior.AllowGet);
-        }        
+        }
 
         [HttpPost]
         public ActionResult UpdateEvidenceByAccount(EvidenceByAccount evidenceByAccount)
@@ -165,11 +172,11 @@
                 IsMasterSubscriberAssignment = PermissionService.IsMasterSubscriberAssignment(),
                 UserId = CurrentSession.UserId
             };
-        }                
+        }
 
         private static Dictionary<AccountStatus, string> GetAccountStatusList()
         {
-            var listStatus = new Dictionary<AccountStatus, string>();            
+            var listStatus = new Dictionary<AccountStatus, string>();
             listStatus.Add(AccountStatus.Open, ResourcesManager.GetValue(ConstsResources.ACCOUNT_STATUS_OPEN));
             listStatus.Add(AccountStatus.Suspended, ResourcesManager.GetValue(ConstsResources.ACCOUNT_STATUS_SUSPENDED));
             listStatus.Add(AccountStatus.Closed, ResourcesManager.GetValue(ConstsResources.ACCOUNT_STATUS_CLOSED));
@@ -184,7 +191,7 @@
 
             return listStatus;
         }
-        
+
         #endregion
     }
 }

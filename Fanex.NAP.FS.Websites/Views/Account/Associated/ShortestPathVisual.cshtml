@@ -1,8 +1,48 @@
 ﻿<div id="shortest-path-render" style="display:none">
-    ahihihihi
+    
 </div>
 
 
 <script type="text/javascript">
-  
+    function RenderShortestPath(graphResultObject) {
+        var nodes = convertNodes(graphResultObject.nodes);
+        var edges = convertEdges(graphResultObject.edges);
+        var container = document.getElementById('shortest-path-render');
+        // provide the data in the vis format
+        var data = {
+            nodes: nodes,
+            edges: edges
+        };
+        var options = {
+            nodes: {
+                shape: 'circle',
+                borderWidth: 2,
+                size: 20,
+                font: {
+                    size: 10,
+                    color: '#ffffff'
+                }
+            },
+            edges: {
+                length: 200,
+                font: {
+                    align: 'top',
+                    color: '#ffffff',
+                    strokeWidth: 0,
+                    size: 10
+                },
+                arrows: 'to'
+            },
+            groups: {
+                "Customer": {
+                    color: { background: '#68BDF6', border: '#5CA8DB' }
+                },
+                "Device": {
+                    color: { background: '#FF756E', border: '#E06760' }
+                }
+            }
+        };
+        // initialize the network
+        var network = new vis.Network(container, data, options);
+    }
 </script>

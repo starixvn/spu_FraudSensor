@@ -17,6 +17,8 @@
 
         IEnumerable<AssociatedAccountByAccount> GetAssociatedAccountByAccounts(AssociatedAccountByAccountFilter filter, out string msgError);
 
+        string GetShortestPath(int startCustId, int endCustId);
+
         IEnumerable<AssociatedDeviceByAccount> GetAssociatedDevicesByAccount(AssociatedDeviceByAccountFilter filter);        
     }
 }

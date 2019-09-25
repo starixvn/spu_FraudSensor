@@ -16,6 +16,7 @@
 
         public const string GraphDBGetAssociationOneLevel = "GraphDB_GetAssociationOneLevel";
         public const string GraphDBGetAssociationNLevel = "GraphDB_GetAssociationNLevel";
+        public const string GraphDBGetShortestPath = "GraphDB_GetShortestPath";
 
         public const string FormatDateToString_MMMddyyyy = "MMM dd, yyyy";
         public const string FormatDateToString_MMMddyyyyhhmmsstt = "MMM dd, yyyy hh: mm:ss tt";
