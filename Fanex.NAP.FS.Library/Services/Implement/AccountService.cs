@@ -1,5 +1,6 @@
 ﻿namespace Fanex.NAP.FS.Library.Services.Implement
 {
+    using Fanex.NAP.FS.Library.Models;
     using Fanex.NAP.FS.Library.Services.Interface;
     using Fanex.NAP.FS.Library.ViewModels.Account.Associated;
     using System;
@@ -17,8 +18,17 @@
             return GetAssociatedAccounts_Test();
         }
 
-        #region Test
+        public DBResult UpdateAssociatedAccountOfVerify(AssociatedAccountOfVerify accountOfVerify)
+        {
+            return new DBResult { ErrorCode = 0, ErrorMsg = "" };
+        }
 
+        public DBResult UpdateAssociatedAccountOfNote(AssociatedAccountOfNote accountOfNote)
+        {
+            return new DBResult { ErrorCode = 0, ErrorMsg = "" };
+        }
+
+        #region Test
         private static IEnumerable<Evidence> GetAllEvidences_Test()
         {
             var evidences = new List<Evidence>();
@@ -53,6 +63,10 @@
 
         private static AssociatedAccounts CreateNewAssociatedAccounts()
         {
+            var note = "Now that we have imported the necessary package, we can start by defining a client which takes in various " +
+                "options such as the address of the redis instance we want to connect to, " +
+                "the password and the database we wish to use in that instance.";
+
             return new AssociatedAccounts
             {
                 AssociatedAccountUsername = "abc",
@@ -66,10 +80,10 @@
                 FirstAssociated = DateTime.Now.ToString("MM/dd/yyyy"),
                 Verified = false,
                 VerifiedBy = "",
-                Note = ""
+                Note = note
             };
         }
-
+       
         #endregion
 
     }

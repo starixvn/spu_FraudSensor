@@ -419,9 +419,11 @@
     <Compile Include="Services\Interface\IFraudSensorTaskService.cs" />
     <Compile Include="Services\Interface\IFraudCaseService.cs" />
     <Compile Include="Services\Interface\IMatchMonitorService.cs" />
+    <Compile Include="ViewModels\Account\Associated\AssociatedAccountOfNote.cs" />
     <Compile Include="ViewModels\Account\Associated\AssociatedAccounts.cs" />
     <Compile Include="ViewModels\Account\Associated\AssociatedAccountsCollected.cs" />
     <Compile Include="ViewModels\Account\Associated\AssociatedAccountsFilter.cs" />
+    <Compile Include="ViewModels\Account\Associated\AssociatedAccountOfVerify.cs" />
     <Compile Include="ViewModels\Account\Associated\Evidence.cs" />
     <Compile Include="ViewModels\Account\Associated\VerifyStatus.cs" />
     <Compile Include="ViewModels\CheckBetReport\CheckBetTicket.cs" />

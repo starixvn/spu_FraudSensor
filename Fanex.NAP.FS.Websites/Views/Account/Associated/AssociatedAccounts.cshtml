@@ -74,7 +74,11 @@
 </div>
 
 @section scripts{
-    <script src="~/Scripts/MultipleSelect/jquery.multiselect.filter.js"></script>
+    <script type="text/javascript">
+        var username = '@ViewBag.Username';
+    </script>
+
+    <script src="~/Scripts/MultipleSelect/jquery.multiselect.filter.js"><</script>
     <script src="~/Scripts/MultipleSelect/jquery.multiselect.js"></script>
     <script src="~/Scripts/Account/Associated/associated-accounts.js"></script>
 }
