@@ -6,7 +6,7 @@
     var btn_generate = $('#btn-generate');
     var grid_associated_account = $('#grid-associated-account');
     var const_note_max_length = 500;
-    var const_note_length_of_collapse = 100;
+    var const_note_length_of_collapse = 50;
 
     function init() {
         $(filter_evidences).multiselect({
@@ -50,25 +50,25 @@
                 { targets: 10, type: "check-box" }
             ],
             columns: [
-                { data: (row, type, set, meta) => meta.row + 1, className: "text-center", width: "10%" },
-                { data: row => row.AssociatedAccountUsername, className: "text-center", width: "10%" },
-                { data: row => row.AssociatedAccountSite, className: "text-center", width: "10%" },
-                { data: row => row.AssociatedAccountLevel, className: "text-center", width: "10%" },
-                { data: row => renderEvidence(row.AssociatedAccountEvidences), className: "text-center", width: "10%" },
-                { data: row => row.MainAccountUsername, className: "text-center", width: "10%" },
-                { data: row => row.MainAccountSite, className: "text-center", width: "10%" },
-                { data: row => row.MainAccountLevel, className: "text-center", width: "10%" },
-                { data: row => renderEvidence(row.MainAccountEvidences), className: "text-center", width: "10%" },
-                { data: row => row.FirstAssociated, className: "text-center", width: "10%" },
+                { data: (row, type, set, meta) => meta.row + 1, className: "text-center", width: "5%" },
+                { data: row => row.AssociatedAccountUsername, className: "text-center", width: "7%" },
+                { data: row => row.AssociatedAccountSite, className: "text-center", width: "5%" },
+                { data: row => row.AssociatedAccountLevel, className: "text-center", width: "5%" },
+                { data: row => renderEvidence(row.AssociatedAccountEvidences), className: "text-left", width: "10%" },
+                { data: row => row.MainAccountUsername, className: "text-center", width: "7%" },
+                { data: row => row.MainAccountSite, className: "text-center", width: "5%" },
+                { data: row => row.MainAccountLevel, className: "text-center", width: "5%" },
+                { data: row => renderEvidence(row.MainAccountEvidences), className: "text-left", width: "10%" },
+                { data: row => row.FirstAssociated, className: "text-center", width: "8%" },
                 {
-                    data: renderverificationCheckBox, className: "text-center", width: "10%", createdCell: (cell, _, row) => {
+                    data: renderverificationCheckBox, className: "text-center", width: "5%", createdCell: (cell, _, row) => {
                         $('.chk-verification', cell).change(() => handleUpdateVerification(cell, row))
                     }
                 },
-                { data: row => row.VerifiedBy, className: "text-center", width: "10%" },
+                { data: row => row.VerifiedBy, className: "text-center", width: "8%" },
                 {
-                    data: renderNote, className: "text-center", width: "10%", createdCell: (cell, _, row) => {
-                        $('.btn-note', cell).click(() => handleEditNote(cell, row));
+                    data: renderNote, className: "col-account-note text-left", createdCell: (cell, _, row) => {
+                        $('.btn-note-change', cell).click(() => handleChangeNote(cell, row));
                         $('.btn-note-ellipsis', cell).click(() => handleExpandNote(cell));
                     }
                 }
@@ -86,8 +86,8 @@
         });
     }
 
-    function renderEvidence(evidence) {
-        return evidence;
+    function renderEvidence(evidence) {        
+        return common.makeWrapString(evidence, 25);
     }
 
     function renderverificationCheckBox(row) {
@@ -100,9 +100,9 @@
         var noteForDisplay = wrapTextForDipslayNote(row.Note, const_note_length_of_collapse);
 
         return '<div class="container-note">'
-            + '<textarea class="txt-note hide" rows="5">' + (row.Note != '-' ? row.Note : '') + '</textarea>'
-            + '<div class="note-content">' + noteForDisplay + '</div>'
-            + '<div class="btn-note icon-edit icon"></div>'
+            + '<textarea class="txt-note-input hide" rows="5">' + (row.Note != '-' ? row.Note : '') + '</textarea>'
+            + '<div class="note-content-display" title=' + row.Note + '>' + noteForDisplay + '</div>'                
+            + '<div class="btn-note-change icon-edit icon"></div>'
             + '</div>';
     }
 
@@ -112,17 +112,17 @@
         }
         var textOutPut = '';
         var textBreaks = textInput.split('\n');
-        var spanHtml = '<span class="btn-note-ellipsis" title="click to see whole note"> ... </span>';
+        var htmlSpan = '<span class="btn-note-ellipsis" title="click to see whole note"> ... </span>';
 
         for (var i = 0; i < textBreaks.length; i++) {
-            if (i == 5) {
+            if (i == 3) {
                 textOutPut = textOutPut + textBreaks[i];
-                return textOutPut.substring(0, maxLengthDisplay - (i * 2) - 3) + spanHtml;
+                return textOutPut.substring(0, maxLengthDisplay - 4) + htmlSpan;
             }
 
             textOutPut = textOutPut + textBreaks[i] + "\n";
             if (textOutPut.length > maxLengthDisplay) {
-                return textOutPut.substring(0, maxLengthDisplay - (i * 2) - 3) + spanHtml;
+                return textOutPut.substring(0, maxLengthDisplay - 4) + htmlSpan;
             }
         }
 
@@ -215,89 +215,106 @@
         return months[currentDatetime.getMonth()] + " " + currentDatetime.getDate() + ", " + currentDatetime.getFullYear();
     } 
 
-    function handleEditNote(cell, row) {
-        var txtNote = $(cell).find('.txt-note');
-        var noteForDisplay = $(cell).find(".note-content");
-        var iconNote = $(cell).find(".icon");        
+    function handleChangeNote(cell, row) {
+        var domElementsNote = {};
+        domElementsNote.txtNoteInput = $(cell).find('.txt-note-input');
+        domElementsNote.noteForDisplay = $(cell).find(".note-content-display");
+        domElementsNote.iconNote = $(cell).find(".icon");
 
-        if ($(txtNote).hasClass('hide')) {
-            $(txtNote).removeClass('hide').focus().select();
-
-            // adjust height input Note
-            $(txtNote).height($(noteForDisplay).height());
-
-            $(noteForDisplay).addClass('hide').hide();
-            $(iconNote).removeClass('icon-edit').addClass('icon-save').attr('title', 'save');
-
-            $(txtNote).mouseout(function () {
-                grid_associated_account.DataTable().columns.adjust();
-            });
-
-            $(txtNote).keyup(function () {
-                $(txtNote).addClass('change');
-            });
-
-            grid_associated_account.DataTable().columns.adjust();
-
-        } else if ($(iconNote).hasClass('icon-save')) {
+        if ($(domElementsNote.txtNoteInput).hasClass('hide')) {
+            handleEditNote(domElementsNote);
+        } else if ($(domElementsNote.iconNote).hasClass('icon-save')) {
             handleSaveNote(cell, row);
         }
     }
 
+    function handleEditNote(domElementsNote) {
+        $(domElementsNote.txtNoteInput).removeClass('hide').focus().select();
+        $(domElementsNote.noteForDisplay).addClass('hide').hide();
+        $(domElementsNote.iconNote).removeClass('icon-edit').addClass('icon-save').attr('title', 'save');
+
+        console.log($(domElementsNote.txtNoteInput).height());
+        console.log($(domElementsNote.noteForDisplay).height());
+
+        $(domElementsNote.txtNoteInput).height($(domElementsNote.noteForDisplay).height() - 6);
+        console.log($(domElementsNote.txtNoteInput).height());
+
+        grid_associated_account.DataTable().columns.adjust();
+
+        handleNoteInputEvents(domElementsNote);
+    }
+
+    function handleNoteInputEvents(domElementsNote) {
+        $(domElementsNote.txtNoteInput).mouseout(function () {
+            grid_associated_account.DataTable().columns.adjust();
+        });
+
+        $(domElementsNote.txtNoteInput).keyup(function () {
+            $(domElementsNote.txtNoteInput).addClass('change');
+        });
+    }
+
+    function handleSaveNote(cell, row) {
+        var domElementsNote = {};
+        domElementsNote.txtNoteInput = $(cell).find('.txt-note-input');
+        domElementsNote.contentNoteDisplay = $(cell).find(".note-content-display");
+
+        var noteToUpdate = $(domElementsNote.txtNoteInput).val().trim();
+        noteToUpdate = handleSpecialCharacter(noteToUpdate);
+
+        if ($(domElementsNote.txtNoteInput).hasClass('change')) {
+            saveChangedNote(domElementsNote);
+        }
+
+        $(domElementsNote.txtNoteInput).removeClass('change').addClass('hide');
+        $(domElementsNote.contentNoteDisplay).removeClass('hide').show();
+        $(cell).find(".icon").removeClass('icon-save').addClass('icon-edit').attr('title', 'edit');
+
+        grid_associated_account.DataTable().columns.adjust();
+    }
+
+    function saveChangedNote(domElementsNote) {
+        var url = common.modifyRelativeUrl("/Account/UpdateAssociatedAccountOfNote");
+        var paramsUpdate = {};
+        paramsUpdate.Note = noteToUpdate;
+
+        common.showLoading();
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data: paramsUpdate,
+            success: function (response) {
+                var noteForDisplay = wrapTextForDipslayNote(noteToUpdate, const_note_length_of_collapse);
+                $(domElementsNote.contentNoteDisplay).html(noteForDisplay);
+                $(".btn-note-ellipsis", cell).click(() => handleExpandNote(cell));
+                common.closeLoading();
+                common.showSuccess();
+            },
+            error: function (xhr, status, error) {
+                console.log('data of ' + xhr.responseText);
+                common.closeLoading();
+            }
+        });
+    }    
+
     function handleExpandNote(cell) {
-        var noteForDisplay = $(cell).find('.txt-note').val();
+        var noteForDisplay = $(cell).find('.txt-note-input').val();
 
         var noteForDisplay = noteForDisplay + "  " + '<span class="btn-note-collapse icon-chevron-up" title="click to collapse up"></span>';
 
-        $(cell).find(".note-content").html(noteForDisplay);
+        $(cell).find(".note-content-display").html(noteForDisplay);
 
         $('.btn-note-collapse', cell).click(() => handleCollapseNote(cell));
     }
 
     function handleCollapseNote(cell) {
-        var txtNote = $(cell).find('.txt-note').val();    
-        var noteForDisplay = wrapTextForDipslayNote(txtNote, const_note_length_of_collapse);
-        $(cell).find(".note-content").html(noteForDisplay);
+        var txtNoteInput = $(cell).find('.txt-note-input').val();    
+        var noteForDisplay = wrapTextForDipslayNote(txtNoteInput, const_note_length_of_collapse);
+        $(cell).find(".note-content-display").html(noteForDisplay);
        
         grid_associated_account.DataTable().columns.adjust();
         $(".btn-note-ellipsis", cell).click(() => handleExpandNote(cell));
-    }
-
-    function handleSaveNote(cell, row) {
-        var txtNote = $(cell).find('.txt-note');
-        var content = $(cell).find(".note-content");
-        var noteToUpdate = $(txtNote).val().trim();
-        noteToUpdate = handleSpecialCharacter(noteToUpdate);
-
-        if ($(txtNote).hasClass('change')) {            
-            var url = common.modifyRelativeUrl("/Account/UpdateAssociatedAccountOfNote");
-            var paramsUpdate = {};
-            paramsUpdate.Note = noteToUpdate;
-
-            common.showLoading();
-            $.ajax({
-                type: 'POST',
-                url: url,
-                data: paramsUpdate,
-                success: function (response) {
-                    var noteForDisplay = wrapTextForDipslayNote(noteToUpdate, const_note_length_of_collapse);
-                    $(content).html(noteForDisplay);
-                    $(".btn-note-ellipsis", cell).click(() => handleExpandNote(cell));
-                    common.closeLoading();
-                    common.showSuccess();
-                },
-                error: function (xhr, status, error) {
-                    console.log('data of ' + xhr.responseText);
-                    common.closeLoading();
-                }
-            });
-        }
-
-        $(txtNote).removeClass('change').addClass('hide');
-        $(content).removeClass('hide').show();       
-        $(cell).find("#icon").removeClass('icon-note-save').addClass('icon-note-text').attr('title', 'edit');
-        grid_associated_account.DataTable().columns.adjust();
-    }
+    }    
 
     function handleSpecialCharacter(str) {
         if (str != null) {

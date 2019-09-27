@@ -55,31 +55,38 @@
         private static IEnumerable<AssociatedAccounts> GetAssociatedAccounts_Test()
         {
             var accounts = new List<AssociatedAccounts>();
-
-            accounts.Add(CreateNewAssociatedAccounts());
+            for (int i = 0; i < 1000; i++)
+            {
+                accounts.Add(CreateNewAssociatedAccounts(i));
+            }            
 
             return accounts;
         }
 
-        private static AssociatedAccounts CreateNewAssociatedAccounts()
+        private static AssociatedAccounts CreateNewAssociatedAccounts(int index)
         {
             var note = "Now that we have imported the necessary package, we can start by defining a client which takes in various " +
                 "options such as the address of the redis instance we want to connect to, " +
-                "the password and the database we wish to use in that instance.";
+                "The password and the database we wish to use in that instance.";
+
+            if (index % 2 == 0)
+            {
+                note = "The password and the database";
+            }            
 
             return new AssociatedAccounts
             {
                 AssociatedAccountUsername = "abc",
                 AssociatedAccountSite = "12bet",
                 AssociatedAccountLevel = "Master",
-                AssociatedAccountEvidences = "1.7 Shipping Fraud",
+                AssociatedAccountEvidences = "1.8 Counterfeit Money Order/Cashiers Check",
                 MainAccountUsername = "def",
                 MainAccountSite = "12bet",
                 MainAccountLevel = "Master",
                 MainAccountEvidences = "100 Seize Bet",
                 FirstAssociated = DateTime.Now.ToString("MM/dd/yyyy"),
                 Verified = false,
-                VerifiedBy = "",
+                VerifiedBy = "starix58" + "Sep 19, 2019",
                 Note = note
             };
         }
