@@ -55,21 +55,78 @@
     <div class="account-info">
         <div class="info-item">
             <div class="info-title">Login Information</div>
-            <div class="info-text"><label>First Login:</label><span> @Model.GeneralInfo.FirstLoginToString</span></div>
+            <div class="info-block">
+                <div class="info-label">
+                    <label>First Login:</label>
+                    <label>Last Login:</label>
+                    <label>Login Frequency:</label>
+                </div>
+                <div class="info-text">
+                    <div> @Model.GeneralInfo.FirstLoginToString</div>
+                    <div> @Model.GeneralInfo.LastLoginToString</div>
+                    <div> @Model.GeneralInfo.FrequencyLogin/@Model.GeneralInfo.AccountAge (times/days)</div>
+                </div>
+            </div>
+            @*<div class="info-text"><label>First Login:</label><span> @Model.GeneralInfo.FirstLoginToString</span></div>
             <div class="info-text"><label>Last Login:</label><span> @Model.GeneralInfo.LastLoginToString</span></div>
-            <div class="info-text"><label>Login Frequency:</label><span> @Model.GeneralInfo.FrequencyLogin/@Model.GeneralInfo.AccountAge (times/days)</span></div>
+            <div class="info-text"><label>Login Frequency:</label><span> @Model.GeneralInfo.FrequencyLogin/@Model.GeneralInfo.AccountAge (times/days)</span></div>*@
         </div>
         <div class="info-item">
             <div class="info-title">Association</div>
-            <div class="info-text"><label>Associated Accounts:</label><span> @Model.GeneralInfo.AssociatedAccounts</span></div>
+            <div class="info-block">
+                <div class="info-label">
+                    <label>Associated Accounts:</label>
+                    <label>Associated Devices:</label>
+                    <label>Shared Devices:</label>
+                    <label>No-Shared Devices:</label>
+                    <label>Account Exceptions:</label>
+                </div>
+                <div class="info-text">
+                    <div> @Model.GeneralInfo.AssociatedAccounts</div>
+                    <div> @Model.GeneralInfo.AssociatedDevices</div>
+                    <div> @Model.GeneralInfo.SharedDevices</div>
+                    <div> @Model.GeneralInfo.NoSharedDevices</div>
+                    <div> @Model.GeneralInfo.AccountExceptions</div>
+                </div>
+            </div>
+            @*<div class="info-text"><label>Associated Accounts:</label><span> @Model.GeneralInfo.AssociatedAccounts</span></div>
             <div class="info-text"><label>Associated Devices:</label><span> @Model.GeneralInfo.AssociatedDevices</span></div>
             <div class="info-text"><label>Shared Devices:</label><span> @Model.GeneralInfo.SharedDevices</span></div>
             <div class="info-text"><label>No-Shared Devices:</label><span> @Model.GeneralInfo.NoSharedDevices</span></div>
-            <div class="info-text"><label>Account Exceptions:</label><span> @Model.GeneralInfo.AccountExceptions</span></div>
+            <div class="info-text"><label>Account Exceptions:</label><span> @Model.GeneralInfo.AccountExceptions</span></div>*@
         </div>
         <div class="info-item">
             <div class="info-title">Fraud Infomation</div>
-            <div class="info-text"><label>Evidence:</label><span class="link"> @Model.GeneralInfo.EvidenceTypeCodes</span></div>
+            <div class="info-block">
+                <div class="info-label">
+                    <label>Evidence:</label>
+                    <label>Problem Account:</label>
+                    <label>Abnormal Level:</label>
+                    <label>Dangerous Level:</label>
+                    <label>Auto Suspend:</label>
+                    <label>Commited Fraud Cases:</label>
+                </div>
+                <div class="info-text">
+                    <div>
+                        <span class="link"> @Model.GeneralInfo.EvidenceTypeCodes</span>
+                    </div>
+                    
+                    <div> @Enum.GetName(typeof(ProblemAccountStatus), Model.GeneralInfo.ProblemAccount)</div>
+                    <div><span class="badge-level" id="abnormal"> @Model.GeneralInfo.Abnormal</span></div>                    
+                    <div>
+                        <label class="line-item2 width-50">Original:</label>
+                        <span class="badge-level" id="dangerous-level-original"> @Model.GeneralInfo.DangerousOriginal</span>
+                        <label class="line-item width-50">NonLive:</label>
+                        <span class="badge-level" id="dangerous-level-non-live"> @Model.GeneralInfo.DangerousNonLive</span>
+                        <label class="line-item width-90">Other Sports:</label>
+                        <span class="badge-level" id="dangerous-level-other-sports"> @Model.GeneralInfo.DangerousOtherSports</span>
+                    </div>
+                    <div> @Model.GeneralInfo.AutoSuspend</div>
+                    <div> @Model.GeneralInfo.CommitedFraudCase</div>
+                </div>
+            </div>
+
+            @*<div class="info-text"><label>Evidence:</label><span class="link"> @Model.GeneralInfo.EvidenceTypeCodes</span></div>
             <div class="info-text"><label>Problem Account:</label><span> @Enum.GetName(typeof(ProblemAccountStatus), Model.GeneralInfo.ProblemAccount)</span></div>
             <div class="info-text">
                 <label>Abnormal Level:</label>
@@ -80,7 +137,7 @@
                 <label class="line-item2 width-50">Original:</label>
                 <span class="badge-level" id="dangerous-level-original"> @Model.GeneralInfo.DangerousOriginal</span>
                 <label class="line-item width-50">NonLive:</label>
-                <span class="badge-level"  id="dangerous-level-non-live"> @Model.GeneralInfo.DangerousNonLive</span>
+                <span class="badge-level" id="dangerous-level-non-live"> @Model.GeneralInfo.DangerousNonLive</span>
                 <label class="line-item width-90">Other Sports:</label>
                 <span class="badge-level" id="dangerous-level-other-sports"> @Model.GeneralInfo.DangerousOtherSports</span>
             </div>
@@ -88,7 +145,7 @@
                 <label>Auto Suspend: </label>
                 <span> @Model.GeneralInfo.AutoSuspend</span>
             </div>
-            <div class="info-text"><label>Commited Fraud Cases:</label><span> @Model.GeneralInfo.CommitedFraudCase</span></div>
+            <div class="info-text"><label>Commited Fraud Cases:</label><span> @Model.GeneralInfo.CommitedFraudCase</span></div>*@
         </div>
     </div>
 </div>

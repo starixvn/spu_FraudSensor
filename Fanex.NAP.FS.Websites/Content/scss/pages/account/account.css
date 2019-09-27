@@ -108,42 +108,76 @@
     margin: 12px;
     background: #fff;
     border: 1px solid #C7C7C7;
-    border-radius: 3px; }
+    border-radius: 3px;
+    /*.info-text {
+            display: grid;
+            grid-template-columns: 150px 1fr;
+
+            label {
+                padding: 5px;
+                //width: 150px;
+                font-weight: bold;
+                color: #404040;
+                background: #B3D2EF;
+                border-bottom: 1px solid #fff;
+            }
+
+            span {
+                border-bottom: 1px solid #DDDDDD;
+            }
+
+            .line-item {
+                margin-left: 50px;
+                margin-right: 10px;
+            }
+
+            .line-item2 {
+                margin-right: 10px;
+            }
+
+            .width-50 {
+                width: 50px;
+            }
+
+            .width-90 {
+                width: 90px;
+            }
+
+            .width-140 {
+                width: 140px;
+            }
+        }*/ }
     .content-card .account-info .info-title {
       padding: 8px 12px;
-      background: #B3D2EF;
-      color: #475A7C;
+      background: #1D2E4F;
+      color: #fff;
       font-size: 14px;
       font-weight: bold; }
     .content-card .account-info .info-item {
-      padding-bottom: 8px;
       border-right: 1px solid #C7C7C7; }
     .content-card .account-info .info-item:last-child {
       grid-column: span 2;
       border-right: 0; }
       .content-card .account-info .info-item:last-child .info-title {
         border-right: 0; }
-    .content-card .account-info .info-text {
-      padding-left: 12px;
-      padding-top: 5px; }
-      .content-card .account-info .info-text > * {
-        display: inline-block;
-        vertical-align: middle; }
-      .content-card .account-info .info-text label {
-        width: 150px;
-        font-weight: bold;
-        color: #404040; }
-      .content-card .account-info .info-text .line-item {
-        margin-left: 50px;
-        margin-right: 10px; }
-      .content-card .account-info .info-text .line-item2 {
-        margin-right: 10px; }
-      .content-card .account-info .info-text .width-50 {
-        width: 50px; }
-      .content-card .account-info .info-text .width-90 {
-        width: 90px; }
-      .content-card .account-info .info-text .width-140 {
-        width: 140px; }
+    .content-card .account-info .info-block {
+      display: grid;
+      grid-template-columns: 160px 1fr;
+      height: calc(100% - 32px); }
+      .content-card .account-info .info-block .info-label {
+        background: #B3D2EF; }
+        .content-card .account-info .info-block .info-label label {
+          display: block;
+          padding: 5px;
+          border-bottom: 1px solid #fff;
+          font-weight: bold;
+          color: #404040;
+          background: #B3D2EF;
+          min-height: 30px; }
+      .content-card .account-info .info-block .info-text div {
+        padding: 5px;
+        border-bottom: 1px solid #ddd;
+        min-height: 30px; }
     @media screen and (max-width: 1199px) {
       .content-card .account-info .info-item:nth-child(2) {
         border-right: 0; }
