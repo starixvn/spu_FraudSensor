@@ -3,7 +3,7 @@
 }
 
 .table .col-account-note {
-    padding: 0 6px !important;
+    padding: 0px 6px !important;
 }
 
 .table .container-note {
@@ -22,7 +22,10 @@
     word-wrap: normal !important;
     word-break: break-word;
     white-space: pre-line;
-    border-right: 1px solid #c1c1c1;   
+    border-right: 1px solid #c1c1c1;
+    padding-top: 6px;
+    padding-right: 6px;
+    min-height: 37px;
 }
 
 .btn-note-change {

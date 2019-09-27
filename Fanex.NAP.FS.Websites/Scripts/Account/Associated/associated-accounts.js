@@ -99,6 +99,14 @@
                     }
                 }
             ],
+            rowCallback: function (cell, row, index) {
+                var domElementNoteDisplay = $(cell).find(".note-content-display")
+                if ($(window).width() < 1108) {
+                    domElementNoteDisplay.css('min-height', '77px');
+                } else if ($(window).width() < 1835) {
+                    domElementNoteDisplay.css('min-height', '57px');
+                }
+            },
             dom: "t<'pagination'<'page-size'lp>i>",
             language: {
                 lengthMenu: "Page size _MENU_",
@@ -126,7 +134,7 @@
         var noteForDisplay = wrapTextForDipslayNote(row.Note, const_note_length_of_collapse);
 
         return '<div class="container-note">'
-            + '<textarea class="txt-note-input hide" rows="5">' + (row.Note != '-' ? row.Note : '') + '</textarea>'
+            + '<textarea class="txt-note-input hide" rows="10">' + (row.Note != '-' ? row.Note : '') + '</textarea>'
             + '<div class="note-content-display" title=' + row.Note + '>' + noteForDisplay + '</div>'                
             + '<div class="btn-note-change icon-edit icon"></div>'
             + '</div>';
@@ -257,17 +265,15 @@
     function handleEditNote(domElementsNote) {
         $(domElementsNote.txtNoteInput).removeClass('hide').focus().select();
         $(domElementsNote.noteForDisplay).addClass('hide').hide();
-        $(domElementsNote.iconNote).removeClass('icon-edit').addClass('icon-save').attr('title', 'save');
-
-        console.log($(domElementsNote.txtNoteInput).height());
-        console.log($(domElementsNote.noteForDisplay).height());
-
-        $(domElementsNote.txtNoteInput).height($(domElementsNote.noteForDisplay).height() - 6);
-        console.log($(domElementsNote.txtNoteInput).height());
-
+        $(domElementsNote.iconNote).removeClass('icon-edit').addClass('icon-save').attr('title', 'save');        
         grid_associated_account.DataTable().columns.adjust();
 
+        adjustHeightNoteInput(domElementsNote);       
         handleNoteInputEvents(domElementsNote);
+    }
+
+    function adjustHeightNoteInput(domElementsNote) {
+        $(domElementsNote.txtNoteInput).height($(domElementsNote.noteForDisplay).height());
     }
 
     function handleNoteInputEvents(domElementsNote) {
@@ -289,7 +295,7 @@
         noteToUpdate = handleSpecialCharacter(noteToUpdate);
 
         if ($(domElementsNote.txtNoteInput).hasClass('change')) {
-            saveChangedNote(domElementsNote);
+            saveChangedNote(domElementsNote, noteToUpdate, cell);
         }
 
         $(domElementsNote.txtNoteInput).removeClass('change').addClass('hide');
@@ -299,7 +305,7 @@
         grid_associated_account.DataTable().columns.adjust();
     }
 
-    function saveChangedNote(domElementsNote) {
+    function saveChangedNote(domElementsNote, noteToUpdate, cell) {
         var url = common.modifyRelativeUrl("/Account/UpdateAssociatedAccountOfNote");
         var paramsUpdate = {};
         paramsUpdate.Note = noteToUpdate;
