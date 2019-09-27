@@ -18,22 +18,48 @@
             label: 'Filter'
         });
 
+        var dateFrom = new Date();
+        dateFrom.setDate(dateFrom.getDate() - 7);
+     
         $(filter_date_from).datepicker({
             dateFormat: "M dd, yy",
             changeMonth: true,
             changeYear: true,
             firstDay: 1,
-            minDate: "-1y +1d"
-        });
+            maxDate: "y"
+        }).datepicker("setDate", dateFrom)
+            .change(restrictFilterDateTo);
 
         $(filter_date_to).datepicker({
             dateFormat: "M dd, yy",
             changeMonth: true,
             changeYear: true,
-            firstDay: 1
-        });
+            firstDay: 1,
+            maxDate: "y"
+        }).datepicker("setDate", new Date())
+            .change(restrictFilterDateFrom);
 
         renderAssociatedAccountGridOptions();
+    }
+
+    function restrictFilterDateFrom() {
+        var dateLimit = filter_date_to.datepicker("getDate");
+        dateLimit.setDate(dateLimit.getDate() - 30);
+        filter_date_from.datepicker("option", "minDate", dateLimit);        
+    }
+
+    function restrictFilterDateTo() {
+        var dateNow = new Date();
+        var dateMinLimit = filter_date_from.datepicker("getDate");
+        var dateMaxLimit = filter_date_from.datepicker("getDate");
+        dateMaxLimit.setDate(dateMaxLimit.getDate() + 30);
+        if (dateMaxLimit > dateNow) {
+            dateMaxLimit = dateNow;
+        }
+
+        filter_date_to
+            .datepicker("option", "minDate", dateMinLimit)
+            .datepicker("option", "maxDate", dateMaxLimit);
     }
 
     function renderAssociatedAccountGridOptions() {
