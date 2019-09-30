@@ -88,34 +88,34 @@
 
         switch (dangerousValue) {
             case '1':
-                $(dangerousName).css({ 'background-color': '#FFFFFF', 'color': '#000000', 'border': '1px solid #2f79ed' });
+                $(dangerousName).css({ 'background-color': '#FFFFFF', 'color': '#000000' });
                 break;
             case '2':
-                $(dangerousName).css({ 'background-color': '#FFFFFF', 'color': '#F3373B', 'border': '1px solid #2f79ed' });
+                $(dangerousName).css({ 'background-color': '#FFFFFF', 'color': '#F3373B' });
                 break;
             case '3':
-                $(dangerousName).css({ 'background-color': '#FFFFFF', 'color': '#E5C05A', 'border': '1px solid #2f79ed' });
+                $(dangerousName).css({ 'background-color': '#FFFFFF', 'color': '#E5C05A' });
                 break;
             case '4':
-                $(dangerousName).css({ 'background-color': '#FFFFFF', 'color': '#2B44E6', 'border': '1px solid #2f79ed' });
+                $(dangerousName).css({ 'background-color': '#FFFFFF', 'color': '#2B44E6' });
                 break;
             case '5':
-                $(dangerousName).css({ 'background-color': '#FFFFFF', 'color': '#DA8A1B', 'border': '1px solid #2f79ed' });
+                $(dangerousName).css({ 'background-color': '#FFFFFF', 'color': '#DA8A1B' });
                 break;
             case '6':
-                $(dangerousName).css({ 'background-color': '#FFFFFF', 'color': '#BE1BDA', 'border': '1px solid #2f79ed' });
+                $(dangerousName).css({ 'background-color': '#FFFFFF', 'color': '#BE1BDA' });
                 break;
             case '7':
-                $(dangerousName).css({ 'background-color': '#FFFFFF', 'color': '#971AAE', 'border': '1px solid #2f79ed' });
+                $(dangerousName).css({ 'background-color': '#FFFFFF', 'color': '#971AAE' });
                 break;
             case '8':
-                $(dangerousName).css({ 'background-color': '#FFFFFF', 'color': '#BE6E12', 'border': '1px solid #2f79ed' });
+                $(dangerousName).css({ 'background-color': '#FFFFFF', 'color': '#BE6E12' });
                 break;
             case '9':
-                $(dangerousName).css({ 'background-color': '#FFFFFF', 'color': '#918D88', 'border': '1px solid #2f79ed' });
+                $(dangerousName).css({ 'background-color': '#FFFFFF', 'color': '#918D88' });
                 break;
             case '10':
-                $(dangerousName).css({ 'background-color': '#FFFFFF', 'color': '#397C12', 'border': '1px solid #2f79ed' });
+                $(dangerousName).css({ 'background-color': '#FFFFFF', 'color': '#397C12' });
                 break;
             case '11':
                 $(dangerousName).css({ 'background-color': '#F3373B' });
@@ -154,8 +154,7 @@
                 $(dangerousName).text('None');
                 $(dangerousName).css(
                     {
-                        'background-color': '#FFFFFF',
-                        'border': '1px solid #2f79ed'
+                        'background-color': '#FFFFFF'                        
                     }
                 );
                 break;

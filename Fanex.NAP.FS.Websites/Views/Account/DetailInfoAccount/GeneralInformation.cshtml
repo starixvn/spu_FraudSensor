@@ -102,9 +102,9 @@
                     <label>Evidence:</label>
                     <label>Problem Account:</label>
                     <label>Abnormal Level:</label>
-                    <label>Dangerous Level:</label>
+                    <label style="height: 60px;">Dangerous Level:</label>
                     <label>Auto Suspend:</label>
-                    <label>Commited Fraud Cases:</label>
+                    <label style="border-bottom: 0;">Commited Fraud Cases:</label>
                 </div>
                 <div class="info-text">
                     <div>
@@ -114,15 +114,27 @@
                     <div> @Enum.GetName(typeof(ProblemAccountStatus), Model.GeneralInfo.ProblemAccount)</div>
                     <div><span class="badge-level" id="abnormal"> @Model.GeneralInfo.Abnormal</span></div>                    
                     <div>
-                        <label class="line-item2 width-50">Original:</label>
+                        @*<label class="line-item2 width-50">Original:</label>
                         <span class="badge-level" id="dangerous-level-original"> @Model.GeneralInfo.DangerousOriginal</span>
                         <label class="line-item width-50">NonLive:</label>
                         <span class="badge-level" id="dangerous-level-non-live"> @Model.GeneralInfo.DangerousNonLive</span>
                         <label class="line-item width-90">Other Sports:</label>
-                        <span class="badge-level" id="dangerous-level-other-sports"> @Model.GeneralInfo.DangerousOtherSports</span>
+                        <span class="badge-level" id="dangerous-level-other-sports"> @Model.GeneralInfo.DangerousOtherSports</span>*@
+                        <table class="dangerous-level">
+                            <tr>
+                                <th>ORG</th>
+                                <th>ABI</th>
+                                <th>NS</th>
+                            </tr>
+                            <tr>
+                                <td id="dangerous-level-original">@Model.GeneralInfo.DangerousOriginal</td>
+                                <td id="dangerous-level-non-live">@Model.GeneralInfo.DangerousNonLive</td>
+                                <td id="dangerous-level-other-sports">@Model.GeneralInfo.DangerousOtherSports</td>
+                            </tr>
+                        </table>
                     </div>
                     <div> @Model.GeneralInfo.AutoSuspend</div>
-                    <div> @Model.GeneralInfo.CommitedFraudCase</div>
+                    <div style="border-bottom: 0;"> @Model.GeneralInfo.CommitedFraudCase</div>
                 </div>
             </div>
 
