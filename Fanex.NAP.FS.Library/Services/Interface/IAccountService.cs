@@ -1,17 +1,17 @@
 ﻿namespace Fanex.NAP.FS.Library.Services.Interface
 {
     using Fanex.NAP.FS.Library.Models;
-    using Fanex.NAP.FS.Library.ViewModels.Account.Associated;
+    using Fanex.NAP.FS.Library.ViewModels.Account.AssociatedToMonitor;
     using System.Collections.Generic;
 
     public interface IAccountService
     {
         IEnumerable<Evidence> GetAllEvidences();
 
-        IEnumerable<AssociatedAccounts> GetAssociatedAccounts(AssociatedAccountsFilter filter);
+        IEnumerable<AssociatedAccountsToMonitor> GetAssociatedAccountsToMonitor(AssociatedAccountsToMonitorFilter filter);
 
-        DBResult UpdateAssociatedAccountOfVerify(AssociatedAccountOfVerify accountOfVerify);
+        DBResult UpdateAssociatedAccountToMonitorOfVerify(AssociatedAccountToMonitorOfVerify accountOfVerify);
 
-        DBResult UpdateAssociatedAccountOfNote(AssociatedAccountOfNote accountOfNote);
+        DBResult UpdateAssociatedAccountToMonitorOfNote(AssociatedAccountToMonitorOfNote accountOfNote);
     }
 }

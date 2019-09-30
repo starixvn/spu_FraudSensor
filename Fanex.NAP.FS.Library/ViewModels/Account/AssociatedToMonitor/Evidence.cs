@@ -1,4 +1,4 @@
-﻿namespace Fanex.NAP.FS.Library.ViewModels.Account.Associated
+﻿namespace Fanex.NAP.FS.Library.ViewModels.Account.AssociatedToMonitor
 {
     public class Evidence
     {

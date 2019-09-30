@@ -1,8 +1,8 @@
-﻿using System;
-
-namespace Fanex.NAP.FS.Library.ViewModels.Account.Associated
+﻿namespace Fanex.NAP.FS.Library.ViewModels.Account.AssociatedToMonitor
 {
-    public class AssociatedAccountsFilter
+    using System;
+
+    public class AssociatedAccountsToMonitorFilter
     {
         public DateTime AssociatedDateFrom { get; set; }
 

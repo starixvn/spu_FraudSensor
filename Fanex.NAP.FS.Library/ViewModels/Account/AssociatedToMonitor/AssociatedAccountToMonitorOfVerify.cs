@@ -1,6 +1,6 @@
-﻿namespace Fanex.NAP.FS.Library.ViewModels.Account.Associated
+﻿namespace Fanex.NAP.FS.Library.ViewModels.Account.AssociatedToMonitor
 {
-    public class AssociatedAccountOfVerify
+    public class AssociatedAccountToMonitorOfVerify
     {
         public string AssociatedAccountUsername { get; set; }
 

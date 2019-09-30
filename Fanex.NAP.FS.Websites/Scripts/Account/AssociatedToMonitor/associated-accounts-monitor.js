@@ -1,4 +1,4 @@
-﻿function associated_account() {
+﻿function associated_account_monitor() {
     var filter_evidences = $('#filter-evidences');
     var filter_verify_status = $('#filter-verify-status');
     var filter_date_from = $('#filter-associated-date-from');
@@ -44,22 +44,27 @@
 
     function restrictFilterDateFrom() {
         var dateLimit = filter_date_to.datepicker("getDate");
-        dateLimit.setDate(dateLimit.getDate() - 30);
-        filter_date_from.datepicker("option", "minDate", dateLimit);        
+        if (dateLimit != null) {
+            dateLimit.setDate(dateLimit.getDate() - 30);
+            filter_date_from.datepicker("option", "minDate", dateLimit);
+        }
     }
 
-    function restrictFilterDateTo() {
+    function restrictFilterDateTo() {   
         var dateNow = new Date();
         var dateMinLimit = filter_date_from.datepicker("getDate");
         var dateMaxLimit = filter_date_from.datepicker("getDate");
-        dateMaxLimit.setDate(dateMaxLimit.getDate() + 30);
-        if (dateMaxLimit > dateNow) {
-            dateMaxLimit = dateNow;
-        }
 
-        filter_date_to
-            .datepicker("option", "minDate", dateMinLimit)
-            .datepicker("option", "maxDate", dateMaxLimit);
+        if (dateMaxLimit != null) {
+            dateMaxLimit.setDate(dateMaxLimit.getDate() + 30);
+            if (dateMaxLimit > dateNow) {
+                dateMaxLimit = dateNow;
+            }
+
+            filter_date_to
+                .datepicker("option", "minDate", dateMinLimit)
+                .datepicker("option", "maxDate", dateMaxLimit);
+        }        
     }
 
     function renderAssociatedAccountGridOptions() {
@@ -164,32 +169,35 @@
     }
 
     function generateReport() {
-        var url = common.modifyRelativeUrl("/Account/GetAssociatedAccounts");
+        var url = common.modifyRelativeUrl("/Account/GetAssociatedAccountsToMonitor");
         var paramFilter = getParamsFilter();
-        common.showLoading();
 
-        $.ajax({
-            type: 'POST',
-            url: url,
-            data: paramFilter,
-            global: false,
-            crossDomain: true,
-            success: function (response) {
-                renderAssociatedAccountGrid(response);
-            },
-            error: function (xhr, status, error) {
-                console.log('data of ' + xhr.responseText);
-                common.showLoading();
-            }
-        });
+        if (validateFilter(paramFilter)) {
+            common.showLoading();
+
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: paramFilter,
+                global: false,
+                crossDomain: true,
+                success: function (response) {
+                    renderAssociatedAccountGrid(response);
+                },
+                error: function (xhr, status, error) {
+                    console.log('data of ' + xhr.responseText);
+                    common.showLoading();
+                }
+            });
+        }
     }
 
     function getParamsFilter() {
         var filter = {};
 
-        filter.AssociatedDateFrom = $('').val();
-        filter.AssociatedDateTo = $('').val();
-        filter.VerifyStatus = $('').val();
+        filter.AssociatedDateFrom = filter_date_from.val();
+        filter.AssociatedDateTo = filter_date_to.val();
+        filter.VerifyStatus = filter_verify_status.val();
         filter.EvidenceCodes = getSeletedEvidences();
 
         return filter;
@@ -204,6 +212,23 @@
         return evidences.join(",");
     }
 
+    function validateFilter(filter) {
+        var isOK = true;
+        $(filter_date_from).removeClass("fail-by-validate");
+        $(filter_date_to).removeClass("fail-by-validate");
+
+        if (filter.AssociatedDateFrom == "") {
+            $(filter_date_from).addClass("fail-by-validate");
+            isOK = false;
+        }
+
+        if (filter.AssociatedDateTo == "") {
+            $(filter_date_to).addClass("fail-by-validate");
+            isOK = false;
+        }
+        return isOK;
+    }
+
     function renderAssociatedAccountGrid(json) {
         grid_associated_account.DataTable().clear().rows.add(json).draw();
         grid_associated_account.DataTable().columns.adjust();
@@ -213,7 +238,7 @@
     function handleUpdateVerification(cell, row) {
         var $target = $(cell).find('.chk-verification');
         common.showConfirmation('Do you want to change verify ?', function () {
-            var url = common.modifyRelativeUrl('/Account/UpdateAssociatedAccountOfVerify');
+            var url = common.modifyRelativeUrl('/Account/UpdateAssociatedAccountToMonitorOfVerify');
             var paramsUpdate = {};
             paramsUpdate.verified = $target.is(":checked");
 
@@ -306,7 +331,7 @@
     }
 
     function saveChangedNote(domElementsNote, noteToUpdate, cell) {
-        var url = common.modifyRelativeUrl("/Account/UpdateAssociatedAccountOfNote");
+        var url = common.modifyRelativeUrl("/Account/UpdateAssociatedAccountToMonitorOfNote");
         var paramsUpdate = {};
         paramsUpdate.Note = noteToUpdate;
 
@@ -360,4 +385,4 @@
     btn_generate.click(generateReport);
 }
 
-$(associated_account);
+$(associated_account_monitor);

@@ -1,32 +1,82 @@
 ﻿namespace Fanex.NAP.FS.Library.Services.Implement
 {
+    using Fanex.NAP.FS.Library.Core.Consts;
+    using Fanex.NAP.FS.Library.Core.Helpers;
+    using Fanex.NAP.FS.Library.Core.Helpers.Api;
     using Fanex.NAP.FS.Library.Models;
     using Fanex.NAP.FS.Library.Services.Interface;
-    using Fanex.NAP.FS.Library.ViewModels.Account.Associated;
-    using System;
+    using Fanex.NAP.FS.Library.ViewModels.Account.AssociatedToMonitor;
     using System.Collections.Generic;
+    using System.Threading.Tasks;
+    using System;
 
     public class AccountService : IAccountService
     {
+        #region Associated Account To Monitor
         public IEnumerable<Evidence> GetAllEvidences()
         {
             return GetAllEvidences_Test();
         }
 
-        public IEnumerable<AssociatedAccounts> GetAssociatedAccounts(AssociatedAccountsFilter filter)
+        public IEnumerable<AssociatedAccountsToMonitor> GetAssociatedAccountsToMonitor(AssociatedAccountsToMonitorFilter filter)
         {
-            return GetAssociatedAccounts_Test();
+            return GetAssociatedAccountsFromAPI(filter);
         }
 
-        public DBResult UpdateAssociatedAccountOfVerify(AssociatedAccountOfVerify accountOfVerify)
+        public DBResult UpdateAssociatedAccountToMonitorOfVerify(AssociatedAccountToMonitorOfVerify accountOfVerify)
         {
-            return new DBResult { ErrorCode = 0, ErrorMsg = "" };
+            return UpdateAssociatedAccountToMonitorOfVerifyFromAPI(accountOfVerify);
         }
 
-        public DBResult UpdateAssociatedAccountOfNote(AssociatedAccountOfNote accountOfNote)
+        public DBResult UpdateAssociatedAccountToMonitorOfNote(AssociatedAccountToMonitorOfNote accountOfNote)
         {
-            return new DBResult { ErrorCode = 0, ErrorMsg = "" };
+            return UpdateAssociatedAccountToMonitorOfNoteFromAPI(accountOfNote);
         }
+
+        private static IEnumerable<AssociatedAccountsToMonitor> GetAssociatedAccountsFromAPI(AssociatedAccountsToMonitorFilter filter)
+        {
+            var url = AppSettings.Get(Consts.FPS_WEBAPI_GET_ASSOCIATED_ACCOUNT_TO_MONITOR);
+
+            var accounts = ApiHelper.Post<IEnumerable<AssociatedAccountsToMonitor>>(url, filter);
+
+            Task.WaitAll(accounts);
+
+            return accounts.Result;
+        }
+
+        private DBResult UpdateAssociatedAccountToMonitorOfVerifyFromAPI(AssociatedAccountToMonitorOfVerify accountOfVerify)
+        {
+            var url = AppSettings.Get(Consts.FPS_WEBAPI_UPDATE_ASSOCIATED_ACCOUNT_TO_MONITOR_OF_VERIFY);
+
+            try
+            {
+                ApiHelper.Post(url, accountOfVerify).Wait();
+
+                return new DBResult { ErrorCode = 0, ErrorMsg = "" };
+            }
+            catch (Exception ex)
+            {
+                return new DBResult { ErrorCode = 1, ErrorMsg = ex.Message };
+            }
+        }
+
+        public DBResult UpdateAssociatedAccountToMonitorOfNoteFromAPI(AssociatedAccountToMonitorOfNote accountOfNote)
+        {
+            var url = AppSettings.Get(Consts.FPS_WEBAPI_UPDATE_ASSOCIATED_ACCOUNT_TO_MONITOR_OF_NOTE);
+
+            try
+            {
+                ApiHelper.Post(url, accountOfNote).Wait();
+
+                return new DBResult { ErrorCode = 0, ErrorMsg = "" };
+            }
+            catch (Exception ex)
+            {
+                return new DBResult { ErrorCode = 1, ErrorMsg = ex.Message };
+            }
+        }
+
+        #endregion
 
         #region Test
         private static IEnumerable<Evidence> GetAllEvidences_Test()
@@ -51,47 +101,7 @@
 
             return evidences;
         }
-
-        private static IEnumerable<AssociatedAccounts> GetAssociatedAccounts_Test()
-        {
-            var accounts = new List<AssociatedAccounts>();
-            for (int i = 0; i < 1000; i++)
-            {
-                accounts.Add(CreateNewAssociatedAccounts(i));
-            }            
-
-            return accounts;
-        }
-
-        private static AssociatedAccounts CreateNewAssociatedAccounts(int index)
-        {
-            var note = "Now that we have imported the necessary package, we can start by defining a client which takes in various " +
-                "options such as the address of the redis instance we want to connect to, " +
-                "The password and the database we wish to use in that instance.";
-
-            if (index % 2 == 0)
-            {
-                note = "The password and the database";
-            }            
-
-            return new AssociatedAccounts
-            {
-                AssociatedAccountUsername = "abc",
-                AssociatedAccountSite = "12bet",
-                AssociatedAccountLevel = "Master",
-                AssociatedAccountEvidences = "1.8 Counterfeit Money Order/Cashiers Check",
-                MainAccountUsername = "def",
-                MainAccountSite = "12bet",
-                MainAccountLevel = "Master",
-                MainAccountEvidences = "100 Seize Bet",
-                FirstAssociated = DateTime.Now.ToString("MM/dd/yyyy"),
-                Verified = false,
-                VerifiedBy = "starix58" + "Sep 19, 2019",
-                Note = note
-            };
-        }
        
         #endregion
-
     }
 }

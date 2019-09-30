@@ -1,8 +1,6 @@
-﻿using System;
-
-namespace Fanex.NAP.FS.Library.ViewModels.Account.Associated
+﻿namespace Fanex.NAP.FS.Library.ViewModels.Account.AssociatedToMonitor
 {
-    public class AssociatedAccounts
+    public class AssociatedAccountsToMonitor
     {
         public string AssociatedAccountUsername { get; set; }
 

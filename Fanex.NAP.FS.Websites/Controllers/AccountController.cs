@@ -3,7 +3,7 @@
     using Fanex.NAP.Core.Web.Attribute;
     using Fanex.NAP.FS.Library.Services.Implement;
     using Fanex.NAP.FS.Library.Services.Interface;
-    using Fanex.NAP.FS.Library.ViewModels.Account.Associated;
+    using Fanex.NAP.FS.Library.ViewModels.Account.AssociatedToMonitor;
     using System.Web.Mvc;
 
     public class AccountController : Controller
@@ -16,34 +16,38 @@
         }
 
         [NapAuth(FunctionKey = FSFunctionKeys.AssociatedAccountsMonitor, Policy = Core.Business.Constant.Policy.Read)]
-        public ActionResult AssociatedAccounts()
+        public ActionResult AssociatedAccountsMonitor()
         {
             ViewBag.Username = this.User.Identity.Name;
             ViewBag.Evidences = accountService.GetAllEvidences();
 
-            return View("Associated/AssociatedAccounts");
+            return View("AssociatedToMonitor/AssociatedAccountsToMonitor");
         }
 
         [HttpPost]
         [NapAuth(FunctionKey = FSFunctionKeys.AssociatedAccountsMonitor, Policy = Core.Business.Constant.Policy.Read)]
-        public ActionResult GetAssociatedAccounts(AssociatedAccountsFilter filter)
+        public ActionResult GetAssociatedAccountsToMonitor(AssociatedAccountsToMonitorFilter filter)
         {
-            var data = accountService.GetAssociatedAccounts(filter);
+            var data = accountService.GetAssociatedAccountsToMonitor(filter);
 
-            return Json(data, JsonRequestBehavior.AllowGet);
+            var jsonResult = Json(data, JsonRequestBehavior.AllowGet);
+
+            jsonResult.MaxJsonLength = int.MaxValue;
+
+            return jsonResult;
         }
 
         [HttpPost]
-        public ActionResult UpdateAssociatedAccountOfVerify(AssociatedAccountOfVerify accountOfVerify)
+        public ActionResult UpdateAssociatedAccountToMonitorOfVerify(AssociatedAccountToMonitorOfVerify accountOfVerify)
         {
-            var data = accountService.UpdateAssociatedAccountOfVerify(accountOfVerify);
+            var data = accountService.UpdateAssociatedAccountToMonitorOfVerify(accountOfVerify);
 
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult UpdateAssociatedAccountOfNote(AssociatedAccountOfNote accountOfNote)
+        public ActionResult UpdateAssociatedAccountToMonitorOfNote(AssociatedAccountToMonitorOfNote accountOfNote)
         {
-            var data = accountService.UpdateAssociatedAccountOfNote(accountOfNote);
+            var data = accountService.UpdateAssociatedAccountToMonitorOfNote(accountOfNote);
 
             return Json(data, JsonRequestBehavior.AllowGet);
         }

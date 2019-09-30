@@ -52,3 +52,7 @@
     cursor: pointer;
     color: mediumblue;
 }
+
+.fail-by-validate {
+    border: 1px solid red !important;
+}
