@@ -15,7 +15,7 @@
         #region Associated Account To Monitor
         public IEnumerable<Evidence> GetAllEvidences()
         {
-            return GetAllEvidences_Test();
+            return GetAllEvidencesFromAPI();
         }
 
         public IEnumerable<AssociatedAccountsToMonitor> GetAssociatedAccountsToMonitor(AssociatedAccountsToMonitorFilter filter)
@@ -31,6 +31,17 @@
         public DBResult UpdateAssociatedAccountToMonitorOfNote(AssociatedAccountToMonitorOfNote accountOfNote)
         {
             return UpdateAssociatedAccountToMonitorOfNoteFromAPI(accountOfNote);
+        }
+
+        private static IEnumerable<Evidence> GetAllEvidencesFromAPI()
+        {
+            var url = AppSettings.Get(Consts.FPS_WEBAPI_GET_ALL_EVIDENCE);
+
+            var evidences = ApiHelper.Post<IEnumerable<Evidence>>(url, null);
+
+            Task.WaitAll(evidences);
+
+            return evidences.Result;
         }
 
         private static IEnumerable<AssociatedAccountsToMonitor> GetAssociatedAccountsFromAPI(AssociatedAccountsToMonitorFilter filter)
