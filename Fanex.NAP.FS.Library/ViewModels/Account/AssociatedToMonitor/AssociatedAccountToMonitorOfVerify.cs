@@ -2,10 +2,10 @@
 {
     public class AssociatedAccountToMonitorOfVerify
     {
-        public string AssociatedAccountUsername { get; set; }
+        public int AssAccId { get; set; }
 
-        public string MainAccountUsername { get; set; }
+        public int? UserId { get; set; }
 
-        public bool Verify { get; set; }
+        public bool IsVerifying { get; set; }
     }
 }

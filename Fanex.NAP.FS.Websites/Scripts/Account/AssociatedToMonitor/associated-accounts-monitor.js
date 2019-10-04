@@ -5,7 +5,6 @@
     var filter_date_to = $('#filter-associated-date-to');
     var btn_generate = $('#btn-generate');
     var grid_associated_account = $('#grid-associated-account');
-    var const_note_max_length = 500;
     var const_note_length_of_collapse = 50;
 
     function init() {
@@ -125,13 +124,13 @@
         });
     }
 
-    function renderEvidence(evidence) {        
+    function renderEvidence(evidence) {
         return common.makeWrapString(evidence, 25);
     }
 
     function renderverificationCheckBox(row) {
         return "<label class='checkbox'>"
-            + "<input type= 'checkbox' class='chk-verification'" + (row.Verified ? "checked" : "") + "/>"
+            + "<input type= 'checkbox' data-ass-acc-id = '" + row.AssAccId + "' class='chk-verification'" + (row.Verified ? "checked" : "") + "/>"
             + "<span></span></label>";
     }
 
@@ -139,8 +138,8 @@
         var noteForDisplay = wrapTextForDipslayNote(row.Note, const_note_length_of_collapse);
 
         return '<div class="container-note">'
-            + '<textarea class="txt-note-input hide" rows="10">' + (row.Note != '-' ? row.Note : '') + '</textarea>'
-            + '<div class="note-content-display" title=' + row.Note + '>' + noteForDisplay + '</div>'                
+            + '<textarea class="txt-note-input hide" data-ass-acc-id="' + row.AssAccId + '" rows="10">' + (row.Note != '-' ? row.Note : '') + '</textarea>'
+            + '<div class="note-content-display" title=' + row.Note + '>' + noteForDisplay + '</div>'
             + '<div class="btn-note-change icon-edit icon"></div>'
             + '</div>';
     }
@@ -178,9 +177,7 @@
             $.ajax({
                 type: 'POST',
                 url: url,
-                data: paramFilter,
-                global: false,
-                crossDomain: true,
+                data: paramFilter,              
                 success: function (response) {
                     renderAssociatedAccountGrid(response);
                 },
@@ -240,7 +237,8 @@
         common.showConfirmation('Do you want to change verify ?', function () {
             var url = common.modifyRelativeUrl('/Account/UpdateAssociatedAccountToMonitorOfVerify');
             var paramsUpdate = {};
-            paramsUpdate.verified = $target.is(":checked");
+            paramsUpdate.IsVerifying = $target.is(':checked');
+            paramsUpdate.AssAccId = $target.attr('data-ass-acc-id');
 
             common.showLoading();
             $.ajax({
@@ -248,7 +246,7 @@
                 url: url,
                 data: paramsUpdate,
                 success: function (response) {
-                    if (paramsUpdate.verified) {                        
+                    if (paramsUpdate.verified) {
                         var html = username + " " + getCurrentDate();
                         $target.parents("td").next().text(html);
                     }
@@ -264,7 +262,7 @@
                 }
             });
         });
-    }    
+    }
 
     function getCurrentDate() {
         const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -333,6 +331,7 @@
     function saveChangedNote(domElementsNote, noteToUpdate, cell) {
         var url = common.modifyRelativeUrl("/Account/UpdateAssociatedAccountToMonitorOfNote");
         var paramsUpdate = {};
+        paramsUpdate.AssAccId = $(domElementsNote.txtNoteInput).attr('data-ass-acc-id');
         paramsUpdate.Note = noteToUpdate;
 
         common.showLoading();

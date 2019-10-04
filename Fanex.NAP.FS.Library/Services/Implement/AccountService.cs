@@ -61,13 +61,18 @@
 
             try
             {
-                ApiHelper.Post(url, accountOfVerify).Wait();
+                var updated =  ApiHelper.Post<int>(url, accountOfVerify);
 
-                return new DBResult { ErrorCode = 0, ErrorMsg = "" };
+                if (int.Parse(updated.Result.ToString()) == 0)
+                {
+                    return new DBResult { ErrorCode = 0, ErrorMsg = string.Empty };
+                }
+
+                return new DBResult { ErrorCode = -1, ErrorMsg = "API update fail!" };
             }
             catch (Exception ex)
             {
-                return new DBResult { ErrorCode = 1, ErrorMsg = ex.Message };
+                return new DBResult { ErrorCode = -1, ErrorMsg = ex.Message };
             }
         }
 
@@ -77,13 +82,18 @@
 
             try
             {
-                ApiHelper.Post(url, accountOfNote).Wait();
+                var updated = ApiHelper.Post<int>(url, accountOfNote);
 
-                return new DBResult { ErrorCode = 0, ErrorMsg = "" };
+                if (int.Parse(updated.Result.ToString()) == 0)
+                {
+                    return new DBResult { ErrorCode = 0, ErrorMsg = string.Empty };
+                }
+
+                return new DBResult { ErrorCode = -1, ErrorMsg = "API update fail!" };
             }
             catch (Exception ex)
             {
-                return new DBResult { ErrorCode = 1, ErrorMsg = ex.Message };
+                return new DBResult { ErrorCode = -1, ErrorMsg = ex.Message };
             }
         }
 

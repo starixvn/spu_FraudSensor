@@ -6,7 +6,7 @@
     using Fanex.NAP.FS.Library.ViewModels.Account.AssociatedToMonitor;
     using System.Web.Mvc;
 
-    public class AccountController : Controller
+    public class AccountController : BaseController
     {
         private readonly IAccountService accountService;
 
@@ -40,6 +40,8 @@
         [HttpPost]
         public ActionResult UpdateAssociatedAccountToMonitorOfVerify(AssociatedAccountToMonitorOfVerify accountOfVerify)
         {
+            accountOfVerify.UserId = CurrentSession.UserId;
+
             var data = accountService.UpdateAssociatedAccountToMonitorOfVerify(accountOfVerify);
 
             return Json(data, JsonRequestBehavior.AllowGet);

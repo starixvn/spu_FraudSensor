@@ -2,6 +2,8 @@
 {
     public class AssociatedAccountsToMonitor
     {
+        public int AssAccId { get; set; }
+
         public string AssociatedAccountUsername { get; set; }
 
         public string AssociatedAccountSite { get; set; }
