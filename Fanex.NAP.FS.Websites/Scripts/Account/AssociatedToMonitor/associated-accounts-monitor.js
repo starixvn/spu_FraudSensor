@@ -76,26 +76,25 @@
             scrollX: true,
             scrollCollapse: true,
             columnDefs: [
-                { targets: "_all", defaultContent: "-" },
                 { targets: 10, type: "check-box" }
             ],
             columns: [
-                { data: (row, type, set, meta) => meta.row + 1, className: "text-center", width: "5%" },
-                { data: row => row.AssociatedAccountUsername, className: "text-center", width: "7%" },
-                { data: row => row.AssociatedAccountSite, className: "text-center", width: "5%" },
-                { data: row => row.AssociatedAccountLevel, className: "text-center", width: "5%" },
+                { data: (row, type, set, meta) => meta.row + 1, className: "text-center", width: "3%" },
+                { data: row => row.AssociatedAccountUsername, className: "text-center", width: "8%" },
+                { data: row => row.AssociatedAccountSite, className: "text-center", width: "4%" },
+                { data: row => row.AssociatedAccountLevelName, className: "text-center", width: "4%" },
                 { data: row => renderEvidence(row.AssociatedAccountEvidences), className: "text-left", width: "10%" },
-                { data: row => row.MainAccountUsername, className: "text-center", width: "7%" },
-                { data: row => row.MainAccountSite, className: "text-center", width: "5%" },
-                { data: row => row.MainAccountLevel, className: "text-center", width: "5%" },
+                { data: row => row.MainAccountUsername, className: "text-center", width: "8%" },
+                { data: row => row.MainAccountSite, className: "text-center", width: "4%" },
+                { data: row => row.MainAccountLevelName, className: "text-center", width: "4%" },
                 { data: row => renderEvidence(row.MainAccountEvidences), className: "text-left", width: "10%" },
-                { data: row => row.FirstAssociated, className: "text-center", width: "8%" },
+                { data: row => row.FirstAssociatedDateToString, className: "text-center", width: "8%" },
                 {
                     data: renderverificationCheckBox, className: "text-center", width: "5%", createdCell: (cell, _, row) => {
                         $('.chk-verification', cell).change(() => handleUpdateVerification(cell, row))
                     }
                 },
-                { data: row => row.VerifiedBy, className: "text-center", width: "8%" },
+                { data: row => row.VerifiedOfView, className: "text-center", width: "8%" },
                 {
                     data: renderNote, className: "col-account-note text-left", createdCell: (cell, _, row) => {
                         $('.btn-note-change', cell).click(() => handleChangeNote(cell, row));
@@ -130,7 +129,7 @@
 
     function renderverificationCheckBox(row) {
         return "<label class='checkbox'>"
-            + "<input type= 'checkbox' data-ass-acc-id = '" + row.AssAccId + "' class='chk-verification'" + (row.Verified ? "checked" : "") + "/>"
+            + "<input type= 'checkbox' data-ass-acc-id = '" + row.AssAccId + "' class='chk-verification'" + (row.IsVerified ? "checked" : "") + "/>"
             + "<span></span></label>";
     }
 
@@ -138,7 +137,7 @@
         var noteForDisplay = wrapTextForDipslayNote(row.Note, const_note_length_of_collapse);
 
         return '<div class="container-note">'
-            + '<textarea class="txt-note-input hide" data-ass-acc-id="' + row.AssAccId + '" rows="10">' + (row.Note != '-' ? row.Note : '') + '</textarea>'
+            + '<textarea class="txt-note-input hide" data-ass-acc-id="' + row.AssAccId + '" rows="10">' + (row.Note != '' ? row.Note : '') + '</textarea>'
             + '<div class="note-content-display" title=' + row.Note + '>' + noteForDisplay + '</div>'
             + '<div class="btn-note-change icon-edit icon"></div>'
             + '</div>';
@@ -146,7 +145,7 @@
 
     function wrapTextForDipslayNote(textInput, maxLengthDisplay) {
         if (textInput == null || textInput == '') {
-            return '-';
+            return '';
         }
         var textOutPut = '';
         var textBreaks = textInput.split('\n');
@@ -183,7 +182,7 @@
                 },
                 error: function (xhr, status, error) {
                     console.log('data of ' + xhr.responseText);
-                    common.showLoading();
+                    common.closeLoading();
                 }
             });
         }
@@ -246,15 +245,18 @@
                 url: url,
                 data: paramsUpdate,
                 success: function (response) {
-                    if (paramsUpdate.verified) {
-                        var html = username + " " + getCurrentDate();
-                        $target.parents("td").next().text(html);
-                    }
-                    else {
-                        $target.parents("td").next().text("-");
-                    }
                     common.closeLoading();
-                    common.showSuccess();
+                    if (response.IsSuccessStatusCode) {
+                        if (paramsUpdate.IsVerifying) {
+                            $target.parents("td").next().text(response.Content);
+                        }
+                        else {
+                            $target.parents("td").next().text("");
+                        }
+                        common.showSuccess();
+                    } else {
+                        common.showError(response.Content);
+                    }
                 },
                 error: function (xhr, status, error) {
                     console.log('data of ' + xhr.responseText);
@@ -263,15 +265,7 @@
             });
         });
     }
-
-    function getCurrentDate() {
-        const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-
-        var currentDatetime = new Date();
-
-        return months[currentDatetime.getMonth()] + " " + currentDatetime.getDate() + ", " + currentDatetime.getFullYear();
-    } 
-
+ 
     function handleChangeNote(cell, row) {
         var domElementsNote = {};
         domElementsNote.txtNoteInput = $(cell).find('.txt-note-input');
@@ -340,11 +334,16 @@
             url: url,
             data: paramsUpdate,
             success: function (response) {
-                var noteForDisplay = wrapTextForDipslayNote(noteToUpdate, const_note_length_of_collapse);
-                $(domElementsNote.contentNoteDisplay).html(noteForDisplay);
-                $(".btn-note-ellipsis", cell).click(() => handleExpandNote(cell));
                 common.closeLoading();
-                common.showSuccess();
+                if (response.IsSuccessStatusCode) {
+                    var noteForDisplay = wrapTextForDipslayNote(noteToUpdate, const_note_length_of_collapse);
+                    $(domElementsNote.contentNoteDisplay).html(noteForDisplay);
+                    $(".btn-note-ellipsis", cell).click(() => handleExpandNote(cell));
+                    
+                    common.showSuccess();
+                } else {
+                    common.showError(response.Content);
+                }                
             },
             error: function (xhr, status, error) {
                 console.log('data of ' + xhr.responseText);

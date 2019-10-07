@@ -4,7 +4,7 @@
     {
         public int AssAccId { get; set; }
 
-        public int? UserId { get; set; }
+        public int UserId { get; set; }
 
         public bool IsVerifying { get; set; }
     }

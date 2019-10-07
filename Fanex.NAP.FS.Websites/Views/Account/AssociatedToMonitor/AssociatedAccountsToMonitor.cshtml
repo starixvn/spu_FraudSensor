@@ -1,4 +1,5 @@
 ﻿@using Fanex.NAP.FS.Library.ViewModels.Account.AssociatedToMonitor
+@using Fanex.NAP.FS.Library.ViewModels
 @{
     ViewBag.Title = "AssociatedAccounts";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -38,7 +39,7 @@
             <select id="filter-evidences" multiple="multiple" style="width:365px;">
                 @foreach (var item in (IEnumerable<Evidence>)ViewBag.Evidences)
                 {
-                    <option value="@item.EvidenceCode">@item.EvidenceName</option>
+                    <option value="@item.EvidenceCode">@item.EvidenceCode  @item.EvidenceName</option>
                 }
             </select>
         </div>

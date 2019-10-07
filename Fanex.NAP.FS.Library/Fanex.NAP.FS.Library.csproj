@@ -426,11 +426,12 @@
     <Compile Include="ViewModels\Account\AssociatedToMonitor\AssociatedAccountsToMonitorFilter.cs" />
     <Compile Include="ViewModels\Account\AssociatedToMonitor\AssociatedAccountToMonitorOfVerify.cs" />
     <Compile Include="ViewModels\Account\AssociatedToMonitor\Evidence.cs" />
-    <Compile Include="ViewModels\Account\AssociatedToMonitor\VerifyStatus.cs" />
+    <Compile Include="ViewModels\Account\AssociatedToMonitor\UpdateResult.cs" />
     <Compile Include="ViewModels\CheckBetReport\CheckBetTicket.cs" />
     <Compile Include="ViewModels\CustomerMonitor\CustomerDetails\CustomerDetailsInfo.cs" />
     <Compile Include="ViewModels\CustomerMonitor\CustomerDetails\TicketDetails.cs" />
     <Compile Include="ViewModels\DailyDataMonitor\CapturedMatch.cs" />
+    <Compile Include="ViewModels\Enums.cs" />
     <Compile Include="ViewModels\FraudCase\DelayedGoal\Customer.cs" />
     <Compile Include="ViewModels\History.cs" />
     <Compile Include="ViewModels\MatchMonitor\Event.cs" />

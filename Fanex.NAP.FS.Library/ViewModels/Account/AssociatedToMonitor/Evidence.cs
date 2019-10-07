@@ -2,7 +2,9 @@
 {
     public class Evidence
     {
-        public int EvidenceId { get; set; }
+        public int EviGroupID { get; set; }
+
+        public string GrpName { get; set; }
 
         public string EvidenceCode { get; set; }
 

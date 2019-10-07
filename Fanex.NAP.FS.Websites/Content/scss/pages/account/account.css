@@ -26,6 +26,7 @@
     padding-top: 6px;
     padding-right: 6px;
     min-height: 37px;
+    min-width: 80px;
 }
 
 .btn-note-change {
