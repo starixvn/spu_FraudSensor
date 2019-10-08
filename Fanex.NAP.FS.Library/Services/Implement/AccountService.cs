@@ -152,7 +152,7 @@
                     }
                 }
 
-                return evidencesForDisplay.ToString().TrimEnd(' ').TrimEnd(';');
+                return evidencesForDisplay.ToString().Replace(Consts.FPS_EVIDENCE_CODE_SEIZE_BET_99_100, Consts.FPS_EVIDENCE_CODE_SEIZE_BET_100).TrimEnd(' ').TrimEnd(';');
             }
             
             return codes;

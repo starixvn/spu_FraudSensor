@@ -4,14 +4,15 @@
 
 .table .col-account-note {
     padding: 0px 6px !important;
+    align-items: center;
 }
 
 .table .container-note {
     display: grid;
-    align-items: center;
     padding: 0px;
     margin: 0px;
     height: inherit;
+    display: grid;    
 }
 
 .txt-note-input {
@@ -22,26 +23,38 @@
     word-wrap: normal !important;
     word-break: break-word;
     white-space: pre-line;
-    border-right: 1px solid #c1c1c1;
     padding-top: 6px;
     padding-right: 6px;
+    border-right: 1px solid #c1c1c1;
     min-height: 36px;
     min-width: 80px;
 }
 
+.note-blank {
+    padding-top: 6px;
+}
+
 .btn-note-change {
-    overflow: auto;    
-    text-align: center;    
+    overflow: auto;
+    text-align: center;
+}
+
+.icon-edit {
+    font-size: 20px;
 }
 
 .icon-edit:before {
     content: "\e91c";
-    cursor: pointer;
+    cursor: pointer;    
+}
+
+.icon-save {
+    font-size: 20px;
 }
 
 .icon-save:before {
     content: "\e927";
-    cursor: pointer;
+    cursor: pointer;    
 }
 
 .btn-note-ellipsis {

@@ -103,12 +103,7 @@
                 }
             ],
             rowCallback: function (cell, row, index) {
-                var domElementNoteDisplay = $(cell).find(".note-content-display")
-                if ($(window).width() < 1108) {
-                    domElementNoteDisplay.css('min-height', '77px');
-                } else if ($(window).width() < 1835) {
-                    domElementNoteDisplay.css('min-height', '57px');
-                }
+                adjustSizeOfNote(cell);                
             },
             dom: "t<'pagination'<'page-size'lp>i>",
             language: {
@@ -124,7 +119,7 @@
     }
 
     function renderEvidence(evidences) {
-        var evidencesForDisplay = common.makeWrapString(evidences, 30);
+        var evidencesForDisplay = common.makeWrapString(evidences, 26);
 
         return "<span title='" + evidences + "'>" + evidencesForDisplay + "</span>";
     }
@@ -138,16 +133,22 @@
     function renderNote(row) {
         var noteForDisplay = wrapTextForDipslayNote(row.Note, const_note_length_of_collapse);
 
+        if (noteForDisplay == '-') {
+            var domElementNoteForDisplay = '<div class="note-content-display note-blank" title=' + row.Note + '>' + noteForDisplay + '</div>';
+        } else {
+            var domElementNoteForDisplay = '<div class="note-content-display" title=' + row.Note + '>' + noteForDisplay + '</div>';
+        }
+
         return '<div class="container-note">'
             + '<textarea class="txt-note-input hide" data-ass-acc-id="' + row.AssAccId + '" rows="10">' + (row.Note != '' ? row.Note : '') + '</textarea>'
-            + '<div class="note-content-display" title=' + row.Note + '>' + noteForDisplay + '</div>'
+            + domElementNoteForDisplay
             + '<div class="btn-note-change icon-edit icon"></div>'
             + '</div>';
     }
 
     function wrapTextForDipslayNote(textInput, maxLengthDisplay) {
         if (textInput == null || textInput == '') {
-            return '';
+            return '-';
         }
         var textOutPut = '';
         var textBreaks = textInput.split('\n');
@@ -339,6 +340,13 @@
                 common.closeLoading();
                 if (response.IsSuccessStatusCode) {
                     var noteForDisplay = wrapTextForDipslayNote(noteToUpdate, const_note_length_of_collapse);
+                    if (noteForDisplay == '-') {
+                        $(domElementsNote.contentNoteDisplay).addClass('note-blank');
+                        adjustSizeOfNote(cell);
+                    } else {
+                        $(domElementsNote.contentNoteDisplay).removeClass('note-blank');
+                        $(domElementsNote.contentNoteDisplay).css({ 'padding-top': '6px' });
+                    }
                     $(domElementsNote.contentNoteDisplay).html(noteForDisplay);
                     $(".btn-note-ellipsis", cell).click(() => handleExpandNote(cell));
                     
@@ -353,6 +361,19 @@
             }
         });
     }    
+
+    function adjustSizeOfNote(cell) {
+        var domElementNoteDisplay = $(cell).find(".note-content-display");
+        var domElementNoteBlank = $(cell).find(".note-blank");
+
+        if ($(window).width() < 1108) {
+            domElementNoteDisplay.css({ 'min-height': '77px' });
+            domElementNoteBlank.css({ 'padding-top': '27px' });
+        } else if ($(window).width() < 1835) {
+            domElementNoteDisplay.css({ 'min-height': '57px' });
+            domElementNoteBlank.css({ 'padding-top': '17px' });
+        }
+    }
 
     function handleExpandNote(cell) {
         var noteForDisplay = $(cell).find('.txt-note-input').val();
