@@ -102,7 +102,7 @@
                 <select id="ddlSite" multiple="multiple">
                     @foreach (var item in (IEnumerable<Site>)ViewBag.SiteList)
                     {
-                        <option value="@item.SiteId">@item.SiteName</option>
+                        <option selected value="@item.SiteId">@item.SiteName</option>
                     }
                 </select>
             </div>
@@ -113,7 +113,7 @@
                 <select id="ddlCurrency" multiple="multiple">
                     @foreach (var item in (IEnumerable<Currency>)ViewBag.CurrencyList)
                     {
-                        <option value="@item.CurrencyId">@item.CurrencyName</option>
+                        <option selected value="@item.CurrencyId">@item.CurrencyName</option>
                     }
                 </select>
             </div>
@@ -124,7 +124,7 @@
                 <select id="ddlEvidence" multiple="multiple">
                     @foreach (var item in (IEnumerable<Evidence>)ViewBag.EvidenceList)
                     {
-                        <option value="@item.EvidenceCode">@item.EvidenceName</option>
+                        <option selected value="@item.EvidenceCode">@item.EvidenceName</option>
                     }
                 </select>
             </div>
