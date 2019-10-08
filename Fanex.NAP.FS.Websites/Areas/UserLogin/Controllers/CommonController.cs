@@ -29,19 +29,14 @@
         public ActionResult Offline()
         {
             var downTime = _maintenanceService.GetUnderMaintenanceTime();
-            /*
+            
             if (!downTime.IsUnderMaintenanceTime)
             {
                 FormsAuthentication.RedirectToLoginPage();
             }
             
             ViewBag.UmtFrom = downTime.From;
-            ViewBag.UmtTo = downTime.To;*/
-
-            var a = new System.DateTime();
-            downTime.IsUnderMaintenanceTime = true;
-            ViewBag.UmtFrom = a.ToShortTimeString();
-            ViewBag.UmtTo = a.AddMinutes(10).ToShortTimeString();
+            ViewBag.UmtTo = downTime.To;
 
             return View();
         }

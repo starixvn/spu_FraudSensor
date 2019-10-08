@@ -97,7 +97,7 @@
         /// <returns>Return result.</returns>
         [HttpGet]
         public ActionResult Index()
-        {/*
+        {
             if (!NapSettings.Settings.IsNapHub && !IsSiteLogin)
             {
                 // if login-directly feature is disabled then redirect users to NAP Hub
@@ -111,8 +111,7 @@
 
             GenerateToken();
 
-            return View();*/
-            return RedirectToAction("Offline", "Common");
+            return View();
         }
 
         /// <summary>
@@ -255,7 +254,7 @@
                 if (!ConfigurationManager.AppSettings["Environment"].Equals("1"))
                 {
                     var maintenanceInfo = _maintenanceService.GetUnderMaintenanceTime();
-                    maintenanceInfo.IsUnderMaintenanceTime = true;
+                    
                     if (maintenanceInfo.IsUnderMaintenanceTime)
                     {
                         Logger.Log.Info("UM");
