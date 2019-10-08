@@ -25,7 +25,7 @@
         {
             var userService = new UserService();
             var evidencesCache = filter.GetEvidencesCache();
-            var accountsFromAPI = GetAssociatedAccountsFromAPI(filter);            
+            var accountsFromAPI = GetAssociatedAccountsFromAPI(filter);
 
             var accounts = accountsFromAPI.AsEnumerable()
                 .Select(c => new AssociatedAccountsToMonitor
@@ -42,10 +42,10 @@
                     FirstAssociatedDate = c.FirstAssociatedDate,
                     IsVerified = c.IsVerified,
                     VerifiedBy = c.VerifiedBy,
-                    VerifiedByUserName = c.VerifiedBy > 0 ? userService.Get(c.VerifiedBy).Username : string.Empty,
+                    VerifiedByUserName = c.VerifiedBy > 0 ? userService.Get(c.VerifiedBy).Username : null,
                     VerifiedDate = c.VerifiedDate,
                     Note = c.Note
-                });
+                });         
 
             return accounts;
         }
@@ -155,7 +155,7 @@
                 return evidencesForDisplay.ToString().Replace(Consts.FPS_EVIDENCE_CODE_SEIZE_BET_99_100, Consts.FPS_EVIDENCE_CODE_SEIZE_BET_100).TrimEnd(' ').TrimEnd(';');
             }
             
-            return codes;
+            return null;
         }
         #endregion
     }

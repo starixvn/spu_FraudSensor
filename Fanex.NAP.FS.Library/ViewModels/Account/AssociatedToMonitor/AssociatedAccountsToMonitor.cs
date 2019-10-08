@@ -63,7 +63,7 @@
                     return this.FirstAssociatedDate.ToString("MMM dd, yyyy");
                 }
 
-                return string.Empty;
+                return null;
             }
         }
 
@@ -86,7 +86,7 @@
                     return this.VerifiedByUserName + ", " + date.ToString("MMM dd, yyyy");
                 }
 
-                return string.Empty;
+                return null;
             }
         }
 

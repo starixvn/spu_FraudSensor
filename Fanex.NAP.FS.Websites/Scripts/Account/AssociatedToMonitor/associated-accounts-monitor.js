@@ -44,7 +44,7 @@
     function restrictFilterDateFrom() {
         var dateLimit = filter_date_to.datepicker("getDate");
         if (dateLimit != null) {
-            dateLimit.setDate(dateLimit.getDate() - 30);
+            dateLimit.setDate(dateLimit.getDate() - 29);
             filter_date_from.datepicker("option", "minDate", dateLimit);
         }
     }
@@ -55,7 +55,7 @@
         var dateMaxLimit = filter_date_from.datepicker("getDate");
 
         if (dateMaxLimit != null) {
-            dateMaxLimit.setDate(dateMaxLimit.getDate() + 30);
+            dateMaxLimit.setDate(dateMaxLimit.getDate() + 29);
             if (dateMaxLimit > dateNow) {
                 dateMaxLimit = dateNow;
             }
@@ -76,7 +76,8 @@
             scrollX: true,
             scrollCollapse: true,
             columnDefs: [
-                { targets: 10, type: "check-box" }
+                { targets: 10, type: "check-box" },
+                { targets: "_all", defaultContent: "-" }
             ],
             columns: [
                 { data: (row, type, set, meta) => meta.row + 1, className: "text-center", width: "3%" },
@@ -119,9 +120,11 @@
     }
 
     function renderEvidence(evidences) {
-        var evidencesForDisplay = common.makeWrapString(evidences, 26);
-
-        return "<span title='" + evidences + "'>" + evidencesForDisplay + "</span>";
+        if (evidences != null && evidences != '') {
+            var evidencesForDisplay = common.makeWrapString(evidences, 26);
+            return "<span title='" + evidences + "'>" + evidencesForDisplay + "</span>";
+        }
+        return evidences;
     }
 
     function renderverificationCheckBox(row) {
