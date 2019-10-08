@@ -123,8 +123,10 @@
         });
     }
 
-    function renderEvidence(evidence) {
-        return common.makeWrapString(evidence, 25);
+    function renderEvidence(evidences) {
+        var evidencesForDisplay = common.makeWrapString(evidences, 30);
+
+        return "<span title='" + evidences + "'>" + evidencesForDisplay + "</span>";
     }
 
     function renderverificationCheckBox(row) {
@@ -195,6 +197,7 @@
         filter.AssociatedDateTo = filter_date_to.val();
         filter.VerifyStatus = filter_verify_status.val();
         filter.EvidenceCodes = getSeletedEvidences();
+        filter.EvidencesCache = evidencesCache;
 
         return filter;
     }
@@ -233,36 +236,35 @@
 
     function handleUpdateVerification(cell, row) {
         var $target = $(cell).find('.chk-verification');
-        common.showConfirmation('Do you want to change verify ?', function () {
-            var url = common.modifyRelativeUrl('/Account/UpdateAssociatedAccountToMonitorOfVerify');
-            var paramsUpdate = {};
-            paramsUpdate.IsVerifying = $target.is(':checked');
-            paramsUpdate.AssAccId = $target.attr('data-ass-acc-id');
 
-            common.showLoading();
-            $.ajax({
-                type: 'POST',
-                url: url,
-                data: paramsUpdate,
-                success: function (response) {
-                    common.closeLoading();
-                    if (response.IsSuccessStatusCode) {
-                        if (paramsUpdate.IsVerifying) {
-                            $target.parents("td").next().text(response.Content);
-                        }
-                        else {
-                            $target.parents("td").next().text("");
-                        }
-                        common.showSuccess();
-                    } else {
-                        common.showError(response.Content);
+        var url = common.modifyRelativeUrl('/Account/UpdateAssociatedAccountToMonitorOfVerify');
+        var paramsUpdate = {};
+        paramsUpdate.IsVerifying = $target.is(':checked');
+        paramsUpdate.AssAccId = $target.attr('data-ass-acc-id');
+
+        common.showLoading();
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data: paramsUpdate,
+            success: function (response) {
+                common.closeLoading();
+                if (response.IsSuccessStatusCode) {
+                    if (paramsUpdate.IsVerifying) {
+                        $target.parents("td").next().text(response.Content);
                     }
-                },
-                error: function (xhr, status, error) {
-                    console.log('data of ' + xhr.responseText);
-                    common.closeLoading();
+                    else {
+                        $target.parents("td").next().text("");
+                    }
+                    common.showSuccess();
+                } else {
+                    common.showError(response.Content);
                 }
-            });
+            },
+            error: function (xhr, status, error) {
+                console.log('data of ' + xhr.responseText);
+                common.closeLoading();
+            }
         });
     }
  

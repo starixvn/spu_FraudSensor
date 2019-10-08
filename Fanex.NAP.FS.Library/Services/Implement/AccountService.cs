@@ -2,8 +2,7 @@
 {
     using Fanex.NAP.FS.Library.Core.Consts;
     using Fanex.NAP.FS.Library.Core.Helpers;
-    using Fanex.NAP.FS.Library.Core.Helpers.Api;
-    using Fanex.NAP.FS.Library.Models;
+    using Fanex.NAP.FS.Library.Core.Helpers.Api;   
     using Fanex.NAP.FS.Library.Services.Interface;
     using Fanex.NAP.FS.Library.ViewModels.Account.AssociatedToMonitor;
     using System.Collections.Generic;
@@ -12,6 +11,7 @@
     using System.Net.Http;
     using System.Linq;
     using Fanex.NAP.Core.Service.Impl;
+    using System.Text;
 
     public class AccountService : IAccountService
     {
@@ -24,8 +24,8 @@
         public IEnumerable<AssociatedAccountsToMonitor> GetAssociatedAccountsToMonitor(AssociatedAccountsToMonitorFilter filter)
         {
             var userService = new UserService();
-           
-            var accountsFromAPI = GetAssociatedAccountsFromAPI(filter);
+            var evidencesCache = filter.GetEvidencesCache();
+            var accountsFromAPI = GetAssociatedAccountsFromAPI(filter);            
 
             var accounts = accountsFromAPI.AsEnumerable()
                 .Select(c => new AssociatedAccountsToMonitor
@@ -34,11 +34,11 @@
                     AssociatedAccountUsername = c.AssociatedAccountUsername,
                     AssociatedAccountSite = c.AssociatedAccountSite,
                     AssociatedAccountLevel = c.AssociatedAccountLevel,
-                    AssociatedAccountEvidences = c.AssociatedAccountEvidences,
+                    AssociatedAccountEvidences = GetEvidenceForDisplay(evidencesCache, c.AssociatedAccountEvidences),
                     MainAccountUsername = c.MainAccountUsername,
                     MainAccountSite = c.MainAccountSite,
                     MainAccountLevel = c.MainAccountLevel,
-                    MainAccountEvidences = c.MainAccountEvidences,
+                    MainAccountEvidences = GetEvidenceForDisplay(evidencesCache, c.MainAccountEvidences),
                     FirstAssociatedDate = c.FirstAssociatedDate,
                     IsVerified = c.IsVerified,
                     VerifiedBy = c.VerifiedBy,
@@ -131,6 +131,31 @@
             var userName = new UserService().Get(userId).Username;
 
             return userName + ", "+ DateTime.Now.ToString("MMM dd, yyyy");
+        }
+
+        private static string GetEvidenceForDisplay(IEnumerable<Evidence> evidences, string codes)
+        {
+            if (!string.IsNullOrEmpty(codes))
+            {
+                var evidencesForDisplay = new StringBuilder();
+                var evidenceCodes = codes.Split(',');
+                
+                foreach (var evidenceCode in evidenceCodes)
+                {
+                    var query = evidences
+                            .Where(e => e.EvidenceCode == evidenceCode)
+                            .Select(e => e.EvidenceName);
+
+                    if (query.Any())
+                    {
+                        evidencesForDisplay.Append(evidenceCode + "-" + query.ToList()[0] + "; ");
+                    }
+                }
+
+                return evidencesForDisplay.ToString().TrimEnd(' ').TrimEnd(';');
+            }
+            
+            return codes;
         }
         #endregion
     }

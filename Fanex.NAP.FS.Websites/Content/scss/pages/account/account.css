@@ -25,7 +25,7 @@
     border-right: 1px solid #c1c1c1;
     padding-top: 6px;
     padding-right: 6px;
-    min-height: 37px;
+    min-height: 36px;
     min-width: 80px;
 }
 
@@ -56,4 +56,15 @@
 
 .fail-by-validate {
     border: 1px solid red !important;
+}
+
+.ui-state-active {
+    border: 1px solid #465262;
+    background: #465262;
+    font-weight: normal;
+    color: #fff;
+}
+
+.ui-widget.ui-widget-content {
+    border: 1px solid #c5c5c5;
 }

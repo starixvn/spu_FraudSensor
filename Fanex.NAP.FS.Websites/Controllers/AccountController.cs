@@ -1,10 +1,10 @@
 ﻿namespace Fanex.NAP.FS.Websites.Controllers
 {
-    using Fanex.NAP.Core.Service.Impl;
     using Fanex.NAP.Core.Web.Attribute;
     using Fanex.NAP.FS.Library.Services.Implement;
     using Fanex.NAP.FS.Library.Services.Interface;
     using Fanex.NAP.FS.Library.ViewModels.Account.AssociatedToMonitor;
+    using System.Text;
     using System.Web.Mvc;
 
     public class AccountController : BaseController
@@ -19,8 +19,17 @@
         [NapAuth(FunctionKey = FSFunctionKeys.AssociatedAccountsMonitor, Policy = Core.Business.Constant.Policy.Read)]
         public ActionResult AssociatedAccountsMonitor()
         {
+            var evidencesCache = new StringBuilder();
+            var evidences = accountService.GetAllEvidences();
+            
+            foreach (var evidence in evidences)
+            {
+                evidencesCache.Append(evidence.EvidenceCode + ":" + evidence.EvidenceName + ";");
+            }
+
+            ViewBag.Evidences = evidences;
+            ViewBag.EvidencesCache = evidencesCache.ToString();
             ViewBag.Username = this.User.Identity.Name;
-            ViewBag.Evidences = accountService.GetAllEvidences();
 
             return View("AssociatedToMonitor/AssociatedAccountsToMonitor");
         }
