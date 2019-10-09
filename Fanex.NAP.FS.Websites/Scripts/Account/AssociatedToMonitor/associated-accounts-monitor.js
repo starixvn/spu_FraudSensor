@@ -8,7 +8,7 @@
     var const_note_length_of_collapse = 50;
 
     function init() {
-        $(filter_evidences).multiselect({
+        filter_evidences.multiselect({
             menuWidth: 330,
             menuHeight: 350
         }).multiselectfilter({
@@ -18,18 +18,22 @@
         });
 
         var dateFrom = new Date();
+        var dateFromMaxLimit = new Date();
+        var dateFromMinLimit = new Date();
+        dateFromMinLimit.setDate(dateFromMinLimit.getDate() - 29);
         dateFrom.setDate(dateFrom.getDate() - 7);
-     
-        $(filter_date_from).datepicker({
+
+        filter_date_from.datepicker({
             dateFormat: "M dd, yy",
             changeMonth: true,
             changeYear: true,
             firstDay: 1,
             maxDate: "y"
-        }).datepicker("setDate", dateFrom)
-            .change(restrictFilterDateTo);
+        }).datepicker("option", "minDate", dateFromMinLimit)
+            .datepicker("option", "maxDate", dateFromMaxLimit)
+            .datepicker("setDate", dateFrom);           
 
-        $(filter_date_to).datepicker({
+        filter_date_to.datepicker({
             dateFormat: "M dd, yy",
             changeMonth: true,
             changeYear: true,
@@ -42,28 +46,14 @@
     }
 
     function restrictFilterDateFrom() {
-        var dateLimit = filter_date_to.datepicker("getDate");
-        if (dateLimit != null) {
-            dateLimit.setDate(dateLimit.getDate() - 29);
-            filter_date_from.datepicker("option", "minDate", dateLimit);
+        var dateMinLimit = filter_date_to.datepicker("getDate");
+        var dateMaxLimit = filter_date_to.datepicker("getDate");
+
+        if (dateMinLimit != null) {
+            dateMinLimit.setDate(dateMinLimit.getDate() - 29);
+            filter_date_from.datepicker("option", "minDate", dateMinLimit)
+                            .datepicker("option", "maxDate", dateMaxLimit);
         }
-    }
-
-    function restrictFilterDateTo() {   
-        var dateNow = new Date();
-        var dateMinLimit = filter_date_from.datepicker("getDate");
-        var dateMaxLimit = filter_date_from.datepicker("getDate");
-
-        if (dateMaxLimit != null) {
-            dateMaxLimit.setDate(dateMaxLimit.getDate() + 29);
-            if (dateMaxLimit > dateNow) {
-                dateMaxLimit = dateNow;
-            }
-
-            filter_date_to
-                .datepicker("option", "minDate", dateMinLimit)
-                .datepicker("option", "maxDate", dateMaxLimit);
-        }        
     }
 
     function renderAssociatedAccountGridOptions() {
