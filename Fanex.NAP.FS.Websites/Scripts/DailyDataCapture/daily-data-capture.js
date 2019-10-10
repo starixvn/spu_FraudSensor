@@ -2,6 +2,7 @@
     var from_date = $("#from-date"),
         to_date = $("#to-date"),
         match_table = $("#match-table");
+    var const_note_length_of_collapse = 50;
 
     function restrict_from_date() {
         var to_val = to_date.datepicker("getDate");
@@ -77,21 +78,23 @@
         language: common.language(),
         lengthMenu: [10, 20, 50, 100, 500],
         pageLength: 50,
-        scrollY: '70vh',
+        scrollY: '65vh',
         scrollCollapse: true,
         columnDefs: [
             { targets: "_all", defaultContent: "-" },
             { targets: [0], className: "text-center", width: "5%" },
-            { targets: [2, 3], className: "text-center", width: "10%" },
+            { targets: [2], className: "text-center", width: "7%" },
+            { targets: [3], className: "text-center", width: "8%" },
             { targets: [4, 5, 6, 7, 8, 9, 10], className: "text-right" },
-            { targets: [4, 5, 6, 7], width: "9%" },
-            { targets: [8, 9, 10], width: "7%" }
+            { targets: [4, 5, 6, 7], width: "7%" },
+            { targets: [8, 9, 10], width: "7%" },
+            { targets: 11, width: "10%" }          
         ],
         columns: [
-            { data: obj => `${obj.MatchId}<br/><span style='color:#003399;'>${obj.MatchCode}</span>`},
-            { data: obj => `<span class='team-home'>${obj.Home}</span> - vs - <span class='team-away'>${obj.Away}</span><br/><span style='color:#003399;'>${obj.League}</span>` },
+            { data: obj => `${obj.MatchId}<br/><span style='color:#003399;'>${obj.MatchCode}</span>` },
+            { data: obj => `<span class='team-home'>${obj.Home}</span> - vs - <span class='team-away'>${obj.Away}</span><br/><span style='color:#003399;'>${obj.League}</span>`, className: "col-daily-league" },
             { data: obj => moment(obj.EventDate, "MMM D, YYYY HH:mm:ss").format("MMM D, YYYY") },
-            { data: obj => moment(obj.ScannedDate, "MMM D, YYYY HH:mm:ss").format("MMM D, YYYY<br/>hh:mm:ss A") },
+            { data: obj => moment(obj.ScannedDate, "MMM D, YYYY HH:mm:ss").format("MMM D, YYYY<br/>hh:mm:ss A"), className: "scanned-date" },
             { data: obj => render_history(obj.CompanyTO) },
             { data: obj => render_history(obj.SuperTO) },
             { data: obj => render_history(obj.MasterTO) },
@@ -99,8 +102,192 @@
             { data: obj => render_history(obj.Tickets, true) },
             { data: obj => render_history(obj.SettledTickets, true) },
             { data: obj => render_history(obj.CancelledTickets, true) },
+            {
+                data: renderNote, className: "col-daily-note text-left", createdCell: (cell, _, row) => {
+                    $('.btn-note-change', cell).click(() => handleChangeNote(cell, row));
+                    $('.btn-note-ellipsis', cell).click(() => handleExpandNote(cell));
+                }
+            }          
         ],
+        rowCallback: function (cell, row, index) {
+            adjustSizeOfNote(cell);            
+        },
     });
+
+    function renderNote(row) {
+        var noteForDisplay = wrapTextForDipslayNote(row.Note, const_note_length_of_collapse);
+
+        if (noteForDisplay == '-') {
+            var domElementNoteForDisplay = '<div class="note-content-display note-blank" title=' + row.Note + '>' + noteForDisplay + '</div>';
+        } else {
+            var domElementNoteForDisplay = '<div class="note-content-display" title=' + row.Note + '>' + noteForDisplay + '</div>';
+        }
+
+        return '<div class="container-note">'
+            + '<textarea class="txt-note-input hide" data-match-id="' + row.MatchId + '" rows="10">' + (row.Note != '-' ? row.Note : '') + '</textarea>'
+            + domElementNoteForDisplay
+            + '<div class="btn-note-change icon-edit icon"></div>'
+            + '</div>';
+    }
+
+    function wrapTextForDipslayNote(textInput, maxLengthDisplay) {
+        if (textInput == null || textInput == '') {
+            return '-';
+        }
+        var textOutPut = '';
+        var textBreaks = textInput.split('\n');
+        var htmlSpan = '<span class="btn-note-ellipsis" title="click to see whole note"> ... </span>';
+
+        for (var i = 0; i < textBreaks.length; i++) {
+            if (i == 3) {
+                textOutPut = textOutPut + textBreaks[i];
+                return textOutPut.substring(0, maxLengthDisplay - 4) + htmlSpan;
+            }
+
+            textOutPut = textOutPut + textBreaks[i] + "\n";
+            if (textOutPut.length > maxLengthDisplay) {
+                return textOutPut.substring(0, maxLengthDisplay - 4) + htmlSpan;
+            }
+        }
+
+        return textInput;
+    }
+
+    function handleChangeNote(cell, row) {
+        var domElementsNote = {};
+        domElementsNote.txtNoteInput = $(cell).find('.txt-note-input');
+        domElementsNote.noteForDisplay = $(cell).find(".note-content-display");
+        domElementsNote.iconNote = $(cell).find(".icon");
+
+        if ($(domElementsNote.txtNoteInput).hasClass('hide')) {
+            handleEditNote(domElementsNote);
+        } else if ($(domElementsNote.iconNote).hasClass('icon-save')) {
+            handleSaveNote(cell, row);
+        }
+    }
+
+    function handleEditNote(domElementsNote) {
+        $(domElementsNote.txtNoteInput).removeClass('hide').focus().select();
+        $(domElementsNote.noteForDisplay).addClass('hide').hide();
+        $(domElementsNote.iconNote).removeClass('icon-edit').addClass('icon-save').attr('title', 'save');
+        match_table.DataTable().columns.adjust();
+
+        adjustHeightNoteInput(domElementsNote);
+        handleNoteInputEvents(domElementsNote);
+    }
+
+    function adjustHeightNoteInput(domElementsNote) {
+        $(domElementsNote.txtNoteInput).height($(domElementsNote.noteForDisplay).height());
+    }
+
+    function handleNoteInputEvents(domElementsNote) {
+        $(domElementsNote.txtNoteInput).mouseout(function () {
+            match_table.DataTable().columns.adjust();
+        });
+
+        $(domElementsNote.txtNoteInput).keyup(function () {
+            $(domElementsNote.txtNoteInput).addClass('change');
+        });
+    }
+
+    function handleSaveNote(cell, row) {
+        var domElementsNote = {};
+        domElementsNote.txtNoteInput = $(cell).find('.txt-note-input');
+        domElementsNote.contentNoteDisplay = $(cell).find(".note-content-display");
+
+        var noteToUpdate = $(domElementsNote.txtNoteInput).val().trim();
+        noteToUpdate = handleSpecialCharacter(noteToUpdate);
+
+        if ($(domElementsNote.txtNoteInput).hasClass('change')) {
+            saveChangedNote(domElementsNote, noteToUpdate, cell);
+        }
+
+        $(domElementsNote.txtNoteInput).removeClass('change').addClass('hide');
+        $(domElementsNote.contentNoteDisplay).removeClass('hide').show();
+        $(cell).find(".icon").removeClass('icon-save').addClass('icon-edit').attr('title', 'edit');
+
+        match_table.DataTable().columns.adjust();
+    }
+
+    function saveChangedNote(domElementsNote, noteToUpdate, cell) {
+        var url = common.modifyRelativeUrl("/DailyDataCapture/UpdateDailyDataCaptureOfNote");
+        var paramsUpdate = {};
+        paramsUpdate.MatchIds = $(domElementsNote.txtNoteInput).attr('data-match-id');
+        paramsUpdate.Note = noteToUpdate;
+
+        common.showLoading();
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data: paramsUpdate,
+            success: function (response) {
+                common.closeLoading();
+                if (response.ErrorCode == 0) {
+                    var noteForDisplay = wrapTextForDipslayNote(noteToUpdate, const_note_length_of_collapse);
+                    if (noteForDisplay == '-') {
+                        $(domElementsNote.contentNoteDisplay).addClass('note-blank');
+                        adjustSizeOfNote(cell);
+                    } else {
+                        $(domElementsNote.contentNoteDisplay).removeClass('note-blank');
+                        $(domElementsNote.contentNoteDisplay).css({ 'padding-top': '6px' });
+                    }
+
+                    $(domElementsNote.contentNoteDisplay).html(noteForDisplay);
+                    $(".btn-note-ellipsis", cell).click(() => handleExpandNote(cell));
+
+                    common.showSuccess();
+                } else {
+                    common.showError(response.ErrorMsg);
+                    console.log(response.ErrorMsg);
+                }
+            },
+            error: function (xhr, status, error) {
+                console.log('data of ' + xhr.responseText);
+                common.showError();
+                common.closeLoading();
+            }
+        });
+    }
+
+    function adjustSizeOfNote(cell) {
+        var domElementNoteDisplay = $(cell).find(".note-content-display");
+        var domElementNoteBlank = $(cell).find(".note-blank");
+        var domElementNoteInput = $(cell).find(".txt-note-input");
+
+        var domElementNoteDisplay = $(cell).find(".note-content-display");
+        console.log($(window).width());
+        if ($(window).width() < 1660) {
+            domElementNoteDisplay.css({ 'min-height': '95px' });
+            domElementNoteInput.css({ 'min-height': '92px' });
+            domElementNoteBlank.css({ 'padding-top': '35px' });            
+        }
+    }
+
+    function handleExpandNote(cell) {
+        var noteForDisplay = $(cell).find('.txt-note-input').val();
+
+        var noteForDisplay = noteForDisplay + "  " + '<span class="btn-note-collapse icon-chevron-up" title="click to collapse up"></span>';
+
+        $(cell).find(".note-content-display").html(noteForDisplay);
+
+        $('.btn-note-collapse', cell).click(() => handleCollapseNote(cell));
+    }
+
+    function handleCollapseNote(cell) {
+        var txtNoteInput = $(cell).find('.txt-note-input').val();
+        var noteForDisplay = wrapTextForDipslayNote(txtNoteInput, const_note_length_of_collapse);
+        $(cell).find(".note-content-display").html(noteForDisplay);
+
+        match_table.DataTable().columns.adjust();
+        $(".btn-note-ellipsis", cell).click(() => handleExpandNote(cell));
+    }
+
+    function handleSpecialCharacter(str) {
+        if (str != null) {
+            return str.replace(/&/g, "&amp;").replace(/>/g, "&gt;").replace(/</g, "&lt;");
+        }
+        return str;
+    }
 
     $("#generate").click(generate_report);
 

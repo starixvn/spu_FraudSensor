@@ -30,7 +30,8 @@ namespace Fanex.NAP.FS.Library.ExcelConfig.DailyDataCapture
             row.GetCell(idx++).SetCellValue(RenderDouble(data.AgentTO));
             row.GetCell(idx++).SetCellValue(RenderInt(data.Tickets));
             row.GetCell(idx++).SetCellValue(RenderInt(data.SettledTickets));
-            row.GetCell(idx).SetCellValue(RenderInt(data.CancelledTickets));
+            row.GetCell(idx++).SetCellValue(RenderInt(data.CancelledTickets));
+            row.GetCell(idx).SetCellValue(data.Note != null ? ReplaceSpecialCharacter(data.Note) : "-");
         }
 
         protected override void FillLegend(IRow row, DailyDataGetCriteria legend)
@@ -70,6 +71,16 @@ namespace Fanex.NAP.FS.Library.ExcelConfig.DailyDataCapture
             return ExcelUtilities.GetXSSF()
                 .Write($"{(history.Old.HasValue ? history.Old.Value.ToString("N0") : "-")}\n")
                 .WriteWithFont(history.New.HasValue ? history.New.Value.ToString("N0") : "-", new XSSFFont { Color = IndexedColors.Coral.Index });
+        }
+
+        private static string ReplaceSpecialCharacter(string obj)
+        {
+            if (!string.IsNullOrEmpty(obj))
+            {
+                return obj.Replace("&amp;", "&").Replace("&gt;", ">").Replace("&lt;", "<");
+            }
+
+            return obj;
         }
     }
 }

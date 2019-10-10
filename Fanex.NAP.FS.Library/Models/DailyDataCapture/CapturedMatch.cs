@@ -45,5 +45,7 @@
         public DateTime CapturedDate { get; set; }
 
         public DateTime EventDate { get; set; }
+
+        public string Note { get; set; }
     }
 }

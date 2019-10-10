@@ -230,6 +230,7 @@
     <Compile Include="Criteria\CustomerMonitor\CustomerGetCriteria.cs" />
     <Compile Include="Criteria\CustomerMonitor\UpdateNoteCriteria.cs" />
     <Compile Include="Criteria\DailyDataCapture\DailyDataGetCriteria.cs" />
+    <Compile Include="Criteria\DailyDataCapture\UpdateDailyDataCaptureOfNoteCriteria.cs" />
     <Compile Include="Criteria\FraudCase\DelayedGoal\DelayGoalAssociationAccountInsertCriteria.cs" />
     <Compile Include="Criteria\FraudCase\DelayedGoal\DelayGoalManualAccountGetCriteria.cs" />
     <Compile Include="Criteria\FraudCase\DelayedGoal\DelayedGoalAccountInsertCriteria.cs" />
@@ -432,6 +433,7 @@
     <Compile Include="ViewModels\CustomerMonitor\CustomerDetails\TicketDetails.cs" />
     <Compile Include="ViewModels\DailyDataMonitor\CapturedMatch.cs" />
     <Compile Include="ViewModels\Enums.cs" />
+    <Compile Include="ViewModels\DailyDataMonitor\DailyDataCaptureOfNote.cs" />
     <Compile Include="ViewModels\FraudCase\DelayedGoal\Customer.cs" />
     <Compile Include="ViewModels\History.cs" />
     <Compile Include="ViewModels\MatchMonitor\Event.cs" />

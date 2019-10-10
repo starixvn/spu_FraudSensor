@@ -2,6 +2,7 @@
 {
     using Fanex.NAP.FS.Library.Core.BaseClasses;
     using Fanex.NAP.FS.Library.Criteria.DailyDataCapture;
+    using Fanex.NAP.FS.Library.Models;
     using Fanex.NAP.FS.Library.Services.Interface;
     using Fanex.NAP.FS.Library.ViewModels.DailyDataMonitor;
     using RemotingRef;
@@ -56,8 +57,21 @@
                     {
                         New = m.NewTotalTickets,
                         Old = m.OldTotalTickets
-                    }
+                    },
+                    Note = m.Note ?? string.Empty
                 });
+        }
+
+        public DBResult UpdateDailyDataCaptureOfNote(DailyDataCaptureOfNote dataCaptureOfNote)
+        {
+            var criteria = new UpdateDailyDataCaptureOfNoteCriteria
+            {
+                UserId = dataCaptureOfNote.UserId,
+                MatchIds = dataCaptureOfNote.MatchIds,
+                Note = dataCaptureOfNote.Note ?? string.Empty
+            };
+
+            return DataService.UpdateData(criteria, "Update Note Daily Data Capture");
         }
     }
 }
