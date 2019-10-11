@@ -118,11 +118,10 @@
             scrollCollapse: true,
             columnDefs: [
                 { targets: "_all", defaultContent: "-" },
-                { targets: [-2, -1], className: "text-center" },
-                { targets: [0, 1, 2, 3], className: "text-center" },
-                { targets: [0], width: "10%" },
-                { targets: [1], width: "30%" },
-                { targets: [2], width: "30%" }              
+                { targets: [0], className: "text-center", width: "10%" },
+                { targets: [1], className: "text-left", width: "30%" },
+                { targets: [2], className: "text-left", width: "30%" },
+                { targets: [3], className: "text-left" },
             ],
             columns: [
                 { data: (row, type, set, meta) => meta.row + 1 },
@@ -169,9 +168,15 @@
     function ValidateInput(keySearch, subscribers) {
         var error = false;
 
-        if (keySearch == null || keySearch.trim().length < 3 || !regex.test(keySearch)) {
-            $('span', captionErrorAccount).text('The Account is not valid!');
+        if (keySearch == null || keySearch.trim().length < 3) {
+            $('span', captionErrorAccount).text('At least three letters are required!');
             $(captionErrorAccount).show();
+            table.DataTable().clear().draw();
+            error = true;
+        }
+
+        if (!regex.test(keySearch)) {
+            table.DataTable().clear().draw();
             error = true;
         }
 

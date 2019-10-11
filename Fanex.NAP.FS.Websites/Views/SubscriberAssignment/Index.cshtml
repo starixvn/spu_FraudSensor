@@ -1,4 +1,5 @@
-﻿@using Fanex.NAP.FS.Library.Models.Subscriber;
+﻿@using Fanex.NAP.FS.Library.Core.Consts;
+@using Fanex.NAP.FS.Library.Core.Resources;
 
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -12,51 +13,60 @@
     <link href="~/Content/scss/pages/subscriber-assignment/subscriber-assignment.css" rel="stylesheet" />
 }
 
-<div class="filter">
-    <div class="form-control">
-        <div class="control-label">Username</div>
-        <input type="text" id="username" class="control input-field" />
+@if (ViewBag.IsPermission)
+{
+    <div class="filter">
+        <div class="form-control">
+            <div class="control-label">Username</div>
+            <input type="text" id="username" class="control input-field" />
 
-        <div id="caption-error" style="margin-top: 3px;">
-            <span style="color:red"></span>
+            <div id="caption-error" style="margin-top: 3px;">
+                <span style="color:red"></span>
+            </div>
+        </div>
+        <div class="form-control button-group">
+            <button class="button btn-search" id="btnSearch">Search</button>
         </div>
     </div>
-    <div class="form-control button-group">
-        <button class="button btn-search" id="btnSearch">Search</button>
+
+    <div class="filter" id="filter-ismaster">
+        <div class="group">
+            <label class="checkbox">
+                <input type="checkbox" id="chkMasterSubcriber" />
+                <span>Set as Master Subscriber</span>
+            </label>
+        </div>
     </div>
-</div>
 
-<div class="filter" id="filter-ismaster">    
-    <div class="group">
-        <label class="checkbox">
-            <input type="checkbox" id="chkMasterSubcriber" />
-            <span>Set as Master Subscriber</span>
-        </label>
+    <div class="filter" id="filter-subs">
+        <div class="form-control">
+            <div class="control-label">Subscribers</div>
+            <select id="ddlSubscriber" multiple="multiple"></select>
+        </div>
+        <div class="form-control">
+            <div class="control-label">Status</div>
+            <select class="control" id="cbbStatus">
+                <option value="0" selected>All</option>
+                <option value="1">Assigned</option>
+                <option value="2">Unassigned</option>
+            </select>
+        </div>
     </div>
-</div>
 
-<div class="filter" id="filter-subs">
-    <div class="form-control">
-        <div class="control-label">Subscribers</div>
-        <select id="ddlSubscriber" multiple="multiple"></select>
-    </div>   
-    <div class="form-control">
-        <div class="control-label">Status</div>
-        <select class="control" id="cbbStatus">
-            <option value="0" selected>All</option>
-            <option value="1">Assigned</option>
-            <option value="2">Unassigned</option>
-        </select>
-    </div>            
-</div>
+    <div class="content-subscribers" id="content-subscribers">
+        <div class="sub-wapper"></div>
+    </div>
 
-<div class="content-subscribers" id="content-subscribers">
-    <div class="sub-wapper"></div>
-</div>
-
-<div class="filter" id="filter-submit">
-    <div class="form-control button-group"><button class="button btn-submit" id="btnSubmit">Submit</button></div>
-</div>
+    <div class="filter" id="filter-submit">
+        <div class="form-control button-group"><button class="button btn-submit" id="btnSubmit">Submit</button></div>
+    </div>
+}
+else
+{
+    <div style="text-align: center;">
+        <h4>@ResourcesManager.GetValue(ConstsResources.SUBSCRIBER_ASSIGNMENT_MUST_PERMISSION)</h4>
+    </div>    
+}
 
 @section scripts{
     <script src="~/Scripts/MultipleSelect/jquery.multiselect.filter.js"></script>

@@ -165,4 +165,7 @@
   <data name="NONE" xml:space="preserve">
     <value>None</value>
   </data>
+  <data name="SUBSCRIBER_ASSIGNMENT_MUST_PERMISSION" xml:space="preserve">
+    <value>You must be assigned as Master to use this function</value>
+  </data>
 </root>

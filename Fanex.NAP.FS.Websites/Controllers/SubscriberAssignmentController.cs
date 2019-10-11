@@ -4,6 +4,7 @@
     using Fanex.NAP.Core.Web.Attribute;
     using Fanex.NAP.FS.Library.Core.Consts;
     using Fanex.NAP.FS.Library.Services;
+    using Fanex.NAP.FS.Service.Utilities;
     using System.Configuration;
     using System.Web.Mvc;
 
@@ -23,6 +24,7 @@
         {
             ViewBag.Username = this.User.Identity.Name;
             ViewBag.Environment = int.Parse(ConfigurationManager.AppSettings["Environment"]);
+            ViewBag.IsPermission = PermissionService.IsMasterSubscriberAssignment();
 
             return View();
         }

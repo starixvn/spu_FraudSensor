@@ -203,5 +203,14 @@ namespace Fanex.NAP.FS.Library.Core.Resources {
                 return ResourceManager.GetString("NONE", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You must be assigned as Master to use this function.
+        /// </summary>
+        internal static string SUBSCRIBER_ASSIGNMENT_MUST_PERMISSION {
+            get {
+                return ResourceManager.GetString("SUBSCRIBER_ASSIGNMENT_MUST_PERMISSION", resourceCulture);
+            }
+        }
     }
 }

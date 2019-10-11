@@ -36,9 +36,25 @@
                 ip_UserId = filter.UserId
             };
           
-            var dataCollected = DataService.GetData<SubscriberAccount>(criteria);
+            var accountsCollected = DataService.GetData<SubscriberAccount>(criteria);
 
-            return dataCollected.AsEnumerable()
+            return SortAccounts(accountsCollected, filter);
+        }
+
+        private IEnumerable<SubscriberAccount> SortAccounts(IEnumerable<SubscriberAccount> accountsCollected, SearchAccountFilter filter)
+        {
+            var accounts = new List<SubscriberAccount>();
+            var subscribers = accountsCollected.AsEnumerable()
+                .GroupBy(g => g.SubscriberName);
+
+            foreach (var subGroup in subscribers)
+            {
+                accounts.AddRange(subGroup
+                       .Where(c => c.SubscriberName == subGroup.Key && c.UserName.ToLower().Equals(filter.Key.ToLower()))
+                       .Select(c => c)
+                );
+
+                accounts.AddRange(subGroup
                       .Select(c => new SubscriberAccount
                       {
                           SubscriberID = c.SubscriberID,
@@ -47,8 +63,12 @@
                           CustID = c.CustID,
                           UserName = c.GetUserName(),
                           UserName2 = c.UserName2,
-                      }).OrderBy(a => a.SubscriberName)
-                      .ThenBy(a => a.UserName);
+                      }).Where(c => c.SubscriberName == subGroup.Key && !c.UserName.ToLower().Equals(filter.Key.ToLower()))
+                      .OrderBy(a => a.UserName)
+                );
+            }
+
+            return accounts;
         }
         #endregion
 
@@ -60,7 +80,7 @@
                 ip_userId = userId
             };
 
-            var rawSubscribers = DataService.GetData<SubscriberAssignment>(criteria).OrderBy(c => c.SubscriberName).ThenBy(c => c.SubscriberID);
+            var rawSubscribers = DataService.GetData<SubscriberAssignment>(criteria).OrderBy(c => c.SubscriberName);
 
             if (CheckIsMasterSubscriber(rawSubscribers))
             {

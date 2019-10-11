@@ -249,11 +249,14 @@
         return ids.join(',');
     }     
 
-    function Compare(subsA, subsB) {
-        if (subsA.name < subsB.name) {
+    function Compare(subA, subB) {
+        var subNameToUpperA = subA.name.toUpperCase();
+        var subNameToUpperB = subB.name.toUpperCase();
+
+        if (subNameToUpperA.name < subNameToUpperB.name) {
             return -1;
         }
-        if (subsA.name > subsB.name) {
+        if (subNameToUpperA.name > subNameToUpperB.name) {
             return 1;
         }
         return 0;
