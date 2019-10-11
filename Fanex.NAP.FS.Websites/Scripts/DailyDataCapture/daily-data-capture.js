@@ -251,15 +251,15 @@
 
     function adjustSizeOfNote(cell) {
         var domElementNoteDisplay = $(cell).find(".note-content-display");
-        var domElementNoteBlank = $(cell).find(".note-blank");
         var domElementNoteInput = $(cell).find(".txt-note-input");
 
-        var domElementNoteDisplay = $(cell).find(".note-content-display");
-        console.log($(window).width());
+        var domElementNoteDisplay = $(cell).find(".note-content-display");       
         if ($(window).width() < 1660) {
-            domElementNoteDisplay.css({ 'min-height': '95px' });
-            domElementNoteInput.css({ 'min-height': '92px' });
-            domElementNoteBlank.css({ 'padding-top': '35px' });            
+            domElementNoteDisplay.css({ 'min-height': '95px', 'padding-top': '37px' });
+            domElementNoteInput.css({ 'min-height': '92px' });           
+        } else {
+            domElementNoteDisplay.css({ 'min-height': '75px', 'padding-top': '27px' });
+            domElementNoteInput.css({ 'min-height': '73px' });
         }
     }
 
