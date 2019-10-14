@@ -169,13 +169,10 @@
         }
         else if (host.includes("oneops")) {
             return "/NAPFS" + url;
-        }       
-        else if (host.includes("Main")) {
-            return "/Main" + url;
-        }       
-        else if (host.includes("Test")) {
-            return "/Test" + url;
-        }       
+        }
+        else {
+            return $('#absoluteUrl').val() + url
+        }      
 
         return url;
     }
