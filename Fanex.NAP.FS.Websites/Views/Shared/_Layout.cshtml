@@ -38,6 +38,9 @@
     <div id="confirmation" title="Confirmation"></div>
     <div id="success" style="color: #4f971f" class="text-center"></div>
     <div id="error" style="color:red" class="text-center"></div>
+
+    <input id="absoluteUrl" type="hidden" value="@(Request.Url.GetLeftPart(UriPartial.Authority) + Request.ApplicationPath)" />
+
     @Scripts.Render("~/bundles/jquery")
     @if (NapSettings.Settings.EnableReCheckIn)
     {
@@ -47,7 +50,6 @@
     @Scripts.Render("~/notification")
     @RenderSection("scripts", required: false)
     @Scripts.Render("~/finalize")
-
-    <input id="absoluteUrl" type="hidden" value="@(Request.Url.GetLeftPart(UriPartial.Authority) + Request.ApplicationPath)" />
+    
 </body>
 </html>

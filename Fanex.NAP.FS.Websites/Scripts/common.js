@@ -174,7 +174,7 @@
             return $('#absoluteUrl').val() + url
         }      
 
-        return url;
+        return $('#absoluteUrl').val() + url
     }
 
     this.makeNonSearchSelect = select => $(select).select2({ minimumResultsForSearch: -1 })
