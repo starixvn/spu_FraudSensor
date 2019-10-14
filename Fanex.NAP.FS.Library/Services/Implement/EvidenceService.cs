@@ -189,7 +189,16 @@
         #region Evidence Management
         public IEnumerable<Evidence> GetAllEvidences()
         {
-            return new List<Evidence>();
+            var evidences = new List<Evidence>();
+
+            evidences.Add(new Evidence { EvidenceGroupID = 1, EvidenceGroupName = "Financial", EvidenceTypeCode = "1.1", EvidenceTypeName = "Credit Card Fraud", Description = "" });
+            evidences.Add(new Evidence { EvidenceGroupID = 1, EvidenceGroupName = "Financial", EvidenceTypeCode = "1.2", EvidenceTypeName = "ACH/Debit Fraud", Description = "" });
+            evidences.Add(new Evidence { EvidenceGroupID = 1, EvidenceGroupName = "Financial", EvidenceTypeCode = "1.3", EvidenceTypeName = "Friendly Chargeback", Description = "" });
+            evidences.Add(new Evidence { EvidenceGroupID = 2, EvidenceGroupName = "Cheating", EvidenceTypeCode = "2.1", EvidenceTypeName = "Collusion", Description = "" });
+            evidences.Add(new Evidence { EvidenceGroupID = 2, EvidenceGroupName = "Cheating", EvidenceTypeCode = "2.2", EvidenceTypeName = "Chip Dumping", Description = "" });
+            evidences.Add(new Evidence { EvidenceGroupID = 3, EvidenceGroupName = "Misconduct", EvidenceTypeCode = "3.1", EvidenceTypeName = "Chat Abuse", Description = "" });
+
+            return evidences;
         }
 
         public IEnumerable<Evidence> GetEvidencesByAccount(int accountId)

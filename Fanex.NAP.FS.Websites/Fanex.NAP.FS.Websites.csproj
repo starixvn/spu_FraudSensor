@@ -419,7 +419,7 @@
     <Content Include="images\graphrender\group.svg" />
     <Content Include="Scripts\Account\Associated\account-by-account.js" />
     <Content Include="Scripts\Account\Associated\device-by-account.js" />
-    <Content Include="Scripts\Evidence\form-add-evidence.js" />
+    <Content Include="Scripts\Evidence\form-place-evidence.js" />
     <Content Include="Scripts\Evidence\form-exception.js" />
     <Content Include="Scripts\popoto\d3.min.js" />
     <Content Include="Scripts\popoto\popoto.min.js" />
@@ -1127,7 +1127,7 @@
     <Content Include="Views\Account\DetailInfoAccount\RetractAndException.cshtml" />
     <Content Include="Views\Account\Associated\AccountByAccount.cshtml" />
     <Content Include="Views\Account\Associated\DeviceByAccount.cshtml" />
-    <Content Include="Views\Evidence\FormAddEvidence.cshtml" />
+    <Content Include="Views\Evidence\FormPlaceEvidence.cshtml" />
     <Content Include="Views\Account\Associated\GraphVisualization.cshtml" />
     <Content Include="Views\Account\Associated\ShortestPathVisual.cshtml" />
     <None Include="Views\Errors\403.cshtml" />

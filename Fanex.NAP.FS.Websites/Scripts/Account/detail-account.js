@@ -3,7 +3,7 @@
     var collapseAll = ('.collapse-all');
     var expandAll = $('.expand-all');
     var formException;
-    var formAddEvidence = new form_add_evidence(ACCOUNTID);
+    var formPlaceEvidence = new form_place_evidence(ACCOUNTID);
 
     var containers = [
         { name: "chains_evidence", url: common.modifyRelativeUrl('/Account/GetChainsToEvidence') },
@@ -130,12 +130,12 @@
         window.location.reload(true);
     }
 
-    function OpenAddEvidence() {
-        formAddEvidence.OpenModal();
+    function OpenFormPlaceEvidence() {
+        formPlaceEvidence.OpenModal();
     }
 
-    function AddEvidence() {
-        formAddEvidence.Submit();
+    function PlaceEvidence() {
+        formPlaceEvidence.Submit();
     }
 
     function RemoveHidden(container) {
@@ -156,9 +156,9 @@
         }
     }
 
-    $('#btn-add-evidence').click(OpenAddEvidence);
+    $('#btn-add-evidence').click(OpenFormPlaceEvidence);
 
-    $('#btn-submit-evidence').click(AddEvidence);
+    $('#btn-place-evidence-submit').click(PlaceEvidence);
 
     $(collapseAll).hide();
 

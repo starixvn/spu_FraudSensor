@@ -11,5 +11,7 @@
         public string EvidenceTypeCode { get; set; }
 
         public string EvidenceTypeName { get; set; }
+
+        public string Description { get; set; }
     }
 }

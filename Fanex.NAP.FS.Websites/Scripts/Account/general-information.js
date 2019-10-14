@@ -76,8 +76,8 @@
             default:
                 $(abnormal).text('None');
                 $(abnormal).css({
-                    'background-color': '#FFFFFF',                  
-                    'border': '1px solid #2f79ed'
+                    'background': 'transparent',
+                    'border': 'transparent'
                 });
                 break;
         }

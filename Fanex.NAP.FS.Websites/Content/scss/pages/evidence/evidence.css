@@ -125,3 +125,10 @@
 
 .margin-top-10 {
   margin-top: 10px; }
+
+.ui-multiselect-grouplabel {
+  text-align: left !important;
+  cursor: default; }
+
+.ui-helper-reset {
+  border: 1px solid rgba(0, 0, 0, 0.3); }

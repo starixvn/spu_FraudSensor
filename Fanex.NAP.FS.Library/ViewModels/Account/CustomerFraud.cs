@@ -71,14 +71,14 @@
 
         private AccountStatus GetAccountStatusForMBC()
         {
-            if (this.reject)
-            {
-                return AccountStatus.Suspended;
-            }
-
             if (this.closed)
             {
                 return AccountStatus.Closed;
+            }
+
+            if (this.reject)
+            {
+                return AccountStatus.Suspended;
             }
 
             return AccountStatus.Open;
