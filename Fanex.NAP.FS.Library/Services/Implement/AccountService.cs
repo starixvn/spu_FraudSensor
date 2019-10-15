@@ -49,26 +49,48 @@
 
             foreach (var subGroup in subscribers)
             {
+                // exactly
                 accounts.AddRange(subGroup
-                       .Where(c => c.SubscriberName == subGroup.Key && c.UserName.ToLower().Equals(filter.Key.ToLower()))
-                       .Select(c => c)
+                    .Where(c => c.SubscriberName == subGroup.Key 
+                        && c.UserNameToSort.ToLower().Equals(filter.Key.ToLower()))
+                    .Select(c => GetAccount(c))
                 );
 
+                // beginning
                 accounts.AddRange(subGroup
-                      .Select(c => new SubscriberAccount
-                      {
-                          SubscriberID = c.SubscriberID,
-                          SubscriberName = c.SubscriberName,
-                          AccountID = c.AccountID,
-                          CustID = c.CustID,
-                          UserName = c.GetUserName(),
-                          UserName2 = c.UserName2,
-                      }).Where(c => c.SubscriberName == subGroup.Key && !c.UserName.ToLower().Equals(filter.Key.ToLower()))
-                      .OrderBy(a => a.UserName)
+                    .Where(c => c.SubscriberName == subGroup.Key 
+                        && !c.UserNameToSort.ToLower().Equals(filter.Key.ToLower())
+                        && c.UserNameToSort.ToLower().StartsWith(filter.Key.ToLower())
+                    )
+                    .Select(c => GetAccount(c))
+                    .OrderBy(a => a.UserNameToSort)
                 );
+
+                // alphabet
+                accounts.AddRange(subGroup
+                   .Where(c => c.SubscriberName == subGroup.Key
+                       && !c.UserNameToSort.ToLower().Equals(filter.Key.ToLower())
+                       && !c.UserNameToSort.ToLower().StartsWith(filter.Key.ToLower())
+                   )
+                   .Select(c => GetAccount(c))
+                   .OrderBy(a => a.UserNameToSort)
+               );
             }
 
             return accounts;
+        }
+
+        private SubscriberAccount GetAccount(SubscriberAccount account)
+        {
+            return new SubscriberAccount
+            {
+                SubscriberID = account.SubscriberID,
+                SubscriberName = account.SubscriberName,
+                AccountID = account.AccountID,
+                CustID = account.CustID,
+                UserName = account.GetUserName(),
+                UserName2 = account.UserName2,
+            };
         }
         #endregion
 

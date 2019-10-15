@@ -16,6 +16,14 @@
 
         public string FirstLoginName { get; set; }
 
+        public string UserNameToSort
+        {
+            get
+            {
+                return !string.IsNullOrEmpty(this.UserName) ? this.UserName : this.FirstLoginName;
+            }
+        }
+
         public bool IsCustomerExisted
         {
             get { return !string.IsNullOrEmpty(this.UserName) && !string.IsNullOrEmpty(this.UserName2); }
@@ -29,6 +37,6 @@
             }
 
             return this.FirstLoginName;
-        }
+        }        
     }
 }
