@@ -1,5 +1,4 @@
-﻿@model Fanex.NAP.FS.Library.ViewModels.Account.AccountDetail
-@{
+﻿@{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 @section styles{
@@ -46,7 +45,7 @@
         }
     </style>
 }
-@Html.Partial("DetailInfoAccount/GeneralInformation", Model)
+@Html.Partial("DetailInfoAccount/GeneralInformation")
 <div class="content-card">
     <div class="status">
         <p class="info" style="margin-bottom: 0">
@@ -114,14 +113,14 @@
     </div>
 </div>
 @section scripts{
-    <script type="text/javascript">
-    var ACCOUNTID = '@Model.GeneralInfo.AccountId';
-    var CUSTID = '@Model.GeneralInfo.CustId';
-    var USERNAME = '@Model.GeneralInfo.Username';
-    var SUBSCRIBERID = '@Model.GeneralInfo.SubscriberID';
-    var SUBSCRIBER = '@Model.GeneralInfo.SubscriberName';
+<script type="text/javascript">
+    var ACCOUNTID = '@ViewBag.AccountId';
+    var CUSTID = '@ViewBag.CustId';
+    var USERNAME = '';
+    var SUBSCRIBERID = '';
+    var SUBSCRIBER = '';
     var IsPermissionIPLocation = '@ViewBag.IsPermissionIPLocation';
-    </script>
+</script>
     <script src="~/Scripts/MultipleSelect/jquery.multiselect.filter.js"></script>
     <script src="~/Scripts/MultipleSelect/jquery.multiselect.js"></script>
     @Scripts.Render("~/evidence-scripts"

@@ -1,45 +1,133 @@
 ﻿function general_information() {
-    var abnormal = $('#abnormal');
-    var dangerous_level_original = $('#dangerous-level-original');
-    var dangerous_level_non_live = $('#dangerous-level-non-live');
-    var dangerous_level_other_sports = $('#dangerous-level-other-sports');
-    var account_status = $('#lbl-account-status-general-info');
 
-    function InitGeneralInformation() {
-        RenderAccountStatus();
-        RenderAbnormal();
-        RenderDangerousLevel(dangerous_level_original);
-        RenderDangerousLevel(dangerous_level_non_live);
-        RenderDangerousLevel(dangerous_level_other_sports);
+    function GetGeneralInformation() {
+        common.showLoading();
+
+        var url = common.modifyRelativeUrl('/Account/GetGeneralInformation');
+        var paramsFilter = {};
+        paramsFilter.AccountId = ACCOUNTID;
+        paramsFilter.CustId = CUSTID;
+
+        $.ajax(url, {
+            type: 'POST',
+            data: paramsFilter,
+            success: function (response) {
+                BindGeneralInformation(response);
+            },
+            error: function (errMsg) {
+                console.log(errMsg);
+                common.showError(errMsg);
+                common.closeLoading();
+            }
+        });
     }
 
-    function RenderAccountStatus() {
-        var statusValue = $(account_status).attr('status');
-        
-        switch (statusValue) {
-            case "Open":
-            case "CN88_Active":
-                $(account_status).css('background-color', '#4F971F');
-                break;
-            case "Suspended":
-            case "CN88_ViewOnly":
-                $(account_status).css('background-color', '#DB2222');
-                break;            
-            case "CN88_Suspended":
-                $(account_status).css('background-color', '#D34315');
-                break;
-            case "Closed":
-            case "CN88_Inactive":
-            case "None":
-                $(account_status).css('background-color', '#545454');
-                break;
-            default:
-                break;
+    function BindGeneralInformation(data) {
+        RenderUserName(data.GeneralInfo);
+        RenderAccountStatus(data.GeneralInfo);
+        RenderLoginInformation(data.GeneralInfo);
+        RenderAssociation(data.GeneralInfo);
+        RenderFraudInformation(data.GeneralInfo);
+
+        USERNAME = data.GeneralInfo.Username;        
+        SUBSCRIBERID = data.GeneralInfo.SubscriberID;
+        SUBSCRIBER = data.GeneralInfo.SubscriberName;
+
+        common.closeLoading();
+    }
+
+    function RenderUserName(info) {
+        var icon = '';
+        var userNameInfo = '';
+
+        if (info.Username != '') {
+            userNameInfo = info.Username + "(" + info.Username2 + ")";
+        } else {
+            userNameInfo = info.FirstLoginName;
         }
+
+        if (info.AccountEvidenceStatus == 'Clean') {
+            $('#general-info-username-icon').addClass('icon-clean');
+
+            userNameInfo = userNameInfo + ': <label>This account is clean</label>';
+
+        } else if (info.AccountEvidenceStatus == 'CentralPoint') {
+            $('#general-info-username-icon').addClass('icon-fraud-flag');
+            $('#general-info-username-icon').parent().addClass('red');
+            userNameInfo = userNameInfo + ': <label>This account is flagged</label>'
+        } else {
+            $('#general-info-username-icon').addClass('icon-fraud');
+            $('#general-info-username-icon').parent().addClass('red');
+
+            userNameInfo = userNameInfo + ': <label>This account is affected by a link to evidence</label>';
+        }
+        
+        $('#general-info-username').append(userNameInfo);
     }
+
+    function RenderAccountStatus(info) {
+        $('#general-info-account-status').text(info.AccountStatusToString);
+
+        if (info.AccountStatusName != 'NotYetDeposit') {
+            $('#general-info-account-status').addClass('badge-label');
+
+            switch (info.AccountStatusName) {
+                case "Open":
+                case "CN88_Active":
+                    $('#general-info-account-status').css('background-color', '#4F971F');
+                    break;
+                case "Suspended":
+                case "CN88_ViewOnly":
+                    $('#general-info-account-status').css('background-color', '#DB2222');
+                    break;
+                case "CN88_Suspended":
+                    $('#general-info-account-status').css('background-color', '#D34315');
+                    break;
+                case "Closed":
+                case "CN88_Inactive":
+                case "None":
+                    $('#general-info-account-status').css('background-color', '#545454');
+                    break;
+                default:
+                    break;
+            }
+        }        
+    }
+
+    function RenderLoginInformation(info) {
+        $('#general-info-first-login').text(info.FirstLoginToString);
+        $('#general-info-last-login').text(info.LastLoginToString);
+        $('#general-info-account-age').text(info.FrequencyLogin + "/" + info.AccountAge + "(times / days)");
+    }
+
+    function RenderAssociation(info) {
+        $('#general-info-associated-accounts').text(info.AssociatedAccounts);
+        $('#general-info-associated-devices').text(info.AssociatedDevices);
+        $('#general-info-shared-devices').text(info.SharedDevices);
+        $('#general-info-noshared-device').text(info.NoSharedDevices);
+        $('#general-info-account-exceptions').text(info.AccountExceptions);
+    }
+
+    function RenderFraudInformation(info) {
+        $('#general-info-evidences').text(info.EvidenceTypeCodes);
+        $('#general-info-problem-account-status').text(info.ProblemAccount);
+        $('#general-info-abnormal').text(info.Abnormal);
+        $('#general-info-dangerous-level-original').text(info.DangerousOriginal);
+        $('#general-info-dangerous-level-non-live').text(info.DangerousNonLive);
+        $('#general-info-dangerous-level-other-sports').text(info.DangerousOtherSports);
+        $('#general-info-autosuspend').text(info.AutoSuspend);
+        $('#general-info-commited-fraudcase').text(info.CommitedFraudCase);
+
+        RenderAbnormal();
+        RenderDangerousLevel($('#general-info-dangerous-level-original'));
+        RenderDangerousLevel($('#general-info-dangerous-level-non-live'));
+        RenderDangerousLevel($('#general-info-dangerous-level-other-sports'));
+    }    
 
     function RenderAbnormal() {
         var abnormalValue = $(abnormal).text().trim();
+        var abnormal = $('#general-info-abnormal');
+
         $(abnormal).css({ 'color': '#000000' });
 
         switch (abnormalValue) {
@@ -75,10 +163,8 @@
                 break;
             default:
                 $(abnormal).text('None');
-                $(abnormal).css({
-                    'background': 'transparent',
-                    'border': 'transparent'
-                });
+                $(abnormal).css({ 'color': '#666666' });
+                $(abnormal).removeClass('badge-level');              
                 break;
         }
     }
@@ -154,14 +240,14 @@
                 $(dangerousName).text('None');
                 $(dangerousName).css(
                     {
-                        'background-color': '#FFFFFF'                        
+                        'background-color': '#FFFFFF'
                     }
                 );
                 break;
         }
     }   
 
-    InitGeneralInformation();
+    GetGeneralInformation();
 }
 
 $(general_information);

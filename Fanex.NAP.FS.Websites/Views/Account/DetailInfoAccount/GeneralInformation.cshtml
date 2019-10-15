@@ -1,6 +1,4 @@
-﻿@using Fanex.NAP.FS.Library.Models;
-@model Fanex.NAP.FS.Library.ViewModels.Account.AccountDetail
-@{
+﻿@{
     ViewBag.Title = "GeneralInformation";
 }
 
@@ -12,64 +10,18 @@
         <span class="page">Account Detail</span>
     </span>
 </h2>
-@{
-    var userNameInfo = string.Empty;
-
-    if (!string.IsNullOrEmpty(Model.GeneralInfo.Username))
-    {
-        userNameInfo = Model.GeneralInfo.Username + "(" + Model.GeneralInfo.Username2 + ")";
-    }
-    else
-    {
-        userNameInfo = Model.GeneralInfo.FirstLoginName;
-    }
-}
 
 <div class="content-card">
     <div class="status">
-        @if (Model.GeneralInfo.AccountEvidenceStatus == AccountEvidenceStatus.Clean)
-        {
-            <p class="info">
-                <i class="icon-clean"></i>
-                <span>
-                    @userNameInfo: <label>This account is clean</label>
-                </span>
-            </p>
-        }
-        else if (Model.GeneralInfo.AccountEvidenceStatus == AccountEvidenceStatus.CentralPoint)
-        {
-            <p class="info red">
-                <i class="icon-fraud-flag"></i>
-                <span>
-                    @userNameInfo: <label>This account is flagged</label>
-                </span>
-            </p>
-        }
-        else
-        {
-            <p class="info red">
-                <i class="icon-fraud"></i>
-                <span>
-                    @userNameInfo: <label>This account is affected by a link to evidence</label>
-                </span>
-            </p>
-        }
+        <p class="info">
+            <i id="general-info-username-icon"></i>
+            <span id="general-info-username"></span>
+        </p>
 
-            <p class="bold">
-                Account Status:
-                @if (Model.GeneralInfo.AccountStatus == AccountStatus.NotYetDeposit)
-                {
-                    <span id="lbl-account-status-general-info">
-                        @Model.GeneralInfo.AccountStatusToString
-                    </span>
-                }
-                else
-                {
-                    <span class="badge-label" id="lbl-account-status-general-info" status="@Enum.GetName(typeof(AccountStatus), Model.GeneralInfo.AccountStatus)">
-                        @Model.GeneralInfo.AccountStatusToString
-                    </span>  
-                }                
-            </p>
+        <p class="bold">
+            Account Status:
+            <span id="general-info-account-status"></span>
+        </p>
         <button class="button btn-add" type="button" id="btn-add-evidence">Place Evidence</button>
     </div>
 
@@ -83,9 +35,9 @@
                     <label>Login Frequency:</label>
                 </div>
                 <div class="info-text">
-                    <div> @Model.GeneralInfo.FirstLoginToString</div>
-                    <div> @Model.GeneralInfo.LastLoginToString</div>
-                    <div> @Model.GeneralInfo.FrequencyLogin/@Model.GeneralInfo.AccountAge (times/days)</div>
+                    <div id="general-info-first-login"> </div>
+                    <div id="general-info-last-login"> </div>
+                    <div id="general-info-account-age"> </div>
                 </div>
             </div>
         </div>
@@ -100,11 +52,11 @@
                     <label>Account Exceptions:</label>
                 </div>
                 <div class="info-text">
-                    <div> @Model.GeneralInfo.AssociatedAccounts</div>
-                    <div> @Model.GeneralInfo.AssociatedDevices</div>
-                    <div> @Model.GeneralInfo.SharedDevices</div>
-                    <div> @Model.GeneralInfo.NoSharedDevices</div>
-                    <div> @Model.GeneralInfo.AccountExceptions</div>
+                    <div id="general-info-associated-accounts"> </div>
+                    <div id="general-info-associated-devices"> </div>
+                    <div id="general-info-shared-devices"> </div>
+                    <div id="general-info-noshared-device"> </div>
+                    <div id="general-info-account-exceptions"> </div>
                 </div>
             </div>
         </div>
@@ -121,19 +73,12 @@
                 </div>
                 <div class="info-text">
                     <div>
-                        <span class="link"> @Model.GeneralInfo.EvidenceTypeCodes</span>
+                        <span class="link" id="general-info-evidences"> </span>
                     </div>
 
-                    <div> @Enum.GetName(typeof(ProblemAccountStatus), Model.GeneralInfo.ProblemAccount)</div>
-                    @if (Model.GeneralInfo.Abnormal > 0 && Model.GeneralInfo.Abnormal < 11)
-                    {
-                        <div><span class="badge-level" id="abnormal"> @Model.GeneralInfo.Abnormal</span></div>
-                    }
-                    else
-                    {
-                        <div>None</div>
-                    }
-                    <div>                       
+                    <div id="general-info-problem-account-status"> </div>
+                    <div><span class="badge-level" id="general-info-abnormal"> </span></div>                   
+                    <div>
                         <table class="dangerous-level">
                             <tr>
                                 <th>ORG</th>
@@ -141,16 +86,16 @@
                                 <th>OS</th>
                             </tr>
                             <tr>
-                                <td id="dangerous-level-original">@Model.GeneralInfo.DangerousOriginal</td>
-                                <td id="dangerous-level-non-live">@Model.GeneralInfo.DangerousNonLive</td>
-                                <td id="dangerous-level-other-sports">@Model.GeneralInfo.DangerousOtherSports</td>
+                                <td id="general-info-dangerous-level-original"></td>
+                                <td id="general-info-dangerous-level-non-live"></td>
+                                <td id="general-info-dangerous-level-other-sports"></td>
                             </tr>
                         </table>
                     </div>
-                    <div> @Model.GeneralInfo.AutoSuspend</div>
-                    <div style="border-bottom: 0;"> @Model.GeneralInfo.CommitedFraudCase</div>
+                    <div id="general-info-autosuspend"> </div>
+                    <div id="general-info-commited-fraudcase" style="border-bottom: 0;"> </div>
                 </div>
-            </div>         
+            </div>
         </div>
     </div>
 </div>

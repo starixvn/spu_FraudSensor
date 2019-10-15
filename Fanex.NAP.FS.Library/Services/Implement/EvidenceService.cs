@@ -191,12 +191,12 @@
         {
             var evidences = new List<Evidence>();
 
-            evidences.Add(new Evidence { EvidenceGroupID = 1, EvidenceGroupName = "Financial", EvidenceTypeCode = "1.1", EvidenceTypeName = "Credit Card Fraud", Description = "Description Credit Card Fraud" });
-            evidences.Add(new Evidence { EvidenceGroupID = 1, EvidenceGroupName = "Financial", EvidenceTypeCode = "1.2", EvidenceTypeName = "ACH/Debit Fraud", Description = "Description ACH/Debit Fraud" });
-            evidences.Add(new Evidence { EvidenceGroupID = 1, EvidenceGroupName = "Financial", EvidenceTypeCode = "1.3", EvidenceTypeName = "Friendly Chargeback", Description = "Description Friendly Chargeback" });
-            evidences.Add(new Evidence { EvidenceGroupID = 2, EvidenceGroupName = "Cheating", EvidenceTypeCode = "2.1", EvidenceTypeName = "Collusion", Description = "Description Collusion" });
-            evidences.Add(new Evidence { EvidenceGroupID = 2, EvidenceGroupName = "Cheating", EvidenceTypeCode = "2.2", EvidenceTypeName = "Chip Dumping", Description = "Description Chip Dumping" });
-            evidences.Add(new Evidence { EvidenceGroupID = 3, EvidenceGroupName = "Misconduct", EvidenceTypeCode = "3.1", EvidenceTypeName = "Chat Abuse", Description = "Description Chat Abuse" });
+            evidences.Add(new Evidence { EvidenceGroupID = 1, EvidenceGroupName = "Financial", EvidenceTypeID = 1 , EvidenceTypeCode = "1.1", EvidenceTypeName = "Credit Card Fraud", Description = "Description Credit Card Fraud" });
+            evidences.Add(new Evidence { EvidenceGroupID = 1, EvidenceGroupName = "Financial", EvidenceTypeID = 2, EvidenceTypeCode = "1.2", EvidenceTypeName = "ACH/Debit Fraud", Description = "Description ACH/Debit Fraud" });
+            evidences.Add(new Evidence { EvidenceGroupID = 1, EvidenceGroupName = "Financial", EvidenceTypeID = 3, EvidenceTypeCode = "1.3", EvidenceTypeName = "Friendly Chargeback", Description = "Description Friendly Chargeback" });
+            evidences.Add(new Evidence { EvidenceGroupID = 2, EvidenceGroupName = "Cheating", EvidenceTypeID = 4, EvidenceTypeCode = "2.1", EvidenceTypeName = "Collusion", Description = "Description Collusion" });
+            evidences.Add(new Evidence { EvidenceGroupID = 2, EvidenceGroupName = "Cheating", EvidenceTypeID = 5, EvidenceTypeCode = "2.2", EvidenceTypeName = "Chip Dumping", Description = "Description Chip Dumping" });
+            evidences.Add(new Evidence { EvidenceGroupID = 3, EvidenceGroupName = "Misconduct", EvidenceTypeID = 6, EvidenceTypeCode = "3.1", EvidenceTypeName = "Chat Abuse", Description = "Description Chat Abuse" });
 
             return evidences;
         }
@@ -233,7 +233,7 @@
             };
         }
 
-        public DBResult UpdateEvidenceByAccount(EvidenceByAccount evidenceByAccount)
+        public DBResult PlaceEvidenceByAccount(EvidenceByAccount evidenceByAccount)
         {
             return new DBResult
             {

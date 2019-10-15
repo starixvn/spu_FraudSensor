@@ -24,6 +24,6 @@
 
         DBResult DeleteEvidence(int evidenceId);
 
-        DBResult UpdateEvidenceByAccount(EvidenceByAccount evidenceByAccount);
+        DBResult PlaceEvidenceByAccount(EvidenceByAccount evidenceByAccount);
     }
 }

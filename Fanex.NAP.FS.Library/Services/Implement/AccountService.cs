@@ -44,6 +44,8 @@
         private IEnumerable<SubscriberAccount> SortAccounts(IEnumerable<SubscriberAccount> accountsCollected, SearchAccountFilter filter)
         {
             var accounts = new List<SubscriberAccount>();
+            var keySearch = filter.Key.Trim().ToLower();
+
             var subscribers = accountsCollected.AsEnumerable()
                 .GroupBy(g => g.SubscriberName);
 
@@ -52,15 +54,15 @@
                 // exactly
                 accounts.AddRange(subGroup
                     .Where(c => c.SubscriberName == subGroup.Key 
-                        && c.UserNameToSort.ToLower().Equals(filter.Key.ToLower()))
+                        && c.UserNameToSort.ToLower().Equals(keySearch))
                     .Select(c => GetAccount(c))
                 );
 
                 // beginning
                 accounts.AddRange(subGroup
                     .Where(c => c.SubscriberName == subGroup.Key 
-                        && !c.UserNameToSort.ToLower().Equals(filter.Key.ToLower())
-                        && c.UserNameToSort.ToLower().StartsWith(filter.Key.ToLower())
+                        && !c.UserNameToSort.ToLower().Equals(keySearch)
+                        && c.UserNameToSort.ToLower().StartsWith(keySearch)
                     )
                     .Select(c => GetAccount(c))
                     .OrderBy(a => a.UserNameToSort)
@@ -69,8 +71,8 @@
                 // alphabet
                 accounts.AddRange(subGroup
                    .Where(c => c.SubscriberName == subGroup.Key
-                       && !c.UserNameToSort.ToLower().Equals(filter.Key.ToLower())
-                       && !c.UserNameToSort.ToLower().StartsWith(filter.Key.ToLower())
+                       && !c.UserNameToSort.ToLower().Equals(keySearch)
+                       && !c.UserNameToSort.ToLower().StartsWith(keySearch)
                    )
                    .Select(c => GetAccount(c))
                    .OrderBy(a => a.UserNameToSort)
@@ -299,7 +301,7 @@
             if (customerFraudSuspicious.CustomerFrauds.Any())
             {
                 var fraud = customerFraudSuspicious.CustomerFrauds.ToList()[0];
-                generalInfo.ProblemAccount = fraud.ProblemAccount ? ProblemAccountStatus.Yes : ProblemAccountStatus.No;
+                generalInfo.ProblemAccountStatus = fraud.ProblemAccount ? ProblemAccountStatus.Yes : ProblemAccountStatus.No;
                 generalInfo.Abnormal = fraud.Abnormal;
                 generalInfo.DangerousOriginal = fraud.danger;
                 generalInfo.DangerousNonLive = fraud.danger2;

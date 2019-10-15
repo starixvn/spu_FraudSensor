@@ -22,29 +22,30 @@
             $('#place-evidence-description').html(desc);
         });
 
-        $('#place-evidence-account').val(USERNAME);
-        $('#place-evidence-subscriber').val(SUBSCRIBER);
+        $('#place-evidence-account').text(USERNAME);
+        $('#place-evidence-subscriber').text(SUBSCRIBER);
         $('#place-evidence-comment').val('');
 
         GetAllEvidences();
     }
 
     this.Submit = function () {
-        var url = common.modifyRelativeUrl('/Account/UpdateEvidenceByAccount');
-        var paramsUpdate = {};
-        paramsUpdate.Comment = $('#place-evidence-comment').val();
+        var url = common.modifyRelativeUrl('/Account/PlaceEvidenceByAccount');
+        var paramsPlace = {};
+        paramsPlace.AccountId = accountId;
+        paramsPlace.EvidenceTypeID = ddlEvidence.find('option:selected').val();
+        paramsPlace.Comment = $('#place-evidence-comment').val();
 
         $.ajax(url, {
             type: 'POST',
-            data: {
-            },
+            data: paramsPlace,
             success: function (response) {
-                common.showSuccess('The Evidence has added!');
+                common.showSuccess('Place the evidence successful!');
                 CloseModal();
             },
             error: function (errorMessage) {
                 console.log(errorMessage);
-                common.showError('The Evidence add fail!');
+                common.showError('Place the evidence fail!');
             }
         });
     }
@@ -81,11 +82,11 @@
         for (var i = 0; i < data.length; i++) {
             if (groupId !== data[i].EvidenceGroupID) {
                 ddlEvidence.append('<optgroup label="' + data[i].EvidenceGroupID + " " + data[i].EvidenceGroupName + '">');
-                ddlEvidence.append('<option desc="' + data[i].Description + '" value="' + data[i].EvidenceTypeCode + '">'
+                ddlEvidence.append('<option desc="' + data[i].Description + '" value="' + data[i].EvidenceTypeID + '">'
                     + data[i].EvidenceTypeCode + " " + data[i].EvidenceTypeName + '</option>');
                 ddlEvidence.append('</optgroup>');
             } else {
-                ddlEvidence.append('<option desc="' + data[i].Description + '" value="' + data[i].EvidenceTypeCode + '">'
+                ddlEvidence.append('<option desc="' + data[i].Description + '" value="' + data[i].EvidenceTypeID + '">'
                     + data[i].EvidenceTypeCode + " " + data[i].EvidenceTypeName + '</option>');
             }
 

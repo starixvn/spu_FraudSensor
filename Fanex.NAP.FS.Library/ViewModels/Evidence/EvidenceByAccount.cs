@@ -2,9 +2,9 @@
 {
     public class EvidenceByAccount
     {
-        public int EvidenceTypeID { get; set; }
+        public int AccountId { get; set; }
 
-        public string Evidences { get; set; }
+        public int EvidenceTypeID { get; set; }   
 
         public string Comment { get; set; }
     }

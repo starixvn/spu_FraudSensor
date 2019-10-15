@@ -42,12 +42,17 @@
             var permissionIPLocation = new UserService().GetPermission(CurrentSession.UserId, SiteId, FSFunctionKeys.IPLocation);
 
             ViewBag.IsPermissionIPLocation = permissionIPLocation > 0;
+            ViewBag.AccountId = id;
+            ViewBag.CustId = custId;         
+            return View("DetailAccount");
+        }
 
-            var filter = GenerateGeneralInformationFilter(id, custId);
-
+        [HttpPost]
+        public ActionResult GetGeneralInformation(GeneralInformationFilter filter)
+        {
             var data = _accountService.GetAccountDetailGeneralInformation(filter);
 
-            return View("DetailAccount", data);
+            return Json(data, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
@@ -147,9 +152,9 @@
         }
 
         [HttpPost]
-        public ActionResult UpdateEvidenceByAccount(EvidenceByAccount evidenceByAccount)
+        public ActionResult PlaceEvidenceByAccount(EvidenceByAccount evidenceByAccount)
         {
-            var data = _evidenceService.UpdateEvidenceByAccount(evidenceByAccount);
+            var data = _evidenceService.PlaceEvidenceByAccount(evidenceByAccount);
 
             return Json(data, JsonRequestBehavior.AllowGet);
         }

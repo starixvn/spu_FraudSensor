@@ -22,6 +22,10 @@
 
         public AccountStatus AccountStatus { get; set; }
 
+        public string AccountStatusName {
+            get { return Enum.GetName(typeof(AccountStatus), this.AccountStatus); }            
+        }
+
         public AccountEvidenceStatus AccountEvidenceStatus { get; set; }
 
         public EvidenceStatus EvidenceStatus
@@ -57,7 +61,12 @@
 
         public string EvidenceTypeCodes { get; set; }
 
-        public ProblemAccountStatus ProblemAccount { get; set; }
+        public ProblemAccountStatus ProblemAccountStatus { get; set; }
+
+        public string ProblemAccount
+        {
+            get { return Enum.GetName(typeof(ProblemAccountStatus), this.ProblemAccountStatus); }        
+        }
 
         public int Abnormal { get; set; }
 
