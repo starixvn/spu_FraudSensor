@@ -226,6 +226,7 @@
             generalInfo.FirstLogin = customerInformation.CreatedDate;
             generalInfo.LastLogin = customerInformation.LastLoginDate;
             generalInfo.FrequencyLogin = customerInformation.LoginCount;
+            generalInfo.FirstLoginName = customerInformation.FirstLoginName;
             generalInfo.Username = customerInformation.Username;
             generalInfo.Username2 = customerInformation.Username2;            
 
@@ -270,8 +271,8 @@
 
         private static AccountGeneralInformation GetFraudInformation(AccountGeneralInformation generalInfo, CustomerFraudSuspicious customerFraudSuspicious)
         {
-            generalInfo.AutoSuspend = ResourcesManager.GetValue(ConstsResources.NONE);
-            generalInfo.AccountStatus = AccountStatus.None;
+            generalInfo.AutoSuspend = string.Empty;
+            generalInfo.AccountStatus = AccountStatus.NotYetDeposit;
 
             if (customerFraudSuspicious.CustomerFrauds.Any())
             {

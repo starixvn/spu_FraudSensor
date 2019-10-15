@@ -147,8 +147,8 @@
   <data name="ACCOUNT_STATUS_CN88_VIEW_ONLY" xml:space="preserve">
     <value>View Only</value>
   </data>
-  <data name="ACCOUNT_STATUS_NONE" xml:space="preserve">
-    <value>None</value>
+  <data name="ACCOUNT_STATUS_NOTYETDEPOSIT" xml:space="preserve">
+    <value>Not Yet Deposit</value>
   </data>
   <data name="ACCOUNT_STATUS_OPEN" xml:space="preserve">
     <value>Open</value>

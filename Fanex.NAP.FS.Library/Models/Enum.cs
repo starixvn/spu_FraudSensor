@@ -9,7 +9,7 @@
         CN88_ViewOnly,
         CN88_Suspended,
         CN88_Inactive,
-        None
+        NotYetDeposit
     }
 
     public enum EvidenceStatus

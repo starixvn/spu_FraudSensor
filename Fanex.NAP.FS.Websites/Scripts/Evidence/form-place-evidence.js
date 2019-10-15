@@ -1,5 +1,5 @@
 ﻿function form_place_evidence(accountId) {
-    var form = $('#form-evidence');
+    var form = $('#form-place-evidence');
     var ddlEvidence = $('#ddlPlaceEvidence');
 
     this.OpenModal = function () {
@@ -19,17 +19,20 @@
         ddlEvidence.bind("change", function (e) {
             var desc = $('#ddlPlaceEvidence :selected').attr('desc');
             if (desc === undefined) desc = '';
-            $('#lblPlaceEvidenceDescription').html(desc);
+            $('#place-evidence-description').html(desc);
         });
 
-        Clear();
+        $('#place-evidence-account').val(USERNAME);
+        $('#place-evidence-subscriber').val(SUBSCRIBER);
+        $('#place-evidence-comment').val('');
 
         GetAllEvidences();
     }
 
     this.Submit = function () {
-        var comment = $('#comment').val();
         var url = common.modifyRelativeUrl('/Account/UpdateEvidenceByAccount');
+        var paramsUpdate = {};
+        paramsUpdate.Comment = $('#place-evidence-comment').val();
 
         $.ajax(url, {
             type: 'POST',
@@ -49,11 +52,7 @@
     function CloseModal() {
         form.dialog('close');
     }
-
-    function Clear() {
-         
-    }    
-
+   
     function GetAllEvidences() {
         var url = common.modifyRelativeUrl("/Account/GetAllEvidences");
 
@@ -80,7 +79,7 @@
         var groupId = '';
 
         for (var i = 0; i < data.length; i++) {
-            if (groupId != data[i].EvidenceGroupID) {
+            if (groupId !== data[i].EvidenceGroupID) {
                 ddlEvidence.append('<optgroup label="' + data[i].EvidenceGroupID + " " + data[i].EvidenceGroupName + '">');
                 ddlEvidence.append('<option desc="' + data[i].Description + '" value="' + data[i].EvidenceTypeCode + '">'
                     + data[i].EvidenceTypeCode + " " + data[i].EvidenceTypeName + '</option>');

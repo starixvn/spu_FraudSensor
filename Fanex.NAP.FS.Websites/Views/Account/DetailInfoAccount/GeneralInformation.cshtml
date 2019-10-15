@@ -12,6 +12,18 @@
         <span class="page">Account Detail</span>
     </span>
 </h2>
+@{
+    var userNameInfo = string.Empty;
+
+    if (!string.IsNullOrEmpty(Model.GeneralInfo.Username))
+    {
+        userNameInfo = Model.GeneralInfo.Username + "(" + Model.GeneralInfo.Username2 + ")";
+    }
+    else
+    {
+        userNameInfo = Model.GeneralInfo.FirstLoginName;
+    }
+}
 
 <div class="content-card">
     <div class="status">
@@ -20,7 +32,7 @@
             <p class="info">
                 <i class="icon-clean"></i>
                 <span>
-                    @Model.GeneralInfo.Username (@Model.GeneralInfo.Username2): <label>This account is clean</label>
+                    @userNameInfo: <label>This account is clean</label>
                 </span>
             </p>
         }
@@ -29,7 +41,7 @@
             <p class="info red">
                 <i class="icon-fraud-flag"></i>
                 <span>
-                    @Model.GeneralInfo.Username (@Model.GeneralInfo.Username2): <label>This account is flagged</label>
+                    @userNameInfo: <label>This account is flagged</label>
                 </span>
             </p>
         }
@@ -38,17 +50,26 @@
             <p class="info red">
                 <i class="icon-fraud"></i>
                 <span>
-                    @Model.GeneralInfo.Username (@Model.GeneralInfo.Username2): <label>This account is affected by a link to evidence</label>
+                    @userNameInfo: <label>This account is affected by a link to evidence</label>
                 </span>
             </p>
         }
 
-        <p class="bold">
-            Account Status:
-            <span class="badge-label" id="lbl-account-status-general-info" status="@Enum.GetName(typeof(AccountStatus), Model.GeneralInfo.AccountStatus)">
-                @Model.GeneralInfo.AccountStatusToString
-            </span>
-        </p>
+            <p class="bold">
+                Account Status:
+                @if (Model.GeneralInfo.AccountStatus == AccountStatus.NotYetDeposit)
+                {
+                    <span id="lbl-account-status-general-info">
+                        @Model.GeneralInfo.AccountStatusToString
+                    </span>
+                }
+                else
+                {
+                    <span class="badge-label" id="lbl-account-status-general-info" status="@Enum.GetName(typeof(AccountStatus), Model.GeneralInfo.AccountStatus)">
+                        @Model.GeneralInfo.AccountStatusToString
+                    </span>  
+                }                
+            </p>
         <button class="button btn-add" type="button" id="btn-add-evidence">Place Evidence</button>
     </div>
 
@@ -67,9 +88,6 @@
                     <div> @Model.GeneralInfo.FrequencyLogin/@Model.GeneralInfo.AccountAge (times/days)</div>
                 </div>
             </div>
-            @*<div class="info-text"><label>First Login:</label><span> @Model.GeneralInfo.FirstLoginToString</span></div>
-            <div class="info-text"><label>Last Login:</label><span> @Model.GeneralInfo.LastLoginToString</span></div>
-            <div class="info-text"><label>Login Frequency:</label><span> @Model.GeneralInfo.FrequencyLogin/@Model.GeneralInfo.AccountAge (times/days)</span></div>*@
         </div>
         <div class="info-item">
             <div class="info-title">Association</div>
@@ -89,11 +107,6 @@
                     <div> @Model.GeneralInfo.AccountExceptions</div>
                 </div>
             </div>
-            @*<div class="info-text"><label>Associated Accounts:</label><span> @Model.GeneralInfo.AssociatedAccounts</span></div>
-            <div class="info-text"><label>Associated Devices:</label><span> @Model.GeneralInfo.AssociatedDevices</span></div>
-            <div class="info-text"><label>Shared Devices:</label><span> @Model.GeneralInfo.SharedDevices</span></div>
-            <div class="info-text"><label>No-Shared Devices:</label><span> @Model.GeneralInfo.NoSharedDevices</span></div>
-            <div class="info-text"><label>Account Exceptions:</label><span> @Model.GeneralInfo.AccountExceptions</span></div>*@
         </div>
         <div class="info-item">
             <div class="info-title">Fraud Infomation</div>
@@ -110,21 +123,22 @@
                     <div>
                         <span class="link"> @Model.GeneralInfo.EvidenceTypeCodes</span>
                     </div>
-                    
+
                     <div> @Enum.GetName(typeof(ProblemAccountStatus), Model.GeneralInfo.ProblemAccount)</div>
-                    <div><span class="badge-level" id="abnormal"> @Model.GeneralInfo.Abnormal</span></div>                    
-                    <div>
-                        @*<label class="line-item2 width-50">Original:</label>
-                        <span class="badge-level" id="dangerous-level-original"> @Model.GeneralInfo.DangerousOriginal</span>
-                        <label class="line-item width-50">NonLive:</label>
-                        <span class="badge-level" id="dangerous-level-non-live"> @Model.GeneralInfo.DangerousNonLive</span>
-                        <label class="line-item width-90">Other Sports:</label>
-                        <span class="badge-level" id="dangerous-level-other-sports"> @Model.GeneralInfo.DangerousOtherSports</span>*@
+                    @if (Model.GeneralInfo.Abnormal > 0 && Model.GeneralInfo.Abnormal < 11)
+                    {
+                        <div><span class="badge-level" id="abnormal"> @Model.GeneralInfo.Abnormal</span></div>
+                    }
+                    else
+                    {
+                        <div>None</div>
+                    }
+                    <div>                       
                         <table class="dangerous-level">
                             <tr>
                                 <th>ORG</th>
                                 <th>ABI</th>
-                                <th>NS</th>
+                                <th>OS</th>
                             </tr>
                             <tr>
                                 <td id="dangerous-level-original">@Model.GeneralInfo.DangerousOriginal</td>
@@ -136,28 +150,7 @@
                     <div> @Model.GeneralInfo.AutoSuspend</div>
                     <div style="border-bottom: 0;"> @Model.GeneralInfo.CommitedFraudCase</div>
                 </div>
-            </div>
-
-            @*<div class="info-text"><label>Evidence:</label><span class="link"> @Model.GeneralInfo.EvidenceTypeCodes</span></div>
-            <div class="info-text"><label>Problem Account:</label><span> @Enum.GetName(typeof(ProblemAccountStatus), Model.GeneralInfo.ProblemAccount)</span></div>
-            <div class="info-text">
-                <label>Abnormal Level:</label>
-                <span class="badge-level" id="abnormal"> @Model.GeneralInfo.Abnormal</span>
-            </div>
-            <div class="info-text">
-                <label>Dangerous Level:</label>
-                <label class="line-item2 width-50">Original:</label>
-                <span class="badge-level" id="dangerous-level-original"> @Model.GeneralInfo.DangerousOriginal</span>
-                <label class="line-item width-50">NonLive:</label>
-                <span class="badge-level" id="dangerous-level-non-live"> @Model.GeneralInfo.DangerousNonLive</span>
-                <label class="line-item width-90">Other Sports:</label>
-                <span class="badge-level" id="dangerous-level-other-sports"> @Model.GeneralInfo.DangerousOtherSports</span>
-            </div>
-            <div class="info-text">
-                <label>Auto Suspend: </label>
-                <span> @Model.GeneralInfo.AutoSuspend</span>
-            </div>
-            <div class="info-text"><label>Commited Fraud Cases:</label><span> @Model.GeneralInfo.CommitedFraudCase</span></div>*@
+            </div>         
         </div>
     </div>
 </div>

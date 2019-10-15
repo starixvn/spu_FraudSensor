@@ -151,11 +151,11 @@ namespace Fanex.NAP.FS.Library.Core.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to None.
+        ///   Looks up a localized string similar to Not Yet Deposit.
         /// </summary>
-        internal static string ACCOUNT_STATUS_NONE {
+        internal static string ACCOUNT_STATUS_NOTYETDEPOSIT {
             get {
-                return ResourceManager.GetString("ACCOUNT_STATUS_NONE", resourceCulture);
+                return ResourceManager.GetString("ACCOUNT_STATUS_NOTYETDEPOSIT", resourceCulture);
             }
         }
         

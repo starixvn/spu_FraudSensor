@@ -10,6 +10,8 @@
 
         public int CustId { get; set; }
 
+        public string FirstLoginName { get; set; }
+
         public string Username { get; set; }
 
         public string Username2 { get; set; }
@@ -117,7 +119,7 @@
                     case AccountStatus.CN88_Inactive:
                         return ResourcesManager.GetValue(ConstsResources.ACCOUNT_STATUS_CN88_INACTIVE);                   
                     default:
-                        return ResourcesManager.GetValue(ConstsResources.ACCOUNT_STATUS_NONE);
+                        return ResourcesManager.GetValue(ConstsResources.ACCOUNT_STATUS_NOTYETDEPOSIT);
                 }
                 
             }

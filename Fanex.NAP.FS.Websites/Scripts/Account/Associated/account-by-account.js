@@ -69,13 +69,16 @@
     }
 
     function GenerateReport() {
-        var deviceAwayOne = $('#chk-device-away-1').is(':checked');
-        var deviceAwayMore = $('#chk-device-away-2').is(':checked');
-        var status = $('#cbb-status-ass-account').val();
-        var evidenceStatus = $('#cbb-evidence-status-ass-account').val();
         var url = common.modifyRelativeUrl('/Account/GetAssociatedAccountByAccountFilter');
-
-        if (!ValidateInputSearch(deviceAwayOne, deviceAwayMore)) {
+        var paramsFilter = {};
+        paramsFilter.AccountId = ACCOUNTID;
+        paramsFilter.CustId = CUSTID;
+        paramsFilter.DeviceAwayOne = $('#chk-device-away-1').is(':checked');
+        paramsFilter.DeviceAwayMore = $('#chk-device-away-2').is(':checked');
+        paramsFilter.Status = $('#cbb-status-ass-account').val().join(',');
+        paramsFilter.EvidenceStatus = $('#cbb-evidence-status-ass-account').val();
+       
+        if (!ValidateInputSearch(paramsFilter.DeviceAwayOne, paramsFilter.DeviceAwayMore)) {
             associatedTable.DataTable().clear().draw();
             return;
         }
@@ -85,20 +88,15 @@
 
         $.ajax(url, {
             type: 'POST',
-            data: {
-                AccountId: ACCOUNTID,
-                CustId: CUSTID,
-                DeviceAwayOne: deviceAwayOne,
-                DeviceAwayMore: deviceAwayMore,
-                Status: status.join(','),
-                EvidenceStatus: evidenceStatus
-            },
+            data: paramsFilter,
             success: function (response) {
                 BindDataToGrid(response);
                 AnimateContent();
             },
             error: function (errMsg) {
                 console.log(errMsg);
+                loading.hide();
+                associatedContent.show();
                 common.showError(errMsg);
             }
         });
@@ -149,6 +147,35 @@
         })
     }
 
+    function RenderGraphImage() {
+        return '<span class="icon-path graph" title="Graph View" onclick="OpenShortestPath(22971808,4677919)"></span>';
+    }
+
+    function OpenShortestPath(startCustId, endCustId) {
+        $('#shortest-path-render').dialog({
+            modal: true,
+            width: '1500px',
+            title: 'Shortest Path',
+            dialogClass: "modal-graph-render",
+            resizable: true,
+            draggable: true,
+            open: function () {
+                $.ajax({
+                    type: "POST",
+                    data: { startCustId: startCustId, endCustId: endCustId },
+                    url: "GetShortestPath",
+                    beforeSend: function () {
+                        alert('before send');
+                    },
+                    success: function () {
+
+                    }
+                });
+            },
+            close: function () { $(this).dialog('close'); }
+        })
+    }
+
     GenerateGrid();
 
     InitSearchOnGrid();
@@ -166,36 +193,7 @@
 
     btnSearch.click(GenerateReport);    
 
-    $('#btn-ass-acc').click(OpenGraphRender);    
-
-    function RenderGraphImage() {
-        return '<span class="icon-path graph" title="Graph View" onclick="OpenShortestPath(22971808,4677919)"></span>';
-    }
+    $('#btn-ass-acc').click(OpenGraphRender);
 }
 
 $(account_by_account);
-
-function OpenShortestPath(startCustId, endCustId) {
-    $('#shortest-path-render').dialog({
-        modal: true,
-        width: '1500px',
-        title: 'Shortest Path',
-        dialogClass: "modal-graph-render",
-        resizable: true,
-        draggable: true,
-        open: function () {
-            $.ajax({
-                type: "POST",
-                data: { startCustId: startCustId, endCustId: endCustId },
-                url: "GetShortestPath",
-                beforeSend: function() {
-                    alert('before send');
-                },
-                success: function () {
-
-                }
-            });
-        },
-        close: function () { $(this).dialog('close'); }
-    })
-}
