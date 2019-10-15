@@ -50,6 +50,9 @@
         [HttpPost]
         public ActionResult GetGeneralInformation(GeneralInformationFilter filter)
         {
+            filter.IsMasterSubscriberAssignment = PermissionService.IsMasterSubscriberAssignment();
+            filter.UserId = CurrentSession.UserId;
+
             var data = _accountService.GetAccountDetailGeneralInformation(filter);
 
             return Json(data, JsonRequestBehavior.AllowGet);
@@ -166,17 +169,6 @@
             errors.Add(msgError);
 
             return Json(errors, JsonRequestBehavior.AllowGet);
-        }
-
-        private GeneralInformationFilter GenerateGeneralInformationFilter(int id, int custId)
-        {
-            return new GeneralInformationFilter
-            {
-                AccountId = id,
-                CustId = custId,
-                IsMasterSubscriberAssignment = PermissionService.IsMasterSubscriberAssignment(),
-                UserId = CurrentSession.UserId
-            };
         }
 
         private static Dictionary<AccountStatus, string> GetAccountStatusList()
