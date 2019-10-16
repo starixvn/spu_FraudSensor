@@ -24,7 +24,7 @@
 
         if(spName.Value != "Age_SelBalanceUpDay")
         {
-            setting.SetAttributeValue("SpName",spName.Value + "_xtest");
+            setting.SetAttributeValue("SpName",spName.Value);
         }
 	}
 #>
