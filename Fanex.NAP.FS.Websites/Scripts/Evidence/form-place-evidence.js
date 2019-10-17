@@ -1,4 +1,4 @@
-﻿function form_place_evidence(accountId) {
+﻿function form_place_evidence() {
     var form = $('#form-place-evidence');
     var ddlEvidence = $('#ddlPlaceEvidence');
 
@@ -32,7 +32,7 @@
     this.Submit = function () {
         var url = common.modifyRelativeUrl('/Account/PlaceEvidenceByAccount');
         var paramsPlace = {};
-        paramsPlace.AccountId = accountId;
+        paramsPlace.AccountId = ACCOUNTID;
         paramsPlace.EvidenceTypeID = ddlEvidence.find('option:selected').val();
         paramsPlace.Comment = $('#place-evidence-comment').val();
 

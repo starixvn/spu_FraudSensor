@@ -8,24 +8,24 @@
         <div class="filter">
             <div class="form-control">
                 <label class="checkbox">
-                    <input type="checkbox" id="chk-used-by-account-current" checked />
-                    <span>Used by </span><span class="username-span"></span>
+                    <input type="checkbox" id="device-by-account-chk-used-by" checked />
+                    <span>Used by </span><span class="device-by-account-username"></span>
                 </label>
                 <label class="checkbox">
-                    <input type="checkbox" id="chk-used-by-account-associated" />
+                    <input type="checkbox" id="device-by-account-chk-used-by-account-associated" />
                     <span>1 or more Accounts Away from </span><span class="username-span"></span>
                 </label>
             </div>
             <div class="form-control width-150">
                 <div class="control-label">Evidence Status</div>
-                <select class="control" id="cbb-evidence-status-ass-device">
+                <select class="control" id="device-by-account-cbb-evidence-status">
                     <option value="@EvidenceStatus.All" selected>All</option>
                     <option value="@EvidenceStatus.Affected">Flagged/Affected</option>                    
                     <option value="@EvidenceStatus.Clean">Clean</option>
                 </select>
             </div>
-            <div class="form-control button-group">
-                <button class="button btn-search" id="btn-search-device">Search</button>
+            <div class="form-control" style="vertical-align: bottom;">
+                <button class="button btn-search" id="device-by-account-btn-search">Search</button>
             </div>
         </div>        
     </div>

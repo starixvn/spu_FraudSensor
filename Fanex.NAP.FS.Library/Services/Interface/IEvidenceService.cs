@@ -24,6 +24,8 @@
 
         DBResult DeleteEvidence(int evidenceId);
 
-        DBResult PlaceEvidenceByAccount(EvidenceByAccount evidenceByAccount);
+        DBResult PlaceEvidenceByAccount(PlaceEvidenceByAccount evidenceByAccount);
+
+        IEnumerable<InformationEvidenceByAccount> GetInformationEvidenceByAccount(InformationEvidenceByAccountFilter filter);
     }
 }

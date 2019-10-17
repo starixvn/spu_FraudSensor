@@ -1,6 +1,6 @@
 ﻿namespace Fanex.NAP.FS.Library.ViewModels.Evidence
 {
-    public class EvidenceByAccount
+    public class PlaceEvidenceByAccount
     {
         public int AccountId { get; set; }
 

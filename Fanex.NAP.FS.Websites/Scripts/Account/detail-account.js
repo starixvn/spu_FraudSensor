@@ -3,7 +3,7 @@
     var collapseAll = ('.collapse-all');
     var expandAll = $('.expand-all');
     var formException;
-    var formPlaceEvidence = new form_place_evidence(ACCOUNTID);
+    var formPlaceEvidence = new form_place_evidence();
 
     var containers = [
         { name: "chains_evidence", url: common.modifyRelativeUrl('/Account/GetChainsToEvidence') },

@@ -35,8 +35,7 @@
         {
             return View();
         }
-
-        #region Detail
+     
         public ActionResult DetailAccount(int id, int custId)
         {
             var permissionIPLocation = new UserService().GetPermission(CurrentSession.UserId, SiteId, FSFunctionKeys.IPLocation);
@@ -47,6 +46,7 @@
             return View("DetailAccount");
         }
 
+        #region General Information
         [HttpPost]
         public ActionResult GetGeneralInformation(GeneralInformationFilter filter)
         {
@@ -58,6 +58,32 @@
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
+        public ActionResult GetAllEvidences()
+        {
+            var data = _evidenceService.GetAllEvidences();
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public ActionResult PlaceEvidenceByAccount(PlaceEvidenceByAccount evidenceByAccount)
+        {
+            var data = _evidenceService.PlaceEvidenceByAccount(evidenceByAccount);
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public ActionResult GetInformationEvidenceByAccount(InformationEvidenceByAccountFilter filter)
+        {
+            var data = _evidenceService.GetInformationEvidenceByAccount(filter);
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        #endregion
+
+        #region Chain To Evidence
         [HttpPost]
         public ActionResult GetChainsToEvidence(ChainsToEvidenceFilter filter)
         {
@@ -80,6 +106,9 @@
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
+        #endregion
+
+        #region Retract And Exception
         [HttpPost]
         public ActionResult GetRetractAndException(RetractedAndExceptionEvidenceFilter filter)
         {
@@ -92,6 +121,9 @@
             return PartialView("DetailInfoAccount/RetractAndException", data);
         }
 
+        #endregion
+
+        #region Associated Account By Account
         [HttpPost]
         public ActionResult GetAssociatedAccountByAccount()
         {
@@ -126,42 +158,6 @@
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
-        [HttpPost]
-        public ActionResult GetAssociatedDeviceByAccount()
-        {
-            return PartialView("Associated/DeviceByAccount");
-        }
-
-        [HttpPost]
-        public ActionResult GetAssociatedDeviceByAccountFilter(AssociatedDeviceByAccountFilter filter)
-        {
-            var data = _accountService.GetAssociatedDevicesByAccount(filter);
-
-            return Json(data, JsonRequestBehavior.AllowGet);
-        }
-
-        public ActionResult GetAllEvidences()
-        {
-            var data = _evidenceService.GetAllEvidences();
-
-            return Json(data, JsonRequestBehavior.AllowGet);
-        }
-
-        public ActionResult GetEvidencesByAccount(int accountId)
-        {
-            var data = _evidenceService.GetEvidencesByAccount(accountId);
-
-            return Json(data, JsonRequestBehavior.AllowGet);
-        }
-
-        [HttpPost]
-        public ActionResult PlaceEvidenceByAccount(EvidenceByAccount evidenceByAccount)
-        {
-            var data = _evidenceService.PlaceEvidenceByAccount(evidenceByAccount);
-
-            return Json(data, JsonRequestBehavior.AllowGet);
-        }
-
         private ActionResult ResponseError(string msgError)
         {
             Response.StatusCode = (int)HttpStatusCode.BadRequest;
@@ -192,5 +188,29 @@
         }
 
         #endregion
+
+        #region Associated Device By Account
+        [HttpPost]
+        public ActionResult GetAssociatedDeviceByAccount()
+        {
+            return PartialView("Associated/DeviceByAccount");
+        }
+
+        [HttpPost]
+        public ActionResult GetAssociatedDeviceByAccountFilter(AssociatedDeviceByAccountFilter filter)
+        {
+            var data = _accountService.GetAssociatedDevicesByAccount(filter);
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult GetEvidencesByAccount(int accountId)
+        {
+            var data = _evidenceService.GetEvidencesByAccount(accountId);
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        #endregion                
     }
 }

@@ -1,8 +1,8 @@
 ﻿function account_by_account() {
-    var loading = $('#associated-account-loading-div');
-    var btnSearch = $('#btn-search-account-ass-account');
-    var accountSearch = $('#account-search');
-    var usernameSpan = $('.username-span');
+    var loading = $('#account-by-account-loading');
+    var btnSearch = $('#account-by-account-btn-search');
+    var accountSearch = $('#account-by-account-txt-search');
+    var usernameSpan = $('.account-by-account-username');
     var associatedTable = $('#account-by-account-table'); 
     var associatedContent = $('#account-by-account-content'); 
 
@@ -73,10 +73,10 @@
         var paramsFilter = {};
         paramsFilter.AccountId = ACCOUNTID;
         paramsFilter.CustId = CUSTID;
-        paramsFilter.DeviceAwayOne = $('#chk-device-away-1').is(':checked');
-        paramsFilter.DeviceAwayMore = $('#chk-device-away-2').is(':checked');
-        paramsFilter.Status = $('#cbb-status-ass-account').val().join(',');
-        paramsFilter.EvidenceStatus = $('#cbb-evidence-status-ass-account').val();
+        paramsFilter.DeviceAwayOne = $('#account-by-account-chk-device-away-1').is(':checked');
+        paramsFilter.DeviceAwayMore = $('#account-by-account-chk-device-away-2').is(':checked');
+        paramsFilter.Status = $('#account-by-account-cbb-status').val().join(',');
+        paramsFilter.EvidenceStatus = $('#account-by-account-cbb-evidence-status').val();
        
         if (!ValidateInputSearch(paramsFilter.DeviceAwayOne, paramsFilter.DeviceAwayMore)) {
             associatedTable.DataTable().clear().draw();
@@ -180,20 +180,24 @@
 
     InitSearchOnGrid();
 
-    $("#cbb-status-ass-account").multiselect({
+    $("#account-by-account-cbb-status").multiselect({
         menuWidth: 225,
         menuHeight: 225,
         selectedText: "# of # selected",
         noneSelectedText: "Select options"
-    });
+    }).multiselect("checkAll");
 
     usernameSpan.text(USERNAME);
 
     loading.hide(); 
 
-    btnSearch.click(GenerateReport);    
+    btnSearch.click(GenerateReport);
 
-    $('#btn-ass-acc').click(OpenGraphRender);
+    $('#account-by-account-btn-shortest-path').click(function () {
+        OpenShortestPath(22971808, 4677919);
+    });
+
+    $('#account-by-account-btn-on-graph').click(OpenGraphRender);
 }
 
 $(account_by_account);

@@ -1,6 +1,6 @@
 ﻿function device_by_account() {
-    var btnSearch = $('#btn-search-device');
-    var usernameSpan = $('.username-span');
+    var btnSearch = $('#device-by-account-btn-search');
+    var usernameSpan = $('.device-by-account-username');
     var associatedTable = $('#device-by-account-table');
     var associatedContent = $('#device-by-account-content');
 
@@ -66,9 +66,9 @@
     }
 
     function GenerateReport() {
-        var usedByAccountCurrent = $('#chk-used-by-account-current').is(':checked');
-        var usedByAccountAssociated = $('#chk-used-by-account-associated').is(':checked');       
-        var evidenceStatus = $('#cbb-evidence-status-ass-device').val();
+        var usedByAccountCurrent = $('#device-by-account-chk-used-by').is(':checked');
+        var usedByAccountAssociated = $('#device-by-account-chk-used-by-account-associated').is(':checked');       
+        var evidenceStatus = $('#device-by-account-cbb-evidence-status').val();
         var url = common.modifyRelativeUrl('/Account/GetAssociatedDeviceByAccountFilter');
 
         $.ajax(url, {

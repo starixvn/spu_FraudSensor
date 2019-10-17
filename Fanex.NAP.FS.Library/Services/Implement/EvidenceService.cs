@@ -233,7 +233,7 @@
             };
         }
 
-        public DBResult PlaceEvidenceByAccount(EvidenceByAccount evidenceByAccount)
+        public DBResult PlaceEvidenceByAccount(PlaceEvidenceByAccount evidenceByAccount)
         {
             return new DBResult
             {
@@ -241,7 +241,15 @@
                 ErrorMsg = string.Empty
             };
         }
+
+        public IEnumerable<InformationEvidenceByAccount> GetInformationEvidenceByAccount(InformationEvidenceByAccountFilter filter)
+        {
+            var evidences = new List<InformationEvidenceByAccount>();
+
+            return evidences;
+        }
+
         #endregion
-        
+
     }
 }

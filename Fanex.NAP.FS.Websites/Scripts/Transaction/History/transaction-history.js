@@ -1,7 +1,7 @@
 ﻿function transaction_history() {
-    var loading = $('#transaction-loading-div');
-    var btnSearch = $('#btn-search-transaction');
-    var reportLength = $('#cbb-report-length-transaction');
+    var loading = $('#transaction-history-loading');
+    var btnSearch = $('#transaction-history-btn-search');
+    var reportLength = $('#transaction-history-cbb-report-length');
     var transactionTable = $('#transaction-history-table');
     var transactionContent = $('#transaction-history-content');
     var formIPInformation = new form_ip_information();

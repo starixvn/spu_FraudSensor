@@ -1,4 +1,5 @@
 ﻿function general_information() {
+    var formInformationEvidence = new form_information_evidence();
 
     function GetGeneralInformation() {
         common.showLoading();
@@ -109,7 +110,7 @@
     }
 
     function RenderFraudInformation(info) {
-        $('#general-info-evidences').text(info.EvidenceTypeCodes);
+        RenderEvidences(info.EvidenceTypeCodes);
         $('#general-info-problem-account-status').text(info.ProblemAccount);
         $('#general-info-abnormal').text(info.Abnormal);
         $('#general-info-dangerous-level-original').text(info.DangerousOriginal);
@@ -123,6 +124,21 @@
         RenderDangerousLevel($('#general-info-dangerous-level-non-live'));
         RenderDangerousLevel($('#general-info-dangerous-level-other-sports'));
     }    
+
+    function RenderEvidences(evidenceTypeCodes) {
+        var html = '';
+        var evidences = evidenceTypeCodes.split(';');
+
+        for (var i = 0; i < evidences.length; i++) {
+            html = html + '<span class="general-info-evidence-item" style="cursor:pointer;">' + evidences[i] + '</span>' + ';';
+        }
+
+        $('#general-info-evidences').append(html.substring(0, html.length - 1));
+
+        $('.general-info-evidence-item').on('click', function () {
+            formInformationEvidence.OpenModal();
+        });
+    }
 
     function RenderAbnormal() {
         var abnormalValue = $(abnormal).text().trim();

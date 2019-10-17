@@ -419,8 +419,10 @@
     <Content Include="images\graphrender\group.svg" />
     <Content Include="Scripts\Account\Associated\account-by-account.js" />
     <Content Include="Scripts\Account\Associated\device-by-account.js" />
+    <Content Include="Scripts\Evidence\form-information-evidence.js" />
     <Content Include="Scripts\Evidence\form-place-evidence.js" />
     <Content Include="Scripts\Evidence\form-exception.js" />
+    <Content Include="Scripts\Evidence\form-retract-evidence.js" />
     <Content Include="Scripts\popoto\d3.min.js" />
     <Content Include="Scripts\popoto\popoto.min.js" />
     <Content Include="Scripts\popoto\vis\vis-network.min.js" />
@@ -1222,6 +1224,8 @@
     <Content Include="Views\Account\DetailAccount.cshtml" />
     <Content Include="Views\Transaction\TransactionHistory.cshtml" />
     <Content Include="Views\Transaction\IPInformation.cshtml" />
+    <Content Include="Views\Evidence\FormInformationEvidence.cshtml" />
+    <Content Include="Views\Evidence\FormRetractEvidence.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
