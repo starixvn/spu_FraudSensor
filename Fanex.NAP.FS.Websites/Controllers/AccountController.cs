@@ -81,6 +81,14 @@
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
+        [HttpPost]
+        public ActionResult UpdateEvidenceByAccountOfComment(InformationEvidenceByAccountUpdateOfComment evidenceOfComment)
+        {
+            var data = _evidenceService.UpdateEvidenceByAccountOfComment(evidenceOfComment);
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
         #endregion
 
         #region Chain To Evidence

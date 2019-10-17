@@ -26,6 +26,8 @@
 
         DBResult PlaceEvidenceByAccount(PlaceEvidenceByAccount evidenceByAccount);
 
-        IEnumerable<InformationEvidenceByAccount> GetInformationEvidenceByAccount(InformationEvidenceByAccountFilter filter);
+        InformationEvidenceByAccount GetInformationEvidenceByAccount(InformationEvidenceByAccountFilter filter);
+
+        DBResult UpdateEvidenceByAccountOfComment(InformationEvidenceByAccountUpdateOfComment evidenceOfComment);
     }
 }

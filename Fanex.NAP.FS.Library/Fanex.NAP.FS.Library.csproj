@@ -502,9 +502,10 @@
     <Compile Include="ViewModels\CustomerMonitor\CustomerDetails\TicketDetails.cs" />
     <Compile Include="ViewModels\DailyDataMonitor\CapturedMatch.cs" />
     <Compile Include="ViewModels\Evidence\Evidence.cs" />
+    <Compile Include="ViewModels\Evidence\InformationEvidenceByAccountUpdateOfComment.cs" />
     <Compile Include="ViewModels\Evidence\InformationEvidenceByAccount.cs" />
     <Compile Include="ViewModels\Evidence\InformationEvidenceByAccountFilter.cs" />
-    <Compile Include="ViewModels\Evidence\InformationEvidenceHistoryByAccount.cs" />
+    <Compile Include="ViewModels\Evidence\InformationEvidenceByAccountHistory.cs" />
     <Compile Include="ViewModels\Evidence\PlaceEvidenceByAccount.cs" />
     <Compile Include="ViewModels\FraudCase\DelayedGoal\Customer.cs" />
     <Compile Include="ViewModels\History.cs" />

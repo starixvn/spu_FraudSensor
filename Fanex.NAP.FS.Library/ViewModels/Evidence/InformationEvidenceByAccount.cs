@@ -12,10 +12,15 @@
 
         public string EvidenceTypeName { get; set; }
 
+        public string EvidenceType
+        {
+            get { return this.EvidenceTypeCode + " " + this.EvidenceTypeName; }
+        }
+
         public string CreatedBy { get; set; }
 
         public string Comment { get; set; }
 
-        public List<InformationEvidenceHistoryByAccount> History { get; set; }
+        public List<InformationEvidenceByAccountHistory> History { get; set; }
     }
 }

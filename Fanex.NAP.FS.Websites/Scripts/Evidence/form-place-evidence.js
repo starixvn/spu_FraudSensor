@@ -41,17 +41,13 @@
             data: paramsPlace,
             success: function (response) {
                 common.showSuccess('Place the evidence successful!');
-                CloseModal();
+                form.dialog('close');
             },
             error: function (errorMessage) {
                 console.log(errorMessage);
                 common.showError('Place the evidence fail!');
             }
         });
-    }
-
-    function CloseModal() {
-        form.dialog('close');
     }
    
     function GetAllEvidences() {
@@ -60,7 +56,7 @@
         $.get(url, function (response) {
             BindEvidences(response);
 
-            if (form.is('dialog')) {
+            if (form.hasClass("ui-dialog-content")) {
                 form.dialog('open');
             } else {
                 form.dialog({
@@ -97,5 +93,7 @@
         $('#ddlPlaceEvidence_ms').width('300px');
     }
 
-    $('#btn-place-evidence-cancel').click(CloseModal);
+    $('#btn-place-evidence-cancel').click(function () {
+        form.dialog('close');
+    });
 }

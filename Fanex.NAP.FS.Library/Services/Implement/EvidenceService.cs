@@ -242,11 +242,49 @@
             };
         }
 
-        public IEnumerable<InformationEvidenceByAccount> GetInformationEvidenceByAccount(InformationEvidenceByAccountFilter filter)
+        public InformationEvidenceByAccount GetInformationEvidenceByAccount(InformationEvidenceByAccountFilter filter)
         {
-            var evidences = new List<InformationEvidenceByAccount>();
+            var evidence = new InformationEvidenceByAccount();
+            var evidencesHistory = new List<InformationEvidenceByAccountHistory>();
+            evidencesHistory.Add(new InformationEvidenceByAccountHistory
+            {
+                CreatedDate = "9/10/2019 9:55:30 PM",
+                Action = "Added",
+                Creator = "sputest02",
+                EvidenceTypeCode = "1.1",
+                EvidenceTypeName = "Credit Card Fraud",
+                Comment = "this is fraud"
+            });
 
-            return evidences;
+            evidencesHistory.Add(new InformationEvidenceByAccountHistory
+            {
+                CreatedDate = "9/10/2019 9:55:30 PM",
+                Action = "Updated",
+                Creator = "sputest02",
+                EvidenceTypeCode = "1.1",
+                EvidenceTypeName = "Credit Card Fraud",
+                Comment = "this is fraud 2"
+            });
+
+            evidence.AccountId = filter.AccountId;
+            evidence.UserName = "fpsa_pgmthai";
+            evidence.EvidenceTypeCode = "4.4";
+            evidence.EvidenceTypeName = "Account Take-Over/Hijacking";
+            evidence.CreatedBy = "sputest02 on 9/10/2019 9:55:30 PM";
+            evidence.Comment = "test";
+            evidence.History = evidencesHistory;
+
+            return evidence;
+        }
+
+        public DBResult UpdateEvidenceByAccountOfComment(InformationEvidenceByAccountUpdateOfComment evidenceOfComment)
+        {
+
+            return new DBResult
+            {
+                ErrorCode = 0,
+                ErrorMsg = string.Empty
+            };
         }
 
         #endregion

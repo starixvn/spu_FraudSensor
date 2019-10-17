@@ -19,8 +19,7 @@
 
     function ShowConfirmation(message) {
         $('#retract-evidence-confirmation-message').text(message);
-
-        if (form_confirmation.is('dialog')) {
+        if (form_confirmation.hasClass("ui-dialog-content")) {        
             form_confirmation.dialog('open');
         } else {
             form_confirmation.dialog({
