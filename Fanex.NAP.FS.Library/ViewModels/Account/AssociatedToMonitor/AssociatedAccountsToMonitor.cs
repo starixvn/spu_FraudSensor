@@ -83,7 +83,7 @@
                 {
                     DateTime date = DateTime.Parse(this.VerifiedDate);
 
-                    return this.VerifiedByUserName + ", " + date.ToString("MMM dd, yyyy");
+                    return this.VerifiedByUserName + "; " + date.ToString("MMM dd, yyyy");
                 }
 
                 return null;

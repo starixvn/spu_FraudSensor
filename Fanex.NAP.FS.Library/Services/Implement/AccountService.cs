@@ -130,7 +130,7 @@
         {
             var userName = new UserService().Get(userId).Username;
 
-            return userName + ", "+ DateTime.Now.ToString("MMM dd, yyyy");
+            return userName + "; "+ DateTime.Now.ToString("MMM dd, yyyy");
         }
 
         private static string GetEvidenceForDisplay(IEnumerable<Evidence> evidences, string codes)

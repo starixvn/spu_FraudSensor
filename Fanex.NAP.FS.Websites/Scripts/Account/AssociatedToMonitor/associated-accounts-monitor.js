@@ -11,7 +11,9 @@
         filter_evidences.multiselect({
             menuWidth: 330,
             menuHeight: 350
-        }).multiselectfilter({
+        })
+        .multiselect('checkAll')
+        .multiselectfilter({
             width: 250,
             placeholder: '',
             label: 'Filter'
@@ -248,7 +250,7 @@
                         $target.parents("td").next().text(response.Content);
                     }
                     else {
-                        $target.parents("td").next().text("");
+                        $target.parents("td").next().text("-");
                     }
                     common.showSuccess();
                 } else {
