@@ -12,6 +12,71 @@
 
     public class EvidenceService : IEvidenceService
     {
+        #region General Information
+        public DBResult PlaceEvidenceByAccount(GeneralInformationPlaceEvidenceByAccount evidenceByAccount)
+        {
+            return new DBResult
+            {
+                ErrorCode = 0,
+                ErrorMsg = string.Empty
+            };
+        }
+
+        public InformationEvidenceByAccount GetInformationEvidenceByAccount(InformationEvidenceByAccountFilter filter)
+        {
+            var evidence = new InformationEvidenceByAccount();
+            var evidencesHistory = new List<InformationEvidenceByAccountHistory>();
+            evidencesHistory.Add(new InformationEvidenceByAccountHistory
+            {
+                CreatedDate = "9/10/2019 9:55:30 PM",
+                Action = "Added",
+                Creator = "sputest02",
+                EvidenceTypeCode = "1.1",
+                EvidenceTypeName = "Credit Card Fraud",
+                Comment = "this is fraud"
+            });
+
+            evidencesHistory.Add(new InformationEvidenceByAccountHistory
+            {
+                CreatedDate = "9/10/2019 9:55:30 PM",
+                Action = "Updated",
+                Creator = "sputest02",
+                EvidenceTypeCode = "1.1",
+                EvidenceTypeName = "Credit Card Fraud",
+                Comment = "this is fraud 2"
+            });
+
+            evidence.AccountId = filter.AccountId;
+            evidence.UserName = "fpsa_pgmthai";
+            evidence.EvidenceTypeCode = "4.4";
+            evidence.EvidenceTypeName = "Account Take-Over/Hijacking";
+            evidence.CreatedBy = "sputest02 on 9/10/2019 9:55:30 PM";
+            evidence.Comment = "test";
+            evidence.History = evidencesHistory;
+
+            return evidence;
+        }
+
+        public DBResult UpdateEvidenceByAccountOfComment(InformationEvidenceByAccountUpdateOfComment evidenceOfComment)
+        {
+            return new DBResult
+            {
+                ErrorCode = 0,
+                ErrorMsg = string.Empty
+            };
+        }
+
+        public DBResult RetractEvidenceByAccount(InformationEvidenceByAccountRetractEvidence evidenceRetract)
+        {
+            return new DBResult
+            {
+                ErrorCode = 0,
+                ErrorMsg = string.Empty
+            };
+        }
+
+        #endregion
+
         #region Chains To Evidence
         public ChainsToEvidence GetChainsToEvidence(ChainsToEvidenceFilter filter)
         {
@@ -204,90 +269,7 @@
         public IEnumerable<Evidence> GetEvidencesByAccount(int accountId)
         {
             return new List<Evidence>();
-        }
-
-        public DBResult InsertEvidenceGroup(string groupName)
-        {
-            return new DBResult
-            {
-                ErrorCode = 0,
-                ErrorMsg = string.Empty
-            };
-        }
-
-        public DBResult InsertEvidence(int groupId, string evidenceName)
-        {
-            return new DBResult
-            {
-                ErrorCode = 0,
-                ErrorMsg = string.Empty
-            };
-        }
-
-        public DBResult DeleteEvidence(int evidenceId)
-        {
-            return new DBResult
-            {
-                ErrorCode = 0,
-                ErrorMsg = string.Empty
-            };
-        }
-
-        public DBResult PlaceEvidenceByAccount(PlaceEvidenceByAccount evidenceByAccount)
-        {
-            return new DBResult
-            {
-                ErrorCode = 0,
-                ErrorMsg = string.Empty
-            };
-        }
-
-        public InformationEvidenceByAccount GetInformationEvidenceByAccount(InformationEvidenceByAccountFilter filter)
-        {
-            var evidence = new InformationEvidenceByAccount();
-            var evidencesHistory = new List<InformationEvidenceByAccountHistory>();
-            evidencesHistory.Add(new InformationEvidenceByAccountHistory
-            {
-                CreatedDate = "9/10/2019 9:55:30 PM",
-                Action = "Added",
-                Creator = "sputest02",
-                EvidenceTypeCode = "1.1",
-                EvidenceTypeName = "Credit Card Fraud",
-                Comment = "this is fraud"
-            });
-
-            evidencesHistory.Add(new InformationEvidenceByAccountHistory
-            {
-                CreatedDate = "9/10/2019 9:55:30 PM",
-                Action = "Updated",
-                Creator = "sputest02",
-                EvidenceTypeCode = "1.1",
-                EvidenceTypeName = "Credit Card Fraud",
-                Comment = "this is fraud 2"
-            });
-
-            evidence.AccountId = filter.AccountId;
-            evidence.UserName = "fpsa_pgmthai";
-            evidence.EvidenceTypeCode = "4.4";
-            evidence.EvidenceTypeName = "Account Take-Over/Hijacking";
-            evidence.CreatedBy = "sputest02 on 9/10/2019 9:55:30 PM";
-            evidence.Comment = "test";
-            evidence.History = evidencesHistory;
-
-            return evidence;
-        }
-
-        public DBResult UpdateEvidenceByAccountOfComment(InformationEvidenceByAccountUpdateOfComment evidenceOfComment)
-        {
-
-            return new DBResult
-            {
-                ErrorCode = 0,
-                ErrorMsg = string.Empty
-            };
-        }
-
+        }       
         #endregion
-
     }
 }

@@ -53,34 +53,39 @@
   text-align: left !important;
   cursor: default; }
 
-.info-evidence-dialog {
-  width: 600px; }
-  .info-evidence-dialog .btn-add {
-    position: absolute;
-    top: 6px;
-    right: 12px;
-    background: #396EF8;
-    color: #fff; }
-  .info-evidence-dialog .status {
-    display: grid;
-    grid-template-columns: 150px 450px; }
-    .info-evidence-dialog .status .info-label label {
-      display: block;
-      padding: 5px;
-      font-weight: bold;
-      color: #404040;
-      line-height: 1.3; }
-    .info-evidence-dialog .status .info-text div {
-      padding: 5px;
-      line-height: 1.3; }
-      .info-evidence-dialog .status .info-text div .icon-edit {
-        margin-left: 10px;
-        cursor: pointer;
-        font-size: 20px;
-        vertical-align: bottom; }
-      .info-evidence-dialog .status .info-text div .icon-edit:before {
-        content: "\e91c"; }
-      .info-evidence-dialog .status .info-text div .evidence-comment {
-        width: 380px; }
-      .info-evidence-dialog .status .info-text div .btn-save {
-        vertical-align: top; }
+.info-evidence-dialog .status {
+  display: grid;
+  grid-template-columns: 150px 580px 100px; }
+  .info-evidence-dialog .status .info-label label {
+    display: block;
+    padding: 5px;
+    font-weight: bold;
+    color: #404040;
+    line-height: 1.3; }
+  .info-evidence-dialog .status .info-text div {
+    padding: 5px;
+    line-height: 1.3; }
+    .info-evidence-dialog .status .info-text div .icon-edit {
+      margin-left: 10px;
+      cursor: pointer;
+      font-size: 20px;
+      vertical-align: bottom; }
+    .info-evidence-dialog .status .info-text div .icon-edit:before {
+      content: "\e91c"; }
+    .info-evidence-dialog .status .info-text div .evidence-comment {
+      width: 610px;
+      resize: none; }
+  .info-evidence-dialog .status .btn-group div {
+    display: block;
+    padding: 5px;
+    height: 28px;
+    text-align: right; }
+
+.table-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 35px;
+  border: 1px solid #c1c1c1;
+  padding: 4px 10px;
+  background-color: #e3e9f6; }

@@ -90,6 +90,13 @@
         return reg.test(str);
     }
 
+    this.handleSpecialCharacter = function (str) {
+        if (str != null) {
+            return str.replace(/&/g, "&amp;").replace(/>/g, "&gt;").replace(/</g, "&lt;");
+        }
+        return str;
+    }
+
     this.showConfirmation = function (html, yesCallback, noCallback) {
         confirmation.empty().html(html).dialog("open");
 

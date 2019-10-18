@@ -6,7 +6,7 @@
 
         public int CustId { get; set; }
 
-        public int EvidenceTypeCode { get; set; }
+        public string EvidenceTypeCode { get; set; }
 
         public string Comment { get; set; }
     }

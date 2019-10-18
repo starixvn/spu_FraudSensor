@@ -26,7 +26,7 @@
         $('#place-evidence-subscriber').text(SUBSCRIBER);
         $('#place-evidence-comment').val('');
 
-        GetAllEvidences();
+        getAllEvidences();
     }
 
     this.Submit = function () {
@@ -50,11 +50,11 @@
         });
     }
    
-    function GetAllEvidences() {
+    function getAllEvidences() {
         var url = common.modifyRelativeUrl("/Account/GetAllEvidences");
 
         $.get(url, function (response) {
-            BindEvidences(response);
+            bindEvidences(response);
 
             if (form.hasClass("ui-dialog-content")) {
                 form.dialog('open');
@@ -71,7 +71,7 @@
         });
     }
 
-    function BindEvidences(data) {
+    function bindEvidences(data) {
         ddlEvidence.multiselect().empty();
         var groupId = '';
 

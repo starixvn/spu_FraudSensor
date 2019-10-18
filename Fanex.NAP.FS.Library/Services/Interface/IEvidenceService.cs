@@ -18,16 +18,12 @@
 
         IEnumerable<Evidence> GetEvidencesByAccount(int accountId);
 
-        DBResult InsertEvidenceGroup(string groupName);
-
-        DBResult InsertEvidence(int groupId, string evidenceName);
-
-        DBResult DeleteEvidence(int evidenceId);
-
-        DBResult PlaceEvidenceByAccount(PlaceEvidenceByAccount evidenceByAccount);
+        DBResult PlaceEvidenceByAccount(GeneralInformationPlaceEvidenceByAccount evidenceByAccount);
 
         InformationEvidenceByAccount GetInformationEvidenceByAccount(InformationEvidenceByAccountFilter filter);
 
         DBResult UpdateEvidenceByAccountOfComment(InformationEvidenceByAccountUpdateOfComment evidenceOfComment);
+
+        DBResult RetractEvidenceByAccount(InformationEvidenceByAccountRetractEvidence evidenceRetract);
     }
 }

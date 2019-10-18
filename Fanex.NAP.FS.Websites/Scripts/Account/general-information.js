@@ -1,7 +1,7 @@
 ﻿function general_information() {
     var formInformationEvidence = new form_information_evidence();
 
-    function GetGeneralInformation() {
+    function getGeneralInformation() {
         common.showLoading();
 
         var url = common.modifyRelativeUrl('/Account/GetGeneralInformation');
@@ -13,7 +13,7 @@
             type: 'POST',
             data: paramsFilter,
             success: function (response) {
-                BindGeneralInformation(response);
+                bindGeneralInformation(response);
             },
             error: function (errMsg) {
                 console.log(errMsg);
@@ -23,12 +23,12 @@
         });
     }
 
-    function BindGeneralInformation(data) {
-        RenderUserName(data.GeneralInfo);
-        RenderAccountStatus(data.GeneralInfo);
-        RenderLoginInformation(data.GeneralInfo);
-        RenderAssociation(data.GeneralInfo);
-        RenderFraudInformation(data.GeneralInfo);
+    function bindGeneralInformation(data) {
+        renderUserName(data.GeneralInfo);
+        renderAccountStatus(data.GeneralInfo);
+        renderLoginInformation(data.GeneralInfo);
+        renderAssociation(data.GeneralInfo);
+        renderFraudInformation(data.GeneralInfo);
 
         USERNAME = data.GeneralInfo.Username;        
         SUBSCRIBERID = data.GeneralInfo.SubscriberID;
@@ -37,7 +37,7 @@
         common.closeLoading();
     }
 
-    function RenderUserName(info) {
+    function renderUserName(info) {
         var icon = '';
         var userNameInfo = '';
 
@@ -66,7 +66,7 @@
         $('#general-info-username').append(userNameInfo);
     }
 
-    function RenderAccountStatus(info) {
+    function renderAccountStatus(info) {
         $('#general-info-account-status').text(info.AccountStatusToString);
 
         if (info.AccountStatusName != 'NotYetDeposit') {
@@ -95,13 +95,13 @@
         }        
     }
 
-    function RenderLoginInformation(info) {
+    function renderLoginInformation(info) {
         $('#general-info-first-login').text(info.FirstLoginToString);
         $('#general-info-last-login').text(info.LastLoginToString);
         $('#general-info-account-age').text(info.FrequencyLogin + "/" + info.AccountAge + "(times / days)");
     }
 
-    function RenderAssociation(info) {
+    function renderAssociation(info) {
         $('#general-info-associated-accounts').text(info.AssociatedAccounts);
         $('#general-info-associated-devices').text(info.AssociatedDevices);
         $('#general-info-shared-devices').text(info.SharedDevices);
@@ -109,8 +109,8 @@
         $('#general-info-account-exceptions').text(info.AccountExceptions);
     }
 
-    function RenderFraudInformation(info) {
-        RenderEvidences(info.EvidenceTypeCodes);
+    function renderFraudInformation(info) {
+        renderEvidences(info.EvidenceTypeCodes);
         $('#general-info-problem-account-status').text(info.ProblemAccount);
         $('#general-info-abnormal').text(info.Abnormal);
         $('#general-info-dangerous-level-original').text(info.DangerousOriginal);
@@ -119,28 +119,28 @@
         $('#general-info-autosuspend').text(info.AutoSuspend);
         $('#general-info-commited-fraudcase').text(info.CommitedFraudCase);
 
-        RenderAbnormal();
-        RenderDangerousLevel($('#general-info-dangerous-level-original'));
-        RenderDangerousLevel($('#general-info-dangerous-level-non-live'));
-        RenderDangerousLevel($('#general-info-dangerous-level-other-sports'));
+        renderAbnormal();
+        renderDangerousLevel($('#general-info-dangerous-level-original'));
+        renderDangerousLevel($('#general-info-dangerous-level-non-live'));
+        renderDangerousLevel($('#general-info-dangerous-level-other-sports'));
     }    
 
-    function RenderEvidences(evidenceTypeCodes) {
+    function renderEvidences(evidenceTypeCodes) {
         var html = '';
         var evidences = evidenceTypeCodes.split(';');
 
         for (var i = 0; i < evidences.length; i++) {
-            html = html + '<span class="general-info-evidence-item" style="cursor:pointer;">' + evidences[i] + '</span>' + ';';
+            html = html + '<span class="general-info-evidence-item" style="cursor:pointer;" data-evidence-type-code="' + evidences[i]+'">' + evidences[i] + '</span>' + ';';
         }
 
         $('#general-info-evidences').append(html.substring(0, html.length - 1));
 
         $('.general-info-evidence-item').on('click', function () {
-            formInformationEvidence.OpenModal();
+            formInformationEvidence.OpenModal($(this).attr('data-evidence-type-code'));
         });
     }
 
-    function RenderAbnormal() {
+    function renderAbnormal() {
         var abnormalValue = $(abnormal).text().trim();
         var abnormal = $('#general-info-abnormal');
 
@@ -185,7 +185,7 @@
         }
     }
 
-    function RenderDangerousLevel(dangerousName) {
+    function renderDangerousLevel(dangerousName) {
         var dangerousValue = $(dangerousName).text().trim();
 
         switch (dangerousValue) {
@@ -263,7 +263,7 @@
         }
     }   
 
-    GetGeneralInformation();
+    getGeneralInformation();
 }
 
 $(general_information);

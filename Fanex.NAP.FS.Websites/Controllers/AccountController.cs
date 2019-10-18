@@ -66,7 +66,7 @@
         }
 
         [HttpPost]
-        public ActionResult PlaceEvidenceByAccount(PlaceEvidenceByAccount evidenceByAccount)
+        public ActionResult PlaceEvidenceByAccount(GeneralInformationPlaceEvidenceByAccount evidenceByAccount)
         {
             var data = _evidenceService.PlaceEvidenceByAccount(evidenceByAccount);
 
@@ -85,6 +85,14 @@
         public ActionResult UpdateEvidenceByAccountOfComment(InformationEvidenceByAccountUpdateOfComment evidenceOfComment)
         {
             var data = _evidenceService.UpdateEvidenceByAccountOfComment(evidenceOfComment);
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public ActionResult RetractEvidenceByAccount(InformationEvidenceByAccountRetractEvidence evidenceRetract)
+        {
+            var data = _evidenceService.RetractEvidenceByAccount(evidenceRetract);
 
             return Json(data, JsonRequestBehavior.AllowGet);
         }

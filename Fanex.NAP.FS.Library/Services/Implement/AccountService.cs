@@ -288,8 +288,7 @@
         {
             var evidenceTypeCodes = evidenceByTargets.Select(e => e.EvidenceTypeCode).OrderBy(e => e);
 
-            //generalInfo.EvidenceTypeCodes = evidenceTypeCodes.Join("; ");
-            generalInfo.EvidenceTypeCodes = "6.1; 6.7; 6.8";
+            generalInfo.EvidenceTypeCodes = evidenceTypeCodes.Join(";");            
 
             return generalInfo;
         }

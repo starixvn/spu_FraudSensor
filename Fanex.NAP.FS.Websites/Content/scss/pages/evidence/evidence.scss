@@ -72,19 +72,9 @@
 }
 
 .info-evidence-dialog {
-    width: 600px;
-
-    .btn-add {
-        position: absolute;
-        top: 6px;
-        right: 12px;
-        background: #396EF8;
-        color: #fff;
-    }
-
     .status {
         display: grid;
-        grid-template-columns: 150px 450px;
+        grid-template-columns: 150px 580px 100px;
 
         .info-label {
             label {
@@ -113,13 +103,29 @@
                 }
 
                 .evidence-comment {
-                    width: 380px;
-                }
-
-                .btn-save {
-                    vertical-align: top;
+                    width: 610px;
+                    resize: none;
                 }
             }
         }
+
+        .btn-group {
+            div {
+                display: block;
+                padding: 5px;
+                height: 28px;
+                text-align: right;
+            }
+        }
     }
+}
+
+.table-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 35px;
+    border: 1px solid #c1c1c1;
+    padding: 4px 10px;
+    background-color: #e3e9f6;
 }

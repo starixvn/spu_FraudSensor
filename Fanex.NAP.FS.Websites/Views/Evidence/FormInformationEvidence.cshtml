@@ -12,21 +12,26 @@
                     <div id="info-evidence-account"></div>
                     <div id="info-evidence-type"></div>
                     <div id="info-evidnece-createby"></div>
-                    <div>
+                    <div style="height: 45px;">
                         <span id="info-evidence-comment-display"></span>
-                        <span id="info-evidence-comment-input" style="display:none;">
+                        <span id="info-evidence-comment-input">
                             <textarea rows="2" class="evidence-comment" id="info-evidence-comment-txt-input"></textarea>
-                            <button class="button -primary btn-save" id="info-evidence-comment-btn-save">Save</button>
                         </span>
                         <span class="icon-edit" title="edit" id="info-evidence-comment-btn-edit"></span>
-                    </div>                    
-                </div>                
+                    </div>
+                </div>
+                <div class="btn-group">
+                    <div><button class="button -add" id="information-evidence-btn-retract">Retract</button></div>
+                    <div></div>
+                    <div></div>
+                    <div><button class="button -primary" id="info-evidence-comment-btn-save">Save</button></div>
+                </div>
             </div>
-            <div class="info-item-right">
-                <button class="button btn-add" id="information-evidence-btn-retract">Retract</button>
-            </div>            
         </div>
         <div>
+            <div class="table-heading">
+                <h3>Evidence History</h3>
+            </div>
             <table id="information-evidence-table" class="table table-striped" style="width: 100%">
                 <thead>
                     <tr>
@@ -34,7 +39,7 @@
                         <th>Action</th>
                         <th>Creator</th>
                         <th>Evidence Type</th>
-                        <th>Comment</th>                       
+                        <th>Comment</th>
                     </tr>
                 </thead>
                 <tbody></tbody>

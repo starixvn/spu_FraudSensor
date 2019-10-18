@@ -1,10 +1,12 @@
 ﻿namespace Fanex.NAP.FS.Library.ViewModels.Evidence
 {
-    public class PlaceEvidenceByAccount
+    public class InformationEvidenceByAccountRetractEvidence
     {
         public int AccountId { get; set; }
 
-        public int EvidenceTypeID { get; set; }   
+        public int CustId { get; set; }
+
+        public string EvidenceTypeCode { get; set; }
 
         public string Comment { get; set; }
     }
