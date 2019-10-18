@@ -47,12 +47,12 @@
             userNameInfo = info.FirstLoginName;
         }
 
-        if (info.AccountEvidenceStatus == 'Clean') {
+        if (info.AccountEvidenceStatusName == 'Clean') {
             $('#general-info-username-icon').addClass('icon-clean');
 
             userNameInfo = userNameInfo + ': <label>This account is clean</label>';
 
-        } else if (info.AccountEvidenceStatus == 'CentralPoint') {
+        } else if (info.AccountEvidenceStatusName == 'CentralPoint') {
             $('#general-info-username-icon').addClass('icon-fraud-flag');
             $('#general-info-username-icon').parent().addClass('red');
             userNameInfo = userNameInfo + ': <label>This account is flagged</label>'

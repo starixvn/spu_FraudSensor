@@ -28,6 +28,10 @@
 
         public AccountEvidenceStatus AccountEvidenceStatus { get; set; }
 
+        public string AccountEvidenceStatusName {
+            get { return Enum.GetName(typeof(AccountEvidenceStatus), this.AccountEvidenceStatus); }
+        }
+
         public EvidenceStatus EvidenceStatus
         {
             get
