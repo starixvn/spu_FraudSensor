@@ -21,6 +21,7 @@ namespace Fanex.NAP.FS.Library.ExcelConfig.DailyDataCapture
             var idx = 0;
 
             row.GetCell(idx++).SetCellValue(data.MatchId);
+            row.GetCell(idx++).SetCellValue(data.MatchCode);
             row.GetCell(idx++).SetCellValue($"{data.Home} - vs - {data.Away}");
             row.GetCell(idx++).SetCellValue(DateTime.Parse(data.EventDate).ToString("MMM dd,yyyy"));
             row.GetCell(idx++).SetCellValue(DateTime.Parse(data.ScannedDate).ToString("MMM dd, yyyy hh:mm:ss tt"));
