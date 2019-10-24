@@ -18,12 +18,10 @@
             placeholder: '',
             label: 'Filter'
         });
-
-        var dateFrom = new Date();
+       
         var dateFromMaxLimit = new Date();
         var dateFromMinLimit = new Date();
-        dateFromMinLimit.setDate(dateFromMinLimit.getDate() - 29);
-        dateFrom.setDate(dateFrom.getDate() - 7);
+        dateFromMinLimit.setDate(dateFromMinLimit.getDate() - 29);        
 
         filter_date_from.datepicker({
             dateFormat: "M dd, yy",
@@ -33,7 +31,7 @@
             maxDate: "y"
         }).datepicker("option", "minDate", dateFromMinLimit)
             .datepicker("option", "maxDate", dateFromMaxLimit)
-            .datepicker("setDate", dateFrom);           
+            .datepicker("setDate", new Date());           
 
         filter_date_to.datepicker({
             dateFormat: "M dd, yy",
