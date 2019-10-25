@@ -141,8 +141,8 @@
     }
 
     function renderAbnormal() {
-        var abnormalValue = $(abnormal).text().trim();
         var abnormal = $('#general-info-abnormal');
+        var abnormalValue = $(abnormal).text().trim();        
 
         $(abnormal).css({ 'color': '#000000' });
 
