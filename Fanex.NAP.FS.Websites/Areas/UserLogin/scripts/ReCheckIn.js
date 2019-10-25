@@ -4,7 +4,7 @@
 function ReCheckin() {
     var urlRecheck = common.modifyRelativeUrl("/UserLogin/Login/ReCheckLogin");
     var urlLogout = common.modifyRelativeUrl("/UserLogin/Login/LogOut");
-
+    
     $.ajax({
         url: urlRecheck,
         type: "POST",

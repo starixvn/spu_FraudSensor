@@ -29,5 +29,7 @@
         public History<int?> SettledTickets { get; set; }
 
         public History<int?> CancelledTickets { get; set; }
+
+        public string Note { get; set; }
     }
 }

@@ -5,6 +5,7 @@
     using Fanex.NAP.FS.Library.ExcelConfig.DailyDataCapture;
     using Fanex.NAP.FS.Library.Services.Implement;
     using Fanex.NAP.FS.Library.Services.Interface;
+    using Fanex.NAP.FS.Library.ViewModels.DailyDataMonitor;
     using System;
     using System.Web.Mvc;
 
@@ -23,6 +24,15 @@
         {
             var result = _service.GetMatches(new DailyDataGetCriteria { FromDate = fromDate, ToDate = toDate });
             return Json(result);
+        }
+
+        public ActionResult UpdateDailyDataCaptureOfNote(DailyDataCaptureOfNote dataCaptureOfNote)
+        {
+            dataCaptureOfNote.UserId = CurrentSession.UserId;
+
+            var data = _service.UpdateDailyDataCaptureOfNote(dataCaptureOfNote);
+
+            return Json(data, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult GetMatchesExcel(DateTime fromDate, DateTime toDate)

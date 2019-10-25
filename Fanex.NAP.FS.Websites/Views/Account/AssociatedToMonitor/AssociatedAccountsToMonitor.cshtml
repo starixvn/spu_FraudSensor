@@ -1,0 +1,95 @@
+﻿@using Fanex.NAP.FS.Library.ViewModels.Account.AssociatedToMonitor
+@using Fanex.NAP.FS.Library.ViewModels
+@using Fanex.NAP.FS.Library.Core.Consts
+@{
+    ViewBag.Title = "AssociatedAccounts";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section styles{
+    <link href="~/Content/scss/MultipleSelect/jquery.multiselect.filter.css" rel="stylesheet" />
+    <link href="~/Content/scss/MultipleSelect/jquery.multiselect.css" rel="stylesheet" />
+    <link href="~/Content/scss/pages/account/account.css" rel="stylesheet" />
+}
+<h1 class="title">Associated Accounts Monitor</h1>
+
+<div class="form-filter">
+    <div class="group calendar">
+        <label class="text">From</label>
+        <input type="text" id="filter-associated-date-from" class="control">
+        <span class="icon-calendar-text"></span>
+    </div>
+
+    <div class="group calendar">
+        <label class="text">To</label>
+        <input type="text" id="filter-associated-date-to" class="control" />
+        <span class="icon-calendar-text"></span>
+    </div>
+
+    <div class="group width-160">
+        <label class="text">Verify Status</label>
+        <select class="control" id="filter-verify-status">
+            <option value=@VerifyStatus.All>All</option>
+            <option value=@VerifyStatus.Verified>Verified</option>
+            <option value=@VerifyStatus.NotVerified>Not Verified</option>
+        </select>
+    </div>
+
+    <div class="group">
+        <label class="text">Evidence List</label>
+        <div class="edit-field" style="width:365px;">
+            <select id="filter-evidences" multiple="multiple" style="width:365px;">
+                @foreach (var item in (IEnumerable<Evidence>)ViewBag.Evidences)
+                {
+                    if (item.EvidenceCode == Consts.FPS_EVIDENCE_CODE_SEIZE_BET_99_100)
+                    {
+                        <option value="@item.EvidenceCode">@Consts.FPS_EVIDENCE_CODE_SEIZE_BET_100  @item.EvidenceName</option>
+                    }
+                    else
+                    {
+                        <option value="@item.EvidenceCode">@item.EvidenceCode  @item.EvidenceName</option>
+                    }
+
+                }
+            </select>
+        </div>
+    </div>
+    <button class="button -primary" id="btn-generate">Generate</button>
+</div>
+
+<div>
+    <table class="table table-striped width-100per" id="grid-associated-account" style="width: 100%">
+        <thead>
+            <tr>
+                <th rowspan="2" class="col-no">#</th>
+                <th colspan="4">Associated Account</th>
+                <th colspan="4">Main Account</th>
+                <th rowspan="2">1st Associated</th>
+                <th rowspan="2">Verified</th>
+                <th rowspan="2">Verified By</th>
+                <th rowspan="2">Note</th>
+            </tr>
+            <tr>
+                <th>Account</th>
+                <th>Site</th>
+                <th>Level</th>
+                <th>Evidence</th>
+                <th>Account</th>
+                <th>Site</th>
+                <th>Level</th>
+                <th>Evidence</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+
+@section scripts{
+    <script type="text/javascript">
+        var username = '@ViewBag.Username';
+        var evidencesCache = '@ViewBag.EvidencesCache';
+    </script>
+
+    <script src="~/Scripts/MultipleSelect/jquery.multiselect.filter.js"></script>
+    <script src="~/Scripts/MultipleSelect/jquery.multiselect.js"></script>
+    <script src="~/Scripts/Account/AssociatedToMonitor/associated-accounts-monitor.js"></script>
+}

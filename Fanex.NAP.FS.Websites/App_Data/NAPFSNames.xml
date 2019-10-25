@@ -251,6 +251,10 @@
     <Setting Key="FS_Rpt_DailyDataMonitoring_Get"
              SpName="FS_Rpt_DailyDataMonitoring_Get"
              DbName="DBFS.bodb_FraudSensor.bodbSPUNet" />
+
+    <Setting Key="FS_Rpt_ChangedMatchNote_Update"
+            SpName="FS_Rpt_ChangedMatchNote_Update"
+            DbName="DBFS.bodb_FraudSensor.bodbSPUNet" />
   </Function>
 
   <Function Name="CheckBetReport">
