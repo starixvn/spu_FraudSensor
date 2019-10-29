@@ -7,10 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fanex.NAP.FS.Websites", "Fa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fanex.NAP.FS.Library", "Fanex.NAP.FS.Library\Fanex.NAP.FS.Library.csproj", "{2D6F84F8-E9B5-49EC-B487-05B44E994DCC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fanex.NAP.FS.WinService", "Fanex.NAP.FS.WinService\Fanex.NAP.FS.WinService.csproj", "{6D6D8E14-23C3-46B7-889E-328632C6DC62}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fanex.NAP.FS.WinService.Console", "Fanex.NAP.FS.WinService.Console\Fanex.NAP.FS.WinService.Console.csproj", "{2226E469-7F62-4BFF-B5AC-C99051228374}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SonarQube", "SonarQube", "{E1B361EA-BB46-45A7-9750-C7F594CE425B}"
 	ProjectSection(SolutionItems) = preProject
 		SonarQube\SolutionBinding.sqconfig = SonarQube\SolutionBinding.sqconfig
@@ -61,14 +57,6 @@ Global
 		{2D6F84F8-E9B5-49EC-B487-05B44E994DCC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2D6F84F8-E9B5-49EC-B487-05B44E994DCC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2D6F84F8-E9B5-49EC-B487-05B44E994DCC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6D6D8E14-23C3-46B7-889E-328632C6DC62}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6D6D8E14-23C3-46B7-889E-328632C6DC62}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6D6D8E14-23C3-46B7-889E-328632C6DC62}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6D6D8E14-23C3-46B7-889E-328632C6DC62}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2226E469-7F62-4BFF-B5AC-C99051228374}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2226E469-7F62-4BFF-B5AC-C99051228374}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2226E469-7F62-4BFF-B5AC-C99051228374}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2226E469-7F62-4BFF-B5AC-C99051228374}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5CE0BA40-0A37-4C89-A33B-D61C7944BE08}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5CE0BA40-0A37-4C89-A33B-D61C7944BE08}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5CE0BA40-0A37-4C89-A33B-D61C7944BE08}.Release|Any CPU.ActiveCfg = Release|Any CPU
