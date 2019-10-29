@@ -224,6 +224,7 @@
     <Compile Include="Core\Utilities\Extentions.cs" />
     <Compile Include="Criteria\Api\FlaggedAccountDeleteCriteria.cs" />
     <Compile Include="Criteria\Api\FlaggedAccountInsertCriteria.cs" />
+    <Compile Include="Criteria\Api\OfficeIpTransInsertCriteria.cs" />
     <Compile Include="Criteria\CheckBetReport\CheckBetReportGetCriteria.cs" />
     <Compile Include="Criteria\CheckBetReport\CheckBetReportUpdateNoteCriteria.cs" />
     <Compile Include="Criteria\CustomerMonitor\CustomerDetails\GetCustomerTicketsCriteria.cs" />
@@ -284,6 +285,7 @@
     <Compile Include="Criteria\Notification\RecipientGetCriteria.cs" />
     <Compile Include="Criteria\Notification\RecipientRemoveCriteria.cs" />
     <Compile Include="Criteria\Notification\UserMessageGetCriteria.cs" />
+    <Compile Include="Criteria\ScannedOfficeIP\OfficeIpTransaction.cs" />
     <Compile Include="Criteria\ScannedOfficeIP\TicketFromOfficeIpGetCriteria.cs" />
     <Compile Include="Criteria\Notification\UserMessageUnreadCounterGetCriteria.cs" />
     <Compile Include="Criteria\SuspiciousCustomerDetails\SuspiciousCustomerDetailsGeneralCriteria.cs" />

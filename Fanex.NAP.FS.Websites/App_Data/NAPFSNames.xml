@@ -175,6 +175,11 @@
     <Setting Key="FS_DelayGoalAccount_ImportFromFPS"
              SpName="FS_DelayGoalAccount_ImportFromFPS"
              DbName="DBFS.bodb_FraudSensor.bodbSPUNet" />
+
+    <Setting Key="FS_Tbl_OfficeIPLogin_Insert"
+             SpName="FS_Tbl_OfficeIPLogin_Insert"
+             DbName="DBFS.bodb_FraudSensor.bodbSPUNet" />
+
   </Function>
 
   <Function Name="SuspiciousInfo">

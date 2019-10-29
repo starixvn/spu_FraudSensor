@@ -1,7 +1,10 @@
 ﻿namespace Fanex.NAP.FS.Library.Services.Implement
 {
     using Fanex.NAP.FS.Library.Core.BaseClasses;
+    using Fanex.NAP.FS.Library.Core.Helpers.Xml;
+    using Fanex.NAP.FS.Library.Criteria.Api;
     using Fanex.NAP.FS.Library.Criteria.FraudCase.ScannedOfficeIP;
+    using Fanex.NAP.FS.Library.Criteria.ScannedOfficeIP;
     using Fanex.NAP.FS.Library.Models;
     using Fanex.NAP.FS.Library.Models.FraudCase.ScannedOfficeIP;
     using Fanex.NAP.FS.Library.Services.Interface;
@@ -39,7 +42,17 @@
             };
 
             return DataService.UpdateData(criteria, "OfficeIP");
-        }        
+        }
+
+        public DBResult InsertOfficeIpTrans(IEnumerable<OfficeIpTransaction> transactions)
+        {
+            var criteria = new OfficeIpTransInsertCriteria
+            {
+                TransactionList = transactions.ToXmlString()
+            };
+
+            return DataService.UpdateData(criteria, "OfficeIPTransaction");
+        }
 
         public IEnumerable<OfficeIp> GetIps()
         {

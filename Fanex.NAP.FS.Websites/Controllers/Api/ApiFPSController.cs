@@ -1,5 +1,6 @@
 ﻿namespace Fanex.NAP.FraudDetection.Controller.Api
 {
+    using Fanex.NAP.FS.Library.Criteria.ScannedOfficeIP;
     using Fanex.NAP.FS.Library.Models.FraudCase.ScannedOfficeIP;
     using Fanex.NAP.FS.Library.Services.Implement;
     using FS.Library.Criteria.Api;
@@ -41,7 +42,15 @@
         [HttpGet]
         public IEnumerable<OfficeIp> GetOfficeIPList()
         {
-            return _officeIPService.GetIps();
+            var data = _officeIPService.GetIps();
+            return data;
+        }
+
+        [HttpPost]
+        public DBResult InsertOfficeIPTrans([FromBody]IEnumerable<OfficeIpTransaction> criteria)
+        {
+            var result = _officeIPService.InsertOfficeIpTrans(criteria);
+            return result;
         }
     }
 }
