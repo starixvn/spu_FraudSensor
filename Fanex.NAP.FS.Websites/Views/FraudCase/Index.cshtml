@@ -79,7 +79,14 @@
         </div>
 
         <div class="row">
-            <div class="info-name">Ticket in rules</div>
+            <div class="info-name">
+                Ticket
+                @if (Model.FraudCaseInfo.FraudCaseId == 2)
+                {
+                    <span>&amp; Log in transaction</span>
+                }
+                in rules
+            </div>
             <div class="info-value">
                 @foreach (var rule in Model.FraudCaseInfo.TicketRules)
                 {
