@@ -1,0 +1,50 @@
+﻿@using Fanex.NAP.FS.Library.ViewModels.Account.AssociatedToMonitor
+@using Fanex.NAP.FS.Library.ViewModels
+@using Fanex.NAP.FS.Library.Core.Consts
+@{
+    ViewBag.Title = "AssociatedAccounts";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section styles{
+    <link href="~/Content/scss/MultipleSelect/jquery.multiselect.filter.css" rel="stylesheet" />
+    <link href="~/Content/scss/MultipleSelect/jquery.multiselect.css" rel="stylesheet" />
+    <link href="~/Content/scss/pages/account/account.css" rel="stylesheet" />
+}
+
+<h1 class="title">Associated Accounts Detail</h1>
+
+<div class="form-filter">
+    <div class="group width-160">
+        <label class="text">Verify Status</label>
+        <select class="control" id="filter-verify-status">
+            <option value=@VerifyStatus.All>All</option>
+            <option value=@VerifyStatus.Verified>Verified</option>
+            <option value=@VerifyStatus.NotVerified>Not Verified</option>
+        </select>
+    </div>
+</div>
+
+<div>
+    <table class="table table-striped width-100per" id="grid-associated-account-detail" style="width: 100%">
+        <thead>
+            <tr>
+                <th class="col-no">#</th>
+                <th>Account</th>
+                <th>Site</th>
+                <th>Level</th>
+                <th>Evidence</th>
+                <th>1st Associated</th>
+                <th>Verified</th>
+                <th>Verified By</th>
+                <th>Note</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+
+@section scripts{    
+    <script src="~/Scripts/MultipleSelect/jquery.multiselect.filter.js"></script>
+    <script src="~/Scripts/MultipleSelect/jquery.multiselect.js"></script>
+    <script src="~/Scripts/Account/AssociatedToMonitor/associated-accounts-detail-monitor.js"></script>
+}

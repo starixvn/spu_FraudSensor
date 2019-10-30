@@ -6,9 +6,13 @@
 
     public interface IAccountService
     {
+        IEnumerable<Subscriber> GetAllSubscribers();
+
         IEnumerable<Evidence> GetAllEvidences();
 
         IEnumerable<AssociatedAccountsToMonitor> GetAssociatedAccountsToMonitor(AssociatedAccountsToMonitorFilter filter);
+
+        IEnumerable<AssociatedAccountsDetailToMonitor> GetAssociatedAccountsDetailToMonitor(AssociatedAccountsDetailToMonitorFilter filter);
 
         UpdateResult UpdateAssociatedAccountToMonitorOfVerify(AssociatedAccountToMonitorOfVerify accountOfVerify);
 

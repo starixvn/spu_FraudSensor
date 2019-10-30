@@ -25,19 +25,34 @@
         <span class="icon-calendar-text"></span>
     </div>
 
-    <div class="group width-160">
-        <label class="text">Verify Status</label>
-        <select class="control" id="filter-verify-status">
-            <option value=@VerifyStatus.All>All</option>
-            <option value=@VerifyStatus.Verified>Verified</option>
-            <option value=@VerifyStatus.NotVerified>Not Verified</option>
-        </select>
+    <div class="group">
+        <label class="text">Site</label>
+        <div class="edit-field">
+            <select id="filter-sites" multiple="multiple" style="width:260px;">
+                @foreach (var item in (IEnumerable<Subscriber>)ViewBag.Subscribers)
+                {
+                    <option value="@item.SubscriberName">@item.SubscriberName</option>
+                }
+            </select>
+        </div>
+    </div>
+
+    <div class="group">
+        <label class="text">Level</label>
+        <div class="edit-field">
+            <select id="filter-cust-levels" multiple="multiple" style="width:160px;">
+                <option value="4">Super</option>
+                <option value="3">Master</option>
+                <option value="2">Agent</option>
+                <option value="1">Member</option>
+            </select>
+        </div>
     </div>
 
     <div class="group">
         <label class="text">Evidence List</label>
-        <div class="edit-field" style="width:365px;">
-            <select id="filter-evidences" multiple="multiple" style="width:365px;">
+        <div class="edit-field" style="width:335px;">
+            <select id="filter-evidences" multiple="multiple" style="width:335px;">
                 @foreach (var item in (IEnumerable<Evidence>)ViewBag.Evidences)
                 {
                     if (item.EvidenceCode == Consts.FPS_EVIDENCE_CODE_SEIZE_BET_99_100)
@@ -48,7 +63,6 @@
                     {
                         <option value="@item.EvidenceCode">@item.EvidenceCode  @item.EvidenceName</option>
                     }
-
                 }
             </select>
         </div>
@@ -58,25 +72,15 @@
 
 <div>
     <table class="table table-striped width-100per" id="grid-associated-account" style="width: 100%">
-        <thead>
+        <thead>           
             <tr>
-                <th rowspan="2" class="col-no">#</th>
-                <th colspan="4">Associated Account</th>
-                <th colspan="4">Main Account</th>
-                <th rowspan="2">1st Associated</th>
-                <th rowspan="2">Verified</th>
-                <th rowspan="2">Verified By</th>
-                <th rowspan="2">Note</th>
-            </tr>
-            <tr>
+                <th class="col-no">#</th>
                 <th>Account</th>
                 <th>Site</th>
                 <th>Level</th>
                 <th>Evidence</th>
-                <th>Account</th>
-                <th>Site</th>
-                <th>Level</th>
-                <th>Evidence</th>
+                <th>1st Associated</th>
+                <th>Verified</th>
             </tr>
         </thead>
         <tbody></tbody>

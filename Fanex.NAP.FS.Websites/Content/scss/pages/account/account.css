@@ -2,6 +2,18 @@
     width: 330px !important;
 }
 
+.btn-no-of-associations {
+    line-height: 1;
+    padding: 2px;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    border-radius: 2px;
+    border: 1px solid #e73339;
+    color: #e73339;
+    font-size: 11px;
+    cursor: pointer;
+}
+
 .table .col-account-note {
     padding: 0px 6px !important;
     align-items: center;

@@ -1,0 +1,72 @@
+﻿namespace Fanex.NAP.FS.Library.ViewModels.Account.AssociatedToMonitor
+{
+    using System;
+
+    public class AssociatedAccountsDetailToMonitor
+    {
+        public int AssAccId { get; set; }
+
+        public string AssociatedAccountUsername { get; set; }
+
+        public string AssociatedAccountSite { get; set; }
+
+        public int AssociatedAccountLevel { get; set; }
+
+        public string AssociatedAccountLevelName
+        {
+            get
+            {
+                try
+                {
+                    return Enum.GetName(typeof(UserLevelName), this.AssociatedAccountLevel);
+                }
+                catch
+                {
+                    return string.Empty;
+                }
+            }
+        }
+
+        public string AssociatedAccountEvidences { get; set; }       
+
+        public DateTime FirstAssociatedDate { get; set; }
+
+        public string FirstAssociatedDateToString
+        {
+            get
+            {
+                if (this.FirstAssociatedDate != DateTime.MinValue)
+                {
+                    return this.FirstAssociatedDate.ToString("MMM dd, yyyy");
+                }
+
+                return null;
+            }
+        }
+
+        public bool IsVerified { get; set; }
+
+        public int VerifiedBy { get; set; }
+
+        public string VerifiedByUserName { get; set; }
+
+        public string VerifiedDate { get; set; }
+
+        public string VerifiedOfView
+        {
+            get
+            {
+                if (this.IsVerified && this.VerifiedDate != null)
+                {
+                    DateTime date = DateTime.Parse(this.VerifiedDate);
+
+                    return this.VerifiedByUserName + "; " + date.ToString("MMM dd, yyyy");
+                }
+
+                return null;
+            }
+        }
+
+        public string Note { get; set; }
+    }
+}

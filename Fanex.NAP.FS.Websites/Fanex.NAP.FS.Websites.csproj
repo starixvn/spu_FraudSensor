@@ -674,6 +674,7 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>NAPFSNames.xml</LastGenOutput>
     </Content>
+    <Content Include="Scripts\Account\AssociatedToMonitor\associated-accounts-detail-monitor.js" />
     <Content Include="Scripts\Account\AssociatedToMonitor\associated-accounts-monitor.js" />
     <Content Include="Scripts\auto-grid.js" />
     <Content Include="Fanex.NAP.FS.Websites.ruleset" />
@@ -999,6 +1000,7 @@
     <Content Include="Views\CustomerMonitor\CustomerDetails\Index.cshtml" />
     <Content Include="Scripts\MultipleSelect\jquery.multiselect.js" />
     <Content Include="Views\Account\AssociatedToMonitor\AssociatedAccountsToMonitor.cshtml" />
+    <Content Include="Views\Account\AssociatedToMonitor\AssociatedAccountsDetailToMonitor.cshtml" />
     <None Include="Views\Errors\403.cshtml" />
     <None Include="Views\Errors\404.cshtml" />
     <None Include="Views\Errors\500.cshtml" />

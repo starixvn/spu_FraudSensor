@@ -221,6 +221,7 @@
     <Compile Include="Core\Helpers\Xml\XmlHelper.cs" />
     <Compile Include="Core\Helpers\Xml\XNameAttribute.cs" />
     <Compile Include="Core\Utilities\ConfigSettings.cs" />
+    <Compile Include="Core\Utilities\DateTimeExtension.cs" />
     <Compile Include="Core\Utilities\Extentions.cs" />
     <Compile Include="Criteria\Api\FlaggedAccountDeleteCriteria.cs" />
     <Compile Include="Criteria\Api\FlaggedAccountInsertCriteria.cs" />
@@ -421,12 +422,15 @@
     <Compile Include="Services\Interface\IFraudSensorTaskService.cs" />
     <Compile Include="Services\Interface\IFraudCaseService.cs" />
     <Compile Include="Services\Interface\IMatchMonitorService.cs" />
+    <Compile Include="ViewModels\Account\AssociatedToMonitor\AssociatedAccountsDetailToMonitor.cs" />
+    <Compile Include="ViewModels\Account\AssociatedToMonitor\AssociatedAccountsDetailToMonitorFilter.cs" />
     <Compile Include="ViewModels\Account\AssociatedToMonitor\AssociatedAccountToMonitorOfNote.cs" />
     <Compile Include="ViewModels\Account\AssociatedToMonitor\AssociatedAccountsToMonitor.cs" />
     <Compile Include="ViewModels\Account\AssociatedToMonitor\AssociatedAccountsToMonitorCollected.cs" />
     <Compile Include="ViewModels\Account\AssociatedToMonitor\AssociatedAccountsToMonitorFilter.cs" />
     <Compile Include="ViewModels\Account\AssociatedToMonitor\AssociatedAccountToMonitorOfVerify.cs" />
     <Compile Include="ViewModels\Account\AssociatedToMonitor\Evidence.cs" />
+    <Compile Include="ViewModels\Account\AssociatedToMonitor\Subscriber.cs" />
     <Compile Include="ViewModels\Account\AssociatedToMonitor\UpdateResult.cs" />
     <Compile Include="ViewModels\CheckBetReport\CheckBetTicket.cs" />
     <Compile Include="ViewModels\CustomerMonitor\CustomerDetails\CustomerDetailsInfo.cs" />

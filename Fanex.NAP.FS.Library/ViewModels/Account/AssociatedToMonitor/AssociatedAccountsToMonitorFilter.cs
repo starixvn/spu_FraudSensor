@@ -9,7 +9,9 @@
 
         public DateTime AssociatedDateTo { get; set; }
 
-        public VerifyStatus VerifyStatus { get; set; }
+        public string Sites { get; set; }
+
+        public string CustLevels { get; set; }
 
         public string EvidenceCodes { get; set; }
 
