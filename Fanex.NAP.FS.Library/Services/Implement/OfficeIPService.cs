@@ -48,7 +48,7 @@
         {
             var criteria = new OfficeIpTransInsertCriteria
             {
-                TransactionList = transactions.ToXmlString()
+                OfficeIPTransXML = transactions.ToXmlString()
             };
 
             return DataService.UpdateData(criteria, "OfficeIPTransaction");

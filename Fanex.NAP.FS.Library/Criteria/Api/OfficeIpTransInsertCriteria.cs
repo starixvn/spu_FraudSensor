@@ -9,7 +9,7 @@ namespace Fanex.NAP.FS.Library.Criteria.Api
 {
     public class OfficeIpTransInsertCriteria : CriteriaBase
     {
-        public string TransactionList { get; set; }
+        public string OfficeIPTransXML { get; set; }
 
         public override string GetSettingKey()
         {
@@ -18,7 +18,7 @@ namespace Fanex.NAP.FS.Library.Criteria.Api
 
         public override bool IsValid()
         {
-            return !string.IsNullOrEmpty(TransactionList);
+            return !string.IsNullOrEmpty(OfficeIPTransXML);
         }
     }
 }
