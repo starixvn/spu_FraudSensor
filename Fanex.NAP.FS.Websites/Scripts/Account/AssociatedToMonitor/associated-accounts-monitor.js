@@ -93,11 +93,7 @@
                 { data: row => row.MainAccountSite, className: "text-center", width: "10%" },
                 { data: row => row.MainAccountLevelName, className: "text-center", width: "10%" },
                 { data: row => renderEvidence(row.MainAccountEvidences), className: "text-left", width: "10%" },
-                {
-                    data: row => renderNoOfAssociations(row.NoOfAssociations), className: "text-center", width: "10%", createdCell: (cell, _, row) => {
-                        $('.btn-no-of-associations', cell).click(() => handleClickNoOfAssociations(cell, row));
-                    }
-                },
+                { data: row => renderNoOfAssociations(row.NoOfAssociations), className: "text-center", width: "10%" },
                 { data: row => row.NoOfVerified, className: "text-center", width: "10%" }
             ],
             dom: "t<'pagination'<'page-size'lp>i>",
@@ -122,8 +118,14 @@
         return evidences;
     }
 
-    function renderNoOfAssociations(noOfAssociations) {
-        return `<span class='btn-no-of-associations'>${renderViolations(noOfAssociations)}</span>`;
+    function renderNoOfAssociations(row) {
+        var filter = {};
+        filter.AccountId = row.MainAccountCustId;
+        filter.AssociatedDateFrom = '';
+        filter.AssociatedDateTo = '';
+
+        return `<a href='AssociatedAccountsDetailMonitor?MainCustId=${filter.AccountId}&AssociatedDateFrom=${filter.AssociatedDateFrom}&AssociatedDateTo=${filter.AssociatedDateTo}' target='_blank'>
+            <span class='btn-no-of-associations'>${renderViolations(row.NoOfAssociations)}</span></a>`;
     }
 
     function renderViolations(violation = 1) {

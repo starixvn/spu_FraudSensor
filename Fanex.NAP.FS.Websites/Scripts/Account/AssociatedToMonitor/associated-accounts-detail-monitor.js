@@ -1,12 +1,34 @@
 ﻿function associated_account_monitor_detail() {
+    var filter_sites = $('#filter-sites');
+    var filter_cust_levels = $('#filter-cust-levels');
     var filter_evidences = $('#filter-evidences');
     var filter_date_from = $('#filter-associated-date-from');
     var filter_date_to = $('#filter-associated-date-to');
     var btn_generate = $('#btn-generate');
-    var grid_associated_account = $('#grid-associated-account');
+    var grid_associated_account = $('#grid-associated-account-detail');
     var const_note_length_of_collapse = 50;
 
     function init() {
+        filter_sites.multiselect({
+            menuWidth: 225,
+            menuHeight: 350
+        }).multiselect('checkAll')
+            .multiselectfilter({
+                width: 145,
+                placeholder: '',
+                label: 'Filter'
+            });
+
+        filter_cust_levels.multiselect({
+            menuWidth: 225,
+            menuHeight: 350
+        }).multiselect('checkAll')
+            .multiselectfilter({
+                width: 145,
+                placeholder: '',
+                label: 'Filter'
+            });
+
         filter_evidences.multiselect({
             menuWidth: 330,
             menuHeight: 350
@@ -59,13 +81,13 @@
         grid_associated_account.DataTable({
             searching: false,
             lengthMenu: [10, 20, 50, 100, 500],
-            pageLength: 50,
-            ordering: false,
+            pageLength: 50,          
             scrollY: "61vh",
             scrollX: true,
             scrollCollapse: true,
             columnDefs: [
-                { targets: "_all", defaultContent: "-" }
+                { targets: "_all", defaultContent: "-" },
+                { targets: [0, 2, 3, 4, 5, 6, 7, 8], orderable: false }
             ],
             columns: [
                 { data: (row, type, set, meta) => meta.row + 1, className: "text-center", width: "5%" },
@@ -157,7 +179,7 @@
     }
 
     function generateReport() {
-        var url = common.modifyRelativeUrl("/Account/GetAssociatedAccountsToMonitor");
+        var url = common.modifyRelativeUrl("/Account/GetAssociatedAccountsDetailToMonitor");
         var paramFilter = getParamsFilter();
 
         if (validateFilter(paramFilter)) {

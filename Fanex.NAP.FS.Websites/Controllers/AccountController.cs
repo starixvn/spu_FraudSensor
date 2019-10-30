@@ -53,6 +53,25 @@
             return jsonResult;
         }
 
+        [NapAuth(FunctionKey = FSFunctionKeys.AssociatedAccountsMonitor, Policy = Core.Business.Constant.Policy.Read)]
+        public ActionResult AssociatedAccountsDetailMonitor(AssociatedAccountsDetailToMonitorFilter filter)
+        {
+            var evidencesCache = new StringBuilder();
+            var evidences = accountService.GetAllEvidences();
+
+            foreach (var evidence in evidences)
+            {
+                evidencesCache.Append(evidence.EvidenceCode + ":" + evidence.EvidenceName + ";");
+            }
+
+            ViewBag.Evidences = evidences;
+            ViewBag.EvidencesCache = evidencesCache.ToString();
+            ViewBag.Subscribers = accountService.GetAllSubscribers();
+            ViewBag.Username = this.User.Identity.Name;
+
+            return View("AssociatedToMonitor/AssociatedAccountsDetailToMonitor");
+        }
+
         [HttpPost]
         [NapAuth(FunctionKey = FSFunctionKeys.AssociatedAccountsMonitor, Policy = Core.Business.Constant.Policy.Read)]
         public ActionResult GetAssociatedAccountsDetailToMonitor(AssociatedAccountsDetailToMonitorFilter filter)
