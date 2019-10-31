@@ -25,29 +25,30 @@
                 "reject"
             };
 
-            return GetRawTickets(fromDate, toDate, isShowSpecialCurrencies)
-                .Select(a =>
-                {
-                    var bettype = CachedRef.GetBettypeName(a.BetTypeId);
+            var data = GetRawTickets(fromDate, toDate, isShowSpecialCurrencies);
 
-                    return new TicketDetails
+            return data.Select(a =>
                     {
-                        Member = a.UserName,
-                        TransDate = a.TransDate.ToString("MMM dd, yyyy hh:mm:ss tt"),
-                        BetID = a.TransId.ToString(),
-                        IP = a.IP,
-                        Odds = new OddsDetails { Value = (double)a.Odds, Type = CachedRef.GetOddsTypeName(a.OddsType), Html = html_builder.BuildOdds(a, null, ticketHelper.GetOddsTypeNameById) },
-                        Score = string.Format("{0}-{1}", a.LiveHomeScore, a.LiveAwayScore),
-                        Stake = a.Stake,
-                        Status = a.Status,
-                        WinLoss = null_winloss.Contains(a.Status.ToLowerInvariant()) ? null : new decimal?(a.Winlost),
-                        Choice = html_builder.BuildChoice(a, ticketHelper, null, false),
-                        ChoiceExcel = null,
-                        BettypeRealName = bettype,
-                        CurrencyName = a.CurrencyName,
-                        RawData = null
-                    };
-                });
+                        var bettype = CachedRef.GetBettypeName(a.BetTypeId);
+
+                        return new TicketDetails
+                        {
+                            Member = a.UserName,
+                            TransDate = a.TransDate.ToString("MMM dd, yyyy hh:mm:ss tt"),
+                            BetID = a.TransId != 0 ? a.TransId.ToString() : "-",
+                            IP = a.IP,
+                            Odds = new OddsDetails { Value = (double)a.Odds, Type = CachedRef.GetOddsTypeName(a.OddsType), Html = html_builder.BuildOdds(a, null, ticketHelper.GetOddsTypeNameById) },
+                            Score = string.Format("{0}-{1}", a.LiveHomeScore, a.LiveAwayScore),
+                            Stake = a.Stake,
+                            Status = a.Status,
+                            WinLoss = a.TransId != 0 ? null_winloss.Contains(a.Status.ToLowerInvariant()) ? null : new decimal?(a.Winlost) : null,
+                            Choice = a.TransId != 0 ? html_builder.BuildChoice(a, ticketHelper, null, false) : "Login Transaction",
+                            ChoiceExcel = null,
+                            BettypeRealName = bettype,
+                            CurrencyName = a.CurrencyName,
+                            RawData = null
+                        };
+                    });
         }
 
         public IEnumerable<TicketInfo> GetRawTickets(DateTime fromDate, DateTime toDate, bool isShowSpecialCurrencies)

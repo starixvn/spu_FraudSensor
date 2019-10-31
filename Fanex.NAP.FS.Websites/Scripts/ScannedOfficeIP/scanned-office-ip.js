@@ -68,8 +68,8 @@
             { data: obj => moment(obj.TransDate, "MMM D, YYYY hh:mm:ss A").format("MMM D, YYYY<br/>hh:mm:ss A"), className: "text-center", width: "100px" },
             { data: obj => obj.BetID, width: "100px" },
             { data: obj => obj.Choice, className: "text-right" },
-            { data: obj => obj.Odds != null ? obj.Odds.Html : null, width: "50px", className: "text-right" },
-            { data: obj => common.formatGridNumber(obj.Stake), className: "text-right", width: "100px" },
+            { data: obj => obj.Odds != null ? obj.Odds.Html : "-", width: "50px", className: "text-right" },
+            { data: obj => obj.Stake != 0 ? common.formatGridNumber(obj.Stake) : "-", className: "text-right", width: "100px" },
             { data: obj => common.formatGridNumber(obj.WinLoss), className: "text-right", width: "100px" },
             { data: obj => obj.Status, width: "82px", className: "text-center uppercase" },
             { data: obj => obj.IP, width: "100px" }
