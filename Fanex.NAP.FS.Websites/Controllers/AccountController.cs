@@ -23,13 +23,13 @@
         {
             var evidencesCache = new StringBuilder();
             var evidences = accountService.GetAllEvidences();
-            
+
             foreach (var evidence in evidences)
             {
                 evidencesCache.Append(evidence.EvidenceCode + ":" + evidence.EvidenceName + ";");
             }
-            
-            ViewBag.Evidences = evidences;            
+
+            ViewBag.Evidences = evidences;
             ViewBag.EvidencesCache = evidencesCache.ToString();
             ViewBag.Subscribers = accountService.GetAllSubscribers();
             ViewBag.Username = this.User.Identity.Name;
@@ -67,7 +67,12 @@
             ViewBag.Evidences = evidences;
             ViewBag.EvidencesCache = evidencesCache.ToString();
             ViewBag.Subscribers = accountService.GetAllSubscribers();
-            ViewBag.Username = this.User.Identity.Name;
+            ViewBag.AccountCustId = filter.AccountCustId;
+            ViewBag.Username = filter.Username;
+            ViewBag.NoOfAssociations = filter.NoOfAssociations;
+            ViewBag.DateFrom = filter.DateFrom;
+            ViewBag.DateTo = filter.DateTo;
+            ViewBag.DateRange = filter.DateFrom.ToString("MMM dd, yyyy") + " - " + filter.DateTo.ToString("MMM dd, yyyy");
 
             return View("AssociatedToMonitor/AssociatedAccountsDetailToMonitor");
         }
@@ -76,8 +81,8 @@
         [NapAuth(FunctionKey = FSFunctionKeys.AssociatedAccountsMonitor, Policy = Core.Business.Constant.Policy.Read)]
         public ActionResult GetAssociatedAccountsDetailToMonitor(AssociatedAccountsDetailToMonitorFilter filter)
         {
-            filter.AssociatedDateFrom = DateTimeExtension.ConvertToFirstTimeInDay(filter.AssociatedDateFrom);
-            filter.AssociatedDateTo = DateTimeExtension.ConvertToLastTimeInDay(filter.AssociatedDateTo);
+            filter.DateFrom = DateTimeExtension.ConvertToFirstTimeInDay(filter.DateFrom);
+            filter.DateTo = DateTimeExtension.ConvertToLastTimeInDay(filter.DateTo);
 
             var data = accountService.GetAssociatedAccountsDetailToMonitor(filter);
 

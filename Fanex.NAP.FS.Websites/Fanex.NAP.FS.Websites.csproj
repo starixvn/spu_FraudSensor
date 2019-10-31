@@ -420,6 +420,9 @@
     <Content Include="Content\scss\images\UM.svg" />
     <Content Include="Content\scss\MultipleSelect\jquery.multiselect.filter.css" />
     <Content Include="Content\scss\pages\account\account.css" />
+    <Content Include="Content\scss\pages\account\account.min.css">
+      <DependentUpon>account.css</DependentUpon>
+    </Content>
     <Content Include="Content\scss\pages\configurations\fraud-case.css" />
     <Content Include="Content\scss\pages\customer-monitor\customer-monitor.css" />
     <Content Include="Content\scss\pages\daily-data-capture\daily-data-capture.css" />
@@ -837,6 +840,11 @@
     <Content Include="Content\scss\pages\customer-monitor\customer-monitor.scss" />
     <Content Include="Content\scss\MultipleSelect\jquery.multiselect.css" />
     <Content Include="Fanex.NAP.FS.Websites-1.ruleset" />
+    <Content Include="Content\scss\pages\account\account.scss" />
+    <None Include="compilerconfig.json" />
+    <None Include="compilerconfig.json.defaults">
+      <DependentUpon>compilerconfig.json</DependentUpon>
+    </None>
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile2.pubxml" />

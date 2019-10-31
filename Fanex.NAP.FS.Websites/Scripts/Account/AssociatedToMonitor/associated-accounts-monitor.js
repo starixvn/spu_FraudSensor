@@ -84,7 +84,7 @@
             scrollX: true,
             scrollCollapse: true,
             columnDefs: [
-                { targets: "_all", defaultContent: "-" },
+                { targets: "_all", defaultContent: "-" },                
                 { targets: [0, 2, 3, 4, 5, 6], orderable: false }
             ],
             columns: [
@@ -92,8 +92,8 @@
                 { data: row => row.MainAccountUsername, className: "text-center", width: "10%" },
                 { data: row => row.MainAccountSite, className: "text-center", width: "10%" },
                 { data: row => row.MainAccountLevelName, className: "text-center", width: "10%" },
-                { data: row => renderEvidence(row.MainAccountEvidences), className: "text-left", width: "10%" },
-                { data: row => renderNoOfAssociations(row.NoOfAssociations), className: "text-center", width: "10%" },
+                { data: row => renderEvidence(row.MainAccountEvidences), className: "text-left", width: "20%" },
+                { data: row => renderNoOfAssociations(row), className: "text-center", width: "10%" },
                 { data: row => row.NoOfVerified, className: "text-center", width: "10%" }
             ],
             dom: "t<'pagination'<'page-size'lp>i>",
@@ -112,7 +112,7 @@
 
     function renderEvidence(evidences) {
         if (evidences != null && evidences != '') {
-            var evidencesForDisplay = common.makeWrapString(evidences, 26);
+            var evidencesForDisplay = common.makeWrapString(evidences, 72);
             return "<span title='" + evidences + "'>" + evidencesForDisplay + "</span>";
         }
         return evidences;
@@ -120,29 +120,24 @@
 
     function renderNoOfAssociations(row) {
         var filter = {};
-        filter.AccountId = row.MainAccountCustId;
-        filter.AssociatedDateFrom = '';
-        filter.AssociatedDateTo = '';
+        filter.AccountCustId = row.MainAccountCustId;
+        filter.Username = row.MainAccountUsername;
+        filter.NoOfAssociations = row.NoOfAssociations;
+        filter.DateFrom = filter_date_from.val();
+        filter.DateTo = filter_date_to.val();
 
-        return `<a href='AssociatedAccountsDetailMonitor?MainCustId=${filter.AccountId}&AssociatedDateFrom=${filter.AssociatedDateFrom}&AssociatedDateTo=${filter.AssociatedDateTo}' target='_blank'>
-            <span class='btn-no-of-associations'>${renderViolations(row.NoOfAssociations)}</span></a>`;
-    }
-
-    function renderViolations(violation = 1) {
-        if (violation < 1000) {
-            return violation;
+        var noOfAssociationsDisplay = '';
+        var noOfAssociations = row.NoOfAssociations;
+        if (noOfAssociations < 1000) {
+            noOfAssociationsDisplay = noOfAssociations;
+        } else if (parseInt(noOfAssociations / 1e6) != 0) {
+            noOfAssociationsDisplay = parseInt(noOfAssociations / 1e6) + "M";
+        } else {
+            noOfAssociationsDisplay = parseInt(noOfAssociations / 1e3) + "K";
         }
 
-        if (parseInt(violation / 1e6) != 0) {
-            return parseInt(violation / 1e6) + "M";
-        }
-        else {
-            return parseInt(violation / 1e3) + "K";
-        }
-    }
-
-    function handleClickNoOfAssociations(cell, row) {
-
+        return `<a href='AssociatedAccountsDetailMonitor?AccountCustId=${filter.AccountCustId}&Username=${filter.Username}&NoOfAssociations=${filter.NoOfAssociations}&DateFrom=${filter.DateFrom}&DateTo=${filter.DateTo}' target='_blank'>
+            <span class='btn-no-of-associations'>${noOfAssociationsDisplay}</span></a>`;
     }
 
     function generateReport() {
@@ -175,6 +170,7 @@
         filter.Sites = getSeletedMultiple("#filter-sites");
         filter.CustLevels = getSeletedMultiple("#filter-cust-levels");
         filter.EvidenceCodes = getSeletedMultiple("#filter-evidences");
+        filter.EvidencesCache = EVIDENCECACHE;
 
         return filter;
     }  

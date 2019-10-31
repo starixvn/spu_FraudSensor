@@ -13,6 +13,17 @@
 
 <h1 class="title">Associated Accounts Detail</h1>
 
+<table class="associated-account-monitor-table-info">
+    <tr>
+        <td class="info-name">Account</td>
+        <td class="info-value">@ViewBag.Username</td>
+        <td class="info-name">No.of 1st Associated</td>
+        <td class="info-value">@ViewBag.NoOfAssociations</td>
+        <td class="info-name">Date Range</td>
+        <td class="info-value">@ViewBag.DateRange</td>
+    </tr>  
+</table>
+
 <div class="form-filter">
     <div class="group">
         <label class="text">Site</label>
@@ -88,7 +99,14 @@
     </table>
 </div>
 
-@section scripts{    
+@section scripts{
+    <script type="text/javascript">
+        var ACCOUNTCUSTID = '@ViewBag.AccountCustId';
+        var USERNAME = '@ViewBag.Username';
+        var EVIDENCECACHE = '@ViewBag.EvidencesCache';
+        var DATEFROM = '@ViewBag.DateFrom';
+        var DATETO = '@ViewBag.DateTo';
+    </script>
     <script src="~/Scripts/MultipleSelect/jquery.multiselect.filter.js"></script>
     <script src="~/Scripts/MultipleSelect/jquery.multiselect.js"></script>
     <script src="~/Scripts/Account/AssociatedToMonitor/associated-accounts-detail-monitor.js"></script>

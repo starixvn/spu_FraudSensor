@@ -56,7 +56,7 @@
                     MainAccountEvidences = GetEvidenceForDisplay(evidencesCache, c.MainAccountEvidences),
                     NoOfAssociations = c.NoOfAssociations,
                     NoOfVerified = c.NoOfVerified
-                });
+                }).OrderBy(c => c.MainAccountUsername);
 
             return accounts;
         }
@@ -64,23 +64,24 @@
         public IEnumerable<AssociatedAccountsDetailToMonitor> GetAssociatedAccountsDetailToMonitor(AssociatedAccountsDetailToMonitorFilter filter)
         {
             var userService = new UserService();
-            //var evidencesCache = filter.GetEvidencesCache();
+            var evidencesCache = filter.GetEvidencesCache();
             var accountsFromAPI = GetAssociatedAccountsDetailToMonitors(filter);
 
             var accounts = accountsFromAPI.AsEnumerable()
                 .Select(c => new AssociatedAccountsDetailToMonitor
                 {
                     AssAccId = c.AssAccId,
-                    AssociatedAccountUsername = c.AssociatedAccountUsername,
-                    AssociatedAccountSite = c.AssociatedAccountSite,
-                    AssociatedAccountLevel = c.AssociatedAccountLevel,
-                    //AssociatedAccountEvidences = GetEvidenceForDisplay(evidencesCache, c.AssociatedAccountEvidences),
+                    AssociatedCustUsername = c.AssociatedCustUsername,
+                    AssociatedCustSite = c.AssociatedCustSite,
+                    AssociatedCustLevel = c.AssociatedCustLevel,
+                    AssociatedCustEvidences = GetEvidenceForDisplay(evidencesCache, c.AssociatedCustEvidences),
+                    FirstAssociatedDate = c.FirstAssociatedDate,
                     IsVerified = c.IsVerified,
                     VerifiedBy = c.VerifiedBy,
                     VerifiedByUserName = c.VerifiedBy > 0 ? userService.Get(c.VerifiedBy).Username : null,
                     VerifiedDate = c.VerifiedDate,
                     Note = c.Note
-                });
+                }).OrderBy(c => c.AssociatedCustUsername);
 
             return accounts;
         }
@@ -144,32 +145,18 @@
         {
             var url = AppSettings.Get(Consts.FPS_WEBAPI_UPDATE_ASSOCIATED_ACCOUNT_TO_MONITOR_OF_VERIFY);
 
-            try
-            {
-                var response =  ApiHelper.Post<HttpResponseMessage>(url, accountOfVerify);
+            var response = ApiHelper.Post<HttpResponseMessage>(url, accountOfVerify);
 
-                return response.Result.IsSuccessStatusCode;
-            }
-            catch
-            {
-                return false;
-            }
+            return response.Result.IsSuccessStatusCode;
         }
 
         private static bool UpdateAssociatedAccountToMonitorOfNoteFromAPI(AssociatedAccountToMonitorOfNote accountOfNote)
         {
             var url = AppSettings.Get(Consts.FPS_WEBAPI_UPDATE_ASSOCIATED_ACCOUNT_TO_MONITOR_OF_NOTE);
 
-            try
-            {
-                var response = ApiHelper.Post<HttpResponseMessage>(url, accountOfNote);
+            var response = ApiHelper.Post<HttpResponseMessage>(url, accountOfNote);
 
-                return response.Result.IsSuccessStatusCode;
-            }
-            catch
-            {
-                return false;
-            }
+            return response.Result.IsSuccessStatusCode;
         }
 
         private static string GetUpdatedUserName(int userId)

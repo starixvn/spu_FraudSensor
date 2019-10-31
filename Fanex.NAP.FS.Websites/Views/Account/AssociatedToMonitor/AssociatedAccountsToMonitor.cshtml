@@ -10,6 +10,7 @@
     <link href="~/Content/scss/MultipleSelect/jquery.multiselect.css" rel="stylesheet" />
     <link href="~/Content/scss/pages/account/account.css" rel="stylesheet" />
 }
+
 <h1 class="title">Associated Accounts Monitor</h1>
 
 <div class="form-filter">
@@ -72,7 +73,7 @@
 
 <div>
     <table class="table table-striped width-100per" id="grid-associated-account" style="width: 100%">
-        <thead>           
+        <thead>
             <tr>
                 <th class="col-no">#</th>
                 <th>Account</th>
@@ -89,10 +90,8 @@
 
 @section scripts{
     <script type="text/javascript">
-        var username = '@ViewBag.Username';
-        var evidencesCache = '@ViewBag.EvidencesCache';
+        var EVIDENCECACHE = '@ViewBag.EvidencesCache';       
     </script>
-
     <script src="~/Scripts/MultipleSelect/jquery.multiselect.filter.js"></script>
     <script src="~/Scripts/MultipleSelect/jquery.multiselect.js"></script>
     <script src="~/Scripts/Account/AssociatedToMonitor/associated-accounts-monitor.js"></script>

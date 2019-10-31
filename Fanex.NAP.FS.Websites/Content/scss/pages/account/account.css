@@ -1,95 +1,91 @@
 ﻿#filter-evidences_ms {
-    width: 330px !important;
-}
+  width: 330px !important; }
+
+.associated-account-monitor-table-info {
+  padding: 5px 0px 5px 0px;
+  border: 1px solid #c1c1c1;
+  margin-bottom: 10px; }
+  .associated-account-monitor-table-info .info-name {
+    padding: 10px;
+    background-color: #f0f0f0;
+    font-weight: bold;
+    border: 1px solid #c1c1c1; }
+  .associated-account-monitor-table-info .info-value {
+    padding: 10px;
+    border: 1px solid #c1c1c1; }
 
 .btn-no-of-associations {
-    line-height: 1;
-    padding: 2px;
-    -webkit-border-radius: 2px;
-    -moz-border-radius: 2px;
-    border-radius: 2px;
-    border: 1px solid #e73339;
-    color: #e73339;
-    font-size: 11px;
-    cursor: pointer;
-}
+  line-height: 1;
+  padding: 2px;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+  border: 1px solid #e73339;
+  color: #e73339;
+  font-size: 11px;
+  cursor: pointer; }
 
 .table .col-account-note {
-    padding: 0px 6px !important;
-    align-items: center;
-}
+  padding: 0px 6px !important;
+  align-items: center; }
 
 .table .container-note {
-    display: grid;
-    padding: 0px;
-    margin: 0px;
-    height: inherit;
-    display: grid;    
-}
+  display: grid;
+  padding: 0px;
+  margin: 0px;
+  height: inherit;
+  display: grid; }
 
 .txt-note-input {
-    resize: vertical;
-}
+  resize: vertical; }
 
 .note-content-display {
-    word-wrap: normal !important;
-    word-break: break-word;
-    white-space: pre-line;
-    padding-top: 6px;
-    padding-right: 6px;
-    border-right: 1px solid #c1c1c1;
-    min-height: 36px;
-    min-width: 80px;
-}
+  word-wrap: normal !important;
+  word-break: break-word;
+  white-space: pre-line;
+  padding-top: 6px;
+  padding-right: 6px;
+  border-right: 1px solid #c1c1c1;
+  min-height: 36px;
+  min-width: 80px; }
 
 .note-blank {
-    padding-top: 6px;
-}
+  padding-top: 6px; }
 
 .btn-note-change {
-    overflow: auto;
-    text-align: center;
-}
+  overflow: auto;
+  text-align: center; }
 
 .icon-edit {
-    font-size: 20px;
-}
+  font-size: 20px; }
 
 .icon-edit:before {
-    content: "\e91c";
-    cursor: pointer;    
-}
+  content: "\e91c";
+  cursor: pointer; }
 
 .icon-save {
-    font-size: 20px;
-}
+  font-size: 20px; }
 
 .icon-save:before {
-    content: "\e927";
-    cursor: pointer;    
-}
+  content: "\e927";
+  cursor: pointer; }
 
 .btn-note-ellipsis {
-    cursor: pointer;
-    color: mediumblue;
-}
+  cursor: pointer;
+  color: mediumblue; }
 
 .btn-note-collapse {
-    cursor: pointer;
-    color: mediumblue;
-}
+  cursor: pointer;
+  color: mediumblue; }
 
 .fail-by-validate {
-    border: 1px solid red !important;
-}
+  border: 1px solid red !important; }
 
 .ui-state-active {
-    border: 1px solid #465262;
-    background: #465262;
-    font-weight: normal;
-    color: #fff;
-}
+  border: 1px solid #465262;
+  background: #465262;
+  font-weight: normal;
+  color: #fff; }
 
 .ui-widget.ui-widget-content {
-    border: 1px solid #c5c5c5;
-}
+  border: 1px solid #c5c5c5; }

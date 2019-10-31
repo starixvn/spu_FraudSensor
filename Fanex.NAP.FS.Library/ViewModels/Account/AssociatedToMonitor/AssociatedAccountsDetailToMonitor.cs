@@ -6,19 +6,21 @@
     {
         public int AssAccId { get; set; }
 
-        public string AssociatedAccountUsername { get; set; }
+        public int AssociatedCustId { get; set; }
 
-        public string AssociatedAccountSite { get; set; }
+        public string AssociatedCustUsername { get; set; }
 
-        public int AssociatedAccountLevel { get; set; }
+        public string AssociatedCustSite { get; set; }
 
-        public string AssociatedAccountLevelName
+        public int AssociatedCustLevel { get; set; }
+
+        public string AssociatedCustLevelName
         {
             get
             {
                 try
                 {
-                    return Enum.GetName(typeof(UserLevelName), this.AssociatedAccountLevel);
+                    return Enum.GetName(typeof(UserLevelName), this.AssociatedCustLevel);
                 }
                 catch
                 {
@@ -27,7 +29,7 @@
             }
         }
 
-        public string AssociatedAccountEvidences { get; set; }       
+        public string AssociatedCustEvidences { get; set; }       
 
         public DateTime FirstAssociatedDate { get; set; }
 
