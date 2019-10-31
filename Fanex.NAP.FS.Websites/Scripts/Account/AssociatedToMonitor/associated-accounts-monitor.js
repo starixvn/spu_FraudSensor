@@ -85,7 +85,7 @@
             scrollCollapse: true,
             columnDefs: [
                 { targets: "_all", defaultContent: "-" },                
-                { targets: [0, 2, 3, 4, 5, 6], orderable: false }
+                { targets: [0, 2, 3, 4, 6], orderable: false }
             ],
             columns: [
                 { data: (row, type, set, meta) => meta.row + 1, className: "text-center", width: "5%" },
