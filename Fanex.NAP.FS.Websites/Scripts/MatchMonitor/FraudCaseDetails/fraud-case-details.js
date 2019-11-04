@@ -977,7 +977,8 @@
                 score: obj.Score,
                 ip: obj.IP,
                 matchId: parameters.matchId,
-                eventDate: parameters.eventDate
+                eventDate: parameters.eventDate,
+                otherEvidenceCodes: parameters.otherEvidenceCodes
             };
         } else {
             criteria = Object.assign({}, savedCriteria);
@@ -1085,6 +1086,7 @@
             handicap: handicap,
             matchId: parameters.matchId,
             eventDate: parameters.eventDate,
+            otherEvidenceCodes: parameters.otherEvidenceCodes,
             odds: $("#txtOdds").val(),
             isOnlyCN88: $("#chkOnlyCN88:checked").length > 0,
             isByIPAndDevice: $("#chkByIPAndDevice:checked").length > 0
@@ -1105,7 +1107,8 @@
             TransDateToString: $("#transDateTo").val(),
             Bettype: $('#betType').val(),
             MatchId: parameters.matchId,
-            EventDate: parameters.eventDate
+            EventDate: parameters.eventDate,
+            otherEvidenceCodes: parameters.otherEvidenceCodes
         };
 
         return criteria;
