@@ -1,4 +1,4 @@
-﻿namespace Fanex.NAP.FS.Library.ViewModels.Account.AssociatedToMonitor
+﻿namespace Fanex.NAP.FS.Library.ViewModels.AssociatedAccountMonitor
 {
     public class Subscriber
     {

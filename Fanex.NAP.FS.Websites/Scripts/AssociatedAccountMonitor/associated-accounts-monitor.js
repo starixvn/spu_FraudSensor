@@ -136,12 +136,12 @@
             noOfAssociationsDisplay = parseInt(noOfAssociations / 1e3) + "K";
         }
 
-        return `<a href='AssociatedAccountsDetailMonitor?AccountCustId=${filter.AccountCustId}&Username=${filter.Username}&NoOfAssociations=${filter.NoOfAssociations}&DateFrom=${filter.DateFrom}&DateTo=${filter.DateTo}' target='_blank'>
+        return `<a href='AssociatedAccountsMonitor/AssociatedAccountsDetailMonitor?AccountCustId=${filter.AccountCustId}&Username=${filter.Username}&NoOfAssociations=${filter.NoOfAssociations}&DateFrom=${filter.DateFrom}&DateTo=${filter.DateTo}' target='_blank'>
             <span class='btn-no-of-associations'>${noOfAssociationsDisplay}</span></a>`;
     }
 
     function generateReport() {
-        var url = common.modifyRelativeUrl("/Account/GetAssociatedAccountsToMonitor");
+        var url = common.modifyRelativeUrl("/AssociatedAccountsMonitor/GetAssociatedAccountsMonitor");
         var paramFilter = getParamsFilter();
 
         if (validateFilter(paramFilter)) {

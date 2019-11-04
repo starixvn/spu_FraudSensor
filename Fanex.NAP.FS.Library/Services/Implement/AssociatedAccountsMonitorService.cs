@@ -4,7 +4,7 @@
     using Fanex.NAP.FS.Library.Core.Helpers;
     using Fanex.NAP.FS.Library.Core.Helpers.Api;   
     using Fanex.NAP.FS.Library.Services.Interface;
-    using Fanex.NAP.FS.Library.ViewModels.Account.AssociatedToMonitor;
+    using Fanex.NAP.FS.Library.ViewModels.AssociatedAccountMonitor;
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using System;
@@ -13,9 +13,8 @@
     using Fanex.NAP.Core.Service.Impl;
     using System.Text;    
 
-    public class AccountService : IAccountService
+    public class AssociatedAccountsMonitorService : IAssociatedAccountsMonitorService
     {
-        #region Associated Account To Monitor
         public IEnumerable<Subscriber> GetAllSubscribers()
         {
             var url = AppSettings.Get(Consts.FPS_WEBAPI_CUSTOMER_SUBSCRIBER);
@@ -26,7 +25,7 @@
 
             var responseSubscribers = response.Result.OrderBy(c => c);
 
-           var subscribers = new List<Subscriber>();
+            var subscribers = new List<Subscriber>();
 
             foreach (string item in responseSubscribers)
             {
@@ -41,15 +40,15 @@
             return GetAllEvidencesFromAPI();
         }
 
-        public IEnumerable<AssociatedAccountsToMonitor> GetAssociatedAccountsToMonitor(AssociatedAccountsToMonitorFilter filter)
+        public IEnumerable<AssociatedAccountsMonitor> GetAssociatedAccountsToMonitor(AssociatedAccountsMonitorFilter filter)
         {
             var evidencesCache = filter.GetEvidencesCache();
             var accountsFromAPI = GetAssociatedAccountsFromAPI(filter);
 
             var accounts = accountsFromAPI.AsEnumerable()
-                .Select(c => new AssociatedAccountsToMonitor
+                .Select(c => new AssociatedAccountsMonitor
                 {
-                    MainAccountCustId = c.MainAccountCustId,                  
+                    MainAccountCustId = c.MainAccountCustId,
                     MainAccountUsername = c.MainAccountUsername,
                     MainAccountSite = c.MainAccountSite,
                     MainAccountLevel = c.MainAccountLevel,
@@ -61,14 +60,14 @@
             return accounts;
         }
 
-        public IEnumerable<AssociatedAccountsDetailToMonitor> GetAssociatedAccountsDetailToMonitor(AssociatedAccountsDetailToMonitorFilter filter)
+        public IEnumerable<AssociatedAccountsDetailMonitor> GetAssociatedAccountsDetailToMonitor(AssociatedAccountsDetailMonitorFilter filter)
         {
             var userService = new UserService();
             var evidencesCache = filter.GetEvidencesCache();
-            var accountsFromAPI = GetAssociatedAccountsDetailToMonitors(filter);
+            var accountsFromAPI = GetAssociatedAccountsDetailMonitorsFromAPI(filter);
 
             var accounts = accountsFromAPI.AsEnumerable()
-                .Select(c => new AssociatedAccountsDetailToMonitor
+                .Select(c => new AssociatedAccountsDetailMonitor
                 {
                     AssAccId = c.AssAccId,
                     AssociatedCustUsername = c.AssociatedCustUsername,
@@ -86,20 +85,20 @@
             return accounts;
         }
 
-        public UpdateResult UpdateAssociatedAccountToMonitorOfVerify(AssociatedAccountToMonitorOfVerify accountOfVerify)
+        public UpdateResult VerifyAssociatedAccountMonitor(AssociatedAccountMonitorVerify account)
         {
-            var isUpdated = UpdateAssociatedAccountToMonitorOfVerifyFromAPI(accountOfVerify);
+            var isUpdated = VerifyAssociatedAccountMonitorFromAPI(account);
 
             return new UpdateResult
             {
                 IsSuccessStatusCode = isUpdated,
-                Content = isUpdated ? GetUpdatedUserName(accountOfVerify.UserId) : "API update fail!"
+                Content = isUpdated ? GetUpdatedUserName(account.UserId) : "API update fail!"
             };
         }
 
-        public UpdateResult UpdateAssociatedAccountToMonitorOfNote(AssociatedAccountToMonitorOfNote accountOfNote)
+        public UpdateResult UpdateNoteAssociatedAccountMonitor(AssociatedAccountMonitorNote account)
         {
-            var isUpdated = UpdateAssociatedAccountToMonitorOfNoteFromAPI(accountOfNote);
+            var isUpdated = UpdateNoteAssociatedAccountMonitorFromAPI(account);
 
             return new UpdateResult
             {
@@ -119,42 +118,42 @@
             return evidences.Result;
         }
 
-        private static IEnumerable<AssociatedAccountsToMonitor> GetAssociatedAccountsFromAPI(AssociatedAccountsToMonitorFilter filter)
+        private static IEnumerable<AssociatedAccountsMonitor> GetAssociatedAccountsFromAPI(AssociatedAccountsMonitorFilter filter)
         {
-            var url = AppSettings.Get(Consts.FPS_WEBAPI_GET_ASSOCIATED_ACCOUNT_TO_MONITOR);
+            var url = AppSettings.Get(Consts.FPS_WEBAPI_GET_ASSOCIATED_ACCOUNT_MONITOR);
 
-            var accounts = ApiHelper.Post<IEnumerable<AssociatedAccountsToMonitor>>(url, filter);
+            var accounts = ApiHelper.Post<IEnumerable<AssociatedAccountsMonitor>>(url, filter);
 
             Task.WhenAll(accounts);
 
             return accounts.Result;
         }
 
-        private static IEnumerable<AssociatedAccountsDetailToMonitor> GetAssociatedAccountsDetailToMonitors(AssociatedAccountsDetailToMonitorFilter filter)
+        private static IEnumerable<AssociatedAccountsDetailMonitor> GetAssociatedAccountsDetailMonitorsFromAPI(AssociatedAccountsDetailMonitorFilter filter)
         {
-            var url = AppSettings.Get(Consts.FPS_WEBAPI_GET_ASSOCIATED_ACCOUNT_DETAIL_TO_MONITOR);
+            var url = AppSettings.Get(Consts.FPS_WEBAPI_GET_ASSOCIATED_ACCOUNT_DETAIL_MONITOR);
 
-            var accounts = ApiHelper.Post<IEnumerable<AssociatedAccountsDetailToMonitor>>(url, filter);
+            var accounts = ApiHelper.Post<IEnumerable<AssociatedAccountsDetailMonitor>>(url, filter);
 
             Task.WhenAll(accounts);
 
             return accounts.Result;
         }
 
-        private static bool UpdateAssociatedAccountToMonitorOfVerifyFromAPI(AssociatedAccountToMonitorOfVerify accountOfVerify)
+        private static bool VerifyAssociatedAccountMonitorFromAPI(AssociatedAccountMonitorVerify account)
         {
-            var url = AppSettings.Get(Consts.FPS_WEBAPI_UPDATE_ASSOCIATED_ACCOUNT_TO_MONITOR_OF_VERIFY);
+            var url = AppSettings.Get(Consts.FPS_WEBAPI_VERIFY_ASSOCIATED_ACCOUNT_MONITOR);
 
-            var response = ApiHelper.Post<HttpResponseMessage>(url, accountOfVerify);
+            var response = ApiHelper.Post<HttpResponseMessage>(url, account);
 
             return response.Result.IsSuccessStatusCode;
         }
 
-        private static bool UpdateAssociatedAccountToMonitorOfNoteFromAPI(AssociatedAccountToMonitorOfNote accountOfNote)
+        private static bool UpdateNoteAssociatedAccountMonitorFromAPI(AssociatedAccountMonitorNote account)
         {
-            var url = AppSettings.Get(Consts.FPS_WEBAPI_UPDATE_ASSOCIATED_ACCOUNT_TO_MONITOR_OF_NOTE);
+            var url = AppSettings.Get(Consts.FPS_WEBAPI_UPDATE_NOTE_ASSOCIATED_ACCOUNT_MONITOR);
 
-            var response = ApiHelper.Post<HttpResponseMessage>(url, accountOfNote);
+            var response = ApiHelper.Post<HttpResponseMessage>(url, account);
 
             return response.Result.IsSuccessStatusCode;
         }
@@ -163,7 +162,7 @@
         {
             var userName = new UserService().Get(userId).Username;
 
-            return userName + "; "+ DateTime.Now.ToString("MMM dd, yyyy");
+            return userName + "; " + DateTime.Now.ToString("MMM dd, yyyy");
         }
 
         private static string GetEvidenceForDisplay(IEnumerable<Evidence> evidences, string codes)
@@ -172,7 +171,7 @@
             {
                 var evidencesForDisplay = new StringBuilder();
                 var evidenceCodes = codes.Split(',');
-                
+
                 foreach (var evidenceCode in evidenceCodes)
                 {
                     var query = evidences
@@ -187,9 +186,8 @@
 
                 return evidencesForDisplay.ToString().Replace(Consts.FPS_EVIDENCE_CODE_SEIZE_BET_99_100, Consts.FPS_EVIDENCE_CODE_SEIZE_BET_100).TrimEnd(' ').TrimEnd(';');
             }
-            
+
             return null;
         }
-        #endregion
     }
 }

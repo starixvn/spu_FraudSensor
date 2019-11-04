@@ -148,7 +148,7 @@
     }
 
     function generateReport() {
-        var url = common.modifyRelativeUrl("/Account/GetAssociatedAccountsDetailToMonitor");
+        var url = common.modifyRelativeUrl("/AssociatedAccountsMonitor/GetAssociatedAccountsDetailMonitor");
         var paramFilter = getParamsFilter();
 
         common.showLoading();
@@ -200,7 +200,7 @@
     function handleUpdateVerification(cell, row) {
         var $target = $(cell).find('.chk-verification');
 
-        var url = common.modifyRelativeUrl('/Account/UpdateAssociatedAccountToMonitorOfVerify');
+        var url = common.modifyRelativeUrl('/AssociatedAccountsMonitor/VerifyAssociatedAccountMonitor');
         var paramsUpdate = {};
         paramsUpdate.IsVerifying = $target.is(':checked');
         paramsUpdate.AssAccId = $target.attr('data-ass-acc-id');
@@ -288,7 +288,7 @@
     }
 
     function saveChangedNote(domElementsNote, noteToUpdate, cell) {
-        var url = common.modifyRelativeUrl("/Account/UpdateAssociatedAccountToMonitorOfNote");
+        var url = common.modifyRelativeUrl("/AssociatedAccountsMonitor/UpdateNoteAssociatedAccountMonitor");
         var paramsUpdate = {};
         paramsUpdate.AssAccId = $(domElementsNote.txtNoteInput).attr('data-ass-acc-id');
         paramsUpdate.Note = noteToUpdate;

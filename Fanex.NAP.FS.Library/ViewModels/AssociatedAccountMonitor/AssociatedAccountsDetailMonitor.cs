@@ -1,8 +1,8 @@
-﻿namespace Fanex.NAP.FS.Library.ViewModels.Account.AssociatedToMonitor
+﻿namespace Fanex.NAP.FS.Library.ViewModels.AssociatedAccountMonitor
 {
     using System;
 
-    public class AssociatedAccountsDetailToMonitor
+    public class AssociatedAccountsDetailMonitor
     {
         public int AssAccId { get; set; }
 

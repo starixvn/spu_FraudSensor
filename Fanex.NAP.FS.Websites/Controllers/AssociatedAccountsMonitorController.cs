@@ -4,25 +4,24 @@
     using Fanex.NAP.FS.Library.Core.Utilities;
     using Fanex.NAP.FS.Library.Services.Implement;
     using Fanex.NAP.FS.Library.Services.Interface;
-    using Fanex.NAP.FS.Library.ViewModels.Account.AssociatedToMonitor;
+    using Fanex.NAP.FS.Library.ViewModels.AssociatedAccountMonitor;
     using System.Text;
     using System.Web.Mvc;
 
-    public class AccountController : BaseController
+    public class AssociatedAccountsMonitorController : BaseController
     {
-        private readonly IAccountService accountService;
+        private readonly IAssociatedAccountsMonitorService service;
 
-        public AccountController()
+        public AssociatedAccountsMonitorController()
         {
-            accountService = new AccountService();
-        }
+            service = new AssociatedAccountsMonitorService();
+        }        
 
-        #region Associated Account Monitor
         [NapAuth(FunctionKey = FSFunctionKeys.AssociatedAccountsMonitor, Policy = Core.Business.Constant.Policy.Read)]
-        public ActionResult AssociatedAccountsMonitor()
+        public ActionResult Index()
         {
             var evidencesCache = new StringBuilder();
-            var evidences = accountService.GetAllEvidences();
+            var evidences = service.GetAllEvidences();
 
             foreach (var evidence in evidences)
             {
@@ -31,20 +30,20 @@
 
             ViewBag.Evidences = evidences;
             ViewBag.EvidencesCache = evidencesCache.ToString();
-            ViewBag.Subscribers = accountService.GetAllSubscribers();
+            ViewBag.Subscribers = service.GetAllSubscribers();
             ViewBag.Username = this.User.Identity.Name;
 
-            return View("AssociatedToMonitor/AssociatedAccountsToMonitor");
+            return View();
         }
 
         [HttpPost]
         [NapAuth(FunctionKey = FSFunctionKeys.AssociatedAccountsMonitor, Policy = Core.Business.Constant.Policy.Read)]
-        public ActionResult GetAssociatedAccountsToMonitor(AssociatedAccountsToMonitorFilter filter)
+        public ActionResult GetAssociatedAccountsMonitor(AssociatedAccountsMonitorFilter filter)
         {
             filter.AssociatedDateFrom = DateTimeExtension.ConvertToFirstTimeInDay(filter.AssociatedDateFrom);
             filter.AssociatedDateTo = DateTimeExtension.ConvertToLastTimeInDay(filter.AssociatedDateTo);
 
-            var data = accountService.GetAssociatedAccountsToMonitor(filter);
+            var data = service.GetAssociatedAccountsToMonitor(filter);
 
             var jsonResult = Json(data, JsonRequestBehavior.AllowGet);
 
@@ -54,10 +53,10 @@
         }
 
         [NapAuth(FunctionKey = FSFunctionKeys.AssociatedAccountsMonitor, Policy = Core.Business.Constant.Policy.Read)]
-        public ActionResult AssociatedAccountsDetailMonitor(AssociatedAccountsDetailToMonitorFilter filter)
+        public ActionResult AssociatedAccountsDetailMonitor(AssociatedAccountsDetailMonitorFilter filter)
         {
             var evidencesCache = new StringBuilder();
-            var evidences = accountService.GetAllEvidences();
+            var evidences = service.GetAllEvidences();
 
             foreach (var evidence in evidences)
             {
@@ -66,7 +65,7 @@
 
             ViewBag.Evidences = evidences;
             ViewBag.EvidencesCache = evidencesCache.ToString();
-            ViewBag.Subscribers = accountService.GetAllSubscribers();
+            ViewBag.Subscribers = service.GetAllSubscribers();
             ViewBag.AccountCustId = filter.AccountCustId;
             ViewBag.Username = filter.Username;
             ViewBag.NoOfAssociations = filter.NoOfAssociations;
@@ -74,17 +73,17 @@
             ViewBag.DateTo = filter.DateTo;
             ViewBag.DateRange = filter.DateFrom.ToString("MMM dd, yyyy") + " - " + filter.DateTo.ToString("MMM dd, yyyy");
 
-            return View("AssociatedToMonitor/AssociatedAccountsDetailToMonitor");
+            return View();
         }
 
         [HttpPost]
         [NapAuth(FunctionKey = FSFunctionKeys.AssociatedAccountsMonitor, Policy = Core.Business.Constant.Policy.Read)]
-        public ActionResult GetAssociatedAccountsDetailToMonitor(AssociatedAccountsDetailToMonitorFilter filter)
+        public ActionResult GetAssociatedAccountsDetailMonitor(AssociatedAccountsDetailMonitorFilter filter)
         {
             filter.DateFrom = DateTimeExtension.ConvertToFirstTimeInDay(filter.DateFrom);
             filter.DateTo = DateTimeExtension.ConvertToLastTimeInDay(filter.DateTo);
 
-            var data = accountService.GetAssociatedAccountsDetailToMonitor(filter);
+            var data = service.GetAssociatedAccountsDetailToMonitor(filter);
 
             var jsonResult = Json(data, JsonRequestBehavior.AllowGet);
 
@@ -95,25 +94,22 @@
 
         [HttpPost]
         [NapAuth(FunctionKey = FSFunctionKeys.AssociatedAccountsMonitor, Policy = Core.Business.Constant.Policy.Read)]
-        public ActionResult UpdateAssociatedAccountToMonitorOfVerify(AssociatedAccountToMonitorOfVerify accountOfVerify)
+        public ActionResult VerifyAssociatedAccountMonitor(AssociatedAccountMonitorVerify accountVerify)
         {
-            accountOfVerify.UserId = CurrentSession.UserId;
+            accountVerify.UserId = CurrentSession.UserId;
 
-            var data = accountService.UpdateAssociatedAccountToMonitorOfVerify(accountOfVerify);
+            var data = service.VerifyAssociatedAccountMonitor(accountVerify);
 
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
         [NapAuth(FunctionKey = FSFunctionKeys.AssociatedAccountsMonitor, Policy = Core.Business.Constant.Policy.Read)]
-        public ActionResult UpdateAssociatedAccountToMonitorOfNote(AssociatedAccountToMonitorOfNote accountOfNote)
+        public ActionResult UpdateNoteAssociatedAccountMonitor(AssociatedAccountMonitorNote accountNote)
         {
-            var data = accountService.UpdateAssociatedAccountToMonitorOfNote(accountOfNote);
+            var data = service.UpdateNoteAssociatedAccountMonitor(accountNote);
 
             return Json(data, JsonRequestBehavior.AllowGet);
         }
-
-        #endregion
-
     }
 }

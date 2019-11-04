@@ -1,4 +1,4 @@
-﻿@using Fanex.NAP.FS.Library.ViewModels.Account.AssociatedToMonitor
+﻿@using Fanex.NAP.FS.Library.ViewModels.AssociatedAccountMonitor
 @using Fanex.NAP.FS.Library.ViewModels
 @using Fanex.NAP.FS.Library.Core.Consts
 @{
@@ -11,21 +11,20 @@
     <link href="~/Content/scss/pages/account/account.css" rel="stylesheet" />
 }
 
-<h1 class="title">Associated Accounts Monitor</h1>
+<h1 class="title">Associated Accounts Detail</h1>
+
+<table class="associated-account-monitor-table-info">
+    <tr>
+        <td class="info-name">Account</td>
+        <td class="info-value">@ViewBag.Username</td>
+        <td class="info-name">No.of 1st Associated</td>
+        <td class="info-value">@ViewBag.NoOfAssociations</td>
+        <td class="info-name">Date Range</td>
+        <td class="info-value">@ViewBag.DateRange</td>
+    </tr>  
+</table>
 
 <div class="form-filter">
-    <div class="group calendar">
-        <label class="text">From</label>
-        <input type="text" id="filter-associated-date-from" class="control">
-        <span class="icon-calendar-text"></span>
-    </div>
-
-    <div class="group calendar">
-        <label class="text">To</label>
-        <input type="text" id="filter-associated-date-to" class="control" />
-        <span class="icon-calendar-text"></span>
-    </div>
-
     <div class="group">
         <label class="text">Site</label>
         <div class="edit-field">
@@ -50,6 +49,15 @@
         </div>
     </div>
 
+    <div class="group width-160">
+        <label class="text">Verify Status</label>
+        <select class="control" id="filter-verify-status">
+            <option value=@VerifyStatus.All>All</option>
+            <option value=@VerifyStatus.Verified>Verified</option>
+            <option value=@VerifyStatus.NotVerified>Not Verified</option>
+        </select>
+    </div>
+
     <div class="group">
         <label class="text">Evidence List</label>
         <div class="edit-field" style="width:335px;">
@@ -68,11 +76,12 @@
             </select>
         </div>
     </div>
+
     <button class="button -primary" id="btn-generate">Generate</button>
 </div>
 
 <div>
-    <table class="table table-striped width-100per" id="grid-associated-account" style="width: 100%">
+    <table class="table table-striped width-100per" id="grid-associated-account-detail" style="width: 100%">
         <thead>
             <tr>
                 <th class="col-no">#</th>
@@ -82,6 +91,8 @@
                 <th>Evidence</th>
                 <th>1st Associated</th>
                 <th>Verified</th>
+                <th>Verified By</th>
+                <th>Note</th>
             </tr>
         </thead>
         <tbody></tbody>
@@ -90,9 +101,13 @@
 
 @section scripts{
     <script type="text/javascript">
-        var EVIDENCECACHE = '@ViewBag.EvidencesCache';       
+        var ACCOUNTCUSTID = '@ViewBag.AccountCustId';
+        var USERNAME = '@ViewBag.Username';
+        var EVIDENCECACHE = '@ViewBag.EvidencesCache';
+        var DATEFROM = '@ViewBag.DateFrom';
+        var DATETO = '@ViewBag.DateTo';
     </script>
     <script src="~/Scripts/MultipleSelect/jquery.multiselect.filter.js"></script>
     <script src="~/Scripts/MultipleSelect/jquery.multiselect.js"></script>
-    <script src="~/Scripts/Account/AssociatedToMonitor/associated-accounts-monitor.js"></script>
+    <script src="~/Scripts/AssociatedAccountMonitor/associated-accounts-detail-monitor.js"></script>
 }
