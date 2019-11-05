@@ -49,6 +49,7 @@
     <Setting Key="FS_Tbl_OfficeIP_Delete" SpName="FS_Tbl_OfficeIP_Delete_xtest" DbName="DBFS.bodb_FraudSensor.bodbSPUNet" />
     <Setting Key="FS_Tbl_OfficeIP_Insert" SpName="FS_Tbl_OfficeIP_Insert_xtest" DbName="DBFS.bodb_FraudSensor.bodbSPUNet" />
     <Setting Key="FS_Tbl_OfficeIP_GetAll" SpName="FS_Tbl_OfficeIP_GetAll_xtest" DbName="DBFS.bodb_FraudSensor.bodbSPUNet" />
+    <Setting Key="FS_Tbl_OfficeIPLogin_Insert" SpName="FS_Tbl_OfficeIPLogin_Insert_xtest" DbName="DBFS.bodb_FraudSensor.bodbSPUNet" />
     <Setting Key="FS_OfficeIPInternalAccount_Insert" SpName="FS_OfficeIPInternalAccount_Insert_xtest" DbName="DBFS.bodb_FraudSensor.bodbSPUNet" />
     <Setting Key="FS_OfficeIPInternalAccount_Update" SpName="FS_OfficeIPInternalAccount_Update_xtest" DbName="DBFS.bodb_FraudSensor.bodbSPUNet" />
     <Setting Key="FS_OfficeIPInternalAccount_GetAll" SpName="FS_OfficeIPInternalAccount_GetAll_xtest" DbName="DBFS.bodb_FraudSensor.bodbSPUNet" />

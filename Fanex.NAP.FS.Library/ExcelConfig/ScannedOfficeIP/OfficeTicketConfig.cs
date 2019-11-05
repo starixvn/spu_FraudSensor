@@ -30,12 +30,20 @@ namespace Fanex.NAP.FS.Library.ExcelConfig.ScannedOfficeIP
             row.GetCell(cell_idx++).SetCellValue(data.UserName);
             row.GetCell(cell_idx++).SetCellValue(data.CurrencyName);
             row.GetCell(cell_idx++).SetCellValue(data.TransDate.ToString("MMM dd, yyyy hh:mm:ss tt"));
-            row.GetCell(cell_idx++).SetCellValue(data.TransId);
-            RenderChoice(row.GetCell(cell_idx++), data);
-            RenderOdds(row.GetCell(cell_idx++), data);
-            row.GetCell(cell_idx++).SetCellValue((double)data.Stake);
-            row.GetCell(cell_idx++).SetCellValue((double)data.Winlost);
-            row.GetCell(cell_idx++).SetCellValue(data.Status);
+            row.GetCell(cell_idx++).SetCellValue(data.TransId != 0 ? data.TransId.ToString() : "-");
+            if (data.TransId !=0 )
+            {
+                RenderChoice(row.GetCell(cell_idx++), data);
+                RenderOdds(row.GetCell(cell_idx++), data);
+            }
+            else
+            {
+                row.GetCell(cell_idx++).SetCellValue("Login Transaction");
+                row.GetCell(cell_idx++).SetCellValue("-");
+            }
+            row.GetCell(cell_idx++).SetCellValue(data.TransId != 0 ? ((double)data.Stake).ToString() : "-");
+            row.GetCell(cell_idx++).SetCellValue(data.TransId != 0 ? ((double)data.Winlost).ToString() : "-");
+            row.GetCell(cell_idx++).SetCellValue(data.TransId != 0 ? data.Status: "-");
             row.GetCell(cell_idx).SetCellValue(data.IP);
         }
 
