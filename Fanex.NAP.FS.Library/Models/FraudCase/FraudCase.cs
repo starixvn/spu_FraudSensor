@@ -39,7 +39,8 @@
                         "Bet type = HDP, O/U, FT. 1X2, 1H HDP, 1H O/U, 1H 1X2",
                         "Transaction Date = Danger Period (180s before goal)",
                         "Total stake in danger period ≥ 40% Max Bet",
-                        "Currency <> UUS, H, C"
+                        "Currency <> UUS, H, C",
+                        "Exclude LOSE tickets"
                     };
 
                     break;
