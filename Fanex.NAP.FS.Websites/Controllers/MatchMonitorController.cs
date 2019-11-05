@@ -146,7 +146,10 @@
             {
                 ViewBag.SiteList = _fraudCaseDetailService.GetSites();
                 ViewBag.CurrencyList = _fraudCaseDetailService.GetAllCurrency(IsShowSpecialCurrencies);
-                ViewBag.EvidenceList = _fraudCaseDetailService.GetListEvidences();
+
+                var evidences = _fraudCaseDetailService.GetListEvidences();
+                ViewBag.EvidenceList = evidences;
+                ViewBag.OtherEvidenceCodes = evidences.Where(e => e.IsOther).Select(e => e.EvidenceCode).Join();
             }
 
             return View("FraudCaseDetails/Index", model);
@@ -336,7 +339,7 @@
 
             // get Evidence name
             string strCode = string.Empty;
-            var otherEvidenceCode = AppSettings.Get("FPS_GET_OTHER_EVIDENCES");
+            var otherEvidenceCode = criteria.OtherEvidenceCodes;
             if (otherEvidenceCode != null && criteria.EvidenceCodeList != null)
             {
                 strCode = criteria.EvidenceCodeList;

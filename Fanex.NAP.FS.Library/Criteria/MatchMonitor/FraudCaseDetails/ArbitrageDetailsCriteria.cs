@@ -27,6 +27,9 @@
         public string EvidenceCodeList { get; set; }
 
         [SpParam(Ignored = true)]
+        public string OtherEvidenceCodes { get; set; }
+
+        [SpParam(Ignored = true)]
         public string TransDateFromString { get; set; }
 
         public DateTime TransDateFrom
