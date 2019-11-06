@@ -45,7 +45,7 @@
             var evidencesCache = filter.GetEvidencesCache();
             var accountsFromAPI = GetAssociatedAccountsFromAPI(filter);
 
-            var accounts = accountsFromAPI.AsEnumerable()
+            return accountsFromAPI.AsEnumerable()
                 .Select(c => new AssociatedAccountsMonitor
                 {
                     MainAccountCustId = c.MainAccountCustId,
@@ -56,8 +56,6 @@
                     NoOfAssociations = c.NoOfAssociations,
                     NoOfVerified = c.NoOfVerified
                 }).OrderBy(c => c.MainAccountUsername);
-
-            return accounts;
         }
 
         public IEnumerable<AssociatedAccountsDetailMonitor> GetAssociatedAccountsDetailToMonitor(AssociatedAccountsDetailMonitorFilter filter)
@@ -66,7 +64,7 @@
             var evidencesCache = filter.GetEvidencesCache();
             var accountsFromAPI = GetAssociatedAccountsDetailMonitorsFromAPI(filter);
 
-            var accounts = accountsFromAPI.AsEnumerable()
+            return accountsFromAPI.AsEnumerable()
                 .Select(c => new AssociatedAccountsDetailMonitor
                 {
                     AssAccId = c.AssAccId,
@@ -81,8 +79,6 @@
                     VerifiedDate = c.VerifiedDate,
                     Note = c.Note
                 }).OrderBy(c => c.AssociatedCustUsername);
-
-            return accounts;
         }
 
         public UpdateResult VerifyAssociatedAccountMonitor(AssociatedAccountMonitorVerify account)

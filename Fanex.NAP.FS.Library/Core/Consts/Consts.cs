@@ -10,5 +10,6 @@
         public const string FPS_WEBAPI_UPDATE_NOTE_ASSOCIATED_ACCOUNT_MONITOR = "FPS_WEBAPI_UPDATE_NOTE_ASSOCIATED_ACCOUNT_MONITOR";
         public const string FPS_EVIDENCE_CODE_SEIZE_BET_99_100 = "99.100";
         public const string FPS_EVIDENCE_CODE_SEIZE_BET_100 = "100";
+        public const string FPS_EVIDENCE_CODE_NONE = "None";
     }
 }
