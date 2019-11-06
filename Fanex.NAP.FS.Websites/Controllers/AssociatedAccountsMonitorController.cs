@@ -40,13 +40,8 @@
         [NapAuth(FunctionKey = FSFunctionKeys.AssociatedAccountsMonitor, Policy = Core.Business.Constant.Policy.Read)]
         public ActionResult GetAssociatedAccountsMonitor(AssociatedAccountsMonitorFilter filter)
         {
-            filter.AssociatedDateFrom = DateTimeExtension.ConvertToFirstTimeInDay(filter.AssociatedDateFrom);
-            filter.AssociatedDateTo = DateTimeExtension.ConvertToLastTimeInDay(filter.AssociatedDateTo);
-
             var data = service.GetAssociatedAccountsToMonitor(filter);
-
             var jsonResult = Json(data, JsonRequestBehavior.AllowGet);
-
             jsonResult.MaxJsonLength = int.MaxValue;
 
             return jsonResult;
@@ -80,13 +75,8 @@
         [NapAuth(FunctionKey = FSFunctionKeys.AssociatedAccountsMonitor, Policy = Core.Business.Constant.Policy.Read)]
         public ActionResult GetAssociatedAccountsDetailMonitor(AssociatedAccountsDetailMonitorFilter filter)
         {
-            filter.DateFrom = DateTimeExtension.ConvertToFirstTimeInDay(filter.DateFrom);
-            filter.DateTo = DateTimeExtension.ConvertToLastTimeInDay(filter.DateTo);
-
             var data = service.GetAssociatedAccountsDetailToMonitor(filter);
-
             var jsonResult = Json(data, JsonRequestBehavior.AllowGet);
-
             jsonResult.MaxJsonLength = int.MaxValue;
 
             return jsonResult;
@@ -97,7 +87,6 @@
         public ActionResult VerifyAssociatedAccountMonitor(AssociatedAccountMonitorVerify accountVerify)
         {
             accountVerify.UserId = CurrentSession.UserId;
-
             var data = service.VerifyAssociatedAccountMonitor(accountVerify);
 
             return Json(data, JsonRequestBehavior.AllowGet);
