@@ -1101,7 +1101,7 @@
             var mostUsedEvidences = GetMostUsedEvidences();
             var mostUsedEvidenceCodes = mostUsedEvidences.Select(e => e.EvidenceCode);
             var otherEvidenceCodes = allEvidences.AsEnumerable()
-                                .Where(e => !mostUsedEvidenceCodes.Equals(e.EvidenceCode))
+                                .Where(e => !mostUsedEvidenceCodes.Contains(e.EvidenceCode))
                                 .Select(e => e.EvidenceCode).Join();
 
             mostUsedEvidences.Add(new Evidence { EvidenceCode = otherEvidenceCodes, EvidenceName = "Others", IsOther = true });
