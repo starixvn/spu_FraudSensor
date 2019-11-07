@@ -317,8 +317,8 @@
     <Compile Include="Areas\UserLogin\Controllers\LoginController.cs" />
     <Compile Include="Areas\UserLogin\Controllers\SSOController.cs" />
     <Compile Include="Areas\UserLogin\UserLoginAreaRegistration.cs" />
-    <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\Api\ApiFPSController.cs" />
+    <Compile Include="Controllers\AssociatedAccountsMonitorController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\CheckBetReportController.cs" />
     <Compile Include="Controllers\ConfigurationsController.cs" />
@@ -420,6 +420,9 @@
     <Content Include="Content\scss\images\UM.svg" />
     <Content Include="Content\scss\MultipleSelect\jquery.multiselect.filter.css" />
     <Content Include="Content\scss\pages\account\account.css" />
+    <Content Include="Content\scss\pages\account\account.min.css">
+      <DependentUpon>account.css</DependentUpon>
+    </Content>
     <Content Include="Content\scss\pages\configurations\fraud-case.css" />
     <Content Include="Content\scss\pages\customer-monitor\customer-monitor.css" />
     <Content Include="Content\scss\pages\daily-data-capture\daily-data-capture.css" />
@@ -674,7 +677,8 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>NAPFSNames.xml</LastGenOutput>
     </Content>
-    <Content Include="Scripts\Account\AssociatedToMonitor\associated-accounts-monitor.js" />
+    <Content Include="Scripts\AssociatedAccountMonitor\associated-accounts-detail-monitor.js" />
+    <Content Include="Scripts\AssociatedAccountMonitor\associated-accounts-monitor.js" />
     <Content Include="Scripts\auto-grid.js" />
     <Content Include="Fanex.NAP.FS.Websites.ruleset" />
     <Content Include="Areas\UserLogin\Views\Common\AccessDenied.cshtml" />
@@ -836,6 +840,11 @@
     <Content Include="Content\scss\pages\customer-monitor\customer-monitor.scss" />
     <Content Include="Content\scss\MultipleSelect\jquery.multiselect.css" />
     <Content Include="Fanex.NAP.FS.Websites-1.ruleset" />
+    <Content Include="Content\scss\pages\account\account.scss" />
+    <None Include="compilerconfig.json" />
+    <None Include="compilerconfig.json.defaults">
+      <DependentUpon>compilerconfig.json</DependentUpon>
+    </None>
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile2.pubxml" />
@@ -998,7 +1007,8 @@
     <Content Include="Views\CustomerMonitor\MatchNote.cshtml" />
     <Content Include="Views\CustomerMonitor\CustomerDetails\Index.cshtml" />
     <Content Include="Scripts\MultipleSelect\jquery.multiselect.js" />
-    <Content Include="Views\Account\AssociatedToMonitor\AssociatedAccountsToMonitor.cshtml" />
+    <Content Include="Views\AssociatedAccountsMonitor\Index.cshtml" />
+    <Content Include="Views\AssociatedAccountsMonitor\AssociatedAccountsDetailMonitor.cshtml" />
     <None Include="Views\Errors\403.cshtml" />
     <None Include="Views\Errors\404.cshtml" />
     <None Include="Views\Errors\500.cshtml" />
