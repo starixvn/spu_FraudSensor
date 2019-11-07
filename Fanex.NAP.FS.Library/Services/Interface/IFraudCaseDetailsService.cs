@@ -8,13 +8,13 @@
     using System.Collections.Generic;    
     public interface IFraudCaseDetailsService
     {
-        IEnumerable<TicketDetails> GetTicketDetails(int matchId, int fraudCaseId, DateTime eventDate, bool isShowSpecialCurrencies, bool saveChoice = false);
+        IEnumerable<TicketDetails> GetTicketDetails(GetTicketCriteria criteria, bool saveChoice = false);
 
-        IEnumerable<CustomerDetails> GetCustomerDetails(int matchId, int fraudCaseId, DateTime eventDate, bool isShowSpecialCurrencies);
+        IEnumerable<CustomerDetails> GetCustomerDetails(GetCustomerCriteria criteria);
 
-        byte[] ExportExcel(int matchId, int fraudCaseId, DateTime eventDate, string templatePath, bool isShowSpecialCurrencies);
+        byte[] ExportExcelForDetails(GetTicketCriteria criteria, string templatePath);
 
-        MatchFraudCaseInfo GetInfo(int matchId, int fraudCaseId, DateTime eventDate);
+        MatchFraudCaseInfo GetMatchInfo(int matchId, int fraudCaseId, DateTime eventDate);
 
         IEnumerable<TicketDetails> GetLast7DaysDetails(int custId, bool isShowSpecialCurrencies);
 
@@ -28,7 +28,7 @@
 
         IEnumerable<CustomerAssociation> GetAssociations(int custId);
 
-        IEnumerable<TicketDetails> GetTicketFromIP(string ip, bool isShowSpecialCurrencies);
+        IEnumerable<TicketDetails> GetTicketsFromIP(string ip, bool isShowSpecialCurrencies);
               
         IEnumerable<CustomerDetails> GetArbitrageCustomerDetails(GetArbitrageCustomerCriteria criteria);       
 
@@ -38,13 +38,13 @@
 
         IEnumerable<Currency> GetAllCurrency(bool isShowSpecialCurrencies);
 
-        IEnumerable<ScoreHDP> GetScoreHDP(int matchId, bool isShowSpecialCurrencies);
+        IEnumerable<ScoreHDP> GetScoreHDP(GetScoreHDPCriteria criteria);
 
         IEnumerable<Site> GetSites();
 
         string ReplaceEvidences(string evidences);
 
-        byte[] ExportToExcelIpTickets(string ip, string template, bool isShowSpecialCurrencies);
+        byte[] ExportExcelTicketsByIP(string ip, string template, bool isShowSpecialCurrencies);
 
         byte[] ExportExcelArbitrageTickets(GetArbitrageTicketCriteria criteria, string[] array, string templatePath, bool isSummary);
       
@@ -54,7 +54,7 @@
 
         IEnumerable<CustomerDetails> GetFlaggedAccountCustomers(FlaggedAccountCriteria criteria);
 
-        byte[] ExportFlaggedAccounts(FlaggedAccountCriteria criteria, string templatePath);
+        byte[] ExportExcelFlaggedAccounts(FlaggedAccountCriteria criteria, string templatePath);
 
         IEnumerable<BetTypes> GetBetTypes();
     }

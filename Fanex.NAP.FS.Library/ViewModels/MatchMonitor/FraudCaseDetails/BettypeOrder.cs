@@ -2,10 +2,10 @@
 {
     public enum BettypeOrder
     {
-        HDP = 0,
-        FHDP = 1,
-        OU = 2,
-        FOU = 3,
-        Other = 99
+        FT_Handicap = 0,
+        FH_Handicap = 1,
+        FT_OverUnder = 2,
+        FH_OverUnder = 3,
+        Others = 99
     }
 }

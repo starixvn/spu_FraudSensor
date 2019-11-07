@@ -58,7 +58,7 @@
     };       
 
     function getBetType() {
-        var url = common.modifyRelativeUrl('/MatchMonitor/GetBetType');
+        var url = common.modifyRelativeUrl('/MatchMonitor/GetBetTypes');
 
         $.get(url, parameters, function (json) {
             $('#betType').append('<option value=-1>All</option>');
@@ -340,8 +340,8 @@
                 liveHomeScore: liveHomeScore,
                 liveAwayScore: liveAwayScore,
                 handicap: handicap,
-                MatchId: parameters.matchId,
-                EventDate: parameters.eventDate
+                MatchId: parameters.MatchId,
+                EventDate: parameters.EventDate
             };
         } else {
             criteria = Object.assign({}, savedCriteria);
@@ -486,9 +486,7 @@
    
     function renderArbitrageGroups(json) {
         $("#tickets").text(`By Tickets (...)`);
-
         var n = (json || []).reduce((total, obj) => total + Math.max(obj.Home.length, obj.Away.length), 0);
-
         var t = (json || []).reduce((total, obj) => total + obj.Home.length + obj.Away.length, 0);
 
         var data = (json || []).reduce(function (arr, obj) {
@@ -510,9 +508,7 @@
 
     function renderArbitrageTicketDetailByGroup(json) {
         ticket_grid.DataTable().clear();
-
         var n = (json || []).reduce((total, obj) => total + Math.max(obj.Home.length, obj.Away.length), 0);
-
         var t = (json || []).reduce((total, obj) => total + obj.Home.length + obj.Away.length, 0);        
 
         var keyName = "";
@@ -528,9 +524,7 @@
                     var a = {};
 
                     a.Home = obj.Home[i] || {};
-
                     a.Away = obj.Away[i] || {};
-
                     arr.push(a);
                 }
             }
@@ -621,8 +615,8 @@
                 transDateFromString: $("#transDateFrom").val(),
                 transDateToString: $("#transDateTo").val(),
                 keyName: $("#scoreHDP option:selected").text(),
-                matchId: parameters.matchId,
-                eventDate: parameters.eventDate,
+                matchId: parameters.MatchId,
+                eventDate: parameters.EventDate,
                 groupId: obj.GroupId,
                 bettype: obj.BettypeId,
                 score: obj.Score,
@@ -976,9 +970,9 @@
                 groupId: obj.GroupId,
                 score: obj.Score,
                 ip: obj.IP,
-                matchId: parameters.matchId,
-                eventDate: parameters.eventDate,
-                otherEvidenceCodes: parameters.otherEvidenceCodes
+                matchId: parameters.MatchId,
+                eventDate: parameters.EventDate,
+                otherEvidenceCodes: parameters.OtherEvidenceCodes
             };
         } else {
             criteria = Object.assign({}, savedCriteria);
@@ -1084,9 +1078,9 @@
             liveHomeScore: liveHomeScore,
             liveAwayScore: liveAwayScore,
             handicap: handicap,
-            matchId: parameters.matchId,
-            eventDate: parameters.eventDate,
-            otherEvidenceCodes: parameters.otherEvidenceCodes,
+            matchId: parameters.MatchId,
+            eventDate: parameters.EventDate,
+            otherEvidenceCodes: parameters.OtherEvidenceCodes,
             odds: $("#txtOdds").val(),
             isOnlyCN88: $("#chkOnlyCN88:checked").length > 0,
             isByIPAndDevice: $("#chkByIPAndDevice:checked").length > 0
@@ -1106,9 +1100,9 @@
             TransDateFromString: $("#transDateFrom").val(),
             TransDateToString: $("#transDateTo").val(),
             Bettype: $('#betType').val(),
-            MatchId: parameters.matchId,
-            EventDate: parameters.eventDate,
-            otherEvidenceCodes: parameters.otherEvidenceCodes
+            MatchId: parameters.MatchId,
+            EventDate: parameters.EventDate,
+            otherEvidenceCodes: parameters.OtherEvidenceCodes
         };
 
         return criteria;

@@ -219,10 +219,10 @@
 
         var parameters =
             {
-                fraudCaseId: @Model.FraudCaseId,
-                matchId: @Model.MatchId,
-                eventDate: '@Model.EventDate.ToShortDateString()',
-                otherEvidenceCodes: isArbitrage || isFlaggedAccount ? '@ViewBag.OtherEvidenceCodes' : ''
+                FraudCaseId: @Model.FraudCaseId,
+                MatchId: @Model.MatchId,
+                EventDate: '@Model.EventDate.ToShortDateString()',
+                OtherEvidenceCodes: isArbitrage || isFlaggedAccount ? '@ViewBag.OtherEvidenceCodes' : ''
             };
 
         var bu_date = "@ViewBag.BUDate.ToString("MMM dd, yyyy")";

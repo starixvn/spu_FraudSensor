@@ -3,11 +3,11 @@
     public enum FraudCaseId
     {
         BSNG = 1,
+        ScannedOfficeIP = 2,
+        CheckBet = 3,
+        DailyDataCapture = 4,
         FlaggedAccount = 6,
         DelayedGoal = 8,
-        ScannedOfficeIP = 2,
-        DailyDataCapture = 4,
-        CheckBet =  3,
         Arbitrage = 10,
         BetsNearGoal = 11
     }
