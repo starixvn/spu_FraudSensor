@@ -1,91 +1,76 @@
-﻿function associated_account_monitor() {
-    var filter_evidences = $('#filter-evidences');
+﻿function associated_account_monitor_detail() {
+    var filter_sites = $('#filter-sites');
+    var filter_cust_levels = $('#filter-cust-levels');
     var filter_verify_status = $('#filter-verify-status');
-    var filter_date_from = $('#filter-associated-date-from');
-    var filter_date_to = $('#filter-associated-date-to');
+    var filter_evidences = $('#filter-evidences');   
     var btn_generate = $('#btn-generate');
-    var grid_associated_account = $('#grid-associated-account');
+    var grid_associated_account = $('#grid-associated-account-detail');
     var const_note_length_of_collapse = 50;
 
     function init() {
+        filter_sites.multiselect({
+            menuWidth: 225,
+            menuHeight: 350
+        }).multiselect('checkAll')
+            .multiselectfilter({
+                width: 145,
+                placeholder: '',
+                label: 'Filter'
+            });
+
+        filter_cust_levels.multiselect({
+            menuWidth: 225,
+            menuHeight: 350
+        }).multiselect('checkAll')
+            .multiselectfilter({
+                width: 145,
+                placeholder: '',
+                label: 'Filter'
+            });
+
         filter_evidences.multiselect({
             menuWidth: 330,
             menuHeight: 350
         })
-        .multiselect('checkAll')
-        .multiselectfilter({
-            width: 250,
-            placeholder: '',
-            label: 'Filter'
-        });
-       
-        var dateFromMaxLimit = new Date();
-        var dateFromMinLimit = new Date();
-        dateFromMinLimit.setDate(dateFromMinLimit.getDate() - 29);        
-
-        filter_date_from.datepicker({
-            dateFormat: "M dd, yy",
-            changeMonth: true,
-            changeYear: true,
-            firstDay: 1,
-            maxDate: "y"
-        }).datepicker("option", "minDate", dateFromMinLimit)
-            .datepicker("option", "maxDate", dateFromMaxLimit)
-            .datepicker("setDate", new Date());           
-
-        filter_date_to.datepicker({
-            dateFormat: "M dd, yy",
-            changeMonth: true,
-            changeYear: true,
-            firstDay: 1,
-            maxDate: "y"
-        }).datepicker("setDate", new Date())
-            .change(restrictFilterDateFrom);
-
+            .multiselect('checkAll')
+            .multiselectfilter({
+                width: 250,
+                placeholder: '',
+                label: 'Filter'
+            });
+     
         renderAssociatedAccountGridOptions();
+
+        generateReport();
     }
 
-    function restrictFilterDateFrom() {
-        var dateMinLimit = filter_date_to.datepicker("getDate");
-        var dateMaxLimit = filter_date_to.datepicker("getDate");
-
-        if (dateMinLimit != null) {
-            dateMinLimit.setDate(dateMinLimit.getDate() - 29);
-            filter_date_from.datepicker("option", "minDate", dateMinLimit)
-                            .datepicker("option", "maxDate", dateMaxLimit);
-        }
-    }
 
     function renderAssociatedAccountGridOptions() {
         grid_associated_account.DataTable({
             searching: false,
             lengthMenu: [10, 20, 50, 100, 500],
-            pageLength: 50,
-            ordering: false,
+            pageLength: 50,          
             scrollY: "61vh",
             scrollX: true,
             scrollCollapse: true,
             columnDefs: [
-                { targets: 10, type: "check-box" },
-                { targets: "_all", defaultContent: "-" }
+                { targets: "_all", defaultContent: "-" },
+                { targets: 6, type: "check-box" },
+                { targets: [0, 2, 3, 4, 5, 6, 7, 8], orderable: false }
             ],
             columns: [
-                { data: (row, type, set, meta) => meta.row + 1, className: "text-center", width: "3%" },
-                { data: row => row.AssociatedAccountUsername, className: "text-center", width: "8%" },
-                { data: row => row.AssociatedAccountSite, className: "text-center", width: "4%" },
-                { data: row => row.AssociatedAccountLevelName, className: "text-center", width: "4%" },
-                { data: row => renderEvidence(row.AssociatedAccountEvidences), className: "text-left", width: "10%" },
-                { data: row => row.MainAccountUsername, className: "text-center", width: "8%" },
-                { data: row => row.MainAccountSite, className: "text-center", width: "4%" },
-                { data: row => row.MainAccountLevelName, className: "text-center", width: "4%" },
-                { data: row => renderEvidence(row.MainAccountEvidences), className: "text-left", width: "10%" },
-                { data: row => row.FirstAssociatedDateToString, className: "text-center", width: "8%" },
+                { data: (row, type, set, meta) => meta.row + 1, className: "text-center", width: "5%" },
+                { data: row => row.AssociatedCustUsername, className: "text-center", width: "10%" },
+                { data: row => row.AssociatedCustSite, className: "text-center", width: "10%" },
+                { data: row => row.AssociatedCustLevelName, className: "text-center", width: "8%" },
+                { data: row => renderEvidence(row.AssociatedCustEvidences), className: "text-left", width: "15%" },
+                { data: row => row.FirstAssociatedDateToString, className: "text-center", width: "10%" },               
                 {
                     data: renderverificationCheckBox, className: "text-center", width: "5%", createdCell: (cell, _, row) => {
                         $('.chk-verification', cell).change(() => handleUpdateVerification(cell, row))
                     }
                 },
-                { data: row => row.VerifiedOfView, className: "text-center", width: "8%" },
+                { data: row => row.VerifiedOfView, className: "text-center", width: "12%" },
                 {
                     data: renderNote, className: "col-account-note text-left", createdCell: (cell, _, row) => {
                         $('.btn-note-change', cell).click(() => handleChangeNote(cell, row));
@@ -94,7 +79,7 @@
                 }
             ],
             rowCallback: function (cell, row, index) {
-                adjustSizeOfNote(cell);                
+                adjustSizeOfNote(cell);
             },
             dom: "t<'pagination'<'page-size'lp>i>",
             language: {
@@ -105,13 +90,14 @@
                 info: "Displaying _START_ to _END_ of _TOTAL_ item(s)",
                 infoEmpty: "",
                 zeroRecords: "There's no data"
-            }
+            },
+            order: [[1, "asc"]]
         });
     }
 
     function renderEvidence(evidences) {
         if (evidences != null && evidences != '') {
-            var evidencesForDisplay = common.makeWrapString(evidences, 26);
+            var evidencesForDisplay = common.makeWrapString(evidences, 42);
             return "<span title='" + evidences + "'>" + evidencesForDisplay + "</span>";
         }
         return evidences;
@@ -125,11 +111,10 @@
 
     function renderNote(row) {
         var noteForDisplay = wrapTextForDipslayNote(row.Note, const_note_length_of_collapse);
+        var domElementNoteForDisplay = '<div class="note-content-display" title=' + row.Note + '>' + noteForDisplay + '</div>';
 
         if (noteForDisplay == '-') {
-            var domElementNoteForDisplay = '<div class="note-content-display note-blank" title=' + row.Note + '>' + noteForDisplay + '</div>';
-        } else {
-            var domElementNoteForDisplay = '<div class="note-content-display" title=' + row.Note + '>' + noteForDisplay + '</div>';
+            domElementNoteForDisplay = '<div class="note-content-display note-blank" title=' + row.Note + '>' + noteForDisplay + '</div>';
         }
 
         return '<div class="container-note">'
@@ -163,63 +148,47 @@
     }
 
     function generateReport() {
-        var url = common.modifyRelativeUrl("/Account/GetAssociatedAccountsToMonitor");
+        var url = common.modifyRelativeUrl("/AssociatedAccountsMonitor/GetAssociatedAccountsDetailMonitor");
         var paramFilter = getParamsFilter();
 
-        if (validateFilter(paramFilter)) {
-            common.showLoading();
+        common.showLoading();
 
-            $.ajax({
-                type: 'POST',
-                url: url,
-                data: paramFilter,              
-                success: function (response) {
-                    renderAssociatedAccountGrid(response);
-                },
-                error: function (xhr, status, error) {
-                    console.log('data of ' + xhr.responseText);
-                    common.closeLoading();
-                }
-            });
-        }
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data: paramFilter,
+            success: function (response) {
+                renderAssociatedAccountGrid(response);
+            },
+            error: function (xhr, status, error) {
+                console.log('data of ' + xhr.responseText);
+                common.closeLoading();
+            }
+        });
     }
 
     function getParamsFilter() {
         var filter = {};
 
-        filter.AssociatedDateFrom = filter_date_from.val();
-        filter.AssociatedDateTo = filter_date_to.val();
+        filter.DateFrom = DATEFROM;
+        filter.DateTo = DATETO;
+        filter.AccountCustId = ACCOUNTCUSTID;
+        filter.Sites = getSeletedMultiple("#filter-sites");
+        filter.CustLevels = getSeletedMultiple("#filter-cust-levels");
         filter.VerifyStatus = filter_verify_status.val();
-        filter.EvidenceCodes = getSeletedEvidences();
-        filter.EvidencesCache = evidencesCache;
+        filter.EvidenceCodes = getSeletedMultiple("#filter-evidences");
+        filter.EvidencesCache = EVIDENCECACHE;
 
         return filter;
     }
 
-    function getSeletedEvidences() {
-        var evidences = [];
-        $('option:selected', "#filter-evidences").each(function (idx, ele) {
-            evidences.push($(ele).val());
+    function getSeletedMultiple(multipleName) {
+        var selects = [];
+        $('option:selected', multipleName).each(function (idx, ele) {
+            selects.push($(ele).val());
         });
 
-        return evidences.join(",");
-    }
-
-    function validateFilter(filter) {
-        var isOK = true;
-        $(filter_date_from).removeClass("fail-by-validate");
-        $(filter_date_to).removeClass("fail-by-validate");
-
-        if (filter.AssociatedDateFrom == "") {
-            $(filter_date_from).addClass("fail-by-validate");
-            isOK = false;
-        }
-
-        if (filter.AssociatedDateTo == "") {
-            $(filter_date_to).addClass("fail-by-validate");
-            isOK = false;
-        }
-        return isOK;
+        return selects.join(",");
     }
 
     function renderAssociatedAccountGrid(json) {
@@ -231,7 +200,7 @@
     function handleUpdateVerification(cell, row) {
         var $target = $(cell).find('.chk-verification');
 
-        var url = common.modifyRelativeUrl('/Account/UpdateAssociatedAccountToMonitorOfVerify');
+        var url = common.modifyRelativeUrl('/AssociatedAccountsMonitor/VerifyAssociatedAccountMonitor');
         var paramsUpdate = {};
         paramsUpdate.IsVerifying = $target.is(':checked');
         paramsUpdate.AssAccId = $target.attr('data-ass-acc-id');
@@ -261,7 +230,7 @@
             }
         });
     }
- 
+
     function handleChangeNote(cell, row) {
         var domElementsNote = {};
         domElementsNote.txtNoteInput = $(cell).find('.txt-note-input');
@@ -278,10 +247,10 @@
     function handleEditNote(domElementsNote) {
         $(domElementsNote.txtNoteInput).removeClass('hide').focus().select();
         $(domElementsNote.noteForDisplay).addClass('hide').hide();
-        $(domElementsNote.iconNote).removeClass('icon-edit').addClass('icon-save').attr('title', 'save');        
+        $(domElementsNote.iconNote).removeClass('icon-edit').addClass('icon-save').attr('title', 'save');
         grid_associated_account.DataTable().columns.adjust();
 
-        adjustHeightNoteInput(domElementsNote);       
+        adjustHeightNoteInput(domElementsNote);
         handleNoteInputEvents(domElementsNote);
     }
 
@@ -319,7 +288,7 @@
     }
 
     function saveChangedNote(domElementsNote, noteToUpdate, cell) {
-        var url = common.modifyRelativeUrl("/Account/UpdateAssociatedAccountToMonitorOfNote");
+        var url = common.modifyRelativeUrl("/AssociatedAccountsMonitor/UpdateNoteAssociatedAccountMonitor");
         var paramsUpdate = {};
         paramsUpdate.AssAccId = $(domElementsNote.txtNoteInput).attr('data-ass-acc-id');
         paramsUpdate.Note = noteToUpdate;
@@ -342,18 +311,18 @@
                     }
                     $(domElementsNote.contentNoteDisplay).html(noteForDisplay);
                     $(".btn-note-ellipsis", cell).click(() => handleExpandNote(cell));
-                    
+
                     common.showSuccess();
                 } else {
                     common.showError(response.Content);
-                }                
+                }
             },
             error: function (xhr, status, error) {
                 console.log('data of ' + xhr.responseText);
                 common.closeLoading();
             }
         });
-    }    
+    }
 
     function adjustSizeOfNote(cell) {
         var domElementNoteDisplay = $(cell).find(".note-content-display");
@@ -379,13 +348,13 @@
     }
 
     function handleCollapseNote(cell) {
-        var txtNoteInput = $(cell).find('.txt-note-input').val();    
+        var txtNoteInput = $(cell).find('.txt-note-input').val();
         var noteForDisplay = wrapTextForDipslayNote(txtNoteInput, const_note_length_of_collapse);
         $(cell).find(".note-content-display").html(noteForDisplay);
-       
+
         grid_associated_account.DataTable().columns.adjust();
         $(".btn-note-ellipsis", cell).click(() => handleExpandNote(cell));
-    }    
+    }
 
     function handleSpecialCharacter(str) {
         if (str != null) {
@@ -399,4 +368,4 @@
     btn_generate.click(generateReport);
 }
 
-$(associated_account_monitor);
+$(associated_account_monitor_detail);

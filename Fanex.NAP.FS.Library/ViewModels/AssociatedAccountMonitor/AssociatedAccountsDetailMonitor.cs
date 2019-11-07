@@ -1,24 +1,26 @@
-﻿namespace Fanex.NAP.FS.Library.ViewModels.Account.AssociatedToMonitor
+﻿namespace Fanex.NAP.FS.Library.ViewModels.AssociatedAccountMonitor
 {
     using System;
 
-    public class AssociatedAccountsToMonitor
+    public class AssociatedAccountsDetailMonitor
     {
         public int AssAccId { get; set; }
 
-        public string AssociatedAccountUsername { get; set; }
+        public int AssociatedCustId { get; set; }
 
-        public string AssociatedAccountSite { get; set; }
+        public string AssociatedCustUsername { get; set; }
 
-        public int AssociatedAccountLevel { get; set; }
+        public string AssociatedCustSite { get; set; }
 
-        public string AssociatedAccountLevelName
+        public int AssociatedCustLevel { get; set; }
+
+        public string AssociatedCustLevelName
         {
             get
             {
                 try
                 {
-                    return Enum.GetName(typeof(UserLevelName), this.AssociatedAccountLevel);
+                    return Enum.GetName(typeof(UserLevelName), this.AssociatedCustLevel);
                 }
                 catch
                 {
@@ -27,30 +29,7 @@
             }
         }
 
-        public string AssociatedAccountEvidences { get; set; }
-
-        public string MainAccountUsername { get; set; }
-
-        public string MainAccountSite { get; set; }
-
-        public int MainAccountLevel { get; set; }
-
-        public string MainAccountLevelName
-        {
-            get
-            {
-                try
-                {
-                    return Enum.GetName(typeof(UserLevelName), this.MainAccountLevel);
-                }
-                catch
-                {
-                    return string.Empty;
-                }
-            }        
-        }
-
-        public string MainAccountEvidences { get; set; }
+        public string AssociatedCustEvidences { get; set; }       
 
         public DateTime FirstAssociatedDate { get; set; }
 
