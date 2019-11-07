@@ -445,13 +445,13 @@
                 "reject"
             };
 
-            // fiter by Sites
+            // fitter by Sites
             var custIds = custSubcribers.Select(c => c.CustId);
             var subcriberDict = custSubcribers.ToLookup(c => c.CustId, c => c.SubscriberName);
             Func<long, bool> conditionSubcriber = s => custIds.Contains((int)s);
 
             // filter by Evidences
-            var evidenceDict = evidences.ToLookup(c => c.CustId, c => c.EvidenceCode + "-" + c.EvidenceName);
+            var evidenceDict = evidences.ToLookup(c => c.CustId, c => c.EvidenceCodeForDisplay + "-" + c.EvidenceName);
             var evidenceExtract = evidences.Where(c => !criteria.EvidenceCodeList.Contains(c.EvidenceCode));
             var lstEvidenceExtract = evidenceExtract.Select(c => (long)c.CustId).ToList();
 
@@ -507,13 +507,13 @@
                 "reject"
             };
 
-            // fiter by Sites
+            // fitter by Sites
             var custIds = custSubcribers.Select(c => c.CustId);
             var subcriberDict = custSubcribers.ToLookup(c => c.CustId, c => c.SubscriberName);
             Func<long, bool> conditionSubcriber = s => custIds.Contains((int)s);
 
             // filter by Evidences
-            var evidenceDict = evidences.ToLookup(c => c.CustId, c => c.EvidenceCode + "-" + c.EvidenceName);
+            var evidenceDict = evidences.ToLookup(c => c.CustId, c => c.EvidenceCodeForDisplay + "-" + c.EvidenceName);
             var listEvidenceByCus = evidences.Select(c => (long)c.CustId).ToList();
             Func<long, bool> conditionExtract = f => 1.Equals(1);
 
@@ -577,7 +577,7 @@
             var custsByBettype = FilterCustomerByBetType(rawCustomers, isBettypeOther);
 
             return FilterCustomerDetail(custsByBettype, criteria.Sites, criteria.EvidenceCodeList, criteria.OtherEvidenceCodes);
-        }
+        }       
 
         private IEnumerable<CustomerDetails> FilterCustomerDetail(IEnumerable<CustInfo> custInfo, string sites, string evidenceCodes, string otherEvidenceCode)
         {
@@ -596,7 +596,7 @@
             }
 
             return FilterCustomerDetail(custInfo, custsOfSites, custEvidence, string.IsNullOrEmpty(evidenceCodes));
-        }
+        }        
 
         private IEnumerable<CustInfo> FilterCustomerByBetType(IEnumerable<CustInfo> custInfo, bool isBetTypeOthers)
         {
@@ -766,7 +766,7 @@
                        TotalWinLoss = (double)info.TotalWinlost,
                        TotalStake = (double)info.TotalStake,
                        Tickets = info.NoOfTickets,
-                       Evidence = string.Join(", ", evidence.Distinct().Select(e => e.EvidenceCode + "-" + e.EvidenceName)),
+                       Evidence = string.Join(", ", evidence.Distinct().Select(e => e.EvidenceCodeForDisplay + "-" + e.EvidenceName)),
                        AssociatedAccounts = totalAssociation.ContainsKey(info.CustId) ? totalAssociation[info.CustId] : 0,
                        CurrencyName = info.CurrencyName
                    }).OrderBy(c => c.Member);
@@ -805,7 +805,7 @@
                        TotalWinLoss = (double)info.TotalWinlost,
                        TotalStake = (double)info.TotalStake,
                        Tickets = info.NoOfTickets,
-                       Evidence = string.Join(", ", evidence.Distinct().Select(e => e.EvidenceCode + "-" + e.EvidenceName)),
+                       Evidence = string.Join(", ", evidence.Distinct().Select(e => e.EvidenceCodeForDisplay + "-" + e.EvidenceName)),
                        AssociatedAccounts = totalAssociation.ContainsKey(info.CustId) ? totalAssociation[info.CustId] : 0,
                        CurrencyName = info.CurrencyName
                    }).OrderBy(c => c.Member);
@@ -871,7 +871,7 @@
             Func<long, bool> conditionSubcriber = s => custIds.Contains((int)s);
 
             // filter by Evidences
-            var evidenceDict = evidences.ToLookup(c => c.CustId, c => c.EvidenceCode + "-" + c.EvidenceName);
+            var evidenceDict = evidences.ToLookup(c => c.CustId, c => c.EvidenceCodeForDisplay + "-" + c.EvidenceName);
             var evidenceExtract = evidences.Where(c => !lstEvidenceSelected.Contains(c.EvidenceCode));
             var lstEvidenceExtract = evidenceExtract.Select(c => (long)c.CustId).ToList();
 
@@ -889,6 +889,7 @@
                 .Where(c => conditionExtract(c.CustId) && conditionSubcriber(c.CustId) && !c.IsIPFraud)
                 .GroupBy(t => Tuple.Create(t.BetTypeId, t.Handicap1 - t.Handicap2, t.LiveHomeScore, t.LiveAwayScore, t.GraphDBGroupId, t.IP), t => new ArbitrageTicket
                 {
+                    CustId = t.CustId,
                     BetId = t.TransId,
                     Currency = t.CurrencyName,
                     DangerousLevel = t.DangerLevel,
@@ -935,6 +936,7 @@
                 .Where(c => conditionExtract(c.CustId) && conditionSubcriber(c.CustId))
                 .GroupBy(t => Tuple.Create(t.BetTypeId, t.Handicap1 - t.Handicap2, t.LiveHomeScore, t.LiveAwayScore, t.GroupId), t => new ArbitrageTicket
                 {
+                    CustId = t.CustId,
                     BetId = t.TransId,
                     Currency = t.CurrencyName,
                     DangerousLevel = t.DangerLevel,
@@ -988,7 +990,7 @@
             Func<long, bool> conditionSubcriber = s => custIds.Contains((int)s);
 
             // filter by Evidences
-            var evidenceDict = evidences.ToLookup(c => c.CustId, c => c.EvidenceCode + "-" + c.EvidenceName);
+            var evidenceDict = evidences.ToLookup(c => c.CustId, c => c.EvidenceCodeForDisplay + "-" + c.EvidenceName);
             var listEvidenceByCus = evidences.Select(c => (long)c.CustId).ToList();
             Func<long, bool> conditionExtract = f => 1.Equals(1);
 
