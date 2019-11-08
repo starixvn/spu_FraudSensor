@@ -4,7 +4,8 @@
         customer_grid = $("#customer-tab table"),
         associated_accounts = $("#associated-accounts"),
         ticket_last_7_days = $("#tickets-last-7-days"),
-        ticket_by_ip = $("#ticket-by-ip");
+        ticket_by_ip = $("#ticket-by-ip");   
+    var loadingDone = false;
 
     var from_date = $("#transDateFrom");
     var to_date = $("#transDateTo");
@@ -228,7 +229,11 @@
                 $(".group-action button").click(e => $(e.target).next().selectmenu("open"));
             }
 
-            common.closeLoading();
+            if (loadingDone) {
+                common.closeLoading();
+            } else {
+                loadingDone = true;
+            }
         });
     }
   
@@ -484,7 +489,7 @@
         window.open(common.modifyRelativeUrl(url));
     }
    
-    function renderArbitrageGroups(json) {
+    function renderTicketArbitrageGroups(json) {
         $("#tickets").text(`By Tickets (...)`);
 
         var n = (json || []).reduce((total, obj) => total + Math.max(obj.Home.length, obj.Away.length), 0);
@@ -497,7 +502,7 @@
             arrGroupTicket.push(obj);
 
             return arr;
-        }, []);        
+        }, []);
 
         ticket_grid.DataTable().rows.add(data).draw();
         totalTicket = t;
@@ -505,6 +510,12 @@
 
         if (n != 0) {
             $("#DataTables_Table_0_info").text(`Displaying 1 to ${n} of ${n} item(s)`);
+        }
+
+        if (loadingDone) {
+            common.closeLoading();
+        } else {
+            loadingDone = true;
         }
     };
 
@@ -897,7 +908,14 @@
         common.closeLoading();
     }
 
-    function loadReportArbitrage(criteria) {       
+    function loadReportArbitrage(criteria) {
+        loadingDone = false;        
+
+        loadTicketGridArbitrage(criteria);
+        loadCustomerGridArbitrage(criteria);
+    };
+
+    function loadTicketGridArbitrage(criteria) {
         var urlGroup = common.modifyRelativeUrl("/MatchMonitor/GetArbitrageTicketsGroupSummary");
         ticket_grid.DataTable().clear();
 
@@ -905,21 +923,19 @@
             type: 'POST',
             url: urlGroup,
             data: criteria,
-            beforeSend: function() {
+            beforeSend: function () {
                 common.showLoading();
             },
             success: function (response) {
                 if (response != null) {
-                    renderArbitrageGroups(response.Content);
-                    loadCustomerGridArbitrage(criteria);
-                    common.closeLoading();
+                    renderTicketArbitrageGroups(response.Content);
                 }
             },
             error: function (err) {
                 loadError(err);
             }
         });
-    };
+    }
 
     $('#ticket-tab table tbody').on('click', 'tr', function () {
         if (isArbitrage) {
