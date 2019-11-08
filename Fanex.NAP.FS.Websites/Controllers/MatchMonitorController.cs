@@ -244,23 +244,10 @@
 
         [HttpPost]
         public ActionResult GetArbitrageTicketsGroupSummary(GetArbitrageTicketCriteria criteria)
-        {
-            var data = new List<ArbitrageGroupTicketList>();
+        {            
             criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
-            data = _fraudCaseDetailService.GetArbitrageTickets(criteria, true).ToList();
 
-            var lstCustId = new List<long>();
-            foreach (var item in data.Select(a => a.Home.Select(t => t.CustId)))
-            {
-                lstCustId.AddRange(item);
-            }
-
-            foreach (var item in data.Select(a => a.Away.Select(t => t.CustId)))
-            {
-                lstCustId.AddRange(item);
-            }
-
-            SessionManager.Set("ListCustId", lstCustId.Distinct().ToList());
+            var data = _fraudCaseDetailService.GetArbitrageTickets(criteria, true).ToList();
 
             return new JsonResult { Data = new { Content = data }, MaxJsonLength = Int32.MaxValue };
         }
@@ -269,18 +256,13 @@
         public JsonResult GetFraudCaseArbitrageCustomerDetails(GetArbitrageCustomerCriteria criteria)
         {
             criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
+
             if (criteria.IsOnlyCN88)
             {
                 criteria.Site = "CN88";
             }
 
             var data = _fraudCaseDetailService.GetArbitrageCustomerDetails(criteria);
-
-            if (SessionManager.Get<List<long>>("ListCustId") != null)
-            {
-                var lstCustId = SessionManager.Get<List<long>>("ListCustId");
-                data = data.Where(a => lstCustId.Contains(a.CustId));
-            }
 
             return Json(data, JsonRequestBehavior.AllowGet);
         }

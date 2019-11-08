@@ -529,7 +529,7 @@
         var keyName = "";
         var data = (json || []).reduce(function (arr, obj) {
             obj.key = true;          
-            keyName = obj.Score + " " + obj.BettypeName + " " + obj.Handicap + " " + obj.GroupId + " " + obj.IP;
+            keyName = obj.Score + " " + obj.BettypeId + " " + obj.Handicap + " " + obj.GroupId + " " + obj.IP;
             
             if (obj.Home.length + obj.Away.length < 1000) {
 
@@ -552,7 +552,7 @@
         //each list group
         var dataGroup = [];
         $.each(arrGroupTicket, function (index, value) {
-            var keyTemp = value.Score + " " + value.BettypeName + " " + value.Handicap + " " + value.GroupId + " " + value.IP;
+            var keyTemp = value.Score + " " + value.BettypeId + " " + value.Handicap + " " + value.GroupId + " " + value.IP;
             dataGroup.push(value);
             if (keyName == keyTemp) {
                 var newArray = $.merge(dataGroup, data);
@@ -618,7 +618,7 @@
         var urlDownload = common.modifyRelativeUrl("/MatchMonitor/DownloadExcel");
 
         var obj = e.data;
-        var keyName = obj.Score + " " + obj.BettypeName + " " + obj.Handicap;
+        var keyName = obj.Score + " " + obj.BettypeId + " " + obj.Handicap;
 
         var criteria = {};
 
@@ -733,15 +733,15 @@
                     var totalTicket = obj.Home.length + obj.Away.length;
                     var td = "";
                     if (totalTicket > 1000) {
-                        td = $(`<td colspan='25' class='group' style='cursor: initial'><span class='icon-chevron-down'></span> <span class='bage'>${obj.BettypeName} ${obj.Handicap}</span> <span class="bage">${obj.Score}</span> <span class='bage'>Tickets: ${totalTicket}</span> <span class="bage muchdata" style="color:red;">Too much data. Export Excel file instead!</span> <button class="button -export"><span class="icon-export-excel"></span></button></td>`);
+                        td = $(`<td colspan='25' class='group' style='cursor: initial'><span class='icon-chevron-down'></span> <span class='bage'>${obj.BettypeId} ${obj.Handicap}</span> <span class="bage">${obj.Score}</span> <span class='bage'>Tickets: ${totalTicket}</span> <span class="bage muchdata" style="color:red;">Too much data. Export Excel file instead!</span> <button class="button -export"><span class="icon-export-excel"></span></button></td>`);
                     }
                     else {
-                        var keyName = obj.Score + " " + obj.BettypeName + " " + obj.Handicap + " " + obj.GroupId + " " + obj.IP;
+                        var keyName = obj.Score + " " + obj.BettypeId + " " + obj.Handicap + " " + obj.GroupId + " " + obj.IP;
                         if (groupExpand == keyName) {
-                            td = $(`<td colspan='25' class='group' style='cursor: initial'><span class='icon-chevron-up' style='cursor: pointer;'></span><span class='bage' style='cursor: pointer;'>${obj.BettypeName} ${obj.Handicap}</span> <span class='bage' style='cursor: pointer;'>${obj.Score}</span> <span class='bage' style='cursor: pointer;'>Tickets: ${totalTicket}</span><button class="button -export"><span class="icon-export-excel"></span></button></td>`);
+                            td = $(`<td colspan='25' class='group' style='cursor: initial'><span class='icon-chevron-up' style='cursor: pointer;'></span><span class='bage' style='cursor: pointer;'>${obj.BettypeId} ${obj.Handicap}</span> <span class='bage' style='cursor: pointer;'>${obj.Score}</span> <span class='bage' style='cursor: pointer;'>Tickets: ${totalTicket}</span><button class="button -export"><span class="icon-export-excel"></span></button></td>`);
                             $(row).addClass('cursor-index');
                         } else {
-                            td = $(`<td colspan='25' class='group' style='cursor: initial'><span class='icon-chevron-down' style='cursor: pointer;'></span><span class='bage' style='cursor: pointer;'>${obj.BettypeName} ${obj.Handicap}</span> <span class='bage' style='cursor: pointer;'>${obj.Score}</span> <span class='bage' style='cursor: pointer;'>Tickets: ${totalTicket}</span><button class="button -export"><span class="icon-export-excel"></span></button></td>`);
+                            td = $(`<td colspan='25' class='group' style='cursor: initial'><span class='icon-chevron-down' style='cursor: pointer;'></span><span class='bage' style='cursor: pointer;'>${obj.BettypeId} ${obj.Handicap}</span> <span class='bage' style='cursor: pointer;'>${obj.Score}</span> <span class='bage' style='cursor: pointer;'>Tickets: ${totalTicket}</span><button class="button -export"><span class="icon-export-excel"></span></button></td>`);
                         }
                     }                  
                     $(".button.-export", td).click(obj, exportGroupTickets);
@@ -971,7 +971,7 @@
         
         var url = common.modifyRelativeUrl("/MatchMonitor/GetArbitrageTickets");
         
-        var keyName = obj.Score + " " + obj.BettypeName + " " + obj.Handicap + " " + obj.GroupId + " " + obj.IP;
+        var keyName = obj.Score + " " + obj.BettypeId + " " + obj.Handicap + " " + obj.GroupId + " " + obj.IP;
         groupExpand = keyName;
         
         var criteria = {};

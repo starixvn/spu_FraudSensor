@@ -10,7 +10,7 @@
             {
                 string name = string.Empty;
                 name = LiveHomeScore.ToString() + " - " + LiveAwayScore.ToString();
-                name += " " + CachedRef.GetBettypeName(BetType) + " " + Handicap;
+                name += " " + BetType + " " + Handicap;
                 return name;
             }
         }
