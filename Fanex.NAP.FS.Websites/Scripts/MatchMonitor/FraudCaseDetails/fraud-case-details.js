@@ -224,9 +224,9 @@
                     },
                 });
 
-                $(".group-action").controlgroup();
+                //$(".group-action").controlgroup();
 
-                $(".group-action button").click(e => $(e.target).next().selectmenu("open"));
+                //$(".group-action button").click(e => $(e.target).next().selectmenu("open"));
             }
 
             if (loadingDone) {
@@ -911,8 +911,7 @@
     function loadReportArbitrage(criteria) {
         loadingDone = false;        
 
-        loadTicketGridArbitrage(criteria);
-        loadCustomerGridArbitrage(criteria);
+        loadTicketGridArbitrage(criteria);        
     };
 
     function loadTicketGridArbitrage(criteria) {
@@ -927,6 +926,8 @@
                 common.showLoading();
             },
             success: function (response) {
+                loadCustomerGridArbitrage(criteria);
+
                 if (response != null) {
                     renderTicketArbitrageGroups(response.Content);
                 }

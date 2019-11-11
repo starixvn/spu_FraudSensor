@@ -2,6 +2,7 @@
 {
     using Core.Service.Impl;
     using Fanex.NAP.Core.Web.Attribute;
+    using Fanex.NAP.FS.Library.Core.Consts;
     using Fanex.NAP.FS.Library.Criteria.MatchMonitor;
     using Fanex.NAP.FS.Library.ViewModels.MatchMonitor;
     using Fanex.NAP.FS.Library.ViewModels.MatchMonitor.FraudCaseDetails;
@@ -247,7 +248,20 @@
         {            
             criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
 
-            var data = _fraudCaseDetailService.GetArbitrageTickets(criteria, true).ToList();
+            var data = _fraudCaseDetailService.GetArbitrageTickets(criteria, true).ToList();            
+
+            var lstCustId = new List<long>();
+            foreach (var item in data.Select(a => a.Home.Select(t => t.CustId)))
+            {
+                lstCustId.AddRange(item);
+            }
+
+            foreach (var item in data.Select(a => a.Away.Select(t => t.CustId)))
+            {
+                lstCustId.AddRange(item);
+            }
+
+            SessionManager.Set(Consts.SESSION_LIST_CUSTOMER_ID, lstCustId.Distinct().ToList());
 
             return new JsonResult { Data = new { Content = data }, MaxJsonLength = Int32.MaxValue };
         }
@@ -263,6 +277,18 @@
             }
 
             var data = _fraudCaseDetailService.GetArbitrageCustomerDetails(criteria);
+
+            if (SessionManager.Get<List<long>>(Consts.SESSION_LIST_CUSTOMER_ID) != null)
+            {
+                var lstCustId = SessionManager.Get<List<long>>(Consts.SESSION_LIST_CUSTOMER_ID);
+               
+                var dataCombine = data.Join(lstCustId.AsEnumerable(),
+                                cusA => cusA.CustId,
+                                cusB => cusB,
+                                (cusA, cusB) => cusA);
+
+                return Json(dataCombine, JsonRequestBehavior.AllowGet);
+            }
 
             return Json(data, JsonRequestBehavior.AllowGet);
         }
@@ -289,9 +315,9 @@
         public ActionResult SaveFileArbitrageCustomers(GetArbitrageCustomerCriteria criteria)
         {
             List<long> lstCustId = null;
-            if (SessionManager.Get<List<long>>("ListCustId") != null && criteria.IsByIPAndDevice)
+            if (SessionManager.Get<List<long>>(Consts.SESSION_LIST_CUSTOMER_ID) != null && criteria.IsByIPAndDevice)
             {
-                lstCustId = SessionManager.Get<List<long>>("ListCustId");
+                lstCustId = SessionManager.Get<List<long>>(Consts.SESSION_LIST_CUSTOMER_ID);
             }
 
             var templatePath = Server.MapPath("~/App_Data/Excel Template/MatchMonitor/FraudCaseDetail/arbitrage.xlsx");
