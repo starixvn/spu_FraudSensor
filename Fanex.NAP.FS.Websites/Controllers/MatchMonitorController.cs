@@ -2,6 +2,7 @@
 {
     using Core.Service.Impl;
     using Fanex.NAP.Core.Web.Attribute;
+    using Fanex.NAP.FS.Library.Core.Consts;
     using Fanex.NAP.FS.Library.Criteria.MatchMonitor;
     using Fanex.NAP.FS.Library.ViewModels.MatchMonitor;
     using Fanex.NAP.FS.Library.ViewModels.MatchMonitor.FraudCaseDetails;
@@ -146,7 +147,10 @@
             {
                 ViewBag.SiteList = _fraudCaseDetailService.GetSites();
                 ViewBag.CurrencyList = _fraudCaseDetailService.GetAllCurrency(IsShowSpecialCurrencies);
-                ViewBag.EvidenceList = _fraudCaseDetailService.GetListEvidences();
+
+                var evidences = _fraudCaseDetailService.GetListEvidences();
+                ViewBag.EvidenceList = evidences;
+                ViewBag.OtherEvidenceCodes = evidences.Where(e => e.IsOther).Select(e => e.EvidenceCode).Join();
             }
 
             return View("FraudCaseDetails/Index", model);
@@ -241,10 +245,10 @@
 
         [HttpPost]
         public ActionResult GetArbitrageTicketsGroupSummary(GetArbitrageTicketCriteria criteria)
-        {
-            var data = new List<ArbitrageGroupTicketList>();
+        {            
             criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
-            data = _fraudCaseDetailService.GetArbitrageTickets(criteria, true).ToList();
+
+            var data = _fraudCaseDetailService.GetArbitrageTickets(criteria, true).ToList();            
 
             var lstCustId = new List<long>();
             foreach (var item in data.Select(a => a.Home.Select(t => t.CustId)))
@@ -257,7 +261,7 @@
                 lstCustId.AddRange(item);
             }
 
-            SessionManager.Set("ListCustId", lstCustId.Distinct().ToList());
+            SessionManager.Set(Consts.SESSION_LIST_CUSTOMER_ID, lstCustId.Distinct().ToList());
 
             return new JsonResult { Data = new { Content = data }, MaxJsonLength = Int32.MaxValue };
         }
@@ -266,6 +270,7 @@
         public JsonResult GetFraudCaseArbitrageCustomerDetails(GetArbitrageCustomerCriteria criteria)
         {
             criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
+
             if (criteria.IsOnlyCN88)
             {
                 criteria.Site = "CN88";
@@ -273,10 +278,16 @@
 
             var data = _fraudCaseDetailService.GetArbitrageCustomerDetails(criteria);
 
-            if (SessionManager.Get<List<long>>("ListCustId") != null)
+            if (SessionManager.Get<List<long>>(Consts.SESSION_LIST_CUSTOMER_ID) != null)
             {
-                var lstCustId = SessionManager.Get<List<long>>("ListCustId");
-                data = data.Where(a => lstCustId.Contains(a.CustId));
+                var lstCustId = SessionManager.Get<List<long>>(Consts.SESSION_LIST_CUSTOMER_ID);
+               
+                var dataCombine = data.Join(lstCustId.AsEnumerable(),
+                                cusA => cusA.CustId,
+                                cusB => cusB,
+                                (cusA, cusB) => cusA);
+
+                return Json(dataCombine, JsonRequestBehavior.AllowGet);
             }
 
             return Json(data, JsonRequestBehavior.AllowGet);
@@ -304,9 +315,9 @@
         public ActionResult SaveFileArbitrageCustomers(GetArbitrageCustomerCriteria criteria)
         {
             List<long> lstCustId = null;
-            if (SessionManager.Get<List<long>>("ListCustId") != null && criteria.IsByIPAndDevice)
+            if (SessionManager.Get<List<long>>(Consts.SESSION_LIST_CUSTOMER_ID) != null && criteria.IsByIPAndDevice)
             {
-                lstCustId = SessionManager.Get<List<long>>("ListCustId");
+                lstCustId = SessionManager.Get<List<long>>(Consts.SESSION_LIST_CUSTOMER_ID);
             }
 
             var templatePath = Server.MapPath("~/App_Data/Excel Template/MatchMonitor/FraudCaseDetail/arbitrage.xlsx");
@@ -336,7 +347,7 @@
 
             // get Evidence name
             string strCode = string.Empty;
-            var otherEvidenceCode = AppSettings.Get("FPS_GET_OTHER_EVIDENCES");
+            var otherEvidenceCode = criteria.OtherEvidenceCodes;
             if (otherEvidenceCode != null && criteria.EvidenceCodeList != null)
             {
                 strCode = criteria.EvidenceCodeList;
@@ -369,7 +380,7 @@
 
             return Json(data, JsonRequestBehavior.AllowGet);
         }
-        #endregion Arbitrage       
+        #endregion Arbitrage
 
     }
 }

@@ -3,6 +3,7 @@
     using Core.BaseClasses;
     using Fanex.BetList.Core.Builder;
     using Fanex.BetList.Core.TicketHelper;
+    using Fanex.NAP.FS.Library.Core.Consts;
     using Fanex.Data;
     using Fanex.NAP.FS.Library.Core.ExportExcel;
     using Fanex.NAP.FS.Library.Core.Helpers;
@@ -148,7 +149,6 @@
 
             return tsk.Where(t => t.Result != null).SelectMany(t => t.Result);
         }
-
 
         public byte[] ExportExcel(int matchId, int fraudCaseId, DateTime eventDate, string templatePath, bool isShowSpecialCurrencies)
         {
@@ -379,7 +379,6 @@
         public IEnumerable<FlaggedAccountTicket> GetFlaggedAccountTickets(FlaggedAccountCriteria criteria)
         {
             var isBettypeOther = false;
-            var otherEvidenceCodes = AppSettings.Get("FPS_GET_OTHER_EVIDENCES");
 
             if (criteria.Bettype == 0)
             {
@@ -391,7 +390,7 @@
             rawTickets = isBettypeOther ? rawTickets.Where(t => !(new List<int> { 1, 3, 7, 8 }).Contains(t.BetTypeId)) : rawTickets;
 
             string siteList = criteria.Sites != "All" ? criteria.Sites : null;
-            string evidenceList = CheckCriteriaEvidenceOthers(criteria.EvidenceCodeList, otherEvidenceCodes);
+            string evidenceList = CheckCriteriaEvidenceOthers(criteria.EvidenceCodeList, criteria.OtherEvidenceCodes);
 
             var custOfSites = FilterCustomersBySites(rawTickets, siteList);
 
@@ -402,7 +401,7 @@
 
             var custOfEvidences = GetCustomersEvidencesFromMS(custOfSites, evidenceList);
 
-            if (criteria.EvidenceCodeList != null && criteria.EvidenceCodeList.Contains(otherEvidenceCodes))
+            if (criteria.EvidenceCodeList != null && criteria.EvidenceCodeList.Contains(criteria.OtherEvidenceCodes))
             {
                 return FilterFlaggedAccountTicketsOtherEvidence(rawTickets, custOfSites, custOfEvidences, criteria);
             }
@@ -414,18 +413,14 @@
         {
             var urlCustSites = AppSettings.Get("FPS_WEBAPI_CUSTOMER_SUBSCRIBER");
 
-            Logger.Log.Info("Call [FPS_WEBAPI_CUSTOMER_SUBSCRIBER] - Start");
-
             var customersBySites = rawTickets.Select(t => t.CustId).Distinct().Chunk(500)
                                     .Select(q => ApiHelper.Post<IEnumerable<CustomerSubcriber>>(urlCustSites, new CustomerSubcriberList { CustIds = string.Join(",", q), Subscribers = sites }))
                                     .ToArray();
 
-            Task.WaitAll(customersBySites);
-
-            Logger.Log.Info("Call [FPS_WEBAPI_CUSTOMER_SUBSCRIBER] - End");
+            Task.WhenAll(customersBySites);
 
             return customersBySites.SelectMany(t => t.Result);
-        }
+        }        
 
         private static IEnumerable<CustomerEvidence> GetCustomersEvidencesFromMS(IEnumerable<CustomerSubcriber> customerBySites, string evidenceList)
         {
@@ -434,7 +429,7 @@
             var customerByEvidences = customerBySites.Select(c => c.CustId).Distinct().Chunk(500)
                                        .Select(q => ApiHelper.Post<IEnumerable<CustomerEvidence>>(urlCustEvidences, new CustomerEvidenceList { CustIdList = string.Join(",", q), EvidenceCodeList = evidenceList }))
                                        .ToArray();
-            Task.WaitAll(customerByEvidences);
+            Task.WhenAll(customerByEvidences);
 
             return customerByEvidences.SelectMany(t => t.Result);
         }
@@ -450,13 +445,13 @@
                 "reject"
             };
 
-            // fiter by Sites
+            // fitter by Sites
             var custIds = custSubcribers.Select(c => c.CustId);
             var subcriberDict = custSubcribers.ToLookup(c => c.CustId, c => c.SubscriberName);
             Func<long, bool> conditionSubcriber = s => custIds.Contains((int)s);
 
             // filter by Evidences
-            var evidenceDict = evidences.ToLookup(c => c.CustId, c => c.EvidenceCode + "-" + c.EvidenceName);
+            var evidenceDict = evidences.ToLookup(c => c.CustId, c => c.EvidenceCodeForDisplay + "-" + c.EvidenceName);
             var evidenceExtract = evidences.Where(c => !criteria.EvidenceCodeList.Contains(c.EvidenceCode));
             var lstEvidenceExtract = evidenceExtract.Select(c => (long)c.CustId).ToList();
 
@@ -512,13 +507,13 @@
                 "reject"
             };
 
-            // fiter by Sites
+            // fitter by Sites
             var custIds = custSubcribers.Select(c => c.CustId);
             var subcriberDict = custSubcribers.ToLookup(c => c.CustId, c => c.SubscriberName);
             Func<long, bool> conditionSubcriber = s => custIds.Contains((int)s);
 
             // filter by Evidences
-            var evidenceDict = evidences.ToLookup(c => c.CustId, c => c.EvidenceCode + "-" + c.EvidenceName);
+            var evidenceDict = evidences.ToLookup(c => c.CustId, c => c.EvidenceCodeForDisplay + "-" + c.EvidenceName);
             var listEvidenceByCus = evidences.Select(c => (long)c.CustId).ToList();
             Func<long, bool> conditionExtract = f => 1.Equals(1);
 
@@ -581,13 +576,11 @@
 
             var custsByBettype = FilterCustomerByBetType(rawCustomers, isBettypeOther);
 
-            return FilterCustomerDetail(custsByBettype, criteria.Sites, criteria.EvidenceCodeList);
-        }
+            return FilterCustomerDetail(custsByBettype, criteria.Sites, criteria.EvidenceCodeList, criteria.OtherEvidenceCodes);
+        }       
 
-        private IEnumerable<CustomerDetails> FilterCustomerDetail(IEnumerable<CustInfo> custInfo, string sites, string evidenceCodes)
+        private IEnumerable<CustomerDetails> FilterCustomerDetail(IEnumerable<CustInfo> custInfo, string sites, string evidenceCodes, string otherEvidenceCode)
         {
-            var otherEvidenceCode = AppSettings.Get("FPS_GET_OTHER_EVIDENCES");
-
             var custsOfSites = GetCustsOfSites(custInfo.Select(c => c.CustId), sites);
 
             if (!custsOfSites.Any())
@@ -595,7 +588,7 @@
                 return new List<CustomerDetails>();
             }
 
-            var custEvidence = GetCustOfEvidences(custsOfSites.Select(c => c.CustId), evidenceCodes);
+            var custEvidence = GetCustOfEvidences(custsOfSites.Select(c => c.CustId), evidenceCodes, otherEvidenceCode);
 
             if (evidenceCodes != null && evidenceCodes.Contains(otherEvidenceCode))
             {
@@ -603,7 +596,7 @@
             }
 
             return FilterCustomerDetail(custInfo, custsOfSites, custEvidence, string.IsNullOrEmpty(evidenceCodes));
-        }
+        }        
 
         private IEnumerable<CustInfo> FilterCustomerByBetType(IEnumerable<CustInfo> custInfo, bool isBetTypeOthers)
         {
@@ -637,27 +630,20 @@
         {
             var urlCustSites = AppSettings.Get("FPS_WEBAPI_CUSTOMER_SUBSCRIBER");
 
-            Logger.Log.Info("FS: call [FPS_WEBAPI_CUSTOMER_SUBSCRIBER] - start");
-
             var custOfSites = custIds.Chunk(500)
                               .Select(q => ApiHelper.Post<IEnumerable<CustomerSubcriber>>(urlCustSites, new CustomerSubcriberList { CustIds = string.Join(",", q), Subscribers = sites != "All" ? sites : null }))
                               .ToArray();
 
-            Task.WaitAll(custOfSites);
-
-            Logger.Log.Info("FS: call [FPS_WEBAPI_CUSTOMER_SUBSCRIBER] - end");
+            Task.WhenAll(custOfSites);
 
             return custOfSites.SelectMany(t => t.Result);
         }
 
-        private IEnumerable<CustomerEvidence> GetCustOfEvidences(IEnumerable<int> custIds, string evidenceCodeList)
+        private IEnumerable<CustomerEvidence> GetCustOfEvidences(IEnumerable<int> custIds, string evidenceCodeList, string otherEvidenceCode)
         {
             var url = AppSettings.Get("FPS_WEBAPI_GET_CUSTOMER_EVIDENCE");
-            var otherEvidenceCode = AppSettings.Get("FPS_GET_OTHER_EVIDENCES");
 
-            var evidenceCodes = CheckCriteriaEvidenceOthers(evidenceCodeList, otherEvidenceCode);
-
-            Logger.Log.Info("FS: call [FPS_WEBAPI_GET_CUSTOMER_EVIDENCE] - start");
+            var evidenceCodes = CheckCriteriaEvidenceOthers(evidenceCodeList, otherEvidenceCode);          
 
             var tsk = custIds.Distinct().Chunk(500).Select(a => new CustomerEvidenceList
             {
@@ -665,9 +651,7 @@
                 EvidenceCodeList = evidenceCodes
             }).Select(p => ApiHelper.Post<IEnumerable<CustomerEvidence>>(url, p)).ToArray();
 
-            Task.WaitAll(tsk);
-
-            Logger.Log.Info("FS: call [FPS_WEBAPI_GET_CUSTOMER_EVIDENCE] - end");
+            Task.WhenAll(tsk);
 
             return tsk.Where(t => t.Result != null).SelectMany(t => t.Result);
         }
@@ -705,7 +689,7 @@
 
                 // Evidence name
                 string strCode = string.Empty;
-                var otherEvidenceCode = AppSettings.Get("FPS_GET_OTHER_EVIDENCES");
+                var otherEvidenceCode = filter.OtherEvidenceCodes;
                 if (otherEvidenceCode != null && filter.EvidenceCodeList != null)
                 {
                     strCode = filter.EvidenceCodeList;
@@ -742,12 +726,7 @@
 
         private static string CheckCriteriaEvidenceOthers(string code, string otherEvidenceCodes)
         {
-            if (code == null || code.Contains(otherEvidenceCodes))
-            {
-                return null;
-            }
-
-            return code;
+            return (code == null || code.Contains(otherEvidenceCodes)) ? null : code;
         }
 
         #endregion
@@ -757,12 +736,12 @@
         {
             var rawCustomers = DataService.GetData<CustInfo>(criteria);
 
-            return FilterCustomerDetail(rawCustomers, criteria.Sites, criteria.EvidenceCodeList);
+            return FilterCustomerDetail(rawCustomers, criteria.Sites, criteria.EvidenceCodeList, criteria.OtherEvidenceCodes);
         }
 
         private IEnumerable<CustomerDetails> FilterCustomerDetailOtherEvidences(IEnumerable<CustInfo> custInfo, IEnumerable<CustomerSubcriber> custSubcribers, IEnumerable<CustomerEvidence> custEvidence, string lstEvidenceSelected)
         {
-            // fiter by Sites
+            // filter by Sites
             var custIds = custSubcribers.Select(c => c.CustId);
             Func<long, bool> conditionSubcriber = s => custIds.Contains((int)s);
 
@@ -787,7 +766,7 @@
                        TotalWinLoss = (double)info.TotalWinlost,
                        TotalStake = (double)info.TotalStake,
                        Tickets = info.NoOfTickets,
-                       Evidence = string.Join(", ", evidence.Distinct().Select(e => e.EvidenceCode + "-" + e.EvidenceName)),
+                       Evidence = string.Join(", ", evidence.Distinct().Select(e => e.EvidenceCodeForDisplay + "-" + e.EvidenceName)),
                        AssociatedAccounts = totalAssociation.ContainsKey(info.CustId) ? totalAssociation[info.CustId] : 0,
                        CurrencyName = info.CurrencyName
                    }).OrderBy(c => c.Member);
@@ -797,7 +776,7 @@
 
         private IEnumerable<CustomerDetails> FilterCustomerDetail(IEnumerable<CustInfo> custInfo, IEnumerable<CustomerSubcriber> custSubcribers, IEnumerable<CustomerEvidence> custEvidence, bool isAllEvidence)
         {
-            // fiter by Sites
+            // filter by Sites
             var custIds = custSubcribers.Select(c => c.CustId);
             Func<long, bool> conditionSubcriber = s => custIds.Contains((int)s);
 
@@ -826,7 +805,7 @@
                        TotalWinLoss = (double)info.TotalWinlost,
                        TotalStake = (double)info.TotalStake,
                        Tickets = info.NoOfTickets,
-                       Evidence = string.Join(", ", evidence.Distinct().Select(e => e.EvidenceCode + "-" + e.EvidenceName)),
+                       Evidence = string.Join(", ", evidence.Distinct().Select(e => e.EvidenceCodeForDisplay + "-" + e.EvidenceName)),
                        AssociatedAccounts = totalAssociation.ContainsKey(info.CustId) ? totalAssociation[info.CustId] : 0,
                        CurrencyName = info.CurrencyName
                    }).OrderBy(c => c.Member);
@@ -836,8 +815,7 @@
 
         public IEnumerable<ArbitrageGroupTicketList> GetArbitrageTickets(GetArbitrageTicketCriteria criteria, bool isSummary)
         {
-            IEnumerable<ArbitrageGroupTicketList> ticketDetails = new List<ArbitrageGroupTicketList>();
-            var otherEvidenceCodes = AppSettings.Get("FPS_GET_OTHER_EVIDENCES");
+            IEnumerable<ArbitrageGroupTicketList> ticketDetails = new List<ArbitrageGroupTicketList>();            
 
             if (criteria.IsOnlyCN88)
             {
@@ -850,10 +828,10 @@
 
             if (custOfSites.Any())
             {
-                var evidenceCodes = CheckCriteriaEvidenceOthers(criteria.EvidenceCodeList, otherEvidenceCodes);
+                var evidenceCodes = CheckCriteriaEvidenceOthers(criteria.EvidenceCodeList, criteria.OtherEvidenceCodes);
                 var custOfEvidences = GetCustomersEvidencesFromMS(custOfSites, evidenceCodes);
 
-                if (criteria.EvidenceCodeList != null && criteria.EvidenceCodeList.Contains(otherEvidenceCodes))
+                if (criteria.EvidenceCodeList != null && criteria.EvidenceCodeList.Contains(criteria.OtherEvidenceCodes))
                 {
                     ticketDetails = FilterArbitrageTicketsEvidenceOthers(rawTickets, custOfSites, custOfEvidences, criteria.EvidenceCodeList, criteria.IsByIPAndDevice, criteria.IsOnlyCN88);
                     if (!isSummary)
@@ -887,13 +865,13 @@
             IEnumerable<CustomerSubcriber> custSubcribers,
             IEnumerable<CustomerEvidence> evidences, string lstEvidenceSelected, bool isByIPAndDevice, bool isOnlyCN88)
         {
-            // fiter by Sites
+            // filter by Sites
             var custIds = custSubcribers.Select(c => c.CustId);
             var subcriberDict = custSubcribers.ToLookup(c => c.CustId, c => c.SubscriberName);
             Func<long, bool> conditionSubcriber = s => custIds.Contains((int)s);
 
             // filter by Evidences
-            var evidenceDict = evidences.ToLookup(c => c.CustId, c => c.EvidenceCode + "-" + c.EvidenceName);
+            var evidenceDict = evidences.ToLookup(c => c.CustId, c => c.EvidenceCodeForDisplay + "-" + c.EvidenceName);
             var evidenceExtract = evidences.Where(c => !lstEvidenceSelected.Contains(c.EvidenceCode));
             var lstEvidenceExtract = evidenceExtract.Select(c => (long)c.CustId).ToList();
 
@@ -911,6 +889,7 @@
                 .Where(c => conditionExtract(c.CustId) && conditionSubcriber(c.CustId) && !c.IsIPFraud)
                 .GroupBy(t => Tuple.Create(t.BetTypeId, t.Handicap1 - t.Handicap2, t.LiveHomeScore, t.LiveAwayScore, t.GraphDBGroupId, t.IP), t => new ArbitrageTicket
                 {
+                    CustId = t.CustId,
                     BetId = t.TransId,
                     Currency = t.CurrencyName,
                     DangerousLevel = t.DangerLevel,
@@ -957,6 +936,7 @@
                 .Where(c => conditionExtract(c.CustId) && conditionSubcriber(c.CustId))
                 .GroupBy(t => Tuple.Create(t.BetTypeId, t.Handicap1 - t.Handicap2, t.LiveHomeScore, t.LiveAwayScore, t.GroupId), t => new ArbitrageTicket
                 {
+                    CustId = t.CustId,
                     BetId = t.TransId,
                     Currency = t.CurrencyName,
                     DangerousLevel = t.DangerLevel,
@@ -1004,13 +984,13 @@
             IEnumerable<CustomerSubcriber> custSubcribers, IEnumerable<CustomerEvidence> evidences,
             bool isAllEvidence, bool isByIPAndDevice, bool isOnlyCN88)
         {
-            // fiter by Sites
+            // filter by Sites
             var custIds = custSubcribers.Select(c => c.CustId);
             var subcriberDict = custSubcribers.ToLookup(c => c.CustId, c => c.SubscriberName);
             Func<long, bool> conditionSubcriber = s => custIds.Contains((int)s);
 
             // filter by Evidences
-            var evidenceDict = evidences.ToLookup(c => c.CustId, c => c.EvidenceCode + "-" + c.EvidenceName);
+            var evidenceDict = evidences.ToLookup(c => c.CustId, c => c.EvidenceCodeForDisplay + "-" + c.EvidenceName);
             var listEvidenceByCus = evidences.Select(c => (long)c.CustId).ToList();
             Func<long, bool> conditionExtract = f => 1.Equals(1);
 
@@ -1115,13 +1095,25 @@
             }
 
             return data;
-        }
+        }        
 
         public IEnumerable<Evidence> GetListEvidences()
         {
-            string otherEvidenceCode = AppSettings.Get("FPS_GET_OTHER_EVIDENCES");
-            var lstEvidences = new List<Evidence>();
+            var allEvidences = GetAllEvidencesFromAPI();
+            var mostUsedEvidences = GetMostUsedEvidences();
+            var mostUsedEvidenceCodes = mostUsedEvidences.Select(e => e.EvidenceCode);
+            var otherEvidenceCodes = allEvidences.AsEnumerable()
+                                .Where(e => !mostUsedEvidenceCodes.Contains(e.EvidenceCode))
+                                .Select(e => e.EvidenceCode).Join();
 
+            mostUsedEvidences.Add(new Evidence { EvidenceCode = otherEvidenceCodes, EvidenceName = "Others", IsOther = true });
+
+            return mostUsedEvidences;
+        }
+        
+        private List<Evidence> GetMostUsedEvidences()
+        {
+            var lstEvidences = new List<Evidence>();
             lstEvidences.Add(new Evidence { EvidenceCode = "5.1", EvidenceName = "5.1 - VIP Smart Punter" });
             lstEvidences.Add(new Evidence { EvidenceCode = "5.2", EvidenceName = "5.2 - Smart Punter" });
             lstEvidences.Add(new Evidence { EvidenceCode = "5.3", EvidenceName = "5.3 - 8RM Accounts" });
@@ -1152,9 +1144,19 @@
             lstEvidences.Add(new Evidence { EvidenceCode = "7.8", EvidenceName = "7.8 - Smart Punter - E-Sport" });
             lstEvidences.Add(new Evidence { EvidenceCode = "7.9", EvidenceName = "7.9 - Abnormal - Motorsports and Cricket" });
             lstEvidences.Add(new Evidence { EvidenceCode = "7.10", EvidenceName = "7.10 - Abnormal - Badminton" });
-            lstEvidences.Add(new Evidence { EvidenceCode = otherEvidenceCode, EvidenceName = "Others" });
 
             return lstEvidences;
+        }
+
+        private static IEnumerable<Evidence> GetAllEvidencesFromAPI()
+        {
+            var url = AppSettings.Get(Consts.FPS_WEBAPI_GET_ALL_EVIDENCE);
+
+            var evidences = ApiHelper.Post<IEnumerable<Evidence>>(url, null);
+
+            Task.WaitAll(evidences);
+
+            return evidences.Result;
         }
 
         public string ReplaceEvidences(string evidences)

@@ -11,5 +11,6 @@
         public const string FPS_EVIDENCE_CODE_SEIZE_BET_99_100 = "99.100";
         public const string FPS_EVIDENCE_CODE_SEIZE_BET_100 = "100";
         public const string FPS_EVIDENCE_CODE_NONE = "None";
+        public const string SESSION_LIST_CUSTOMER_ID = "ListCustId";
     }
 }

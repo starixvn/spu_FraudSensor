@@ -214,17 +214,18 @@
     <script src="~/Scripts/MultipleSelect/jquery.multiselect.filter.js"></script>
     <script src="~/Scripts/MultipleSelect/jquery.multiselect.js"></script>
     <script>
+        var isArbitrage = @(Convert.ToInt32((FraudCaseId)Model.FraudCaseId == FraudCaseId.Arbitrage));
+        var isFlaggedAccount = @(Convert.ToInt32((FraudCaseId)Model.FraudCaseId == FraudCaseId.FlaggedAccount));
+
         var parameters =
             {
                 fraudCaseId: @Model.FraudCaseId,
                 matchId: @Model.MatchId,
-                eventDate: '@Model.EventDate.ToShortDateString()'
+                eventDate: '@Model.EventDate.ToShortDateString()',
+                otherEvidenceCodes: isArbitrage || isFlaggedAccount ? '@ViewBag.OtherEvidenceCodes' : ''
             };
 
         var bu_date = "@ViewBag.BUDate.ToString("MMM dd, yyyy")";
-
-        var isArbitrage = @(Convert.ToInt32((FraudCaseId)Model.FraudCaseId == FraudCaseId.Arbitrage));
-        var isFlaggedAccount = @(Convert.ToInt32((FraudCaseId)Model.FraudCaseId == FraudCaseId.FlaggedAccount));
 
         //datetime picker
         $(".date-time-picker").datetimepicker({
