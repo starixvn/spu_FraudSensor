@@ -380,7 +380,7 @@
 
             return Json(data, JsonRequestBehavior.AllowGet);
         }
-        #endregion Arbitrage       
+        #endregion Arbitrage
 
     }
 }

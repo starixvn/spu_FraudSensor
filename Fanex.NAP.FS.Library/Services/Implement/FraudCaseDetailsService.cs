@@ -916,7 +916,8 @@
                         var tmp = g.OrderBy(t => t.RawTransDate).ThenBy(t => t.Username).ToList();
                         return new ArbitrageGroupTicketList
                         {
-                            BettypeId = g.Key.Item1,                         
+                            BettypeId = g.Key.Item1,
+                            BettypeName = CachedRef.GetBettypeName(g.Key.Item1),
                             Away = tmp.Where(t => t.BetTeam == "a"),
                             Home = tmp.Where(t => t.BetTeam == "h"),
                             Handicap = g.Key.Item2,
@@ -962,7 +963,8 @@
                         var tmp = g.OrderBy(t => t.RawTransDate).ThenBy(t => t.Username).ToList();
                         return new ArbitrageGroupTicketList
                         {
-                            BettypeId = g.Key.Item1,                            
+                            BettypeId = g.Key.Item1,
+                            BettypeName = CachedRef.GetBettypeName(g.Key.Item1),
                             Away = tmp.Where(t => t.BetTeam == "a"),
                             Home = tmp.Where(t => t.BetTeam == "h"),
                             Handicap = g.Key.Item2,
@@ -1034,7 +1036,8 @@
                             var tmp = g.OrderBy(t => t.RawTransDate).ThenBy(t => t.Username).ToList();
                             return new ArbitrageGroupTicketList
                             {
-                                BettypeId = g.Key.Item1,                            
+                                BettypeId = g.Key.Item1,
+                                BettypeName = CachedRef.GetBettypeName(g.Key.Item1),
                                 Away = tmp.Where(t => t.BetTeam == "a"),
                                 Home = tmp.Where(t => t.BetTeam == "h"),
                                 Handicap = g.Key.Item2,
@@ -1078,7 +1081,8 @@
                             var tmp = g.OrderBy(t => t.RawTransDate).ThenBy(t => t.Username).ToList();
                             return new ArbitrageGroupTicketList
                             {
-                                BettypeId = g.Key.Item1,                          
+                                BettypeId = g.Key.Item1,
+                                BettypeName = CachedRef.GetBettypeName(g.Key.Item1),
                                 Away = tmp.Where(t => t.BetTeam == "a"),
                                 Home = tmp.Where(t => t.BetTeam == "h"),
                                 Handicap = g.Key.Item2,
