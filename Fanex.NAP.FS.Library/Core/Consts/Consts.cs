@@ -11,7 +11,6 @@
         public const string FPS_EVIDENCE_CODE_SEIZE_BET_99_100 = "99.100";
         public const string FPS_EVIDENCE_CODE_SEIZE_BET_100 = "100";
         public const string FPS_EVIDENCE_CODE_NONE = "None";
-        public const string SESSION_LIST_CUSTOMER_ID = "ListCustId";
 
         public const string TICKET_STATUS_RUNNING = "running";
         public const string TICKET_STATUS_REJECT = "reject";
@@ -20,5 +19,7 @@
         public const string TICKET_BETTYPEGROUP_OTHERS = "Others";
 
         public const string EXPORTEXCEL_DATETIME_FORMAT = "yyyyMMdd";
+
+        public const string FRAUD_CASE_FILTER_ALL = "All";       
     }
 }

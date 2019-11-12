@@ -192,15 +192,14 @@
         var url = common.modifyRelativeUrl("/MatchMonitor/GetFraudCaseArbitrageCustomerDetails");
 
         $.post(url, criteria, function (json) {
-            $("#customers").text(`By Customers (${json.length})`);
-
-            if (json.length > 1000) {
-                json = [];
-                customer_grid.DataTable().clear().rows.add(json).draw();
+            if (json.length > 0 && typeof json[0].TotalCustomers !== "undefined") {
+                customer_grid.DataTable().clear().rows.add([]).draw();
+                $("#customers").text(`By Customers (${json[0].TotalCustomers})`);                
                 $(".dataTables_empty").text("Too much data. Export Excel file instead!").css("color", "red");
-            }
-            else {
+
+            } else {
                 customer_grid.DataTable().clear().rows.add(json).draw();
+                $("#customers").text(`By Customers (${json.length})`);                
 
                 $(".action").selectmenu({
                     classes: {
@@ -223,9 +222,7 @@
                         }
                     },
                 });
-
                 //$(".group-action").controlgroup();
-
                 //$(".group-action button").click(e => $(e.target).next().selectmenu("open"));
             }
 

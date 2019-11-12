@@ -450,6 +450,7 @@
     <Compile Include="ViewModels\MatchMonitor\FraudCaseDetails\ArbitrageTicketList.cs" />
     <Compile Include="ViewModels\MatchMonitor\FraudCaseDetails\AssociatedCustomer.cs" />
     <Compile Include="ViewModels\MatchMonitor\FraudCaseDetails\BettypeOrder.cs" />
+    <Compile Include="ViewModels\MatchMonitor\FraudCaseDetails\CustomerDetailsForMuchData.cs" />
     <Compile Include="ViewModels\MatchMonitor\FraudCaseDetails\CustomerDetails.cs" />
     <Compile Include="ViewModels\MatchMonitor\FraudCaseDetails\FlaggedAccountTicket.cs" />
     <Compile Include="ViewModels\MatchMonitor\FraudCaseDetails\MatchFraudCaseInfo.cs" />

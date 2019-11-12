@@ -5,6 +5,7 @@
     using Fanex.NAP.FS.Library.Core.Consts;
     using Fanex.NAP.FS.Library.Criteria.MatchMonitor;
     using Fanex.NAP.FS.Library.ViewModels.MatchMonitor;
+    using Fanex.NAP.FS.Library.ViewModels.MatchMonitor.FraudCaseDetails;
     using Fanex.NAP.FS.Service.Utilities;
     using Library.Core.Helpers;
     using Library.Criteria.MatchMonitor.FraudCaseDetails;
@@ -274,10 +275,24 @@
             {
                 var custIdList = SessionManager.Get<List<long>>(SessionCustomerList);
 
-                arbitrageCustomerDetails = arbitrageCustomerDetails.Join(custIdList.AsEnumerable(),
+                if (arbitrageCustomerDetails is List<CustomerDetailsForMuchData>)
+                {
+                    var arbitrageCustomerDetailsMuchData = arbitrageCustomerDetails as List<CustomerDetailsForMuchData>;
+                    var totalCustomersCombineWithTickets = arbitrageCustomerDetailsMuchData[0].CustIdList.Join(custIdList.AsEnumerable(),
+                                custA => custA,
+                                custB => custB,
+                                (custA, custB) => custA).Count();
+                    arbitrageCustomerDetailsMuchData[0].TotalCustomers = totalCustomersCombineWithTickets;
+
+                    return Json(arbitrageCustomerDetailsMuchData, JsonRequestBehavior.AllowGet);
+                }
+                else
+                {
+                    arbitrageCustomerDetails = arbitrageCustomerDetails.Join(custIdList.AsEnumerable(),
                                 custA => custA.CustId,
                                 custB => custB,
                                 (custA, custB) => custA);
+                }
             }
 
             return Json(arbitrageCustomerDetails, JsonRequestBehavior.AllowGet);

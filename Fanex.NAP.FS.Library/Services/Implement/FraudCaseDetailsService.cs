@@ -29,6 +29,8 @@
 
         public int mailingListId { get; set; }
 
+        private const int maxLengthRowsDisplay = 1000;
+
         public HashSet<string> ticketStatuses { get; set; }
 
         public FraudCaseDetailsService(int env, int mailId)
@@ -584,7 +586,7 @@
             var urlCustSites = AppSettings.Get("FPS_WEBAPI_CUSTOMER_SUBSCRIBER");
 
             var custOfSites = custIds.Chunk(500)
-                              .Select(q => ApiHelper.Post<IEnumerable<CustomerSubcriber>>(urlCustSites, new CustomerSubcriberList { CustIds = string.Join(",", q), Subscribers = sites != "All" ? sites : null }))
+                              .Select(q => ApiHelper.Post<IEnumerable<CustomerSubcriber>>(urlCustSites, new CustomerSubcriberList { CustIds = string.Join(",", q), Subscribers = sites != Consts.FRAUD_CASE_FILTER_ALL ? sites : null }))
                               .ToArray();
 
             Task.WhenAll(custOfSites);
@@ -686,9 +688,33 @@
         #region Arbitrage
         public IEnumerable<CustomerDetails> GetArbitrageCustomerDetails(GetArbitrageCustomerCriteria criteria)
         {
+            return GetArbitrageCustomerDetails(criteria, false);
+        }
+
+        private IEnumerable<CustomerDetails> GetArbitrageCustomerDetails(GetArbitrageCustomerCriteria criteria, bool isExportFile)
+        {
             var rawCustomers = DataService.GetData<CustInfo>(criteria);
 
+            if (criteria.Sites == Consts.FRAUD_CASE_FILTER_ALL 
+                && ReplaceEvidences(criteria.EvidenceCodeList) == Consts.FRAUD_CASE_FILTER_ALL
+                && rawCustomers.Count() > maxLengthRowsDisplay 
+                && !isExportFile)
+            {
+                return GetCustomerDetailsForMuchData(rawCustomers);
+            }
+
             return FilterCustomerDetail(rawCustomers, criteria.Sites, criteria.EvidenceCodeList, criteria.OtherEvidenceCodes);
+        }
+
+        private List<CustomerDetailsForMuchData> GetCustomerDetailsForMuchData(IEnumerable<CustInfo> custInfo)
+        {
+            var customers = new List<CustomerDetailsForMuchData>();
+            var totalCustomers = custInfo.Count();
+            var custIdList = custInfo.Select(cust => cust.CustId);
+
+            customers.Add(new CustomerDetailsForMuchData { TotalCustomers = totalCustomers, CustIdList = custIdList });
+
+            return customers;
         }
 
         private IEnumerable<CustomerDetails> FilterCustomerDetailEvidenceOthers(
@@ -709,7 +735,6 @@
 
             IEnumerable<CustomerDetails> custDetails = custInfo
                    .Where(c => filterByEvidences(c.CustId) && filterBySites(c.CustId))
-                   .Where(c => filterByEvidences(c.CustId))
                    .GroupJoin(
                    distinctedCustEvidence,
                    info => info.CustId,
@@ -1012,14 +1037,15 @@
         {
             if (!string.IsNullOrEmpty(evidences))
             {
-                int totalAll = GetListEvidences().Count();
-                string[] lstCode = evidences.Split('/');
+                int totalAll = GetAllEvidencesFromAPI().Count();
+                string[] lstCode = evidences.Split(',');
 
                 if (lstCode.Count() == totalAll)
                 {
-                    return "All";
+                    return Consts.FRAUD_CASE_FILTER_ALL;
                 }
             }
+
             return evidences;
         }
 
@@ -1074,7 +1100,8 @@
             var legend = GetMatchInfo(criteria.MatchId, (int)FraudCaseId.Arbitrage, criteria.EventDate);
             legend.Filter = array;
 
-            var customers = GetArbitrageCustomerDetails(criteria);
+            var customers = GetArbitrageCustomerDetails(criteria, true);
+
             if (listCustIdFromTickets != null)
             {
                 customers = customers.Where(c => listCustIdFromTickets.Contains(c.CustId));
