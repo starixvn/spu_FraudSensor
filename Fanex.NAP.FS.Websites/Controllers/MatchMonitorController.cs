@@ -273,7 +273,11 @@
             if (SessionManager.Get<List<long>>(SessionCustomerList) != null)
             {
                 var custIdList = SessionManager.Get<List<long>>(SessionCustomerList);
-                arbitrageCustomerDetails = arbitrageCustomerDetails.Where(a => custIdList.Contains(a.CustId));
+
+                arbitrageCustomerDetails = arbitrageCustomerDetails.Join(custIdList.AsEnumerable(),
+                                custA => custA.CustId,
+                                custB => custB,
+                                (custA, custB) => custA);
             }
 
             return Json(arbitrageCustomerDetails, JsonRequestBehavior.AllowGet);

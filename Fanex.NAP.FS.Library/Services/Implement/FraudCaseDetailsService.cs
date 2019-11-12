@@ -413,7 +413,7 @@
             bool filterBySites(long s) => custIds.Contains((int)s);
 
             // filter by Evidences
-            var customerEvidenceDict = customerEvidences.ToLookup(c => c.CustId, c => c.EvidenceCode + "-" + c.EvidenceName);
+            var customerEvidenceDict = customerEvidences.ToLookup(c => c.CustId, c => c.EvidenceCodeForDisplay + "-" + c.EvidenceName);
             var customersBySelectedEvidences = customerEvidences.Where(c => !criteria.EvidenceCodeList.Contains(c.EvidenceCode)).Select(c => (long)c.CustId).ToList();
             bool filterByEvidences(long e) => !customersBySelectedEvidences.Contains(e);
 
@@ -472,7 +472,7 @@
             bool filterBySites(long s) => custIds.Contains((int)s);
 
             // filter by Evidences
-            var customerEvidenceDict = customerEvidences.ToLookup(c => c.CustId, c => c.EvidenceCode + "-" + c.EvidenceName);
+            var customerEvidenceDict = customerEvidences.ToLookup(c => c.CustId, c => c.EvidenceCodeForDisplay + "-" + c.EvidenceName);
             var customersBySelectedEvidences = customerEvidences.Select(c => (long)c.CustId).ToList();
             bool filterByEvidences(long e) => (!string.IsNullOrEmpty(criteria.EvidenceCodeList)) ? 1.Equals(1) : customersBySelectedEvidences.Contains(e);
 
@@ -721,7 +721,7 @@
                        TotalWinLoss = (double)info.TotalWinlost,
                        TotalStake = (double)info.TotalStake,
                        Tickets = info.NoOfTickets,
-                       Evidence = string.Join(", ", evidence.Distinct().Select(e => e.EvidenceCode + "-" + e.EvidenceName)),
+                       Evidence = string.Join(", ", evidence.Distinct().Select(e => e.EvidenceCodeForDisplay + "-" + e.EvidenceName)),
                        AssociatedAccounts = totalAssociation.ContainsKey(info.CustId) ? totalAssociation[info.CustId] : 0,
                        CurrencyName = info.CurrencyName
                    }).OrderBy(c => c.Member);
@@ -755,7 +755,7 @@
                        TotalWinLoss = (double)info.TotalWinlost,
                        TotalStake = (double)info.TotalStake,
                        Tickets = info.NoOfTickets,
-                       Evidence = string.Join(", ", evidence.Distinct().Select(e => e.EvidenceCode + "-" + e.EvidenceName)),
+                       Evidence = string.Join(", ", evidence.Distinct().Select(e => e.EvidenceCodeForDisplay + "-" + e.EvidenceName)),
                        AssociatedAccounts = totalAssociation.ContainsKey(info.CustId) ? totalAssociation[info.CustId] : 0,
                        CurrencyName = info.CurrencyName
                    }).OrderBy(c => c.Member);
@@ -910,7 +910,7 @@
             bool filterBySites(long s) => custIds.Contains((int)s);
 
             // filter by Evidences
-            var customerEvidenceDict = custEvidences.ToLookup(c => c.CustId, c => c.EvidenceCode + "-" + c.EvidenceName);
+            var customerEvidenceDict = custEvidences.ToLookup(c => c.CustId, c => c.EvidenceCodeForDisplay + "-" + c.EvidenceName);
             var customersBySelectedEvidences = custEvidences.Where(c => !selectedEvidences.Contains(c.EvidenceCode)).Select(c => (long)c.CustId).ToList();
             bool filterByEvidences(long e) => !customersBySelectedEvidences.Contains(e);
 
@@ -933,7 +933,7 @@
             bool filterBySites(long s) => custIds.Contains((int)s);
 
             // filter by Evidences
-            var customerEvidenceDict = custEvidences.ToLookup(c => c.CustId, c => c.EvidenceCode + "-" + c.EvidenceName);
+            var customerEvidenceDict = custEvidences.ToLookup(c => c.CustId, c => c.EvidenceCodeForDisplay + "-" + c.EvidenceName);
             var allCustomers = custEvidences.Select(c => (long)c.CustId).ToList();
             bool filterByEvidences(long e) => isAllEvidences
                 ? 1.Equals(1)
@@ -952,7 +952,7 @@
             var mostUsedEvidences = GetMostUsedEvidences();
             var mostUsedEvidenceCodes = mostUsedEvidences.Select(e => e.EvidenceCode);
             var otherEvidenceCodes = allEvidences.AsEnumerable()
-                                .Where(e => !mostUsedEvidenceCodes.Equals(e.EvidenceCode))
+                                .Where(e => !mostUsedEvidenceCodes.Contains(e.EvidenceCode))
                                 .Select(e => e.EvidenceCode).Join();
 
             mostUsedEvidences.Add(new Evidence { EvidenceCode = otherEvidenceCodes, EvidenceName = Consts.TICKET_BETTYPEGROUP_OTHERS, IsOther = true });
