@@ -4,7 +4,7 @@
         customer_grid = $("#customer-tab table"),
         associated_accounts = $("#associated-accounts"),
         ticket_last_7_days = $("#tickets-last-7-days"),
-        ticket_by_ip = $("#ticket-by-ip");   
+        ticket_by_ip = $("#ticket-by-ip");
     var loadingDone = false;
 
     var from_date = $("#transDateFrom");
@@ -14,19 +14,19 @@
 
     var filter = {};
 
-    var totalTicket = 0;    
-    var arrGroupTicket = [];   
+    var totalTicket = 0;
+    var arrGroupTicket = [];
     var groupExpand = "";
     var groupExportExcel = 0;
     var savedCriteria = null;
 
-    from_date.datepicker({       
+    from_date.datepicker({
         changeMonth: true,
         changeYear: true,
         firstDay: 1,
         minDate: moment(`${moment().year() - 1}/${moment().subtract(10, "months").month()}/1`, "M dd, yy").toDate()
     }).datepicker("setDate", to_date.datepicker("getDate")).change(restrictToDate);
-   
+
     function restrictToDate() {
         var from_val = from_date.datepicker("getDate");
         to_date.datepicker("option", "minDate", from_val);
@@ -51,12 +51,12 @@
 
         $("#ddlEvidence").multiselect({
             menuWidth: 345,
-            menuHeight: 350            
+            menuHeight: 350
         }).multiselectfilter({
             width: 270,
             placeholder: ''
         });
-    };       
+    };
 
     function getBetType() {
         var url = common.modifyRelativeUrl('/MatchMonitor/GetBetTypes');
@@ -77,7 +77,7 @@
 
         $.get(url, parameters, function (json) {
             $("#scoreHDP").append("<option value=-1>All</option>");
-                     
+
             for (var i = 0; i < json.length; i++) {
                 $("#scoreHDP").append(`<option value='${json[i].KeyValue}'>${json[i].KeyName}</option>`);
             }
@@ -143,13 +143,13 @@
                 },
             });
 
-            $(".group-action").controlgroup();
+            //$(".group-action").controlgroup();
 
-            $(".group-action button").click(e => $(e.target).next().selectmenu("open"));
+            //$(".group-action button").click(e => $(e.target).next().selectmenu("open"));
 
             common.closeLoading();
         });
-    }    
+    }
 
     function loadCustomerGridFlaggedAccount(criteria) {
         var url = common.modifyRelativeUrl("/MatchMonitor/GetFlaggedAccountCustomers");
@@ -180,11 +180,14 @@
                 },
             });
 
-            $(".group-action").controlgroup();
+            if (loadingDone) {
+                common.closeLoading();
+            } else {
+                loadingDone = true;
+            }
 
-            $(".group-action button").click(e => $(e.target).next().selectmenu("open"));
-
-            common.closeLoading();
+            //$(".group-action").controlgroup();
+            //$(".group-action button").click(e => $(e.target).next().selectmenu("open"));            
         });
     }
 
@@ -194,12 +197,12 @@
         $.post(url, criteria, function (json) {
             if (json.length > 0 && typeof json[0].TotalCustomers !== "undefined") {
                 customer_grid.DataTable().clear().rows.add([]).draw();
-                $("#customers").text(`By Customers (${json[0].TotalCustomers})`);                
+                $("#customers").text(`By Customers (${json[0].TotalCustomers})`);
                 $(".dataTables_empty").text("Too much data. Export Excel file instead!").css("color", "red");
 
             } else {
                 customer_grid.DataTable().clear().rows.add(json).draw();
-                $("#customers").text(`By Customers (${json.length})`);                
+                $("#customers").text(`By Customers (${json.length})`);
 
                 $(".action").selectmenu({
                     classes: {
@@ -233,7 +236,7 @@
             }
         });
     }
-  
+
     function process_ticket_json(json) {
         var result = [];
 
@@ -287,7 +290,7 @@
 
     function switchTab(ui) {
         if (ui.newPanel.is("#customer-tab")) {
-            customer_grid.DataTable().columns.adjust();          
+            customer_grid.DataTable().columns.adjust();
         }
         else {
             ticket_grid.DataTable().columns.adjust();
@@ -307,70 +310,43 @@
     }
 
     function exportArbitrage() {
-        var criteria = {};
-
-        if (savedCriteria == null) {
-            var bettype = 0;
-            var liveHomeScore = 0;
-            var liveAwayScore = 0;
-            var handicap = 0;
-            var valBet = $("#scoreHDP").val();
-
-            if (valBet == "-1") {
-                bettype = "-1";
-                liveHomeScore = "-1";
-                liveAwayScore = "-1";
-                handicap = "-1";
-            } else if (valBet != "") {
-                var arrBet = valBet.split(';');
-                bettype = arrBet[0];
-                liveHomeScore = arrBet[1];
-                liveAwayScore = arrBet[2];
-                handicap = arrBet[3];
-            }
-
-            var criteria = {
-                liveStatus: $("#market").val(),
-                evidenceCodeList: getEvidences(),
-                currencyIds: getCurrency(),
-                currencyNames: getCurrencyNames(),
-                sites: getSites(),
-                transDateFromString: $("#transDateFrom").val(),
-                transDateToString: $("#transDateTo").val(),
-                KeyName: $("#scoreHDP option:selected").text(),
-                bettype: bettype,
-                liveHomeScore: liveHomeScore,
-                liveAwayScore: liveAwayScore,
-                handicap: handicap,
-                MatchId: parameters.MatchId,
-                EventDate: parameters.EventDate
-            };
-        } else {
-            criteria = Object.assign({}, savedCriteria);
-        }
-
+        common.showLoading();
         var selectedTab = $("#detailTabs li[aria-selected=true]").attr("aria-controls");
-
+        var urlSaveTicketCustIds = common.modifyRelativeUrl("/MatchMonitor/GetArbitrageTicketsGroupSummary");
         var urlSaveCriteria = selectedTab === "customer-tab" ? common.modifyRelativeUrl("/MatchMonitor/SaveFileArbitrageCustomers")
             : common.modifyRelativeUrl("/MatchMonitor/SaveFileArbitrageTickets");
 
         var urlDownload = common.modifyRelativeUrl("/MatchMonitor/DownloadExcel");
+
+        var criteria = {};
+        if (savedCriteria == null) {
+            criteria = getCriteriaArbitrage();
+        } else {
+            criteria = Object.assign({}, savedCriteria);
+        }
+
+        if (criteria.isByIPAndDevice) {
+            $.post(urlSaveTicketCustIds, criteria, function (json) { });
+        }
 
         $.ajax({
             type: 'POST',
             url: urlSaveCriteria,
             data: criteria,
             success: function (response) {
+                common.closeLoading();
                 common.downloadFile(urlDownload, { fileId: response.FileId, fileName: response.FileName });
             },
             error: function (xhr, status, error) {
+                common.closeLoading();
+                common.showError(error);
                 console.log('data of ' + xhr.responseText);
             }
         });
-    }    
+    }
 
     function exportFlaggedAccounts() {
-
+        common.showLoading();
         var urlSaveCriteria = common.modifyRelativeUrl("/MatchMonitor/SaveFileFlaggedAccounts");
         var urlDownload = common.modifyRelativeUrl("/MatchMonitor/DownloadExcel");
         var criteria = {};
@@ -386,9 +362,12 @@
             url: urlSaveCriteria,
             data: criteria,
             success: function (response) {
+                common.closeLoading();
                 common.downloadFile(urlDownload, { fileId: response.FileId, fileName: response.FileName });
             },
             error: function (xhr, status, error) {
+                common.closeLoading();
+                common.showError(error);
                 console.log('data of ' + xhr.responseText);
             }
         });
@@ -485,14 +464,14 @@
 
         window.open(common.modifyRelativeUrl(url));
     }
-   
+
     function renderTicketArbitrageGroups(json) {
         $("#tickets").text(`By Tickets (...)`);
         var n = (json || []).reduce((total, obj) => total + Math.max(obj.Home.length, obj.Away.length), 0);
         var t = (json || []).reduce((total, obj) => total + obj.Home.length + obj.Away.length, 0);
 
         var data = (json || []).reduce(function (arr, obj) {
-            obj.key = true;      
+            obj.key = true;
             arr.push(obj);
             arrGroupTicket.push(obj);
 
@@ -517,13 +496,13 @@
     function renderArbitrageTicketDetailByGroup(json) {
         ticket_grid.DataTable().clear();
         var n = (json || []).reduce((total, obj) => total + Math.max(obj.Home.length, obj.Away.length), 0);
-        var t = (json || []).reduce((total, obj) => total + obj.Home.length + obj.Away.length, 0);        
+        var t = (json || []).reduce((total, obj) => total + obj.Home.length + obj.Away.length, 0);
 
         var keyName = "";
         var data = (json || []).reduce(function (arr, obj) {
-            obj.key = true;          
+            obj.key = true;
             keyName = obj.Score + " " + obj.BettypeName + " " + obj.Handicap + " " + obj.GroupId + " " + obj.IP;
-            
+
             if (obj.Home.length + obj.Away.length < 1000) {
 
                 var n = Math.max(obj.Home.length, obj.Away.length);
@@ -538,7 +517,7 @@
             }
 
             return arr;
-        }, []);            
+        }, []);
 
         //each list group
         var dataGroup = [];
@@ -548,7 +527,7 @@
             if (keyName == keyTemp) {
                 var newArray = $.merge(dataGroup, data);
                 dataGroup = newArray;
-            }           
+            }
         });
 
         ticket_grid.DataTable().rows.add(dataGroup).draw();
@@ -557,13 +536,13 @@
             $("#DataTables_Table_0_info").text(`Displaying 1 to ${n} of ${n} item(s)`);
         }
 
-        ticket_grid.DataTable().columns.adjust();                
+        ticket_grid.DataTable().columns.adjust();
 
         $('.dataTables_scrollBody').animate({
             scrollTop: $('tr.cursor-index').offset().top - ($('.dataTables_scrollBody').height() / 2)
         }, 100);
 
-        common.closeLoading();     
+        common.closeLoading();
     };
 
     function renderArbitrageGrid(json) {
@@ -593,18 +572,18 @@
         var t = (json || []).reduce((total, obj) => total + obj.Home.length + obj.Away.length, 0);
 
         ticket_grid.DataTable().rows.add(data).draw();
-  
+
         $("#tickets").text(`By Tickets (${t})`);
 
         if (n != 0) {
             $("#DataTables_Table_0_info").text(`Displaying 1 to ${n} of ${n} item(s)`);
         }
-        
+
         common.closeLoading();
-    }    
+    }
 
     function exportGroupTickets(e) {
-        groupExportExcel = 1;        
+        groupExportExcel = 1;
         var urlSaveCriteria = common.modifyRelativeUrl("/MatchMonitor/SaveFileArbitrageTickets");
         var urlDownload = common.modifyRelativeUrl("/MatchMonitor/DownloadExcel");
 
@@ -644,7 +623,7 @@
             criteria.handicap = obj.Handicap;
             criteria.ip = obj.IP;
         }
-                    
+
         $.ajax({
             type: 'POST',
             url: urlSaveCriteria,
@@ -655,11 +634,11 @@
             error: function (xhr, status, error) {
                 console.log('data of ' + xhr.responseText);
             }
-        });       
+        });
     }
 
     if (isArbitrage) {
-        ticket_grid.DataTable({            
+        ticket_grid.DataTable({
             ordering: false,
             paging: false,
             lengthMenu: [1000],
@@ -680,7 +659,7 @@
             columnDefs: [
                 { targets: "_all", defaultContent: "-" },
                 { targets: [-5, -4, -3, -2, 6, 7, 8, 9, 19, 20, 21, 22], className: "text-right" },
-                { targets: [-1, 2, 4, 17], className: "text-center" },            
+                { targets: [-1, 2, 4, 17], className: "text-center" },
                 { targets: [0, 13], width: "170px" },
                 { targets: [1, 14], width: "145px" },
                 { targets: [2, 15], width: "91px" },
@@ -694,7 +673,7 @@
             ],
             columns: [
                 { data: obj => obj.Home.Username },
-                { data: obj => common.makeWrapString((obj.Home.Evidences || []).join(", "), 16), width: "40px"},
+                { data: obj => common.makeWrapString((obj.Home.Evidences || []).join(", "), 16), width: "40px" },
                 { data: obj => obj.Home.DangerousLevel },
                 { data: obj => obj.Home.Site },
                 { data: obj => obj.Home.Currency },
@@ -734,11 +713,11 @@
                         } else {
                             td = $(`<td colspan='25' class='group' style='cursor: initial'><span class='icon-chevron-down' style='cursor: pointer;'></span><span class='bage' style='cursor: pointer;'>${obj.BettypeName} ${obj.Handicap}</span> <span class='bage' style='cursor: pointer;'>${obj.Score}</span> <span class='bage' style='cursor: pointer;'>Tickets: ${totalTicket}</span><button class="button -export"><span class="icon-export-excel"></span></button></td>`);
                         }
-                    }                  
+                    }
                     $(".button.-export", td).click(obj, exportGroupTickets);
-                   
+
                     $(row).empty().html(td);
-                    
+
                 }
                 else if (obj.Home.Username == null) {
                     var td = $("<td colspan='13'></td>");
@@ -754,8 +733,8 @@
                     $("td:gt(13)", row).remove();
 
                     $(row).append(td);
-                }              
-            }         
+                }
+            }
         });
     } else if (isFlaggedAccount) {
         ticket_grid.DataTable({
@@ -780,8 +759,8 @@
                 { data: obj => obj.key ? obj.value : ++global_idx, className: "text-center", width: "30px" },
                 { data: obj => obj.Member, width: "120px" },
                 { data: obj => common.makeWrapString((obj.Evidences || []).join(", "), 30), width: "160px" },
-                { data: obj => obj.DangerousLevel, className: "text-center", width: "40px"},
-                { data: obj => obj.Site, width: "120px"},
+                { data: obj => obj.DangerousLevel, className: "text-center", width: "40px" },
+                { data: obj => obj.Site, width: "120px" },
                 { data: obj => obj.CurrencyName, className: "text-center", width: "10px" },
                 { data: obj => moment(obj.TransDate, "MMM D, YYYY hh:mm:ss A").format("MMM D, YYYY<br/>hh:mm:ss A"), className: "text-center", width: "120px" },
                 { data: obj => obj.BetID, width: "120px" },
@@ -850,20 +829,18 @@
             headerCallback: tr => $(":nth-child(11)", tr).removeClass("uppercase")
         });
     }
-    
+
     function renderIPFraud(obj) {
         var isIPFraud = obj.IsIPFraud;
         if (isIPFraud == true) {
-            
+
             return "<div style='position: relative; width: 100%; height: 100%; background: #FFCCCA'>" + obj.BetId + "</div>";
-        }        
+        }
         return obj.BetId;
-    };   
+    };
 
     function loadFlaggedAccountsTicket(criteria) {
         var url = common.modifyRelativeUrl('/MatchMonitor/GetFlaggedAccountTickets');
-
-        common.showLoading();
 
         $.ajax({
             type: 'POST',
@@ -876,6 +853,11 @@
             },
             error: function (err) {
                 loadError(err);
+                if (loadingDone) {
+                    common.closeLoading();
+                } else {
+                    loadingDone = true;
+                }
             }
         });
     }
@@ -896,14 +878,12 @@
         totalTicket = n;
         $(".ip-link").click(renderTicketByIp);
 
-        common.closeLoading();
+        if (loadingDone) {
+            common.closeLoading();
+        } else {
+            loadingDone = true;
+        }
     }
-
-    function loadReportArbitrage(criteria) {
-        loadingDone = false;        
-
-        loadTicketGridArbitrage(criteria);        
-    };
 
     function loadTicketGridArbitrage(criteria) {
         var urlGroup = common.modifyRelativeUrl("/MatchMonitor/GetArbitrageTicketsGroupSummary");
@@ -944,9 +924,9 @@
                     var span = $('td span:first', this);
 
                     if ($(span).is("span.icon-chevron-down")) {
-                        $(span).removeClass("icon-chevron-down").addClass("icon-chevron-up");                        
+                        $(span).removeClass("icon-chevron-down").addClass("icon-chevron-up");
                         expandGroup(data);
-                       // $(this).addClass('cursor-index');
+                        // $(this).addClass('cursor-index');
                     }
                     else if ($(span).is("span.icon-chevron-up")) {
                         $(span).removeClass("icon-chevron-up").addClass("icon-chevron-down");
@@ -960,12 +940,12 @@
 
     function expandGroup(obj) {
         common.showLoading();
-        
+
         var url = common.modifyRelativeUrl("/MatchMonitor/GetArbitrageTickets");
-        
+
         var keyName = obj.Score + " " + obj.BettypeName + " " + obj.Handicap + " " + obj.GroupId + " " + obj.IP;
         groupExpand = keyName;
-        
+
         var criteria = {};
 
         if (savedCriteria == null) {
@@ -1003,27 +983,28 @@
 
         $.post(url, criteria, function (json) {
             if (json != null) {
-               
+
                 renderArbitrageTicketDetailByGroup(json);
             }
         });
     };
-   
+
     function collapseGroup() {
         ticket_grid.DataTable().clear();
-        groupExpand = "";       
+        groupExpand = "";
 
-        ticket_grid.DataTable().rows.add(arrGroupTicket).draw();      
+        ticket_grid.DataTable().rows.add(arrGroupTicket).draw();
     };
 
     function loadError(error) {
+        common.showError(error);
         console.log(error);
     };
 
     function loadGrids() {
         global_idx = 0;
         arrGroupTicket = [];
-        groupExpand = "";      
+        groupExpand = "";
         var transDateFrom = $("#transDateFrom").val();
         var transDateTo = $("#transDateTo").val();
         var transDateFromInput = $("#transDateFrom");
@@ -1031,7 +1012,7 @@
 
         if (transDateFrom !== "" && transDateTo === "") {
             transDateFromInput.css({ 'border': '1px solid #d6d6d6' });
-            transDateToInput.css({'border-color': 'red', 'border-style': 'solid', 'border-width': '1px' });
+            transDateToInput.css({ 'border-color': 'red', 'border-style': 'solid', 'border-width': '1px' });
         }
         else if (transDateFrom === "" && transDateTo !== "") {
             transDateFromInput.css({ 'border-color': 'red', 'border-style': 'solid', 'border-width': '1px' });
@@ -1040,15 +1021,16 @@
         else {
             transDateFromInput.css({ 'border': '1px solid #d6d6d6' });
             transDateToInput.css({ 'border': '1px solid #d6d6d6' });
-
+            loadingDone = false;
             var criteria = {};
 
             if (isArbitrage) {
                 criteria = getCriteriaArbitrage();
-                
-                loadReportArbitrage(criteria);
+
+                loadTicketGridArbitrage(criteria);
             }
             else if (isFlaggedAccount) {
+                common.showLoading();
                 criteria = getCriteriaFlaggedAccounts();
 
                 loadCustomerGridFlaggedAccount(criteria);
@@ -1057,7 +1039,7 @@
 
             savedCriteria = criteria;
         }
-    };    
+    };
 
     function getCriteriaArbitrage() {
         var bettype = 0;
@@ -1103,7 +1085,7 @@
         return criteria;
     }
 
-    function getCriteriaFlaggedAccounts() {        
+    function getCriteriaFlaggedAccounts() {
 
         var criteria = {
             LiveStatus: $("#market").val(),
@@ -1125,14 +1107,14 @@
     function getEvidences() {
         var array = [];
         var arrEvidences = $("#ddlEvidence").multiselect("getChecked");
-        var lengthEvidences = $("#ddlEvidence").children("option").length;    
+        var lengthEvidences = $("#ddlEvidence").children("option").length;
 
         for (var i = 0; i < arrEvidences.length; i++) {
             array.push($(arrEvidences[i]).attr('value'));
         }
 
         if (arrEvidences != null && arrEvidences.length > 0) {
-           var evidenceCode = array.join(",");
+            var evidenceCode = array.join(",");
         }
         return evidenceCode;
     }
@@ -1163,7 +1145,7 @@
         if (arrCurrency.length == lengthCurrency) {
             return "All";
         }
-        for (var i = 0; i < arrCurrency.length; i++) {            
+        for (var i = 0; i < arrCurrency.length; i++) {
             array.push($(arrCurrency[i]).next().text());
         }
 
@@ -1191,8 +1173,7 @@
         return sites;
     }
 
-    function getListHDPScore()
-    {
+    function getListHDPScore() {
         var ddlArray = new Array();
         var ddl = document.getElementById('scoreHDP');
         for (i = 0; i < ddl.options.length; i++) {
@@ -1241,12 +1222,12 @@
             { data: obj => obj.AssociatedAccounts, className: "text-right", width: "50px" },
             { defaultContent: renderCustomerAction(), className: "has-icon text-center", width: "70px" }
         ]
-    });   
+    });
 
     detail_tabs.tabs({
         activate: (e, ui) => switchTab(ui)
     });
-    
+
     $("#generate").click(loadGrids);
 
     $(".-export").click(exportExcel);
