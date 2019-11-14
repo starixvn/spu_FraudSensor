@@ -12,6 +12,7 @@
     using NAP.Core.Web;
     using NAP.Core.Web.Auth;
     using NAP.Core.Web.Session;
+    using ONEbook.UM.Filters;
     using ONEbook.UM.Services;
     using ONEbook.UM.Services.Impl;
     using System;
@@ -96,6 +97,7 @@
         /// </summary>
         /// <returns>Return result.</returns>
         [HttpGet]
+        [CheckUMFilter]
         public ActionResult Index()
         {
             if (!NapSettings.Settings.IsNapHub && !IsSiteLogin)
@@ -104,7 +106,7 @@
                 return Redirect(NapSettings.Settings.HubUrl);
             }
 
-            if (_maintenanceService.GetUnderMaintenanceTime().IsUnderMaintenanceTime)
+            if (_maintenanceService.IsUnderMaintenance())
             {
                 return RedirectToAction("Offline", "Common");
             }
