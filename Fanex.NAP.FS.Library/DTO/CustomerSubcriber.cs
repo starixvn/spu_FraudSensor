@@ -5,6 +5,8 @@
         public int CustId { get; set; }
 
         public string SubscriberName { get; set; }
+
+        public bool IsExistedInMS { get; set; }
     }
 
     public class CustomerSubcriberList

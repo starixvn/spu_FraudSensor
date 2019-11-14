@@ -355,9 +355,8 @@
             var rawTickets = DataService.GetData<TicketInfo>(criteria);
             rawTickets = isBettypeOther ? rawTickets.Where(t => !(new List<int> { (int)Bettype.FT_Handicap, (int)Bettype.FT_OverUnder, (int)Bettype.FH_Handicap, (int)Bettype.FH_OverUnder }).Contains(t.BetTypeId)) : rawTickets;
 
-            string siteList = criteria.Sites != "All" ? criteria.Sites : null;
             string evidenceList = CheckEvidenceOthers(criteria.EvidenceCodeList, criteria.OtherEvidenceCodes);
-            var custOfSites = FilterCustomersBySites(rawTickets, siteList);
+            var custOfSites = FilterCustomersBySites(rawTickets, criteria.Sites);
 
             if (!custOfSites.Any())
             {
@@ -376,27 +375,57 @@
 
         private static IEnumerable<CustomerSubcriber> FilterCustomersBySites(IEnumerable<TicketInfo> rawTickets, string sites)
         {
+            var isAllOptions = sites == "All";
+            var isIncludeNoneOption = isAllOptions || sites.Contains("None");
+            sites = sites.Replace("None", "");
             var urlCustSites = AppSettings.Get("FPS_WEBAPI_CUSTOMER_SUBSCRIBER");
 
             var customersBySites = rawTickets.Select(t => t.CustId).Distinct().Chunk(500)
-                                    .Select(q => ApiHelper.Post<IEnumerable<CustomerSubcriber>>(urlCustSites, new CustomerSubcriberList { CustIds = string.Join(",", q), Subscribers = sites }))
+                                    .Select(q => ApiHelper.Post<IEnumerable<CustomerSubcriber>>(urlCustSites, new CustomerSubcriberList { CustIds = string.Join(",", q), Subscribers = isAllOptions ? null : sites }))
                                     .ToArray();
 
             Task.WhenAll(customersBySites);
 
-            return customersBySites.SelectMany(t => t.Result);
+            var resultsFromAPI = customersBySites.SelectMany(t => t.Result).ToList();
+
+            if (isAllOptions)
+            {
+                resultsFromAPI = resultsFromAPI.Where(c => !string.IsNullOrEmpty(c.SubscriberName) || !c.IsExistedInMS).ToList();
+            }
+
+            if (!isIncludeNoneOption)
+            {
+                resultsFromAPI = resultsFromAPI.Where(c => c.IsExistedInMS).ToList();
+            }
+
+            return resultsFromAPI;
         }        
 
         private static IEnumerable<CustomerEvidence> GetCustomersByEvidences(IEnumerable<CustomerSubcriber> customerBySites, string evidenceList)
         {
+            var isAllOptions = evidenceList == null;
+            var isIncludeNoneOption = isAllOptions || evidenceList.Contains("None");
+            evidenceList = evidenceList.Replace("None", "");
             var urlCustEvidences = AppSettings.Get("FPS_WEBAPI_GET_CUSTOMER_EVIDENCE");
 
             var customerByEvidences = customerBySites.Select(c => c.CustId).Distinct().Chunk(500)
                                        .Select(q => ApiHelper.Post<IEnumerable<CustomerEvidence>>(urlCustEvidences, new CustomerEvidenceList { CustIdList = string.Join(",", q), EvidenceCodeList = evidenceList }))
                                        .ToArray();
             Task.WhenAll(customerByEvidences);
+            
+            var resultsFromAPI = customerByEvidences.SelectMany(t => t.Result).ToList();
 
-            return customerByEvidences.SelectMany(t => t.Result);
+            if (isAllOptions)
+            {
+                resultsFromAPI = resultsFromAPI.Where(c => !string.IsNullOrEmpty(c.EvidenceCode) || !c.IsExistedInMS).ToList();
+            }
+
+            if (!isIncludeNoneOption)
+            {
+                resultsFromAPI = resultsFromAPI.Where(c => c.IsExistedInMS).ToList();
+            }
+
+            return resultsFromAPI;
         }
 
         private IEnumerable<FlaggedAccountTicket> FilterFlaggedAccountTicketsByEvidenceOthers(
@@ -680,7 +709,7 @@
 
         private static string CheckEvidenceOthers(string evidenceCodeList, string otherEvidenceCodes)
         {
-            return (evidenceCodeList == null || evidenceCodeList.Contains(otherEvidenceCodes)) ? null : evidenceCodeList;
+            return (evidenceCodeList == null || (evidenceCodeList.Contains(otherEvidenceCodes) && evidenceCodeList.Contains("None"))) ? null : evidenceCodeList;
         }
 
         #endregion
@@ -794,8 +823,7 @@
 
             criteria.Site = criteria.IsOnlyCN88 ? "CN88" : criteria.Site;
             var rawTickets = DataService.GetData<TicketInfo>(criteria);
-            var sites = criteria.Sites != "All" ? criteria.Sites : null;
-            var custOfSites = FilterCustomersBySites(rawTickets, sites);
+            var custOfSites = FilterCustomersBySites(rawTickets, criteria.Sites);
 
             if (custOfSites.Any())
             {

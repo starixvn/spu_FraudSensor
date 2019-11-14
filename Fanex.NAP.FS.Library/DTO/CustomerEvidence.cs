@@ -24,5 +24,7 @@
         }
 
         public string EvidenceName { get; set; }
+        
+        public bool IsExistedInMS { get; set; }
     }
 }
