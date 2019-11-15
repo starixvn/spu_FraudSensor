@@ -376,6 +376,7 @@
         private static IEnumerable<CustomerSubcriber> FilterCustomersBySites(IEnumerable<TicketInfo> rawTickets, string sites)
         {
             var isAllOptions = sites == "All";
+            var isNoneOptionOnly = sites == "None";
             var isIncludeNoneOption = isAllOptions || sites.Contains("None");
             sites = sites.Replace("None", "");
             var urlCustSites = AppSettings.Get("FPS_WEBAPI_CUSTOMER_SUBSCRIBER");
@@ -387,13 +388,13 @@
             Task.WhenAll(customersBySites);
 
             var resultsFromAPI = customersBySites.SelectMany(t => t.Result).ToList();
+            resultsFromAPI = resultsFromAPI.Where(c => !string.IsNullOrEmpty(c.SubscriberName) || !c.IsExistedInMS).ToList();
 
-            if (isAllOptions)
+            if (isNoneOptionOnly)
             {
-                resultsFromAPI = resultsFromAPI.Where(c => !string.IsNullOrEmpty(c.SubscriberName) || !c.IsExistedInMS).ToList();
+                resultsFromAPI = resultsFromAPI.Where(c => !c.IsExistedInMS).ToList();
             }
-
-            if (!isIncludeNoneOption)
+            else if (!isIncludeNoneOption)
             {
                 resultsFromAPI = resultsFromAPI.Where(c => c.IsExistedInMS).ToList();
             }
@@ -404,6 +405,7 @@
         private static IEnumerable<CustomerEvidence> GetCustomersByEvidences(IEnumerable<CustomerSubcriber> customerBySites, string evidenceList)
         {
             var isAllOptions = evidenceList == null;
+            var isNoneOptionOnly = evidenceList == "None";
             var isIncludeNoneOption = isAllOptions || evidenceList.Contains("None");
             evidenceList = isAllOptions ? evidenceList : evidenceList.Replace("None", "");
             var urlCustEvidences = AppSettings.Get("FPS_WEBAPI_GET_CUSTOMER_EVIDENCE");
@@ -414,13 +416,13 @@
             Task.WhenAll(customerByEvidences);
             
             var resultsFromAPI = customerByEvidences.SelectMany(t => t.Result).ToList();
+            resultsFromAPI = resultsFromAPI.Where(c => !string.IsNullOrEmpty(c.EvidenceCode) || !c.IsExistedInMS).ToList();
 
-            if (isAllOptions)
+            if(isNoneOptionOnly)
             {
-                resultsFromAPI = resultsFromAPI.Where(c => !string.IsNullOrEmpty(c.EvidenceCode) || !c.IsExistedInMS).ToList();
+                resultsFromAPI = resultsFromAPI.Where(c => !c.IsExistedInMS).ToList();
             }
-
-            if (!isIncludeNoneOption)
+            else if (!isIncludeNoneOption)
             {
                 resultsFromAPI = resultsFromAPI.Where(c => c.IsExistedInMS).ToList();
             }
