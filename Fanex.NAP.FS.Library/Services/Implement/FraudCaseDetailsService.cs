@@ -405,7 +405,7 @@
         {
             var isAllOptions = evidenceList == null;
             var isIncludeNoneOption = isAllOptions || evidenceList.Contains("None");
-            evidenceList = evidenceList.Replace("None", "");
+            evidenceList = isAllOptions ? evidenceList : evidenceList.Replace("None", "");
             var urlCustEvidences = AppSettings.Get("FPS_WEBAPI_GET_CUSTOMER_EVIDENCE");
 
             var customerByEvidences = customerBySites.Select(c => c.CustId).Distinct().Chunk(500)
