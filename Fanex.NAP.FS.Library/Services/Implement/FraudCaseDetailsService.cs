@@ -680,7 +680,7 @@
                     strCode = strCode.Replace(',', '/');
                 }
 
-                filterInfo[2] = ReplaceEvidences(strCode);
+                filterInfo[2] = ReplaceFilterEvidences(strCode);
 
                 // From date, to date
                 filterInfo[3] = filter.TransDateFromString != null ? filter.TransDateFromString.Replace(',', '-') : string.Empty;
@@ -725,7 +725,7 @@
             var rawCustomers = DataService.GetData<CustInfo>(criteria);
 
             if (criteria.Sites == Consts.FRAUD_CASE_FILTER_ALL 
-                && ReplaceEvidences(criteria.EvidenceCodeList) == Consts.FRAUD_CASE_FILTER_ALL
+                && ReplaceFilterEvidences(criteria.EvidenceCodeList) == Consts.FRAUD_CASE_FILTER_ALL
                 && rawCustomers.Count() > maxLengthRowsDisplay 
                 && !isExportFile)
             {
@@ -1061,14 +1061,14 @@
             return evidences.Result;
         }
 
-        public string ReplaceEvidences(string evidences)
+        public string ReplaceFilterEvidences(string evidences)
         {
             if (!string.IsNullOrEmpty(evidences))
             {
-                int totalAll = GetAllEvidencesFromAPI().Count();
-                string[] lstCode = evidences.Split(',');
+                int totalEvidences = GetAllEvidencesFromAPI().Count();
+                string[] evidenceCodes = evidences.Split(',');
 
-                if (lstCode.Count() == totalAll)
+                if (evidenceCodes.Count() == totalEvidences + 1)
                 {
                     return Consts.FRAUD_CASE_FILTER_ALL;
                 }

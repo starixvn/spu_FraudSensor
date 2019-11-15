@@ -353,7 +353,7 @@
                 strCode = strCode.Replace(',', '/');
             }
 
-            filterInfo[2] = _fraudCaseDetailService.ReplaceEvidences(strCode);
+            filterInfo[2] = _fraudCaseDetailService.ReplaceFilterEvidences(strCode);
 
             // From date, to date
             filterInfo[3] = criteria.TransDateFromString != null ? criteria.TransDateFromString.Replace(',', '-') : string.Empty;

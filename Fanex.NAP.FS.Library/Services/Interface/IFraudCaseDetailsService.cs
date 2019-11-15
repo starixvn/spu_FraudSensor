@@ -42,7 +42,7 @@
 
         IEnumerable<Site> GetSites();
 
-        string ReplaceEvidences(string evidences);
+        string ReplaceFilterEvidences(string evidences);
 
         byte[] ExportExcelTicketsByIP(string ip, string template, bool isShowSpecialCurrencies);
 
