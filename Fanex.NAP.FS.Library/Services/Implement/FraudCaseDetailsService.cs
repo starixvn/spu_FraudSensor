@@ -837,7 +837,10 @@
                 var evidenceCodes = CheckEvidenceOthers(criteria.EvidenceCodeList, criteria.OtherEvidenceCodes);
                 var custExistedInMS = custOfSites.Where(c => c.IsExistedInMS && !string.IsNullOrEmpty(c.SubscriberName)).ToList();
                 var custOfEvidences = custExistedInMS.Count > 0 ? GetCustomersByEvidences(custExistedInMS, evidenceCodes) : new List<CustomerEvidence>();                
-                custOfEvidences = custOfEvidences.Concat(custOfSites.Where(c => !c.IsExistedInMS).Select(n => new CustomerEvidence { CustId = n.CustId, EvidenceCode = null, EvidenceName = null, IsExistedInMS = false })).ToList();
+                if (evidenceCodes == null || evidenceCodes.Contains("None"))
+                {
+                    custOfEvidences = custOfEvidences.Concat(custOfSites.Where(c => !c.IsExistedInMS).Select(n => new CustomerEvidence { CustId = n.CustId, EvidenceCode = null, EvidenceName = null, IsExistedInMS = false })).ToList();
+                }
 
                 custOfEvidences = FilterCustomersByEvidences(custOfEvidences, criteria);
 
@@ -1038,7 +1041,7 @@
             //var customersBySelectedEvidences = custEvidences.Where(c => c.EvidenceCode == null || !selectedEvidences.Contains(c.EvidenceCode) ).Select(c => (long)c.CustId).ToList();
             var customersBySelectedEvidences = custEvidences.Select(c => (long)c.CustId).ToList();
             bool filterByEvidences(long e) => customersBySelectedEvidences.Contains(e);           
-
+            
             return isByIPAndDevice
                 ? GenerateArbitrageTicketsByIPAndDevice(rawData.AsParallel().Where(c => filterByEvidences(c.CustId) && filterBySites(c.CustId) && !c.IsIPFraud),
                         customerSubscriberDict, customerEvidenceDict, isShowCN88Only)
