@@ -388,15 +388,17 @@
             Task.WhenAll(customersBySites);
 
             var resultsFromAPI = customersBySites.SelectMany(t => t.Result).ToList();
-            resultsFromAPI = resultsFromAPI.Where(c => !string.IsNullOrEmpty(c.SubscriberName) || !c.IsExistedInMS).ToList();
+            //resultsFromAPI = resultsFromAPI.Where(c => !string.IsNullOrEmpty(c.SubscriberName) && !c.IsExistedInMS).ToList();
 
             if (isNoneOptionOnly)
             {
-                resultsFromAPI = resultsFromAPI.Where(c => !c.IsExistedInMS).ToList();
+                //resultsFromAPI = resultsFromAPI.Where(c => !c.IsExistedInMS).ToList();
+                resultsFromAPI = resultsFromAPI.Where(c => !string.IsNullOrEmpty(c.SubscriberName) && !c.IsExistedInMS).ToList();
             }
             else if (!isIncludeNoneOption)
             {
-                resultsFromAPI = resultsFromAPI.Where(c => c.IsExistedInMS).ToList();
+                //resultsFromAPI = resultsFromAPI.Where(c => c.IsExistedInMS).ToList();
+                resultsFromAPI = resultsFromAPI.Where(c => !string.IsNullOrEmpty(c.SubscriberName) && c.IsExistedInMS).ToList();
             }
 
             return resultsFromAPI;
@@ -416,16 +418,18 @@
             Task.WhenAll(customerByEvidences);
             
             var resultsFromAPI = customerByEvidences.SelectMany(t => t.Result).ToList();
-            resultsFromAPI = resultsFromAPI.Where(c => !string.IsNullOrEmpty(c.EvidenceCode) || !c.IsExistedInMS).ToList();
+            //resultsFromAPI = resultsFromAPI.Where(c => !string.IsNullOrEmpty(c.EvidenceCode) || !c.IsExistedInMS).ToList();
 
             if(isNoneOptionOnly)
             {
-                resultsFromAPI = resultsFromAPI.Where(c => !c.IsExistedInMS).ToList();
+                //resultsFromAPI = resultsFromAPI.Where(c => !c.IsExistedInMS).ToList();
+                resultsFromAPI = resultsFromAPI.Where(c => !string.IsNullOrEmpty(c.EvidenceCode) && !c.IsExistedInMS).ToList();
             }
             else if (!isIncludeNoneOption)
             {
-                resultsFromAPI = resultsFromAPI.Where(c => c.IsExistedInMS).ToList();
-            }
+                //resultsFromAPI = resultsFromAPI.Where(c => c.IsExistedInMS).ToList();
+                resultsFromAPI = resultsFromAPI.Where(c => !string.IsNullOrEmpty(c.EvidenceCode) && c.IsExistedInMS).ToList();
+            }            
 
             return resultsFromAPI;
         }
@@ -572,7 +576,8 @@
             if (custsOfSites.Any())
             {
                 var custOfEvidences = GetCustOfEvidences(custsOfSites.Where(c => c.IsExistedInMS && !string.IsNullOrEmpty(c.SubscriberName)).Select(c => c.CustId), evidenceCodes, otherEvidenceCode);
-                custOfEvidences = custOfEvidences.Concat(custsOfSites.Where(c => !c.IsExistedInMS).Select(n => new CustomerEvidence { CustId = n.CustId, EvidenceCode = null, EvidenceName = null, IsExistedInMS = false }));
+                //custOfEvidences = custOfEvidences.Concat(custsOfSites.Where(c => !c.IsExistedInMS).Select(n => new CustomerEvidence { CustId = n.CustId, EvidenceCode = null, EvidenceName = null, IsExistedInMS = false }));
+                custOfEvidences = custOfEvidences.Concat(custsOfSites.Where(c => !c.IsExistedInMS && string.IsNullOrEmpty(c.SubscriberName)).Select(n => new CustomerEvidence { CustId = n.CustId, EvidenceCode = null, EvidenceName = null, IsExistedInMS = false }));
 
                 if (evidenceCodes != null && evidenceCodes.Contains(otherEvidenceCode))
                 {
@@ -760,9 +765,10 @@
 
             // filter by Evidences
             var distinctedCustEvidence = customerEvidences.Distinct();
-            var customersBySelectedEvidences = distinctedCustEvidence.Where(c => c.EvidenceCode == null || !lstEvidenceSelected.Contains(c.EvidenceCode)).Select(c => (long)c.CustId).ToList();
+            //var customersBySelectedEvidences = distinctedCustEvidence.Where(c => c.EvidenceCode == null || !lstEvidenceSelected.Contains(c.EvidenceCode)).Select(c => (long)c.CustId).ToList();
+            var customersBySelectedEvidences = distinctedCustEvidence.Select(c => (long)c.CustId).ToList();
             var totalAssociation = GetTotalAssociations(custInfo.Select(i => i.CustId)).ToDictionary(o => o.CustId, o => o.TotalAssociation);
-            bool filterByEvidences(long e) => !customersBySelectedEvidences.Contains(e);
+            bool filterByEvidences(long e) => customersBySelectedEvidences.Contains(e);
 
             IEnumerable<CustomerDetails> custDetails = custInfo
                    .Where(c => filterByEvidences(c.CustId) && filterBySites(c.CustId))
@@ -829,11 +835,17 @@
 
             if (custOfSites.Any())
             {
-                var evidenceCodes = CheckEvidenceOthers(criteria.EvidenceCodeList, criteria.OtherEvidenceCodes);
+                //var evidenceCodes = CheckEvidenceOthers(criteria.EvidenceCodeList, criteria.OtherEvidenceCodes);
                 var custExistedInMS = custOfSites.Where(c => c.IsExistedInMS && !string.IsNullOrEmpty(c.SubscriberName)).ToList();
-                var custOfEvidences = custExistedInMS.Count > 0 ?  GetCustomersByEvidences(custExistedInMS, evidenceCodes) : new List<CustomerEvidence>();
-                custOfEvidences = custOfEvidences.Concat(custOfSites.Where(c => !c.IsExistedInMS).Select(n => new CustomerEvidence { CustId = n.CustId, EvidenceCode = null, EvidenceName = null, IsExistedInMS = false })).ToList();
-
+                //var custOfEvidences = custExistedInMS.Count > 0 ? GetCustomersByEvidences(custExistedInMS, evidenceCodes) : new List<CustomerEvidence>();
+                var custOfEvidences = custExistedInMS.Count > 0 ? GetCustomersByEvidences(custExistedInMS, criteria.EvidenceCodeList) : new List<CustomerEvidence>();
+                var arrEvidencodes = criteria.EvidenceCodeList.Split(',');
+                custOfEvidences = custOfEvidences.Where(c => arrEvidencodes.Contains(c.EvidenceCode));
+                if (criteria.EvidenceCodeList == null || criteria.EvidenceCodeList.Contains("None"))
+                {
+                    custOfEvidences = custOfEvidences.Concat(custOfSites.Where(c => !c.IsExistedInMS).Select(n => new CustomerEvidence { CustId = n.CustId, EvidenceCode = null, EvidenceName = null, IsExistedInMS = false })).ToList();
+                }
+               
                 ticketDetails = (criteria.EvidenceCodeList != null && criteria.EvidenceCodeList.Contains(criteria.OtherEvidenceCodes))
                     ? FilterArbitrageTicketsByEvidenceOthers(rawTickets, custOfSites, custOfEvidences, criteria.EvidenceCodeList, criteria.IsByIPAndDevice, criteria.IsOnlyCN88)
                     : FilterArbitrageTickets(rawTickets, custOfSites, custOfEvidences, string.IsNullOrEmpty(criteria.EvidenceCodeList), criteria.IsByIPAndDevice, criteria.IsOnlyCN88);                    
@@ -1010,8 +1022,9 @@
 
             // filter by Evidences
             var customerEvidenceDict = custEvidences.ToLookup(c => c.CustId, c => c.EvidenceCodeForDisplay + "-" + c.EvidenceName);
-            var customersBySelectedEvidences = custEvidences.Where(c => c.EvidenceCode == null || !selectedEvidences.Contains(c.EvidenceCode) ).Select(c => (long)c.CustId).ToList();
-            bool filterByEvidences(long e) => !customersBySelectedEvidences.Contains(e);
+            //var customersBySelectedEvidences = custEvidences.Where(c => c.EvidenceCode == null || !selectedEvidences.Contains(c.EvidenceCode) ).Select(c => (long)c.CustId).ToList();
+            var customersBySelectedEvidences = custEvidences.Select(c => (long)c.CustId).ToList();
+            bool filterByEvidences(long e) => customersBySelectedEvidences.Contains(e);           
 
             return isByIPAndDevice
                 ? GenerateArbitrageTicketsByIPAndDevice(rawData.AsParallel().Where(c => filterByEvidences(c.CustId) && filterBySites(c.CustId) && !c.IsIPFraud),
