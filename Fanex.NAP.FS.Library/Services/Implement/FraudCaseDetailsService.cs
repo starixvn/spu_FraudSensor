@@ -828,24 +828,19 @@
         public IEnumerable<ArbitrageGroupTicketList> GetArbitrageTickets(GetArbitrageTicketCriteria criteria, bool isSummary)
         {
             IEnumerable<ArbitrageGroupTicketList> ticketDetails = new List<ArbitrageGroupTicketList>(); 
-
             criteria.Site = criteria.IsOnlyCN88 ? "CN88" : criteria.Site;
             var rawTickets = DataService.GetData<TicketInfo>(criteria);
             var custOfSites = FilterCustomersBySites(rawTickets, criteria.Sites);
 
             if (custOfSites.Any())
             {
-                //var evidenceCodes = CheckEvidenceOthers(criteria.EvidenceCodeList, criteria.OtherEvidenceCodes);
+                var evidenceCodes = CheckEvidenceOthers(criteria.EvidenceCodeList, criteria.OtherEvidenceCodes);
                 var custExistedInMS = custOfSites.Where(c => c.IsExistedInMS && !string.IsNullOrEmpty(c.SubscriberName)).ToList();
-                //var custOfEvidences = custExistedInMS.Count > 0 ? GetCustomersByEvidences(custExistedInMS, evidenceCodes) : new List<CustomerEvidence>();
-                var custOfEvidences = custExistedInMS.Count > 0 ? GetCustomersByEvidences(custExistedInMS, criteria.EvidenceCodeList) : new List<CustomerEvidence>();
-                var arrEvidencodes = criteria.EvidenceCodeList.Split(',');
-                custOfEvidences = custOfEvidences.Where(c => arrEvidencodes.Contains(c.EvidenceCode));
-                if (criteria.EvidenceCodeList == null || criteria.EvidenceCodeList.Contains("None"))
-                {
-                    custOfEvidences = custOfEvidences.Concat(custOfSites.Where(c => !c.IsExistedInMS).Select(n => new CustomerEvidence { CustId = n.CustId, EvidenceCode = null, EvidenceName = null, IsExistedInMS = false })).ToList();
-                }
-               
+                var custOfEvidences = custExistedInMS.Count > 0 ? GetCustomersByEvidences(custExistedInMS, evidenceCodes) : new List<CustomerEvidence>();                
+                custOfEvidences = custOfEvidences.Concat(custOfSites.Where(c => !c.IsExistedInMS).Select(n => new CustomerEvidence { CustId = n.CustId, EvidenceCode = null, EvidenceName = null, IsExistedInMS = false })).ToList();
+
+                custOfEvidences = FilterCustomersByEvidences(custOfEvidences, criteria);
+
                 ticketDetails = (criteria.EvidenceCodeList != null && criteria.EvidenceCodeList.Contains(criteria.OtherEvidenceCodes))
                     ? FilterArbitrageTicketsByEvidenceOthers(rawTickets, custOfSites, custOfEvidences, criteria.EvidenceCodeList, criteria.IsByIPAndDevice, criteria.IsOnlyCN88)
                     : FilterArbitrageTickets(rawTickets, custOfSites, custOfEvidences, string.IsNullOrEmpty(criteria.EvidenceCodeList), criteria.IsByIPAndDevice, criteria.IsOnlyCN88);                    
@@ -861,6 +856,24 @@
             }
 
             return ticketDetails;
+        }
+
+        private static IEnumerable<CustomerEvidence> FilterCustomersByEvidences(IEnumerable<CustomerEvidence> custOfEvidences, GetArbitrageTicketCriteria criteria)
+        {
+            var evidenceCodeList = criteria.EvidenceCodeList.Split(',').ToList();
+            var custOfEvidencesFilter = custOfEvidences.Where(c => evidenceCodeList.Contains(c.EvidenceCode));
+
+            if (criteria.EvidenceCodeList.Contains("None"))
+            {
+                custOfEvidencesFilter = custOfEvidencesFilter.Concat(custOfEvidences.Where(c => string.IsNullOrEmpty(c.EvidenceCode) && !c.IsExistedInMS));
+            }
+            
+            if (criteria.EvidenceCodeList.Contains(criteria.OtherEvidenceCodes))
+            {
+                custOfEvidencesFilter = custOfEvidencesFilter.Concat(custOfEvidences.Where(c => string.IsNullOrEmpty(c.EvidenceCode) && c.IsExistedInMS));
+            }
+
+            return custOfEvidencesFilter;
         }
 
         private IEnumerable<ArbitrageGroupTicketList> GenerateArbitrageTicketsByIPAndDevice(
