@@ -360,15 +360,10 @@
             if (custOfSites.Any())
             {
                 var custExistedInMS = custOfSites.Where(c => c.IsExistedInMS && !string.IsNullOrEmpty(c.SubscriberName)).ToList();
-                var custOfEvidences = custExistedInMS.Count > 0 ? GetCustomersByEvidences(custExistedInMS, criteria.EvidenceCodeList) : new List<CustomerEvidence>();
+                var custOfEvidences = custExistedInMS.Any() && criteria.EvidenceCodeList != "None" ? GetCustomersByEvidences(custExistedInMS, criteria.EvidenceCodeList) : new List<CustomerEvidence>();
                 custOfEvidences = custOfEvidences.Concat(custOfSites.Where(c => !c.IsExistedInMS).Select(n => new CustomerEvidence { CustId = n.CustId, EvidenceCode = null, EvidenceName = null, IsExistedInMS = false })).ToList();
 
                 custOfEvidences = FilterCustomersByEvidences(custOfEvidences, criteria.EvidenceCodeList, criteria.OtherEvidenceCodes);
-
-                if (criteria.EvidenceCodeList != null && criteria.EvidenceCodeList.Contains(criteria.OtherEvidenceCodes))
-                {
-                    return FilterFlaggedAccountTicketsByEvidenceOthers(rawTickets, custOfSites, custOfEvidences, criteria);
-                }
 
                 return FilterFlaggedAccountTickets(rawTickets, custOfSites, custOfEvidences, criteria);                
             }
@@ -407,91 +402,17 @@
 
         private static IEnumerable<CustomerEvidence> GetCustomersByEvidences(IEnumerable<CustomerSubcriber> customerBySites, string evidenceList)
         {
-            var isAllOptions = evidenceList == null;
-            var isNoneOptionOnly = evidenceList == "None";
-            var isIncludeNoneOption = isAllOptions || evidenceList.Contains("None");
-            evidenceList = isAllOptions ? evidenceList : evidenceList.Replace("None", "").TrimEnd(',');
+            evidenceList = evidenceList == null ? evidenceList : evidenceList.Replace("None", "").TrimEnd(',');
             var urlCustEvidences = AppSettings.Get("FPS_WEBAPI_GET_CUSTOMER_EVIDENCE");
 
             var customerByEvidences = customerBySites.Select(c => c.CustId).Distinct().Chunk(500)
                                        .Select(q => ApiHelper.Post<IEnumerable<CustomerEvidence>>(urlCustEvidences, new CustomerEvidenceList { CustIdList = string.Join(",", q), EvidenceCodeList = evidenceList }))
                                        .ToArray();
             Task.WhenAll(customerByEvidences);
-            
-            var resultsFromAPI = customerByEvidences.SelectMany(t => t.Result).ToList();
 
-            if(isNoneOptionOnly)
-            {
-                resultsFromAPI = resultsFromAPI.Where(c => !c.IsExistedInMS).ToList();
-            }
-            else if (!isIncludeNoneOption)
-            {
-                resultsFromAPI = resultsFromAPI.Where(c => c.IsExistedInMS).ToList();
-            }            
-
-            return resultsFromAPI;
+            return customerByEvidences.SelectMany(t => t.Result).ToList();
         }
-
-        private IEnumerable<FlaggedAccountTicket> FilterFlaggedAccountTicketsByEvidenceOthers(
-            IEnumerable<TicketInfo> rawData, 
-            IEnumerable<CustomerSubcriber> customerSubcribers, 
-            IEnumerable<CustomerEvidence> customerEvidences, 
-            FlaggedAccountCriteria criteria)
-        {
-            var legend = GetMatchInfo(criteria.MatchId, (int)FraudCaseId.FlaggedAccount, criteria.EventDate);
-            var htmlBuilder = new BetListHTMLBuilder();
-            var ticketHelper = new TicketHelper();
-
-            // fiter by Sites
-            var custIds = customerSubcribers.Select(c => c.CustId);
-            var customerSubcriberDict = customerSubcribers.ToLookup(c => c.CustId, c => c.SubscriberName);
-            bool filterBySites(long s) => custIds.Contains((int)s);
-
-            // filter by Evidences
-            var customerEvidenceDict = customerEvidences.ToLookup(c => c.CustId, c => c.EvidenceCodeForDisplay + "-" + c.EvidenceName);
-            var customersBySelectedEvidences = customerEvidences.Select(c => (long)c.CustId).ToList();
-            bool filterByEvidences(long e) => customersBySelectedEvidences.Contains(e);
-
-            var data = rawData.AsParallel()
-                .Where(c => filterByEvidences(c.CustId) && filterBySites(c.CustId))
-                .Select(a =>
-                {
-                    a.HomeId = legend.HomeId;
-                    a.AwayId = legend.AwayId;
-
-                    var bettype = CachedRef.GetBettypeName(a.BetTypeId);
-                    var groupedBettype = GetOrder(bettype) != BettypeOrder.Others ? bettype : Consts.TICKET_BETTYPEGROUP_OTHERS;
-
-                    return new FlaggedAccountTicket
-                    {
-                        Member = a.UserName,
-                        Evidences = customerEvidenceDict[(int)a.CustId],
-                        Site = customerSubcriberDict[(int)a.CustId].FirstOrDefault(),
-                        DangerousLevel = a.DangerLevel,
-                        Bettype = groupedBettype,
-                        TransDate = a.TransDate.ToString(Consts.TICKET_DATETIME_FORMAT),
-                        BetID = a.TransId.ToString(),
-                        IP = a.IP,
-                        Odds = new OddsDetails { Value = (double)a.Odds, Type = CachedRef.GetOddsTypeName(int.Parse(a.OddsType)), Html = htmlBuilder.BuildOdds(a, null, ticketHelper.GetOddsTypeNameById) },
-                        Score = string.Format(Consts.TICKET_SCORE_FORMAT, a.LiveHomeScore, a.LiveAwayScore),
-                        Stake = a.Stake,
-                        Status = a.Status,
-                        WinLoss = ticketStatuses.Contains(a.Status.ToLowerInvariant()) ? null : new decimal?(a.Winlost),
-                        Choice = htmlBuilder.BuildChoice(a, ticketHelper, null, false),
-                        ChoiceExcel = criteria.SaveChoice ? htmlBuilder.BuildChoiceBlock(a, ticketHelper, null, false) : null,
-                        BettypeRealName = bettype,
-                        CurrencyName = a.CurrencyName,
-                        RawData = criteria.SaveChoice ? a : null
-                    };
-                })
-                .OrderBy(t => GetOrder(t.Bettype))
-                .ThenBy(t => DateTime.Parse(t.TransDate))
-                .ThenBy(t => t.Member)
-                .ToList();
-            
-            return data;
-        }
-
+     
         private IEnumerable<FlaggedAccountTicket> FilterFlaggedAccountTickets(
             IEnumerable<TicketInfo> rawData, 
             IEnumerable<CustomerSubcriber> customerSubcribers, 
@@ -502,7 +423,7 @@
             var htmlBuilder = new BetListHTMLBuilder();
             var ticketHelper = new TicketHelper();
 
-            // fiter by Sites
+            // filter by Sites
             var custIds = customerSubcribers.Select(c => c.CustId);
             var customerSubcriberDict = customerSubcribers.ToLookup(c => c.CustId, c => c.SubscriberName);
             bool filterBySites(long s) => custIds.Contains((int)s);
@@ -574,17 +495,12 @@
             if (custsOfSites.Any())
             {
                 var custExistedInMS = custsOfSites.Where(c => c.IsExistedInMS && !string.IsNullOrEmpty(c.SubscriberName)).Select(c => c.CustId).ToList();
-                var custOfEvidences = custExistedInMS.Count > 0 ? GetCustOfEvidences(custExistedInMS, evidenceCodes) : new List<CustomerEvidence>();
+                var custOfEvidences = custExistedInMS.Any() && evidenceCodes != "None" ? GetCustOfEvidences(custExistedInMS, evidenceCodes) : new List<CustomerEvidence>();
                 custOfEvidences = custOfEvidences.Concat(custsOfSites.Where(c => !c.IsExistedInMS && string.IsNullOrEmpty(c.SubscriberName)).Select(n => new CustomerEvidence { CustId = n.CustId, EvidenceCode = null, EvidenceName = null, IsExistedInMS = false }));
 
                 custOfEvidences = FilterCustomersByEvidences(custOfEvidences, evidenceCodes, otherEvidenceCode);
 
-                if (evidenceCodes != null && evidenceCodes.Contains(otherEvidenceCode))
-                {
-                    return FilterCustomerDetailEvidenceOthers(custInfo, custsOfSites, custOfEvidences);
-                }
-
-                return FilterCustomerDetails(custInfo, custsOfSites, custOfEvidences, string.IsNullOrEmpty(evidenceCodes));
+                return FilterCustomerDetails(custInfo, custsOfSites, custOfEvidences);
             }
 
             return new List<CustomerDetails>();
@@ -764,43 +680,7 @@
             return customers;
         }
 
-        private IEnumerable<CustomerDetails> FilterCustomerDetailEvidenceOthers(
-            IEnumerable<CustInfo> custInfo, 
-            IEnumerable<CustomerSubcriber> customerSubcribers, 
-            IEnumerable<CustomerEvidence> customerEvidences)
-        {
-            // filter by Sites
-            var custIds = customerSubcribers.Select(c => c.CustId);
-            bool filterBySites(long s) => custIds.Contains((int)s);
-
-            // filter by Evidences
-            var distinctedCustEvidence = customerEvidences.Distinct();
-            var customersBySelectedEvidences = distinctedCustEvidence.Select(c => (long)c.CustId).ToList();
-            var totalAssociation = GetTotalAssociations(custInfo.Select(i => i.CustId)).ToDictionary(o => o.CustId, o => o.TotalAssociation);
-            bool filterByEvidences(long e) => customersBySelectedEvidences.Contains(e);
-
-            IEnumerable<CustomerDetails> custDetails = custInfo
-                   .Where(c => filterByEvidences(c.CustId) && filterBySites(c.CustId))
-                   .GroupJoin(
-                   distinctedCustEvidence,
-                   info => info.CustId,
-                   evid => evid.CustId,
-                   (info, evidence) => new CustomerDetails
-                   {
-                       CustId = info.CustId,
-                       Member = info.Username,
-                       TotalWinLoss = (double)info.TotalWinlost,
-                       TotalStake = (double)info.TotalStake,
-                       Tickets = info.NoOfTickets,
-                       Evidence = evidence.Distinct().Count() > 0 ? string.Join(", ", evidence.Distinct().Select(e => e.EvidenceCodeForDisplay + "-" + e.EvidenceName)) : string.Empty,
-                       AssociatedAccounts = totalAssociation.ContainsKey(info.CustId) ? totalAssociation[info.CustId] : 0,
-                       CurrencyName = info.CurrencyName
-                   }).OrderBy(c => c.Member);
-
-            return custDetails;
-        }
-
-        private IEnumerable<CustomerDetails> FilterCustomerDetails(IEnumerable<CustInfo> custInfo, IEnumerable<CustomerSubcriber> custSubcribers, IEnumerable<CustomerEvidence> custEvidence, bool isAllEvidence)
+        private IEnumerable<CustomerDetails> FilterCustomerDetails(IEnumerable<CustInfo> custInfo, IEnumerable<CustomerSubcriber> custSubcribers, IEnumerable<CustomerEvidence> custEvidence)
         {
             // filter by Sites
             var custIds = custSubcribers.Select(c => c.CustId);
@@ -809,9 +689,11 @@
             // filter by Evidences
             var distinctedCustEvidence = custEvidence.Distinct();
             var customersBySelectedEvidences = distinctedCustEvidence.Select(c => (long)c.CustId).ToList();
-            bool filterByEvidences(long e) => isAllEvidence ? 1.Equals(1) : customersBySelectedEvidences.Contains(e);
+            bool filterByEvidences(long e) => customersBySelectedEvidences.Contains(e);
 
-            var totalAssociation = GetTotalAssociations(custInfo.Select(i => i.CustId)).ToDictionary(o => o.CustId, o => o.TotalAssociation);
+            var custExistedInMS = custEvidence.Where(c => c.IsExistedInMS).ToList();
+            var totalAssociation = custExistedInMS.Any() ? GetTotalAssociations(custInfo.Select(i => i.CustId)) : new List<CustomerTotalAssociation>();
+            var dicTotalAssociation = totalAssociation.ToDictionary(o => o.CustId, o => o.TotalAssociation);
 
             IEnumerable<CustomerDetails> custDetails = custInfo
                    .Where(c => filterByEvidences(c.CustId) && filterBySites(c.CustId))
@@ -827,7 +709,7 @@
                        TotalStake = (double)info.TotalStake,
                        Tickets = info.NoOfTickets,
                        Evidence = string.Join(", ", evidence.Distinct().Select(e => e.EvidenceCodeForDisplay + "-" + e.EvidenceName)),
-                       AssociatedAccounts = totalAssociation.ContainsKey(info.CustId) ? totalAssociation[info.CustId] : 0,
+                       AssociatedAccounts = dicTotalAssociation.ContainsKey(info.CustId) ? dicTotalAssociation[info.CustId] : 0,
                        CurrencyName = info.CurrencyName
                    }).OrderBy(c => c.Member);
 
@@ -844,14 +726,12 @@
             if (custOfSites.Any())
             {
                 var custExistedInMS = custOfSites.Where(c => c.IsExistedInMS && !string.IsNullOrEmpty(c.SubscriberName)).ToList();
-                var custOfEvidences = custExistedInMS.Count > 0 ? GetCustomersByEvidences(custExistedInMS, criteria.EvidenceCodeList) : new List<CustomerEvidence>();
+                var custOfEvidences = custExistedInMS.Any() && criteria.EvidenceCodeList != "None" ? GetCustomersByEvidences(custExistedInMS, criteria.EvidenceCodeList) : new List<CustomerEvidence>();
                 custOfEvidences = custOfEvidences.Concat(custOfSites.Where(c => !c.IsExistedInMS).Select(n => new CustomerEvidence { CustId = n.CustId, EvidenceCode = null, EvidenceName = null, IsExistedInMS = false })).ToList();
 
                 custOfEvidences = FilterCustomersByEvidences(custOfEvidences, criteria.EvidenceCodeList, criteria.OtherEvidenceCodes);
 
-                ticketDetails = (criteria.EvidenceCodeList != null && criteria.EvidenceCodeList.Contains(criteria.OtherEvidenceCodes))
-                    ? FilterArbitrageTicketsByEvidenceOthers(rawTickets, custOfSites, custOfEvidences, criteria.IsByIPAndDevice, criteria.IsOnlyCN88)
-                    : FilterArbitrageTickets(rawTickets, custOfSites, custOfEvidences, criteria.IsByIPAndDevice, criteria.IsOnlyCN88);                    
+                ticketDetails = FilterArbitrageTickets(rawTickets, custOfSites, custOfEvidences, criteria.IsByIPAndDevice, criteria.IsOnlyCN88);
 
                 if (!isSummary)
                 {
@@ -949,48 +829,6 @@
             ILookup<int, string> customerSubscriberDict,
             ILookup<int, string> customerEvidenceDict)
         {
-            var a = rawData
-                .AsParallel()
-                .GroupBy(t => Tuple.Create(t.BetTypeId, t.Handicap1 - t.Handicap2, t.LiveHomeScore, t.LiveAwayScore, t.GroupId), t => new ArbitrageTicket
-                {
-                    CustId = t.CustId,
-                    BetId = t.TransId,
-                    Currency = t.CurrencyName,
-                    DangerousLevel = t.DangerLevel,
-                    Site = customerSubscriberDict[(int)t.CustId].FirstOrDefault(),
-                    Evidences = customerEvidenceDict[(int)t.CustId],
-                    Odds = t.Odds,
-                    RawTransDate = t.TransDate,
-                    Username = t.UserName,
-                    BetTeam = t.BetTeam,
-                    Stake = new ArbitrageStake
-                    {
-                        ComPT = t.ComPTStake,
-                        Virtual = t.VirtualStake,
-                        Full = t.FullStake
-                    },
-                    Handicap = (double)(t.Handicap1 - t.Handicap2),
-                    Score = $"{t.LiveHomeScore} - {t.LiveAwayScore}",
-                    IsIPFraud = t.IsIPFraud,
-                    IP = t.IP
-                })
-                .OrderBy(g => g.Key.Item1).ThenBy(g => g.Key.Item3).ThenBy(g => g.Key.Item4).ThenBy(g => g.Key.Item2)
-                .Select(g =>
-                {
-                    var tmp = g.OrderBy(t => t.RawTransDate).ThenBy(t => t.Username).ToList();
-                    return new ArbitrageGroupTicketList
-                    {
-                        BettypeId = g.Key.Item1,
-                        BettypeName = CachedRef.GetBettypeName(g.Key.Item1),
-                        Away = tmp.Where(t => t.BetTeam == "a"),
-                        Home = tmp.Where(t => t.BetTeam == "h"),
-                        Handicap = g.Key.Item2,
-                        Score = $"{g.Key.Item3} - {g.Key.Item4}",
-                        LiveHomeScore = g.Key.Item3,
-                        LiveAwayScore = g.Key.Item4,
-                        GroupId = g.Key.Item5
-                    };
-                }).ToList();
             return rawData
                 .AsParallel()
                 .GroupBy(t => Tuple.Create(t.BetTypeId, t.Handicap1 - t.Handicap2, t.LiveHomeScore, t.LiveAwayScore, t.GroupId), t => new ArbitrageTicket
@@ -1033,30 +871,7 @@
                         GroupId = g.Key.Item5
                     };
                 });
-        }
-
-        private IEnumerable<ArbitrageGroupTicketList> FilterArbitrageTicketsByEvidenceOthers(
-            IEnumerable<TicketInfo> rawData,
-            IEnumerable<CustomerSubcriber> custSubcribers,
-            IEnumerable<CustomerEvidence> custEvidences, 
-            bool isByIPAndDevice, bool isShowCN88Only)
-        {
-            // filter by Sites
-            var custIds = custSubcribers.Select(c => c.CustId);
-            var customerSubscriberDict = custSubcribers.ToLookup(c => c.CustId, c => c.SubscriberName);
-            bool filterBySites(long s) => custIds.Contains((int)s);
-
-            // filter by Evidences
-            var customerEvidenceDict = custEvidences.ToLookup(c => c.CustId, c => c.EvidenceCodeForDisplay + "-" + c.EvidenceName);            
-            var customersBySelectedEvidences = custEvidences.Select(c => (long)c.CustId).ToList();
-            bool filterByEvidences(long e) => customersBySelectedEvidences.Contains(e);           
-            
-            return isByIPAndDevice
-                ? GenerateArbitrageTicketsByIPAndDevice(rawData.AsParallel().Where(c => filterByEvidences(c.CustId) && filterBySites(c.CustId) && !c.IsIPFraud),
-                        customerSubscriberDict, customerEvidenceDict, isShowCN88Only)
-                : GenerateArbitrageTickets(rawData.AsParallel().Where(c => filterByEvidences(c.CustId) && filterBySites(c.CustId)),
-                        customerSubscriberDict, customerEvidenceDict);
-        }
+        }        
 
         private IEnumerable<ArbitrageGroupTicketList> FilterArbitrageTickets(
             IEnumerable<TicketInfo> rawData,
@@ -1073,9 +888,7 @@
             var customerEvidenceDict = custEvidences.ToLookup(c => c.CustId, c => c.EvidenceCodeForDisplay + "-" + c.EvidenceName);
             var allCustomers = custEvidences.Select(c => (long)c.CustId).ToList();
             bool filterByEvidences(long e) => allCustomers.Contains(e);
-
-            var a = GenerateArbitrageTickets(rawData.AsParallel().Where(c => filterByEvidences(c.CustId) && filterBySites(c.CustId)),
-                        customerSubscriberDict, customerEvidenceDict);
+            
             return isByIPAndDevice
                 ? GenerateArbitrageTicketsByIPAndDevice(rawData.AsParallel().Where(c => filterByEvidences(c.CustId) && filterBySites(c.CustId) && !c.IsIPFraud),
                         customerSubscriberDict, customerEvidenceDict, isShowCN88Only)
