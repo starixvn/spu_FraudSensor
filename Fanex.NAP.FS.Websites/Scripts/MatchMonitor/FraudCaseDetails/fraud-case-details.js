@@ -195,9 +195,11 @@
         var url = common.modifyRelativeUrl("/MatchMonitor/GetFraudCaseArbitrageCustomerDetails");
 
         $.post(url, criteria, function (json) {
-            if (json.length > 0 && typeof json[0].TotalCustomers !== "undefined") {
+            if ((json.length > 0 && typeof json[0].TotalCustomers !== "undefined") || json.length >= 1000) {
                 customer_grid.DataTable().clear().rows.add([]).draw();
-                $("#customers").text(`By Customers (${json[0].TotalCustomers})`);
+                var totalCustomers = json.length >= 1000 ? json.length : json[0].TotalCustomers;
+
+                $("#customers").text(`By Customers (${totalCustomers})`);
                 $(".dataTables_empty").text("Too much data. Export Excel file instead!").css("color", "red");
 
             } else {
@@ -224,9 +226,7 @@
                             openSuspiciousHistoryLink(obj);
                         }
                     },
-                });
-                //$(".group-action").controlgroup();
-                //$(".group-action button").click(e => $(e.target).next().selectmenu("open"));
+                });                
             }
 
             if (loadingDone) {
