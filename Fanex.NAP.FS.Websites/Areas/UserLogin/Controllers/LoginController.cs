@@ -99,7 +99,6 @@
         /// 
 
         [HttpGet]
-        [CheckUMFilter]
         public ActionResult Index()
         {
             if (!NapSettings.Settings.IsNapHub && !IsSiteLogin)
