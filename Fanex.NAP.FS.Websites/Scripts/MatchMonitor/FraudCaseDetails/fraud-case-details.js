@@ -5,8 +5,7 @@
         associated_accounts = $("#associated-accounts"),
         ticket_last_7_days = $("#tickets-last-7-days"),
         ticket_by_ip = $("#ticket-by-ip");
-    var loadingDone = false;
-
+    var loadingDone = false;   
     var from_date = $("#transDateFrom");
     var to_date = $("#transDateTo");
 
@@ -26,6 +25,8 @@
         firstDay: 1,
         minDate: moment(`${moment().year() - 1}/${moment().subtract(10, "months").month()}/1`, "M dd, yy").toDate()
     }).datepicker("setDate", to_date.datepicker("getDate")).change(restrictToDate);
+
+    detail_tabs.removeClass("ui-widget");
 
     function restrictToDate() {
         var from_val = from_date.datepicker("getDate");
@@ -156,38 +157,21 @@
 
         $.post(url, criteria, function (json) {
             $("#customers").text(`By Customers (${json.length})`);
-            customer_grid.DataTable().clear().rows.add(json).draw();
+            customer_grid.DataTable().clear().rows.add(json).draw();                       
 
-            $(".action").selectmenu({
-                classes: {
-                    "ui-selectmenu-button": "ui-button-icon-only demo-splitbutton-select"
-                },
-                position: { my: "left top", at: "left bottom", collision: "flip" },
-                select: function () {
-                    var tr = $(this).parents("tr");
-
-                    var obj = customer_grid.DataTable().row(tr).data();
-
-                    if (this.value == "2") {
-                        renderAssociatedAccounts(obj);
-                    }
-                    else if (this.value == "1") {
-                        renderLast7DaysTickets(obj);
-                    }
-                    else {
-                        openSuspiciousHistoryLink(obj);
-                    }
-                },
-            });
-
+            actionSelectmenu();
             if (loadingDone) {
                 common.closeLoading();
             } else {
                 loadingDone = true;
             }
 
-            //$(".group-action").controlgroup();
-            //$(".group-action button").click(e => $(e.target).next().selectmenu("open"));            
+            if (json.length > 0) {
+                var urlAssociationAccounts = common.modifyRelativeUrl("/MatchMonitor/GetFlaggedAccountAssociationCustomers");
+                $.post(urlAssociationAccounts, { custIds: json[0].CustIdCaches }, function (aaResponse) {
+                    renderCustomerAssociatedAccounts(aaResponse);
+                })
+            }
         });
     }
 
@@ -444,6 +428,52 @@
             common.closeLoading();
 
             bindExportExcelByIP(obj);
+        });
+    }
+
+    function renderCustomerAssociatedAccounts(obj) {
+        customer_grid.DataTable().rows().every(function () {
+            var rowData = this.data();
+            var htmlAssociatedAccounts = rowData.AssociatedAccounts;
+            var custId = $(htmlAssociatedAccounts).attr("custId");
+            rowData.AssociatedAccounts = getTotalAssociation(custId, obj);
+            this.invalidate();
+        });        
+
+        customer_grid.DataTable().draw();
+        actionSelectmenu();
+    }
+
+    function getTotalAssociation(custId, arrCustId) {
+        for (var i = 0; i < arrCustId.length; i++) {
+            if (arrCustId[i].CustId == custId) {
+                return arrCustId[i].TotalAssociation;
+            }
+        }
+        return 0;
+    }
+
+    function actionSelectmenu() {
+        $(".action").selectmenu({
+            classes: {
+                "ui-selectmenu-button": "ui-button-icon-only demo-splitbutton-select"
+            },
+            position: { my: "left top", at: "left bottom", collision: "flip" },
+            select: function () {
+                var tr = $(this).parents("tr");
+
+                var obj = customer_grid.DataTable().row(tr).data();
+
+                if (this.value == "2") {
+                    renderAssociatedAccounts(obj);
+                }
+                else if (this.value == "1") {
+                    renderLast7DaysTickets(obj);
+                }
+                else {
+                    openSuspiciousHistoryLink(obj);
+                }
+            },
         });
     }
 
@@ -1219,7 +1249,7 @@
             { data: obj => numeral(obj.TotalStake).format("0,0.00"), className: "text-right", width: "100px" },
             { data: obj => obj.TotalWinLoss >= 0 ? numeral(obj.TotalWinLoss).format("0,0.00") : `<span class='text-red'>${numeral(obj.TotalWinLoss).format("0,0.00")}</span>`, className: "text-right", width: "100px" },
             { data: obj => obj.Evidence != null && obj.Evidence.length > 78 ? `<span title='${obj.Evidence}'>${obj.Evidence.substring(0, 75)}...</span>` : obj.Evidence, width: "500px" },
-            { data: obj => obj.AssociatedAccounts, className: "text-right", width: "50px" },
+            { data: obj => obj.AssociatedAccounts, className: "text-right", width: "50px" },            
             { defaultContent: renderCustomerAction(), className: "has-icon text-center", width: "70px" }
         ]
     });

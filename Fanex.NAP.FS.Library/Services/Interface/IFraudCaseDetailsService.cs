@@ -52,7 +52,7 @@
 
         IEnumerable<FlaggedAccountTicket> GetFlaggedAccountTickets(FlaggedAccountCriteria criteria);
 
-        IEnumerable<CustomerDetails> GetFlaggedAccountCustomers(FlaggedAccountCriteria criteria);
+        IEnumerable<CustomerDetails> GetFlaggedAccountCustomers(FlaggedAccountCriteria criteria, bool isExportFile = false);       
 
         byte[] ExportExcelFlaggedAccounts(FlaggedAccountCriteria criteria, string templatePath);
 
