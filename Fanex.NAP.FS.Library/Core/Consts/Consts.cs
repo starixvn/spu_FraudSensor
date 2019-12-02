@@ -20,6 +20,7 @@
 
         public const string EXPORTEXCEL_DATETIME_FORMAT = "yyyyMMdd";
 
-        public const string FRAUD_CASE_FILTER_ALL = "All";       
+        public const string FRAUD_CASE_FILTER_ALL = "All";
+        public const string DOM_DEFAULT_TOTAL_ASSOCIATED_ACCOUNT = "<span class='col-loader'></span>";
     }
 }

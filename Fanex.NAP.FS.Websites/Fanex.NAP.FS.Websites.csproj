@@ -1096,6 +1096,7 @@
     <Content Include="Views\FraudCase\DailyDataCapture\Dialog.cshtml" />
     <Content Include="Views\FraudCase\Index.cshtml" />
     <Content Include="Views\FraudCase\ScannedOfficeIP\InternalAccountDialog.cshtml" />
+    <Content Include="Views\MatchMonitor\FraudCaseDetails\ActionSelectMenu.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
