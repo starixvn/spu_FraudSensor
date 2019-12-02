@@ -10,7 +10,7 @@
     {
         IEnumerable<TicketDetails> GetTicketDetails(GetTicketCriteria criteria, bool saveChoice = false);
 
-        IEnumerable<CustomerDetails> GetCustomerDetails(GetCustomerCriteria criteria);
+        IEnumerable<CustomerDetails> GetCustomerDetails(GetCustomerCriteria criteria, bool isExportFile = false);
 
         byte[] ExportExcelForDetails(GetTicketCriteria criteria, string templatePath);
 
@@ -30,7 +30,7 @@
 
         IEnumerable<TicketDetails> GetTicketsFromIP(string ip, bool isShowSpecialCurrencies);
               
-        IEnumerable<CustomerDetails> GetArbitrageCustomerDetails(GetArbitrageCustomerCriteria criteria);       
+        IEnumerable<CustomerDetails> GetArbitrageCustomerDetails(GetArbitrageCustomerCriteria criteria, int totalTicketCustomer);       
 
         IEnumerable<ArbitrageGroupTicketList> GetArbitrageTickets(GetArbitrageTicketCriteria criteria, bool isSummary);
 

@@ -121,19 +121,24 @@
         common.showLoading();
 
         var url = common.modifyRelativeUrl("/MatchMonitor/GetFraudCaseCustomerDetails");
-
         $.get(url, parameters, function (json) {
-            customer_grid.DataTable().clear().rows.add(json).draw();
+            common.closeLoading();
 
+            customer_grid.DataTable().clear().rows.add(json).draw();
             $("#customers").text(`By Customers (${json.length})`);           
+
+            if (json.length > 0) {
+                var urlAssociationAccounts = common.modifyRelativeUrl("/MatchMonitor/GetTotalAssociationCustomers");
+                $.post(urlAssociationAccounts, { custIds: json[0].CustIdCaches }, function (aaResponse) {
+                    renderCustomerAssociatedAccounts(aaResponse);
+                })
+            }
 
             customer_grid.DataTable().on('click', 'span.ui-selectmenu-icon', function (event) {
                 var domElementTR = $(this).parents("tr");
                 var dataElementTR = customer_grid.DataTable().row(domElementTR).data();
                 actionSelectMenu(event, dataElementTR);
-            })
-
-            common.closeLoading();
+            })            
         });
     }
 
@@ -424,7 +429,7 @@
 
     function getTotalAssociation(custId, associations) {       
         for (var i = 0; i < associations.length; i++) {
-            if (associations[i].CustId == custId) {
+            if (associations[i].CustId == -1 || associations[i].CustId == custId) {
                 return associations[i].TotalAssociation;
             }
         }

@@ -85,14 +85,15 @@
                 .ThenBy(t => t.Member);
         }
 
-        public IEnumerable<CustomerDetails> GetCustomerDetails(GetCustomerCriteria criteria)
+        public IEnumerable<CustomerDetails> GetCustomerDetails(GetCustomerCriteria criteria, bool isExportFile = false)
         {
             using (var db = new ObjectDb(criteria.GetSettingKey()))
             using (var query = db.QueryMultiple(criteria))
             {
                 var custInfo = query.Read<CustInfo>();
+                var custIdCaches = custInfo.Select(i => i.CustId).Join();
                 var custEvidence = (criteria.FraudCaseId == (int)FraudCaseId.Arbitrage) ? new CustomerEvidence[0] : GetCustomerEvidences(custInfo.Select(info => info.CustId));
-                var totalAssociation = GetTotalAssociations(custInfo.Select(i => i.CustId)).ToDictionary(o => o.CustId, o => o.TotalAssociation);
+                var totalAssociation = isExportFile ? GetTotalAssociations(custInfo.Select(i => i.CustId)).ToDictionary(o => o.CustId, o => o.TotalAssociation) : new Dictionary<int, string>();
 
                 return custInfo.GroupJoin(
                     custEvidence,
@@ -106,8 +107,9 @@
                         TotalStake = (double)info.TotalStake,
                         Tickets = info.NoOfTickets,
                         Evidence = string.Join(", ", evidence.Distinct().Select(e => e.EvidenceCode + "-" + e.EvidenceName)),
-                        AssociatedAccounts = totalAssociation.ContainsKey(info.CustId) ? totalAssociation[info.CustId].ToString() : "0",
-                        CurrencyName = info.CurrencyName
+                        AssociatedAccounts = isExportFile ? (totalAssociation.ContainsKey(info.CustId) ? totalAssociation[info.CustId].ToString() : "0") : Consts.DOM_DEFAULT_TOTAL_ASSOCIATED_ACCOUNT,
+                        CurrencyName = info.CurrencyName,
+                        CustIdCaches = custIdCaches
                     }).OrderBy(c => c.Member);
             }
         }
@@ -135,7 +137,7 @@
                 FraudCaseId = criteria.FraudCaseId,
                 EventDate = criteria.EventDate,
                 IsShowSpecialCurrencies = criteria.IsShowSpecialCurrencies
-            });
+            }, true);
 
             var wb =
                 ExcelUtilities.GetWorkbook(templatePath)
@@ -268,13 +270,28 @@
 
         public IEnumerable<CustomerTotalAssociation> GetTotalAssociations(IEnumerable<int> custIds)
         {
-            var url = AppSettings.Get("FPS_WEBAPI_GET_TOTAL_ASSOCIATION");
-            var custIdFromAPIs = custIds.Chunk(200)
+            var url = AppSettings.Get(Consts.FPS_WEBAPI_GET_TOTAL_ASSOCIATION);
+
+            try
+            {
+                var custIdFromAPI = custIds.Chunk(200)
                                  .Select(q => ApiHelper.Post<string, IEnumerable<CustomerTotalAssociation>>(url, q.Join(), environment, mailingListId))
                                  .ToArray();
-            Task.WhenAll(custIdFromAPIs);
+                Task.WhenAll(custIdFromAPI);
 
-            return custIdFromAPIs.SelectMany(t => t.Result).ToList();
+                return custIdFromAPI.SelectMany(t => t.Result).ToList();
+            }
+            catch (Exception)
+            {
+                var custIdFromAPINA = new List<CustomerTotalAssociation>();
+                custIdFromAPINA.Add(new CustomerTotalAssociation
+                {
+                    CustId = -1,
+                    TotalAssociation = Consts.FPS_WEBAPI_RESPONSE_NA
+                });
+
+                return custIdFromAPINA;
+            }
         }
 
         public IEnumerable<CustomerAssociation> GetAssociations(int custId)
@@ -656,18 +673,18 @@
         #endregion
 
         #region Arbitrage
-        public IEnumerable<CustomerDetails> GetArbitrageCustomerDetails(GetArbitrageCustomerCriteria criteria)
+        public IEnumerable<CustomerDetails> GetArbitrageCustomerDetails(GetArbitrageCustomerCriteria criteria, int totalTicketCustomer)
         {
-            return GetArbitrageCustomerDetails(criteria, false);
+            return GetArbitrageCustomerDetails(criteria, totalTicketCustomer, false);
         }
 
-        private IEnumerable<CustomerDetails> GetArbitrageCustomerDetails(GetArbitrageCustomerCriteria criteria, bool isExportFile)
+        private IEnumerable<CustomerDetails> GetArbitrageCustomerDetails(GetArbitrageCustomerCriteria criteria, int totalTicketCustomer, bool isExportFile)
         {
             var rawCustomers = DataService.GetData<CustInfo>(criteria);
 
             if (criteria.Sites == Consts.FRAUD_CASE_FILTER_ALL 
                 && ReplaceFilterEvidences(criteria.EvidenceCodeList) == Consts.FRAUD_CASE_FILTER_ALL
-                && rawCustomers.Count() > maxLengthRowsDisplay 
+                && totalTicketCustomer >= maxLengthRowsDisplay 
                 && !isExportFile)
             {
                 return GetCustomerDetailsForMuchData(rawCustomers);
@@ -703,13 +720,8 @@
             bool filterByEvidences(long e) => customersBySelectedEvidences.Contains(e);
 
             var custIdCaches = custInfo.Select(i => i.CustId).Join();
-            var custExistedInMS = custEvidence.Where(c => c.IsExistedInMS).ToList();
-            var isGenerateTotalAssociation = true;           
-            if (custExistedInMS.Any() || !isExportFile)
-            {
-                isGenerateTotalAssociation = false;
-            }
-            var totalAssociation = isGenerateTotalAssociation ? GetTotalAssociations(custInfo.Select(i => i.CustId)) : new List<CustomerTotalAssociation>();
+            var custExistedInMS = custEvidence.Where(c => c.IsExistedInMS).ToList();                    
+            var totalAssociation = isExportFile && custExistedInMS.Any() ? GetTotalAssociations(custInfo.Select(i => i.CustId)) : new List<CustomerTotalAssociation>();
             var dicTotalAssociation = totalAssociation.ToDictionary(o => o.CustId, o => o.TotalAssociation);
 
             IEnumerable<CustomerDetails> custDetails = custInfo
@@ -726,7 +738,7 @@
                        TotalStake = (double)info.TotalStake,
                        Tickets = info.NoOfTickets,
                        Evidence = string.Join(", ", evidence.Distinct().Select(e => e.EvidenceCodeForDisplay + "-" + e.EvidenceName)),
-                       AssociatedAccounts = isGenerateTotalAssociation ? (dicTotalAssociation.ContainsKey(info.CustId) ? dicTotalAssociation[info.CustId].ToString() : "0") : Consts.DOM_DEFAULT_TOTAL_ASSOCIATED_ACCOUNT,
+                       AssociatedAccounts = isExportFile ? (dicTotalAssociation.ContainsKey(info.CustId) ? dicTotalAssociation[info.CustId].ToString() : "0") : Consts.DOM_DEFAULT_TOTAL_ASSOCIATED_ACCOUNT,
                        CurrencyName = info.CurrencyName,
                        CustIdCaches = custIdCaches
                    }).OrderBy(c => c.Member);
@@ -1043,7 +1055,7 @@
             var legend = GetMatchInfo(criteria.MatchId, (int)FraudCaseId.Arbitrage, criteria.EventDate);
             legend.Filter = array;
 
-            var customers = GetArbitrageCustomerDetails(criteria, true);
+            var customers = GetArbitrageCustomerDetails(criteria, listCustIdFromTickets.Count(), true);
 
             if (listCustIdFromTickets != null)
             {
