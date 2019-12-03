@@ -1802,6 +1802,25 @@ table.dataTable tbody tr.selected td {
 .dataTables_wrapper .dataTables_paginate {
   margin-left: 20px; }
 
+.ajax-loader-in-table {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    margin-top: -5px;
+    margin-left: -30px;
+    background-image: url("../../images/ajax_loader.gif");
+    background-repeat: no-repeat;}
+
+.ajax-loader-in-table-v2 {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    margin-top: -5px;
+    margin-left: -30px;
+    background-image: url("../../V2/images/ajax_loader.gif");
+    background-repeat: no-repeat;
+}
+
 .info-name {
   padding: 10px;
   background-color: #f0f0f0;
