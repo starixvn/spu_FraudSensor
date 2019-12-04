@@ -36,9 +36,9 @@
             {
                 GetChoiceExcel(ticket, row.GetCell(cell_idx++));
             }
-            catch (Exception ex2)
+            catch (Exception ex)
             {
-                row.GetCell(cell_idx).SetCellValue("Error2 " + ex2.Message);
+                row.GetCell(cell_idx).SetCellValue(ex.Message);
             }
 
             row.GetCell(cell_idx++).SetCellValue(ticket.Score);
@@ -95,9 +95,15 @@
             var score = string.Empty;
 
             if (t.ChoiceExcel != null)
-            {               
-                bet_team.Append(t.ChoiceExcel.betTeam);
-                handicap.Append(t.ChoiceExcel.Handicap);
+            {
+                if (t.ChoiceExcel.betTeam != null)
+                {
+                    bet_team.Append(t.ChoiceExcel.betTeam);
+                }
+                if (t.ChoiceExcel.Handicap != null)
+                {
+                    handicap.Append(t.ChoiceExcel.Handicap);
+                }                
                 score = BetListHelper.ExtractStringFromHtml(t.ChoiceExcel.Score);
             }
 

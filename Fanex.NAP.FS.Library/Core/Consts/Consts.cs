@@ -25,5 +25,6 @@
         public const string FRAUD_CASE_FILTER_ALL = "All";
         public const string DOM_DEFAULT_TOTAL_ASSOCIATED_ACCOUNT = "<span class='ajax-loader-in-table'></span>";
         public const string DOM_DEFAULT_TOTAL_ASSOCIATED_ACCOUNT_V2 = "<span class='ajax-loader-in-table-v2'></span>";
+        public const string DOM_DEFAULT_TOTAL_ASSOCIATED_ACCOUNT_NAPFS = "<span class='ajax-loader-in-table-napfs'></span>";
     }
 }

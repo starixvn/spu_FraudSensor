@@ -94,7 +94,7 @@
                 var custIdCaches = custInfo.Select(i => i.CustId).Join();
                 var custEvidence = (criteria.FraudCaseId == (int)FraudCaseId.Arbitrage) ? new CustomerEvidence[0] : GetCustomerEvidences(custInfo.Select(info => info.CustId));
                 var totalAssociation = isExportFile ? GetTotalAssociations(custInfo.Select(i => i.CustId)).ToDictionary(o => o.CustId, o => o.TotalAssociation) : new Dictionary<int, string>();
-                var defaultAssociatedAccount = environment == 2 ? Consts.DOM_DEFAULT_TOTAL_ASSOCIATED_ACCOUNT_V2 : Consts.DOM_DEFAULT_TOTAL_ASSOCIATED_ACCOUNT;
+                var defaultAssociatedAccount = environment == 2 ? Consts.DOM_DEFAULT_TOTAL_ASSOCIATED_ACCOUNT_V2 : (environment == 3 ? Consts.DOM_DEFAULT_TOTAL_ASSOCIATED_ACCOUNT_NAPFS : Consts.DOM_DEFAULT_TOTAL_ASSOCIATED_ACCOUNT);
 
                 return custInfo.GroupJoin(
                     custEvidence,
@@ -711,8 +711,8 @@
             IEnumerable<CustomerEvidence> custEvidences,
             bool isExportFile)
         {
-            var customerEvidenceDict = custEvidences.ToLookup(c => c.CustId, c => c.EvidenceCodeForDisplay + "-" + c.EvidenceName);            
-            var defaultAssociatedAccount = environment == 2 ? Consts.DOM_DEFAULT_TOTAL_ASSOCIATED_ACCOUNT_V2 : Consts.DOM_DEFAULT_TOTAL_ASSOCIATED_ACCOUNT;
+            var customerEvidenceDict = custEvidences.ToLookup(c => c.CustId, c => c.EvidenceCodeForDisplay + "-" + c.EvidenceName);
+            var defaultAssociatedAccount = environment == 2 ? Consts.DOM_DEFAULT_TOTAL_ASSOCIATED_ACCOUNT_V2 : (environment == 3 ? Consts.DOM_DEFAULT_TOTAL_ASSOCIATED_ACCOUNT_NAPFS : Consts.DOM_DEFAULT_TOTAL_ASSOCIATED_ACCOUNT);
             var custIdCaches = custInfo.Select(i => i.CustId).Join();
             var custExistedInMS = custEvidences.Where(c => c.IsExistedInMS).ToList();
             var totalAssociation = isExportFile && custExistedInMS.Any() ? GetTotalAssociations(custInfo.Select(i => i.CustId)) : new List<CustomerTotalAssociation>();
