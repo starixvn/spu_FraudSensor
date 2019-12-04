@@ -419,6 +419,16 @@
     background-repeat: no-repeat;
 }
 
+.ajax-loader-in-table-napfs {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    margin-top: -5px;
+    margin-left: -30px;
+    background-image: url("../../NAPFS/images/ajax_loader.gif");
+    background-repeat: no-repeat;
+}
+
 // Display detail information
 
 .info-name {
