@@ -708,38 +708,37 @@
         private IEnumerable<CustomerDetails> FilterCustomerDetails(
             IEnumerable<CustInfo> custInfo, 
             IEnumerable<CustomerSubcriber> custSubcribers, 
-            IEnumerable<CustomerEvidence> custEvidence,
+            IEnumerable<CustomerEvidence> custEvidences,
             bool isExportFile)
         {
-            // filter by Sites
-            var custIds = custSubcribers.Select(c => c.CustId);
-            bool filterBySites(long s) => custIds.Contains((int)s);
-
-            // filter by Evidences
-            var customerEvidenceDict = custEvidence.ToLookup(c => c.CustId, c => c.EvidenceCodeForDisplay + "-" + c.EvidenceName);            
-            var customersBySelectedEvidences = custEvidence.Select(c => (long)c.CustId).ToList();
-            bool filterByEvidences(long e) => customersBySelectedEvidences.Contains(e);
-
+            var customerEvidenceDict = custEvidences.ToLookup(c => c.CustId, c => c.EvidenceCodeForDisplay + "-" + c.EvidenceName);            
             var defaultAssociatedAccount = environment == 2 ? Consts.DOM_DEFAULT_TOTAL_ASSOCIATED_ACCOUNT_V2 : Consts.DOM_DEFAULT_TOTAL_ASSOCIATED_ACCOUNT;
             var custIdCaches = custInfo.Select(i => i.CustId).Join();
-            var custExistedInMS = custEvidence.Where(c => c.IsExistedInMS).ToList();                    
+            var custExistedInMS = custEvidences.Where(c => c.IsExistedInMS).ToList();
             var totalAssociation = isExportFile && custExistedInMS.Any() ? GetTotalAssociations(custInfo.Select(i => i.CustId)) : new List<CustomerTotalAssociation>();
-            var dicTotalAssociation = totalAssociation.ToDictionary(o => o.CustId, o => o.TotalAssociation);         
+            var dicTotalAssociation = totalAssociation.ToDictionary(o => o.CustId, o => o.TotalAssociation);
 
-            IEnumerable<CustomerDetails> custDetails = custInfo.AsParallel()
-                   .Where(c => filterByEvidences(c.CustId) && filterBySites(c.CustId))
-                   .Select(c => new CustomerDetails
-                   {
-                       CustId = c.CustId,
-                       Member = c.Username,
-                       TotalWinLoss = (double)c.TotalWinlost,
-                       TotalStake = (double)c.TotalStake,
-                       Tickets = c.NoOfTickets,
-                       Evidence = string.Join(", ", customerEvidenceDict[c.CustId]),
-                       AssociatedAccounts = isExportFile ? (dicTotalAssociation.ContainsKey(c.CustId) ? dicTotalAssociation[c.CustId].ToString() : "0") : defaultAssociatedAccount,
-                       CurrencyName = c.CurrencyName,
-                       CustIdCaches = custIdCaches
-                   });                   
+            var custDetails = custInfo.Distinct().AsEnumerable()
+                .GroupJoin(custSubcribers.Distinct(),
+                    custA => custA.CustId,
+                    custB => custB.CustId,
+                    (custA, custB) => new CustomerDetails
+                    {
+                        CustId = custA.CustId,
+                        Member = custA.Username,
+                        TotalWinLoss = (double)custA.TotalWinlost,
+                        TotalStake = (double)custA.TotalStake,
+                        Tickets = custA.NoOfTickets,
+                        Evidence = string.Join(", ", customerEvidenceDict[custA.CustId]),
+                        AssociatedAccounts = isExportFile ? (dicTotalAssociation.ContainsKey(custA.CustId) ? dicTotalAssociation[custA.CustId].ToString() : "0") : defaultAssociatedAccount,
+                        CurrencyName = custA.CurrencyName,
+                        CustIdCaches = custIdCaches
+                    })
+                .GroupJoin(custEvidences.Distinct(),
+                     custA => custA.CustId,
+                    custB => custB.CustId,
+                    (custA, custB) => custA)
+                .OrderBy(c => c.Member);
 
             return custDetails;
         }

@@ -23,7 +23,6 @@
         {
             var ticket = data;
             var cell_idx = 0;
-
             row.GetCell(cell_idx++).SetCellValue(row.RowNum - 2);
             row.GetCell(cell_idx++).SetCellValue(ticket.Member);
             row.GetCell(cell_idx++).SetCellValue(string.Join(",", ticket.Evidences));
@@ -33,7 +32,15 @@
             row.GetCell(cell_idx++).SetCellValue(ticket.TransDate);
             row.GetCell(cell_idx++).SetCellValue(ticket.BetID);
             row.GetCell(cell_idx++).SetCellValue(ticket.BettypeRealName);
-            GetChoiceExcel(ticket, row.GetCell(cell_idx++));
+            try
+            {
+                GetChoiceExcel(ticket, row.GetCell(cell_idx++));
+            }
+            catch (Exception ex2)
+            {
+                row.GetCell(cell_idx).SetCellValue("Error2 " + ex2.Message);
+            }
+
             row.GetCell(cell_idx++).SetCellValue(ticket.Score);
             GetOddsExcel(ticket, row.GetCell(cell_idx++));
             row.GetCell(cell_idx++).SetCellValue((double)ticket.Stake);
@@ -88,7 +95,7 @@
             var score = string.Empty;
 
             if (t.ChoiceExcel != null)
-            {
+            {               
                 bet_team.Append(t.ChoiceExcel.betTeam);
                 handicap.Append(t.ChoiceExcel.Handicap);
                 score = BetListHelper.ExtractStringFromHtml(t.ChoiceExcel.Score);
