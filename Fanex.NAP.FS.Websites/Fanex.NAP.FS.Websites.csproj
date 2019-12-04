@@ -367,6 +367,9 @@
     <Content Include="Areas\UserLogin\Views\Common\Style\Images\UnderMaintenance.gif" />
     <Content Include="Content\CoreBetList.css" />
     <Content Include="Content\gulpfile.js" />
+    <Content Include="Content\images\ajax_loader.gif">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\images\details_close.png" />
     <Content Include="Content\images\details_open.png" />
     <Content Include="Content\images\multiple-select.png" />
@@ -646,6 +649,9 @@
       <LastGenOutput>FSFunctionKeys.cs</LastGenOutput>
     </Content>
     <Content Include="Global.asax" />
+    <Content Include="images\ajax_loader.gif">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="images\details_close.png" />
     <Content Include="images\details_open.png" />
     <Content Include="images\multiple-select.png" />
@@ -1095,6 +1101,7 @@
     <Content Include="Views\FraudCase\DailyDataCapture\Dialog.cshtml" />
     <Content Include="Views\FraudCase\Index.cshtml" />
     <Content Include="Views\FraudCase\ScannedOfficeIP\InternalAccountDialog.cshtml" />
+    <Content Include="Views\MatchMonitor\FraudCaseDetails\ActionSelectMenu.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />

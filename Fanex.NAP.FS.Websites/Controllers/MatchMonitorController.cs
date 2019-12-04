@@ -4,6 +4,7 @@
     using Fanex.NAP.Core.Web.Attribute;
     using Fanex.NAP.FS.Library.Core.Consts;
     using Fanex.NAP.FS.Library.Criteria.MatchMonitor;
+    using Fanex.NAP.FS.Library.DTO;
     using Fanex.NAP.FS.Library.ViewModels.MatchMonitor;
     using Fanex.NAP.FS.Library.ViewModels.MatchMonitor.FraudCaseDetails;
     using Fanex.NAP.FS.Service.Utilities;
@@ -187,22 +188,29 @@
         public ActionResult GetFlaggedAccountTickets(GetFlaggedAccountTicketCriteria criteria)
         {
             criteria.IsShowSpecialCurrencies = _isShowSpecialCurrencies;
-
-            var flaggedAccountTickets =
+            var tickets =
                _fraudCaseDetailService.GetFlaggedAccountTickets(criteria)
                .GroupBy(t => t.Bettype)
                .Select(g => new { key = g.Key, data = g.AsEnumerable() });
 
-            return Json(flaggedAccountTickets, JsonRequestBehavior.AllowGet);
+            return Json(tickets, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
         public ActionResult GetFlaggedAccountCustomers(GetFlaggedAccountCustomerCriteria criteria)
         {
             criteria.IsShowSpecialCurrencies = _isShowSpecialCurrencies;
-            var data = _fraudCaseDetailService.GetFlaggedAccountCustomers(criteria);
+            var customers = _fraudCaseDetailService.GetFlaggedAccountCustomers(criteria);
+        
+            return Json(customers, JsonRequestBehavior.AllowGet);
+        }
 
-            return Json(data, JsonRequestBehavior.AllowGet);
+        public ActionResult GetTotalAssociationCustomers(string custIds)
+        {
+            var custIdList = custIds != null ? custIds.Split(',').Select(Int32.Parse).ToList() : new List<int>();
+            var associations = _fraudCaseDetailService.GetTotalAssociations(custIdList);            
+
+            return Json(associations, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
@@ -268,31 +276,31 @@
             {
                 criteria.Site = "CN88";
             }
-
-            var arbitrageCustomerDetails = _fraudCaseDetailService.GetArbitrageCustomerDetails(criteria);
-
+            
+            var custIdList = new List<long>();
             if (SessionManager.Get<List<long>>(SessionCustomerList) != null)
             {
-                var custIdList = SessionManager.Get<List<long>>(SessionCustomerList);
+                custIdList = SessionManager.Get<List<long>>(SessionCustomerList);
+            }
+            var arbitrageCustomerDetails = _fraudCaseDetailService.GetArbitrageCustomerDetails(criteria, custIdList.Count);
 
-                if (arbitrageCustomerDetails is List<CustomerDetailsForMuchData>)
-                {
-                    var arbitrageCustomerDetailsMuchData = arbitrageCustomerDetails as List<CustomerDetailsForMuchData>;
-                    var totalCustomersCombineWithTickets = arbitrageCustomerDetailsMuchData[0].CustIdList.Join(custIdList.AsEnumerable(),
-                                custA => custA,
-                                custB => custB,
-                                (custA, custB) => custA).Count();
-                    arbitrageCustomerDetailsMuchData[0].TotalCustomers = totalCustomersCombineWithTickets;
+            if (arbitrageCustomerDetails is List<CustomerDetailsForMuchData>)
+            {
+                var arbitrageCustomerDetailsMuchData = arbitrageCustomerDetails as List<CustomerDetailsForMuchData>;
+                var totalCustomersCombineWithTickets = arbitrageCustomerDetailsMuchData[0].CustIdList.Join(custIdList.AsEnumerable(),
+                            custA => custA,
+                            custB => custB,
+                            (custA, custB) => custA).Count();
+                arbitrageCustomerDetailsMuchData[0].TotalCustomers = totalCustomersCombineWithTickets;
 
-                    return Json(arbitrageCustomerDetailsMuchData, JsonRequestBehavior.AllowGet);
-                }
-                else
-                {
-                    arbitrageCustomerDetails = arbitrageCustomerDetails.Join(custIdList.AsEnumerable(),
-                                custA => custA.CustId,
-                                custB => custB,
-                                (custA, custB) => custA);
-                }
+                return Json(arbitrageCustomerDetailsMuchData, JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+                arbitrageCustomerDetails = arbitrageCustomerDetails.Join(custIdList.AsEnumerable(),
+                            custA => custA.CustId,
+                            custB => custB,
+                            (custA, custB) => custA);
             }
 
             return Json(arbitrageCustomerDetails, JsonRequestBehavior.AllowGet);
@@ -316,8 +324,8 @@
         [HttpPost]
         public ActionResult SaveFileArbitrageCustomers(GetArbitrageCustomerCriteria criteria)
         {
-            List<long> custIdList = null;
-            if (SessionManager.Get<List<long>>(SessionCustomerList) != null && criteria.IsByIPAndDevice)
+            var custIdList = new List<long>();
+            if (SessionManager.Get<List<long>>(SessionCustomerList) != null)
             {
                 custIdList = SessionManager.Get<List<long>>(SessionCustomerList);
             }

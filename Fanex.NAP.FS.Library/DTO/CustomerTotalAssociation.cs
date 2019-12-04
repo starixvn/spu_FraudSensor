@@ -4,6 +4,6 @@
     {
         public int CustId { get; set; }
 
-        public int TotalAssociation { get; set; }
+        public string TotalAssociation { get; set; }
     }
 }

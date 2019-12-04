@@ -5,10 +5,10 @@
         associated_accounts = $("#associated-accounts"),
         ticket_last_7_days = $("#tickets-last-7-days"),
         ticket_by_ip = $("#ticket-by-ip");
-    var loadingDone = false;
-
+    var loadingDone = false;   
     var from_date = $("#transDateFrom");
     var to_date = $("#transDateTo");
+    var action_select_menu = $("#action-select-menu");
 
     var global_idx = 0;
 
@@ -26,6 +26,12 @@
         firstDay: 1,
         minDate: moment(`${moment().year() - 1}/${moment().subtract(10, "months").month()}/1`, "M dd, yy").toDate()
     }).datepicker("setDate", to_date.datepicker("getDate")).change(restrictToDate);
+
+    detail_tabs.removeClass("ui-widget");
+    action_select_menu.draggable({
+        containment: "parent"
+    });
+    action_select_menu.hide();
 
     function restrictToDate() {
         var from_val = from_date.datepicker("getDate");
@@ -115,39 +121,24 @@
         common.showLoading();
 
         var url = common.modifyRelativeUrl("/MatchMonitor/GetFraudCaseCustomerDetails");
-
         $.get(url, parameters, function (json) {
-            customer_grid.DataTable().clear().rows.add(json).draw();
-
-            $("#customers").text(`By Customers (${json.length})`);
-
-            $(".action").selectmenu({
-                classes: {
-                    "ui-selectmenu-button": "ui-button-icon-only demo-splitbutton-select"
-                },
-                position: { my: "left top", at: "left bottom", collision: "flip" },
-                select: function () {
-                    var tr = $(this).parents("tr");
-
-                    var obj = customer_grid.DataTable().row(tr).data();
-
-                    if (this.value == "2") {
-                        renderAssociatedAccounts(obj);
-                    }
-                    else if (this.value == "1") {
-                        renderLast7DaysTickets(obj);
-                    }
-                    else {
-                        openSuspiciousHistoryLink(obj);
-                    }
-                },
-            });
-
-            //$(".group-action").controlgroup();
-
-            //$(".group-action button").click(e => $(e.target).next().selectmenu("open"));
-
             common.closeLoading();
+
+            customer_grid.DataTable().clear().rows.add(json).draw();
+            $("#customers").text(`By Customers (${json.length})`);           
+
+            if (json.length > 0) {
+                var urlAssociationAccounts = common.modifyRelativeUrl("/MatchMonitor/GetTotalAssociationCustomers");
+                $.post(urlAssociationAccounts, { custIds: json[0].CustIdCaches }, function (aaResponse) {
+                    renderCustomerAssociatedAccounts(aaResponse);
+                })
+            }
+
+            customer_grid.DataTable().on('click', 'span.ui-selectmenu-icon', function (event) {
+                var domElementTR = $(this).parents("tr");
+                var dataElementTR = customer_grid.DataTable().row(domElementTR).data();
+                actionSelectMenu(event, dataElementTR);
+            })            
         });
     }
 
@@ -158,43 +149,37 @@
             $("#customers").text(`By Customers (${json.length})`);
             customer_grid.DataTable().clear().rows.add(json).draw();
 
-            $(".action").selectmenu({
-                classes: {
-                    "ui-selectmenu-button": "ui-button-icon-only demo-splitbutton-select"
-                },
-                position: { my: "left top", at: "left bottom", collision: "flip" },
-                select: function () {
-                    var tr = $(this).parents("tr");
-
-                    var obj = customer_grid.DataTable().row(tr).data();
-
-                    if (this.value == "2") {
-                        renderAssociatedAccounts(obj);
-                    }
-                    else if (this.value == "1") {
-                        renderLast7DaysTickets(obj);
-                    }
-                    else {
-                        openSuspiciousHistoryLink(obj);
-                    }
-                },
-            });
-
             if (loadingDone) {
                 common.closeLoading();
             } else {
                 loadingDone = true;
             }
 
-            //$(".group-action").controlgroup();
-            //$(".group-action button").click(e => $(e.target).next().selectmenu("open"));            
-        });
+            if (json.length > 0) {
+                var urlAssociationAccounts = common.modifyRelativeUrl("/MatchMonitor/GetTotalAssociationCustomers");
+                $.post(urlAssociationAccounts, { custIds: json[0].CustIdCaches }, function (aaResponse) {
+                    renderCustomerAssociatedAccounts(aaResponse);
+                })
+            }
+
+            customer_grid.DataTable().on('click', 'span.ui-selectmenu-icon', function (event) {                
+                var domElementTR = $(this).parents("tr");
+                var dataElementTR = customer_grid.DataTable().row(domElementTR).data();
+                actionSelectMenu(event, dataElementTR);
+            })
+        })
     }
 
     function loadCustomerGridArbitrage(criteria) {
         var url = common.modifyRelativeUrl("/MatchMonitor/GetFraudCaseArbitrageCustomerDetails");
 
         $.post(url, criteria, function (json) {
+            if (loadingDone) {
+                common.closeLoading();
+            } else {
+                loadingDone = true;
+            }
+
             if ((json.length > 0 && typeof json[0].TotalCustomers !== "undefined") || json.length >= 1000) {
                 customer_grid.DataTable().clear().rows.add([]).draw();
                 var totalCustomers = json.length >= 1000 ? json.length : json[0].TotalCustomers;
@@ -204,36 +189,21 @@
 
             } else {
                 customer_grid.DataTable().clear().rows.add(json).draw();
-                $("#customers").text(`By Customers (${json.length})`);
+                $("#customers").text(`By Customers (${json.length})`);              
 
-                $(".action").selectmenu({
-                    classes: {
-                        "ui-selectmenu-button": "ui-button-icon-only demo-splitbutton-select"
-                    },
-                    position: { my: "left top", at: "left bottom", collision: "flip" },
-                    select: function () {
-                        var tr = $(this).parents("tr");
+                if (json.length > 0) {
+                    var urlAssociationAccounts = common.modifyRelativeUrl("/MatchMonitor/GetTotalAssociationCustomers");
+                    $.post(urlAssociationAccounts, { custIds: json[0].CustIdCaches }, function (aaResponse) {
+                        renderCustomerAssociatedAccounts(aaResponse);
+                    })
+                }
 
-                        var obj = customer_grid.DataTable().row(tr).data();
-
-                        if (this.value == "2") {
-                            renderAssociatedAccounts(obj);
-                        }
-                        else if (this.value == "1") {
-                            renderLast7DaysTickets(obj);
-                        }
-                        else {
-                            openSuspiciousHistoryLink(obj);
-                        }
-                    },
-                });                
-            }
-
-            if (loadingDone) {
-                common.closeLoading();
-            } else {
-                loadingDone = true;
-            }
+                customer_grid.DataTable().on('click', 'span.ui-selectmenu-icon', function (event) {
+                    var domElementTR = $(this).parents("tr");
+                    var dataElementTR = customer_grid.DataTable().row(domElementTR).data();
+                    actionSelectMenu(event, dataElementTR);
+                })
+            }            
         });
     }
 
@@ -378,13 +348,13 @@
     }
 
     function renderCustomerAction() {
-        var options = [
-            "<option value='0'>View Suspicious History</option>",
-            "<option value='1'>View tickets of last 7 days</option>",
-            "<option value='2'>View Associated Accounts</option>"
-        ]
+        var html = '<div class="group-action">';
+        html += '<span class="ui-selectmenu-button ui-button-icon-only demo-splitbutton-select ui-selectmenu-button-closed ui-corner-all ui-button ui-widget">';
+        html += '<span class="ui-selectmenu-icon ui-icon ui-icon-triangle-1-s"></span>';
+        html += '</span>';
+        html += '</div>';
 
-        return `<div class='group-action'><button class='hide'></button><select class='action'>${options.join("")}</select></div>`;
+        return html;
     }
 
     function renderAssociatedAccounts(obj) {
@@ -444,6 +414,57 @@
             common.closeLoading();
 
             bindExportExcelByIP(obj);
+        });
+    }
+
+    function renderCustomerAssociatedAccounts(associations) {        
+        customer_grid.DataTable().rows().every(function () {
+            var rowData = this.data();
+            rowData.AssociatedAccounts = getTotalAssociation(rowData.CustId, associations);
+            this.invalidate();
+        });
+
+        customer_grid.DataTable().draw();
+    }
+
+    function getTotalAssociation(custId, associations) {       
+        for (var i = 0; i < associations.length; i++) {
+            if (associations[i].CustId == -1 || associations[i].CustId == custId) {
+                return associations[i].TotalAssociation;
+            }
+        }
+        return 0;
+    }
+
+    function actionSelectMenu(e, dataElementTR) {
+        var top = isFlaggedAccount || isArbitrage ? e.pageY - 325 : e.pageY - 210;
+        var left = e.pageX - 200;
+        action_select_menu.css({
+            'top': top, 'left': left, 'position': 'absolute'
+        }).show();
+
+        $('.ui-menu-item').hover(
+            function () {
+                $(this).addClass('ui-state-active');
+            },
+            function () {
+                $(this).removeClass('ui-state-active');
+            }
+        )        
+        $('.ui-menu').unbind('click');
+        $('.ui-menu').click(function (e) {
+            var actionValue = $(e.target).attr('action-value');
+            switch (actionValue) {
+                case "1":
+                    renderLast7DaysTickets(dataElementTR);
+                    break;
+                case "2":
+                    renderAssociatedAccounts(dataElementTR);
+                    break;
+                default:
+                    openSuspiciousHistoryLink(dataElementTR);
+                    break;
+            }
         });
     }
 
@@ -1219,7 +1240,7 @@
             { data: obj => numeral(obj.TotalStake).format("0,0.00"), className: "text-right", width: "100px" },
             { data: obj => obj.TotalWinLoss >= 0 ? numeral(obj.TotalWinLoss).format("0,0.00") : `<span class='text-red'>${numeral(obj.TotalWinLoss).format("0,0.00")}</span>`, className: "text-right", width: "100px" },
             { data: obj => obj.Evidence != null && obj.Evidence.length > 78 ? `<span title='${obj.Evidence}'>${obj.Evidence.substring(0, 75)}...</span>` : obj.Evidence, width: "500px" },
-            { data: obj => obj.AssociatedAccounts, className: "text-right", width: "50px" },
+            { data: obj => obj.AssociatedAccounts, className: "text-right", width: "50px" },            
             { defaultContent: renderCustomerAction(), className: "has-icon text-center", width: "70px" }
         ]
     });
@@ -1227,6 +1248,15 @@
     detail_tabs.tabs({
         activate: (e, ui) => switchTab(ui)
     });
+
+    $(document).click(function (e) {
+        var target = $(e.target);
+        var clickInside = target.is(".ui-selectmenu-icon") || target.parents(".group-action").length != 0;
+
+        if (!clickInside) {
+            action_select_menu.hide();
+        }
+    })
 
     $("#generate").click(loadGrids);
 

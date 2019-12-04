@@ -85,14 +85,16 @@
                 .ThenBy(t => t.Member);
         }
 
-        public IEnumerable<CustomerDetails> GetCustomerDetails(GetCustomerCriteria criteria)
+        public IEnumerable<CustomerDetails> GetCustomerDetails(GetCustomerCriteria criteria, bool isExportFile = false)
         {
             using (var db = new ObjectDb(criteria.GetSettingKey()))
             using (var query = db.QueryMultiple(criteria))
             {
                 var custInfo = query.Read<CustInfo>();
+                var custIdCaches = custInfo.Select(i => i.CustId).Join();
                 var custEvidence = (criteria.FraudCaseId == (int)FraudCaseId.Arbitrage) ? new CustomerEvidence[0] : GetCustomerEvidences(custInfo.Select(info => info.CustId));
-                var totalAssociation = GetTotalAssociations(custInfo.Select(i => i.CustId)).ToDictionary(o => o.CustId, o => o.TotalAssociation);
+                var totalAssociation = isExportFile ? GetTotalAssociations(custInfo.Select(i => i.CustId)).ToDictionary(o => o.CustId, o => o.TotalAssociation) : new Dictionary<int, string>();
+                var defaultAssociatedAccount = environment == 2 ? Consts.DOM_DEFAULT_TOTAL_ASSOCIATED_ACCOUNT_V2 : Consts.DOM_DEFAULT_TOTAL_ASSOCIATED_ACCOUNT;
 
                 return custInfo.GroupJoin(
                     custEvidence,
@@ -106,8 +108,9 @@
                         TotalStake = (double)info.TotalStake,
                         Tickets = info.NoOfTickets,
                         Evidence = string.Join(", ", evidence.Distinct().Select(e => e.EvidenceCode + "-" + e.EvidenceName)),
-                        AssociatedAccounts = totalAssociation.ContainsKey(info.CustId) ? totalAssociation[info.CustId] : 0,
-                        CurrencyName = info.CurrencyName
+                        AssociatedAccounts = isExportFile ? (totalAssociation.ContainsKey(info.CustId) ? totalAssociation[info.CustId].ToString() : "0") : defaultAssociatedAccount,
+                        CurrencyName = info.CurrencyName,
+                        CustIdCaches = custIdCaches
                     }).OrderBy(c => c.Member);
             }
         }
@@ -135,7 +138,7 @@
                 FraudCaseId = criteria.FraudCaseId,
                 EventDate = criteria.EventDate,
                 IsShowSpecialCurrencies = criteria.IsShowSpecialCurrencies
-            });
+            }, true);
 
             var wb =
                 ExcelUtilities.GetWorkbook(templatePath)
@@ -268,12 +271,28 @@
 
         public IEnumerable<CustomerTotalAssociation> GetTotalAssociations(IEnumerable<int> custIds)
         {
-            var url = AppSettings.Get("FPS_WEBAPI_GET_TOTAL_ASSOCIATION");
-            var tsk = ApiHelper.Post<string, IEnumerable<CustomerTotalAssociation>>(url, string.Join(",", custIds), environment, mailingListId);
+            var url = AppSettings.Get(Consts.FPS_WEBAPI_GET_TOTAL_ASSOCIATION);
 
-            Task.WaitAll(tsk);
+            try
+            {
+                var custIdFromAPI = custIds.Chunk(200)
+                                 .Select(q => ApiHelper.Post<string, IEnumerable<CustomerTotalAssociation>>(url, q.Join(), environment, mailingListId))
+                                 .ToArray();
+                Task.WhenAll(custIdFromAPI);
 
-            return tsk.Result ?? Enumerable.Empty<CustomerTotalAssociation>();
+                return custIdFromAPI.SelectMany(t => t.Result).ToList();
+            }
+            catch (Exception)
+            {
+                var custIdFromAPINA = new List<CustomerTotalAssociation>();
+                custIdFromAPINA.Add(new CustomerTotalAssociation
+                {
+                    CustId = -1,
+                    TotalAssociation = Consts.FPS_WEBAPI_RESPONSE_NA
+                });
+
+                return custIdFromAPINA;
+            }
         }
 
         public IEnumerable<CustomerAssociation> GetAssociations(int custId)
@@ -472,7 +491,7 @@
             return data;
         }
 
-        public IEnumerable<CustomerDetails> GetFlaggedAccountCustomers(FlaggedAccountCriteria criteria)
+        public IEnumerable<CustomerDetails> GetFlaggedAccountCustomers(FlaggedAccountCriteria criteria, bool isExportFile = false)
         {
             var isBettypeOthers = false;
 
@@ -485,10 +504,15 @@
             var rawCustomers = DataService.GetData<CustInfo>(criteria);
             var custsByBettype = FilterCustomerByBetType(rawCustomers, isBettypeOthers);
 
-            return FilterCustomerDetail(custsByBettype, criteria.Sites, criteria.EvidenceCodeList, criteria.OtherEvidenceCodes);
+            return FilterCustomerDetail(custsByBettype, criteria.Sites, criteria.EvidenceCodeList, criteria.OtherEvidenceCodes, isExportFile);
         }
 
-        private IEnumerable<CustomerDetails> FilterCustomerDetail(IEnumerable<CustInfo> custInfo, string sites, string evidenceCodes, string otherEvidenceCode)
+        private IEnumerable<CustomerDetails> FilterCustomerDetail(
+            IEnumerable<CustInfo> custInfo, 
+            string sites, 
+            string evidenceCodes, 
+            string otherEvidenceCode,
+            bool isExportFile)
         {
             var custsOfSites = GetCustsOfSites(custInfo.Select(c => c.CustId), sites);
 
@@ -496,11 +520,12 @@
             {
                 var custExistedInMS = custsOfSites.Where(c => c.IsExistedInMS && !string.IsNullOrEmpty(c.SubscriberName)).Select(c => c.CustId).ToList();
                 var custOfEvidences = custExistedInMS.Any() && evidenceCodes != "None" ? GetCustOfEvidences(custExistedInMS, evidenceCodes) : new List<CustomerEvidence>();
-                custOfEvidences = custOfEvidences.Concat(custsOfSites.Where(c => !c.IsExistedInMS && string.IsNullOrEmpty(c.SubscriberName)).Select(n => new CustomerEvidence { CustId = n.CustId, EvidenceCode = null, EvidenceName = null, IsExistedInMS = false }));
+                custOfEvidences = custOfEvidences.Concat(custsOfSites.Where(c => !c.IsExistedInMS && string.IsNullOrEmpty(c.SubscriberName))
+                                                                    .Select(n => new CustomerEvidence { CustId = n.CustId, EvidenceCode = null, EvidenceName = null, IsExistedInMS = false }));
 
                 custOfEvidences = FilterCustomersByEvidences(custOfEvidences, evidenceCodes, otherEvidenceCode);
 
-                return FilterCustomerDetails(custInfo, custsOfSites, custOfEvidences);
+                return FilterCustomerDetails(custInfo, custsOfSites, custOfEvidences, isExportFile);
             }
 
             return new List<CustomerDetails>();
@@ -576,7 +601,7 @@
             Task.WhenAll(custOfEvidences);
 
             return custOfEvidences.Where(t => t.Result != null).SelectMany(t => t.Result);
-        }
+        }       
 
         public byte[] ExportExcelFlaggedAccounts(FlaggedAccountCriteria criteria, string templatePath)
         {
@@ -585,7 +610,7 @@
             var tickets = GetFlaggedAccountTickets(criteria);
 
             GetFlaggedAccountCustomerCriteria cusCriteria = ObjectHelper.ConvertObject<GetFlaggedAccountCustomerCriteria>(criteria);
-            var customers = GetFlaggedAccountCustomers(cusCriteria);
+            var customers = GetFlaggedAccountCustomers(cusCriteria, true);
 
             var wb =
                 ExcelUtilities.GetWorkbook(templatePath)
@@ -649,24 +674,24 @@
         #endregion
 
         #region Arbitrage
-        public IEnumerable<CustomerDetails> GetArbitrageCustomerDetails(GetArbitrageCustomerCriteria criteria)
+        public IEnumerable<CustomerDetails> GetArbitrageCustomerDetails(GetArbitrageCustomerCriteria criteria, int totalTicketCustomer)
         {
-            return GetArbitrageCustomerDetails(criteria, false);
+            return GetArbitrageCustomerDetails(criteria, totalTicketCustomer, false);
         }
 
-        private IEnumerable<CustomerDetails> GetArbitrageCustomerDetails(GetArbitrageCustomerCriteria criteria, bool isExportFile)
+        private IEnumerable<CustomerDetails> GetArbitrageCustomerDetails(GetArbitrageCustomerCriteria criteria, int totalTicketCustomer, bool isExportFile)
         {
             var rawCustomers = DataService.GetData<CustInfo>(criteria);
 
             if (criteria.Sites == Consts.FRAUD_CASE_FILTER_ALL 
                 && ReplaceFilterEvidences(criteria.EvidenceCodeList) == Consts.FRAUD_CASE_FILTER_ALL
-                && rawCustomers.Count() > maxLengthRowsDisplay 
+                && totalTicketCustomer >= maxLengthRowsDisplay 
                 && !isExportFile)
             {
                 return GetCustomerDetailsForMuchData(rawCustomers);
             }
 
-            return FilterCustomerDetail(rawCustomers, criteria.Sites, criteria.EvidenceCodeList, criteria.OtherEvidenceCodes);
+            return FilterCustomerDetail(rawCustomers, criteria.Sites, criteria.EvidenceCodeList, criteria.OtherEvidenceCodes, isExportFile);
         }
 
         private List<CustomerDetailsForMuchData> GetCustomerDetailsForMuchData(IEnumerable<CustInfo> custInfo)
@@ -678,40 +703,42 @@
             customers.Add(new CustomerDetailsForMuchData { TotalCustomers = totalCustomers, CustIdList = custIdList });
 
             return customers;
-        }
+        }        
 
-        private IEnumerable<CustomerDetails> FilterCustomerDetails(IEnumerable<CustInfo> custInfo, IEnumerable<CustomerSubcriber> custSubcribers, IEnumerable<CustomerEvidence> custEvidence)
+        private IEnumerable<CustomerDetails> FilterCustomerDetails(
+            IEnumerable<CustInfo> custInfo, 
+            IEnumerable<CustomerSubcriber> custSubcribers, 
+            IEnumerable<CustomerEvidence> custEvidences,
+            bool isExportFile)
         {
-            // filter by Sites
-            var custIds = custSubcribers.Select(c => c.CustId);
-            bool filterBySites(long s) => custIds.Contains((int)s);
-
-            // filter by Evidences
-            var distinctedCustEvidence = custEvidence.Distinct();
-            var customersBySelectedEvidences = distinctedCustEvidence.Select(c => (long)c.CustId).ToList();
-            bool filterByEvidences(long e) => customersBySelectedEvidences.Contains(e);
-
-            var custExistedInMS = custEvidence.Where(c => c.IsExistedInMS).ToList();
-            var totalAssociation = custExistedInMS.Any() ? GetTotalAssociations(custInfo.Select(i => i.CustId)) : new List<CustomerTotalAssociation>();
+            var customerEvidenceDict = custEvidences.ToLookup(c => c.CustId, c => c.EvidenceCodeForDisplay + "-" + c.EvidenceName);            
+            var defaultAssociatedAccount = environment == 2 ? Consts.DOM_DEFAULT_TOTAL_ASSOCIATED_ACCOUNT_V2 : Consts.DOM_DEFAULT_TOTAL_ASSOCIATED_ACCOUNT;
+            var custIdCaches = custInfo.Select(i => i.CustId).Join();
+            var custExistedInMS = custEvidences.Where(c => c.IsExistedInMS).ToList();
+            var totalAssociation = isExportFile && custExistedInMS.Any() ? GetTotalAssociations(custInfo.Select(i => i.CustId)) : new List<CustomerTotalAssociation>();
             var dicTotalAssociation = totalAssociation.ToDictionary(o => o.CustId, o => o.TotalAssociation);
 
-            IEnumerable<CustomerDetails> custDetails = custInfo
-                   .Where(c => filterByEvidences(c.CustId) && filterBySites(c.CustId))
-                   .GroupJoin(
-                   distinctedCustEvidence,
-                   info => info.CustId,
-                   evid => evid.CustId,
-                   (info, evidence) => new CustomerDetails
-                   {
-                       CustId = info.CustId,
-                       Member = info.Username,
-                       TotalWinLoss = (double)info.TotalWinlost,
-                       TotalStake = (double)info.TotalStake,
-                       Tickets = info.NoOfTickets,
-                       Evidence = string.Join(", ", evidence.Distinct().Select(e => e.EvidenceCodeForDisplay + "-" + e.EvidenceName)),
-                       AssociatedAccounts = dicTotalAssociation.ContainsKey(info.CustId) ? dicTotalAssociation[info.CustId] : 0,
-                       CurrencyName = info.CurrencyName
-                   }).OrderBy(c => c.Member);
+            var custDetails = custInfo.Distinct().AsEnumerable()
+                .GroupJoin(custSubcribers.Distinct(),
+                    custA => custA.CustId,
+                    custB => custB.CustId,
+                    (custA, custB) => new CustomerDetails
+                    {
+                        CustId = custA.CustId,
+                        Member = custA.Username,
+                        TotalWinLoss = (double)custA.TotalWinlost,
+                        TotalStake = (double)custA.TotalStake,
+                        Tickets = custA.NoOfTickets,
+                        Evidence = string.Join(", ", customerEvidenceDict[custA.CustId]),
+                        AssociatedAccounts = isExportFile ? (dicTotalAssociation.ContainsKey(custA.CustId) ? dicTotalAssociation[custA.CustId].ToString() : "0") : defaultAssociatedAccount,
+                        CurrencyName = custA.CurrencyName,
+                        CustIdCaches = custIdCaches
+                    })
+                .GroupJoin(custEvidences.Distinct(),
+                     custA => custA.CustId,
+                    custB => custB.CustId,
+                    (custA, custB) => custA)
+                .OrderBy(c => c.Member);
 
             return custDetails;
         }
@@ -1025,7 +1052,7 @@
             var legend = GetMatchInfo(criteria.MatchId, (int)FraudCaseId.Arbitrage, criteria.EventDate);
             legend.Filter = array;
 
-            var customers = GetArbitrageCustomerDetails(criteria, true);
+            var customers = GetArbitrageCustomerDetails(criteria, listCustIdFromTickets.Count(), true);
 
             if (listCustIdFromTickets != null)
             {

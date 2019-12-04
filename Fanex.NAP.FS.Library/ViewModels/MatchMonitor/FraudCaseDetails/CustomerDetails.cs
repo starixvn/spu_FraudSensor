@@ -12,10 +12,12 @@
 
         public string Evidence { get; set; }
 
-        public int AssociatedAccounts { get; set; }
+        public string AssociatedAccounts { get; set; }
 
         public string CurrencyName { get; set; }
 
-        public int CustId { get; set; }
+        public int CustId { get; set; }     
+
+        public string CustIdCaches { get; set; }
     }
 }
