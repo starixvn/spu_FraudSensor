@@ -2,7 +2,7 @@
 {
     using System;
 
-    public class AssociatedAccountsDetailMonitor
+    public class AssociatedAccountsMonitorDetail
     {
         public int AssAccId { get; set; }
 
@@ -20,7 +20,7 @@
             {
                 try
                 {
-                    return Enum.GetName(typeof(UserLevelName), this.AssociatedCustLevel);
+                    return Enum.GetName(typeof(RoleLevel), this.AssociatedCustLevel);
                 }
                 catch
                 {

@@ -21,7 +21,7 @@
         <td class="info-value">@ViewBag.NoOfAssociations</td>
         <td class="info-name">Date Range</td>
         <td class="info-value">@ViewBag.DateRange</td>
-    </tr>  
+    </tr>
 </table>
 
 <div class="form-filter">
@@ -91,7 +91,8 @@
                 <th>Site</th>
                 <th>Level</th>
                 <th>Evidence</th>
-                <th>1st Associated</th>
+                <th>New Association</th>
+                <th>All Association</th>
                 <th>Verified</th>
                 <th>Verified By</th>
                 <th>Note</th>
@@ -100,6 +101,7 @@
         <tbody></tbody>
     </table>
 </div>
+@Html.Partial("AllAssociatedAccounts")
 
 @section scripts{
     <script type="text/javascript">
@@ -111,5 +113,6 @@
     </script>
     <script src="~/Scripts/MultipleSelect/jquery.multiselect.filter.js"></script>
     <script src="~/Scripts/MultipleSelect/jquery.multiselect.js"></script>
-    <script src="~/Scripts/AssociatedAccountMonitor/associated-accounts-detail-monitor.js"></script>
+    <script src="~/Scripts/AssociatedAccountMonitor/associated-accounts-monitor-detail.js"></script>
+    <script src="~/Scripts/AssociatedAccountMonitor/all-associated-accounts.js"></script>
 }

@@ -85,15 +85,16 @@
             scrollCollapse: true,
             columnDefs: [
                 { targets: "_all", defaultContent: "-" },                
-                { targets: [0, 2, 3, 4, 6], orderable: false }
+                { targets: [0, 2, 3, 4, 6, 7], orderable: false }
             ],
             columns: [
                 { data: (row, type, set, meta) => meta.row + 1, className: "text-center", width: "5%" },
                 { data: row => row.MainAccountUsername, className: "text-center", width: "10%" },
                 { data: row => row.MainAccountSite, className: "text-center", width: "10%" },
-                { data: row => row.MainAccountLevelName, className: "text-center", width: "10%" },
-                { data: row => renderEvidence(row.MainAccountEvidences), className: "text-left", width: "20%" },
-                { data: row => renderNoOfAssociations(row), className: "text-center", width: "10%" },
+                { data: row => row.MainAccountLevelName, className: "text-center", width: "7%" },
+                { data: row => renderEvidence(row.MainAccountEvidences), className: "text-left", width: "17%" },
+                { data: row => renderNoOfAssociations(row), className: "text-center", width: "8%" },
+                { data: row => renderAllAssociations(row), className: "text-center", width: "8%" },
                 { data: row => row.NoOfVerified, className: "text-center", width: "10%" }
             ],
             dom: "t<'pagination'<'page-size'lp>i>",
@@ -107,7 +108,7 @@
                 zeroRecords: "There's no data"
             },
             order: [[1, "asc"]]
-        });
+        });        
     }
 
     function renderEvidence(evidences) {
@@ -136,9 +137,15 @@
             noOfAssociationsDisplay = parseInt(noOfAssociations / 1e3) + "K";
         }
 
-        return `<a href='AssociatedAccountsMonitor/AssociatedAccountsDetailMonitor?AccountCustId=${filter.AccountCustId}&Username=${filter.Username}&NoOfAssociations=${filter.NoOfAssociations}&DateFrom=${filter.DateFrom}&DateTo=${filter.DateTo}' target='_blank'>
+        return `<a href='AssociatedAccountsMonitor/AssociatedAccountsMonitorDetail?AccountCustId=${filter.AccountCustId}&Username=${filter.Username}&NoOfAssociations=${filter.NoOfAssociations}&DateFrom=${filter.DateFrom}&DateTo=${filter.DateTo}' target='_blank'>
             <span class='btn-no-of-associations'>${noOfAssociationsDisplay}</span></a>`;
     }
+
+    function renderAllAssociations(row) {
+        var allAssociationsFormat = '<span class="btn-all-associations link" data-cust-id="{0}" data-role-id="{1}">View</span>';
+
+        return allAssociationsFormat.format(row.MainAccountCustId, row.MainAccountLevel);
+    }    
 
     function generateReport() {
         var url = common.modifyRelativeUrl("/AssociatedAccountsMonitor/GetAssociatedAccountsMonitor");
@@ -205,8 +212,21 @@
         grid_associated_account.DataTable().clear().rows.add(json).draw();
         grid_associated_account.DataTable().columns.adjust();
         common.closeLoading();
+
+        handleAssociatedAccountGridEvent();
     }
-       
+
+    function handleAssociatedAccountGridEvent() {
+        grid_associated_account.find('span.btn-all-associations').click(function () {
+            var link = $(this);
+            var custId = link.attr('data-cust-id');
+            var roleId = link.attr('data-role-id');
+
+            var formAllAssociatedAccount = new all_associated_accounts();
+            formAllAssociatedAccount.OpenModal(custId, roleId);
+        })
+    }
+
     init();
 
     btn_generate.click(generateReport);

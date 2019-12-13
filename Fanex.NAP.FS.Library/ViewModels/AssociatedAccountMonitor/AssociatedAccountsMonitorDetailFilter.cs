@@ -3,7 +3,7 @@
     using System;
     using System.Collections.Generic;
 
-    public class AssociatedAccountsDetailMonitorFilter
+    public class AssociatedAccountsMonitorDetailFilter
     {
         public int AccountCustId { get; set; }
 

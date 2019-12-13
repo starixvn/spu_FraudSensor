@@ -425,8 +425,9 @@
     <Compile Include="Services\Interface\IFraudSensorTaskService.cs" />
     <Compile Include="Services\Interface\IFraudCaseService.cs" />
     <Compile Include="Services\Interface\IMatchMonitorService.cs" />
-    <Compile Include="ViewModels\AssociatedAccountMonitor\AssociatedAccountsDetailMonitor.cs" />
-    <Compile Include="ViewModels\AssociatedAccountMonitor\AssociatedAccountsDetailMonitorFilter.cs" />
+    <Compile Include="ViewModels\AssociatedAccountMonitor\AllAssociatedAccountsFilter.cs" />
+    <Compile Include="ViewModels\AssociatedAccountMonitor\AssociatedAccountsMonitorDetail.cs" />
+    <Compile Include="ViewModels\AssociatedAccountMonitor\AssociatedAccountsMonitorDetailFilter.cs" />
     <Compile Include="ViewModels\AssociatedAccountMonitor\AssociatedAccountMonitorNote.cs" />
     <Compile Include="ViewModels\AssociatedAccountMonitor\AssociatedAccountsMonitor.cs" />
     <Compile Include="ViewModels\AssociatedAccountMonitor\AssociatedAccountsMonitorFilter.cs" />

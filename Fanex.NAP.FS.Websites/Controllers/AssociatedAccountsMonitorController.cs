@@ -10,18 +10,18 @@
 
     public class AssociatedAccountsMonitorController : BaseController
     {
-        private readonly IAssociatedAccountsMonitorService service;
+        private readonly IAssociatedAccountsMonitorService _service;
 
         public AssociatedAccountsMonitorController()
         {
-            service = new AssociatedAccountsMonitorService();
+            _service = new AssociatedAccountsMonitorService();
         }        
 
         [NapAuth(FunctionKey = FSFunctionKeys.AssociatedAccountsMonitor, Policy = Core.Business.Constant.Policy.Read)]
         public ActionResult Index()
         {
             var evidencesCache = new StringBuilder();
-            var evidences = service.GetAllEvidences();
+            var evidences = _service.GetAllEvidences();
 
             foreach (var evidence in evidences)
             {
@@ -30,7 +30,7 @@
 
             ViewBag.Evidences = evidences;
             ViewBag.EvidencesCache = evidencesCache.ToString();
-            ViewBag.Subscribers = service.GetAllSubscribers();
+            ViewBag.Subscribers = _service.GetAllSubscribers();
             ViewBag.Username = this.User.Identity.Name;
 
             return View();
@@ -40,7 +40,18 @@
         [NapAuth(FunctionKey = FSFunctionKeys.AssociatedAccountsMonitor, Policy = Core.Business.Constant.Policy.Read)]
         public ActionResult GetAssociatedAccountsMonitor(AssociatedAccountsMonitorFilter filter)
         {
-            var data = service.GetAssociatedAccountsToMonitor(filter);
+            var data = _service.GetAssociatedAccountsMonitor(filter);
+            var jsonResult = Json(data, JsonRequestBehavior.AllowGet);
+            jsonResult.MaxJsonLength = int.MaxValue;
+
+            return jsonResult;
+        }
+
+        [HttpPost]
+        [NapAuth(FunctionKey = FSFunctionKeys.AssociatedAccountsMonitor, Policy = Core.Business.Constant.Policy.Read)]
+        public ActionResult GetAllAssociatedAccounts(AllAssociatedAccountsFilter filter)
+        {
+            var data = _service.GetAllAssociatedAccounts(filter);
             var jsonResult = Json(data, JsonRequestBehavior.AllowGet);
             jsonResult.MaxJsonLength = int.MaxValue;
 
@@ -48,10 +59,10 @@
         }
 
         [NapAuth(FunctionKey = FSFunctionKeys.AssociatedAccountsMonitor, Policy = Core.Business.Constant.Policy.Read)]
-        public ActionResult AssociatedAccountsDetailMonitor(AssociatedAccountsDetailMonitorFilter filter)
+        public ActionResult AssociatedAccountsMonitorDetail(AssociatedAccountsMonitorDetailFilter filter)
         {
             var evidencesCache = new StringBuilder();
-            var evidences = service.GetAllEvidences();
+            var evidences = _service.GetAllEvidences();
 
             foreach (var evidence in evidences)
             {
@@ -60,7 +71,7 @@
 
             ViewBag.Evidences = evidences;
             ViewBag.EvidencesCache = evidencesCache.ToString();
-            ViewBag.Subscribers = service.GetAllSubscribers();
+            ViewBag.Subscribers = _service.GetAllSubscribers();
             ViewBag.AccountCustId = filter.AccountCustId;
             ViewBag.Username = filter.Username;
             ViewBag.NoOfAssociations = filter.NoOfAssociations;
@@ -68,14 +79,14 @@
             ViewBag.DateTo = filter.DateTo;
             ViewBag.DateRange = filter.DateFrom.ToString("MMM dd, yyyy") + " - " + filter.DateTo.ToString("MMM dd, yyyy");
 
-            return View();
+            return View("Detail");
         }
 
         [HttpPost]
         [NapAuth(FunctionKey = FSFunctionKeys.AssociatedAccountsMonitor, Policy = Core.Business.Constant.Policy.Read)]
-        public ActionResult GetAssociatedAccountsDetailMonitor(AssociatedAccountsDetailMonitorFilter filter)
+        public ActionResult GetAssociatedAccountsMonitorDetail(AssociatedAccountsMonitorDetailFilter filter)
         {
-            var data = service.GetAssociatedAccountsDetailToMonitor(filter);
+            var data = _service.GetAssociatedAccountsMonitorDetail(filter);
             var jsonResult = Json(data, JsonRequestBehavior.AllowGet);
             jsonResult.MaxJsonLength = int.MaxValue;
 
@@ -87,7 +98,7 @@
         public ActionResult VerifyAssociatedAccountMonitor(AssociatedAccountMonitorVerify accountVerify)
         {
             accountVerify.UserId = CurrentSession.UserId;
-            var data = service.VerifyAssociatedAccountMonitor(accountVerify);
+            var data = _service.VerifyAssociatedAccountMonitor(accountVerify);
 
             return Json(data, JsonRequestBehavior.AllowGet);
         }
@@ -96,7 +107,7 @@
         [NapAuth(FunctionKey = FSFunctionKeys.AssociatedAccountsMonitor, Policy = Core.Business.Constant.Policy.Read)]
         public ActionResult UpdateNoteAssociatedAccountMonitor(AssociatedAccountMonitorNote accountNote)
         {
-            var data = service.UpdateNoteAssociatedAccountMonitor(accountNote);
+            var data = _service.UpdateNoteAssociatedAccountMonitor(accountNote);
 
             return Json(data, JsonRequestBehavior.AllowGet);
         }

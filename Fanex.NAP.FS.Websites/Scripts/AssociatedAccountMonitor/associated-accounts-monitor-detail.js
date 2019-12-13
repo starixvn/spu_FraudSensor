@@ -55,8 +55,8 @@
             scrollCollapse: true,
             columnDefs: [
                 { targets: "_all", defaultContent: "-" },
-                { targets: 6, type: "check-box" },
-                { targets: [0, 2, 3, 4, 5, 6, 7, 8], orderable: false }
+                { targets: 7, type: "check-box" },
+                { targets: [0, 2, 3, 4, 5, 6, 7, 8, 9], orderable: false }
             ],
             columns: [
                 { data: (row, type, set, meta) => meta.row + 1, className: "text-center", width: "5%" },
@@ -64,10 +64,15 @@
                 { data: row => row.AssociatedCustSite, className: "text-center", width: "10%" },
                 { data: row => row.AssociatedCustLevelName, className: "text-center", width: "8%" },
                 { data: row => renderEvidence(row.AssociatedCustEvidences), className: "text-left", width: "15%" },
-                { data: row => row.FirstAssociatedDateToString, className: "text-center", width: "10%" },               
+                { data: row => row.FirstAssociatedDateToString, className: "text-center", width: "10%" },
+                {
+                    data: row => renderAllAssociations(row), className: "text-center", width: "8%", createdCell: (cell, _, row) => {
+                        $('.btn-all-associations', cell).click(() => handleAllAssociatedAccounts(cell));
+                    }
+                },
                 {
                     data: renderverificationCheckBox, className: "text-center", width: "5%", createdCell: (cell, _, row) => {
-                        $('.chk-verification', cell).change(() => handleUpdateVerification(cell, row))
+                        $('.chk-verification', cell).change(() => handleUpdateVerification(cell, row));
                     }
                 },
                 { data: row => row.VerifiedOfView, className: "text-center", width: "12%" },
@@ -101,7 +106,13 @@
             return "<span title='" + evidences + "'>" + evidencesForDisplay + "</span>";
         }
         return evidences;
-    }
+    }   
+
+    function renderAllAssociations(row) {
+        var allAssociationsFormat = '<span class="btn-all-associations link" data-cust-id="{0}" data-role-id="{1}">View</span>';
+
+        return allAssociationsFormat.format(row.MainAccountCustId, row.MainAccountLevel);
+    } 
 
     function renderverificationCheckBox(row) {
         return "<label class='checkbox'>"
@@ -148,7 +159,7 @@
     }
 
     function generateReport() {
-        var url = common.modifyRelativeUrl("/AssociatedAccountsMonitor/GetAssociatedAccountsDetailMonitor");
+        var url = common.modifyRelativeUrl("/AssociatedAccountsMonitor/GetAssociatedAccountsMonitorDetail");
         var paramFilter = getParamsFilter();
 
         common.showLoading();
@@ -195,6 +206,15 @@
         grid_associated_account.DataTable().clear().rows.add(json).draw();
         grid_associated_account.DataTable().columns.adjust();
         common.closeLoading();
+    }
+
+    function handleAllAssociatedAccounts(cell) {
+        var $target = $(cell).find('span.btn-all-associations');
+        var custId = $target.attr('data-cust-id');
+        var roleId = $target.attr('data-role-id');
+
+        var formAllAssociatedAccount = new all_associated_accounts();
+        formAllAssociatedAccount.OpenModal(custId, roleId);
     }
 
     function handleUpdateVerification(cell, row) {

@@ -1,5 +1,4 @@
 ﻿@using Fanex.NAP.FS.Library.ViewModels.AssociatedAccountMonitor
-@using Fanex.NAP.FS.Library.ViewModels
 @using Fanex.NAP.FS.Library.Core.Consts
 @{
     ViewBag.Title = "AssociatedAccounts";
@@ -80,7 +79,8 @@
                 <th>Site</th>
                 <th>Level</th>
                 <th>Evidence</th>
-                <th>1st Associated</th>
+                <th>New Association</th>
+                <th>All Association</th>
                 <th>Verified</th>
             </tr>
         </thead>
@@ -88,11 +88,14 @@
     </table>
 </div>
 
+@Html.Partial("AllAssociatedAccounts")
+
 @section scripts{
     <script type="text/javascript">
-        var EVIDENCECACHE = '@ViewBag.EvidencesCache';       
+        var EVIDENCECACHE = '@ViewBag.EvidencesCache';
     </script>
     <script src="~/Scripts/MultipleSelect/jquery.multiselect.filter.js"></script>
     <script src="~/Scripts/MultipleSelect/jquery.multiselect.js"></script>
     <script src="~/Scripts/AssociatedAccountMonitor/associated-accounts-monitor.js"></script>
+    <script src="~/Scripts/AssociatedAccountMonitor/all-associated-accounts.js"></script>
 }

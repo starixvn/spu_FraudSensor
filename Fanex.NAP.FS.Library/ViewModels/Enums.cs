@@ -7,7 +7,7 @@
         NotVerified
     }
 
-    public enum UserLevelName
+    public enum RoleLevel
     {
         Member = 1,
         Agent = 2,

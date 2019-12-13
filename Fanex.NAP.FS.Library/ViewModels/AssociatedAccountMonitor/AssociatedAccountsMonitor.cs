@@ -18,7 +18,7 @@
             {
                 try
                 {
-                    return Enum.GetName(typeof(UserLevelName), this.MainAccountLevel);
+                    return Enum.GetName(typeof(RoleLevel), this.MainAccountLevel);
                 }
                 catch
                 {

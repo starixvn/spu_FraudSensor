@@ -11,20 +11,19 @@
     using System.Net.Http;
     using System.Linq;
     using Fanex.NAP.Core.Service.Impl;
-    using System.Text;    
+    using System.Text;
+    using Fanex.NAP.FS.Library.DTO;
 
     public class AssociatedAccountsMonitorService : IAssociatedAccountsMonitorService
     {
         public IEnumerable<Subscriber> GetAllSubscribers()
         {
             var url = AppSettings.Get(Consts.FPS_WEBAPI_CUSTOMER_SUBSCRIBER);
-
             var response = ApiHelper.Get<IEnumerable<string>>(url);
 
             Task.WhenAll(response);
 
             var responseSubscribers = response.Result.OrderBy(c => c);
-
             var subscribers = new List<Subscriber>();
 
             foreach (string item in responseSubscribers)
@@ -40,7 +39,7 @@
             return GetAllEvidencesFromAPI();
         }
 
-        public IEnumerable<AssociatedAccountsMonitor> GetAssociatedAccountsToMonitor(AssociatedAccountsMonitorFilter filter)
+        public IEnumerable<AssociatedAccountsMonitor> GetAssociatedAccountsMonitor(AssociatedAccountsMonitorFilter filter)
         {
             var evidencesCache = filter.GetEvidencesCache();
             var accountsFromAPI = GetAssociatedAccountsFromAPI(filter);
@@ -58,14 +57,19 @@
                 }).OrderBy(c => c.MainAccountUsername);
         }
 
-        public IEnumerable<AssociatedAccountsDetailMonitor> GetAssociatedAccountsDetailToMonitor(AssociatedAccountsDetailMonitorFilter filter)
+        public IEnumerable<CustomerAssociation> GetAllAssociatedAccounts(AllAssociatedAccountsFilter filter)
+        {
+            return GetAllAssociatedAccountsFromAPI(filter);
+        }
+
+        public IEnumerable<AssociatedAccountsMonitorDetail> GetAssociatedAccountsMonitorDetail(AssociatedAccountsMonitorDetailFilter filter)
         {
             var userService = new UserService();
             var evidencesCache = filter.GetEvidencesCache();
             var accountsFromAPI = GetAssociatedAccountsDetailMonitorsFromAPI(filter);
 
             return accountsFromAPI.AsEnumerable()
-                .Select(c => new AssociatedAccountsDetailMonitor
+                .Select(c => new AssociatedAccountsMonitorDetail
                 {
                     AssAccId = c.AssAccId,
                     AssociatedCustUsername = c.AssociatedCustUsername,
@@ -103,34 +107,39 @@
             };
         }
 
+        #region Private Methods
+
         private static IEnumerable<Evidence> GetAllEvidencesFromAPI()
         {
             var url = AppSettings.Get(Consts.FPS_WEBAPI_GET_ALL_EVIDENCE);
-
             var evidences = ApiHelper.Post<IEnumerable<Evidence>>(url, null);
-
-            Task.WaitAll(evidences);
+            Task.WhenAll(evidences);
 
             return evidences.Result;
         }
 
-        private static IEnumerable<AssociatedAccountsMonitor> GetAssociatedAccountsFromAPI(AssociatedAccountsMonitorFilter filter)
+        private static IEnumerable<CustomerAssociation> GetAllAssociatedAccountsFromAPI(AllAssociatedAccountsFilter filter)
         {
-            var url = AppSettings.Get(Consts.FPS_WEBAPI_GET_ASSOCIATED_ACCOUNT_MONITOR);
-
-            var accounts = ApiHelper.Post<IEnumerable<AssociatedAccountsMonitor>>(url, filter);
-
+            var url = AppSettings.Get(Consts.FPS_WEBAPI_GET_ASSOCIATION_ACCOUNT);
+            var accounts = ApiHelper.Post<IEnumerable<CustomerAssociation>>(url, filter);
             Task.WhenAll(accounts);
 
             return accounts.Result;
         }
 
-        private static IEnumerable<AssociatedAccountsDetailMonitor> GetAssociatedAccountsDetailMonitorsFromAPI(AssociatedAccountsDetailMonitorFilter filter)
+        private static IEnumerable<AssociatedAccountsMonitor> GetAssociatedAccountsFromAPI(AssociatedAccountsMonitorFilter filter)
+        {
+            var url = AppSettings.Get(Consts.FPS_WEBAPI_GET_ASSOCIATED_ACCOUNT_MONITOR);
+            var accounts = ApiHelper.Post<IEnumerable<AssociatedAccountsMonitor>>(url, filter);
+            Task.WhenAll(accounts);
+
+            return accounts.Result;
+        }
+
+        private static IEnumerable<AssociatedAccountsMonitorDetail> GetAssociatedAccountsDetailMonitorsFromAPI(AssociatedAccountsMonitorDetailFilter filter)
         {
             var url = AppSettings.Get(Consts.FPS_WEBAPI_GET_ASSOCIATED_ACCOUNT_DETAIL_MONITOR);
-
-            var accounts = ApiHelper.Post<IEnumerable<AssociatedAccountsDetailMonitor>>(url, filter);
-
+            var accounts = ApiHelper.Post<IEnumerable<AssociatedAccountsMonitorDetail>>(url, filter);
             Task.WhenAll(accounts);
 
             return accounts.Result;
@@ -139,7 +148,6 @@
         private static bool VerifyAssociatedAccountMonitorFromAPI(AssociatedAccountMonitorVerify account)
         {
             var url = AppSettings.Get(Consts.FPS_WEBAPI_VERIFY_ASSOCIATED_ACCOUNT_MONITOR);
-
             var response = ApiHelper.Post<HttpResponseMessage>(url, account);
 
             return response.Result.IsSuccessStatusCode;
@@ -148,7 +156,6 @@
         private static bool UpdateNoteAssociatedAccountMonitorFromAPI(AssociatedAccountMonitorNote account)
         {
             var url = AppSettings.Get(Consts.FPS_WEBAPI_UPDATE_NOTE_ASSOCIATED_ACCOUNT_MONITOR);
-
             var response = ApiHelper.Post<HttpResponseMessage>(url, account);
 
             return response.Result.IsSuccessStatusCode;
@@ -185,5 +192,7 @@
 
             return null;
         }
+
+        #endregion
     }
 }

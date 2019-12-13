@@ -1,4 +1,7 @@
-﻿namespace Fanex.NAP.FS.Library.DTO
+﻿using Fanex.NAP.FS.Library.ViewModels;
+using System;
+
+namespace Fanex.NAP.FS.Library.DTO
 {
     public class CustomerAssociation
     {
@@ -9,5 +12,23 @@
         public string ToOWUsername { get; set; }
 
         public string CurrencyName { get; set; }
+
+        public int RoleId { get; set; }
+
+        public string RoleLevel {
+            get
+            {
+                try
+                {
+                    return Enum.GetName(typeof(RoleLevel), this.RoleId);
+                }
+                catch
+                {
+                    return string.Empty;
+                }
+            }
+        }
+
+        public string SubscriberName { get; set; }
     }
 }

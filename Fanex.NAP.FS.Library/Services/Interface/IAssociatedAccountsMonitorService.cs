@@ -1,5 +1,6 @@
 ﻿namespace Fanex.NAP.FS.Library.Services.Interface
 {
+    using Fanex.NAP.FS.Library.DTO;
     using Fanex.NAP.FS.Library.ViewModels.AssociatedAccountMonitor;
     using System.Collections.Generic;
 
@@ -9,9 +10,11 @@
 
         IEnumerable<Evidence> GetAllEvidences();
 
-        IEnumerable<AssociatedAccountsMonitor> GetAssociatedAccountsToMonitor(AssociatedAccountsMonitorFilter filter);
+        IEnumerable<AssociatedAccountsMonitor> GetAssociatedAccountsMonitor(AssociatedAccountsMonitorFilter filter);
 
-        IEnumerable<AssociatedAccountsDetailMonitor> GetAssociatedAccountsDetailToMonitor(AssociatedAccountsDetailMonitorFilter filter);
+        IEnumerable<CustomerAssociation> GetAllAssociatedAccounts(AllAssociatedAccountsFilter filter);
+
+        IEnumerable<AssociatedAccountsMonitorDetail> GetAssociatedAccountsMonitorDetail(AssociatedAccountsMonitorDetailFilter filter);
 
         UpdateResult VerifyAssociatedAccountMonitor(AssociatedAccountMonitorVerify account);
 
