@@ -59,8 +59,8 @@
 
         public IEnumerable<CustomerAssociation> GetAllAssociatedAccounts(AllAssociatedAccountsFilter filter)
         {
-            return GetAllAssociatedAccountsFromAPI(filter);
-        }
+            return GetAllAssociatedAccountsFromAPI(filter);            
+        }     
 
         public IEnumerable<AssociatedAccountsMonitorDetail> GetAssociatedAccountsMonitorDetail(AssociatedAccountsMonitorDetailFilter filter)
         {

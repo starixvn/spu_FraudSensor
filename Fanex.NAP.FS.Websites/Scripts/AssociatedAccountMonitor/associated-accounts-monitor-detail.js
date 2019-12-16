@@ -111,7 +111,7 @@
     function renderAllAssociations(row) {
         var allAssociationsFormat = '<span class="btn-all-associations link" data-cust-id="{0}" data-role-id="{1}">View</span>';
 
-        return allAssociationsFormat.format(row.MainAccountCustId, row.MainAccountLevel);
+        return allAssociationsFormat.format(row.AssociatedCustId, row.AssociatedCustLevel);
     } 
 
     function renderverificationCheckBox(row) {
@@ -209,9 +209,9 @@
     }
 
     function handleAllAssociatedAccounts(cell) {
-        var $target = $(cell).find('span.btn-all-associations');
-        var custId = $target.attr('data-cust-id');
-        var roleId = $target.attr('data-role-id');
+        var target = $(cell).find('.btn-all-associations');
+        var custId = target.attr('data-cust-id');
+        var roleId = target.attr('data-role-id');
 
         var formAllAssociatedAccount = new all_associated_accounts();
         formAllAssociatedAccount.OpenModal(custId, roleId);

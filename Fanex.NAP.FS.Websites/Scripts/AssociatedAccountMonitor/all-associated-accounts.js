@@ -16,7 +16,7 @@
             searching: false,
             lengthMenu: [20, 50, 100, 500],
             pageLength: 50,
-            scrollY: "70vh",
+            scrollY: "65vh",
             scrollCollapse: true,
             dom: "t<'pagination'<'page-size'lp>i>",
             language: {
@@ -33,9 +33,9 @@
                 { targets: "_all", defaultContent: "-" }                
             ],
             columns: [
-                { data: (row, type, set, meta) => meta.row + 1, className: "text-center", width: "20%" },
+                { data: (row, type, set, meta) => meta.row + 1, className: "text-center", width: "15%" },
                 { data: row => row.ToOWUsername, className: "text-left", width: "30%" },
-                { data: row => row.SubscriberName, className: "text-center", width: "25%" },
+                { data: row => row.SubscriberName, className: "text-center", width: "30%" },
                 { data: row => row.RoleLevel, className: "text-center", width: "25%" }            
             ],
             dom: "t<'pagination'<'page-size'lp>i>",
@@ -85,7 +85,7 @@
         var titleFormat = 'Associated Accounts of customer {0}';
         form.dialog({
             modal: true,
-            width: '750px',
+            width: '780px',
             title: titleFormat.format(custId),
             resizable: false,
             draggable: false,
