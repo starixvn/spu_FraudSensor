@@ -22,6 +22,8 @@
     using Model;
     using EasyNetQ;
     using Library.Core.Utilities;
+    using System.Threading.Tasks;
+    using Fanex.NAP.FS.Library.Core.Consts;
 
     [NapAuth(FunctionKey = FSFunctionKeys.FraudCase, Policy = Core.Business.Constant.Policy.Read)]
     public class FraudCaseController : ConfigurationsController
@@ -132,12 +134,16 @@
             if (dbresult.ErrorCode == 0)
             {
                 var manualAccount = dbresult.OutParam["addedcustid"].ToString();
-                IEnumerable<CustomerAssociation> customerAssociation =
-                    ApiHelper.Post<string, IEnumerable<CustomerAssociation>>(
-                        FPS_WEBAPI_GET_ASSOCIATION_ACCOUNT, manualAccount,
-                        int.Parse(ConfigurationManager.AppSettings["Environment"]),
-                        int.Parse(ConfigurationManager.AppSettings["MailingListId"])).Result;
+                var param = new Library.ViewModels.AssociatedAccountMonitor.AllAssociatedAccountsFilter
+                {
+                    CustIdList = manualAccount.ToString(),
+                    RoleIdList = null
+                };
 
+                var url = AppSettings.Get(Consts.FPS_WEBAPI_GET_ASSOCIATION_ACCOUNT);
+                var accounts = ApiHelper.Post<IEnumerable<CustomerAssociation>>(url, param);
+                Task.WhenAll(accounts);
+                var customerAssociation = accounts.Result;
                 if (customerAssociation.Any())
                 {
                     var customerAssociationXML = customerAssociation.ToXmlString();

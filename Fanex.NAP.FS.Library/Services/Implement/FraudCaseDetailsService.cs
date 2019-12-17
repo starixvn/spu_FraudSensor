@@ -297,9 +297,17 @@
 
         public IEnumerable<CustomerAssociation> GetAssociations(int custId)
         {
-            var url = AppSettings.Get("FPS_WEBAPI_GET_ASSOCIATION_ACCOUNT");
+            var param = new ViewModels.AssociatedAccountMonitor.AllAssociatedAccountsFilter
+            {
+                CustIdList = custId.ToString(),
+                RoleIdList = null
+            };
 
-            return ApiHelper.Post<string, IEnumerable<CustomerAssociation>>(url, custId.ToString(), environment, mailingListId).Result;
+            var url = AppSettings.Get(Consts.FPS_WEBAPI_GET_ASSOCIATION_ACCOUNT);
+            var accounts = ApiHelper.Post<IEnumerable<CustomerAssociation>>(url, param);
+            Task.WhenAll(accounts);
+
+            return accounts.Result;
         }
 
         public IEnumerable<TicketDetails> GetTicketsFromIP(string ip, bool isShowSpecialCurrencies)

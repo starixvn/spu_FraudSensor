@@ -59,7 +59,7 @@
 
         public IEnumerable<CustomerAssociation> GetAllAssociatedAccounts(AllAssociatedAccountsFilter filter)
         {
-            return GetAllAssociatedAccountsFromAPI(filter);            
+            return GetAllAssociatedAccountsFromAPI(filter).OrderBy(c=>c.ToOWUsername);            
         }     
 
         public IEnumerable<AssociatedAccountsMonitorDetail> GetAssociatedAccountsMonitorDetail(AssociatedAccountsMonitorDetailFilter filter)
@@ -72,6 +72,7 @@
                 .Select(c => new AssociatedAccountsMonitorDetail
                 {
                     AssAccId = c.AssAccId,
+                    AssociatedCustId = c.AssociatedCustId,
                     AssociatedCustUsername = c.AssociatedCustUsername,
                     AssociatedCustSite = c.AssociatedCustSite,
                     AssociatedCustLevel = c.AssociatedCustLevel,

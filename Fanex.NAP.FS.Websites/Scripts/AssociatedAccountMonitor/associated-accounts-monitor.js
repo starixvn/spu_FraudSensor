@@ -97,6 +97,7 @@
                 { data: row => renderAllAssociations(row), className: "text-center", width: "8%" },
                 { data: row => row.NoOfVerified, className: "text-center", width: "10%" }
             ],
+            drawCallback: handleAssociatedAccountGridEvent,
             dom: "t<'pagination'<'page-size'lp>i>",
             language: {
                 lengthMenu: "Page size _MENU_",
@@ -106,7 +107,7 @@
                 info: "Displaying _START_ to _END_ of _TOTAL_ item(s)",
                 infoEmpty: "",
                 zeroRecords: "There's no data"
-            },
+            },            
             order: [[1, "asc"]]
         });        
     }
@@ -142,9 +143,9 @@
     }
 
     function renderAllAssociations(row) {
-        var allAssociationsFormat = '<span class="btn-all-associations link" data-cust-id="{0}" data-role-id="{1}">View</span>';
+        var allAssociationsFormat = '<span class="btn-all-associations link" data-cust-id="{0}" data-user-name="{1}">View</span>';
 
-        return allAssociationsFormat.format(row.MainAccountCustId, row.MainAccountLevel);
+        return allAssociationsFormat.format(row.MainAccountCustId, row.MainAccountUsername);
     }    
 
     function generateReport() {
@@ -211,19 +212,17 @@
     function renderAssociatedAccountGrid(json) {
         grid_associated_account.DataTable().clear().rows.add(json).draw();
         grid_associated_account.DataTable().columns.adjust();
-        common.closeLoading();
-
-        handleAssociatedAccountGridEvent();
+        common.closeLoading();        
     }
 
-    function handleAssociatedAccountGridEvent() {
+    function handleAssociatedAccountGridEvent() {        
         grid_associated_account.find('span.btn-all-associations').click(function () {
             var link = $(this);
             var custId = link.attr('data-cust-id');
-            var roleId = link.attr('data-role-id');
+            var userName = link.attr('data-user-name');
 
             var formAllAssociatedAccount = new all_associated_accounts();
-            formAllAssociatedAccount.OpenModal(custId, roleId);
+            formAllAssociatedAccount.OpenModal(custId, userName);
         })
     }
 

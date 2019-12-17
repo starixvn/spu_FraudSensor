@@ -2,17 +2,16 @@
     var form = $('#form-all-association-accounts');
     var grid = $('#grid-all-association-accounts');
 
-    this.OpenModal = function (custId, roleId) {
+    this.OpenModal = function (custId, userName) {
         if (!form.hasClass("ui-dialog-content")) {
             renderAllAssociatedAccountsGridOptions();
         }       
         
-        getAllAssociatedAccounts(custId, roleId);        
+        getAllAssociatedAccounts(custId, userName);        
     }
 
     function renderAllAssociatedAccountsGridOptions() {       
-        grid.DataTable({           
-            ordering: false,
+        grid.DataTable({
             searching: false,
             lengthMenu: [20, 50, 100, 500],
             pageLength: 50,
@@ -30,7 +29,8 @@
                 processing: 'Loading...'
             },
             columnDefs: [
-                { targets: "_all", defaultContent: "-" }                
+                { targets: "_all", defaultContent: "-" },
+                { targets: [0, 2, 3], orderable: false }
             ],
             columns: [
                 { data: (row, type, set, meta) => meta.row + 1, className: "text-center", width: "15%" },
@@ -47,23 +47,24 @@
                 info: "Displaying _START_ to _END_ of _TOTAL_ item(s)",
                 infoEmpty: "",
                 zeroRecords: "There's no data"
-            }            
+            },
+            order: [[1, "asc"]]
         });        
     }
 
-    function getAllAssociatedAccounts(custId, roleId) {
+    function getAllAssociatedAccounts(custId, userName) {
         common.showLoading();
         var url = common.modifyRelativeUrl('/AssociatedAccountsMonitor/GetAllAssociatedAccounts');
         var filter = {};
-        filter.CustIdList = custId;
-        filter.RoleIdList = roleId;
+        filter.CustIdList = custId;       
+        filter.RoleIdList = '1,2,3,4';
 
         $.ajax({
             type: 'POST',
             url: url,
             data: filter,
             success: function (response) {
-                renderAllAssociatedAccounts(response, custId);
+                renderAllAssociatedAccounts(response, userName);
             },
             error: function (xhr, status, error) {
                 console.log('data of ' + xhr.responseText);
@@ -73,20 +74,20 @@
         });       
     }
 
-    function renderAllAssociatedAccounts(data, custId) {
+    function renderAllAssociatedAccounts(data, userName) {
         common.closeLoading();
-        openForm(custId);
+        openForm(userName);
 
         grid.DataTable().clear().rows.add(data).draw();
         grid.DataTable().columns.adjust();
     }
 
-    function openForm(custId) {
+    function openForm(userName) {
         var titleFormat = 'Associated Accounts of customer {0}';
         form.dialog({
             modal: true,
-            width: '780px',
-            title: titleFormat.format(custId),
+            width: '980px',
+            title: titleFormat.format(userName),
             resizable: false,
             draggable: false,
             close: function () {                
