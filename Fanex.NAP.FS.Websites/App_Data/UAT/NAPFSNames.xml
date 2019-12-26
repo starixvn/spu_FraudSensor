@@ -96,4 +96,8 @@
     <Setting Key="FS_Rpt_CustomerMonitor_Get" SpName="FS_Rpt_CustomerMonitor_Get_xtest" DbName="DBFS.bodb_FraudSensor.bodbSPUNet" />
     <Setting Key="FS_Tbl_SuspiciousCustomerNotes_Update" SpName="FS_Tbl_SuspiciousCustomerNotes_Update_xtest" DbName="DBFS.bodb_FraudSensor.bodbSPUNet"/>
   </Function>
+
+  <Function Name="Footprint">
+    <Setting Key="FS_Footprint_GetAssociationsByCustId" SpName="FS_Footprint_GetAssociationsByCustId_xtest" DbName="DBFS.bodb_FraudSensor.bodbSPUNet"/>
+  </Function>
 </Functions>

@@ -234,6 +234,7 @@
     <Compile Include="Criteria\CustomerMonitor\UpdateNoteCriteria.cs" />
     <Compile Include="Criteria\DailyDataCapture\DailyDataGetCriteria.cs" />
     <Compile Include="Criteria\DailyDataCapture\UpdateDailyDataCaptureOfNoteCriteria.cs" />
+    <Compile Include="Criteria\Footprint\FootprintAssociationsGetCriteria.cs" />
     <Compile Include="Criteria\FraudCase\DelayedGoal\DelayGoalAssociationAccountInsertCriteria.cs" />
     <Compile Include="Criteria\FraudCase\DelayedGoal\DelayGoalManualAccountGetCriteria.cs" />
     <Compile Include="Criteria\FraudCase\DelayedGoal\DelayedGoalAccountInsertCriteria.cs" />
@@ -305,6 +306,7 @@
     <Compile Include="Criteria\SuspiciousCustomer\SuspiciousCustomerUpdateCriteria.cs" />
     <Compile Include="Criteria\SuspiciousCustomer\SuspiciousCustomerReportGetCriteria.cs" />
     <Compile Include="Criteria\SuspiciousInfo\SuspicousCustomerCurrencyGetCriteria.cs" />
+    <Compile Include="DTO\FootprintAssociation.cs" />
     <Compile Include="DTO\CustomerEvidence.cs" />
     <Compile Include="DTO\CustomerEvidenceList.cs" />
     <Compile Include="DTO\CustomerSubcriber.cs" />
@@ -399,6 +401,7 @@
     <Compile Include="Services\Implement\DailyCaptureDataService.cs" />
     <Compile Include="Services\Implement\DelayGoalAccountService.cs" />
     <Compile Include="Services\Implement\FraudCaseDetailsService.cs" />
+    <Compile Include="Services\Implement\FootprintService.cs" />
     <Compile Include="Services\Interface\IAssociatedAccountsMonitorService.cs" />
     <Compile Include="Services\Interface\ICustomerMonitorService.cs" />
     <Compile Include="Services\Implement\NotificationRecipientService.cs" />
@@ -417,6 +420,7 @@
     <Compile Include="Services\Interface\IDelayGoalAccountService.cs" />
     <Compile Include="Services\Interface\INotificationRecipientService.cs" />
     <Compile Include="Services\Interface\INotificationService.cs" />
+    <Compile Include="Services\Interface\IFootprintService.cs" />
     <Compile Include="Services\Interface\IOfficeIPService.cs" />
     <Compile Include="Services\Interface\IScannedOfficeIpReportService.cs" />
     <Compile Include="Services\Interface\ISuspiciousCustomerReportDetailsService.cs" />

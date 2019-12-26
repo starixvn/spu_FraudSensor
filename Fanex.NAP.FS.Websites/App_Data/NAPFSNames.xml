@@ -280,4 +280,10 @@
          SpName="FS_Tbl_SuspiciousCustomerNotes_Update"
          DbName="DBFS.bodb_FraudSensor.bodbSPUNet"/>
   </Function>
+
+  <Function Name="Footprint">
+    <Setting Key="FS_Footprint_GetAssociationsByCustId"
+             SpName="FS_Footprint_GetAssociationsByCustId"
+             DbName="DBFS.bodb_FraudSensor.bodbSPUNet"/>
+  </Function>
 </Functions>
