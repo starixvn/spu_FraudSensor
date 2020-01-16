@@ -11,7 +11,7 @@
 
         public int CustId { get; set; }
 
-        public override string GetSettingKey() => "FS_Footprint_GetAssociationsByCustId";
+        public override string GetSettingKey() => "DW_GetListAssociationByCustomer";
 
         public override bool IsValid() => true;
     }
