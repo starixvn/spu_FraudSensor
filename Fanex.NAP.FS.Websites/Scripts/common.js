@@ -161,13 +161,20 @@
 
     this.getTableDefaultOptions = () => Object.assign({}, defaultTableOptions);
 
+    this.validateIPaddress = function(ipaddress) {
+        if (/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(myForm.emailAddr.value)) {
+            return (true)
+        }        
+        return (false)
+    }
+
     this.modifyRelativeUrl = function (url) {
         var host = window.location.host;
 
         if (host.includes("starific")) {
             return "/V2" + url;
         }
-        else if (host.includes("oneops")) {
+        else if (host.includes("oneops") || validateIPaddress(host)) {
             return "/NAPFS" + url;
         }
         else {
