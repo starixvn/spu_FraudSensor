@@ -4,6 +4,8 @@
     {
         public int MatchId { get; set; }
 
+        public string MatchCode { get; set; }
+
         public string LeagueName { get; set; }
 
         public bool IsVerified { get; set; }

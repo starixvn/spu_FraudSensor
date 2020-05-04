@@ -80,6 +80,7 @@
                     .Select(g => new FraudCase(g.Key.Item1, g.Key.Item2, g))
                     .ToDictionary(f => f.FraudCaseId.ToString()),
                 MatchId = match.MatchId,
+                MatchCode = match.MatchCode,
                 Verified = match.IsVerified,
                 VerifiedBy = match.VerifiedBy == null ? null : userService.Get(match.VerifiedBy.Value).Username,
                 Status = (char)(match.EventStatus[0] - 32) + match.EventStatus.Remove(0, 1),

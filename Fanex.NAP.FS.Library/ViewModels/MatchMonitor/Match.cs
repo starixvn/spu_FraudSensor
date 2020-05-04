@@ -8,6 +8,8 @@
 
         public int MatchId { get; set; }
 
+        public string MatchCode { get; set; }
+
         public bool Verified { get; set; }
 
         public string VerifiedBy { get; set; }

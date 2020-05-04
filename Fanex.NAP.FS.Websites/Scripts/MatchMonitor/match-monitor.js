@@ -185,7 +185,8 @@ function renderEvent(obj) {
     return "<span class='team-home'>" + obj.Event.HomeName + "</span>"
         + " - vs - "
         + "<span class='team-away'>" + obj.Event.AwayName + "</span>"
-        + "<div class='league-name'>" + obj.Event.LeagueName + "</div>";
+        + "<div class='league-name'>" + obj.Event.LeagueName + "</div>"
+        + "MatchCode: <span class='team-home'>" + obj.MatchCode + "</div>";
 }
 
 function renderFraudCase(obj, selector) {
