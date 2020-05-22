@@ -39,7 +39,7 @@ function load_page_events() {
     $("#refresh_interval").val(60).change(e => refreshChange($(e.target))).change();
 
     $("#export").click(exportExcel);
-
+    
     var t = $("#match_grid table")
         .DataTable({
             searching: false,
@@ -95,7 +95,7 @@ function load_page_events() {
             headerCallback: th => $("th", th).removeClass("has-icon"),
             order: [[3, "asc"]]
         });
-
+    
     t.on('order.dt search.dt', function () {
         t.column(0, { search: 'applied', order: 'applied' }).nodes().each(function (cell, i) {
             cell.innerHTML = i + 1;
@@ -142,6 +142,10 @@ function load_page_events() {
             cell.innerHTML = i + 1;
         });
     }).draw();
+
+    t.on('page.dt', function () {
+        $("#match_grid table").DataTable().$(".verified-checkbox").change(updateVerification);
+    });
 
     load_grid();
 }
