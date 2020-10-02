@@ -2,6 +2,8 @@
     var from_date = $("#from-date"),
         to_date = $("#to-date"),
         match_table = $("#match-table");
+    var inputScannedDate = $("#inputScannedDate");
+    var lblSwitchScannedDate = $("#lblSwitchScannedDate");
     var const_note_length_of_collapse = 50;
 
     function restrict_from_date() {
@@ -19,18 +21,31 @@
     function generate_report() {
         var url = common.modifyRelativeUrl("/DailyDataCapture/GetMatches");
 
+        var params = {};
+        params.fromDate = from_date.val();
+        params.toDate = to_date.val();
+
         common.showLoading();
 
-        $.get(url, { fromDate: from_date.val(), toDate: to_date.val() }, function (json) {
-            match_table.DataTable().clear().rows.add(json).draw();                                
+        $.get(url, params, function (json) {
+            match_table.DataTable().clear().rows.add(json).draw();
+            $('tbody > tr:first', match_table).before('<tr><td></td><td></td><td></td><td></td><td>Stuff</td><td>Stuff</td><td>Stuff</td></tr>');
+        }).done(function () {
             common.closeLoading();
-        });
+        }).fail(function (err) {
+                common.closeLoading();
+                console.log(err);                
+            });
     }
 
     function generate_excel() {
         var url = common.modifyRelativeUrl("/DailyDataCapture/GetMatchesExcel");
 
-        common.downloadFile(url, { fromDate: from_date.val(), toDate: to_date.val() });
+        var params = {};
+        params.fromDate = from_date.val();
+        params.toDate = to_date.val();
+
+        common.downloadFile(url, params);
     }
 
     function render_history(history, isInt) {
@@ -76,8 +91,8 @@
         ordering: false,
         dom: "t<'pagination'<'page-size'lp>i>",
         language: common.language(),
-        lengthMenu: [10, 20, 50, 100, 500],
-        pageLength: 50,
+        lengthMenu: [1, 10, 20, 50, 100, 500],
+        pageLength: 1,
         scrollY: '65vh',
         scrollCollapse: true,
         columnDefs: [
@@ -112,6 +127,15 @@
         rowCallback: function (cell, row, index) {
             adjustSizeOfNote(cell);            
         },
+        drawCallback: function () {
+            $('.paginate_button').on('click', function () {
+                var isDrawRowTotal = !$(this).hasClass('current') && !$(this).hasClass('disabled');
+
+                if (isDrawRowTotal) {
+                    $('tbody > tr:first', match_table).before('<tr><td>Total</td><td></td><td></td><td></td><td>Stuff</td><td>Stuff</td><td>Stuff</td></tr>');
+                }
+            });
+        }
     });
 
     function renderNote(row) {
@@ -249,12 +273,11 @@
         });
     }
 
-    function adjustSizeOfNote(cell) {
-        var domElementNoteDisplay = $(cell).find(".note-content-display");
+    function adjustSizeOfNote(cell) {        
         var domElementNoteInput = $(cell).find(".txt-note-input");
         var domElemntNoteBlank = $(cell).find(".note-blank");
-
         var domElementNoteDisplay = $(cell).find(".note-content-display");       
+
         if ($(window).width() < 1660) {
             domElementNoteDisplay.css({ 'min-height': '95px'});
             domElementNoteInput.css({ 'min-height': '92px' });
@@ -269,7 +292,7 @@
     function handleExpandNote(cell) {
         var noteForDisplay = $(cell).find('.txt-note-input').val();
 
-        var noteForDisplay = noteForDisplay + "  " + '<span class="btn-note-collapse icon-chevron-up" title="click to collapse up"></span>';
+        noteForDisplay += "  " + '<span class="btn-note-collapse icon-chevron-up" title="click to collapse up"></span>';
 
         $(cell).find(".note-content-display").html(noteForDisplay);
 
@@ -286,10 +309,16 @@
     }
 
     function handleSpecialCharacter(str) {
-        if (str != null) {
+        if (str !== null) {
             return str.replace(/&/g, "&amp;").replace(/>/g, "&gt;").replace(/</g, "&lt;");
         }
         return str;
+    }
+
+    function switchScannedDate() {
+        inputScannedDate.is(':checked')
+            ? lblSwitchScannedDate.text("Scanned Date")
+            : lblSwitchScannedDate.text("Event Date");
     }
 
     $("#generate").click(generate_report);
@@ -297,6 +326,10 @@
     $("#export").click(generate_excel);
 
     $(".icon-calendar-text").click(e => $(e.target).prev().focus());
+
+    inputScannedDate.on('click', function () {
+        switchScannedDate();
+    });
 
     generate_report();
 }

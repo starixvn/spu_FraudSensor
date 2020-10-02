@@ -1,0 +1,155 @@
+﻿.div-switch {
+    height: 35px;
+    display: inline-block;
+    cursor: text;
+
+    .label-switch {
+        width: 90px;
+        display:inline-block;
+        float:left;
+    }
+
+    .switch {
+        margin-left: 10px;
+        position: relative;
+        display: inline-block;
+        width: 26px;
+        height: 14px;
+    }
+
+    .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+        display: none;
+    }
+
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #27ae60;
+        -webkit-transition: .4s;
+        transition: .4s;
+    }
+
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 14px;
+        width: 14px;
+        left: 0px;
+        top: 0px;
+        bottom: 0px;
+        background-color: white;
+        -webkit-transition: .4s;
+        transition: .4s;
+    }
+
+    input:checked + .slider {
+        background-color: #27ae60;
+    }
+
+    input:focus + .slider {
+        box-shadow: 0 0 1px #27ae60;
+    }
+
+    input:checked + .slider:before {
+        -webkit-transform: translateX(13px);
+        -ms-transform: translateX(13px);
+        transform: translateX(13px);
+    }
+
+    .slider.round {
+        border-radius: 13px;
+    }
+
+    .slider.round:before {
+        border-radius: 50%;
+    }
+
+    .slider.round:after {
+        border: none;
+    }
+}
+
+.new-value {
+    color: coral;
+}
+
+.table .col-daily-league {
+    min-width: 200px;
+}
+
+.table .col-daily-note {
+    padding: 0px 6px !important;
+}
+
+.table .container-note {
+    display: grid;
+    align-items: center;
+    padding: 0px;
+    margin: 0px;
+    height: inherit;
+}
+
+.txt-note-input {
+    min-height: 73px;
+    min-width: 80px;
+    resize: vertical;
+}
+
+.note-content-display {
+    word-wrap: normal !important;
+    word-break: break-word;
+    white-space: pre-line;
+    border-right: 1px solid #c1c1c1;
+    padding-top: 6px;
+    padding-right: 6px;
+    min-height: 75px;
+    min-width: 80px;
+}
+
+.note-blank {
+    padding-top: 27px;
+}
+
+.btn-note-change {
+    overflow: auto;
+    text-align: center;
+}
+
+.icon-edit {
+    font-size: 20px;
+}
+
+    .icon-edit:before {
+        content: "\e91c";
+        cursor: pointer;
+    }
+
+.icon-save {
+    font-size: 20px;
+}
+
+    .icon-save:before {
+        content: "\e927";
+        cursor: pointer;
+    }
+
+.btn-note-ellipsis {
+    cursor: pointer;
+    color: mediumblue;
+}
+
+.btn-note-collapse {
+    cursor: pointer;
+    color: mediumblue;
+}
+
+.fail-by-validate {
+    border: 1px solid red !important;
+}

@@ -434,7 +434,13 @@
     </Content>
     <Content Include="Content\scss\pages\configurations\fraud-case.css" />
     <Content Include="Content\scss\pages\customer-monitor\customer-monitor.css" />
-    <Content Include="Content\scss\pages\daily-data-capture\daily-data-capture.css" />
+    <None Include="Content\scss\pages\daily-data-capture\daily-data-capture.scss" />
+    <Content Include="Content\scss\pages\daily-data-capture\daily-data-capture.css">
+      <DependentUpon>daily-data-capture.scss</DependentUpon>
+    </Content>
+    <Content Include="Content\scss\pages\daily-data-capture\daily-data-capture.min.css">
+      <DependentUpon>daily-data-capture.css</DependentUpon>
+    </Content>
     <Content Include="Content\scss\pages\errors\errors.css" />
     <Content Include="Content\scss\pages\index.css" />
     <Content Include="Content\scss\pages\login\login.css" />
