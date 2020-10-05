@@ -16,6 +16,8 @@ namespace Fanex.NAP.FS.Library.ExcelConfig.DailyDataCapture
 
         protected override string SheetName => null;
 
+        protected override bool HasSummary => true;
+
         protected override void FillData(IRow row, CapturedMatch data)
         {
             var idx = 0;

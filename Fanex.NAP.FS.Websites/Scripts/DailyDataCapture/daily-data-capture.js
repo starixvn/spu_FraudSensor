@@ -1,10 +1,11 @@
 ﻿function daily_data_capture() {
+    var const_note_length_of_collapse = 50;
     var from_date = $("#from-date"),
         to_date = $("#to-date"),
         match_table = $("#match-table");
     var inputScannedDate = $("#inputScannedDate");
     var lblSwitchScannedDate = $("#lblSwitchScannedDate");
-    var const_note_length_of_collapse = 50;
+    var matchTotal;
 
     function restrict_from_date() {
         var to_val = to_date.datepicker("getDate");
@@ -24,12 +25,16 @@
         var params = {};
         params.fromDate = from_date.val();
         params.toDate = to_date.val();
+        params.typeDate = inputScannedDate.is(':checked') ? 1 : 2;            
 
         common.showLoading();
 
         $.get(url, params, function (json) {
-            match_table.DataTable().clear().rows.add(json).draw();
-            $('tbody > tr:first', match_table).before('<tr><td></td><td></td><td></td><td></td><td>Stuff</td><td>Stuff</td><td>Stuff</td></tr>');
+            if (json !== undefined) {
+                match_table.DataTable().clear().rows.add(json.data).draw();
+                matchTotal = json.matchTotal;
+                renderMatchTotal();
+            }            
         }).done(function () {
             common.closeLoading();
         }).fail(function (err) {
@@ -38,12 +43,29 @@
             });
     }
 
+    function renderMatchTotal() {
+        var html = '<tr class="row-total">';
+        html += '<td class="text-center" colspan="4"><span class="col-total">Total</span></td>';
+        html += '<td class="text-right">' + render_history(matchTotal.CompanyTO) + '</td>';
+        html += '<td class="text-right">' + render_history(matchTotal.SuperTO) + '</td>';
+        html += '<td class="text-right">' + render_history(matchTotal.MasterTO) + '</td>';
+        html += '<td class="text-right">' + render_history(matchTotal.AgentTO) + '</td>';
+        html += '<td class="text-right">' + render_history(matchTotal.Tickets) + '</td>';
+        html += '<td class="text-right">' + render_history(matchTotal.SettledTickets) + '</td>';
+        html += '<td class="text-right">' + render_history(matchTotal.CancelledTickets) + '</td>';
+        html += '<td></td>';
+        html += '</tr>';
+
+        $('tbody > tr:first', match_table).before(html);
+    }
+
     function generate_excel() {
         var url = common.modifyRelativeUrl("/DailyDataCapture/GetMatchesExcel");
 
         var params = {};
         params.fromDate = from_date.val();
         params.toDate = to_date.val();
+        params.typeDate = inputScannedDate.is(':checked') ? 1 : 2;
 
         common.downloadFile(url, params);
     }
@@ -131,9 +153,8 @@
             $('.paginate_button').on('click', function () {
                 var isDrawRowTotal = !$(this).hasClass('current') && !$(this).hasClass('disabled');
 
-                if (isDrawRowTotal) {
-                    $('tbody > tr:first', match_table).before('<tr><td>Total</td><td></td><td></td><td></td><td>Stuff</td><td>Stuff</td><td>Stuff</td></tr>');
-                }
+                if (isDrawRowTotal)
+                    renderMatchTotal();
             });
         }
     });

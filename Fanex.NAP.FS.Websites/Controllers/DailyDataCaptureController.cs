@@ -8,6 +8,7 @@
     using Fanex.NAP.FS.Library.ViewModels.DailyDataMonitor;
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Web.Mvc;
 
     [NapAuth(FunctionKey = FSFunctionKeys.DailyDataCapture, Policy = Core.Business.Constant.Policy.Read)]
@@ -21,13 +22,62 @@
             return View();
         }
 
-        public ActionResult GetMatches(DateTime fromDate, DateTime toDate)
+        public ActionResult GetMatches(DateTime fromDate, DateTime toDate, int typeDate)
         {
-            //var result = _service.GetMatches(new DailyDataGetCriteria { FromDate = fromDate, ToDate = toDate });
+            //var data = _service.GetMatches(new DailyDataGetCriteria { FromDate = fromDate, ToDate = toDate });
 
-            var result = GenerateMatchesForTest();
+            var data = GenerateMatchesForTest();
+            var matchTotal = CalculateMatchTotal(data);
 
-            return Json(result);
+            return Json(new { data, matchTotal }, JsonRequestBehavior.AllowGet);
+        }
+
+        private CapturedMatch CalculateMatchTotal(List<CapturedMatch> matchList)
+        {
+            if (matchList != null && matchList.Any())
+            {
+                var matchTotal = new CapturedMatch();
+
+                matchTotal.CompanyTO = new Library.ViewModels.History<double?>
+                {
+                    New = matchList.Sum(x => x.CompanyTO.New),
+                    Old = matchList.Sum(x => x.CompanyTO.Old)
+                };
+                matchTotal.SuperTO = new Library.ViewModels.History<double?>
+                {
+                    New = matchList.Sum(x => x.SuperTO.New),
+                    Old = matchList.Sum(x => x.SuperTO.Old)
+                };
+                matchTotal.MasterTO = new Library.ViewModels.History<double?>
+                {
+                    New = matchList.Sum(x => x.MasterTO.New),
+                    Old = matchList.Sum(x => x.MasterTO.Old)
+                };
+                matchTotal.AgentTO = new Library.ViewModels.History<double?>
+                {
+                    New = matchList.Sum(x => x.AgentTO.New),
+                    Old = matchList.Sum(x => x.AgentTO.Old)
+                };
+                matchTotal.Tickets = new Library.ViewModels.History<int?>
+                {
+                    New = matchList.Sum(x => x.Tickets.New),
+                    Old = matchList.Sum(x => x.Tickets.Old)
+                };
+                matchTotal.SettledTickets = new Library.ViewModels.History<int?>
+                {
+                    New = matchList.Sum(x => x.SettledTickets.New),
+                    Old = matchList.Sum(x => x.SettledTickets.Old)
+                };
+                matchTotal.CancelledTickets = new Library.ViewModels.History<int?>
+                {
+                    New = matchList.Sum(x => x.CancelledTickets.New),
+                    Old = matchList.Sum(x => x.CancelledTickets.Old)
+                };
+
+                return matchTotal;
+            }
+
+            return new CapturedMatch();
         }
 
         private List<CapturedMatch> GenerateMatchesForTest()
@@ -101,15 +151,23 @@
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult GetMatchesExcel(DateTime fromDate, DateTime toDate)
+        public ActionResult GetMatchesExcel(DateTime fromDate, DateTime toDate, int typeDate)
         {
             var template = Server.MapPath("~/App_Data/Excel Template/DailyDataCapture/template.xlsx");
 
-            var criteria = new DailyDataGetCriteria { FromDate = fromDate, ToDate = toDate };
+            var criteria = new DailyDataGetCriteria 
+            {
+                FromDate = fromDate, 
+                ToDate = toDate 
+            };
 
-            var file = RenderExcelFile(template, wb => new DailyDataCaptureExcelConfig().RenderExcel(wb, criteria, _service.GetMatches(criteria), null));
+            var data = _service.GetMatches(criteria);
+            var matchTotal = CalculateMatchTotal(data.ToList());
+
+            var file = RenderExcelFile(template, wb => new DailyDataCaptureExcelConfig().RenderExcel(wb, criteria, data, matchTotal));
 
             return ExcelFile(file, GetExcelReportName("DailyDataMonitor"));
         }
+
     }
 }

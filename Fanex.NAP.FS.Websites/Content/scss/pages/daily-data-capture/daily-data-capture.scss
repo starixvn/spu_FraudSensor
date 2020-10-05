@@ -88,6 +88,15 @@
     padding: 0px 6px !important;
 }
 
+.table .row-total {
+    background: #b3d1ff;
+}
+
+.table .col-total {
+    font-weight: bold;
+    color: #f76617;
+}
+
 .table .container-note {
     display: grid;
     align-items: center;
