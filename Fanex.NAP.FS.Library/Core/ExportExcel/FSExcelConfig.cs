@@ -11,6 +11,8 @@
 
         protected abstract string SheetName { get; }
 
+        protected virtual bool HasFirstRowTotal { get; }
+
         protected virtual bool HasSummary { get; }
 
         protected virtual IRow GetTemplateRow(ISheet sheet, TData data) => sheet.GetRow(sheet.LastRowNum);
@@ -30,6 +32,8 @@
         protected virtual void FillSummary(IRow row, TSummary summary)
         {
         }
+
+        protected virtual void FillFirstRowTotal(IRow row, TSummary summary) { }
 
         public virtual void RenderExcel(IWorkbook wb, TLegend legend, IEnumerable<TData> data, TSummary summary)
         {
@@ -51,7 +55,12 @@
 
             ModifyHeader(sheet.GetRow(2));
 
-            var summary_template = HasSummary ? sheet.GetRow(sheet.LastRowNum) : null;
+            if (this.HasFirstRowTotal)
+            {
+                var rowTemplate = sheet.GetRow(sheet.LastRowNum - 1);
+
+                FillFirstRowTotal(rowTemplate, summary);
+            }
 
             if (data.Any())
             {
@@ -66,6 +75,8 @@
                 var data_template = GetTemplateRow(sheet, default(TData));
                 WriteEmpty(data_template);
             }
+
+            var summary_template = HasSummary ? sheet.GetRow(sheet.LastRowNum) : null;
 
             if (summary_template != null)
             {

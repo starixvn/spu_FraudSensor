@@ -91,8 +91,8 @@
                 League = "1",
                 Home = "1",
                 Away = "1",
-                EventDate = "1",
-                ScannedDate = "1",
+                EventDate = DateTime.Now.ToShortDateString(),
+                ScannedDate = DateTime.Now.ToShortDateString(),
                 CompanyTO = new Library.ViewModels.History<double?> { Old = 1, New = 2 },
                 SuperTO = new Library.ViewModels.History<double?> { Old = 1, New = 2 },
                 MasterTO = new Library.ViewModels.History<double?> { Old = 1, New = 2 },
@@ -109,8 +109,8 @@
                 League = "2",
                 Home = "2",
                 Away = "2",
-                EventDate = "2",
-                ScannedDate = "2",
+                EventDate = DateTime.Now.ToShortDateString(),
+                ScannedDate = DateTime.Now.ToShortDateString(),
                 CompanyTO = new Library.ViewModels.History<double?> { Old = 1, New = 2 },
                 SuperTO = new Library.ViewModels.History<double?> { Old = 1, New = 2 },
                 MasterTO = new Library.ViewModels.History<double?> { Old = 1, New = 2 },
@@ -127,8 +127,8 @@
                 League = "3",
                 Home = "3",
                 Away = "3",
-                EventDate = "2",
-                ScannedDate = "2",
+                EventDate = DateTime.Now.ToShortDateString(),
+                ScannedDate = DateTime.Now.ToShortDateString(),
                 CompanyTO = new Library.ViewModels.History<double?> { Old = 1, New = 2 },
                 SuperTO = new Library.ViewModels.History<double?> { Old = 1, New = 2 },
                 MasterTO = new Library.ViewModels.History<double?> { Old = 1, New = 2 },
@@ -161,7 +161,8 @@
                 ToDate = toDate 
             };
 
-            var data = _service.GetMatches(criteria);
+            //var data = _service.GetMatches(criteria);
+            var data = GenerateMatchesForTest();
             var matchTotal = CalculateMatchTotal(data.ToList());
 
             var file = RenderExcelFile(template, wb => new DailyDataCaptureExcelConfig().RenderExcel(wb, criteria, data, matchTotal));

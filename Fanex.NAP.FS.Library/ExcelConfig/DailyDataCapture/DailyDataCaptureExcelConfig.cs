@@ -16,7 +16,7 @@ namespace Fanex.NAP.FS.Library.ExcelConfig.DailyDataCapture
 
         protected override string SheetName => null;
 
-        protected override bool HasSummary => true;
+        protected override bool HasFirstRowTotal => true;
 
         protected override void FillData(IRow row, CapturedMatch data)
         {
@@ -35,6 +35,21 @@ namespace Fanex.NAP.FS.Library.ExcelConfig.DailyDataCapture
             row.GetCell(idx++).SetCellValue(RenderInt(data.SettledTickets));
             row.GetCell(idx++).SetCellValue(RenderInt(data.CancelledTickets));
             row.GetCell(idx).SetCellValue(data.Note != null ? ReplaceSpecialCharacter(data.Note) : "-");
+        }
+
+        protected override void FillFirstRowTotal(IRow row, object summary)
+        {
+            var idx = 4;
+
+            CapturedMatch data = summary as CapturedMatch;
+         
+            row.GetCell(idx++).SetCellValue(RenderDouble(data.CompanyTO));
+            row.GetCell(idx++).SetCellValue(RenderDouble(data.SuperTO));
+            row.GetCell(idx++).SetCellValue(RenderDouble(data.MasterTO));
+            row.GetCell(idx++).SetCellValue(RenderDouble(data.AgentTO));
+            row.GetCell(idx++).SetCellValue(RenderInt(data.Tickets));
+            row.GetCell(idx++).SetCellValue(RenderInt(data.SettledTickets));
+            row.GetCell(idx).SetCellValue(RenderInt(data.CancelledTickets));
         }
 
         protected override void FillLegend(IRow row, DailyDataGetCriteria legend)
