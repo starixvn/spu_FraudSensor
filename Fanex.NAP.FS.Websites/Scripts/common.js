@@ -175,16 +175,10 @@
 
         if (host.includes("starific")) {
             return "/V2" + url;
-        }
-        else if (host.includes("oneops") || validateIPaddress(host)) {
-            return "/NAPFS" + url;
-        }
-        else {
-            return $('#absoluteUrl').val() + url
-        }      
-
-        return $('#absoluteUrl').val() + url
-    }
+        } else {
+            return url;
+        }     
+    };
 
     this.makeNonSearchSelect = select => $(select).select2({ minimumResultsForSearch: -1 })
 
