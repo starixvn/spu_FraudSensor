@@ -229,8 +229,9 @@
 
         public IEnumerable<AssociatedCustomer> GetAssociatedAccounts(int custId)
         {
-            return GetAssociations(custId)
-                .Select(a => new AssociatedCustomer { Username = a.ToOWUsername, Currency = a.CurrencyName })
+            var b = GetAssociations(custId);
+            Logging.LogService.Info(b.Select(r => r.ToCustId).Join(","));
+            return b.Select(a => new AssociatedCustomer { Username = a.ToOWUsername, Currency = a.CurrencyName })
                 .OrderBy(a => a.Username);
         }
 
