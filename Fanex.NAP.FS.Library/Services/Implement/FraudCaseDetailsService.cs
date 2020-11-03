@@ -7,6 +7,7 @@
     using Fanex.Data.Repository;
     using Fanex.NAP.FS.Library.Core.Consts;
     using Fanex.NAP.FS.Library.Core.ExportExcel;
+    using Fanex.NAP.FS.Library.Core.Extensions;
     using Fanex.NAP.FS.Library.Core.Helpers;
     using Fanex.NAP.FS.Library.Core.Helpers.Api;
     using Fanex.NAP.FS.Library.Core.Utilities;
@@ -17,7 +18,7 @@
     using Fanex.NAP.FS.Library.Models;
     using Fanex.NAP.FS.Library.Models.MatchMonitor;
     using Fanex.NAP.FS.Library.Models.MatchMonitor.FraudCaseDetails;
-    using Fanex.NAP.FS.Library.ViewModels.MatchMonitor.FraudCaseDetails;
+    using Fanex.NAP.FS.Library.ViewModels.MatchMonitor.FraudCaseDetails;    
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -230,8 +231,10 @@
         public IEnumerable<AssociatedCustomer> GetAssociatedAccounts(int custId)
         {
             var b = GetAssociations(custId);
-            Logging.LogService.Info(b.Select(r => r.ToCustId).Join(","));
+            //Logging.LogService.Info(b.Select(r => r.ToCustId).Join(","));
+
             return b.Select(a => new AssociatedCustomer { Username = a.ToOWUsername, Currency = a.CurrencyName })
+                .Distinct(a => a.Username)
                 .OrderBy(a => a.Username);
         }
 
@@ -300,7 +303,11 @@
         {
             var url = AppSettings.Get("FPS_WEBAPI_GET_ASSOCIATION_ACCOUNT");
 
-            return ApiHelper.Post<string, IEnumerable<CustomerAssociation>>(url, custId.ToString(), environment, mailingListId).Result;
+            var associations = ApiHelper.Post<IEnumerable<CustomerAssociation>>(url, new { CustIdList = custId.ToString() });
+
+            Task.WhenAll(associations);
+
+            return associations.Result;
         }
 
         public IEnumerable<TicketDetails> GetTicketsFromIP(string ip, bool isShowSpecialCurrencies)

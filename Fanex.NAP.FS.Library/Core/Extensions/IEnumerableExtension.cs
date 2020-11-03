@@ -12,5 +12,10 @@ namespace Fanex.NAP.FS.Library.Core.Extensions
         {
             return string.Join(seperator, data.Select(selector));
         }
+
+        public static IEnumerable<TSource> Distinct<TSource>(this IEnumerable<TSource> data, Func<TSource, object> predicate)
+        {
+            return from item in data.GroupBy(predicate) select item.First();
+        }
     }
 }

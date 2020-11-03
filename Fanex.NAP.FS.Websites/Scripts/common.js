@@ -173,7 +173,7 @@
     this.modifyRelativeUrl = function (url) {
         var host = window.location.host;
 
-        if (host.includes("starific")) {
+        if (host.includes("starixuat")) {
             return "/V2" + url;
         } else {
             return url;
