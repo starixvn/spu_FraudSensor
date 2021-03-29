@@ -96,40 +96,51 @@ namespace Fanex.NAP.FS.Library.Services.Implement
             var oldChoice = excelBuilder.CreateChoiceBuilder(history.Bettype).Render(oldTicket, ticketHelper, null, false);
             var newChoice = excelBuilder.CreateChoiceBuilder(history.Bettype).Render(newTIcket, ticketHelper, null, false);
 
+            var testHistorybettype = history.Bettype;
+            var testOldTicket = oldTicket.TransId;
+            var testNewTicket = newTIcket.TransId;
+
+            var oldBetTeam = oldChoice.betTeam + oldChoice.Handicap + oldChoice.Score;
+            var newBetTeam = newChoice.betTeam + newChoice.Handicap + newChoice.Score;
+            
+            var testNew = BetListHelper.ExtractStringFromHtml(newChoice.betTeam).Pick() + BetListHelper.ExtractStringFromHtml(newChoice.Handicap) + BetListHelper.ExtractStringFromHtml(newChoice.Score);
+            var testOld = BetListHelper.ExtractStringFromHtml(oldChoice.betTeam).Pick() + BetListHelper.ExtractStringFromHtml(oldChoice.Handicap) + BetListHelper.ExtractStringFromHtml(oldChoice.Score);
+
             return new CheckBetTicket
             {
-                BetId = history.TransId,
-                Bettype = CachedRef.GetBettypeName(history.Bettype),
+                //BetId = history.TransId,
+                //Bettype = CachedRef.GetBettypeName(history.Bettype),
                 Choice = new ViewModels.History<string>
                 {
                     New = BetListHelper.ExtractStringFromHtml(newChoice.betTeam).Pick() + BetListHelper.ExtractStringFromHtml(newChoice.Handicap) + BetListHelper.ExtractStringFromHtml(newChoice.Score),
                     Old = BetListHelper.ExtractStringFromHtml(oldChoice.betTeam).Pick() + BetListHelper.ExtractStringFromHtml(oldChoice.Handicap) + BetListHelper.ExtractStringFromHtml(oldChoice.Score)
-                },
-                Creator = history.Creator,
-                Currency = history.Currency,
-                Odds = new ViewModels.History<string>
-                {
-                    New = $"{history.NewOdds.Pick(0).ToString("N2")} ({CachedRef.GetOddsTypeName(history.OddsType)})",
-                    Old = $"{history.OldOdds.Pick(0).ToString("N2")} ({CachedRef.GetOddsTypeName(history.OddsType)})"
-                },
-                PoistionTaking = new ViewModels.History<decimal?>
-                {
-                    New = history.NewPT,
-                    Old = history.OldPT
-                },
-                Stake = new ViewModels.History<decimal?>
-                {
-                    New = history.NewStake,
-                    Old = history.OldStake
-                },
-                Status = new ViewModels.History<string>
-                {
-                    New = history.NewStatus?.ToUpper(),
-                    Old = history.OldStatus?.ToUpper()
-                },
-                TransDate = history.TransDate.ToString("MMM dd, yyyy HH:mm:ss"),
-                Username = history.Username,
-                Note = history.Note
+                }
+                //,
+                //Creator = history.Creator,
+                //Currency = history.Currency,
+                //Odds = new ViewModels.History<string>
+                //{
+                //    New = $"{history.NewOdds.Pick(0).ToString("N2")} ({CachedRef.GetOddsTypeName(history.OddsType)})",
+                //    Old = $"{history.OldOdds.Pick(0).ToString("N2")} ({CachedRef.GetOddsTypeName(history.OddsType)})"
+                //},
+                //PoistionTaking = new ViewModels.History<decimal?>
+                //{
+                //    New = history.NewPT,
+                //    Old = history.OldPT
+                //},
+                //Stake = new ViewModels.History<decimal?>
+                //{
+                //    New = history.NewStake,
+                //    Old = history.OldStake
+                //},
+                //Status = new ViewModels.History<string>
+                //{
+                //    New = history.NewStatus?.ToUpper(),
+                //    Old = history.OldStatus?.ToUpper()
+                //},
+                //TransDate = history.TransDate.ToString("MMM dd, yyyy HH:mm:ss"),
+                //Username = history.Username,
+                //Note = history.Note
             };
         }
 
