@@ -27,7 +27,6 @@
 
         public ActionResult GenerateReport(CheckBetReportGetCriteria criteria)
         {
-            Logging.LogService.Error("123123");
             criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
             return Json(_service.Generate(criteria));
         }

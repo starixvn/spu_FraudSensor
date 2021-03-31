@@ -92,10 +92,39 @@ namespace Fanex.NAP.FS.Library.Services.Implement
                 Race = history.Race,
                 IsLive = true
             };
-
-            Logging.LogService.Info("Harvey pro");
+            
             var oldChoice = excelBuilder.CreateChoiceBuilder(history.Bettype).Render(oldTicket, ticketHelper, null, false);
             var newChoice = excelBuilder.CreateChoiceBuilder(history.Bettype).Render(newTIcket, ticketHelper, null, false);
+
+            Logging.LogService.Info("Start log");
+            if (oldChoice == null || newChoice == null)
+            {
+                Logging.LogService.Info("history.Bettype: " + history.Bettype.ToString());
+                if (oldTicket == null)
+                {
+                    Logging.LogService.Info("oldTicket is null");
+                }
+                else
+                {
+                    Logging.LogService.Info("oldTicket is not null");
+                }
+
+                if (newTIcket == null)
+                {
+                    Logging.LogService.Info("newTIcket is null");
+                }
+                else
+                {
+                    Logging.LogService.Info("newTIcket is not null");
+                }
+            }
+            else 
+            {
+                if (newChoice.betTeam == null || oldChoice.betTeam == null)
+                {
+                    Logging.LogService.Info("newChoice.betTeam is null");
+                }
+            }
 
          
             return new CheckBetTicket
