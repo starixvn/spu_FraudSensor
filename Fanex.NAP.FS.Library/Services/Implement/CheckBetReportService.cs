@@ -124,43 +124,48 @@ namespace Fanex.NAP.FS.Library.Services.Implement
                 {
                     Logging.LogService.Info("newChoice.betTeam is null");
                 }
+                else
+                {
+                    Logging.LogService.Info("newChoice.betTeam is not null: "+ newChoice.betTeam);
+                    Logging.LogService.Info("oldChoice.betTeam is not null: " + oldChoice.betTeam);
+                }
             }
 
          
             return new CheckBetTicket
             {
-                BetId = history.TransId,
-                Bettype = CachedRef.GetBettypeName(history.Bettype),
-                Choice = new ViewModels.History<string>
-                {
-                    New = BetListHelper.ExtractStringFromHtml(newChoice.betTeam).Pick() + BetListHelper.ExtractStringFromHtml(newChoice.Handicap) + BetListHelper.ExtractStringFromHtml(newChoice.Score),
-                    Old = BetListHelper.ExtractStringFromHtml(oldChoice.betTeam).Pick() + BetListHelper.ExtractStringFromHtml(oldChoice.Handicap) + BetListHelper.ExtractStringFromHtml(oldChoice.Score)
-                },
-                Creator = history.Creator,
-                Currency = history.Currency,
-                Odds = new ViewModels.History<string>
-                {
-                    New = $"{history.NewOdds.Pick(0).ToString("N2")} ({CachedRef.GetOddsTypeName(history.OddsType)})",
-                    Old = $"{history.OldOdds.Pick(0).ToString("N2")} ({CachedRef.GetOddsTypeName(history.OddsType)})"
-                },
-                PoistionTaking = new ViewModels.History<decimal?>
-                {
-                    New = history.NewPT,
-                    Old = history.OldPT
-                },
-                Stake = new ViewModels.History<decimal?>
-                {
-                    New = history.NewStake,
-                    Old = history.OldStake
-                },
-                Status = new ViewModels.History<string>
-                {
-                    New = history.NewStatus?.ToUpper(),
-                    Old = history.OldStatus?.ToUpper()
-                },
-                TransDate = history.TransDate.ToString("MMM dd, yyyy HH:mm:ss"),
-                Username = history.Username,
-                Note = history.Note
+                //BetId = history.TransId,
+                //Bettype = CachedRef.GetBettypeName(history.Bettype),
+                //Choice = new ViewModels.History<string>
+                //{
+                //    New = BetListHelper.ExtractStringFromHtml(newChoice.betTeam).Pick() + BetListHelper.ExtractStringFromHtml(newChoice.Handicap) + BetListHelper.ExtractStringFromHtml(newChoice.Score),
+                //    Old = BetListHelper.ExtractStringFromHtml(oldChoice.betTeam).Pick() + BetListHelper.ExtractStringFromHtml(oldChoice.Handicap) + BetListHelper.ExtractStringFromHtml(oldChoice.Score)
+                //},
+                //Creator = history.Creator,
+                //Currency = history.Currency,
+                //Odds = new ViewModels.History<string>
+                //{
+                //    New = $"{history.NewOdds.Pick(0).ToString("N2")} ({CachedRef.GetOddsTypeName(history.OddsType)})",
+                //    Old = $"{history.OldOdds.Pick(0).ToString("N2")} ({CachedRef.GetOddsTypeName(history.OddsType)})"
+                //},
+                //PoistionTaking = new ViewModels.History<decimal?>
+                //{
+                //    New = history.NewPT,
+                //    Old = history.OldPT
+                //},
+                //Stake = new ViewModels.History<decimal?>
+                //{
+                //    New = history.NewStake,
+                //    Old = history.OldStake
+                //},
+                //Status = new ViewModels.History<string>
+                //{
+                //    New = history.NewStatus?.ToUpper(),
+                //    Old = history.OldStatus?.ToUpper()
+                //},
+                //TransDate = history.TransDate.ToString("MMM dd, yyyy HH:mm:ss"),
+                //Username = history.Username,
+                //Note = history.Note
             };
         }
 
