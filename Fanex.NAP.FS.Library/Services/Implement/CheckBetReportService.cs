@@ -167,8 +167,17 @@ namespace Fanex.NAP.FS.Library.Services.Implement
                     }
                     else
                     {
-                        Logging.LogService.Info("newChoice is not null: " + newChoice.betTeam +"-"+ newChoice.Handicap + "-" + newChoice.Score);
-                        Logging.LogService.Info("oldChoice is not null: " + oldChoice.betTeam + "-" + oldChoice.Handicap + "-" + oldChoice.Score);
+                        Logging.LogService.Info("newChoice is not null: " + newChoice.betTeam);
+                        Logging.LogService.Info("oldChoice is not null: " + oldChoice.betTeam);
+
+                        if (newChoice.Handicap == null)
+                        {
+                            Logging.LogService.Info("newChoice.Handicap is null: " + history.TransId);
+                        }
+                        if (newChoice.Score == null)
+                        {
+                            Logging.LogService.Info("newChoice.Score is null: " + history.TransId);
+                        }
                     }
                 }
             }
