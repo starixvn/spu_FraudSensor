@@ -4,7 +4,6 @@
     using Fanex.NAP.FS.Library.Core.Helpers;
     using Fanex.NAP.FS.Library.Core.Helpers.Api;
     using Fanex.NAP.FS.Library.ExcelConfig.FraudCase.ScannedOfficeIP;
-    using Fanex.NAP.FS.Library.FSMQ;
     using Fanex.NAP.FS.Library.Models;
     using Fanex.NAP.FS.Library.Services.Implement;
     using Fanex.NAP.FS.Library.Services.Interface;
@@ -22,6 +21,7 @@
     using Model;
     using EasyNetQ;
     using Library.Core.Utilities;
+    using System.Threading.Tasks;
 
     [NapAuth(FunctionKey = FSFunctionKeys.FraudCase, Policy = Core.Business.Constant.Policy.Read)]
     public class FraudCaseController : ConfigurationsController
@@ -132,12 +132,14 @@
             if (dbresult.ErrorCode == 0)
             {
                 var manualAccount = dbresult.OutParam["addedcustid"].ToString();
-                IEnumerable<CustomerAssociation> customerAssociation =
+                /*IEnumerable<CustomerAssociation> customerAssociation =
                     ApiHelper.Post<string, IEnumerable<CustomerAssociation>>(
                         FPS_WEBAPI_GET_ASSOCIATION_ACCOUNT, manualAccount,
                         int.Parse(ConfigurationManager.AppSettings["Environment"]),
                         int.Parse(ConfigurationManager.AppSettings["MailingListId"])).Result;
-
+                */
+                var customerAssociation = ApiHelper.Post<IEnumerable<CustomerAssociation>>(FPS_WEBAPI_GET_ASSOCIATION_ACCOUNT, new { CustIdList = manualAccount }).Result;
+                
                 if (customerAssociation.Any())
                 {
                     var customerAssociationXML = customerAssociation.ToXmlString();
