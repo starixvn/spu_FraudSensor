@@ -175,9 +175,12 @@
 
         if (host.includes("starixuat")) {
             return "/V2" + url;
-        } else {
+        }  
+        else if (host.includes("oneops")) {
             return url;
-        }     
+        }
+
+        return $('#absoluteUrl').val() + url;
     };
 
     this.makeNonSearchSelect = select => $(select).select2({ minimumResultsForSearch: -1 })

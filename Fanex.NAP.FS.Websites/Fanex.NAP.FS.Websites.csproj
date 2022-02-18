@@ -1108,6 +1108,15 @@
     <Content Include="Views\FraudCase\Index.cshtml" />
     <Content Include="Views\FraudCase\ScannedOfficeIP\InternalAccountDialog.cshtml" />
     <Content Include="Views\MatchMonitor\FraudCaseDetails\ActionSelectMenu.cshtml" />
+    <Content Include="WebConfigs\Web.AppSettings.PROCLOUD.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="WebConfigs\Web.ConnectionString.PROCLOUD.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="WebConfigs\Web.PROCLOUD.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
