@@ -24,9 +24,9 @@
 }
 
 <ul class="main-menu">
-    @foreach (var menu in Model.Where(m => m.Parent == null && m.IsActive && m.Name != "Home").OrderBy(m => m.DisplayOrder))
+    @foreach (var menu in Model.Where(m => string.IsNullOrEmpty(m.ParentName) && m.IsActive && m.Name != "Home").OrderBy(m => m.DisplayOrder))
     {
-        var subMenus = Model.Where(m => m.Parent != null && m.IsActive && m.Parent.Id == menu.Id).OrderBy(m => m.DisplayOrder);
+        var subMenus = Model.Where(m => !string.IsNullOrEmpty(m.ParentName) && m.IsActive && m.ParentId == menu.Id).OrderBy(m => m.DisplayOrder);
 
         <li class="menu-item">
             <a href="#" class="link @(subMenus.Any()? "has-child" : "") @(controllerBaseType.Contains(menu.Name) ? "active" : "")">@Html.Raw(iconLookup(menu.Name)) @menu.Name</a>

@@ -18,7 +18,7 @@
         public static Dictionary<string, int> GetRoleAccess(IEnumerable<FunctionPolicy> currentFunctions)
         {
             return currentFunctions.Where(functionPolicy => functionPolicy.Policy >= (int)Constant.Policy.Read)
-                                   .ToDictionary(functionPolicy => functionPolicy.Function.Key, functionPolicy => functionPolicy.Policy);
+                                   .ToDictionary(functionPolicy => functionPolicy.Key, functionPolicy => functionPolicy.Policy);
         }
 
         public static bool HasHostPermission(string functionName)

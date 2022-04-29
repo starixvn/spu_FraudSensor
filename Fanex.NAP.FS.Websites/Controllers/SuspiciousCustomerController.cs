@@ -114,21 +114,9 @@ namespace Fanex.NAP.FS.Websites.Controllers
 
         public async Task<ActionResult> GetUsers()
         {
-            var siteId = int.Parse(ConfigurationManager.AppSettings["SiteId"]);
-            var users = new UserService().GetUserPolicies(FSFunctionKeys.SuspiciousCustomer, siteId);
-            var result = new List<Core.Models.User>();
-
-            foreach (var user in users)
-            {
-                if (user.Policy != (decimal)Constant.Policy.Read && user.Policy != (decimal)Constant.Policy.Host)
-                {
-                    continue;
-                }
-
-                result.Add(user.User);
-            }
-
-            return Json(result, JsonRequestBehavior.AllowGet);
+            var users = new UserService().GetByFunctionAndSite(FSFunctionKeys.SuspiciousCustomer, SiteId);
+           
+            return Json(users, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult ExportExcel(SuspiciousCustomerReportGetCriteria criteria, string fraudCaseName, string assignee, string classificationName, string verified)

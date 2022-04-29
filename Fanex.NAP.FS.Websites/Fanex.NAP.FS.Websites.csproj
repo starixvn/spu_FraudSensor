@@ -87,7 +87,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Fanex.NAP.Core.Client, Version=1.2.1.6, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Fanex.NAP.Core.Client.1.2.1.8\lib\net40\Fanex.NAP.Core.Client.dll</HintPath>
+      <HintPath>..\packages\Fanex.NAP.Core.Client.2.0.0.1-beta1\lib\net40\Fanex.NAP.Core.Client.dll</HintPath>
     </Reference>
     <Reference Include="Fanex.RemotingRef, Version=1.4.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Fanex.RemotingRef.1.4.0\lib\net461\Fanex.RemotingRef.dll</HintPath>

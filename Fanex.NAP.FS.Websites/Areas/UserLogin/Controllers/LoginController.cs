@@ -126,8 +126,6 @@
         [HttpPost]
         public ActionResult Index(string username, string password, string loginToken)
         {
-            //try
-            //{
             Response.BufferOutput = true;
             object msg = null;
 
@@ -143,7 +141,7 @@
 
                         if (password == hashPw)
                         {
-                            var group = user.Group == null ? null : _groupService.Get(user.Group.Id);
+                            var group = _groupService.Get(user.GroupId);
 
                             // gets all sites of logging-in user
                             var siteLevelList = _userService.GetSiteLevel(user.Id, Environment);
@@ -159,12 +157,12 @@
                                 // Saves user session
                                 SaveUserSession(user, username, onId);
 
-                                var currentFunction = _userService.GetPermissions(user.Id, NapSettings.Settings.SiteId, null, NapSettings.Settings.Environment);
+                                var currentFunction = _userService.GetPermissions(user.Id, NapSettings.Settings.SiteId, FSFunctionKeys.MatchMonitoring, NapSettings.Settings.Environment);
                                 AppSession.CurrentUser = user;
                                 AppSession.RoleAccess = PermissionService.GetRoleAccess(currentFunction);
 
                                 if (AppSession.CurrentUserMenu != null &&
-                                    AppSession.CurrentUserMenu.Where(m => m.Parent == null).ToList().Count > 0)
+                                    AppSession.CurrentUserMenu.Any(m => string.IsNullOrEmpty(m.ParentName)))
                                 {
                                     // if the user login directly, not through NAP Hub
                                     if (IsSiteLogin)
@@ -209,9 +207,9 @@
                         msg = ViewResources.Invalid_Username_or_Password;
                     }
                 }
-                catch (Exception exception)
+                catch (Exception ex)
                 {
-                    LogService.Error(exception.Message, exception);
+                    LogService.Error(ex.Message, ex);
                     throw;
                 }
             }
@@ -223,12 +221,6 @@
             GenerateToken();
 
             return View(msg);
-            //}
-            //catch (Exception ex)
-            //{
-            //    Logger.Log.Error(ex.Message, ex);
-            //    throw;
-            //}
         }
 
         #endregion sign in
@@ -267,17 +259,7 @@
                             IsKickedOut = "3"
                         });
                     }
-
-                    var siteStatus = _siteService.IsActivated(SiteId);
-
-                    if (!siteStatus)
-                    {
-                        return Json(new
-                        {
-                            IsKickedOut = "2"
-                        });
-                    }
-
+                    
                     if (_currentSession == null || _currentSession.OnUserId == 0)
                     {
                         return Json(new
@@ -408,7 +390,7 @@
 
             foreach (var siteLevel in siteLevelList)
             {
-                if (siteLevel.Site.Id == SiteId && siteLevel.IsActive)
+                if (siteLevel.SiteId == SiteId && siteLevel.IsActive)
                 {
                     userIsActiveOnThisSite = true;
                 }
@@ -430,10 +412,10 @@
                 return RedirectToAction("Site", "UserSite");
             }
 
-            var site = siteLevelList.First(s => s.IsActive).Site;
+            var siteId = siteLevelList.First(s => s.IsActive).SiteId;
 
             var listSiteUrl =
-                _siteService.GetUrlById(site.Id, Environment).Where(u => u.IsActive).ToList();
+                _siteService.GetMenuItemBySiteId(siteId, Environment).Where(u => u.IsActive).ToList();
 
             // user has acces to one site
             if (listSiteUrl.Count > 1)
@@ -441,7 +423,7 @@
                 return RedirectToAction("Site", "UserSite");
             }
 
-            return RedirectToAction("Forward", "UserSite", new { id = listSiteUrl.First().SiteUrlId });
+            return RedirectToAction("Forward", "UserSite", new { id = listSiteUrl.First().Url });
         }
 
         private void AddTokenToCookie(string loginToken)
