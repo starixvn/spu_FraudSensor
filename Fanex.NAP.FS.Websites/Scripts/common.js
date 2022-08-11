@@ -173,10 +173,15 @@
     this.modifyRelativeUrl = function (url) {
         var host = window.location.host;
 
+        if (host.includes("nexdev")) {
+            return "/Main" + url;
+        }
+
         if (host.includes("starixuat")) {
             return "/V2" + url;
         }  
-        else if (host.includes("oneops")) {
+
+        if (host.includes("oneops")) {
             return url;
         }
 

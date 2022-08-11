@@ -152,7 +152,7 @@
                 IsShowSpecialCurrencies = filter.IsShowSpecialCurrencies,
             };
 
-            using (var db = new ObjectDb(criteria.GetSettingKey()))
+            using (var db = ObjectDbFactory.CreateInstance(criteria.GetSettingKey()))
             {
                 using (var query = db.QueryMultiple(criteria))
                 {

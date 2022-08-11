@@ -133,7 +133,7 @@
                 IsShowSpecialCurrencies = isShowSpecialCurrencies
             };
 
-            using (var db = new ObjectDb(criteria.GetSettingKey()))
+            using (var db = ObjectDbFactory.CreateInstance(criteria.GetSettingKey()))
             using (var queries = db.QueryMultiple(criteria))
             {
                 var summaries = queries.Read<Summary>().OrderBy(s => new DateTime(s.RptYear, s.RptMonth, 1));
@@ -163,7 +163,7 @@
             var html_builder = new BetListHTMLBuilder();
             var ticketHelper = new TicketHelper();
 
-            using (var db = new ObjectDb(criteria.GetSettingKey()))
+            using (var db = ObjectDbFactory.CreateInstance(criteria.GetSettingKey()))
             using (var queries = db.QueryMultiple(criteria))
             {
                 var fraudCases =
