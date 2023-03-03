@@ -2,10 +2,12 @@
 {
     using Core.Service.Impl;
     using Fanex.NAP.Core.Web.Attribute;
+    using Fanex.NAP.FS.Library.Core.Consts;
     using Fanex.NAP.FS.Library.Criteria.CheckBetReport;
     using Fanex.NAP.FS.Library.ExcelConfig.CheckBetReport;
     using Fanex.NAP.FS.Library.Services.Implement;
     using Fanex.NAP.FS.Library.Services.Interface;
+    using Fanex.NAP.FS.Websites.Controllers.ActionFilter;
     using System.Web.Mvc;
 
     [NapAuth(FunctionKey = FSFunctionKeys.CheckBetReport, Policy = Core.Business.Constant.Policy.Read)]
@@ -25,12 +27,14 @@
             return View();
         }
 
+        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.CheckBetRptGet)]
         public ActionResult GenerateReport(CheckBetReportGetCriteria criteria)
         {
             criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
             return Json(_service.Generate(criteria));
         }
 
+        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.CheckBetRptUpdateNote)]
         public ActionResult UpdateNote(CheckBetReportUpdateNoteCriteria criteria)
         {
             criteria.UserId = CurrentSession.UserId;
@@ -38,6 +42,7 @@
             return Json(_service.UpdateNote(criteria));
         }
 
+        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.CheckBetRptExpExcel)]
         public ActionResult GenerateExcel(CheckBetReportGetCriteria criteria)
         {
             criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;

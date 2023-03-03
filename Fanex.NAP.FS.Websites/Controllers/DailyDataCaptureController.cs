@@ -1,11 +1,13 @@
 ﻿namespace Fanex.NAP.FS.Websites.Controllers
 {
     using Fanex.NAP.Core.Web.Attribute;
+    using Fanex.NAP.FS.Library.Core.Consts;
     using Fanex.NAP.FS.Library.Criteria.DailyDataCapture;
     using Fanex.NAP.FS.Library.ExcelConfig.DailyDataCapture;
     using Fanex.NAP.FS.Library.Services.Implement;
     using Fanex.NAP.FS.Library.Services.Interface;
     using Fanex.NAP.FS.Library.ViewModels.DailyDataMonitor;
+    using Fanex.NAP.FS.Websites.Controllers.ActionFilter;
     using System;
     using System.Web.Mvc;
 
@@ -20,12 +22,14 @@
             return View();
         }
 
+        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.DailyDataCaptureGetMatch)]
         public ActionResult GetMatches(DateTime fromDate, DateTime toDate)
         {
             var result = _service.GetMatches(new DailyDataGetCriteria { FromDate = fromDate, ToDate = toDate });
             return Json(result);
         }
 
+        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.DailyDataCaptureUpdateNote)]
         public ActionResult UpdateDailyDataCaptureOfNote(DailyDataCaptureOfNote dataCaptureOfNote)
         {
             dataCaptureOfNote.UserId = CurrentSession.UserId;
@@ -35,6 +39,7 @@
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
+        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.DailyDataCaptureExpExcel)]
         public ActionResult GetMatchesExcel(DateTime fromDate, DateTime toDate)
         {
             var template = Server.MapPath("~/App_Data/Excel Template/DailyDataCapture/template.xlsx");

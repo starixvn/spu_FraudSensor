@@ -8,6 +8,7 @@
     using Fanex.NAP.FS.Library.ViewModels.MatchMonitor;
     using Fanex.NAP.FS.Library.ViewModels.MatchMonitor.FraudCaseDetails;
     using Fanex.NAP.FS.Service.Utilities;
+    using Fanex.NAP.FS.Websites.Controllers.ActionFilter;
     using Library.Core.Helpers;
     using Library.Criteria.MatchMonitor.FraudCaseDetails;
     using Library.Service;
@@ -48,6 +49,7 @@
 
         #region Common
         [HttpPost]
+        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.MatchMonitorGet)]
         public ActionResult GetMatches(MatchFilter filter)
         {
             filter.IsShowSpecialCurrencies = _isShowSpecialCurrencies;
@@ -64,6 +66,7 @@
 
         [HttpPost]
         [NapAuth(FunctionKey = FSFunctionKeys.MatchMonitoring, Policy = Core.Business.Constant.Policy.Host)]
+        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.MatchMonitorVerifyMatch)]
         public ActionResult VerifyMatch(VerifyMatchCriteria criteria)
         {
             criteria.UserId = CurrentSession.UserId;
@@ -72,6 +75,7 @@
         }
 
         [HttpPost]
+        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.MatchMonitorExpToExcel)]
         public ActionResult GenerateExcel(MatchFilter filter)
         {
             filter.IsShowSpecialCurrencies = _isShowSpecialCurrencies;
@@ -98,6 +102,7 @@
         }
 
         [HttpPost]
+        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.MatchMonitorUpdateMatchNote)]
         public ActionResult UpdateMatchNote(MatchNoteUpdateCriteria criteria)
         {
             criteria.UserId = CurrentSession.UserId;
@@ -151,6 +156,7 @@
             return View("FraudCaseDetails/Index", model);
         }
 
+        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.MatchMonitorDetailGetOtherFCTicket)]
         public ActionResult GetFraudCaseTicketDetails(GetTicketCriteria criteria)
         {
             criteria.IsShowSpecialCurrencies = _isShowSpecialCurrencies;
@@ -171,6 +177,7 @@
             return Json(fraudCustomersDetails, JsonRequestBehavior.AllowGet);
         }
 
+        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.MatchMonitorDetailExpExcelOther)]
         public ActionResult ExportExcelForDetail(GetTicketCriteria criteria)
         {
             criteria.IsShowSpecialCurrencies = _isShowSpecialCurrencies;
@@ -185,6 +192,7 @@
         #region Flagged Accounts
 
         [HttpPost]
+        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.MatchMonitorDetailGetFlaggedTicket)]
         public ActionResult GetFlaggedAccountTickets(GetFlaggedAccountTicketCriteria criteria)
         {
             criteria.IsShowSpecialCurrencies = _isShowSpecialCurrencies;
@@ -214,6 +222,7 @@
         }
 
         [HttpPost]
+        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.MatchMonitorDetailExpExcelFlagged)]
         public ActionResult SaveFileFlaggedAccounts(GetFlaggedAccountTicketCriteria criteria)
         {
             var template = Server.MapPath("~/App_Data/Excel Template/MatchMonitor/FraudCaseDetail/flagged account.xlsx");
@@ -238,6 +247,7 @@
 
         #region Arbitrage        
         [HttpPost]
+        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.MatchMonitorDetailGetArbitrageTicket)]
         public ActionResult GetArbitrageTickets(GetArbitrageTicketCriteria criteria)
         {
             criteria.IsShowSpecialCurrencies = _isShowSpecialCurrencies;
@@ -307,6 +317,7 @@
         }
 
         [HttpPost]
+        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.MatchMonitorDetailGetArbitrageTicket)]
         public ActionResult SaveFileArbitrageTickets(GetArbitrageTicketCriteria criteria)
         {
             var templatePath = Server.MapPath("~/App_Data/Excel Template/MatchMonitor/FraudCaseDetail/arbitrage.xlsx");
@@ -322,6 +333,7 @@
         }
 
         [HttpPost]
+        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.MatchMonitorDetailExpExcelArbitrageCustomer)]
         public ActionResult SaveFileArbitrageCustomers(GetArbitrageCustomerCriteria criteria)
         {
             var custIdList = new List<long>();

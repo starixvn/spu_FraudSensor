@@ -1,10 +1,12 @@
 ﻿namespace Fanex.NAP.FS.Websites.Controllers
 {
     using Fanex.NAP.Core.Web.Attribute;
+    using Fanex.NAP.FS.Library.Core.Consts;
     using Fanex.NAP.FS.Library.Core.Utilities;
     using Fanex.NAP.FS.Library.Services.Implement;
     using Fanex.NAP.FS.Library.Services.Interface;
     using Fanex.NAP.FS.Library.ViewModels.AssociatedAccountMonitor;
+    using Fanex.NAP.FS.Websites.Controllers.ActionFilter;
     using System.Text;
     using System.Web.Mvc;
 
@@ -38,6 +40,7 @@
 
         [HttpPost]
         [NapAuth(FunctionKey = FSFunctionKeys.AssociatedAccountsMonitor, Policy = Core.Business.Constant.Policy.Read)]
+        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.AssAccMonitorGet)]
         public ActionResult GetAssociatedAccountsMonitor(AssociatedAccountsMonitorFilter filter)
         {
             var data = service.GetAssociatedAccountsToMonitor(filter);
@@ -47,7 +50,7 @@
             return jsonResult;
         }
 
-        [NapAuth(FunctionKey = FSFunctionKeys.AssociatedAccountsMonitor, Policy = Core.Business.Constant.Policy.Read)]
+        [NapAuth(FunctionKey = FSFunctionKeys.AssociatedAccountsMonitor, Policy = Core.Business.Constant.Policy.Read)]        
         public ActionResult AssociatedAccountsDetailMonitor(AssociatedAccountsDetailMonitorFilter filter)
         {
             var evidencesCache = new StringBuilder();
@@ -73,6 +76,7 @@
 
         [HttpPost]
         [NapAuth(FunctionKey = FSFunctionKeys.AssociatedAccountsMonitor, Policy = Core.Business.Constant.Policy.Read)]
+        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.AssAccMonitorDetailGet)]
         public ActionResult GetAssociatedAccountsDetailMonitor(AssociatedAccountsDetailMonitorFilter filter)
         {
             var data = service.GetAssociatedAccountsDetailToMonitor(filter);
@@ -84,6 +88,7 @@
 
         [HttpPost]
         [NapAuth(FunctionKey = FSFunctionKeys.AssociatedAccountsMonitor, Policy = Core.Business.Constant.Policy.Read)]
+        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.AssAccMonitorVerify)]
         public ActionResult VerifyAssociatedAccountMonitor(AssociatedAccountMonitorVerify accountVerify)
         {
             accountVerify.UserId = CurrentSession.UserId;
@@ -94,6 +99,7 @@
 
         [HttpPost]
         [NapAuth(FunctionKey = FSFunctionKeys.AssociatedAccountsMonitor, Policy = Core.Business.Constant.Policy.Read)]
+        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.AssAccMonitorUpdateNote)]
         public ActionResult UpdateNoteAssociatedAccountMonitor(AssociatedAccountMonitorNote accountNote)
         {
             var data = service.UpdateNoteAssociatedAccountMonitor(accountNote);

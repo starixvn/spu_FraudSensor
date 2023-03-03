@@ -22,6 +22,8 @@
     using EasyNetQ;
     using Library.Core.Utilities;
     using System.Threading.Tasks;
+    using Fanex.NAP.FS.Websites.Controllers.ActionFilter;
+    using Fanex.NAP.FS.Library.Core.Consts;
 
     [NapAuth(FunctionKey = FSFunctionKeys.FraudCase, Policy = Core.Business.Constant.Policy.Read)]
     public class FraudCaseController : ConfigurationsController
@@ -64,6 +66,7 @@
         }
 
         [HttpPost]
+        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.FCRuleIdx)]
         public ActionResult Index(int fraudCaseId)
         {
             var caseid = (FraudCaseId)fraudCaseId;
@@ -76,6 +79,7 @@
         }
 
         [HttpPost]
+        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.FCRuleChangeCaseStatus)]
         public ActionResult ChangeCaseStatus(int fraudCaseId, bool isActive)
         {
             _fraudCaseService.ChangeFraudCaseStatus((FraudCaseId)fraudCaseId, CurrentSession.UserId);
@@ -105,7 +109,7 @@
         }
 
         #region delay goal customer
-
+        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.FCRuleGetCustDelayGoal)]
         public ActionResult GetDelayedGoalCustomerList()
         {
             var json = new
@@ -118,6 +122,7 @@
 
         [HttpPost]
         [NapAuth(FunctionKey = FSFunctionKeys.FraudCase, Policy = Core.Business.Constant.Policy.Host)]
+        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.FCRuleDeleteCustDelayGoal)]
         public ActionResult DeleteDelayedGoalCustomer(int custId)
         {
             return Json(_fraudCaseService.DeleteDelayedGoalCustomer(custId, CurrentSession.UserId));
@@ -125,6 +130,7 @@
 
         [HttpPost]
         [NapAuth(FunctionKey = FSFunctionKeys.FraudCase, Policy = Core.Business.Constant.Policy.Host)]
+        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.FCRuleAddCustDelayGoal)]
         public ActionResult AddDelayedGoalCustomer(string username)
         {
             var dbresult = _fraudCaseService.AddDelayedGoalCustomer(username, CurrentSession.UserId);
@@ -150,6 +156,7 @@
             return Json(dbresult);
         }
 
+        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.FCRuleExpExcelCustDelayGoal)]
         public ActionResult ExportDelayedGoalCustomer(string searchString)
         {
             var templatePath = Server.MapPath("~/App_Data/Excel Template/FraudCase/DelayedGoal/template.xlsx");
@@ -162,24 +169,27 @@
         #endregion delay goal customer
 
         #region scanned office ip
-
+        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.FCRuleGetIP)]
         public ActionResult GetIpList()
         {
             return JData(_ipService.GetIps());
         }
 
         [NapAuth(FunctionKey = FSFunctionKeys.FraudCase, Policy = Core.Business.Constant.Policy.Host)]
+        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.FCRuleDeleteIP)]
         public ActionResult DeleteIpRange(string fromIp, string toIp)
         {
             return Json(_ipService.DeleteIpRange(fromIp, toIp, CurrentSession.UserId));
         }
 
         [NapAuth(FunctionKey = FSFunctionKeys.FraudCase, Policy = Core.Business.Constant.Policy.Host)]
+        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.FCRuleAddIP)]
         public ActionResult AddIpRange(string fromIp, string toIp)
         {
             return Json(_ipService.AddIpRange(fromIp, toIp, CurrentSession.UserId));
         }
 
+        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.FCRuleExpExcelIP)]
         public ActionResult ExportExcelIp()
         {
             var template = Server.MapPath("~/App_Data/Excel Template/FraudCase/ScannedOfficeIP/template.xlsx");
@@ -194,7 +204,8 @@
 
         #endregion scanned office ip
 
-        #region scanned office internal account      
+        #region scanned office internal account     
+        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.FCRuleGetInternalAcc)]
         public ActionResult GetAllInternalAccount()
         {
             return JData(_ipService.GetInternalAccounts());
@@ -202,6 +213,7 @@
 
         [HttpPost]
         [NapAuth(FunctionKey = FSFunctionKeys.FraudCase, Policy = Core.Business.Constant.Policy.Host)]
+        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.FCRuleAddInternalAcc)]
         public ActionResult AddInternalAccount(string userName)
         {
             return Json(_ipService.AddInternalAccount(userName, CurrentSession.UserId));
@@ -209,11 +221,13 @@
 
         [HttpPost]
         [NapAuth(FunctionKey = FSFunctionKeys.FraudCase, Policy = Core.Business.Constant.Policy.Host)]
+        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.FCRuleDeleteInternalAcc)]
         public ActionResult DeleteInternalAccount(int custId)
         {
             return Json(_ipService.DeleteInternalAccount(custId, CurrentSession.UserId));
         }
 
+        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.FCRuleExpExcelInternalAcc)]
         public ActionResult ExportExcelInternalAccount()
         {
             var template = Server.MapPath("~/App_Data/Excel Template/FraudCase/ScannedOfficeIP/InternalAccountTemplate.xlsx");
@@ -228,7 +242,7 @@
         #endregion scanned office internal account
 
         #region notification recipient
-
+        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.FCRuleGetRecipient)]
         public ActionResult GetRecipients(FraudCaseId fraudCase)
         {
             return JData(_recipientService.GetRecipients(fraudCase));
@@ -236,12 +250,14 @@
 
         [HttpPost]
         [NapAuth(FunctionKey = FSFunctionKeys.FraudCase, Policy = Core.Business.Constant.Policy.Host)]
+        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.FCRuleAddRecipient)]
         public ActionResult AddRecipients(string recipients, FraudCaseId fraudCase)
         {
             return Json(_recipientService.AddRecipient(recipients, CurrentSession.UserId, fraudCase));
         }
 
         [NapAuth(FunctionKey = FSFunctionKeys.FraudCase, Policy = Core.Business.Constant.Policy.Host)]
+        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.FCRuleDeleteRecipient)]
         public ActionResult RemoveRecipient(int id, FraudCaseId fraudCase)
         {
             return Json(_recipientService.RemoveRecipient(id, CurrentSession.UserId, fraudCase));

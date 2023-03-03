@@ -2,10 +2,12 @@
 {
     using Core.Service.Impl;
     using Fanex.NAP.Core.Web.Attribute;
+    using Fanex.NAP.FS.Library.Core.Consts;
     using Fanex.NAP.FS.Library.Criteria.ScannedOfficeIP;
     using Fanex.NAP.FS.Library.ExcelConfig.ScannedOfficeIP;
     using Fanex.NAP.FS.Library.Services.Implement;
     using Fanex.NAP.FS.Library.Services.Interface;
+    using Fanex.NAP.FS.Websites.Controllers.ActionFilter;
     using System;
     using System.Web.Mvc;
 
@@ -27,11 +29,13 @@
             return View();
         }
 
+        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.ScannedOfficeIPGet)]
         public ActionResult GetTickets(DateTime fromDate, DateTime toDate)
         {
             return Json(_service.GetTickets(fromDate, toDate, IsShowSpecialCurrencies));
         }
 
+        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.ScannedOfficeIPExpExcel)]
         public ActionResult ExportExcel(DateTime fromDate, DateTime toDate)
         {
             var template = Server.MapPath("~/App_Data/Excel Template/Scanned Office Ip/template.xlsx");

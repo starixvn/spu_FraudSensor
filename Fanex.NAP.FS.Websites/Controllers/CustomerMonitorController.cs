@@ -35,7 +35,7 @@
         }        
 
         [HttpPost]
-        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.CustomerMonitor)]
+        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.CustomerMonitorGet)]
         public ActionResult GetCustomers(CustomerGetCriteria criteria)
         {
             criteria.IsShowSpecialCurrencies = isSpecialCurrency;
@@ -45,6 +45,7 @@
         }
 
         [HttpPost]
+        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.CustomerMonitorUpdateNote)]
         public ActionResult UpdateNote(UpdateNoteCriteria criteria)
         {
             criteria.UserId = CurrentSession.UserId;
@@ -57,6 +58,7 @@
             return View("CustomerDetails/Index", model);
         }
 
+        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.CustomerMonitorDetailGetTicket)]
         public ActionResult GetTicketDetails(GetCustomerTicketsCriteria criteria)
         {
             criteria.IsShowSpecialCurrencies = isSpecialCurrency;
@@ -70,6 +72,7 @@
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
+        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.CustomerMonitorExpExcel)]
         public ActionResult ExportExcel(CustomerGetCriteria criteria)
         {
             criteria.IsShowSpecialCurrencies = isSpecialCurrency;
@@ -86,6 +89,7 @@
             return ExcelFile(content, fileName);
         }
 
+        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.CustomerMonitorDetailExpExcel)]
         public ActionResult ExportExcelForDetails(GetCustomerTicketsCriteria criteria, CustomerDetailsInfo detailsInfo)
         {
             /*criteria.IsShowSpecialCurrencies = isSpecialCurrency;
