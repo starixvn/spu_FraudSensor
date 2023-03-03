@@ -3,6 +3,7 @@
     using Fanex.BetList.Core;
     using Fanex.BetList.Core.RemotingRef;
     using Fanex.Data;
+    using Fanex.Data.MySql;
     using Fanex.Data.SqlServer;
     using Fanex.Logging;
     using Fanex.NAP.FS.Library.Core.Helpers.Xml;
@@ -23,7 +24,8 @@
         {
             DbSettingProviderManager
                 .StartNewSession()
-                .WithSqlServer()                
+                .WithSqlServer()    
+                .WithMySql()
                 .UseDefaultDbSettingProvider(ConfigSettings.GetConfigStringByName("UAT") ?? "~/App_Data")
                 .UseDefaultConnectionStringProvider()
                 .Run();
