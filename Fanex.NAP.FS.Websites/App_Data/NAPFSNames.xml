@@ -286,4 +286,8 @@
              SpName="FS_Footprint_GetAssociationsByCustId"
              DbName="DBFS.bodb_FraudSensor.bodbSPUNet"/>
   </Function>
+
+	<Function Name="MonitorFuncAccess">
+		<Setting Key="SPU_Stats_Accessment_Insert" SpName="SPU_Stats_Accessment_Insert" DbName="MySQL.SPU_Stats.Admin" />
+	</Function>
 </Functions>

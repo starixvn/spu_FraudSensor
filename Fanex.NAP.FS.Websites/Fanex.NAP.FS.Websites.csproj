@@ -343,6 +343,7 @@
     <Compile Include="Areas\UserLogin\Controllers\LoginController.cs" />
     <Compile Include="Areas\UserLogin\Controllers\SSOController.cs" />
     <Compile Include="Areas\UserLogin\UserLoginAreaRegistration.cs" />
+    <Compile Include="Controllers\ActionFilter\TrackingFunctionUsageFilterAttribute.cs" />
     <Compile Include="Controllers\Api\ApiFPSController.cs" />
     <Compile Include="Controllers\AssociatedAccountsMonitorController.cs" />
     <Compile Include="Controllers\BaseController.cs" />

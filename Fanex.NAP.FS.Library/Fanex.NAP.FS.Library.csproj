@@ -231,6 +231,7 @@
     <Compile Include="Core\BaseClasses\FraudCaseAttribute.cs" />
     <Compile Include="Core\Consts\Bettype.cs" />
     <Compile Include="Core\Consts\Consts.cs" />
+    <Compile Include="Core\Consts\Enum.cs" />
     <Compile Include="Core\ExportExcel\ExcelUtilities.cs" />
     <Compile Include="Core\ExportExcel\FSExcelConfig.cs" />
     <Compile Include="Core\ExportExcel\ExcelStream.cs" />
@@ -305,6 +306,7 @@
     <Compile Include="Criteria\MatchMonitor\MatchGetAllCriteria.cs" />
     <Compile Include="Criteria\MatchMonitor\MatchNoteUpdateCriteria.cs" />
     <Compile Include="Criteria\MatchMonitor\VerifyMatchCriteria.cs" />
+    <Compile Include="Criteria\MonitorFuncAccess\StatsAccessmentInsertCriteria.cs" />
     <Compile Include="Criteria\Notification\RecipientAddCriteria.cs" />
     <Compile Include="Criteria\Notification\RecipientGetCriteria.cs" />
     <Compile Include="Criteria\Notification\RecipientRemoveCriteria.cs" />
@@ -423,6 +425,7 @@
     <Compile Include="Services\Implement\DelayGoalAccountService.cs" />
     <Compile Include="Services\Implement\FraudCaseDetailsService.cs" />
     <Compile Include="Services\Implement\FootprintService.cs" />
+    <Compile Include="Services\Implement\MonitorFuncAccessService.cs" />
     <Compile Include="Services\Interface\IAssociatedAccountsMonitorService.cs" />
     <Compile Include="Services\Interface\ICustomerMonitorService.cs" />
     <Compile Include="Services\Implement\NotificationRecipientService.cs" />

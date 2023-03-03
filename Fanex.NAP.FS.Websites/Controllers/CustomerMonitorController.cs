@@ -2,12 +2,14 @@
 {
     using Fanex.NAP.Core.Service.Impl;
     using Fanex.NAP.Core.Web.Attribute;
+    using Fanex.NAP.FS.Library.Core.Consts;
     using Fanex.NAP.FS.Library.Criteria.CustomerMonitor;
     using Fanex.NAP.FS.Library.Criteria.CustomerMonitor.CustomerDetails;
     using Fanex.NAP.FS.Library.ExcelConfig.CustomerMonitor;
     using Fanex.NAP.FS.Library.Services.Implement;
     using Fanex.NAP.FS.Library.Services.Interface;
     using Fanex.NAP.FS.Library.ViewModels.CustomerMonitor.CustomerDetails;
+    using Fanex.NAP.FS.Websites.Controllers.ActionFilter;
     using System;
     using System.Configuration;
     using System.Linq;
@@ -33,6 +35,7 @@
         }        
 
         [HttpPost]
+        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.CustomerMonitor)]
         public ActionResult GetCustomers(CustomerGetCriteria criteria)
         {
             criteria.IsShowSpecialCurrencies = isSpecialCurrency;

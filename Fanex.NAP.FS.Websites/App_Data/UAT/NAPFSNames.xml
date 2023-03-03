@@ -100,4 +100,8 @@
   <Function Name="Footprint">
     <Setting Key="FS_Footprint_GetAssociationsByCustId" SpName="FS_Footprint_GetAssociationsByCustId_xtest" DbName="DBFS.bodb_FraudSensor.bodbSPUNet"/>
   </Function>
+
+	<Function Name="MonitorFuncAccess">
+		<Setting Key="SPU_Stats_Accessment_Insert" SpName="SPU_Stats_Accessment_Insert" DbName="MySQL.SPU_Stats.Admin" />
+	</Function>
 </Functions>
