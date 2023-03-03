@@ -88,7 +88,7 @@
 
         public IEnumerable<CustomerDetails> GetCustomerDetails(GetCustomerCriteria criteria, bool isExportFile = false)
         {
-            using (var db = new ObjectDb(criteria.GetSettingKey()))
+            using (var db = ObjectDbFactory.CreateInstance(criteria.GetSettingKey()))
             using (var query = db.QueryMultiple(criteria))
             {
                 var custInfo = query.Read<CustInfo>();
@@ -158,7 +158,7 @@
                 FraudCaseId = fraudCaseId
             };
 
-            using (var db = new ObjectDb(criteria.GetSettingKey()))
+            using (var db = ObjectDbFactory.CreateInstance(criteria.GetSettingKey()))
             {
                 using (var query = db.QueryMultiple(criteria))
                 {
