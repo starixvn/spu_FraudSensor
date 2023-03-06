@@ -38,7 +38,7 @@ namespace Fanex.NAP.FS.Websites.Controllers
         }
 
         [HttpPost]
-        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.SuspiciousCustomerGet)]
+        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.SuspiciousCustomer_Get)]
         public ActionResult Generate(DataTableAjaxPostModel criteria)
         {
             int filteredResultsCount = 0;
@@ -122,7 +122,7 @@ namespace Fanex.NAP.FS.Websites.Controllers
             return Json(users, JsonRequestBehavior.AllowGet);
         }
 
-        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.SuspiciousCustomerExpExcel)]
+        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.SuspiciousCustomer_ExportToExcel, null, null)]
         public ActionResult ExportExcel(SuspiciousCustomerReportGetCriteria criteria, string fraudCaseName, string assignee, string classificationName, string verified)
         {
             criteria.IsExportExcel = true;
@@ -144,8 +144,7 @@ namespace Fanex.NAP.FS.Websites.Controllers
 
             return File(file, "application/vnd.ms-excel", fileName);
         }
-
-        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.SuspiciousCustomerGetNote)]
+     
         public ActionResult GetSuspiciousCustomerNote(int custId)
         {
             return Json(_suspiciousCustomerReportService.GetNoteViews(custId), JsonRequestBehavior.AllowGet);

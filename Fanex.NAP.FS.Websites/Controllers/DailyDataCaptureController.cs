@@ -22,14 +22,14 @@
             return View();
         }
 
-        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.DailyDataCaptureGetMatch)]
+        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.DailyDataCapture_GetMatch)]
         public ActionResult GetMatches(DateTime fromDate, DateTime toDate)
         {
             var result = _service.GetMatches(new DailyDataGetCriteria { FromDate = fromDate, ToDate = toDate });
             return Json(result);
         }
 
-        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.DailyDataCaptureUpdateNote)]
+        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.DailyDataCapture_UpdateNote)]
         public ActionResult UpdateDailyDataCaptureOfNote(DailyDataCaptureOfNote dataCaptureOfNote)
         {
             dataCaptureOfNote.UserId = CurrentSession.UserId;
@@ -39,7 +39,7 @@
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
-        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.DailyDataCaptureExpExcel)]
+        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.DailyDataCapture_ExportToExcel)]
         public ActionResult GetMatchesExcel(DateTime fromDate, DateTime toDate)
         {
             var template = Server.MapPath("~/App_Data/Excel Template/DailyDataCapture/template.xlsx");

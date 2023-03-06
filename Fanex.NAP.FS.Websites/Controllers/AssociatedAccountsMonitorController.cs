@@ -40,7 +40,7 @@
 
         [HttpPost]
         [NapAuth(FunctionKey = FSFunctionKeys.AssociatedAccountsMonitor, Policy = Core.Business.Constant.Policy.Read)]
-        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.AssAccMonitorGet)]
+        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.AssAccMonitor_Get, null, null)]
         public ActionResult GetAssociatedAccountsMonitor(AssociatedAccountsMonitorFilter filter)
         {
             var data = service.GetAssociatedAccountsToMonitor(filter);
@@ -76,7 +76,7 @@
 
         [HttpPost]
         [NapAuth(FunctionKey = FSFunctionKeys.AssociatedAccountsMonitor, Policy = Core.Business.Constant.Policy.Read)]
-        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.AssAccMonitorDetailGet)]
+        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.AssAccMonitor_Detail_Get, null, null)]
         public ActionResult GetAssociatedAccountsDetailMonitor(AssociatedAccountsDetailMonitorFilter filter)
         {
             var data = service.GetAssociatedAccountsDetailToMonitor(filter);
@@ -88,7 +88,7 @@
 
         [HttpPost]
         [NapAuth(FunctionKey = FSFunctionKeys.AssociatedAccountsMonitor, Policy = Core.Business.Constant.Policy.Read)]
-        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.AssAccMonitorVerify)]
+        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.AssAccMonitor_Verify, null, null)]
         public ActionResult VerifyAssociatedAccountMonitor(AssociatedAccountMonitorVerify accountVerify)
         {
             accountVerify.UserId = CurrentSession.UserId;
@@ -99,7 +99,7 @@
 
         [HttpPost]
         [NapAuth(FunctionKey = FSFunctionKeys.AssociatedAccountsMonitor, Policy = Core.Business.Constant.Policy.Read)]
-        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.AssAccMonitorUpdateNote)]
+        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.AssAccMonitor_UpdateNote, null, null)]
         public ActionResult UpdateNoteAssociatedAccountMonitor(AssociatedAccountMonitorNote accountNote)
         {
             var data = service.UpdateNoteAssociatedAccountMonitor(accountNote);

@@ -27,14 +27,14 @@
             return View();
         }
 
-        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.CheckBetRptGet)]
+        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.CheckBetRpt_Get)]
         public ActionResult GenerateReport(CheckBetReportGetCriteria criteria)
         {
             criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
             return Json(_service.Generate(criteria));
         }
 
-        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.CheckBetRptUpdateNote)]
+        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.CheckBetRpt_UpdateNote)]
         public ActionResult UpdateNote(CheckBetReportUpdateNoteCriteria criteria)
         {
             criteria.UserId = CurrentSession.UserId;
@@ -42,7 +42,7 @@
             return Json(_service.UpdateNote(criteria));
         }
 
-        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.CheckBetRptExpExcel)]
+        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.CheckBetRpt_ExportToExcel)]
         public ActionResult GenerateExcel(CheckBetReportGetCriteria criteria)
         {
             criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;

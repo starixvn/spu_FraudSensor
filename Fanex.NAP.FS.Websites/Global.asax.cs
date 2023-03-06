@@ -6,10 +6,12 @@
     using Fanex.Data.MySql;
     using Fanex.Data.SqlServer;
     using Fanex.Logging;
-    using Fanex.NAP.FS.Library.Core.Helpers.Xml;
+    using Fanex.Logging.Sentry;
     using Fanex.NAP.FS.Library.Core.Utilities;
     using Fanex.RemotingRef;
+    using Sentry;
     using System;
+    using System.Collections.Generic;
     using System.Configuration;
     using System.Data.SqlClient;
     using System.Web;
@@ -29,6 +31,15 @@
                 .UseDefaultDbSettingProvider(ConfigSettings.GetConfigStringByName("UAT") ?? "~/App_Data")
                 .UseDefaultConnectionStringProvider()
                 .Run();
+
+            LogManager.SetDefaultLogCategory(ConfigurationManager.AppSettings["Sentry-Log-Category"])
+                  .Use(new List<ILogEngine>
+                  {
+                         new SentryLogging(new SentryEngineOptions
+                         {
+                             Dsn = new Dsn(ConfigurationManager.AppSettings["Sentry-Log-Config"])
+                         })
+                  });
 
             RefDataTypeContainer
                 .ConnectTo(new Uri(ConfigurationManager.AppSettings["Fanex.RemotingRef.Service.Url"]))

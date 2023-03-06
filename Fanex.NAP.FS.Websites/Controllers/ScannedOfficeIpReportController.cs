@@ -29,13 +29,13 @@
             return View();
         }
 
-        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.ScannedOfficeIPGet)]
+        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.ScannedOffice_IP_Get)]
         public ActionResult GetTickets(DateTime fromDate, DateTime toDate)
         {
             return Json(_service.GetTickets(fromDate, toDate, IsShowSpecialCurrencies));
         }
 
-        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.ScannedOfficeIPExpExcel)]
+        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.ScannedOffice_IP_ExportToExcel)]
         public ActionResult ExportExcel(DateTime fromDate, DateTime toDate)
         {
             var template = Server.MapPath("~/App_Data/Excel Template/Scanned Office Ip/template.xlsx");

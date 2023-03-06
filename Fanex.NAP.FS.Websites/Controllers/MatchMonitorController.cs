@@ -49,7 +49,7 @@
 
         #region Common
         [HttpPost]
-        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.MatchMonitorGet)]
+        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.MatchMonitor_Get)]
         public ActionResult GetMatches(MatchFilter filter)
         {
             filter.IsShowSpecialCurrencies = _isShowSpecialCurrencies;
@@ -66,7 +66,7 @@
 
         [HttpPost]
         [NapAuth(FunctionKey = FSFunctionKeys.MatchMonitoring, Policy = Core.Business.Constant.Policy.Host)]
-        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.MatchMonitorVerifyMatch)]
+        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.MatchMonitor_VerifyMatch)]
         public ActionResult VerifyMatch(VerifyMatchCriteria criteria)
         {
             criteria.UserId = CurrentSession.UserId;
@@ -75,7 +75,7 @@
         }
 
         [HttpPost]
-        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.MatchMonitorExpToExcel)]
+        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.MatchMonitor_ExportToExcel)]
         public ActionResult GenerateExcel(MatchFilter filter)
         {
             filter.IsShowSpecialCurrencies = _isShowSpecialCurrencies;
@@ -102,7 +102,7 @@
         }
 
         [HttpPost]
-        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.MatchMonitorUpdateMatchNote)]
+        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.MatchMonitor_UpdateMatchNote)]
         public ActionResult UpdateMatchNote(MatchNoteUpdateCriteria criteria)
         {
             criteria.UserId = CurrentSession.UserId;
@@ -156,7 +156,9 @@
             return View("FraudCaseDetails/Index", model);
         }
 
-        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.MatchMonitorDetailGetOtherFCTicket)]
+        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.MatchMonitor_Detail_BSNG_GetTicket, "FraudCaseId"
+            , "MatchMonitor_Detail_BSNG_GetTicket=1"           
+            , "MatchMonitor_Detail_DelayGoal_GetTicket=8")]
         public ActionResult GetFraudCaseTicketDetails(GetTicketCriteria criteria)
         {
             criteria.IsShowSpecialCurrencies = _isShowSpecialCurrencies;
@@ -177,7 +179,9 @@
             return Json(fraudCustomersDetails, JsonRequestBehavior.AllowGet);
         }
 
-        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.MatchMonitorDetailExpExcelOther)]
+        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.MatchMonitor_Detail_BSNG_ExportToExcel, "FraudCaseId"
+            , "MatchMonitor_Detail_BSNG_ExportToExcel = 1"
+            , "MatchMonitor_Detail_DelayGoal_ExportToExcel = 8")]
         public ActionResult ExportExcelForDetail(GetTicketCriteria criteria)
         {
             criteria.IsShowSpecialCurrencies = _isShowSpecialCurrencies;
@@ -191,8 +195,7 @@
 
         #region Flagged Accounts
 
-        [HttpPost]
-        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.MatchMonitorDetailGetFlaggedTicket)]
+        [HttpPost]        
         public ActionResult GetFlaggedAccountTickets(GetFlaggedAccountTicketCriteria criteria)
         {
             criteria.IsShowSpecialCurrencies = _isShowSpecialCurrencies;
@@ -221,8 +224,7 @@
             return Json(associations, JsonRequestBehavior.AllowGet);
         }
 
-        [HttpPost]
-        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.MatchMonitorDetailExpExcelFlagged)]
+        [HttpPost]     
         public ActionResult SaveFileFlaggedAccounts(GetFlaggedAccountTicketCriteria criteria)
         {
             var template = Server.MapPath("~/App_Data/Excel Template/MatchMonitor/FraudCaseDetail/flagged account.xlsx");
@@ -246,8 +248,7 @@
         #endregion
 
         #region Arbitrage        
-        [HttpPost]
-        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.MatchMonitorDetailGetArbitrageTicket)]
+        [HttpPost]       
         public ActionResult GetArbitrageTickets(GetArbitrageTicketCriteria criteria)
         {
             criteria.IsShowSpecialCurrencies = _isShowSpecialCurrencies;
@@ -316,8 +317,7 @@
             return Json(arbitrageCustomerDetails, JsonRequestBehavior.AllowGet);
         }
 
-        [HttpPost]
-        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.MatchMonitorDetailGetArbitrageTicket)]
+        [HttpPost]      
         public ActionResult SaveFileArbitrageTickets(GetArbitrageTicketCriteria criteria)
         {
             var templatePath = Server.MapPath("~/App_Data/Excel Template/MatchMonitor/FraudCaseDetail/arbitrage.xlsx");
@@ -332,8 +332,7 @@
             return new JsonResult { JsonRequestBehavior = JsonRequestBehavior.AllowGet, Data = new { FileId = fileId, FileName = fileName } };
         }
 
-        [HttpPost]
-        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.MatchMonitorDetailExpExcelArbitrageCustomer)]
+        [HttpPost]      
         public ActionResult SaveFileArbitrageCustomers(GetArbitrageCustomerCriteria criteria)
         {
             var custIdList = new List<long>();

@@ -9,6 +9,8 @@
         FlaggedAccount = 6,
         DelayedGoal = 8,
         Arbitrage = 10,
-        BetsNearGoal = 11
+        BetsNearGoal = 11,
+        GroupBetting = 13,
+        Hedging = 14
     }
 }
