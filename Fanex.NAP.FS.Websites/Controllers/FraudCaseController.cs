@@ -180,27 +180,27 @@
         #endregion delay goal customer
 
         #region scanned office ip
-        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.FCRule_IP_Get)]
+        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.FCRule_OfficeIP_IP_Get)]
         public ActionResult GetIpList()
         {
             return JData(_ipService.GetIps());
         }
 
         [NapAuth(FunctionKey = FSFunctionKeys.FraudCase, Policy = Core.Business.Constant.Policy.Host)]
-        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.FCRule_IP_Delete)]
+        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.FCRule_OfficeIP_IP_Delete)]
         public ActionResult DeleteIpRange(string fromIp, string toIp)
         {
             return Json(_ipService.DeleteIpRange(fromIp, toIp, CurrentSession.UserId));
         }
 
         [NapAuth(FunctionKey = FSFunctionKeys.FraudCase, Policy = Core.Business.Constant.Policy.Host)]
-        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.FCRule_IP_Add)]
+        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.FCRule_OfficeIP_IP_Add)]
         public ActionResult AddIpRange(string fromIp, string toIp)
         {
             return Json(_ipService.AddIpRange(fromIp, toIp, CurrentSession.UserId));
         }
 
-        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.FCRule_IP_ExportToExcel)]
+        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.FCRule_OfficeIP_IP_ExportToExcel)]
         public ActionResult ExportExcelIp()
         {
             var template = Server.MapPath("~/App_Data/Excel Template/FraudCase/ScannedOfficeIP/template.xlsx");
@@ -216,7 +216,7 @@
         #endregion scanned office ip
 
         #region scanned office internal account     
-        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.FCRule_InternalAccount_Get)]
+        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.FCRule_OfficeIP_InternalAccount_Get)]
         public ActionResult GetAllInternalAccount()
         {
             return JData(_ipService.GetInternalAccounts());
@@ -224,7 +224,7 @@
 
         [HttpPost]
         [NapAuth(FunctionKey = FSFunctionKeys.FraudCase, Policy = Core.Business.Constant.Policy.Host)]
-        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.FCRule_InternalAccount_Add)]
+        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.FCRule_OfficeIP_InternalAccount_Add)]
         public ActionResult AddInternalAccount(string userName)
         {
             return Json(_ipService.AddInternalAccount(userName, CurrentSession.UserId));
@@ -232,13 +232,13 @@
 
         [HttpPost]
         [NapAuth(FunctionKey = FSFunctionKeys.FraudCase, Policy = Core.Business.Constant.Policy.Host)]
-        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.FCRule_InternalAccount_Delete)]
+        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.FCRule_OfficeIP_InternalAccount_Delete)]
         public ActionResult DeleteInternalAccount(int custId)
         {
             return Json(_ipService.DeleteInternalAccount(custId, CurrentSession.UserId));
         }
 
-        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.FCRule_InternalAccount_ExportToExcel)]
+        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.FCRule_OfficeIP_InternalAccount_ExportToExcel)]
         public ActionResult ExportExcelInternalAccount()
         {
             var template = Server.MapPath("~/App_Data/Excel Template/FraudCase/ScannedOfficeIP/InternalAccountTemplate.xlsx");
@@ -253,7 +253,9 @@
         #endregion scanned office internal account
 
         #region notification recipient
-        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.FCRule_Recipient_Get)]
+        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.FCRule_CheckBet_Recipient_Get, "fraudCase"           
+            , "FCRule_CheckBet_Recipient_Get=3"
+            , "FCRule_DailyData_Recipient_Get=4")]
         public ActionResult GetRecipients(FraudCaseId fraudCase)
         {
             return JData(_recipientService.GetRecipients(fraudCase));
@@ -261,14 +263,18 @@
 
         [HttpPost]
         [NapAuth(FunctionKey = FSFunctionKeys.FraudCase, Policy = Core.Business.Constant.Policy.Host)]
-        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.FCRule_Recipient_Add)]
+        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.FCRule_CheckBet_Recipient_Add, "fraudCase"
+            , "FCRule_CheckBet_Recipient_Add=3"
+            , "FCRule_DailyData_Recipient_Add=4")]
         public ActionResult AddRecipients(string recipients, FraudCaseId fraudCase)
         {
             return Json(_recipientService.AddRecipient(recipients, CurrentSession.UserId, fraudCase));
         }
 
         [NapAuth(FunctionKey = FSFunctionKeys.FraudCase, Policy = Core.Business.Constant.Policy.Host)]
-        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.FCRule_Recipient_Delete)]
+        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.FCRule_CheckBet_Recipient_Delete, "fraudCase"
+            , "FCRule_CheckBet_Recipient_Delete=3"
+            , "FCRule_DailyData_Recipient_Delete=4")]
         public ActionResult RemoveRecipient(int id, FraudCaseId fraudCase)
         {
             return Json(_recipientService.RemoveRecipient(id, CurrentSession.UserId, fraudCase));

@@ -30,9 +30,9 @@
         {
             using (var db = ObjectDbFactory.CreateInstance(criteria.GetSettingKey()))
             {
-                var param = db.GetOutputParams();
+                db.ExecuteNonQuery(criteria);
 
-                db.ExecuteNonQuery(param);
+                var param = db.GetOutputParams();
 
                 var code = param["ErrCode"];
                 var intCode = (code is DBNull) ? 0 : Convert.ToInt32(code);

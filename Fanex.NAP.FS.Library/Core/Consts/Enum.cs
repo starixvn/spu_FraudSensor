@@ -63,17 +63,20 @@
         FCRule_DelayGoal_DeleteCust = 345,
         FCRule_DelayGoal_AddCust = 346,
         FCRule_DelayGoal_ExportToExcel = 347,
-        FCRule_IP_Get = 348,
-        FCRule_IP_Delete = 349,
-        FCRule_IP_Add = 350,
-        FCRule_IP_ExportToExcel = 351,
-        FCRule_InternalAccount_Get = 352,
-        FCRule_InternalAccount_Add = 353,
-        FCRule_InternalAccount_Delete = 354,
-        FCRule_InternalAccount_ExportToExcel = 355,
-        FCRule_Recipient_Get = 356,
-        FCRule_Recipient_Add = 357,
-        FCRule_Recipient_Delete = 358
+        FCRule_OfficeIP_IP_Get = 348,
+        FCRule_OfficeIP_IP_Delete = 349,
+        FCRule_OfficeIP_IP_Add = 350,
+        FCRule_OfficeIP_IP_ExportToExcel = 351,
+        FCRule_OfficeIP_InternalAccount_Get = 352,
+        FCRule_OfficeIP_InternalAccount_Add = 353,
+        FCRule_OfficeIP_InternalAccount_Delete = 354,
+        FCRule_OfficeIP_InternalAccount_ExportToExcel = 355,
+        FCRule_CheckBet_Recipient_Get = 356,
+        FCRule_CheckBet_Recipient_Add = 357,
+        FCRule_CheckBet_Recipient_Delete = 358,
+        FCRule_DailyData_Recipient_Get = 359,
+        FCRule_DailyData_Recipient_Add = 360,
+        FCRule_DailyData_Recipient_Delete = 361
 
     };
 }

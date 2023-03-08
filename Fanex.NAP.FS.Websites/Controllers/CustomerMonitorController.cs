@@ -29,13 +29,13 @@
             isSpecialCurrency = permission > 0;
         }
 
+        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.CustomerMonitor_Get)]
         public ActionResult Index()
         {
             return View(_customerMonitorService.GetBalanceUpDate());
         }        
 
-        [HttpPost]
-        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.CustomerMonitor_Get)]
+        [HttpPost]        
         public ActionResult GetCustomers(CustomerGetCriteria criteria)
         {
             criteria.IsShowSpecialCurrencies = isSpecialCurrency;

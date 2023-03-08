@@ -38,6 +38,7 @@
             _isShowSpecialCurrencies = new UserService().GetPermission(CurrentSession.UserId, SiteId, FSFunctionKeys.SpecialCurrencies) > 0;
         }
 
+        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.MatchMonitor_Get)]
         public ActionResult Index()
         {
             ViewBag.Username = this.User.Identity.Name;
@@ -48,8 +49,7 @@
         }
 
         #region Common
-        [HttpPost]
-        [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.MatchMonitor_Get)]
+        [HttpPost]        
         public ActionResult GetMatches(MatchFilter filter)
         {
             filter.IsShowSpecialCurrencies = _isShowSpecialCurrencies;
