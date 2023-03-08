@@ -34,7 +34,7 @@
         private readonly IFraudCaseService _fraudCaseService;
         private readonly IOfficeIPService _ipService;
         private readonly INotificationRecipientService _recipientService = new NotificationRecipientService();
-        private static EasyNetQ _rabbitMQ;
+        //private static EasyNetQ _rabbitMQ;
         private static int envConfig = int.Parse(ConfigurationManager.AppSettings["Environment"]);
 
         public FraudCaseController()
@@ -43,15 +43,15 @@
             _fraudCaseService = new FraudCaseService();
             _ipService = new OfficeIPService();
 
-            _rabbitMQ = new EasyNetQ(ConfigSettings.RabbitMQ_Host() + ":" + ConfigSettings.RabbitMQ_Port(),
-                ConfigSettings.RabbitMQ_VirtualHost(),
-                Convert.ToInt32(ConfigSettings.RabbitMQ_PrefetchCount()),
-                ConfigSettings.RabbitMQ_Username(),
-                ConfigSettings.RabbitMQ_Password());
+            //_rabbitMQ = new EasyNetQ(ConfigSettings.RabbitMQ_Host() + ":" + ConfigSettings.RabbitMQ_Port(),
+            //    ConfigSettings.RabbitMQ_VirtualHost(),
+            //    Convert.ToInt32(ConfigSettings.RabbitMQ_PrefetchCount()),
+            //    ConfigSettings.RabbitMQ_Username(),
+            //    ConfigSettings.RabbitMQ_Password());
 
-            _rabbitMQ
-                .CreateBus()
-                .DeclareExchange(ConfigSettings.RabbitMQ_Exchange());
+            //_rabbitMQ
+            //    .CreateBus()
+            //    .DeclareExchange(ConfigSettings.RabbitMQ_Exchange());
 
             ViewBag.IsHost = UserService.IsHavingPermission(CurrentSession.UserId, int.Parse(AppSettings.Get("SiteId")), FSFunctionKeys.FraudCase, Core.Business.Constant.Policy.Host);
         }
@@ -97,23 +97,23 @@
             var fraudCaseName = Enum.GetName(typeof(FraudCaseId), fraudCaseId);
             if (!string.IsNullOrWhiteSpace(fraudCaseName))
             {
-                _rabbitMQ
-                    .DeclareQueue(fraudCaseName)
-                    .DeclareRoutingKey(fraudCaseName)
-                    .Bind();
+                //_rabbitMQ
+                //    .DeclareQueue(fraudCaseName)
+                //    .DeclareRoutingKey(fraudCaseName)
+                //    .Bind();
 
-                if (!string.IsNullOrWhiteSpace(_rabbitMQ.QueueName))
-                {
-                    var message = new Message<FraudCaseMessage>(new FraudCaseMessage
-                    {
-                        Action = isActive ? Model.Action.Activating : Model.Action.Deactivating,
-                        Id = fraudCaseId,
-                        Name = fraudCaseName,
-                        Message = "Message is sent at" + DateTime.Now
-                    }, new MessageProperties { DeliveryMode = 2, Priority = 9 });
+                //if (!string.IsNullOrWhiteSpace(_rabbitMQ.QueueName))
+                //{
+                //    var message = new Message<FraudCaseMessage>(new FraudCaseMessage
+                //    {
+                //        Action = isActive ? Model.Action.Activating : Model.Action.Deactivating,
+                //        Id = fraudCaseId,
+                //        Name = fraudCaseName,
+                //        Message = "Message is sent at" + DateTime.Now
+                //    }, new MessageProperties { DeliveryMode = 2, Priority = 9 });
 
-                    _rabbitMQ.AdvanceBus.PublishAsync(_rabbitMQ.Exchange, _rabbitMQ.RoutingKey, false, message);
-                }
+                //    _rabbitMQ.AdvanceBus.PublishAsync(_rabbitMQ.Exchange, _rabbitMQ.RoutingKey, false, message);
+                //}
             }
 
             return Json(new object());

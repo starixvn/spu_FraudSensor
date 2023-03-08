@@ -36,7 +36,7 @@
 
             var result = DataService.GetSingle<dynamic>(criteria);
 
-            return result.IsActive;
+            return result != null && result.IsActive;
         }
 
         public void ChangeFraudCaseStatus(FraudCaseId id, int userId)
