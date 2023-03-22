@@ -1,6 +1,8 @@
 ﻿namespace Fanex.NAP.FS.Websites.Controllers.ActionFilter
 {
-    using Fanex.Logging;   
+    using Fanex.Logging;
+    using Fanex.Logging.Extensions;
+    using Fanex.Logging.Extensions.Database;
     using Fanex.NAP.Core.Web.Session;
     using Fanex.NAP.FS.Library.Core.Consts;
     using Fanex.NAP.FS.Library.Services.Implement;
@@ -79,10 +81,10 @@
             }
             catch (Exception ex)
             {
-                //var logMessage = new LogMessage($"Tracking function usage - Insert Stats Accessment fail - {ex.Message}")
-                //                 .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
-                //                 .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
-                var logMessage = $"Tracking function usage - Insert Stats Accessment fail - {ex.Message}";
+                var logMessage = new LogMessage($"Tracking function usage - Insert Stats Accessment fail - {ex.Message}")
+                                 .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
+                                 .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
+               
                 LogService.Error(logMessage);
             }
         }

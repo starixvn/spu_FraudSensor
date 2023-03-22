@@ -1,6 +1,7 @@
 ﻿namespace Fanex.NAP.FS.Websites.Controllers
 {
     using Core.Service.Impl;
+    using Fanex.Logging;
     using Fanex.NAP.Core.Web.Attribute;
     using Fanex.NAP.FS.Library.Core.Consts;
     using Fanex.NAP.FS.Library.Criteria.MatchMonitor;
@@ -43,7 +44,7 @@
         {
             ViewBag.Username = this.User.Identity.Name;
             ViewBag.Environment = int.Parse(ConfigurationManager.AppSettings["Environment"]);
-            ViewBag.Sites = _fraudCaseDetailService.GetSites();
+            ViewBag.Sites = _fraudCaseDetailService.GetSites();           
 
             return View(_matchMonitorService.GetBalanceUpDate());
         }
