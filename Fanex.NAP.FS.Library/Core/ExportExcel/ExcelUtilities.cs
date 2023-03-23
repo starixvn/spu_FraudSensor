@@ -82,7 +82,7 @@
         {
             using (var file = new ExcelStream())
             {
-                wb.Write(file);
+                wb.Write(file, false);
 
                 file.AllowClose = true;
                 file.Position = 0;
