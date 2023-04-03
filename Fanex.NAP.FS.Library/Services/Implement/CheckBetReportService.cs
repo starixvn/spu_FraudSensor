@@ -6,6 +6,7 @@ namespace Fanex.NAP.FS.Library.Services.Implement
     using Fanex.BetList.Core.Builder;
     using Fanex.BetList.Core.Entities;
     using Fanex.BetList.Core.TicketHelper;
+    using Fanex.Logging;
     using Fanex.NAP.FS.Library.Core.BaseClasses;
     using Fanex.NAP.FS.Library.Core.Helpers;
     using Fanex.NAP.FS.Library.Criteria.CheckBetReport;
@@ -13,6 +14,7 @@ namespace Fanex.NAP.FS.Library.Services.Implement
     using Fanex.NAP.FS.Library.Models.CheckBetReport;
     using Fanex.NAP.FS.Library.Services.Interface;
     using Fanex.NAP.FS.Library.ViewModels.CheckBetReport;
+    using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -27,10 +29,48 @@ namespace Fanex.NAP.FS.Library.Services.Implement
         {
             var data = DataService.GetData<CheckBetHistory>(criteria);
 
-            return data
+#if DEBUG
+            if (!data.Any())
+            {
+                data = GenerateCheckBetHistory_Test();
+            }
+#endif
+
+            var result = data
                 .Select(d => GetTicket(d))
                 .OrderBy(t => t.Username).ThenBy(t => t.BetId);
+
+            var logDataInfo = result.Take(10);
+
+            LogService.Info(logDataInfo != null ? $"CheckBetReport log info: {JsonConvert.SerializeObject(logDataInfo)}" : $"CheckBetReport log info empty:");
+
+            return result;
         }
+
+#if DEBUG
+        private IEnumerable<CheckBetHistory> GenerateCheckBetHistory_Test()
+        {
+            var checkBets = new List<CheckBetHistory>();
+
+            checkBets.Add(new CheckBetHistory
+            {
+                TransId = 101061018561544210,
+                TransDate = DateTime.Now,
+                OldStake = 1,
+                OldOdds = 1,
+                OldLiveHomeScore = 1,
+                OldLiveAwayScore = 1,
+                OldStatus = "C",
+                OldMatchId = 1,
+                HomeId = 1,
+                AwayId = 1,
+                Bettype = 1,
+                Note = "Adam Test"
+            });
+
+            return checkBets;
+        }
+#endif
 
         public DBResult UpdateNote(CheckBetReportUpdateNoteCriteria criteria)
         {
