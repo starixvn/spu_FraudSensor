@@ -2,7 +2,7 @@
 {
     public class CheckBetTicket
     {
-        public long BetId { get; set; }
+        public string BetId { get; set; }
 
         public string TransDate { get; set; }
 

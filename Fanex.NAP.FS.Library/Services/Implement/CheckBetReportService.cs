@@ -29,48 +29,12 @@ namespace Fanex.NAP.FS.Library.Services.Implement
         {
             var data = DataService.GetData<CheckBetHistory>(criteria);
 
-#if DEBUG
-            if (!data.Any())
-            {
-                data = GenerateCheckBetHistory_Test();
-            }
-#endif
-
             var result = data
                 .Select(d => GetTicket(d))
                 .OrderBy(t => t.Username).ThenBy(t => t.BetId);
-
-            var logDataInfo = result.Take(10);
-
-            LogService.Info(logDataInfo != null ? $"CheckBetReport log info: {JsonConvert.SerializeObject(logDataInfo)}" : $"CheckBetReport log info empty:");
-
+            
             return result;
         }
-
-#if DEBUG
-        private IEnumerable<CheckBetHistory> GenerateCheckBetHistory_Test()
-        {
-            var checkBets = new List<CheckBetHistory>();
-
-            checkBets.Add(new CheckBetHistory
-            {
-                TransId = 101061018561544210,
-                TransDate = DateTime.Now,
-                OldStake = 1,
-                OldOdds = 1,
-                OldLiveHomeScore = 1,
-                OldLiveAwayScore = 1,
-                OldStatus = "C",
-                OldMatchId = 1,
-                HomeId = 1,
-                AwayId = 1,
-                Bettype = 1,
-                Note = "Adam Test"
-            });
-
-            return checkBets;
-        }
-#endif
 
         public DBResult UpdateNote(CheckBetReportUpdateNoteCriteria criteria)
         {
@@ -138,7 +102,7 @@ namespace Fanex.NAP.FS.Library.Services.Implement
 
             return new CheckBetTicket
             {
-                BetId = history.TransId,
+                BetId = history.TransId.ToString(),
                 Bettype = CachedRef.GetBettypeName(history.Bettype),
                 Choice = new ViewModels.History<string>
                 {
