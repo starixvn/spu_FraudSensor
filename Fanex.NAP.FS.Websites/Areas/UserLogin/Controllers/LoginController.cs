@@ -141,7 +141,7 @@
 
                         if (password == hashPw)
                         {
-                            var group = _groupService.Get(user.GroupId);
+                            var group = user.GroupId == 0 ? null : _groupService.Get(user.GroupId);
 
                             // gets all sites of logging-in user
                             var siteLevelList = _userService.GetSiteLevel(user.Id, Environment);
