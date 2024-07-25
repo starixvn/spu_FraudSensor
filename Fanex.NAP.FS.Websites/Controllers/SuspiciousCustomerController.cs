@@ -58,7 +58,7 @@ namespace Fanex.NAP.FS.Websites.Controllers
             }, JsonRequestBehavior.AllowGet);
         }
 
-        public IList<SuspiciousCustomerReportModel> FilterData(DataTableAjaxPostModel model, out int filteredResultsCount, out int totalResultsCount)
+        private IList<SuspiciousCustomerReportModel> FilterData(DataTableAjaxPostModel model, out int filteredResultsCount, out int totalResultsCount)
         {
             var take = model.length;
             var skip = model.start;
@@ -91,7 +91,7 @@ namespace Fanex.NAP.FS.Websites.Controllers
             return result;
         }
 
-        public List<SuspiciousCustomerReportModel> GetDataFromDbase(SuspiciousCustomerReportGetCriteria searchBy, int take, int skip, out int filteredResultsCount, out int totalResultsCount)
+        private List<SuspiciousCustomerReportModel> GetDataFromDbase(SuspiciousCustomerReportGetCriteria searchBy, int take, int skip, out int filteredResultsCount, out int totalResultsCount)
         {
             var suspiciousCustomers = _suspiciousCustomerReportService.GetSuspiciousCustomerReport(searchBy);
             var counter = skip + 1;           

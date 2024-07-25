@@ -1,7 +1,7 @@
 ﻿namespace Fanex.NAP.FS.Areas.UserLogin.Controllers
 {
+    using ONEbook.UM;
     using ONEbook.UM.Services;
-    using ONEbook.UM.Services.Impl;
     using System.Web.Mvc;
     using System.Web.Security;
 
@@ -18,8 +18,11 @@
         }
 
         public CommonController(IMaintenanceService maintenanceService)
-        {
-            _maintenanceService = maintenanceService ?? new MaintenanceService();
+        {            
+            _maintenanceService = maintenanceService ?? new MaintenanceService(UMClientManager.RestClient,
+                                  UMClientManager.CacheService,
+                                  UMClientManager.UMClientConfigs,
+                                  UMClientManager.HttpContext);
         }
 
         /// <summary>
