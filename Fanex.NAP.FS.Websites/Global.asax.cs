@@ -2,6 +2,7 @@
 {
     using Fanex.BetList.Core;
     using Fanex.BetList.Core.RemotingRef;
+    using Fanex.Caching;
     using Fanex.Data;
     using Fanex.Data.MySql;
     using Fanex.Data.SqlServer;
@@ -9,6 +10,12 @@
     using Fanex.Logging.Sentry;
     using Fanex.NAP.FS.Library.Core.Utilities;
     using Fanex.RemotingRef;
+    using ONEbook.UM;
+    using ONEbook.UM.Configurations;
+    using ONEbook.UM.Helpers;
+    using ONEbook.UM.NETFramework;
+    using ONEbook.UM.Transport;
+    using RestSharp;
     using Sentry;
     using System;
     using System.Collections.Generic;
@@ -52,6 +59,15 @@
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+
+            var umConfig = new UMClientConfiguration().Initialize();
+
+            UMClientManager
+               .UseConfig(umConfig)
+               .UseCacheService(new UMCacheService(new CacheService()))
+               .UseRestClient(new UMRestClient(umConfig))
+               .UseHttpContext(new HttpContextHelper());
+
         }
 
         protected void Application_AuthenticateRequest(object sender, EventArgs e)

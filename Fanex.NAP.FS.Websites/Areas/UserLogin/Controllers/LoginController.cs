@@ -12,9 +12,8 @@
     using NAP.Core.Web;
     using NAP.Core.Web.Auth;
     using NAP.Core.Web.Session;
-    using ONEbook.UM.Filters;
+    using ONEbook.UM;
     using ONEbook.UM.Services;
-    using ONEbook.UM.Services.Impl;
     using System;
     using System.Collections.Generic;
     using System.Configuration;
@@ -61,7 +60,10 @@
             _groupService = groupService ?? new GroupService();
             _siteService = siteService ?? new SiteService();
             _currentSession = currentSession ?? new CurrentSession();
-            _maintenanceService = maintenanceService ?? new MaintenanceService();
+            _maintenanceService = maintenanceService ?? new MaintenanceService(UMClientManager.RestClient,
+                                  UMClientManager.CacheService,
+                                  UMClientManager.UMClientConfigs,
+                                  UMClientManager.HttpContext);
             _securityService = new SecurityService();
             _hashAlgorithm = new SHA256Managed();
         }
