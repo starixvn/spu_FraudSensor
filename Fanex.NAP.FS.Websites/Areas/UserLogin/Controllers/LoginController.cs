@@ -313,8 +313,11 @@
         }
 
         private void CreateUserMenu(User user)
-        {
+        {           
             _currentSession.MenuItemList = (IList<MenuItem>)_userService.GetMenuItem(user.Id, SiteId, Environment, true);
+
+            LogService.Info($"Test Login FS _currentSession.MenuItemList: {JsonConvert.SerializeObject(_currentSession.MenuItemList)}");
+
             AppSession.CurrentUserMenu = _currentSession.MenuItemList;
         }
 
