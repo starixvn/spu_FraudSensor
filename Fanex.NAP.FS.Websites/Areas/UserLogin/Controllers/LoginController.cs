@@ -175,13 +175,21 @@
                                 if (AppSession.CurrentUserMenu != null &&
                                     AppSession.CurrentUserMenu.Any(m => string.IsNullOrEmpty(m.ParentName)))
                                 {
+                                    LogService.Info($"Test Login FS ParentName Empty");
+
                                     // if the user login directly, not through NAP Hub
                                     if (IsSiteLogin)
                                     {
                                         if (UserIsActiveOnThisSite(siteLevelList))
                                         {
+                                            LogService.Info($"Test Login FS UserIsActiveOnThisSite");
+
                                             var returnUrl = FormsAuthentication.GetRedirectUrl(username, true);
+
+                                            LogService.Info($"Test Login FS returnUrl:  {returnUrl}");
+
                                             returnUrl = string.IsNullOrEmpty(returnUrl) ? FormsAuthentication.DefaultUrl : returnUrl;
+
                                             return Redirect(returnUrl);
                                         }
 
@@ -313,8 +321,12 @@
         }
 
         private void CreateUserMenu(User user)
-        {           
-            _currentSession.MenuItemList = (IList<MenuItem>)_userService.GetMenuItem(user.Id, SiteId, Environment, true);
+        {
+            LogService.Info($"Test Login FS user: {JsonConvert.SerializeObject(user)}");
+
+            LogService.Info($"Test Login FS _userService.GetMenuItem: user.Id {user.Id} ;SiteId {SiteId} ;Environment {Environment}");
+
+            _currentSession.MenuItemList = (IList<MenuItem>)_userService.GetMenuItem(user.Id, SiteId, Environment, true);           
 
             LogService.Info($"Test Login FS _currentSession.MenuItemList: {JsonConvert.SerializeObject(_currentSession.MenuItemList)}");
 
