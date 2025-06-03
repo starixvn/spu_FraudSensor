@@ -12,6 +12,7 @@
     using NAP.Core.Web;
     using NAP.Core.Web.Auth;
     using NAP.Core.Web.Session;
+    using Newtonsoft.Json;
     using ONEbook.UM;
     using ONEbook.UM.Services;
     using System;
@@ -145,10 +146,14 @@
                         {
                             var group = user.GroupId == 0 ? null : _groupService.Get(user.GroupId);
 
+                            LogService.Info($"Test Login FS group: {JsonConvert.SerializeObject(group)}");
+
                             // gets all sites of logging-in user
                             var siteLevelList = _userService.GetSiteLevel(user.Id, Environment);
-
+                           
                             ClearToken();
+
+                            LogService.Info($"Test Login FS siteLevelList: {JsonConvert.SerializeObject(siteLevelList)}");
 
                             if ((group == null || group.IsActive) && siteLevelList.Any(x => x.IsActive))
                             {
@@ -162,6 +167,10 @@
                                 var currentFunction = _userService.GetPermissions(user.Id, NapSettings.Settings.SiteId, FSFunctionKeys.MatchMonitoring, NapSettings.Settings.Environment);
                                 AppSession.CurrentUser = user;
                                 AppSession.RoleAccess = PermissionService.GetRoleAccess(currentFunction);
+
+                                LogService.Info($"Test Login FS SiteId: {SiteId}");
+                                
+                                LogService.Info($"Test Login FS CurrentUserMenu: {JsonConvert.SerializeObject(AppSession.CurrentUserMenu)}");
 
                                 if (AppSession.CurrentUserMenu != null &&
                                     AppSession.CurrentUserMenu.Any(m => string.IsNullOrEmpty(m.ParentName)))
