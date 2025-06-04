@@ -50,6 +50,11 @@ namespace Fanex.NAP.FS.Library.Core.Helpers.Api
 
         public static async Task<TResult> Post<TResult>(string url, object param)
         {
+            if (string.IsNullOrEmpty(url))
+            {
+                return default(TResult);
+            }
+
             using (var web = new HttpClient())
             {
                 var content = JsonConvert.SerializeObject(param);

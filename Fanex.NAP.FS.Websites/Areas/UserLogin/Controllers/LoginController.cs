@@ -145,16 +145,12 @@
                         if (password == hashPw)
                         {
                             var group = user.GroupId == 0 ? null : _groupService.Get(user.GroupId);
-
-                            LogService.Info($"Test Login FS group: {JsonConvert.SerializeObject(group)}");
-
+                           
                             // gets all sites of logging-in user
                             var siteLevelList = _userService.GetSiteLevel(user.Id, Environment);
                            
                             ClearToken();
-
-                            LogService.Info($"Test Login FS siteLevelList: {JsonConvert.SerializeObject(siteLevelList)}");
-
+                          
                             if ((group == null || group.IsActive) && siteLevelList.Any(x => x.IsActive))
                             {
                                 // Check-in user
@@ -167,16 +163,12 @@
                                 var currentFunction = _userService.GetPermissions(user.Id, NapSettings.Settings.SiteId, FSFunctionKeys.MatchMonitoring, NapSettings.Settings.Environment);
                                 AppSession.CurrentUser = user;
                                 AppSession.RoleAccess = PermissionService.GetRoleAccess(currentFunction);
-
-                                LogService.Info($"Test Login FS SiteId: {SiteId}");
                                 
                                 LogService.Info($"Test Login FS CurrentUserMenu: {JsonConvert.SerializeObject(AppSession.CurrentUserMenu)}");
 
                                 if (AppSession.CurrentUserMenu != null &&
                                     AppSession.CurrentUserMenu.Any(m => string.IsNullOrEmpty(m.ParentName)))
-                                {
-                                    LogService.Info($"Test Login FS ParentName Empty");
-
+                                {                                    
                                     // if the user login directly, not through NAP Hub
                                     if (IsSiteLogin)
                                     {
@@ -185,9 +177,7 @@
                                             LogService.Info($"Test Login FS UserIsActiveOnThisSite");
 
                                             var returnUrl = FormsAuthentication.GetRedirectUrl(username, true);
-
-                                            LogService.Info($"Test Login FS returnUrl:  {returnUrl}");
-
+                                            
                                             returnUrl = string.IsNullOrEmpty(returnUrl) ? FormsAuthentication.DefaultUrl : returnUrl;
 
                                             return Redirect(returnUrl);
@@ -265,40 +255,32 @@
         {
             try
             {
-                if (!ConfigurationManager.AppSettings["Environment"].Equals("1"))
-                {
-                    var maintenanceInfo = _maintenanceService.GetUnderMaintenanceTime();
+                //if (UMHelper.IsUnderMaintainaceHappen(_maintenanceService))
+                //{
+                //    Logger.Log.Info("UM");
 
-                    if (maintenanceInfo.IsUnderMaintenanceTime)
-                    {
-                        Logger.Log.Info("UM");
+                //    return Json(new
+                //    {
+                //        IsKickedOut = "3"
+                //    });
+                //}
 
-                        return Json(new
-                        {
-                            IsKickedOut = "3"
-                        });
-                    }
-                    
-                    if (_currentSession == null || _currentSession.OnUserId == 0)
-                    {
-                        return Json(new
-                        {
-                            IsKickedOut = "1"
-                        });
-                    }
-
-                    var isKickedOut = _securityService.ReCheckIn(_currentSession.OnUserId, SiteId);
-
+                if (_currentSession == null || _currentSession.OnUserId == 0)
+                {                   
                     return Json(new
                     {
-                        OnUserId = Convert.ToInt32(_currentSession.OnUserId),
-                        IsKickedOut = isKickedOut
+                        IsKickedOut = "1"
                     });
                 }
 
+                var isKickedOut = _securityService.ReCheckIn(_currentSession.OnUserId, SiteId);
+
+                LogService.Info($"Test Login FS isKickedOut: {isKickedOut}");
+
                 return Json(new
                 {
-                    IsKickedOut = "0"
+                    OnUserId = Convert.ToInt32(_currentSession.OnUserId),
+                    IsKickedOut = isKickedOut
                 });
             }
             catch (Exception exception)
@@ -321,15 +303,9 @@
         }
 
         private void CreateUserMenu(User user)
-        {
-            LogService.Info($"Test Login FS user: {JsonConvert.SerializeObject(user)}");
-
-            LogService.Info($"Test Login FS _userService.GetMenuItem: user.Id {user.Id} ;SiteId {SiteId} ;Environment {Environment}");
-
+        {           
             _currentSession.MenuItemList = (IList<MenuItem>)_userService.GetMenuItem(user.Id, SiteId, Environment, true);           
-
-            LogService.Info($"Test Login FS _currentSession.MenuItemList: {JsonConvert.SerializeObject(_currentSession.MenuItemList)}");
-
+            
             AppSession.CurrentUserMenu = _currentSession.MenuItemList;
         }
 
