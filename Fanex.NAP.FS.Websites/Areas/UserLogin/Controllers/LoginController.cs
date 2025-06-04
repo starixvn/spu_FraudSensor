@@ -265,6 +265,8 @@
                 //    });
                 //}
 
+                LogService.Info($"Test Login FS _currentSession.OnUserId: {_currentSession.OnUserId}");
+
                 if (_currentSession == null || _currentSession.OnUserId == 0)
                 {                   
                     return Json(new
