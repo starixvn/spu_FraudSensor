@@ -1237,22 +1237,22 @@
     <Content Include="WebConfigs\Web.PROCLOUD.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="WebConfigs\Web.AppSettings.KLDR.config">
+    <Content Include="WebConfigs\Web.AppSettings.KLPROD.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="WebConfigs\Web.ConnectionString.KLDR.config">
+    <Content Include="WebConfigs\Web.ConnectionString.KLPROD.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="WebConfigs\Web.KLDR.config">
+    <Content Include="WebConfigs\Web.KLPROD.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <None Include="WebConfigs\Web.AppSettings.KLPROD.config">
+    <None Include="WebConfigs\Web.AppSettings.KLSIMPLE.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="WebConfigs\Web.ConnectionString.KLPROD.config">
+    <None Include="WebConfigs\Web.ConnectionString.KLSIMPLE.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="WebConfigs\Web.KLPROD.config">
+    <None Include="WebConfigs\Web.KLSIMPLE.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
