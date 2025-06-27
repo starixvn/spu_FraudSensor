@@ -11,7 +11,7 @@
     using System;
     using System.Web.Mvc;
 
-    [NapAuth(FunctionKey = FSFunctionKeys.ScannedOfficeIP, Policy = Core.Business.Constant.Policy.Read)]
+    //[NapAuth(FunctionKey = FSFunctionKeys.ScannedOfficeIP, Policy = Core.Business.Constant.Policy.Read)]
     public class ScannedOfficeIpReportController : ReportsController
     {
         private readonly IScannedOfficeIpReportService _service = new ScannedOfficeIpReport();

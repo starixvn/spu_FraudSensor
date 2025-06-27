@@ -21,7 +21,7 @@
     using System.Linq;
     using System.Web.Mvc;
 
-    [NapAuth(FunctionKey = FSFunctionKeys.MatchMonitoring, Policy = Core.Business.Constant.Policy.Read)]
+    //[NapAuth(FunctionKey = FSFunctionKeys.MatchMonitoring, Policy = Core.Business.Constant.Policy.Read)]
     public class MatchMonitorController : ReportsController
     {
         private readonly IFraudCaseDetailsService _fraudCaseDetailService;

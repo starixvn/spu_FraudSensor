@@ -16,7 +16,7 @@
             case "Notification":
                 return "<span class='icon icon-email'></span>";
             default:
-                return string.Empty ;
+                return string.Empty;
         }
     };
 
@@ -32,14 +32,14 @@
             <a href="#" class="link @(subMenus.Any()? "has-child" : "") @(controllerBaseType.Contains(menu.Name) ? "active" : "")">@Html.Raw(iconLookup(menu.Name)) @menu.Name</a>
             @if (subMenus.Any())
             {
-            <ul class="sub-menu">
-                @foreach (var subMenu in subMenus)
-                {
-                    <li class="sub-menu-item">
-                        <a href="@Url.Content(subMenu.ValidUrl)" class="link">@subMenu.Name</a>
-                    </li>
-                }
-            </ul>
+                <ul class="sub-menu">
+                    @foreach (var subMenu in subMenus)
+                    {
+                        <li class="sub-menu-item">
+                            <a href="@Url.Content(subMenu.ValidUrl)" class="link">@subMenu.Name</a>
+                        </li>
+                    }
+                </ul>
             }
         </li>
     }

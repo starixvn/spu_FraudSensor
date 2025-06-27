@@ -1,6 +1,8 @@
 ﻿namespace Fanex.NAP.FS.Websites.Controllers
 {
+    using Fanex.Logging;
     using Fanex.NAP.Core.Web.Attribute;
+    using Newtonsoft.Json;
     using System.Web.Mvc;
 
     [NapSuperAuth]
@@ -14,6 +16,8 @@
         public ActionResult Menu(string activeMenu)
         {
             ViewBag.ActiveMenu = activeMenu;
+
+            LogService.Info($"Test Login FS CurrentSession.MenuItemList: {JsonConvert.SerializeObject(CurrentSession.MenuItemList)}");
 
             return PartialView("~/Views/Shared/_Menu.cshtml", CurrentSession.MenuItemList);
         }

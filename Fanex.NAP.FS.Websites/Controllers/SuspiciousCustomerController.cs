@@ -5,6 +5,10 @@ namespace Fanex.NAP.FS.Websites.Controllers
     using Core.Business;
     using Core.Service.Impl;
     using Core.Web.Attribute;
+    using Fanex.Logging.Extensions.Database;
+    using Fanex.Logging.Extensions;
+    using Fanex.Logging;
+    using Fanex.NAP.Core.Models;
     using Fanex.NAP.FS.Library.Core.Consts;
     using Fanex.NAP.FS.Library.Models.SuspiciousCustomer;
     using Fanex.NAP.FS.Websites.Controllers.ActionFilter;
@@ -18,7 +22,7 @@ namespace Fanex.NAP.FS.Websites.Controllers
     using System.Threading.Tasks;
     using System.Web.Mvc;
 
-    [NapAuth(FunctionKey = FSFunctionKeys.SuspiciousCustomer, Policy = Constant.Policy.Read)]
+    //[NapAuth(FunctionKey = FSFunctionKeys.SuspiciousCustomer, Policy = Constant.Policy.Read)]
     public class SuspiciousCustomerController : ReportsController
     {
         private readonly ISuspiciousCustomerReportService _suspiciousCustomerReportService;
@@ -117,7 +121,20 @@ namespace Fanex.NAP.FS.Websites.Controllers
 
         public async Task<ActionResult> GetUsers()
         {
-            var users = new UserService().GetByFunctionAndSite(FSFunctionKeys.SuspiciousCustomer, SiteId);
+            var users = Enumerable.Empty<User>();
+            
+            try
+            {
+                users = new UserService().GetByFunctionAndSite(FSFunctionKeys.SuspiciousCustomer, SiteId);
+            }
+            catch (Exception ex)
+            {
+                var logMessage = new LogMessage(ex.Message)
+                                 .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
+                                 .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
+
+                LogService.Error(logMessage);
+            }            
            
             return Json(users, JsonRequestBehavior.AllowGet);
         }

@@ -11,7 +11,7 @@
     using System;
     using System.Web.Mvc;
 
-    [NapAuth(FunctionKey = FSFunctionKeys.DailyDataCapture, Policy = Core.Business.Constant.Policy.Read)]
+    //[NapAuth(FunctionKey = FSFunctionKeys.DailyDataCapture, Policy = Core.Business.Constant.Policy.Read)]
     public class DailyDataCaptureController : ReportsController
     {
         private readonly IDailyDataCaptureService _service = new DailyCaptureDataService();

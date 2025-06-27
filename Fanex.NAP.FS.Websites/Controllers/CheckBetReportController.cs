@@ -17,7 +17,7 @@
     using System.Linq;
     using System.Web.Mvc;
 
-    [NapAuth(FunctionKey = FSFunctionKeys.CheckBetReport, Policy = Core.Business.Constant.Policy.Read)]
+    //[NapAuth(FunctionKey = FSFunctionKeys.CheckBetReport, Policy = Core.Business.Constant.Policy.Read)]
     public class CheckBetReportController : ReportsController
     {
         private readonly ICheckBetReportService _service = new CheckBetReportService();

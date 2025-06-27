@@ -13,7 +13,7 @@ namespace Fanex.NAP.FS.Websites.Controllers
     using System.Threading.Tasks;
     using System.Web.Mvc;
 
-    [NapAuth(FunctionKey = FSFunctionKeys.SuspiciousCustomerDetails, Policy = Core.Business.Constant.Policy.Read)]
+    //[NapAuth(FunctionKey = FSFunctionKeys.SuspiciousCustomerDetails, Policy = Core.Business.Constant.Policy.Read)]
     public class SuspiciousCustomerDetailsController : ReportsController
     {
         private readonly ISuspiciousCustomerReportDetailsService _detailsService = new SuspiciousCustomerReportDetailsService();
