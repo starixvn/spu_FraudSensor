@@ -20,6 +20,7 @@
     using Fanex.NAP.FS.Library.Models.MatchMonitor.FraudCaseDetails;
     using Fanex.NAP.FS.Library.ViewModels.MatchMonitor.FraudCaseDetails;    
     using System;
+    using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
@@ -405,7 +406,7 @@
             var isIncludeNoneOption = isAllOptions || sites.Contains("None");
             sites = sites != null ? sites.Replace("None", ""): sites;
 
-            var urlCustSites = AppSettings.Get("FPS_WEBAPI_CUSTOMER_SUBSCRIBER");
+            var urlCustSites = AppSettings.Get("FPS_WEBAPI_CUSTOMER_SUBSCRIBER");           
 
             var customersBySites = rawTickets.Select(t => t.CustId).Distinct().Chunk(500)
                                     .Select(q => ApiHelper.Post<IEnumerable<CustomerSubcriber>>(urlCustSites, new CustomerSubcriberList { CustIds = string.Join(",", q), Subscribers = isAllOptions ? null : sites }))
@@ -1025,6 +1026,12 @@
         public IEnumerable<Site> GetSites()
         {
             var url = AppSettings.Get("FPS_WEBAPI_CUSTOMER_SUBSCRIBER");
+
+            if (string.IsNullOrEmpty(url))
+            {
+                return Enumerable.Empty<Site>();
+            }
+
             var responseSites = ApiHelper.Get<IEnumerable<string>>(url);
             Task.WaitAll(responseSites);
 

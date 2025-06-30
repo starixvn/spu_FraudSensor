@@ -66,7 +66,7 @@
         }
 
         [HttpPost]
-        [NapAuth(FunctionKey = FSFunctionKeys.MatchMonitoring, Policy = Core.Business.Constant.Policy.Host)]
+        //[NapAuth(FunctionKey = FSFunctionKeys.MatchMonitoring, Policy = Core.Business.Constant.Policy.Host)]
         [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.MatchMonitor_VerifyMatch)]
         public ActionResult VerifyMatch(VerifyMatchCriteria criteria)
         {

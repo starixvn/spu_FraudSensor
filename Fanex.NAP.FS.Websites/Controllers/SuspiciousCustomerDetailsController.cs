@@ -34,7 +34,7 @@ namespace Fanex.NAP.FS.Websites.Controllers
             return View(generalViewModel);
         }
 
-        [NapAuth(FunctionKey = FSFunctionKeys.SuspiciousCustomerDetails, Policy = Core.Business.Constant.Policy.Host)]
+        //[NapAuth(FunctionKey = FSFunctionKeys.SuspiciousCustomerDetails, Policy = Core.Business.Constant.Policy.Host)]
         [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.SuspiciousCustomer_Detail_UpdateAssignee)]
         public ActionResult UpdateAssignee(int custId, int? assigneeId)
         {
@@ -43,7 +43,7 @@ namespace Fanex.NAP.FS.Websites.Controllers
             return Json(result);
         }
 
-        [NapAuth(FunctionKey = FSFunctionKeys.SuspiciousCustomerDetails, Policy = Core.Business.Constant.Policy.Host)]
+        //[NapAuth(FunctionKey = FSFunctionKeys.SuspiciousCustomerDetails, Policy = Core.Business.Constant.Policy.Host)]
         [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.SuspiciousCustomer_Detail_UpdateFCVerify)]
         public ActionResult UpdateCustomerFraudCaseVerify(int custId, int fraudCaseId)
         {
@@ -52,7 +52,7 @@ namespace Fanex.NAP.FS.Websites.Controllers
             return Json(result);
         }
 
-        [NapAuth(FunctionKey = FSFunctionKeys.SuspiciousCustomerDetails, Policy = Core.Business.Constant.Policy.Host)]
+        //[NapAuth(FunctionKey = FSFunctionKeys.SuspiciousCustomerDetails, Policy = Core.Business.Constant.Policy.Host)]
         [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.SuspiciousCustomer_Detail_RemoveLogNote)]
         public ActionResult RemoveLogNote(int custId, int customerLogId)
         {
@@ -61,7 +61,7 @@ namespace Fanex.NAP.FS.Websites.Controllers
             return Json(result);
         }
 
-        [NapAuth(FunctionKey = FSFunctionKeys.SuspiciousCustomerDetails, Policy = Core.Business.Constant.Policy.Host)]
+        //[NapAuth(FunctionKey = FSFunctionKeys.SuspiciousCustomerDetails, Policy = Core.Business.Constant.Policy.Host)]
         [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.SuspiciousCustomer_Detail_InsertLogNote)]
         public ActionResult InsertLogNote(int custId, string logDesc)
         {
@@ -70,7 +70,7 @@ namespace Fanex.NAP.FS.Websites.Controllers
             return Json(result);
         }
 
-        [NapAuth(FunctionKey = FSFunctionKeys.SuspiciousCustomerDetails, Policy = Core.Business.Constant.Policy.Host)]
+        //[NapAuth(FunctionKey = FSFunctionKeys.SuspiciousCustomerDetails, Policy = Core.Business.Constant.Policy.Host)]
         [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.SuspiciousCustomer_Detail_UpdateCust)]
         public ActionResult UpdateCustomerInfo(int custId, bool? isDelinquent, bool? isDirty, bool? isHedge)
         {
