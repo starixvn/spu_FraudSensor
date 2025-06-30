@@ -132,7 +132,7 @@
         }
 
         [HttpPost]
-        [NapAuth(FunctionKey = FSFunctionKeys.FraudCase, Policy = Core.Business.Constant.Policy.Host)]
+        //[NapAuth(FunctionKey = FSFunctionKeys.FraudCase, Policy = Core.Business.Constant.Policy.Host)]
         [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.FCRule_DelayGoal_DeleteCust)]
         public ActionResult DeleteDelayedGoalCustomer(int custId)
         {
@@ -140,7 +140,7 @@
         }
 
         [HttpPost]
-        [NapAuth(FunctionKey = FSFunctionKeys.FraudCase, Policy = Core.Business.Constant.Policy.Host)]
+        //[NapAuth(FunctionKey = FSFunctionKeys.FraudCase, Policy = Core.Business.Constant.Policy.Host)]
         [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.FCRule_DelayGoal_AddCust)]
         public ActionResult AddDelayedGoalCustomer(string username)
         {
@@ -186,14 +186,14 @@
             return JData(_ipService.GetIps());
         }
 
-        [NapAuth(FunctionKey = FSFunctionKeys.FraudCase, Policy = Core.Business.Constant.Policy.Host)]
+        //[NapAuth(FunctionKey = FSFunctionKeys.FraudCase, Policy = Core.Business.Constant.Policy.Host)]
         [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.FCRule_OfficeIP_IP_Delete)]
         public ActionResult DeleteIpRange(string fromIp, string toIp)
         {
             return Json(_ipService.DeleteIpRange(fromIp, toIp, CurrentSession.UserId));
         }
 
-        [NapAuth(FunctionKey = FSFunctionKeys.FraudCase, Policy = Core.Business.Constant.Policy.Host)]
+        //[NapAuth(FunctionKey = FSFunctionKeys.FraudCase, Policy = Core.Business.Constant.Policy.Host)]
         [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.FCRule_OfficeIP_IP_Add)]
         public ActionResult AddIpRange(string fromIp, string toIp)
         {
@@ -223,7 +223,7 @@
         }
 
         [HttpPost]
-        [NapAuth(FunctionKey = FSFunctionKeys.FraudCase, Policy = Core.Business.Constant.Policy.Host)]
+        //[NapAuth(FunctionKey = FSFunctionKeys.FraudCase, Policy = Core.Business.Constant.Policy.Host)]
         [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.FCRule_OfficeIP_InternalAccount_Add)]
         public ActionResult AddInternalAccount(string userName)
         {
@@ -231,7 +231,7 @@
         }
 
         [HttpPost]
-        [NapAuth(FunctionKey = FSFunctionKeys.FraudCase, Policy = Core.Business.Constant.Policy.Host)]
+        //[NapAuth(FunctionKey = FSFunctionKeys.FraudCase, Policy = Core.Business.Constant.Policy.Host)]
         [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.FCRule_OfficeIP_InternalAccount_Delete)]
         public ActionResult DeleteInternalAccount(int custId)
         {
@@ -262,7 +262,7 @@
         }
 
         [HttpPost]
-        [NapAuth(FunctionKey = FSFunctionKeys.FraudCase, Policy = Core.Business.Constant.Policy.Host)]
+        //[NapAuth(FunctionKey = FSFunctionKeys.FraudCase, Policy = Core.Business.Constant.Policy.Host)]
         [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.FCRule_CheckBet_Recipient_Add, "fraudCase"
             , "FCRule_CheckBet_Recipient_Add=3"
             , "FCRule_DailyData_Recipient_Add=4")]
@@ -271,7 +271,7 @@
             return Json(_recipientService.AddRecipient(recipients, CurrentSession.UserId, fraudCase));
         }
 
-        [NapAuth(FunctionKey = FSFunctionKeys.FraudCase, Policy = Core.Business.Constant.Policy.Host)]
+        //[NapAuth(FunctionKey = FSFunctionKeys.FraudCase, Policy = Core.Business.Constant.Policy.Host)]
         [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.FCRule_CheckBet_Recipient_Delete, "fraudCase"
             , "FCRule_CheckBet_Recipient_Delete=3"
             , "FCRule_DailyData_Recipient_Delete=4")]
