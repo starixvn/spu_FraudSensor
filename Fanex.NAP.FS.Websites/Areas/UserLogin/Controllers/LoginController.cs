@@ -134,7 +134,7 @@
 
             if (!string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(password) && CheckValidToken(loginToken))
             {
-                LogService.Info($"Test Login FS username: {username}");
+                //LogService.Info($"Test Login FS username: {username}");
 
                 var user = _userService.Get(username.Trim());
 
@@ -159,7 +159,7 @@
                                 var criteria = SetUserCheckInCriteria(user.Id);
                                 var onId = _securityService.Login(criteria);
 
-                                LogService.Info($"Test Login FS group: {JsonConvert.SerializeObject(group)}");
+                                //LogService.Info($"Test Login FS group: {JsonConvert.SerializeObject(group)}");
 
                                 // Saves user session
                                 SaveUserSession(user, username, onId);
