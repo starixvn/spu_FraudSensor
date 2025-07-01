@@ -134,8 +134,6 @@
 
             if (!string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(password) && CheckValidToken(loginToken))
             {
-                //LogService.Info($"Test Login FS username: {username}");
-
                 var user = _userService.Get(username.Trim());
 
                 try
@@ -157,9 +155,7 @@
                             {
                                 // Check-in user
                                 var criteria = SetUserCheckInCriteria(user.Id);
-                                var onId = _securityService.Login(criteria);
-
-                                //LogService.Info($"Test Login FS group: {JsonConvert.SerializeObject(group)}");
+                                var onId = _securityService.Login(criteria);                                
 
                                 // Saves user session
                                 SaveUserSession(user, username, onId);
@@ -177,9 +173,7 @@
                                     if (IsSiteLogin)
                                     {
                                         if (UserIsActiveOnThisSite(siteLevelList))
-                                        {
-                                            LogService.Info($"Test Login FS UserIsActiveOnThisSite");
-
+                                        {                                            
                                             var returnUrl = FormsAuthentication.GetRedirectUrl(username, true);
                                             
                                             returnUrl = string.IsNullOrEmpty(returnUrl) ? FormsAuthentication.DefaultUrl : returnUrl;
@@ -269,7 +263,7 @@
                 //    });
                 //}
 
-                LogService.Info($"Test Login FS _currentSession.OnUserId: {_currentSession.OnUserId}");
+                //LogService.Info($"Test Login FS _currentSession.OnUserId: {_currentSession.OnUserId}");
 
                 if (_currentSession == null || _currentSession.OnUserId == 0)
                 {                   
@@ -280,9 +274,7 @@
                 }
 
                 var isKickedOut = _securityService.ReCheckIn(_currentSession.OnUserId, SiteId);
-
-                LogService.Info($"Test Login FS isKickedOut: {isKickedOut}");
-
+                
                 return Json(new
                 {
                     OnUserId = Convert.ToInt32(_currentSession.OnUserId),
@@ -377,7 +369,7 @@
             _currentSession.Username = userName;
             _currentSession.OnUserId = userId;
             _currentSession.SessionId = Session.SessionID;
-
+            
             // current site is not NAP Hub
             if (SiteId != 0)
             {
