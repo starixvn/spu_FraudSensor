@@ -19,6 +19,11 @@
         {
             var url = AppSettings.Get(Consts.FPS_WEBAPI_CUSTOMER_SUBSCRIBER);
 
+            if (string.IsNullOrEmpty(url))
+            {
+                return Enumerable.Empty<Subscriber>();
+            }
+
             var response = ApiHelper.Get<IEnumerable<string>>(url);
 
             Task.WhenAll(response);
@@ -106,6 +111,11 @@
         private static IEnumerable<Evidence> GetAllEvidencesFromAPI()
         {
             var url = AppSettings.Get(Consts.FPS_WEBAPI_GET_ALL_EVIDENCE);
+
+            if (string.IsNullOrEmpty(url))
+            {
+                return Enumerable.Empty<Evidence>();
+            }
 
             var evidences = ApiHelper.Post<IEnumerable<Evidence>>(url, null);
 
