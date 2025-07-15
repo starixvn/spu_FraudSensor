@@ -19,7 +19,7 @@
             service = new AssociatedAccountsMonitorService();
         }        
 
-        [NapAuth(FunctionKey = FSFunctionKeys.AssociatedAccountsMonitor, Policy = Core.Business.Constant.Policy.Read)]
+        //[NapAuth(FunctionKey = FSFunctionKeys.AssociatedAccountsMonitor, Policy = Core.Business.Constant.Policy.Read)]
         public ActionResult Index()
         {
             var evidencesCache = new StringBuilder();
@@ -39,7 +39,7 @@
         }
 
         [HttpPost]
-        [NapAuth(FunctionKey = FSFunctionKeys.AssociatedAccountsMonitor, Policy = Core.Business.Constant.Policy.Read)]
+        //[NapAuth(FunctionKey = FSFunctionKeys.AssociatedAccountsMonitor, Policy = Core.Business.Constant.Policy.Read)]
         [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.AssAccMonitor_Get, null, null)]
         public ActionResult GetAssociatedAccountsMonitor(AssociatedAccountsMonitorFilter filter)
         {
@@ -50,7 +50,7 @@
             return jsonResult;
         }
 
-        [NapAuth(FunctionKey = FSFunctionKeys.AssociatedAccountsMonitor, Policy = Core.Business.Constant.Policy.Read)]        
+        //[NapAuth(FunctionKey = FSFunctionKeys.AssociatedAccountsMonitor, Policy = Core.Business.Constant.Policy.Read)]        
         public ActionResult AssociatedAccountsDetailMonitor(AssociatedAccountsDetailMonitorFilter filter)
         {
             var evidencesCache = new StringBuilder();
@@ -75,7 +75,7 @@
         }
 
         [HttpPost]
-        [NapAuth(FunctionKey = FSFunctionKeys.AssociatedAccountsMonitor, Policy = Core.Business.Constant.Policy.Read)]
+        //[NapAuth(FunctionKey = FSFunctionKeys.AssociatedAccountsMonitor, Policy = Core.Business.Constant.Policy.Read)]
         [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.AssAccMonitor_Detail_Get, null, null)]
         public ActionResult GetAssociatedAccountsDetailMonitor(AssociatedAccountsDetailMonitorFilter filter)
         {
@@ -87,7 +87,7 @@
         }
 
         [HttpPost]
-        [NapAuth(FunctionKey = FSFunctionKeys.AssociatedAccountsMonitor, Policy = Core.Business.Constant.Policy.Read)]
+        //[NapAuth(FunctionKey = FSFunctionKeys.AssociatedAccountsMonitor, Policy = Core.Business.Constant.Policy.Read)]
         [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.AssAccMonitor_Verify, null, null)]
         public ActionResult VerifyAssociatedAccountMonitor(AssociatedAccountMonitorVerify accountVerify)
         {
@@ -98,7 +98,7 @@
         }
 
         [HttpPost]
-        [NapAuth(FunctionKey = FSFunctionKeys.AssociatedAccountsMonitor, Policy = Core.Business.Constant.Policy.Read)]
+        //[NapAuth(FunctionKey = FSFunctionKeys.AssociatedAccountsMonitor, Policy = Core.Business.Constant.Policy.Read)]
         [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.AssAccMonitor_UpdateNote, null, null)]
         public ActionResult UpdateNoteAssociatedAccountMonitor(AssociatedAccountMonitorNote accountNote)
         {

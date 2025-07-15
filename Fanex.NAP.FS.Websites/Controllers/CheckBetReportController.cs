@@ -1,16 +1,23 @@
 ﻿namespace Fanex.NAP.FS.Websites.Controllers
 {
     using Core.Service.Impl;
+    using Fanex.Logging.Extensions.Database;
+    using Fanex.Logging.Extensions;
+    using Fanex.Logging;
     using Fanex.NAP.Core.Web.Attribute;
     using Fanex.NAP.FS.Library.Core.Consts;
     using Fanex.NAP.FS.Library.Criteria.CheckBetReport;
     using Fanex.NAP.FS.Library.ExcelConfig.CheckBetReport;
     using Fanex.NAP.FS.Library.Services.Implement;
     using Fanex.NAP.FS.Library.Services.Interface;
+    using Fanex.NAP.FS.Library.ViewModels.CheckBetReport;
     using Fanex.NAP.FS.Websites.Controllers.ActionFilter;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
     using System.Web.Mvc;
 
-    [NapAuth(FunctionKey = FSFunctionKeys.CheckBetReport, Policy = Core.Business.Constant.Policy.Read)]
+    //[NapAuth(FunctionKey = FSFunctionKeys.CheckBetReport, Policy = Core.Business.Constant.Policy.Read)]
     public class CheckBetReportController : ReportsController
     {
         private readonly ICheckBetReportService _service = new CheckBetReportService();
@@ -31,7 +38,23 @@
         public ActionResult GenerateReport(CheckBetReportGetCriteria criteria)
         {
             criteria.IsShowSpecialCurrencies = IsShowSpecialCurrencies;
-            return Json(_service.Generate(criteria));
+
+            var data = Enumerable.Empty<CheckBetTicket>();
+
+            try
+            {
+                data = _service.Generate(criteria);
+            }
+            catch (Exception ex)
+            {
+                var logMessage = new LogMessage(ex.Message)
+                                  .AddSection("Data Info", DatabaseInfoGetters.GetDbExceptionInfo(ex))
+                                  .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(ex)).ToString();
+
+                LogService.Error(logMessage);
+            }
+            
+            return Json(data);
         }
 
         [TrackingFuncUsageFilter(SystemId.FS, TrackingFunctionId.CheckBetRpt_UpdateNote)]

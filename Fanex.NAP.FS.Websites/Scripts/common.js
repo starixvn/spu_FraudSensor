@@ -177,8 +177,8 @@
             return "/Main" + url;
         } else if (host.includes("starixuat")) {
             return "/V2" + url;
-        }  
-        else if (host.includes("oneops")) {
+        }
+        else if (host.includes("oneops") || host.includes("starixplay")) {
             return url;
         }
 

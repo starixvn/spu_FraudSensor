@@ -12,6 +12,7 @@
     using NAP.Core.Web;
     using NAP.Core.Web.Auth;
     using NAP.Core.Web.Session;
+    using Newtonsoft.Json;
     using ONEbook.UM;
     using ONEbook.UM.Services;
     using System;
@@ -144,17 +145,17 @@
                         if (password == hashPw)
                         {
                             var group = user.GroupId == 0 ? null : _groupService.Get(user.GroupId);
-
+                           
                             // gets all sites of logging-in user
                             var siteLevelList = _userService.GetSiteLevel(user.Id, Environment);
-
+                           
                             ClearToken();
-
+                          
                             if ((group == null || group.IsActive) && siteLevelList.Any(x => x.IsActive))
                             {
                                 // Check-in user
                                 var criteria = SetUserCheckInCriteria(user.Id);
-                                var onId = _securityService.Login(criteria);
+                                var onId = _securityService.Login(criteria);                                
 
                                 // Saves user session
                                 SaveUserSession(user, username, onId);
@@ -162,17 +163,21 @@
                                 var currentFunction = _userService.GetPermissions(user.Id, NapSettings.Settings.SiteId, FSFunctionKeys.MatchMonitoring, NapSettings.Settings.Environment);
                                 AppSession.CurrentUser = user;
                                 AppSession.RoleAccess = PermissionService.GetRoleAccess(currentFunction);
+                                
+                                LogService.Info($"Test Login FS CurrentUserMenu: {JsonConvert.SerializeObject(AppSession.CurrentUserMenu)}");
 
                                 if (AppSession.CurrentUserMenu != null &&
                                     AppSession.CurrentUserMenu.Any(m => string.IsNullOrEmpty(m.ParentName)))
-                                {
+                                {                                    
                                     // if the user login directly, not through NAP Hub
                                     if (IsSiteLogin)
                                     {
                                         if (UserIsActiveOnThisSite(siteLevelList))
-                                        {
+                                        {                                            
                                             var returnUrl = FormsAuthentication.GetRedirectUrl(username, true);
+                                            
                                             returnUrl = string.IsNullOrEmpty(returnUrl) ? FormsAuthentication.DefaultUrl : returnUrl;
+
                                             return Redirect(returnUrl);
                                         }
 
@@ -248,40 +253,32 @@
         {
             try
             {
-                if (!ConfigurationManager.AppSettings["Environment"].Equals("1"))
-                {
-                    var maintenanceInfo = _maintenanceService.GetUnderMaintenanceTime();
+                //if (UMHelper.IsUnderMaintainaceHappen(_maintenanceService))
+                //{
+                //    Logger.Log.Info("UM");
 
-                    if (maintenanceInfo.IsUnderMaintenanceTime)
-                    {
-                        Logger.Log.Info("UM");
+                //    return Json(new
+                //    {
+                //        IsKickedOut = "3"
+                //    });
+                //}
 
-                        return Json(new
-                        {
-                            IsKickedOut = "3"
-                        });
-                    }
-                    
-                    if (_currentSession == null || _currentSession.OnUserId == 0)
-                    {
-                        return Json(new
-                        {
-                            IsKickedOut = "1"
-                        });
-                    }
+                //LogService.Info($"Test Login FS _currentSession.OnUserId: {_currentSession.OnUserId}");
 
-                    var isKickedOut = _securityService.ReCheckIn(_currentSession.OnUserId, SiteId);
-
+                if (_currentSession == null || _currentSession.OnUserId == 0)
+                {                   
                     return Json(new
                     {
-                        OnUserId = Convert.ToInt32(_currentSession.OnUserId),
-                        IsKickedOut = isKickedOut
+                        IsKickedOut = "1"
                     });
                 }
 
+                var isKickedOut = _securityService.ReCheckIn(_currentSession.OnUserId, SiteId);
+                
                 return Json(new
                 {
-                    IsKickedOut = "0"
+                    OnUserId = Convert.ToInt32(_currentSession.OnUserId),
+                    IsKickedOut = isKickedOut
                 });
             }
             catch (Exception exception)
@@ -304,8 +301,9 @@
         }
 
         private void CreateUserMenu(User user)
-        {
-            _currentSession.MenuItemList = (IList<MenuItem>)_userService.GetMenuItem(user.Id, SiteId, Environment, true);
+        {           
+            _currentSession.MenuItemList = (IList<MenuItem>)_userService.GetMenuItem(user.Id, SiteId, Environment, true);           
+            
             AppSession.CurrentUserMenu = _currentSession.MenuItemList;
         }
 
@@ -371,7 +369,7 @@
             _currentSession.Username = userName;
             _currentSession.OnUserId = userId;
             _currentSession.SessionId = Session.SessionID;
-
+            
             // current site is not NAP Hub
             if (SiteId != 0)
             {

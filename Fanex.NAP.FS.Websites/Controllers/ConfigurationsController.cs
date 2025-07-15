@@ -4,7 +4,7 @@ namespace Fanex.NAP.FS.Websites.Controllers
 {
     using Fanex.NAP.Core.Web.Attribute;
 
-    [NapSuperAuth]
+    //[NapSuperAuth]
     public abstract class ConfigurationsController : BaseController
     {
     }

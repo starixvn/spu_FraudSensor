@@ -16,7 +16,7 @@
     using System.Threading.Tasks;
     using System.Web.Mvc;
 
-    [NapAuth(FunctionKey = FSFunctionKeys.CustomerMonitor, Policy = Core.Business.Constant.Policy.Read)]
+    //[NapAuth(FunctionKey = FSFunctionKeys.CustomerMonitor, Policy = Core.Business.Constant.Policy.Read)]
     public class CustomerMonitorController : ReportsController
     {
         readonly ICustomerMonitorService _customerMonitorService = new CustomerMonitorService();
